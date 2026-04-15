@@ -1,0 +1,184 @@
+﻿2026-04-04T19:55:26.5699095Z Prepare all required actions
+2026-04-04T19:55:26.5756594Z ##[group]Run ./.github/actions/templates/avm-setEnvironment
+2026-04-04T19:55:26.5756986Z with:
+2026-04-04T19:55:26.5757264Z   removeDeployment: true
+2026-04-04T19:55:26.5757532Z env:
+2026-04-04T19:55:26.5758231Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:55:26.5758533Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:55:26.5758974Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:55:26.5759309Z ##[endgroup]
+2026-04-04T19:55:26.5845657Z ##[group]Run # Grouping task logs
+2026-04-04T19:55:26.5846178Z [36;1m# Grouping task logs[0m
+2026-04-04T19:55:26.5846552Z [36;1mWrite-Output '::group::Setup agent'[0m
+2026-04-04T19:55:26.5846933Z [36;1m[0m
+2026-04-04T19:55:26.5847375Z [36;1mWrite-Verbose "Caller job id: job_module_deploy_validation" -Verbose[0m
+2026-04-04T19:55:26.5847879Z [36;1m[0m
+2026-04-04T19:55:26.5848140Z [36;1m# Load used functions[0m
+2026-04-04T19:55:26.5848916Z [36;1m. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')[0m
+2026-04-04T19:55:26.5849620Z [36;1m[0m
+2026-04-04T19:55:26.5849923Z [36;1m# Define PS modules to install on the runner[0m
+2026-04-04T19:55:26.5850315Z [36;1m$modules = @([0m
+2026-04-04T19:55:26.5850601Z [36;1m    @{ Name = 'Az.Accounts' },[0m
+2026-04-04T19:55:26.5850916Z [36;1m    @{ Name = 'Az.Resources' },[0m
+2026-04-04T19:55:26.5851270Z [36;1m    @{ Name = 'powershell-yaml'; Version = '0.4.2'}[0m
+2026-04-04T19:55:26.5851602Z [36;1m)[0m
+2026-04-04T19:55:26.5851826Z [36;1m[0m
+2026-04-04T19:55:26.5852296Z [36;1m# Additional PS modules need to be installed for the deployment validation removal step in case it is enabled[0m
+2026-04-04T19:55:26.5853040Z [36;1mif (('job_module_deploy_validation' -eq 'job_module_deploy_validation') -and ('true' -eq 'true')) {[0m
+2026-04-04T19:55:26.5853538Z [36;1m  $modules += @([0m
+2026-04-04T19:55:26.5853834Z [36;1m    @{ Name = 'Az.CognitiveServices' },[0m
+2026-04-04T19:55:26.5854167Z [36;1m    @{ Name = 'Az.Compute' },[0m
+2026-04-04T19:55:26.5854492Z [36;1m    @{ Name = 'Az.DataProtection' },[0m
+2026-04-04T19:55:26.5854816Z [36;1m    @{ Name = 'Az.KeyVault' },[0m
+2026-04-04T19:55:26.5855332Z [36;1m    @{ Name = 'Az.MachineLearningServices' },[0m
+2026-04-04T19:55:26.5855682Z [36;1m    @{ Name = 'Az.Monitor' },[0m
+2026-04-04T19:55:26.5856021Z [36;1m    @{ Name = 'Az.OperationalInsights' },[0m
+2026-04-04T19:55:26.5856378Z [36;1m    @{ Name = 'Az.RecoveryServices' },[0m
+2026-04-04T19:55:26.5856712Z [36;1m    @{ Name = 'Az.Subscription' }[0m
+2026-04-04T19:55:26.5857025Z [36;1m  )[0m
+2026-04-04T19:55:26.5857257Z [36;1m}[0m
+2026-04-04T19:55:26.5857476Z [36;1m[0m
+2026-04-04T19:55:26.5857803Z [36;1m# Additional PS modules need to be installed for the publish job[0m
+2026-04-04T19:55:26.5858299Z [36;1mif ('job_module_deploy_validation' -eq 'job_publish_module') {[0m
+2026-04-04T19:55:26.5858693Z [36;1m  $modules += @([0m
+2026-04-04T19:55:26.5859139Z [36;1m    @{ Name = 'Az.ContainerRegistry' }[0m
+2026-04-04T19:55:26.5859452Z [36;1m  )[0m
+2026-04-04T19:55:26.5859675Z [36;1m}[0m
+2026-04-04T19:55:26.5859893Z [36;1m[0m
+2026-04-04T19:55:26.5860124Z [36;1m# Set agent up[0m
+2026-04-04T19:55:26.5860459Z [36;1mSet-EnvironmentOnAgent -PSModules $modules[0m
+2026-04-04T19:55:26.5860793Z [36;1m[0m
+2026-04-04T19:55:26.5861048Z [36;1mWrite-Output '::endgroup::'[0m
+2026-04-04T19:55:26.5885350Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-04-04T19:55:26.5885714Z env:
+2026-04-04T19:55:26.5886305Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:55:26.5886604Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:55:26.5886892Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:55:26.5887200Z ##[endgroup]
+2026-04-04T19:55:30.7901763Z ##[group]Setup agent
+2026-04-04T19:55:30.7942739Z [33;1mVERBOSE: Caller job id: job_module_deploy_validation[0m
+2026-04-04T19:55:30.8736265Z [33;1mVERBOSE: Powershell version:[0m
+2026-04-04T19:55:30.8794553Z 
+2026-04-04T19:55:30.8797478Z [32;1mName                          [0m[32;1m Value[0m
+2026-04-04T19:55:30.8798683Z [32;1m----                          [0m [32;1m-----[0m
+2026-04-04T19:55:30.8799373Z PSVersion                      7.4.14
+2026-04-04T19:55:30.8799820Z PSEdition                      Core
+2026-04-04T19:55:30.8800205Z GitCommitId                    7.4.14
+2026-04-04T19:55:30.8800653Z OS                             Ubuntu 24.04.4 LTS
+2026-04-04T19:55:30.8801096Z Platform                       Unix
+2026-04-04T19:55:30.8801703Z PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0…}
+2026-04-04T19:55:30.8802199Z PSRemotingProtocolVersion      2.3
+2026-04-04T19:55:30.8802657Z SerializationVersion           1.1.0.1
+2026-04-04T19:55:30.8802979Z WSManStackVersion              3.0
+2026-04-04T19:55:30.8803287Z [33;1mVERBOSE: Az CLI version:[0m
+2026-04-04T19:55:35.8007727Z azure-cli                         2.84.0
+2026-04-04T19:55:35.8008189Z 
+2026-04-04T19:55:35.8008364Z core                              2.84.0
+2026-04-04T19:55:35.8009001Z telemetry                          1.1.0
+2026-04-04T19:55:35.8009385Z 
+2026-04-04T19:55:35.8009535Z Extensions:
+2026-04-04T19:55:35.8009897Z azure-devops                       1.0.2
+2026-04-04T19:55:35.8010209Z 
+2026-04-04T19:55:35.8010378Z Dependencies:
+2026-04-04T19:55:35.8010700Z msal                            1.35.0b1
+2026-04-04T19:55:35.8011157Z azure-mgmt-resource               24.0.0
+2026-04-04T19:55:35.8011452Z 
+2026-04-04T19:55:35.8011632Z Python location '/opt/az/bin/python3'
+2026-04-04T19:55:35.8012367Z Config directory '/home/runner/.azure'
+2026-04-04T19:55:35.8015069Z Extensions directory '/opt/az/azcliextensions'
+2026-04-04T19:55:35.8019626Z 
+2026-04-04T19:55:35.8020013Z Python (Linux) 3.13.11 (main, Feb 25 2026, 02:29:34) [GCC 13.3.0]
+2026-04-04T19:55:35.8020472Z 
+2026-04-04T19:55:35.8020691Z Legal docs and information: aka.ms/AzureCliLegal
+2026-04-04T19:55:35.8021080Z 
+2026-04-04T19:55:35.8021093Z 
+2026-04-04T19:55:35.8021257Z Your CLI is up-to-date.
+2026-04-04T19:55:35.8498982Z [33;1mVERBOSE: Preinstalled Bicep CLI version:[0m
+2026-04-04T19:55:36.7779817Z Bicep CLI version 0.41.2 (3e403ea7c1)
+2026-04-04T19:55:36.7847347Z [33;1mVERBOSE: Install latest Bicep CLI[0m
+2026-04-04T19:55:36.7938133Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-04-04T19:55:36.7939348Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-04-04T19:55:36.7939705Z 
+2026-04-04T19:55:36.8709098Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:55:36.8709821Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:55:36.8950411Z 
+2026-04-04T19:55:36.8951888Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:55:37.3773124Z 
+2026-04-04T19:55:37.3773749Z 100 92.4M  100 92.4M    0     0   158M      0 --:--:-- --:--:-- --:--:--  158M
+2026-04-04T19:55:37.4191270Z [33;1mVERBOSE: Bicep CLI version after install:[0m
+2026-04-04T19:55:37.7292996Z Bicep CLI version 0.42.1 (caea9302e8)
+2026-04-04T19:55:37.7364555Z [33;1mVERBOSE: AZ CLI extensions:[0m
+2026-04-04T19:55:45.7715908Z 
+2026-04-04T19:55:45.7716721Z [32;1mname         : [0mazure-devops
+2026-04-04T19:55:45.7718927Z [32;1mversion      : [0m1.0.2
+2026-04-04T19:55:45.7719399Z [32;1mpreview      : [0mFalse
+2026-04-04T19:55:45.7719704Z [32;1mexperimental : [0mFalse
+2026-04-04T19:55:45.7719928Z 
+2026-04-04T19:55:45.7720125Z [33;1mVERBOSE: Try installing:[0m
+2026-04-04T19:55:45.7756730Z [33;1mVERBOSE: - 1. [Az.Accounts][0m
+2026-04-04T19:55:45.7764262Z [33;1mVERBOSE: - 2. [Az.Resources][0m
+2026-04-04T19:55:45.7765024Z [33;1mVERBOSE: - 3. [powershell-yaml][0m
+2026-04-04T19:55:45.7766594Z [33;1mVERBOSE: - 4. [Az.CognitiveServices][0m
+2026-04-04T19:55:45.7767679Z [33;1mVERBOSE: - 5. [Az.Compute][0m
+2026-04-04T19:55:45.7769283Z [33;1mVERBOSE: - 6. [Az.DataProtection][0m
+2026-04-04T19:55:45.7770417Z [33;1mVERBOSE: - 7. [Az.KeyVault][0m
+2026-04-04T19:55:45.7772228Z [33;1mVERBOSE: - 8. [Az.MachineLearningServices][0m
+2026-04-04T19:55:45.7773257Z [33;1mVERBOSE: - 9. [Az.Monitor][0m
+2026-04-04T19:55:45.7774589Z [33;1mVERBOSE: - 10. [Az.OperationalInsights][0m
+2026-04-04T19:55:45.7777087Z [33;1mVERBOSE: - 11. [Az.RecoveryServices][0m
+2026-04-04T19:55:45.7777727Z [33;1mVERBOSE: - 12. [Az.Subscription][0m
+2026-04-04T19:55:45.8054951Z [33;1mVERBOSE: Found pre-installed modules in path [/usr/share/az_14.6.0]. Adding it PSModulePath environment variable.[0m
+2026-04-04T19:55:51.8817621Z [33;1mVERBOSE: Install-CustomModule start[0m
+2026-04-04T19:55:51.8821265Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:51.8844444Z [33;1mVERBOSE: HANDLING MODULE [1/12] [Az.Accounts] [0m
+2026-04-04T19:55:51.8845060Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:54.9506968Z [33;1mVERBOSE: Module [Az.Accounts] already installed with version [5.3.3][0m
+2026-04-04T19:55:54.9507722Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:54.9509894Z [33;1mVERBOSE: HANDLING MODULE [2/12] [Az.Resources] [0m
+2026-04-04T19:55:54.9510608Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:55.2084505Z [33;1mVERBOSE: Module [Az.Resources] already installed with version [8.1.1][0m
+2026-04-04T19:55:55.2085362Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:55.2085951Z [33;1mVERBOSE: HANDLING MODULE [3/12] [powershell-yaml] [0m
+2026-04-04T19:55:55.2086511Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:55.4189048Z [33;1mVERBOSE: Install module [powershell-yaml] with version [0.4.2][0m
+2026-04-04T19:55:56.6503399Z [33;1mVERBOSE: Module [powershell-yaml] is installed with version [0.4.2][0m
+2026-04-04T19:55:56.6504154Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:56.6504839Z [33;1mVERBOSE: HANDLING MODULE [4/12] [Az.CognitiveServices] [0m
+2026-04-04T19:55:56.6505450Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:56.7587784Z [33;1mVERBOSE: Module [Az.CognitiveServices] already installed with version [1.16.0][0m
+2026-04-04T19:55:56.7588605Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:56.7589426Z [33;1mVERBOSE: HANDLING MODULE [5/12] [Az.Compute] [0m
+2026-04-04T19:55:56.7589949Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:56.9517034Z [33;1mVERBOSE: Module [Az.Compute] already installed with version [10.5.0][0m
+2026-04-04T19:55:56.9517526Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:56.9517907Z [33;1mVERBOSE: HANDLING MODULE [6/12] [Az.DataProtection] [0m
+2026-04-04T19:55:56.9518273Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.0817476Z [33;1mVERBOSE: Module [Az.DataProtection] already installed with version [2.8.0][0m
+2026-04-04T19:55:57.0817987Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.0818351Z [33;1mVERBOSE: HANDLING MODULE [7/12] [Az.KeyVault] [0m
+2026-04-04T19:55:57.0818689Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.2723139Z [33;1mVERBOSE: Module [Az.KeyVault] already installed with version [6.4.0][0m
+2026-04-04T19:55:57.2723770Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.2724214Z [33;1mVERBOSE: HANDLING MODULE [8/12] [Az.MachineLearningServices] [0m
+2026-04-04T19:55:57.2724636Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.5178976Z [33;1mVERBOSE: Module [Az.MachineLearningServices] already installed with version [1.2.0][0m
+2026-04-04T19:55:57.5181019Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:57.5190366Z [33;1mVERBOSE: HANDLING MODULE [9/12] [Az.Monitor] [0m
+2026-04-04T19:55:57.5192450Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.0311615Z [33;1mVERBOSE: Module [Az.Monitor] already installed with version [6.0.3][0m
+2026-04-04T19:55:58.0314055Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.0316125Z [33;1mVERBOSE: HANDLING MODULE [10/12] [Az.OperationalInsights] [0m
+2026-04-04T19:55:58.0329836Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.4229433Z [33;1mVERBOSE: Module [Az.OperationalInsights] already installed with version [3.3.0][0m
+2026-04-04T19:55:58.4234102Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.4237423Z [33;1mVERBOSE: HANDLING MODULE [11/12] [Az.RecoveryServices] [0m
+2026-04-04T19:55:58.4243130Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.9754820Z [33;1mVERBOSE: Module [Az.RecoveryServices] already installed with version [7.10.0][0m
+2026-04-04T19:55:58.9756876Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:58.9758375Z [33;1mVERBOSE: HANDLING MODULE [12/12] [Az.Subscription] [0m
+2026-04-04T19:55:58.9760355Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:55:59.3767343Z [33;1mVERBOSE: Install module [Az.Subscription] with version [0.12.0][0m
+2026-04-04T19:56:01.6382221Z [33;1mVERBOSE: Module [Az.Subscription] is installed with version [0.12.0][0m
+2026-04-04T19:56:01.6385521Z [33;1mVERBOSE: Install-CustomModule end[0m
+2026-04-04T19:56:01.6388876Z ##[endgroup]
+2026-04-04T19:56:01.6393510Z 

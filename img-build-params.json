@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "eastus2euap" },
+    "localAdminPassword": { "value": "HciImgBuild2026!Pwd9" },
+    "hostVMSize": { "value": "Standard_E32bds_v5" },
+    "userAssignedIdentityName": { "value": "img3-msi" },
+    "virtualNetworkName": { "value": "img3-vnet" },
+    "networkSecurityGroupName": { "value": "img3-nsg" },
+    "maintenanceConfigurationName": { "value": "img3-mc" },
+    "HCIHostVirtualMachineScaleSetName": { "value": "img3-vmss" },
+    "networkInterfaceName": { "value": "img3-nic" },
+    "diskNamePrefix": { "value": "img3-dsk" },
+    "virtualMachineName": { "value": "img3-vm" },
+    "maintenanceConfigurationAssignmentName": { "value": "img3-mca" },
+    "waitDeploymentScriptPrefixName": { "value": "img3-wds" }
+  }
+}

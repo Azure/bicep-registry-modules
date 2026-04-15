@@ -1,0 +1,685 @@
+﻿2026-04-04T19:53:35.2647736Z Current runner version: '2.333.1'
+2026-04-04T19:53:35.2683328Z ##[group]Runner Image Provisioner
+2026-04-04T19:53:35.2684653Z Hosted Compute Agent
+2026-04-04T19:53:35.2685542Z Version: 20260213.493
+2026-04-04T19:53:35.2687060Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-04T19:53:35.2688353Z Build Date: 2026-02-13T00:28:41Z
+2026-04-04T19:53:35.2689433Z Worker ID: {9f645383-74e7-46db-bda4-48cad8655416}
+2026-04-04T19:53:35.2690821Z Azure Region: eastus2
+2026-04-04T19:53:35.2691728Z ##[endgroup]
+2026-04-04T19:53:35.2694381Z ##[group]Operating System
+2026-04-04T19:53:35.2695440Z Ubuntu
+2026-04-04T19:53:35.2696251Z 24.04.4
+2026-04-04T19:53:35.2697356Z LTS
+2026-04-04T19:53:35.2698272Z ##[endgroup]
+2026-04-04T19:53:35.2699113Z ##[group]Runner Image
+2026-04-04T19:53:35.2700278Z Image: ubuntu-24.04
+2026-04-04T19:53:35.2701191Z Version: 20260329.72.1
+2026-04-04T19:53:35.2703093Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260329.72/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-04T19:53:35.2705880Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260329.72
+2026-04-04T19:53:35.2707852Z ##[endgroup]
+2026-04-04T19:53:35.2709922Z ##[group]GITHUB_TOKEN Permissions
+2026-04-04T19:53:35.2712785Z Contents: write
+2026-04-04T19:53:35.2713713Z Metadata: read
+2026-04-04T19:53:35.2714721Z ##[endgroup]
+2026-04-04T19:53:35.2717764Z Secret source: Actions
+2026-04-04T19:53:35.2719435Z Prepare workflow directory
+2026-04-04T19:53:35.3449378Z Prepare all required actions
+2026-04-04T19:53:35.3492675Z Getting action download info
+2026-04-04T19:53:35.5683704Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+2026-04-04T19:53:35.8435630Z Uses: chirag1603/bicep-registry-modules/.github/workflows/avm.template.module.yml@refs/heads/avm-res-azure-stack-hci-virtual-machine-instance (5cae08ebc970c947810fbe2387bd0e8e003c5265)
+2026-04-04T19:53:35.8441038Z ##[group] Inputs
+2026-04-04T19:53:35.8441955Z   workflowInput: {"staticValidation":"true","removeDeployment":"true","deploymentValidation":"true"}
+2026-04-04T19:53:35.8443874Z   moduleTestFilePaths: [{"e2eIgnore":false,"path":"tests/e2e/defaults/main.test.bicep","name":"defaults"},{"e2eIgnore":false,"path":"tests/e2e/waf-aligned/main.test.bicep","name":"waf-aligned"}]
+2026-04-04T19:53:35.8445952Z   psRuleModuleTestFilePaths: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep"}]
+2026-04-04T19:53:35.8447610Z   modulePath: avm/res/azure-stack-hci/virtual-machine-instance
+2026-04-04T19:53:35.8448812Z   staticValidation: true
+2026-04-04T19:53:35.8449409Z   deploymentValidation: true
+2026-04-04T19:53:35.8450034Z   removeDeployment: true
+2026-04-04T19:53:35.8450594Z ##[endgroup]
+2026-04-04T19:53:35.8451104Z Complete job name: Run / Static validation
+2026-04-04T19:53:35.9149458Z ##[group]Run actions/checkout@v5
+2026-04-04T19:53:35.9150278Z with:
+2026-04-04T19:53:35.9150656Z   fetch-depth: 0
+2026-04-04T19:53:35.9151134Z   repository: chirag1603/bicep-registry-modules
+2026-04-04T19:53:35.9151834Z   token: ***
+2026-04-04T19:53:35.9152218Z   ssh-strict: true
+2026-04-04T19:53:35.9152612Z   ssh-user: git
+2026-04-04T19:53:35.9153017Z   persist-credentials: true
+2026-04-04T19:53:35.9153465Z   clean: true
+2026-04-04T19:53:35.9153868Z   sparse-checkout-cone-mode: true
+2026-04-04T19:53:35.9154343Z   fetch-tags: false
+2026-04-04T19:53:35.9154744Z   show-progress: true
+2026-04-04T19:53:35.9155153Z   lfs: false
+2026-04-04T19:53:35.9155522Z   submodules: false
+2026-04-04T19:53:35.9155925Z   set-safe-directory: true
+2026-04-04T19:53:35.9156789Z env:
+2026-04-04T19:53:35.9157640Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:53:35.9158099Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:53:35.9158554Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:53:35.9159059Z ##[endgroup]
+2026-04-04T19:53:36.0068979Z Syncing repository: chirag1603/bicep-registry-modules
+2026-04-04T19:53:36.0070758Z ##[group]Getting Git version info
+2026-04-04T19:53:36.0071596Z Working directory is '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-04-04T19:53:36.0073011Z [command]/usr/bin/git version
+2026-04-04T19:53:36.0102685Z git version 2.53.0
+2026-04-04T19:53:36.0123746Z ##[endgroup]
+2026-04-04T19:53:36.0137905Z Temporarily overriding HOME='/home/runner/work/_temp/cfcb37f5-9f60-4662-8a5a-b9d62c4e1bb3' before making global git config changes
+2026-04-04T19:53:36.0140138Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-04T19:53:36.0142983Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-04-04T19:53:36.0174882Z Deleting the contents of '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-04-04T19:53:36.0179152Z ##[group]Initializing the repository
+2026-04-04T19:53:36.0184268Z [command]/usr/bin/git init /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-04-04T19:53:36.0278172Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-04-04T19:53:36.0279788Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-04-04T19:53:36.0281170Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-04-04T19:53:36.0282016Z hint: call:
+2026-04-04T19:53:36.0282390Z hint:
+2026-04-04T19:53:36.0282875Z hint: 	git config --global init.defaultBranch <name>
+2026-04-04T19:53:36.0283450Z hint:
+2026-04-04T19:53:36.0283993Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-04-04T19:53:36.0285425Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-04-04T19:53:36.0286814Z hint:
+2026-04-04T19:53:36.0287440Z hint: 	git branch -m <name>
+2026-04-04T19:53:36.0288144Z hint:
+2026-04-04T19:53:36.0288758Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-04-04T19:53:36.0290236Z Initialized empty Git repository in /home/runner/work/bicep-registry-modules/bicep-registry-modules/.git/
+2026-04-04T19:53:36.0292308Z [command]/usr/bin/git remote add origin https://github.com/chirag1603/bicep-registry-modules
+2026-04-04T19:53:36.0353729Z ##[endgroup]
+2026-04-04T19:53:36.0354483Z ##[group]Disabling automatic garbage collection
+2026-04-04T19:53:36.0357276Z [command]/usr/bin/git config --local gc.auto 0
+2026-04-04T19:53:36.0385330Z ##[endgroup]
+2026-04-04T19:53:36.0386613Z ##[group]Setting up auth
+2026-04-04T19:53:36.0391429Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-04T19:53:36.0420815Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-04T19:53:36.0710079Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-04T19:53:36.0740854Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-04T19:53:36.0963810Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-04T19:53:36.0995592Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-04T19:53:36.1211314Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-04-04T19:53:36.1244433Z ##[endgroup]
+2026-04-04T19:53:36.1245270Z ##[group]Fetching the repository
+2026-04-04T19:53:36.1253533Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-04-04T19:53:40.6163741Z From https://github.com/chirag1603/bicep-registry-modules
+2026-04-04T19:53:40.6166708Z  * [new branch]          avm-res-azure-stack-hci-cluster -> origin/avm-res-azure-stack-hci-cluster
+2026-04-04T19:53:40.6170910Z  * [new branch]          avm-res-azure-stack-hci-marketplace-gallery-image -> origin/avm-res-azure-stack-hci-marketplace-gallery-image
+2026-04-04T19:53:40.6174880Z  * [new branch]          avm-res-azure-stack-hci-virtual-machine-instance -> origin/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-04T19:53:40.6177404Z  * [new branch]          main       -> origin/main
+2026-04-04T19:53:40.6205782Z [command]/usr/bin/git branch --list --remote origin/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-04T19:53:40.6229044Z   origin/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-04T19:53:40.6239931Z [command]/usr/bin/git rev-parse refs/remotes/origin/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-04T19:53:40.6259533Z 5cae08ebc970c947810fbe2387bd0e8e003c5265
+2026-04-04T19:53:40.6271046Z ##[endgroup]
+2026-04-04T19:53:40.6272460Z ##[group]Determining the checkout info
+2026-04-04T19:53:40.6274108Z ##[endgroup]
+2026-04-04T19:53:40.6275407Z [command]/usr/bin/git sparse-checkout disable
+2026-04-04T19:53:40.6310613Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-04-04T19:53:40.6338412Z ##[group]Checking out the ref
+2026-04-04T19:53:40.6344107Z [command]/usr/bin/git checkout --progress --force -B avm-res-azure-stack-hci-virtual-machine-instance refs/remotes/origin/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-04T19:53:41.2944140Z Switched to a new branch 'avm-res-azure-stack-hci-virtual-machine-instance'
+2026-04-04T19:53:41.2948736Z branch 'avm-res-azure-stack-hci-virtual-machine-instance' set up to track 'origin/avm-res-azure-stack-hci-virtual-machine-instance'.
+2026-04-04T19:53:41.3009011Z ##[endgroup]
+2026-04-04T19:53:41.3050401Z [command]/usr/bin/git log -1 --format=%H
+2026-04-04T19:53:41.3075237Z 5cae08ebc970c947810fbe2387bd0e8e003c5265
+2026-04-04T19:53:41.3344914Z Prepare all required actions
+2026-04-04T19:53:41.3438739Z ##[group]Run ./.github/actions/templates/avm-setEnvironment
+2026-04-04T19:53:41.3439398Z with:
+2026-04-04T19:53:41.3439825Z   removeDeployment: true
+2026-04-04T19:53:41.3440270Z env:
+2026-04-04T19:53:41.3441613Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:53:41.3442123Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:53:41.3442599Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:53:41.3443150Z ##[endgroup]
+2026-04-04T19:53:41.3575943Z ##[group]Run # Grouping task logs
+2026-04-04T19:53:41.3576693Z [36;1m# Grouping task logs[0m
+2026-04-04T19:53:41.3577057Z [36;1mWrite-Output '::group::Setup agent'[0m
+2026-04-04T19:53:41.3577382Z [36;1m[0m
+2026-04-04T19:53:41.3577755Z [36;1mWrite-Verbose "Caller job id: job_module_static_validation" -Verbose[0m
+2026-04-04T19:53:41.3578196Z [36;1m[0m
+2026-04-04T19:53:41.3578430Z [36;1m# Load used functions[0m
+2026-04-04T19:53:41.3579046Z [36;1m. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')[0m
+2026-04-04T19:53:41.3579628Z [36;1m[0m
+2026-04-04T19:53:41.3579913Z [36;1m# Define PS modules to install on the runner[0m
+2026-04-04T19:53:41.3580279Z [36;1m$modules = @([0m
+2026-04-04T19:53:41.3580554Z [36;1m    @{ Name = 'Az.Accounts' },[0m
+2026-04-04T19:53:41.3580866Z [36;1m    @{ Name = 'Az.Resources' },[0m
+2026-04-04T19:53:41.3581245Z [36;1m    @{ Name = 'powershell-yaml'; Version = '0.4.2'}[0m
+2026-04-04T19:53:41.3581595Z [36;1m)[0m
+2026-04-04T19:53:41.3581813Z [36;1m[0m
+2026-04-04T19:53:41.3582813Z [36;1m# Additional PS modules need to be installed for the deployment validation removal step in case it is enabled[0m
+2026-04-04T19:53:41.3584022Z [36;1mif (('job_module_static_validation' -eq 'job_module_deploy_validation') -and ('true' -eq 'true')) {[0m
+2026-04-04T19:53:41.3584721Z [36;1m  $modules += @([0m
+2026-04-04T19:53:41.3585411Z [36;1m    @{ Name = 'Az.CognitiveServices' },[0m
+2026-04-04T19:53:41.3586039Z [36;1m    @{ Name = 'Az.Compute' },[0m
+2026-04-04T19:53:41.3586771Z [36;1m    @{ Name = 'Az.DataProtection' },[0m
+2026-04-04T19:53:41.3587380Z [36;1m    @{ Name = 'Az.KeyVault' },[0m
+2026-04-04T19:53:41.3587951Z [36;1m    @{ Name = 'Az.MachineLearningServices' },[0m
+2026-04-04T19:53:41.3588738Z [36;1m    @{ Name = 'Az.Monitor' },[0m
+2026-04-04T19:53:41.3589319Z [36;1m    @{ Name = 'Az.OperationalInsights' },[0m
+2026-04-04T19:53:41.3590041Z [36;1m    @{ Name = 'Az.RecoveryServices' },[0m
+2026-04-04T19:53:41.3590629Z [36;1m    @{ Name = 'Az.Subscription' }[0m
+2026-04-04T19:53:41.3591134Z [36;1m  )[0m
+2026-04-04T19:53:41.3591748Z [36;1m}[0m
+2026-04-04T19:53:41.3592122Z [36;1m[0m
+2026-04-04T19:53:41.3592786Z [36;1m# Additional PS modules need to be installed for the publish job[0m
+2026-04-04T19:53:41.3593801Z [36;1mif ('job_module_static_validation' -eq 'job_publish_module') {[0m
+2026-04-04T19:53:41.3594486Z [36;1m  $modules += @([0m
+2026-04-04T19:53:41.3594999Z [36;1m    @{ Name = 'Az.ContainerRegistry' }[0m
+2026-04-04T19:53:41.3595689Z [36;1m  )[0m
+2026-04-04T19:53:41.3596056Z [36;1m}[0m
+2026-04-04T19:53:41.3596755Z [36;1m[0m
+2026-04-04T19:53:41.3597145Z [36;1m# Set agent up[0m
+2026-04-04T19:53:41.3597708Z [36;1mSet-EnvironmentOnAgent -PSModules $modules[0m
+2026-04-04T19:53:41.3598082Z [36;1m[0m
+2026-04-04T19:53:41.3598535Z [36;1mWrite-Output '::endgroup::'[0m
+2026-04-04T19:53:41.3641527Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-04-04T19:53:41.3641891Z env:
+2026-04-04T19:53:41.3642492Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:53:41.3642785Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:53:41.3643084Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:53:41.3643404Z ##[endgroup]
+2026-04-04T19:53:44.9776151Z ##[group]Setup agent
+2026-04-04T19:53:44.9837466Z [33;1mVERBOSE: Caller job id: job_module_static_validation[0m
+2026-04-04T19:53:45.0834555Z [33;1mVERBOSE: Powershell version:[0m
+2026-04-04T19:53:45.0896115Z 
+2026-04-04T19:53:45.0900172Z [32;1mName                          [0m[32;1m Value[0m
+2026-04-04T19:53:45.0900849Z [32;1m----                          [0m [32;1m-----[0m
+2026-04-04T19:53:45.0901232Z PSVersion                      7.4.14
+2026-04-04T19:53:45.0901646Z PSEdition                      Core
+2026-04-04T19:53:45.0902185Z GitCommitId                    7.4.14
+2026-04-04T19:53:45.0902493Z OS                             Ubuntu 24.04.4 LTS
+2026-04-04T19:53:45.0902806Z Platform                       Unix
+2026-04-04T19:53:45.0903224Z PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0…}
+2026-04-04T19:53:45.0903620Z PSRemotingProtocolVersion      2.3
+2026-04-04T19:53:45.0903934Z SerializationVersion           1.1.0.1
+2026-04-04T19:53:45.0904235Z WSManStackVersion              3.0
+2026-04-04T19:53:45.0904567Z [33;1mVERBOSE: Az CLI version:[0m
+2026-04-04T19:53:49.7180387Z azure-cli                         2.84.0
+2026-04-04T19:53:49.7180754Z 
+2026-04-04T19:53:49.7180898Z core                              2.84.0
+2026-04-04T19:53:49.7181387Z telemetry                          1.1.0
+2026-04-04T19:53:49.7181656Z 
+2026-04-04T19:53:49.7181764Z Extensions:
+2026-04-04T19:53:49.7182052Z azure-devops                       1.0.2
+2026-04-04T19:53:49.7182318Z 
+2026-04-04T19:53:49.7182464Z Dependencies:
+2026-04-04T19:53:49.7182741Z msal                            1.35.0b1
+2026-04-04T19:53:49.7183124Z azure-mgmt-resource               24.0.0
+2026-04-04T19:53:49.7183391Z 
+2026-04-04T19:53:49.7183580Z Python location '/opt/az/bin/python3'
+2026-04-04T19:53:49.7184055Z Config directory '/home/runner/.azure'
+2026-04-04T19:53:49.7184528Z Extensions directory '/opt/az/azcliextensions'
+2026-04-04T19:53:49.7184848Z 
+2026-04-04T19:53:49.7185077Z Python (Linux) 3.13.11 (main, Feb 25 2026, 02:29:34) [GCC 13.3.0]
+2026-04-04T19:53:49.7185445Z 
+2026-04-04T19:53:49.7185631Z Legal docs and information: aka.ms/AzureCliLegal
+2026-04-04T19:53:49.7185945Z 
+2026-04-04T19:53:49.7185955Z 
+2026-04-04T19:53:49.7186094Z Your CLI is up-to-date.
+2026-04-04T19:53:49.7638277Z [33;1mVERBOSE: Preinstalled Bicep CLI version:[0m
+2026-04-04T19:53:50.8329499Z Bicep CLI version 0.41.2 (3e403ea7c1)
+2026-04-04T19:53:50.8418009Z [33;1mVERBOSE: Install latest Bicep CLI[0m
+2026-04-04T19:53:50.8552749Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-04-04T19:53:50.8555398Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-04-04T19:53:50.8556241Z 
+2026-04-04T19:53:50.9501219Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:53:50.9502068Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:53:51.0171555Z 
+2026-04-04T19:53:51.0172105Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-04-04T19:53:51.5269271Z 
+2026-04-04T19:53:51.5340367Z  97 92.4M   97 89.7M    0     0   133M      0 --:--:-- --:--:-- --:--:--  133M
+2026-04-04T19:53:51.5341332Z 100 92.4M  100 92.4M    0     0   136M      0 --:--:-- --:--:-- --:--:--  378M
+2026-04-04T19:53:51.5885822Z [33;1mVERBOSE: Bicep CLI version after install:[0m
+2026-04-04T19:53:51.9652238Z Bicep CLI version 0.42.1 (caea9302e8)
+2026-04-04T19:53:51.9756007Z [33;1mVERBOSE: AZ CLI extensions:[0m
+2026-04-04T19:53:59.1866278Z 
+2026-04-04T19:53:59.1867266Z [32;1mname         : [0mazure-devops
+2026-04-04T19:53:59.1867848Z [32;1mversion      : [0m1.0.2
+2026-04-04T19:53:59.1868286Z [32;1mpreview      : [0mFalse
+2026-04-04T19:53:59.1868715Z [32;1mexperimental : [0mFalse
+2026-04-04T19:53:59.1868951Z 
+2026-04-04T19:53:59.1869723Z [33;1mVERBOSE: Try installing:[0m
+2026-04-04T19:53:59.1907241Z [33;1mVERBOSE: - 1. [Az.Accounts][0m
+2026-04-04T19:53:59.1914760Z [33;1mVERBOSE: - 2. [Az.Resources][0m
+2026-04-04T19:53:59.1916165Z [33;1mVERBOSE: - 3. [powershell-yaml][0m
+2026-04-04T19:53:59.2211084Z [33;1mVERBOSE: Found pre-installed modules in path [/usr/share/az_14.6.0]. Adding it PSModulePath environment variable.[0m
+2026-04-04T19:54:05.7010704Z [33;1mVERBOSE: Install-CustomModule start[0m
+2026-04-04T19:54:05.7015152Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:05.7036842Z [33;1mVERBOSE: HANDLING MODULE [1/3] [Az.Accounts] [0m
+2026-04-04T19:54:05.7037838Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:09.2023661Z [33;1mVERBOSE: Module [Az.Accounts] already installed with version [5.3.3][0m
+2026-04-04T19:54:09.2024334Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:09.2024772Z [33;1mVERBOSE: HANDLING MODULE [2/3] [Az.Resources] [0m
+2026-04-04T19:54:09.2025172Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:09.5057635Z [33;1mVERBOSE: Module [Az.Resources] already installed with version [8.1.1][0m
+2026-04-04T19:54:09.5058342Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:09.5058790Z [33;1mVERBOSE: HANDLING MODULE [3/3] [powershell-yaml] [0m
+2026-04-04T19:54:09.5059181Z [33;1mVERBOSE: =====================[0m
+2026-04-04T19:54:09.7389323Z [33;1mVERBOSE: Install module [powershell-yaml] with version [0.4.2][0m
+2026-04-04T19:54:11.1461996Z [33;1mVERBOSE: Module [powershell-yaml] is installed with version [0.4.2][0m
+2026-04-04T19:54:11.1462825Z [33;1mVERBOSE: Install-CustomModule end[0m
+2026-04-04T19:54:11.1465253Z ##[endgroup]
+2026-04-04T19:54:11.1473343Z 
+2026-04-04T19:54:11.2319063Z Prepare all required actions
+2026-04-04T19:54:11.2319405Z Getting action download info
+2026-04-04T19:54:11.3362192Z Download action repository 'actions/upload-artifact@v4.6.2' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-04-04T19:54:11.4636655Z ##[group]Run ./.github/actions/templates/avm-validateModulePester
+2026-04-04T19:54:11.4637006Z with:
+2026-04-04T19:54:11.4637280Z   modulePath: avm/res/azure-stack-hci/virtual-machine-instance
+2026-04-04T19:54:11.4637771Z   moduleTestFilePath: utilities/pipelines/staticValidation/compliance/module.tests.ps1
+2026-04-04T19:54:11.4638187Z env:
+2026-04-04T19:54:11.4638678Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:54:11.4638905Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:54:11.4639136Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:54:11.4639381Z ##[endgroup]
+2026-04-04T19:54:11.4658951Z ##[group]Run # Grouping task logs
+2026-04-04T19:54:11.4659262Z [36;1m# Grouping task logs[0m
+2026-04-04T19:54:11.4659560Z [36;1mWrite-Output '::group::Run Pester tests'[0m
+2026-04-04T19:54:11.4660018Z [36;1m[0m
+2026-04-04T19:54:11.4660197Z [36;1m# Load used functions[0m
+2026-04-04T19:54:11.4660739Z [36;1m. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')[0m
+2026-04-04T19:54:11.4661293Z [36;1m[0m
+2026-04-04T19:54:11.4661465Z [36;1m# Set repo root path[0m
+2026-04-04T19:54:11.4661728Z [36;1m$repoRootPath = $env:GITHUB_WORKSPACE[0m
+2026-04-04T19:54:11.4661989Z [36;1m[0m
+2026-04-04T19:54:11.4662168Z [36;1m# Set test input module path[0m
+2026-04-04T19:54:11.4662648Z [36;1m$moduleFolderPaths = @(Join-Path $repoRootPath "avm/res/azure-stack-hci/virtual-machine-instance")[0m
+2026-04-04T19:54:11.4663404Z [36;1m$moduleFolderPaths += (Get-ChildItem $moduleFolderPaths -Recurse -Directory -Force).FullName | Where-Object {[0m
+2026-04-04T19:54:11.4664106Z [36;1m  (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0[0m
+2026-04-04T19:54:11.4664538Z [36;1m}[0m
+2026-04-04T19:54:11.4664778Z [36;1mWrite-Verbose 'Execute tests in path(s):' -Verbose[0m
+2026-04-04T19:54:11.4665158Z [36;1mforeach ($moduleFolderPath in $moduleFolderPaths) {[0m
+2026-04-04T19:54:11.4665525Z [36;1m  Write-Verbose "- [$moduleFolderPath]" -Verbose[0m
+2026-04-04T19:54:11.4665807Z [36;1m}[0m
+2026-04-04T19:54:11.4665961Z [36;1m[0m
+2026-04-04T19:54:11.4666133Z [36;1m# --------------------- #[0m
+2026-04-04T19:54:11.4666515Z [36;1m# Invoke Pester test(s) #[0m
+2026-04-04T19:54:11.4666750Z [36;1m# --------------------- #[0m
+2026-04-04T19:54:11.4666970Z [36;1m$testFiles = @([0m
+2026-04-04T19:54:11.4667485Z [36;1m  (Join-Path $repoRootPath 'utilities/pipelines/staticValidation/compliance/module.tests.ps1'), # AVM Compliance Tests[0m
+2026-04-04T19:54:11.4668291Z [36;1m  (Join-Path "avm/res/azure-stack-hci/virtual-machine-instance" 'tests' 'unit')         # Custom Unit Tests[0m
+2026-04-04T19:54:11.4668801Z [36;1m)[0m
+2026-04-04T19:54:11.4668965Z [36;1m[0m
+2026-04-04T19:54:11.4669153Z [36;1m$pesterConfiguration = @{[0m
+2026-04-04T19:54:11.4669390Z [36;1m  Run    = @{[0m
+2026-04-04T19:54:11.4669692Z [36;1m    Container = New-PesterContainer -Path $testFiles -Data @{[0m
+2026-04-04T19:54:11.4670081Z [36;1m      moduleFolderPaths = $moduleFolderPaths[0m
+2026-04-04T19:54:11.4670408Z [36;1m      RepoRootPath      = $env:GITHUB_WORKSPACE[0m
+2026-04-04T19:54:11.4670677Z [36;1m    }[0m
+2026-04-04T19:54:11.4670864Z [36;1m    PassThru  = $true[0m
+2026-04-04T19:54:11.4671079Z [36;1m  }[0m
+2026-04-04T19:54:11.4671253Z [36;1m  Output = @{[0m
+2026-04-04T19:54:11.4671457Z [36;1m    Verbosity = 'Detailed'[0m
+2026-04-04T19:54:11.4671686Z [36;1m  }[0m
+2026-04-04T19:54:11.4671854Z [36;1m}[0m
+2026-04-04T19:54:11.4672009Z [36;1m[0m
+2026-04-04T19:54:11.4672222Z [36;1mWrite-Verbose 'Invoke test with' -Verbose[0m
+2026-04-04T19:54:11.4672688Z [36;1mWrite-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 4 | Out-String) -Verbose[0m
+2026-04-04T19:54:11.4673283Z [36;1m[0m
+2026-04-04T19:54:11.4673569Z [36;1m$testResults = Invoke-Pester -Configuration $pesterConfiguration[0m
+2026-04-04T19:54:11.4673918Z [36;1m[0m
+2026-04-04T19:54:11.4674219Z [36;1mWrite-Verbose 'Storing test results in file [testResults.json]' -Verbose[0m
+2026-04-04T19:54:11.4674833Z [36;1m$testResults | ConvertTo-Json -Depth 3 | Out-File -FilePath 'testResults.json' -Force -Encoding 'utf8'[0m
+2026-04-04T19:54:11.4675335Z [36;1m[0m
+2026-04-04T19:54:11.4675535Z [36;1m# ----------------------------------------- #[0m
+2026-04-04T19:54:11.4675847Z [36;1m# Create formatted Pester Test Results File #[0m
+2026-04-04T19:54:11.4676150Z [36;1m# ----------------------------------------- #[0m
+2026-04-04T19:54:11.4676523Z [36;1m[0m
+2026-04-04T19:54:11.4676699Z [36;1m$functionInput = @{[0m
+2026-04-04T19:54:11.4676945Z [36;1m  PesterTestResults = $testResults[0m
+2026-04-04T19:54:11.4677376Z [36;1m  OutputFilePath    = Join-Path $env:GITHUB_WORKSPACE 'avm' 'Pester-output.md'[0m
+2026-04-04T19:54:11.4678003Z [36;1m  GitHubRepository  = $env:GITHUB_REPOSITORY[0m
+2026-04-04T19:54:11.4678308Z [36;1m  BranchName        = $env:GITHUB_REF[0m
+2026-04-04T19:54:11.4678602Z [36;1m  ErrorAction       = 'SilentlyContinue'[0m
+2026-04-04T19:54:11.4678862Z [36;1m}[0m
+2026-04-04T19:54:11.4679022Z [36;1m[0m
+2026-04-04T19:54:11.4679291Z [36;1mWrite-Verbose 'Invoke Pester formatting function with' -Verbose[0m
+2026-04-04T19:54:11.4679800Z [36;1mWrite-Verbose ($functionInput | ConvertTo-Json -Depth 0 | Out-String) -Verbose[0m
+2026-04-04T19:54:11.4680195Z [36;1m[0m
+2026-04-04T19:54:11.4680428Z [36;1mSet-PesterGitHubOutput @functionInput -Verbose[0m
+2026-04-04T19:54:11.4680711Z [36;1m[0m
+2026-04-04T19:54:11.4680933Z [36;1mif(Test-Path $functionInput.outputFilePath) {[0m
+2026-04-04T19:54:11.4681487Z [36;1m  Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT[0m
+2026-04-04T19:54:11.4681991Z [36;1m}[0m
+2026-04-04T19:54:11.4713851Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-04-04T19:54:11.4714118Z env:
+2026-04-04T19:54:11.4714625Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:54:11.4714859Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:54:11.4715089Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:54:11.4715354Z ##[endgroup]
+2026-04-04T19:54:11.7115536Z ##[group]Run Pester tests
+2026-04-04T19:54:11.7770935Z [33;1mVERBOSE: Execute tests in path(s):[0m
+2026-04-04T19:54:11.7789855Z [33;1mVERBOSE: - [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance][0m
+2026-04-04T19:54:12.3400288Z [33;1mVERBOSE: Invoke test with[0m
+2026-04-04T19:54:12.3428610Z [33;1mWARNING: Resulting JSON is truncated as serialization has exceeded the set depth of 4.[0m
+2026-04-04T19:54:12.3564629Z [33;1mVERBOSE: {
+2026-04-04T19:54:12.3565033Z   "Output": {
+2026-04-04T19:54:12.3565431Z     "Verbosity": "Detailed"
+2026-04-04T19:54:12.3565791Z   },
+2026-04-04T19:54:12.3565991Z   "Run": {
+2026-04-04T19:54:12.3566235Z     "Container": {
+2026-04-04T19:54:12.3566800Z       "Type": "File",
+2026-04-04T19:54:12.3567056Z       "Item": {
+2026-04-04T19:54:12.3567298Z         "Name": "module.tests.ps1",
+2026-04-04T19:54:12.3567605Z         "Length": 139701,
+2026-04-04T19:54:12.3568394Z         "DirectoryName": "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation/compliance",
+2026-04-04T19:54:12.3569168Z         "Directory": {
+2026-04-04T19:54:12.3569402Z           "Name": "compliance",
+2026-04-04T19:54:12.3570010Z           "Parent": "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation",
+2026-04-04T19:54:12.3570657Z           "Root": "/",
+2026-04-04T19:54:12.3570888Z           "Exists": true,
+2026-04-04T19:54:12.3571549Z           "FullName": "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation/compliance",
+2026-04-04T19:54:12.3572248Z           "Extension": "",
+2026-04-04T19:54:12.3572909Z           "CreationTime": "2026-04-04T19:53:41.1615175+00:00",
+2026-04-04T19:54:12.3573304Z           "CreationTimeUtc": "2026-04-04T19:53:41.1615175Z",
+2026-04-04T19:54:12.3573704Z           "LastAccessTime": "2026-04-04T19:53:41.1611451+00:00",
+2026-04-04T19:54:12.3574103Z           "LastAccessTimeUtc": "2026-04-04T19:53:41.1611451Z",
+2026-04-04T19:54:12.3574492Z           "LastWriteTime": "2026-04-04T19:53:41.1615175+00:00",
+2026-04-04T19:54:12.3574875Z           "LastWriteTimeUtc": "2026-04-04T19:53:41.1615175Z",
+2026-04-04T19:54:12.3575216Z           "LinkTarget": null,
+2026-04-04T19:54:12.3575478Z           "UnixFileMode": 493,
+2026-04-04T19:54:12.3575733Z           "Attributes": 16
+2026-04-04T19:54:12.3575963Z         },
+2026-04-04T19:54:12.3576169Z         "IsReadOnly": false,
+2026-04-04T19:54:12.3576629Z         "Exists": true,
+2026-04-04T19:54:12.3577366Z         "FullName": "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation/compliance/module.tests.ps1",
+2026-04-04T19:54:12.3578355Z         "Extension": ".ps1",
+2026-04-04T19:54:12.3578690Z         "CreationTime": "2026-04-04T19:53:41.1615175+00:00",
+2026-04-04T19:54:12.3579071Z         "CreationTimeUtc": "2026-04-04T19:53:41.1615175Z",
+2026-04-04T19:54:12.3579381Z         "LastAccessTime": "2026-04-04T19:53:41.1615175+00:00",
+2026-04-04T19:54:12.3579698Z         "LastAccessTimeUtc": "2026-04-04T19:53:41.1615175Z",
+2026-04-04T19:54:12.3580012Z         "LastWriteTime": "2026-04-04T19:53:41.1615175+00:00",
+2026-04-04T19:54:12.3580326Z         "LastWriteTimeUtc": "2026-04-04T19:53:41.1615175Z",
+2026-04-04T19:54:12.3580597Z         "LinkTarget": null,
+2026-04-04T19:54:12.3580803Z         "UnixFileMode": 420,
+2026-04-04T19:54:12.3581012Z         "Attributes": 128
+2026-04-04T19:54:12.3581205Z       },
+2026-04-04T19:54:12.3581360Z       "Data": {
+2026-04-04T19:54:12.3581691Z         "RepoRootPath": "/home/runner/work/bicep-registry-modules/bicep-registry-modules",
+2026-04-04T19:54:12.3582113Z         "moduleFolderPaths": [
+2026-04-04T19:54:12.3582614Z           "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance"
+2026-04-04T19:54:12.3583128Z         ]
+2026-04-04T19:54:12.3583288Z       }
+2026-04-04T19:54:12.3583442Z     },
+2026-04-04T19:54:12.3583604Z     "PassThru": true
+2026-04-04T19:54:12.3583791Z   }
+2026-04-04T19:54:12.3583946Z }
+2026-04-04T19:54:12.3584140Z [0m
+2026-04-04T19:54:12.5259209Z [95mPester v5.7.1[0m
+2026-04-04T19:54:12.5395293Z [95m
+2026-04-04T19:54:12.5395765Z [95mStarting discovery in 1 files.[0m
+2026-04-04T19:54:12.5932253Z [33;1mVERBOSE: repoRootPath: /home/runner/work/bicep-registry-modules/bicep-registry-modules[0m
+2026-04-04T19:54:12.5938827Z [33;1mVERBOSE: moduleFolderPaths: 1[0m
+2026-04-04T19:54:27.0116082Z [95mDiscovery found 100 tests in 14.44s.[0m
+2026-04-04T19:54:27.0254405Z [95mRunning tests.[0m
+2026-04-04T19:54:27.0393240Z [95m
+2026-04-04T19:54:27.0396135Z [95mRunning tests from '/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation/compliance/module.tests.ps1'[0m
+2026-04-04T19:54:27.2000149Z [92mDescribing File/folder tests[0m
+2026-04-04T19:54:27.2006437Z [96m Context General module folder tests[0m
+2026-04-04T19:54:27.2893868Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Module must contain a [ main.bicep ] file.[0m[90m 88ms (56ms|32ms)[0m
+2026-04-04T19:54:27.2985474Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Module must contain a [ main.json ] file.[0m[90m 6ms (5ms|1ms)[0m
+2026-04-04T19:54:27.3130542Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Module must contain a [ README.md ] file.[0m[90m 12ms (11ms|1ms)[0m
+2026-04-04T19:54:27.3224532Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Module must contain a [ CHANGELOG.md ] file.[0m[90m 7ms (5ms|2ms)[0m
+2026-04-04T19:54:27.3595259Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Resource module (folder) name must be singular, use '-' instead of camel-case and be lower-case (e.g., 'the-cake-is-a-lie').[0m[90m 34ms (7ms|27ms)[0m
+2026-04-04T19:54:27.3756497Z [96m Context Top level module folder tests[0m
+2026-04-04T19:54:27.3812759Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module must contain a [ version.json ] file, unless multi-scope.[0m[90m 5ms (3ms|2ms)[0m
+2026-04-04T19:54:27.3870772Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module should contain a [ tests ] folder.[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:27.3930122Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module should contain a [ tests/e2e ] folder.[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:27.4091819Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module should contain a [ tests/e2e/*waf-aligned ] folder.[0m[90m 14ms (13ms|1ms)[0m
+2026-04-04T19:54:27.4184210Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module should contain one [ main.test.bicep ] file in each e2e test folder.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:27.4269968Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Resource Modules must not skip the "*defaults" or "*waf-aligned" tests with a [ .e2eignore ] file.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:27.4495880Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] a [ .e2eignore ] file must contain text, which states the exception reason for not executing the deployment test.[0m[90m 8ms (6ms|2ms)[0m
+2026-04-04T19:54:27.6547438Z [32m   [+] [res/azure-stack-hci/virtual-machine-instance] Top-level module should contain a [ ORPHANED.md ] file only if orphaned.[0m[90m 203ms (201ms|2ms)[0m
+2026-04-04T19:54:27.6638783Z [0m
+2026-04-04T19:54:27.6642361Z [92mDescribing Pipeline tests[0m
+2026-04-04T19:54:27.6732114Z [32m  [+] [azure-stack-hci/virtual-machine-instance] Module should have a GitHub workflow in path [.github/workflows/avm.res.azure-stack-hci.virtual-machine-instance.yml].[0m[90m 8ms (5ms|4ms)[0m
+2026-04-04T19:54:27.6855602Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml] should have expected environment variables.[0m[90m 10ms (9ms|2ms)[0m
+2026-04-04T19:54:27.7097096Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml] should have [workflowPath] environment variable with value [.github/workflows/avm.res.azure-stack-hci.virtual-machine-instance.yml].[0m[90m 6ms (5ms|1ms)[0m
+2026-04-04T19:54:27.7162116Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml] should have [modulePath] environment variable with value [avm/res/azure-stack-hci/virtual-machine-instance].[0m[90m 5ms (4ms|1ms)[0m
+2026-04-04T19:54:27.7249152Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml] should have expected runtime parameters.[0m[90m 7ms (5ms|1ms)[0m
+2026-04-04T19:54:27.7352574Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]'s [staticValidation] runtime parameter should have a default value of [true].[0m[90m 8ms (7ms|1ms)[0m
+2026-04-04T19:54:27.7440297Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]'s [deploymentValidation] runtime parameter should have a default value of [true].[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:27.7562509Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]'s [customLocation] runtime parameter should not have a default value.[0m[90m 10ms (9ms|1ms)[0m
+2026-04-04T19:54:27.7653508Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml] Should have only the [main] branch as a push trigger.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:27.7746003Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]. Should have the expected push trigger path filters.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:27.7830645Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]. Should only have the expected push trigger path filters.[0m[90m 6ms (5ms|1ms)[0m
+2026-04-04T19:54:27.8367781Z [32m  [+] [azure-stack-hci/virtual-machine-instance] GitHub workflow [avm.res.azure-stack-hci.virtual-machine-instance.yml]. Should include a condition to run automatically only on upstream main changes.[0m[90m 52ms (51ms|1ms)[0m
+2026-04-04T19:54:40.4020456Z [0m
+2026-04-04T19:54:40.4021380Z [92mDescribing Module tests[0m
+2026-04-04T19:54:40.4023756Z [96m Context Readme content tests[0m
+2026-04-04T19:54:49.2107072Z [33;1mVERBOSE: File [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance/README.md] updated[0m
+2026-04-04T19:54:49.2167004Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Set-ModuleReadMe script should not apply any updates.[0m[90m 8.81s (8.81s|2ms)[0m
+2026-04-04T19:54:49.2220236Z [96m Context Compiled ARM template tests[0m
+2026-04-04T19:54:52.9200706Z /home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance/main.bicep(149,21) : Warning BCP036: The property "osType" expected a value of type "'Linux' | 'Windows' | null" but the provided value is of type "'Linux' | 'Windows' | string". If this is a resource type definition inaccuracy, report it using https://aka.ms/bicep-type-issues. [https://aka.ms/bicep/core-diagnostics#BCP036]
+2026-04-04T19:54:52.9206675Z /home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance/main.bicep(149,21) : Warning BCP037: The property "managedDisk" is not allowed on objects of type "VirtualMachineInstancePropertiesStorageProfileOsDisk". No other properties are allowed. If this is a resource type definition inaccuracy, report it using https://aka.ms/bicep-type-issues. [https://aka.ms/bicep/core-diagnostics#BCP037]
+2026-04-04T19:54:53.3769613Z [32m   [+] [azure-stack-hci/virtual-machine-instance] The [main.json] ARM template should be based on the current [main.bicep] Bicep template.[0m[90m 4.16s (4.15s|3ms)[0m
+2026-04-04T19:54:53.4017976Z [96m Context Template tests[0m
+2026-04-04T19:54:53.4019940Z [96m  Context General[0m
+2026-04-04T19:54:53.4077524Z [32m    [+] [azure-stack-hci/virtual-machine-instance] The template file should not be empty.[0m[90m 6ms (4ms|2ms)[0m
+2026-04-04T19:54:53.4133724Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Template schema version should be the latest.[0m[90m 4ms (4ms|1ms)[0m
+2026-04-04T19:54:53.4194502Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Template schema should use HTTPS reference.[0m[90m 5ms (4ms|1ms)[0m
+2026-04-04T19:54:53.4249609Z [32m    [+] [azure-stack-hci/virtual-machine-instance] The template file should contain required elements [schema], [contentVersion], [resources].[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:53.4308290Z [32m    [+] [azure-stack-hci/virtual-machine-instance] template file should have a module name specified.[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.4349508Z [32m    [+] [azure-stack-hci/virtual-machine-instance] template file should have a module description specified.[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:53.4402789Z [96m  Context Parameters[0m
+2026-04-04T19:54:53.4527720Z [32m    [+] [azure-stack-hci/virtual-machine-instance] The Location should be defined as a parameter, with the default value of "[resourceGroup().Location]" or "global" for ResourceGroup deployment scope.[0m[90m 14ms (11ms|3ms)[0m
+2026-04-04T19:54:53.5026275Z [32m    [+] [azure-stack-hci/virtual-machine-instance] The telemetry parameter should be present & have the expected type, default value & metadata description.[0m[90m 46ms (46ms|1ms)[0m
+2026-04-04T19:54:53.5075027Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Parameter & UDT names should be camel-cased (no dashes or underscores and must start with lower-case letter).[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:53.5653906Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Each parameters' & UDT's description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot.[0m[90m 53ms (53ms|1ms)[0m
+2026-04-04T19:54:53.5805729Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Conditional parameters' & UDT's description should contain 'Required if' followed by the condition making the parameter required.[0m[90m 11ms (10ms|1ms)[0m
+2026-04-04T19:54:53.5948355Z [32m    [+] [azure-stack-hci/virtual-machine-instance] All non-required parameters & UDTs in template file should not have description that start with "Required.".[0m[90m 8ms (7ms|1ms)[0m
+2026-04-04T19:54:53.6050332Z [32m    [+] [azure-stack-hci/virtual-machine-instance] All required parameters & UDTs in template file should have description that start with "(Required|Conditional).".[0m[90m 8ms (7ms|1ms)[0m
+2026-04-04T19:54:53.6177292Z [32m    [+] [azure-stack-hci/virtual-machine-instance] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.[0m[90m 8ms (8ms|1ms)[0m
+2026-04-04T19:54:53.6195921Z [96m   Context Schema-based User-defined-types tests[0m
+2026-04-04T19:54:53.7097038Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If template has a parameter [diagnosticSettings], it should implement AVM's corresponding user-defined type. is skipped, because the module template has no [diagnosticSettings] parameter.[0m[90m 62ms (52ms|10ms)[0m
+2026-04-04T19:54:53.7544706Z [32m     [+] [azure-stack-hci/virtual-machine-instance] If template has a parameter [roleAssignments], it should implement AVM's corresponding user-defined type.[0m[90m 44ms (43ms|1ms)[0m
+2026-04-04T19:54:53.7592154Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If template has a parameter [lock], it should implement AVM's corresponding user-defined type. is skipped, because the module template has no [lock] parameter.[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.7630079Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If template has a parameter [managedIdentities], it should implement AVM's corresponding user-defined type. is skipped, because the module template has no [managedIdentities] parameter.[0m[90m 2ms (1ms|1ms)[0m
+2026-04-04T19:54:53.7668223Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If template has a parameter [privateEndpoints], it should implement AVM's corresponding user-defined type. is skipped, because the module template has no [privateEndpoints] parameter.[0m[90m 2ms (1ms|0ms)[0m
+2026-04-04T19:54:53.7707342Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If template has a parameter [customerManagedKey], it should implement AVM's corresponding user-defined type. is skipped, because the module template has no [customerManagedKey] parameter.[0m[90m 2ms (1ms|1ms)[0m
+2026-04-04T19:54:53.7790885Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID. is skipped, because the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.[0m[90m 6ms (6ms|0ms)[0m
+2026-04-04T19:54:53.7832388Z [93m     [!] [azure-stack-hci/virtual-machine-instance] If a parameter [tags] exists it should be nullable. is skipped, because the module template has no [tags] parameter.[0m[90m 2ms (2ms|0ms)[0m
+2026-04-04T19:54:53.7863659Z [96m  Context Variables[0m
+2026-04-04T19:54:53.7896082Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Variable names should be camel-cased (no dashes or underscores and must start with lower-case letter).[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.7939126Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry (unless multi-scoped).[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:53.7960164Z [96m  Context Resources[0m
+2026-04-04T19:54:53.8219264Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Telemetry deployment should be present in the template.[0m[90m 26ms (25ms|1ms)[0m
+2026-04-04T19:54:53.8257692Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Telemetry deployment should have correct condition in the template.[0m[90m 3ms (3ms|1ms)[0m
+2026-04-04T19:54:53.8311118Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Telemetry deployment should have expected inner output for verbosity.[0m[90m 4ms (4ms|1ms)[0m
+2026-04-04T19:54:53.9014496Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Telemetry deployment should have expected telemetry identifier.[0m[90m 69ms (69ms|1ms)[0m
+2026-04-04T19:54:53.9055238Z [32m    [+] [azure-stack-hci/virtual-machine-instance] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).[0m[90m 3ms (3ms|1ms)[0m
+2026-04-04T19:54:53.9078443Z [96m  Context Output[0m
+2026-04-04T19:54:53.9109033Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Output names should be camel-cased (no dashes or underscores and must start with lower-case letter).[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.9422021Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Output names description should start with a capital letter and contain text ending with a dot.[0m[90m 30ms (30ms|1ms)[0m
+2026-04-04T19:54:53.9452989Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Location output should be returned for resources that use it.[0m[90m 2ms (2ms|1ms)[0m
+2026-04-04T19:54:53.9504899Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Resource Group output should exist for resources that are deployed into a resource group scope.[0m[90m 4ms (4ms|1ms)[0m
+2026-04-04T19:54:53.9591631Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Resource modules should have a name output.[0m[90m 8ms (7ms|1ms)[0m
+2026-04-04T19:54:53.9634599Z [32m    [+] [azure-stack-hci/virtual-machine-instance] Resource modules should have a Resource ID output.[0m[90m 4ms (3ms|1ms)[0m
+2026-04-04T19:54:53.9683652Z [93m    [!] [azure-stack-hci/virtual-machine-instance] Resource modules Principal ID output should exist, if supported. is skipped, because the module template seems not to support an identity object.[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.9706505Z [96m  Context UDT-spcific[0m
+2026-04-04T19:54:53.9743726Z [32m    [+] [azure-stack-hci/virtual-machine-instance] A UDT should not be of type array, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.[0m[90m 3ms (3ms|1ms)[0m
+2026-04-04T19:54:53.9781448Z [32m    [+] [azure-stack-hci/virtual-machine-instance] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.[0m[90m 3ms (2ms|1ms)[0m
+2026-04-04T19:54:53.9809294Z [32m    [+] [azure-stack-hci/virtual-machine-instance] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.[0m[90m 2ms (1ms|1ms)[0m
+2026-04-04T19:54:54.0098945Z [96m Context Changelog tests[0m
+2026-04-04T19:54:54.0115832Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md must not be empty.[0m[90m 1ms (1ms|1ms)[0m
+2026-04-04T19:54:54.0196782Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md must start with #Changelog header, followed by an empty line and a link to the latest version.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:54:54.0551077Z [33;1mVERBOSE: Currently in the fork branch [avm-res-azure-stack-hci-virtual-machine-instance][0m
+2026-04-04T19:54:59.4838914Z [33;1mVERBOSE: Fetching changes of latest upstream [main] commit [3bfdf36] against current commit [5cae08e].[0m
+2026-04-04T19:54:59.4949972Z [33;1mVERBOSE: Diff found:
+2026-04-04T19:54:59.4950428Z [0m
+2026-04-04T19:54:59.5050083Z [33;1mVERBOSE:   The new version equals the old version[0m
+2026-04-04T19:54:59.5051552Z [33;1mVERBOSE: [version.json] file version property was not updated. Calculating new PATCH version.[0m
+2026-04-04T19:54:59.6910066Z [33;1mVERBOSE: Latest tag is [avm/res/azure-stack-hci/virtual-machine-instance/0.1.1]. Bumping patch.[0m
+2026-04-04T19:54:59.6919468Z [33;1mVERBOSE: Target version is [0.1.2].[0m
+2026-04-04T19:54:59.6957231Z [33;1mVERBOSE: Looking for modified files under: [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/virtual-machine-instance/][0m
+2026-04-04T19:54:59.7141569Z [33;1mVERBOSE: Currently in the fork branch [avm-res-azure-stack-hci-virtual-machine-instance][0m
+2026-04-04T19:55:04.9207939Z [33;1mVERBOSE: Fetching changes of latest upstream [main] commit [3bfdf36] against current commit [5cae08e].[0m
+2026-04-04T19:55:04.9432177Z [33;1mVERBOSE: Diff found:
+2026-04-04T19:55:04.9432789Z  .../virtual-machine-instance/README.md             |    3 +-
+2026-04-04T19:55:04.9433526Z  .../virtual-machine-instance/main.bicep            |   11 +-
+2026-04-04T19:55:04.9434215Z  .../virtual-machine-instance/main.json             |   39 +-
+2026-04-04T19:55:04.9434865Z  .../tests/e2e/defaults/main.test.bicep             |   22 +-
+2026-04-04T19:55:04.9435590Z  .../tests/e2e/defaults/main.test.json              | 1813 ++++++++++++++++++--
+2026-04-04T19:55:04.9436584Z  .../tests/e2e/waf-aligned/main.test.bicep          |   20 +-
+2026-04-04T19:55:04.9437338Z  .../tests/e2e/waf-aligned/main.test.json           | 1813 ++++++++++++++++++--
+2026-04-04T19:55:04.9438056Z  7 files changed, 3336 insertions(+), 385 deletions(-)
+2026-04-04T19:55:04.9438599Z [0m
+2026-04-04T19:55:04.9541448Z [33;1mVERBOSE: [7] modified files identified in path [avm/res/azure-stack-hci/virtual-machine-instance/]:[0m
+2026-04-04T19:55:04.9545279Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/README.md[0m
+2026-04-04T19:55:04.9546648Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/main.bicep[0m
+2026-04-04T19:55:04.9547776Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/main.json[0m
+2026-04-04T19:55:04.9549059Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/tests/e2e/defaults/main.test.bicep[0m
+2026-04-04T19:55:04.9550438Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/tests/e2e/defaults/main.test.json[0m
+2026-04-04T19:55:04.9551835Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/tests/e2e/waf-aligned/main.test.bicep[0m
+2026-04-04T19:55:04.9553211Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/tests/e2e/waf-aligned/main.test.json[0m
+2026-04-04T19:55:04.9598463Z [33;1mVERBOSE: [1] files identified that justify publishing:[0m
+2026-04-04T19:55:04.9602297Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/main.json[0m
+2026-04-04T19:55:04.9638481Z [33;1mVERBOSE: [1] template(s) for modified modules found:[0m
+2026-04-04T19:55:04.9641983Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/main.json[0m
+2026-04-04T19:55:04.9650328Z [33;1mVERBOSE: [1] versioned modules to publish[0m
+2026-04-04T19:55:04.9654069Z [33;1mVERBOSE:  - avm/res/azure-stack-hci/virtual-machine-instance/main.json[0m
+2026-04-04T19:55:04.9704700Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md must contain a section for the module version.[0m[90m 10.95s (10.95s|1ms)[0m
+2026-04-04T19:55:05.0073442Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md file's sections must be sorted in a decending order.[0m[90m 36ms (35ms|1ms)[0m
+2026-04-04T19:55:05.0142900Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md versions must contain exactly one valid Changes section.[0m[90m 6ms (6ms|0ms)[0m
+2026-04-04T19:55:05.0181752Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md versions must contain exactly one valid Breaking Changes section.[0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:05.0225365Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md sections Changes and Breaking Changes must not be empty.[0m[90m 4ms (3ms|0ms)[0m
+2026-04-04T19:55:05.0341396Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md versions must contain the Changes section before the Breaking Changes section.[0m[90m 11ms (10ms|0ms)[0m
+2026-04-04T19:55:05.0382319Z [33;1mVERBOSE: Getting available tags at 'https://mcr.microsoft.com/v2/bicep/avm/res/azure-stack-hci/virtual-machine-instance/tags/list' (attempt 1)...[0m
+2026-04-04T19:55:05.0911767Z [33;1mVERBOSE:   Found tags: 0.1.0, 0.1.1[0m
+2026-04-04T19:55:05.1124384Z [33;1mVERBOSE: Currently in the fork branch [avm-res-azure-stack-hci-virtual-machine-instance][0m
+2026-04-04T19:55:10.3078388Z [33;1mVERBOSE: Fetching changes of latest upstream [main] commit [3bfdf36] against current commit [5cae08e].[0m
+2026-04-04T19:55:10.3175496Z [33;1mVERBOSE: Diff found:
+2026-04-04T19:55:10.3175935Z [0m
+2026-04-04T19:55:10.3270012Z [33;1mVERBOSE:   The new version equals the old version[0m
+2026-04-04T19:55:10.3271088Z [33;1mVERBOSE: [version.json] file version property was not updated. Calculating new PATCH version.[0m
+2026-04-04T19:55:10.5061488Z [33;1mVERBOSE: Latest tag is [avm/res/azure-stack-hci/virtual-machine-instance/0.1.1]. Bumping patch.[0m
+2026-04-04T19:55:10.5062460Z [33;1mVERBOSE: Target version is [0.1.2].[0m
+2026-04-04T19:55:10.5079419Z [32m   [+] [azure-stack-hci/virtual-machine-instance] CHANGELOG.md must contain only versions, that are published.[0m[90m 5.47s (5.47s|0ms)[0m
+2026-04-04T19:55:10.5102108Z [96m Context Version tests[0m
+2026-04-04T19:55:10.5139771Z [32m   [+] [azure-stack-hci/virtual-machine-instance] A [ version.json ] file must only have a major & minor version.[0m[90m 3ms (3ms|1ms)[0m
+2026-04-04T19:55:10.5745379Z [32m   [+] [azure-stack-hci/virtual-machine-instance] A [ version.json ] file must not yet contain a major version greater than 0.[0m[90m 60ms (59ms|0ms)[0m
+2026-04-04T19:55:10.5775046Z [0m
+2026-04-04T19:55:10.5777409Z [92mDescribing Governance tests[0m
+2026-04-04T19:55:10.5844959Z [32m  [+] [azure-stack-hci/virtual-machine-instance] Owning team should be specified correctly in CODEWONERS file.[0m[90m 7ms (6ms|1ms)[0m
+2026-04-04T19:55:10.5995757Z [32m  [+] [azure-stack-hci/virtual-machine-instance] Module identifier should be listed in issue template in the correct alphabetical position.[0m[90m 14ms (14ms|0ms)[0m
+2026-04-04T19:55:10.6021366Z [0m
+2026-04-04T19:55:10.6022927Z [92mDescribing Test file tests[0m
+2026-04-04T19:55:10.6024715Z [96m Context General test file[0m
+2026-04-04T19:55:10.6066075Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a parameter [serviceShort] for test case [defaults][0m[90m 4ms (2ms|2ms)[0m
+2026-04-04T19:55:10.6088581Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a parameter [serviceShort] for test case [waf-aligned][0m[90m 1ms (1ms|0ms)[0m
+2026-04-04T19:55:10.6702438Z [32m   [+] [azure-stack-hci/virtual-machine-instance] [defaults] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min][0m[90m 61ms (60ms|0ms)[0m
+2026-04-04T19:55:10.6742015Z [32m   [+] [azure-stack-hci/virtual-machine-instance] [waf-aligned] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf][0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:10.6782044Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a metadata string [name] for test case [defaults][0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:10.6819544Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a metadata string [name] for test case [waf-aligned][0m[90m 3ms (2ms|0ms)[0m
+2026-04-04T19:55:10.6858137Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a metadata string [description] for test case [defaults][0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:10.6893071Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a metadata string [description] for test case [waf-aligned][0m[90m 3ms (2ms|0ms)[0m
+2026-04-04T19:55:10.6934631Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#'] for test case [defaults][0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:10.6969463Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#'] for test case [waf-aligned][0m[90m 3ms (2ms|0ms)[0m
+2026-04-04T19:55:10.7003393Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should invoke test like [module testDeployment '../.*main.bicep' = [ or {] for test case [defaults][0m[90m 3ms (2ms|0ms)[0m
+2026-04-04T19:55:10.7178328Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment files should invoke test like [module testDeployment '../.*main.bicep' = [ or {] for test case [waf-aligned][0m[90m 17ms (16ms|0ms)[0m
+2026-04-04T19:55:10.7221655Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment name should contain [-test-] for test case [defaults][0m[90m 4ms (3ms|0ms)[0m
+2026-04-04T19:55:10.7258136Z [32m   [+] [azure-stack-hci/virtual-machine-instance] Bicep test deployment name should contain [-test-] for test case [waf-aligned][0m[90m 3ms (2ms|0ms)[0m
+2026-04-04T19:55:12.3753497Z [32m   [+] [azure-stack-hci/virtual-machine-instance] serviceShort should be unique across repository[0m[90m 1.65s (1.65s|0ms)[0m
+2026-04-04T19:55:13.9394898Z [32m   [+] [azure-stack-hci/virtual-machine-instance] serviceShort should be unique across repository[0m[90m 1.56s (1.56s|1ms)[0m
+2026-04-04T19:55:13.9424563Z [0m
+2026-04-04T19:55:13.9435340Z [92mDescribing API version tests[0m
+2026-04-04T19:55:13.9650428Z [32m  [+] In [res/azure-stack-hci/virtual-machine-instance] used resource type [locks] should use one of the recent API version(s). Currently using [2020-05-01].[0m[90m 22ms (20ms|2ms)[0m
+2026-04-04T19:55:13.9679809Z [32m  [+] In [res/azure-stack-hci/virtual-machine-instance] used resource type [roleAssignments] should use one of the recent API version(s). Currently using [2022-04-01].[0m[90m 2ms (1ms|1ms)[0m
+2026-04-04T19:55:13.9727505Z [33;1mWARNING: The used API version [2024-01-01] for Resource Type [Microsoft.AzureStackHCI/virtualMachineInstances] will soon expire. Please consider updating it. Consider using one of the newer API versions 
+2026-04-04T19:55:13.9729027Z - 2026-04-01-preview
+2026-04-04T19:55:13.9729349Z - 2026-02-01-preview
+2026-04-04T19:55:13.9729703Z - 2025-09-01-preview
+2026-04-04T19:55:13.9729891Z - 2025-06-01-preview
+2026-04-04T19:55:13.9730060Z - 2025-04-01-preview
+2026-04-04T19:55:13.9730267Z [0m
+2026-04-04T19:55:13.9749235Z [32m  [+] In [res/azure-stack-hci/virtual-machine-instance] used resource type [virtualMachineInstances] should use one of the recent API version(s). Currently using [2024-01-01].[0m[90m 6ms (4ms|2ms)[0m
+2026-04-04T19:55:13.9789155Z [32m  [+] In [res/azure-stack-hci/virtual-machine-instance] used resource type [guestConfigurationAssignments] should use one of the recent API version(s). Currently using [2020-06-25].[0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:13.9829976Z [32m  [+] In [res/azure-stack-hci/virtual-machine-instance] used resource type [machines] should use one of the recent API version(s). Currently using [2024-07-10].[0m[90m 3ms (3ms|0ms)[0m
+2026-04-04T19:55:14.1264467Z [97mTests completed in 61.44s[0m
+2026-04-04T19:55:14.1340495Z [32mTests Passed: 92, [0m[90mFailed: 0, [0m[93mSkipped: 8, [0m[90mInconclusive: 0, [0m[37m[0m[90mNotRun: 0[0m
+2026-04-04T19:55:14.1506957Z [33;1mVERBOSE: Storing test results in file [testResults.json][0m
+2026-04-04T19:55:14.1528296Z [33;1mWARNING: Resulting JSON is truncated as serialization has exceeded the set depth of 3.[0m
+2026-04-04T19:55:14.2473689Z [33;1mVERBOSE: Invoke Pester formatting function with[0m
+2026-04-04T19:55:14.2474988Z [33;1mWARNING: Resulting JSON is truncated as serialization has exceeded the set depth of 0.[0m
+2026-04-04T19:55:14.2476918Z [33;1mVERBOSE: {
+2026-04-04T19:55:14.2477360Z   "ErrorAction": "SilentlyContinue",
+2026-04-04T19:55:14.2477913Z   "PesterTestResults": "[+] Pester",
+2026-04-04T19:55:14.2478824Z   "OutputFilePath": "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/Pester-output.md",
+2026-04-04T19:55:14.2479556Z   "GitHubRepository": "chirag1603/bicep-registry-modules",
+2026-04-04T19:55:14.2480124Z   "BranchName": "refs/heads/avm-res-azure-stack-hci-virtual-machine-instance"
+2026-04-04T19:55:14.2480915Z }
+2026-04-04T19:55:14.2481152Z [0m
+2026-04-04T19:55:14.2987301Z [33;1mVERBOSE: Formatting [92] passed tests[0m
+2026-04-04T19:55:14.2988480Z [33;1mVERBOSE: Formatting [0] failed tests[0m
+2026-04-04T19:55:14.2988900Z [33;1mVERBOSE: Formatting [8] skipped tests[0m
+2026-04-04T19:55:14.2989369Z [33;1mVERBOSE: Formatting [0] tests with explicit warnings[0m
+2026-04-04T19:55:14.3008765Z [33;1mVERBOSE: Adding failed tests[0m
+2026-04-04T19:55:14.3013613Z [33;1mVERBOSE: Adding passed tests[0m
+2026-04-04T19:55:14.3176305Z [33;1mVERBOSE: Adding skipped tests[0m
+2026-04-04T19:55:14.3204989Z [33;1mVERBOSE: Adding warnings[0m
+2026-04-04T19:55:14.3221466Z [33;1mVERBOSE: Performing the operation "Create" on target "Test results file in path [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/Pester-output.md]".[0m
+2026-04-04T19:55:14.3247446Z [33;1mVERBOSE: Create results file [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/Pester-output.md][0m
+2026-04-04T19:55:14.4404732Z ##[group]Run # Grouping task logs
+2026-04-04T19:55:14.4405015Z [36;1m# Grouping task logs[0m
+2026-04-04T19:55:14.4405320Z [36;1mWrite-Output '::group::Output to GitHub job summaries'[0m
+2026-04-04T19:55:14.4405751Z [36;1m[0m
+2026-04-04T19:55:14.4406227Z [36;1m$mdPesterOutputFilePath = '/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/Pester-output.md'[0m
+2026-04-04T19:55:14.4407805Z [36;1m[0m
+2026-04-04T19:55:14.4408209Z [36;1mif (-not (Test-Path $mdPesterOutputFilePath)) {[0m
+2026-04-04T19:55:14.4409269Z [36;1m  Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)[0m
+2026-04-04T19:55:14.4410234Z [36;1m} else {[0m
+2026-04-04T19:55:14.4410555Z [36;1m  Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY[0m
+2026-04-04T19:55:14.4411175Z [36;1m  Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose[0m
+2026-04-04T19:55:14.4411688Z [36;1m}[0m
+2026-04-04T19:55:14.4411852Z [36;1m[0m
+2026-04-04T19:55:14.4412029Z [36;1mWrite-Output '::endgroup::'[0m
+2026-04-04T19:55:14.4444115Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-04-04T19:55:14.4444379Z env:
+2026-04-04T19:55:14.4444933Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:55:14.4445170Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:55:14.4445396Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:55:14.4445645Z ##[endgroup]
+2026-04-04T19:55:14.6705203Z ##[group]Output to GitHub job summaries
+2026-04-04T19:55:14.7164154Z [33;1mVERBOSE: Successfully printed out file [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/Pester-output.md] to Job Summaries[0m
+2026-04-04T19:55:14.7165684Z ##[endgroup]
+2026-04-04T19:55:14.7779716Z ##[group]Run actions/upload-artifact@v4.6.2
+2026-04-04T19:55:14.7780023Z with:
+2026-04-04T19:55:14.7780214Z   name: Upload & store test results
+2026-04-04T19:55:14.7780470Z   path: testResults.json
+
+2026-04-04T19:55:14.7780899Z   if-no-files-found: warn
+2026-04-04T19:55:14.7781132Z   compression-level: 6
+2026-04-04T19:55:14.7781340Z   overwrite: false
+2026-04-04T19:55:14.7781535Z   include-hidden-files: false
+2026-04-04T19:55:14.7781747Z env:
+2026-04-04T19:55:14.7782297Z   ARM_MGMTGROUP_ID: ***
+2026-04-04T19:55:14.7782531Z   TOKEN_NAMEPREFIX: ***
+2026-04-04T19:55:14.7782752Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-04-04T19:55:14.7782999Z ##[endgroup]
+2026-04-04T19:55:14.9877991Z With the provided path, there will be 1 file uploaded
+2026-04-04T19:55:14.9882749Z Artifact name is valid!
+2026-04-04T19:55:14.9883967Z Root directory input is valid!
+2026-04-04T19:55:15.0741526Z Beginning upload of artifact content to blob storage
+2026-04-04T19:55:15.2718486Z Uploaded bytes 354495
+2026-04-04T19:55:15.2932167Z Finished uploading artifact content to blob storage!
+2026-04-04T19:55:15.2935260Z SHA256 digest of uploaded artifact zip is 88a80eaa7acf846bcf2534d9c6b3ae2ee38791a86374f2685295bbca6e930b98
+2026-04-04T19:55:15.2936894Z Finalizing artifact upload
+2026-04-04T19:55:15.3818565Z Artifact Upload & store test results.zip successfully finalized. Artifact ID 6272839962
+2026-04-04T19:55:15.3820099Z Artifact Upload & store test results has been successfully uploaded! Final size is 354495 bytes. Artifact ID is 6272839962
+2026-04-04T19:55:15.3825551Z Artifact download URL: https://github.com/chirag1603/bicep-registry-modules/actions/runs/23986374375/artifacts/6272839962
+2026-04-04T19:55:15.3979456Z Post job cleanup.
+2026-04-04T19:55:15.4743577Z [command]/usr/bin/git version
+2026-04-04T19:55:15.4778848Z git version 2.53.0
+2026-04-04T19:55:15.4814690Z Temporarily overriding HOME='/home/runner/work/_temp/55fea895-51cf-42d8-b8c2-75f6e8e94b9b' before making global git config changes
+2026-04-04T19:55:15.4815597Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-04T19:55:15.4820367Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-04-04T19:55:15.4855030Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-04T19:55:15.4887849Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-04T19:55:15.5132340Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-04T19:55:15.5180566Z http.https://github.com/.extraheader
+2026-04-04T19:55:15.5190275Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-04T19:55:15.5220438Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-04T19:55:15.5451161Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-04T19:55:15.5480676Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-04T19:55:15.5847531Z Cleaning up orphan processes
+2026-04-04T19:55:15.6229070Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/upload-artifact@v4.6.2. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

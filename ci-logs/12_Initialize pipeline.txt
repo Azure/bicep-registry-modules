@@ -1,0 +1,300 @@
+﻿2026-03-22T23:19:52.3228295Z Current runner version: '2.332.0'
+2026-03-22T23:19:52.3254479Z ##[group]Runner Image Provisioner
+2026-03-22T23:19:52.3255350Z Hosted Compute Agent
+2026-03-22T23:19:52.3255947Z Version: 20260213.493
+2026-03-22T23:19:52.3256517Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-03-22T23:19:52.3257286Z Build Date: 2026-02-13T00:28:41Z
+2026-03-22T23:19:52.3257966Z Worker ID: {ff769e55-53f0-4996-adb6-33ad60814d96}
+2026-03-22T23:19:52.3258661Z Azure Region: northcentralus
+2026-03-22T23:19:52.3259588Z ##[endgroup]
+2026-03-22T23:19:52.3261182Z ##[group]Operating System
+2026-03-22T23:19:52.3261796Z Ubuntu
+2026-03-22T23:19:52.3262220Z 24.04.3
+2026-03-22T23:19:52.3262786Z LTS
+2026-03-22T23:19:52.3263213Z ##[endgroup]
+2026-03-22T23:19:52.3263732Z ##[group]Runner Image
+2026-03-22T23:19:52.3264359Z Image: ubuntu-24.04
+2026-03-22T23:19:52.3264828Z Version: 20260309.50.1
+2026-03-22T23:19:52.3266023Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260309.50/images/ubuntu/Ubuntu2404-Readme.md
+2026-03-22T23:19:52.3267470Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260309.50
+2026-03-22T23:19:52.3268380Z ##[endgroup]
+2026-03-22T23:19:52.3271426Z ##[group]GITHUB_TOKEN Permissions
+2026-03-22T23:19:52.3273440Z Actions: write
+2026-03-22T23:19:52.3274114Z ArtifactMetadata: write
+2026-03-22T23:19:52.3274675Z Attestations: write
+2026-03-22T23:19:52.3275231Z Checks: write
+2026-03-22T23:19:52.3275790Z Contents: write
+2026-03-22T23:19:52.3276261Z Deployments: write
+2026-03-22T23:19:52.3276780Z Discussions: write
+2026-03-22T23:19:52.3277290Z Issues: write
+2026-03-22T23:19:52.3277803Z Metadata: read
+2026-03-22T23:19:52.3278288Z Models: read
+2026-03-22T23:19:52.3278811Z Packages: write
+2026-03-22T23:19:52.3279625Z Pages: write
+2026-03-22T23:19:52.3280302Z PullRequests: write
+2026-03-22T23:19:52.3280914Z RepositoryProjects: write
+2026-03-22T23:19:52.3281478Z SecurityEvents: write
+2026-03-22T23:19:52.3282054Z Statuses: write
+2026-03-22T23:19:52.3282517Z ##[endgroup]
+2026-03-22T23:19:52.3284760Z Secret source: Actions
+2026-03-22T23:19:52.3285448Z Prepare workflow directory
+2026-03-22T23:19:52.3853371Z Prepare all required actions
+2026-03-22T23:19:52.3910712Z Getting action download info
+2026-03-22T23:19:52.6650247Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+2026-03-22T23:19:52.8863549Z Complete job name: Initialize pipeline
+2026-03-22T23:19:52.9701761Z ##[group]Run actions/checkout@v5
+2026-03-22T23:19:52.9702594Z with:
+2026-03-22T23:19:52.9702973Z   fetch-depth: 0
+2026-03-22T23:19:52.9703423Z   repository: chirag1603/bicep-registry-modules
+2026-03-22T23:19:52.9704168Z   token: ***
+2026-03-22T23:19:52.9704553Z   ssh-strict: true
+2026-03-22T23:19:52.9704937Z   ssh-user: git
+2026-03-22T23:19:52.9705322Z   persist-credentials: true
+2026-03-22T23:19:52.9705753Z   clean: true
+2026-03-22T23:19:52.9706152Z   sparse-checkout-cone-mode: true
+2026-03-22T23:19:52.9706618Z   fetch-tags: false
+2026-03-22T23:19:52.9707010Z   show-progress: true
+2026-03-22T23:19:52.9707419Z   lfs: false
+2026-03-22T23:19:52.9707782Z   submodules: false
+2026-03-22T23:19:52.9708174Z   set-safe-directory: true
+2026-03-22T23:19:52.9708924Z env:
+2026-03-22T23:19:52.9709618Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:19:52.9710335Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:19:52.9710979Z ##[endgroup]
+2026-03-22T23:19:53.0704106Z Syncing repository: chirag1603/bicep-registry-modules
+2026-03-22T23:19:53.0706136Z ##[group]Getting Git version info
+2026-03-22T23:19:53.0706964Z Working directory is '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-03-22T23:19:53.0708104Z [command]/usr/bin/git version
+2026-03-22T23:19:53.0790815Z git version 2.53.0
+2026-03-22T23:19:53.0845719Z ##[endgroup]
+2026-03-22T23:19:53.0861681Z Temporarily overriding HOME='/home/runner/work/_temp/5fa9c5c7-718c-4e5f-b0c1-32de7fcdd216' before making global git config changes
+2026-03-22T23:19:53.0863898Z Adding repository directory to the temporary git global config as a safe directory
+2026-03-22T23:19:53.0867808Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:19:53.0917203Z Deleting the contents of '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-03-22T23:19:53.0921961Z ##[group]Initializing the repository
+2026-03-22T23:19:53.0927172Z [command]/usr/bin/git init /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:19:53.1066704Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-03-22T23:19:53.1068500Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-03-22T23:19:53.1070211Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-03-22T23:19:53.1071355Z hint: call:
+2026-03-22T23:19:53.1071947Z hint:
+2026-03-22T23:19:53.1072667Z hint: 	git config --global init.defaultBranch <name>
+2026-03-22T23:19:53.1073625Z hint:
+2026-03-22T23:19:53.1074428Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-03-22T23:19:53.1075346Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-03-22T23:19:53.1076024Z hint:
+2026-03-22T23:19:53.1076397Z hint: 	git branch -m <name>
+2026-03-22T23:19:53.1076820Z hint:
+2026-03-22T23:19:53.1077513Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-03-22T23:19:53.1079497Z Initialized empty Git repository in /home/runner/work/bicep-registry-modules/bicep-registry-modules/.git/
+2026-03-22T23:19:53.1084181Z [command]/usr/bin/git remote add origin https://github.com/chirag1603/bicep-registry-modules
+2026-03-22T23:19:53.1127015Z ##[endgroup]
+2026-03-22T23:19:53.1127750Z ##[group]Disabling automatic garbage collection
+2026-03-22T23:19:53.1131019Z [command]/usr/bin/git config --local gc.auto 0
+2026-03-22T23:19:53.1165706Z ##[endgroup]
+2026-03-22T23:19:53.1166364Z ##[group]Setting up auth
+2026-03-22T23:19:53.1172748Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-03-22T23:19:53.1208401Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-03-22T23:19:53.1601371Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-03-22T23:19:53.1637135Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-03-22T23:19:53.1890906Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-03-22T23:19:53.1928088Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-03-22T23:19:53.2184584Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-03-22T23:19:53.2226621Z ##[endgroup]
+2026-03-22T23:19:53.2227913Z ##[group]Fetching the repository
+2026-03-22T23:19:53.2237756Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-03-22T23:19:57.6623866Z From https://github.com/chirag1603/bicep-registry-modules
+2026-03-22T23:19:57.6626605Z  * [new branch]          avm-res-azure-stack-hci-cluster -> origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:19:57.6629065Z  * [new branch]          main       -> origin/main
+2026-03-22T23:19:57.6676757Z [command]/usr/bin/git branch --list --remote origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:19:57.6706218Z   origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:19:57.6717760Z [command]/usr/bin/git rev-parse refs/remotes/origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:19:57.6748811Z 394450ca35943dae6637af14c828745673244249
+2026-03-22T23:19:57.6755430Z ##[endgroup]
+2026-03-22T23:19:57.6756836Z ##[group]Determining the checkout info
+2026-03-22T23:19:57.6758318Z ##[endgroup]
+2026-03-22T23:19:57.6763127Z [command]/usr/bin/git sparse-checkout disable
+2026-03-22T23:19:57.6806670Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-03-22T23:19:57.6843829Z ##[group]Checking out the ref
+2026-03-22T23:19:57.6849199Z [command]/usr/bin/git checkout --progress --force -B avm-res-azure-stack-hci-cluster refs/remotes/origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:19:58.1891267Z Switched to a new branch 'avm-res-azure-stack-hci-cluster'
+2026-03-22T23:19:58.1893073Z branch 'avm-res-azure-stack-hci-cluster' set up to track 'origin/avm-res-azure-stack-hci-cluster'.
+2026-03-22T23:19:58.1948104Z ##[endgroup]
+2026-03-22T23:19:58.1992200Z [command]/usr/bin/git log -1 --format=%H
+2026-03-22T23:19:58.2020943Z 394450ca35943dae6637af14c828745673244249
+2026-03-22T23:19:58.2398814Z Prepare all required actions
+2026-03-22T23:19:58.2556417Z ##[group]Run ./.github/actions/templates/avm-getWorkflowInput
+2026-03-22T23:19:58.2557678Z with:
+2026-03-22T23:19:58.2558761Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:19:58.2560466Z env:
+2026-03-22T23:19:58.2561256Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:19:58.2562620Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:19:58.2563892Z ##[endgroup]
+2026-03-22T23:19:58.2720507Z ##[group]Run # Grouping task logs
+2026-03-22T23:19:58.2721661Z [36;1m# Grouping task logs[0m
+2026-03-22T23:19:58.2722836Z [36;1mWrite-Output '::group::Get workflow input parameters'[0m
+2026-03-22T23:19:58.2724041Z [36;1m[0m
+2026-03-22T23:19:58.2725152Z [36;1mWrite-Verbose "The workflow trigger is: workflow_dispatch" -Verbose[0m
+2026-03-22T23:19:58.2726479Z [36;1m[0m
+2026-03-22T23:19:58.2727530Z [36;1m# When running from workflow_dispatch event get input values[0m
+2026-03-22T23:19:58.2728973Z [36;1mif ('workflow_dispatch' -eq 'workflow_dispatch') {[0m
+2026-03-22T23:19:58.2730560Z [36;1m  $parameters = '{[0m
+2026-03-22T23:19:58.2731477Z [36;1m  "staticValidation": "true",[0m
+2026-03-22T23:19:58.2732515Z [36;1m  "deploymentValidation": "true",[0m
+2026-03-22T23:19:58.2733552Z [36;1m  "removeDeployment": "true"[0m
+2026-03-22T23:19:58.2734575Z [36;1m}' | ConvertFrom-Json -AsHashTable[0m
+2026-03-22T23:19:58.2735549Z [36;1m[0m
+2026-03-22T23:19:58.2736391Z [36;1m  # Output values to be accessed by next jobs[0m
+2026-03-22T23:19:58.2737487Z [36;1m  $workflowInput = @{}[0m
+2026-03-22T23:19:58.2738539Z [36;1m  foreach($parameterName in $parameters.Keys) {[0m
+2026-03-22T23:19:58.2740105Z [36;1m    if([String]::IsNullOrEmpty($parameters[$parameterName])) {[0m
+2026-03-22T23:19:58.2742100Z [36;1m      Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose[0m
+2026-03-22T23:19:58.2743785Z [36;1m      continue[0m
+2026-03-22T23:19:58.2744537Z [36;1m    }[0m
+2026-03-22T23:19:58.2745207Z [36;1m[0m
+2026-03-22T23:19:58.2746687Z [36;1m    Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $parameters[$parameterName]) -Verbose[0m
+2026-03-22T23:19:58.2748743Z [36;1m    $workflowInput[$parameterName] = $parameters[$parameterName][0m
+2026-03-22T23:19:58.2750089Z [36;1m  }[0m
+2026-03-22T23:19:58.2751557Z [36;1m  Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT[0m
+2026-03-22T23:19:58.2753218Z [36;1m}[0m
+2026-03-22T23:19:58.2753968Z [36;1m# Otherwise retrieve default values[0m
+2026-03-22T23:19:58.2754929Z [36;1melse {[0m
+2026-03-22T23:19:58.2755650Z [36;1m  # Load used functions[0m
+2026-03-22T23:19:58.2757390Z [36;1m  . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')[0m
+2026-03-22T23:19:58.2759153Z [36;1m[0m
+2026-03-22T23:19:58.2759939Z [36;1m  $functionInput = @{[0m
+2026-03-22T23:19:58.2761229Z [36;1m    workflowPath = '.github/workflows/avm.res.azure-stack-hci.cluster.yml'[0m
+2026-03-22T23:19:58.2762794Z [36;1m  }[0m
+2026-03-22T23:19:58.2763436Z [36;1m[0m
+2026-03-22T23:19:58.2764234Z [36;1m  Write-Verbose "Invoke task with" -Verbose[0m
+2026-03-22T23:19:58.2765683Z [36;1m  Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose[0m
+2026-03-22T23:19:58.2766984Z [36;1m[0m
+2026-03-22T23:19:58.2768168Z [36;1m  $workflowParameters = Get-GitHubWorkflowDefaultInput @functionInput -Verbose[0m
+2026-03-22T23:19:58.2769931Z [36;1m[0m
+2026-03-22T23:19:58.2770735Z [36;1m  # Output values to be accessed by next jobs[0m
+2026-03-22T23:19:58.2771795Z [36;1m  $workflowInput = @{}[0m
+2026-03-22T23:19:58.2772915Z [36;1m  foreach($parameterName in $workflowParameters.Keys) {[0m
+2026-03-22T23:19:58.2774046Z [36;1m[0m
+2026-03-22T23:19:58.2775066Z [36;1m    if([String]::IsNullOrEmpty($workflowParameters[$parameterName])) {[0m
+2026-03-22T23:19:58.2777311Z [36;1m      Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose[0m
+2026-03-22T23:19:58.2778993Z [36;1m      continue[0m
+2026-03-22T23:19:58.2779849Z [36;1m    }[0m
+2026-03-22T23:19:58.2780509Z [36;1m[0m
+2026-03-22T23:19:58.2782098Z [36;1m    Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose[0m
+2026-03-22T23:19:58.2784399Z [36;1m    $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()[0m
+2026-03-22T23:19:58.2785844Z [36;1m  }[0m
+2026-03-22T23:19:58.2787290Z [36;1m  Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT[0m
+2026-03-22T23:19:58.2788922Z [36;1m}[0m
+2026-03-22T23:19:58.2789723Z [36;1mWrite-Output '::endgroup::'[0m
+2026-03-22T23:19:58.2849929Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-03-22T23:19:58.2850900Z env:
+2026-03-22T23:19:58.2851680Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:19:58.2853029Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:19:58.2854269Z ##[endgroup]
+2026-03-22T23:20:02.0117880Z ##[group]Get workflow input parameters
+2026-03-22T23:20:02.0161594Z [33;1mVERBOSE: The workflow trigger is: workflow_dispatch[0m
+2026-03-22T23:20:02.0638891Z [33;1mVERBOSE: Passing output [staticValidation] with value [true][0m
+2026-03-22T23:20:02.0657850Z [33;1mVERBOSE: Passing output [deploymentValidation] with value [true][0m
+2026-03-22T23:20:02.0658871Z [33;1mVERBOSE: Passing output [removeDeployment] with value [true][0m
+2026-03-22T23:20:02.1225913Z ##[endgroup]
+2026-03-22T23:20:02.3599697Z Prepare all required actions
+2026-03-22T23:20:02.3672295Z ##[group]Run ./.github/actions/templates/avm-getModuleTestFiles
+2026-03-22T23:20:02.3672647Z with:
+2026-03-22T23:20:02.3672857Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:20:02.3673163Z   psRuleFilterRegex: (defaults|waf-aligned)
+2026-03-22T23:20:02.3673425Z env:
+2026-03-22T23:20:02.3673616Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:20:02.3674005Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:20:02.3674356Z ##[endgroup]
+2026-03-22T23:20:02.3693985Z ##[group]Run # Grouping task logs
+2026-03-22T23:20:02.3694299Z [36;1m# Grouping task logs[0m
+2026-03-22T23:20:02.3694568Z [36;1mWrite-Output '::group::Get all test files'[0m
+2026-03-22T23:20:02.3694841Z [36;1m[0m
+2026-03-22T23:20:02.3695056Z [36;1m# Get the list of parameter file paths[0m
+2026-03-22T23:20:02.3695545Z [36;1m$moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE 'avm/res/azure-stack-hci/cluster'[0m
+2026-03-22T23:20:02.3695955Z [36;1m[0m
+2026-03-22T23:20:02.3696409Z [36;1m$testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object[0m
+2026-03-22T23:20:02.3697000Z [36;1m$testFilePaths = $testFilePaths | ForEach-Object {[0m
+2026-03-22T23:20:02.3697373Z [36;1m  $_.Replace($moduleFolderPath, '').Trim('\').Trim('/')[0m
+2026-03-22T23:20:02.3697675Z [36;1m}[0m
+2026-03-22T23:20:02.3698049Z [36;1m[0m
+2026-03-22T23:20:02.3698297Z [36;1mWrite-Verbose 'Found all module test files' -Verbose[0m
+2026-03-22T23:20:02.3698724Z [36;1m$testFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }[0m
+2026-03-22T23:20:02.3699087Z [36;1m[0m
+2026-03-22T23:20:02.3699484Z [36;1m# Output values to be accessed by next jobs[0m
+2026-03-22T23:20:02.3699866Z [36;1m$deployCompressedOutput = $testFilePaths | ForEach-Object {[0m
+2026-03-22T23:20:02.3700195Z [36;1m  @{[0m
+2026-03-22T23:20:02.3700364Z [36;1m    path = $_[0m
+2026-03-22T23:20:02.3700614Z [36;1m    name = Split-Path (Split-Path $_) -Leaf[0m
+2026-03-22T23:20:02.3700981Z [36;1m    # if an .e2eignore file exists, the testcase will not be deployed[0m
+2026-03-22T23:20:02.3701529Z [36;1m    e2eIgnore = Test-Path (Join-Path $moduleFolderPath $_).Replace('main.test.bicep', '.e2eignore')[0m
+2026-03-22T23:20:02.3701971Z [36;1m  }[0m
+2026-03-22T23:20:02.3702154Z [36;1m} | ConvertTo-Json -Compress[0m
+2026-03-22T23:20:02.3702393Z [36;1m[0m
+2026-03-22T23:20:02.3702589Z [36;1m# Output values to be accessed by next jobs[0m
+2026-03-22T23:20:02.3702918Z [36;1mif($deployCompressedOutput -notmatch "\[.*\]") {[0m
+2026-03-22T23:20:02.3703291Z [36;1m  $deployCompressedOutput = "[$deployCompressedOutput]"[0m
+2026-03-22T23:20:02.3703598Z [36;1m}[0m
+2026-03-22T23:20:02.3703885Z [36;1mWrite-Verbose "Publishing output: $deployCompressedOutput" -Verbose[0m
+2026-03-22T23:20:02.3704454Z [36;1mWrite-Output ('{0}={1}' -f 'moduleTestFilePaths', $deployCompressedOutput) >> $env:GITHUB_OUTPUT[0m
+2026-03-22T23:20:02.3704890Z [36;1m[0m
+2026-03-22T23:20:02.3705062Z [36;1mWrite-Output '::endgroup::'[0m
+2026-03-22T23:20:02.3705292Z [36;1m[0m
+2026-03-22T23:20:02.3705498Z [36;1mWrite-Output '::group::Get PSRule test files'[0m
+2026-03-22T23:20:02.3705972Z [36;1m$psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '(defaults|waf-aligned)' }[0m
+2026-03-22T23:20:02.3706402Z [36;1m[0m
+2026-03-22T23:20:02.3706649Z [36;1mWrite-Verbose 'Found PSRule module test files' -Verbose[0m
+2026-03-22T23:20:02.3707114Z [36;1m$psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }[0m
+2026-03-22T23:20:02.3707476Z [36;1m[0m
+2026-03-22T23:20:02.3707682Z [36;1m# Output values to be accessed by next jobs[0m
+2026-03-22T23:20:02.3708064Z [36;1m$psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {[0m
+2026-03-22T23:20:02.3708421Z [36;1m  @{[0m
+2026-03-22T23:20:02.3708588Z [36;1m    path = $_[0m
+2026-03-22T23:20:02.3708987Z [36;1m    name = Split-Path (Split-Path $_) -Leaf[0m
+2026-03-22T23:20:02.3709384Z [36;1m  }[0m
+2026-03-22T23:20:02.3709581Z [36;1m} | ConvertTo-Json -Compress[0m
+2026-03-22T23:20:02.3709815Z [36;1m[0m
+2026-03-22T23:20:02.3710037Z [36;1mif($psRuleCompressedOutput -notmatch "\[.*\]") {[0m
+2026-03-22T23:20:02.3710419Z [36;1m  $psRuleCompressedOutput = "[$psRuleCompressedOutput]"[0m
+2026-03-22T23:20:02.3710722Z [36;1m}[0m
+2026-03-22T23:20:02.3711017Z [36;1mWrite-Verbose "Publishing output: $psRuleCompressedOutput" -Verbose[0m
+2026-03-22T23:20:02.3711623Z [36;1mWrite-Output ('{0}={1}' -f 'psRuleModuleTestFilePaths', $psRuleCompressedOutput) >> $env:GITHUB_OUTPUT[0m
+2026-03-22T23:20:02.3712079Z [36;1m[0m
+2026-03-22T23:20:02.3712259Z [36;1mWrite-Output '::endgroup::'[0m
+2026-03-22T23:20:02.3766389Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-03-22T23:20:02.3766655Z env:
+2026-03-22T23:20:02.3766871Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:20:02.3767261Z   workflowPath: .github/workflows/avm.res.azure-stack-hci.cluster.yml
+2026-03-22T23:20:02.3767608Z ##[endgroup]
+2026-03-22T23:20:03.0886951Z ##[group]Get all test files
+2026-03-22T23:20:03.1619517Z [33;1mVERBOSE: Found all module test files[0m
+2026-03-22T23:20:03.1644811Z [33;1mVERBOSE: - [tests/e2e/defaults/main.test.bicep][0m
+2026-03-22T23:20:03.1645760Z [33;1mVERBOSE: - [tests/e2e/waf-aligned/main.test.bicep][0m
+2026-03-22T23:20:03.1908267Z [33;1mVERBOSE: Publishing output: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep","e2eIgnore":false}][0m
+2026-03-22T23:20:03.1937733Z ##[endgroup]
+2026-03-22T23:20:03.1938656Z ##[group]Get PSRule test files
+2026-03-22T23:20:03.1971880Z [33;1mVERBOSE: Found PSRule module test files[0m
+2026-03-22T23:20:03.1976662Z [33;1mVERBOSE: - [tests/e2e/defaults/main.test.bicep][0m
+2026-03-22T23:20:03.1977762Z [33;1mVERBOSE: - [tests/e2e/waf-aligned/main.test.bicep][0m
+2026-03-22T23:20:03.2046379Z [33;1mVERBOSE: Publishing output: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep"}][0m
+2026-03-22T23:20:03.2059436Z ##[endgroup]
+2026-03-22T23:20:03.2635436Z Post job cleanup.
+2026-03-22T23:20:03.3484168Z [command]/usr/bin/git version
+2026-03-22T23:20:03.3524464Z git version 2.53.0
+2026-03-22T23:20:03.3562728Z Temporarily overriding HOME='/home/runner/work/_temp/4806c426-0216-4615-b6f9-1d560a76622f' before making global git config changes
+2026-03-22T23:20:03.3563902Z Adding repository directory to the temporary git global config as a safe directory
+2026-03-22T23:20:03.3568806Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:20:03.3611286Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-03-22T23:20:03.3672748Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-03-22T23:20:03.3935298Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-03-22T23:20:03.3962544Z http.https://github.com/.extraheader
+2026-03-22T23:20:03.3976353Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-03-22T23:20:03.4011493Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-03-22T23:20:03.4270317Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-03-22T23:20:03.4304685Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-03-22T23:20:03.4722946Z Evaluate and set job outputs
+2026-03-22T23:20:03.4729574Z Set output 'workflowInput'
+2026-03-22T23:20:03.4731750Z Set output 'moduleTestFilePaths'
+2026-03-22T23:20:03.4732884Z Set output 'psRuleModuleTestFilePaths'
+2026-03-22T23:20:03.4733243Z Set output 'modulePath'
+2026-03-22T23:20:03.4734043Z Cleaning up orphan processes

@@ -1,0 +1,40 @@
+﻿2026-04-04T19:55:20.3797701Z Current runner version: '2.333.1'
+2026-04-04T19:55:20.3822448Z ##[group]Runner Image Provisioner
+2026-04-04T19:55:20.3823397Z Hosted Compute Agent
+2026-04-04T19:55:20.3824028Z Version: 20260213.493
+2026-04-04T19:55:20.3824706Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-04T19:55:20.3825406Z Build Date: 2026-02-13T00:28:41Z
+2026-04-04T19:55:20.3826112Z Worker ID: {5dcf21be-2e88-42da-997a-509377101fa5}
+2026-04-04T19:55:20.3826818Z Azure Region: westus3
+2026-04-04T19:55:20.3827377Z ##[endgroup]
+2026-04-04T19:55:20.3828917Z ##[group]Operating System
+2026-04-04T19:55:20.3829555Z Ubuntu
+2026-04-04T19:55:20.3830129Z 24.04.4
+2026-04-04T19:55:20.3830645Z LTS
+2026-04-04T19:55:20.3831144Z ##[endgroup]
+2026-04-04T19:55:20.3831736Z ##[group]Runner Image
+2026-04-04T19:55:20.3832660Z Image: ubuntu-24.04
+2026-04-04T19:55:20.3833222Z Version: 20260329.72.1
+2026-04-04T19:55:20.3834351Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260329.72/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-04T19:55:20.3836120Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260329.72
+2026-04-04T19:55:20.3837092Z ##[endgroup]
+2026-04-04T19:55:20.3838222Z ##[group]GITHUB_TOKEN Permissions
+2026-04-04T19:55:20.3840023Z Contents: write
+2026-04-04T19:55:20.3840612Z Metadata: read
+2026-04-04T19:55:20.3841291Z ##[endgroup]
+2026-04-04T19:55:20.3843677Z Secret source: Actions
+2026-04-04T19:55:20.3844818Z Prepare workflow directory
+2026-04-04T19:55:20.4367026Z Prepare all required actions
+2026-04-04T19:55:20.4404684Z Getting action download info
+2026-04-04T19:55:20.7992851Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+2026-04-04T19:55:21.0145338Z Uses: chirag1603/bicep-registry-modules/.github/workflows/avm.template.module.yml@refs/heads/avm-res-azure-stack-hci-virtual-machine-instance (5cae08ebc970c947810fbe2387bd0e8e003c5265)
+2026-04-04T19:55:21.0150787Z ##[group] Inputs
+2026-04-04T19:55:21.0151799Z   workflowInput: {"staticValidation":"true","removeDeployment":"true","deploymentValidation":"true"}
+2026-04-04T19:55:21.0154160Z   moduleTestFilePaths: [{"e2eIgnore":false,"path":"tests/e2e/defaults/main.test.bicep","name":"defaults"},{"e2eIgnore":false,"path":"tests/e2e/waf-aligned/main.test.bicep","name":"waf-aligned"}]
+2026-04-04T19:55:21.0156367Z   psRuleModuleTestFilePaths: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep"}]
+2026-04-04T19:55:21.0157798Z   modulePath: avm/res/azure-stack-hci/virtual-machine-instance
+2026-04-04T19:55:21.0159092Z   staticValidation: true
+2026-04-04T19:55:21.0159799Z   deploymentValidation: true
+2026-04-04T19:55:21.0160413Z   removeDeployment: true
+2026-04-04T19:55:21.0161093Z ##[endgroup]
+2026-04-04T19:55:21.0161674Z Complete job name: Run / Deploy [waf-aligned]

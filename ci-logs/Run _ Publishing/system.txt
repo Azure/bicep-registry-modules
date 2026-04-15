@@ -1,0 +1,7 @@
+2026-03-23T05:27:16.8030000Z Evaluating call-workflow-passing-data.if
+2026-03-23T05:27:16.8030000Z Evaluating: success()
+2026-03-23T05:27:16.8030000Z Result: true
+2026-03-23T05:27:16.8030000Z Evaluating call-workflow-passing-data.job_publish_module.if
+2026-03-23T05:27:16.8030000Z Evaluating: (!cancelled() && (needs.job_module_static_validation.result == 'success') && (needs.job_module_deploy_validation.result == 'success') && (github.ref == 'refs/heads/main') && (github.repository == 'Azure/bicep-registry-modules'))
+2026-03-23T05:27:16.8030000Z Expanded: (!false && ('success' == 'success') && ('cancelled' == 'success') && (github.ref == 'refs/heads/main') && (github.repository == 'Azure/bicep-registry-modules'))
+2026-03-23T05:27:16.8030000Z Result: false

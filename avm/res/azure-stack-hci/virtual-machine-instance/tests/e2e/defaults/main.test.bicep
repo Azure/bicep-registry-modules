@@ -203,7 +203,7 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
     }
     osType: 'Windows'
     version: {
-      name: '' // Empty version defaults to latest available in Edge Marketplace
+      name: 'latest'
     }
   }
 }

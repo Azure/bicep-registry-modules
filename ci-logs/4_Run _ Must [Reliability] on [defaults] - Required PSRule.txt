@@ -1,0 +1,588 @@
+﻿2026-03-22T23:20:08.1951266Z Current runner version: '2.332.0'
+2026-03-22T23:20:08.1976433Z ##[group]Runner Image Provisioner
+2026-03-22T23:20:08.1977799Z Hosted Compute Agent
+2026-03-22T23:20:08.1978471Z Version: 20260213.493
+2026-03-22T23:20:08.1979091Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-03-22T23:20:08.1979787Z Build Date: 2026-02-13T00:28:41Z
+2026-03-22T23:20:08.1980511Z Worker ID: {e4b1dcc6-f3ff-481b-a0cc-ba8326f33392}
+2026-03-22T23:20:08.1981219Z Azure Region: westcentralus
+2026-03-22T23:20:08.1981886Z ##[endgroup]
+2026-03-22T23:20:08.1983522Z ##[group]Operating System
+2026-03-22T23:20:08.1984127Z Ubuntu
+2026-03-22T23:20:08.1984677Z 24.04.3
+2026-03-22T23:20:08.1985110Z LTS
+2026-03-22T23:20:08.1985578Z ##[endgroup]
+2026-03-22T23:20:08.1986144Z ##[group]Runner Image
+2026-03-22T23:20:08.1987058Z Image: ubuntu-24.04
+2026-03-22T23:20:08.1987594Z Version: 20260309.50.1
+2026-03-22T23:20:08.1988884Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260309.50/images/ubuntu/Ubuntu2404-Readme.md
+2026-03-22T23:20:08.1990419Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260309.50
+2026-03-22T23:20:08.1991348Z ##[endgroup]
+2026-03-22T23:20:08.1992365Z ##[group]GITHUB_TOKEN Permissions
+2026-03-22T23:20:08.1994498Z Contents: write
+2026-03-22T23:20:08.1995084Z Metadata: read
+2026-03-22T23:20:08.1995590Z ##[endgroup]
+2026-03-22T23:20:08.1998071Z Secret source: Actions
+2026-03-22T23:20:08.1999048Z Prepare workflow directory
+2026-03-22T23:20:08.2531042Z Prepare all required actions
+2026-03-22T23:20:08.2570651Z Getting action download info
+2026-03-22T23:20:08.6101109Z Download action repository 'actions/checkout@v5' (SHA:93cb6efe18208431cddfb8368fd83d5badbf9bfd)
+2026-03-22T23:20:08.8478526Z Uses: chirag1603/bicep-registry-modules/.github/workflows/avm.template.module.yml@refs/heads/avm-res-azure-stack-hci-cluster (394450ca35943dae6637af14c828745673244249)
+2026-03-22T23:20:08.8484141Z ##[group] Inputs
+2026-03-22T23:20:08.8485120Z   workflowInput: {"removeDeployment":"true","staticValidation":"true","deploymentValidation":"true"}
+2026-03-22T23:20:08.8487061Z   moduleTestFilePaths: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep","e2eIgnore":false},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep","e2eIgnore":false}]
+2026-03-22T23:20:08.8489296Z   psRuleModuleTestFilePaths: [{"name":"defaults","path":"tests/e2e/defaults/main.test.bicep"},{"name":"waf-aligned","path":"tests/e2e/waf-aligned/main.test.bicep"}]
+2026-03-22T23:20:08.8490583Z   modulePath: avm/res/azure-stack-hci/cluster
+2026-03-22T23:20:08.8491704Z   staticValidation: true
+2026-03-22T23:20:08.8492422Z   deploymentValidation: true
+2026-03-22T23:20:08.8493024Z   removeDeployment: true
+2026-03-22T23:20:08.8493528Z ##[endgroup]
+2026-03-22T23:20:08.8494296Z Complete job name: Run / Must [Reliability] on [defaults] - Required PSRule
+2026-03-22T23:20:08.9245575Z ##[group]Run actions/checkout@v5
+2026-03-22T23:20:08.9246435Z with:
+2026-03-22T23:20:08.9247080Z   repository: chirag1603/bicep-registry-modules
+2026-03-22T23:20:08.9247856Z   token: ***
+2026-03-22T23:20:08.9248237Z   ssh-strict: true
+2026-03-22T23:20:08.9248629Z   ssh-user: git
+2026-03-22T23:20:08.9249036Z   persist-credentials: true
+2026-03-22T23:20:08.9249543Z   clean: true
+2026-03-22T23:20:08.9249999Z   sparse-checkout-cone-mode: true
+2026-03-22T23:20:08.9250532Z   fetch-depth: 1
+2026-03-22T23:20:08.9250976Z   fetch-tags: false
+2026-03-22T23:20:08.9251435Z   show-progress: true
+2026-03-22T23:20:08.9251894Z   lfs: false
+2026-03-22T23:20:08.9252323Z   submodules: false
+2026-03-22T23:20:08.9252788Z   set-safe-directory: true
+2026-03-22T23:20:08.9253527Z env:
+2026-03-22T23:20:08.9254433Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:08.9254901Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:08.9255352Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:08.9255845Z ##[endgroup]
+2026-03-22T23:20:09.0213845Z Syncing repository: chirag1603/bicep-registry-modules
+2026-03-22T23:20:09.0215603Z ##[group]Getting Git version info
+2026-03-22T23:20:09.0217247Z Working directory is '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-03-22T23:20:09.0218446Z [command]/usr/bin/git version
+2026-03-22T23:20:09.0284220Z git version 2.53.0
+2026-03-22T23:20:09.0305935Z ##[endgroup]
+2026-03-22T23:20:09.0320303Z Temporarily overriding HOME='/home/runner/work/_temp/a070a8e5-b811-4888-8c1d-5b3f451541d5' before making global git config changes
+2026-03-22T23:20:09.0321687Z Adding repository directory to the temporary git global config as a safe directory
+2026-03-22T23:20:09.0326159Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:20:09.0367069Z Deleting the contents of '/home/runner/work/bicep-registry-modules/bicep-registry-modules'
+2026-03-22T23:20:09.0371147Z ##[group]Initializing the repository
+2026-03-22T23:20:09.0375899Z [command]/usr/bin/git init /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:20:09.0478194Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-03-22T23:20:09.0479708Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-03-22T23:20:09.0480663Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-03-22T23:20:09.0481407Z hint: call:
+2026-03-22T23:20:09.0481788Z hint:
+2026-03-22T23:20:09.0482287Z hint: 	git config --global init.defaultBranch <name>
+2026-03-22T23:20:09.0482899Z hint:
+2026-03-22T23:20:09.0483599Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-03-22T23:20:09.0485304Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-03-22T23:20:09.0486361Z hint:
+2026-03-22T23:20:09.0487578Z hint: 	git branch -m <name>
+2026-03-22T23:20:09.0488090Z hint:
+2026-03-22T23:20:09.0488779Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-03-22T23:20:09.0490394Z Initialized empty Git repository in /home/runner/work/bicep-registry-modules/bicep-registry-modules/.git/
+2026-03-22T23:20:09.0495711Z [command]/usr/bin/git remote add origin https://github.com/chirag1603/bicep-registry-modules
+2026-03-22T23:20:09.0532466Z ##[endgroup]
+2026-03-22T23:20:09.0533198Z ##[group]Disabling automatic garbage collection
+2026-03-22T23:20:09.0536316Z [command]/usr/bin/git config --local gc.auto 0
+2026-03-22T23:20:09.0569046Z ##[endgroup]
+2026-03-22T23:20:09.0570306Z ##[group]Setting up auth
+2026-03-22T23:20:09.0576309Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-03-22T23:20:09.0609635Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-03-22T23:20:09.0968766Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-03-22T23:20:09.1000946Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-03-22T23:20:09.1233886Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-03-22T23:20:09.1267319Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-03-22T23:20:09.1501220Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-03-22T23:20:09.1537640Z ##[endgroup]
+2026-03-22T23:20:09.1538471Z ##[group]Fetching the repository
+2026-03-22T23:20:09.1547304Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +394450ca35943dae6637af14c828745673244249:refs/remotes/origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:20:12.4591736Z From https://github.com/chirag1603/bicep-registry-modules
+2026-03-22T23:20:12.4594284Z  * [new ref]         394450ca35943dae6637af14c828745673244249 -> origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:20:12.4629885Z ##[endgroup]
+2026-03-22T23:20:12.4631246Z ##[group]Determining the checkout info
+2026-03-22T23:20:12.4633152Z ##[endgroup]
+2026-03-22T23:20:12.4638253Z [command]/usr/bin/git sparse-checkout disable
+2026-03-22T23:20:12.4684437Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-03-22T23:20:12.4725840Z ##[group]Checking out the ref
+2026-03-22T23:20:12.4729158Z [command]/usr/bin/git checkout --progress --force -B avm-res-azure-stack-hci-cluster refs/remotes/origin/avm-res-azure-stack-hci-cluster
+2026-03-22T23:20:12.9044179Z Switched to a new branch 'avm-res-azure-stack-hci-cluster'
+2026-03-22T23:20:12.9046311Z branch 'avm-res-azure-stack-hci-cluster' set up to track 'origin/avm-res-azure-stack-hci-cluster'.
+2026-03-22T23:20:12.9080676Z ##[endgroup]
+2026-03-22T23:20:12.9127976Z [command]/usr/bin/git log -1 --format=%H
+2026-03-22T23:20:12.9152184Z 394450ca35943dae6637af14c828745673244249
+2026-03-22T23:20:12.9418539Z Prepare all required actions
+2026-03-22T23:20:12.9469433Z ##[group]Run ./.github/actions/templates/avm-setEnvironment
+2026-03-22T23:20:12.9469832Z with:
+2026-03-22T23:20:12.9470064Z   removeDeployment: true
+2026-03-22T23:20:12.9470309Z env:
+2026-03-22T23:20:12.9470970Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:12.9471274Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:12.9471554Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:12.9471851Z ##[endgroup]
+2026-03-22T23:20:12.9560119Z ##[group]Run # Grouping task logs
+2026-03-22T23:20:12.9560540Z [36;1m# Grouping task logs[0m
+2026-03-22T23:20:12.9560855Z [36;1mWrite-Output '::group::Setup agent'[0m
+2026-03-22T23:20:12.9561181Z [36;1m[0m
+2026-03-22T23:20:12.9561496Z [36;1mWrite-Verbose "Caller job id: job_psrule_must" -Verbose[0m
+2026-03-22T23:20:12.9561873Z [36;1m[0m
+2026-03-22T23:20:12.9562118Z [36;1m# Load used functions[0m
+2026-03-22T23:20:12.9562720Z [36;1m. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')[0m
+2026-03-22T23:20:12.9563284Z [36;1m[0m
+2026-03-22T23:20:12.9563552Z [36;1m# Define PS modules to install on the runner[0m
+2026-03-22T23:20:12.9563878Z [36;1m$modules = @([0m
+2026-03-22T23:20:12.9564140Z [36;1m    @{ Name = 'Az.Accounts' },[0m
+2026-03-22T23:20:12.9564442Z [36;1m    @{ Name = 'Az.Resources' },[0m
+2026-03-22T23:20:12.9564788Z [36;1m    @{ Name = 'powershell-yaml'; Version = '0.4.2'}[0m
+2026-03-22T23:20:12.9565118Z [36;1m)[0m
+2026-03-22T23:20:12.9565322Z [36;1m[0m
+2026-03-22T23:20:12.9565771Z [36;1m# Additional PS modules need to be installed for the deployment validation removal step in case it is enabled[0m
+2026-03-22T23:20:12.9566464Z [36;1mif (('job_psrule_must' -eq 'job_module_deploy_validation') -and ('true' -eq 'true')) {[0m
+2026-03-22T23:20:12.9567086Z [36;1m  $modules += @([0m
+2026-03-22T23:20:12.9567374Z [36;1m    @{ Name = 'Az.CognitiveServices' },[0m
+2026-03-22T23:20:12.9567691Z [36;1m    @{ Name = 'Az.Compute' },[0m
+2026-03-22T23:20:12.9568001Z [36;1m    @{ Name = 'Az.DataProtection' },[0m
+2026-03-22T23:20:12.9568312Z [36;1m    @{ Name = 'Az.KeyVault' },[0m
+2026-03-22T23:20:12.9568640Z [36;1m    @{ Name = 'Az.MachineLearningServices' },[0m
+2026-03-22T23:20:12.9568962Z [36;1m    @{ Name = 'Az.Monitor' },[0m
+2026-03-22T23:20:12.9569275Z [36;1m    @{ Name = 'Az.OperationalInsights' },[0m
+2026-03-22T23:20:12.9569609Z [36;1m    @{ Name = 'Az.RecoveryServices' },[0m
+2026-03-22T23:20:12.9569926Z [36;1m    @{ Name = 'Az.Subscription' }[0m
+2026-03-22T23:20:12.9570210Z [36;1m  )[0m
+2026-03-22T23:20:12.9570421Z [36;1m}[0m
+2026-03-22T23:20:12.9570622Z [36;1m[0m
+2026-03-22T23:20:12.9570926Z [36;1m# Additional PS modules need to be installed for the publish job[0m
+2026-03-22T23:20:12.9571378Z [36;1mif ('job_psrule_must' -eq 'job_publish_module') {[0m
+2026-03-22T23:20:12.9571709Z [36;1m  $modules += @([0m
+2026-03-22T23:20:12.9571983Z [36;1m    @{ Name = 'Az.ContainerRegistry' }[0m
+2026-03-22T23:20:12.9572275Z [36;1m  )[0m
+2026-03-22T23:20:12.9572689Z [36;1m}[0m
+2026-03-22T23:20:12.9572889Z [36;1m[0m
+2026-03-22T23:20:12.9573088Z [36;1m# Set agent up[0m
+2026-03-22T23:20:12.9573386Z [36;1mSet-EnvironmentOnAgent -PSModules $modules[0m
+2026-03-22T23:20:12.9573701Z [36;1m[0m
+2026-03-22T23:20:12.9573920Z [36;1mWrite-Output '::endgroup::'[0m
+2026-03-22T23:20:12.9630043Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-03-22T23:20:12.9630383Z env:
+2026-03-22T23:20:12.9630952Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:12.9631238Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:12.9631512Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:12.9631815Z ##[endgroup]
+2026-03-22T23:20:13.9240393Z ##[group]Setup agent
+2026-03-22T23:20:13.9281833Z [33;1mVERBOSE: Caller job id: job_psrule_must[0m
+2026-03-22T23:20:14.0045816Z [33;1mVERBOSE: Powershell version:[0m
+2026-03-22T23:20:14.0118347Z 
+2026-03-22T23:20:14.0123472Z [32;1mName                          [0m[32;1m Value[0m
+2026-03-22T23:20:14.0125280Z [32;1m----                          [0m [32;1m-----[0m
+2026-03-22T23:20:14.0126027Z PSVersion                      7.4.13
+2026-03-22T23:20:14.0126622Z PSEdition                      Core
+2026-03-22T23:20:14.0127315Z GitCommitId                    7.4.13
+2026-03-22T23:20:14.0127803Z OS                             Ubuntu 24.04.3 LTS
+2026-03-22T23:20:14.0128299Z Platform                       Unix
+2026-03-22T23:20:14.0128990Z PSCompatibleVersions           {1.0, 2.0, 3.0, 4.0…}
+2026-03-22T23:20:14.0129455Z PSRemotingProtocolVersion      2.3
+2026-03-22T23:20:14.0129792Z SerializationVersion           1.1.0.1
+2026-03-22T23:20:14.0130112Z WSManStackVersion              3.0
+2026-03-22T23:20:14.0130481Z [33;1mVERBOSE: Az CLI version:[0m
+2026-03-22T23:20:17.9394471Z azure-cli                         2.84.0
+2026-03-22T23:20:17.9399177Z 
+2026-03-22T23:20:17.9399423Z core                              2.84.0
+2026-03-22T23:20:17.9400054Z telemetry                          1.1.0
+2026-03-22T23:20:17.9400426Z 
+2026-03-22T23:20:17.9400676Z Extensions:
+2026-03-22T23:20:17.9401040Z azure-devops                       1.0.2
+2026-03-22T23:20:17.9401361Z 
+2026-03-22T23:20:17.9401494Z Dependencies:
+2026-03-22T23:20:17.9401848Z msal                            1.35.0b1
+2026-03-22T23:20:17.9402328Z azure-mgmt-resource               24.0.0
+2026-03-22T23:20:17.9402649Z 
+2026-03-22T23:20:17.9402833Z Python location '/opt/az/bin/python3'
+2026-03-22T23:20:17.9403406Z Config directory '/home/runner/.azure'
+2026-03-22T23:20:17.9403998Z Extensions directory '/opt/az/azcliextensions'
+2026-03-22T23:20:17.9404424Z 
+2026-03-22T23:20:17.9404693Z Python (Linux) 3.13.11 (main, Feb 25 2026, 02:29:34) [GCC 13.3.0]
+2026-03-22T23:20:17.9405166Z 
+2026-03-22T23:20:17.9405378Z Legal docs and information: aka.ms/AzureCliLegal
+2026-03-22T23:20:17.9405769Z 
+2026-03-22T23:20:17.9405780Z 
+2026-03-22T23:20:17.9405934Z Your CLI is up-to-date.
+2026-03-22T23:20:17.9959960Z [33;1mVERBOSE: Preinstalled Bicep CLI version:[0m
+2026-03-22T23:20:19.3219953Z Bicep CLI version 0.41.2 (3e403ea7c1)
+2026-03-22T23:20:19.3317563Z [33;1mVERBOSE: Install latest Bicep CLI[0m
+2026-03-22T23:20:19.3467045Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-03-22T23:20:19.3468327Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-03-22T23:20:19.3469181Z 
+2026-03-22T23:20:19.5311144Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-22T23:20:19.5311996Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-22T23:20:19.6510379Z 
+2026-03-22T23:20:19.6510983Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-03-22T23:20:20.2047617Z 
+2026-03-22T23:20:20.2441243Z  90 91.8M   90 83.4M    0     0  97.2M      0 --:--:-- --:--:-- --:--:-- 97.2M
+2026-03-22T23:20:20.2442174Z 100 91.8M  100 91.8M    0     0   102M      0 --:--:-- --:--:-- --:--:--  216M
+2026-03-22T23:20:20.3025386Z [33;1mVERBOSE: Bicep CLI version after install:[0m
+2026-03-22T23:20:20.6967418Z Bicep CLI version 0.41.2 (3e403ea7c1)
+2026-03-22T23:20:20.7060509Z [33;1mVERBOSE: AZ CLI extensions:[0m
+2026-03-22T23:20:28.1145818Z 
+2026-03-22T23:20:28.1146439Z [32;1mname         : [0mazure-devops
+2026-03-22T23:20:28.1147309Z [32;1mversion      : [0m1.0.2
+2026-03-22T23:20:28.1147832Z [32;1mpreview      : [0mFalse
+2026-03-22T23:20:28.1148336Z [32;1mexperimental : [0mFalse
+2026-03-22T23:20:28.1148666Z 
+2026-03-22T23:20:28.1149829Z [33;1mVERBOSE: Try installing:[0m
+2026-03-22T23:20:28.1190400Z [33;1mVERBOSE: - 1. [Az.Accounts][0m
+2026-03-22T23:20:28.1197979Z [33;1mVERBOSE: - 2. [Az.Resources][0m
+2026-03-22T23:20:28.1199965Z [33;1mVERBOSE: - 3. [powershell-yaml][0m
+2026-03-22T23:20:28.1534626Z [33;1mVERBOSE: Found pre-installed modules in path [/usr/share/az_14.6.0]. Adding it PSModulePath environment variable.[0m
+2026-03-22T23:20:32.4316647Z [33;1mVERBOSE: Install-CustomModule start[0m
+2026-03-22T23:20:32.4320967Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:32.4345088Z [33;1mVERBOSE: HANDLING MODULE [1/3] [Az.Accounts] [0m
+2026-03-22T23:20:32.4347908Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:36.6181015Z [33;1mVERBOSE: Module [Az.Accounts] already installed with version [5.3.3][0m
+2026-03-22T23:20:36.6182033Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:36.6187925Z [33;1mVERBOSE: HANDLING MODULE [2/3] [Az.Resources] [0m
+2026-03-22T23:20:36.6188677Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:37.0537649Z [33;1mVERBOSE: Module [Az.Resources] already installed with version [8.1.1][0m
+2026-03-22T23:20:37.0538574Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:37.0539341Z [33;1mVERBOSE: HANDLING MODULE [3/3] [powershell-yaml] [0m
+2026-03-22T23:20:37.0540019Z [33;1mVERBOSE: =====================[0m
+2026-03-22T23:20:37.2954454Z [33;1mVERBOSE: Install module [powershell-yaml] with version [0.4.2][0m
+2026-03-22T23:20:38.5596282Z [33;1mVERBOSE: Module [powershell-yaml] is installed with version [0.4.2][0m
+2026-03-22T23:20:38.5597157Z [33;1mVERBOSE: Install-CustomModule end[0m
+2026-03-22T23:20:38.5599626Z ##[endgroup]
+2026-03-22T23:20:38.5609574Z 
+2026-03-22T23:20:38.6596573Z Prepare all required actions
+2026-03-22T23:20:38.6597236Z Getting action download info
+2026-03-22T23:20:38.8511758Z Download action repository 'azure/powershell@v2' (SHA:53dd145408794f7e80f97cfcca04155c85234709)
+2026-03-22T23:20:40.9302839Z Download action repository 'microsoft/ps-rule@v2.9.0' (SHA:46451b8f5258c41beb5ae69ed7190ccbba84112c)
+2026-03-22T23:20:41.4159578Z ##[group]Run ./.github/actions/templates/avm-validateModulePSRule
+2026-03-22T23:20:41.4159910Z with:
+2026-03-22T23:20:41.4160237Z   templateFilePath: avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep
+2026-03-22T23:20:41.4161014Z   managementGroupId: ***
+2026-03-22T23:20:41.4161309Z   psrulePath: /utilities/pipelines/staticValidation/psrule
+2026-03-22T23:20:41.4161647Z   psruleBaseline: Azure.Pillar.Reliability
+2026-03-22T23:20:41.4161902Z   softFailure: false
+2026-03-22T23:20:41.4162138Z   skipPassedRulesReport: $false
+2026-03-22T23:20:41.4162363Z env:
+2026-03-22T23:20:41.4162836Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:41.4163066Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:41.4163288Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:41.4163540Z ##[endgroup]
+2026-03-22T23:20:41.4228019Z ##[group]Run azure/powershell@v2
+2026-03-22T23:20:41.4228271Z with:
+2026-03-22T23:20:41.4228448Z   azPSVersion: latest
+2026-03-22T23:20:41.4235822Z   inlineScript: # Grouping task logs
+Write-Output '::group::Replace tokens in template file'
+
+# Load used functions
+. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+
+$templateFilePath = Join-Path $env:GITHUB_WORKSPACE 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep'
+
+# Get target files
+$targetFileList = @(
+  $templateFilePath
+)
+
+# Add all module template files as they may contain tokens
+$targetFileList += (Get-LocallyReferencedFileList -FilePath $templateFilePath)
+$targetFileList = $targetFileList | Sort-Object -Unique
+
+# Construct Token Function Input
+$ConvertTokensInputs = @{
+  FilePathList = $targetFileList
+  Tokens       = @{}
+}
+
+# Add enforced tokens
+$ConvertTokensInputs.Tokens += @{
+  subscriptionId    = ''
+  managementGroupId = '***'
+  tenantId          = ''
+}
+
+# Add local (source control) tokens
+$tokenMap = @{}
+foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
+  $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
+}
+Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
+$ConvertTokensInputs.Tokens += $tokenMap
+
+# Swap 'namePrefix' token if empty and provided as a GitHub secret
+if([String]::IsNullOrEmpty($ConvertTokensInputs.Tokens['namePrefix'])){
+  Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
+  $ConvertTokensInputs.Tokens['namePrefix'] = '***'
+}
+
+# Add custom tokens (passed in via the pipeline)
+if(-not [String]::IsNullOrEmpty('')) {
+  $customTokens = '' | ConvertFrom-Json -AsHashTable
+  Write-Verbose ('Using custom parameter file tokens [{0}]' -f ($customTokens.Keys -join ', ')) -Verbose
+  $ConvertTokensInputs.Tokens += $customTokens
+}
+
+Write-Verbose "Convert Tokens Input:`n $($ConvertTokensInputs | ConvertTo-Json -Depth 10)" -Verbose
+
+# Invoke Token Replacement Functionality [For Module]
+$null = Convert-TokensInFileList @ConvertTokensInputs
+
+Write-Output '::endgroup::'
+
+2026-03-22T23:20:41.4243337Z   errorActionPreference: Stop
+2026-03-22T23:20:41.4243571Z   failOnStandardError: false
+2026-03-22T23:20:41.4243901Z   githubToken: ***
+2026-03-22T23:20:41.4244081Z env:
+2026-03-22T23:20:41.4244513Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:41.4244726Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:41.4244940Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:41.4245188Z ##[endgroup]
+2026-03-22T23:20:41.4875550Z Validating inputs
+2026-03-22T23:20:41.4900299Z Module Az latest installed from hostedAgentFolder
+2026-03-22T23:20:41.4901071Z Initializing Az Module
+2026-03-22T23:20:41.4938080Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command Test-Path (Join-Path /usr/share az_*)
+2026-03-22T23:20:41.4973854Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command $env:PSModulePath
+2026-03-22T23:20:41.7425099Z /home/runner/.local/share/powershell/Modules:/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0
+2026-03-22T23:20:41.8029638Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command try {
+2026-03-22T23:20:41.8030366Z             $ErrorActionPreference = "Stop"
+2026-03-22T23:20:41.8030885Z             $WarningPreference = "SilentlyContinue"
+2026-03-22T23:20:41.8031377Z             $output = @{}
+2026-03-22T23:20:41.8032134Z             $data = Get-Module -Name Az -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+2026-03-22T23:20:41.8033075Z             $output['AzVersion'] = $data.Version.ToString()
+2026-03-22T23:20:41.8033683Z             $output['Success'] = "true"
+2026-03-22T23:20:41.8034094Z         }
+2026-03-22T23:20:41.8034368Z         catch {
+2026-03-22T23:20:41.8034711Z             $output['Error'] = $_.exception.Message
+2026-03-22T23:20:41.8035162Z         }
+2026-03-22T23:20:41.8035478Z         return ConvertTo-Json $output
+2026-03-22T23:20:41.8484204Z True
+2026-03-22T23:20:55.7639549Z {
+2026-03-22T23:20:55.8124987Z   "Success": "true",
+2026-03-22T23:20:55.8125292Z   "AzVersion": "14.6.0"
+2026-03-22T23:20:55.8125532Z }
+2026-03-22T23:20:55.8128891Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command $env:PSModulePath
+2026-03-22T23:20:55.9987824Z /usr/share:/home/runner/.local/share/powershell/Modules:/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0
+2026-03-22T23:20:56.0417248Z Initializing Az Module Complete
+2026-03-22T23:20:56.0417793Z Running Az PowerShell Script
+2026-03-22T23:20:56.0433587Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command /home/runner/work/_temp/9e77ca48-5441-43f9-9d70-978bbd1b5446.ps1
+2026-03-22T23:20:57.0584587Z ##[group]Replace tokens in template file
+2026-03-22T23:20:57.9387359Z [33;1mVERBOSE: Using local tokens [][0m
+2026-03-22T23:20:57.9430343Z [33;1mVERBOSE: Using [namePrefix] token from GitHub[0m
+2026-03-22T23:20:57.9670491Z [33;1mVERBOSE: Convert Tokens Input:
+2026-03-22T23:20:57.9671059Z  {
+2026-03-22T23:20:57.9671440Z   "Tokens": {
+2026-03-22T23:20:57.9672023Z     "namePrefix": "***",
+2026-03-22T23:20:57.9672464Z     "tenantId": "",
+2026-03-22T23:20:57.9673572Z     "managementGroupId": "***",
+2026-03-22T23:20:57.9674151Z     "subscriptionId": ""
+2026-03-22T23:20:57.9674629Z   },
+2026-03-22T23:20:57.9674970Z   "FilePathList": [
+2026-03-22T23:20:57.9675948Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/deployment-setting/main.bicep",
+2026-03-22T23:20:57.9677415Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/main.bicep",
+2026-03-22T23:20:57.9678631Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/modules/deployment-setting.bicep",
+2026-03-22T23:20:57.9679674Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/modules/secrets.bicep",
+2026-03-22T23:20:57.9680678Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep",
+2026-03-22T23:20:57.9682033Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/e2e-template-assets/module-specific/azure-stack-hci/azureStackHCIClusterPreqs/ashciARBSPRoleAssignment.bicep",
+2026-03-22T23:20:57.9683557Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/e2e-template-assets/module-specific/azure-stack-hci/azureStackHCIClusterPreqs/ashciPrereqs.bicep",
+2026-03-22T23:20:57.9685333Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/e2e-template-assets/module-specific/azure-stack-hci/azureStackHCIHost/hciHostDeployment.bicep",
+2026-03-22T23:20:57.9686937Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/e2e-template-assets/module-specific/azure-stack-hci/azureStackHCIHost/modules/subscriptionRoleAssignment.bicep",
+2026-03-22T23:20:57.9688393Z     "/home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/dependencies.bicep"
+2026-03-22T23:20:57.9689209Z   ]
+2026-03-22T23:20:57.9689463Z }[0m
+2026-03-22T23:20:58.0520314Z ##[endgroup]
+2026-03-22T23:20:58.1052164Z Script execution Complete
+2026-03-22T23:20:58.1150859Z ##[group]Run microsoft/ps-rule@v2.9.0
+2026-03-22T23:20:58.1151106Z with:
+2026-03-22T23:20:58.1151287Z   modules: PSRule.Rules.Azure
+2026-03-22T23:20:58.1151525Z   prerelease: true
+2026-03-22T23:20:58.1151730Z   baseline: Azure.Pillar.Reliability
+2026-03-22T23:20:58.1152140Z   inputPath: avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep
+2026-03-22T23:20:58.1152519Z   outputFormat: Csv
+2026-03-22T23:20:58.1152902Z   outputPath: avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv
+2026-03-22T23:20:58.1153687Z   option: /home/runner/work/bicep-registry-modules/bicep-registry-modules//utilities/pipelines/staticValidation/psrule/ps-rule.yaml
+2026-03-22T23:20:58.1154350Z   source: /utilities/pipelines/staticValidation/psrule/.ps-rule/
+2026-03-22T23:20:58.1154671Z   summary: false
+2026-03-22T23:20:58.1154850Z   inputType: repository
+2026-03-22T23:20:58.1155056Z   repository: PSGallery
+2026-03-22T23:20:58.1155242Z env:
+2026-03-22T23:20:58.1155749Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:58.1155961Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:58.1156181Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:58.1156578Z   AZURE_HTTP_USER_AGENT: 
+2026-03-22T23:20:58.1157116Z   AZUREPS_HOST_ENVIRONMENT: 
+2026-03-22T23:20:58.1157383Z   CONTINUE_ON_ERROR: false
+2026-03-22T23:20:58.1157590Z ##[endgroup]
+2026-03-22T23:20:58.1175605Z ##[group]Run /home/runner/work/_actions/microsoft/ps-rule/v2.9.0/powershell.ps1 -InputType 'repository' -InputPath 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep' -Modules 'PSRule.Rules.Azure' -Source '/utilities/pipelines/staticValidation/psrule/.ps-rule/' -Baseline 'Azure.Pillar.Reliability' -Conventions '' -Option '/home/runner/work/bicep-registry-modules/bicep-registry-modules//utilities/pipelines/staticValidation/psrule/ps-rule.yaml' -Outcome '' -OutputFormat 'Csv' -OutputPath 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv' -Path '' -PreRelease 'true' -Repository 'PSGallery' -Summary 'false' -Version ''
+2026-03-22T23:20:58.1180532Z [36;1m/home/runner/work/_actions/microsoft/ps-rule/v2.9.0/powershell.ps1 -InputType 'repository' -InputPath 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep' -Modules 'PSRule.Rules.Azure' -Source '/utilities/pipelines/staticValidation/psrule/.ps-rule/' -Baseline 'Azure.Pillar.Reliability' -Conventions '' -Option '/home/runner/work/bicep-registry-modules/bicep-registry-modules//utilities/pipelines/staticValidation/psrule/ps-rule.yaml' -Outcome '' -OutputFormat 'Csv' -OutputPath 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv' -Path '' -PreRelease 'true' -Repository 'PSGallery' -Summary 'false' -Version ''[0m
+2026-03-22T23:20:58.1232954Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-03-22T23:20:58.1233213Z env:
+2026-03-22T23:20:58.1233689Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:20:58.1233923Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:20:58.1234153Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:20:58.1234407Z   AZURE_HTTP_USER_AGENT: 
+2026-03-22T23:20:58.1234614Z   AZUREPS_HOST_ENVIRONMENT: 
+2026-03-22T23:20:58.1234839Z   CONTINUE_ON_ERROR: false
+2026-03-22T23:20:58.1235036Z ##[endgroup]
+2026-03-22T23:20:58.4847942Z [info] Using repository: PSGallery
+2026-03-22T23:21:00.0296531Z [info] Installing PSRule: 2.9.0
+2026-03-22T23:21:02.8828436Z 
+2026-03-22T23:21:02.8857787Z > Checking module: PSRule.Rules.Azure
+2026-03-22T23:21:03.3560117Z   - Installing module
+2026-03-22T23:21:07.9760868Z   - Using version: 1.47.0
+2026-03-22T23:21:08.0187620Z 
+2026-03-22T23:21:08.0188476Z [info] Using Version: 2.9.0
+2026-03-22T23:21:08.0189897Z [info] Using Action: __self_2
+2026-03-22T23:21:08.0191290Z [info] Using Workspace: /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:21:08.0196530Z [info] Using PWD: /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:21:08.0197695Z [info] Using Path: /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:21:08.0199176Z [info] Using Source: /home/runner/work/bicep-registry-modules/bicep-registry-modules/utilities/pipelines/staticValidation/psrule/.ps-rule/
+2026-03-22T23:21:08.0200463Z [info] Using Baseline: Azure.Pillar.Reliability
+2026-03-22T23:21:08.0201037Z [info] Using Conventions: 
+2026-03-22T23:21:08.0202029Z [info] Using InputType: repository
+2026-03-22T23:21:08.0203831Z [info] Using InputPath: /home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep
+2026-03-22T23:21:08.0205666Z [info] Using Option: /home/runner/work/bicep-registry-modules/bicep-registry-modules//utilities/pipelines/staticValidation/psrule/ps-rule.yaml
+2026-03-22T23:21:08.0207051Z [info] Using Outcome: 
+2026-03-22T23:21:08.0207430Z [info] Using OutputFormat: Csv
+2026-03-22T23:21:08.0209482Z [info] Using OutputPath: avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv
+2026-03-22T23:21:08.0210589Z [info] Using Summary: false
+2026-03-22T23:21:08.0429478Z 
+2026-03-22T23:21:08.0430166Z ---
+2026-03-22T23:21:08.3159153Z     ____  _____ ____        __
+2026-03-22T23:21:08.3159968Z    / __ \/ ___// __ \__  __/ /__
+2026-03-22T23:21:08.3160347Z   / /_/ /\__ \/ /_/ / / / / / _ \
+2026-03-22T23:21:08.3160751Z  / ____/___/ / _, _/ /_/ / /  __/
+2026-03-22T23:21:08.3161001Z /_/    /____/_/ |_|\__,_/_/\___/
+2026-03-22T23:21:08.3161163Z 
+2026-03-22T23:21:08.3164453Z Using PSRule v2.9.0
+2026-03-22T23:21:08.3164879Z Using PSRule.Rules.Azure v1.47.0
+2026-03-22T23:21:08.3165188Z 
+2026-03-22T23:21:08.3168838Z ----------------------------
+2026-03-22T23:21:08.3169368Z Explore documentation: https://aka.ms/ps-rule
+2026-03-22T23:21:08.3170090Z Contribute and find source: https://github.com/microsoft/PSRule
+2026-03-22T23:21:08.3176970Z Report issues: https://github.com/microsoft/PSRule/issues
+2026-03-22T23:21:08.3177580Z PSRule.Rules.Azure: https://aka.ms/ps-rule-azure
+2026-03-22T23:21:08.3177981Z ----------------------------
+2026-03-22T23:21:08.3178221Z 
+2026-03-22T23:21:08.3178553Z From repository: https://github.com/chirag1603/bicep-registry-modules
+2026-03-22T23:21:08.3179208Z   on : avm-res-azure-stack-hci-cluster
+2026-03-22T23:21:08.3179718Z   at : 394450ca35943dae6637af14c828745673244249
+2026-03-22T23:21:08.3180049Z 
+2026-03-22T23:21:17.9143397Z 
+2026-03-22T23:21:17.9145211Z Rules processed: 0, failed: 0, errored: 0
+2026-03-22T23:21:17.9148519Z Run chirag1603/bicep-registry-modules/23414954476 completed in 00:00:09.5855239
+2026-03-22T23:21:17.9170383Z Output written to the following file: '/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv'
+2026-03-22T23:21:17.9209301Z ---
+2026-03-22T23:21:18.0114329Z ##[group]Run azure/powershell@v2
+2026-03-22T23:21:18.0114555Z with:
+2026-03-22T23:21:18.0114715Z   azPSVersion: latest
+2026-03-22T23:21:18.0117821Z   inlineScript: # Grouping task logs
+Write-Output '::group::Parse CSV content'
+
+# Load used functions
+. (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+
+# Populate parameter input
+$ParameterInput = @{
+  inputFilePath         = 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv'
+  outputFilePath        = 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.md'
+  skipPassedRulesReport = $false
+}
+
+Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
+
+# Invoke Set PSRule Output Functionality
+$null = Set-PSRuleGitHubOutput @ParameterInput
+
+Write-Output '::endgroup::'
+
+2026-03-22T23:21:18.0120536Z   errorActionPreference: Stop
+2026-03-22T23:21:18.0120774Z   failOnStandardError: false
+2026-03-22T23:21:18.0121126Z   githubToken: ***
+2026-03-22T23:21:18.0121304Z env:
+2026-03-22T23:21:18.0121741Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:21:18.0121955Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:21:18.0122176Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:21:18.0122429Z   AZURE_HTTP_USER_AGENT: 
+2026-03-22T23:21:18.0122641Z   AZUREPS_HOST_ENVIRONMENT: 
+2026-03-22T23:21:18.0122852Z ##[endgroup]
+2026-03-22T23:21:18.0719691Z Validating inputs
+2026-03-22T23:21:18.0743907Z Module Az latest installed from hostedAgentFolder
+2026-03-22T23:21:18.0744280Z Initializing Az Module
+2026-03-22T23:21:18.0781302Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command Test-Path (Join-Path /usr/share az_*)
+2026-03-22T23:21:18.0814809Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command $env:PSModulePath
+2026-03-22T23:21:18.3052152Z /home/runner/.local/share/powershell/Modules:/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0
+2026-03-22T23:21:18.3512086Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command try {
+2026-03-22T23:21:18.3515778Z             $ErrorActionPreference = "Stop"
+2026-03-22T23:21:18.3519679Z             $WarningPreference = "SilentlyContinue"
+2026-03-22T23:21:18.3523085Z             $output = @{}
+2026-03-22T23:21:18.3526169Z             $data = Get-Module -Name Az -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+2026-03-22T23:21:18.3535645Z             $output['AzVersion'] = $data.Version.ToString()
+2026-03-22T23:21:18.3536193Z             $output['Success'] = "true"
+2026-03-22T23:21:18.3536600Z         }
+2026-03-22T23:21:18.3537298Z         catch {
+2026-03-22T23:21:18.3537666Z             $output['Error'] = $_.exception.Message
+2026-03-22T23:21:18.3538160Z         }
+2026-03-22T23:21:18.3538485Z         return ConvertTo-Json $output
+2026-03-22T23:21:18.3845887Z True
+2026-03-22T23:21:20.0998267Z {
+2026-03-22T23:21:20.0998644Z   "Success": "true",
+2026-03-22T23:21:20.0999026Z   "AzVersion": "14.6.0"
+2026-03-22T23:21:20.0999378Z }
+2026-03-22T23:21:20.1479307Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command $env:PSModulePath
+2026-03-22T23:21:20.3277491Z /usr/share:/home/runner/.local/share/powershell/Modules:/root/.local/share/powershell/Modules:/usr/local/share/powershell/Modules:/opt/microsoft/powershell/7/Modules:/usr/share/az_14.6.0
+2026-03-22T23:21:20.3684235Z Initializing Az Module Complete
+2026-03-22T23:21:20.3684636Z Running Az PowerShell Script
+2026-03-22T23:21:20.3699190Z [command]/usr/bin/pwsh -NoLogo -NoProfile -NonInteractive -Command /home/runner/work/_temp/ebd2ce5e-a6ea-4474-9ff3-7814db718a89.ps1
+2026-03-22T23:21:21.3438240Z ##[group]Parse CSV content
+2026-03-22T23:21:22.1355208Z [33;1mVERBOSE: Set PS Rule Output with following parameters:`n{
+2026-03-22T23:21:22.1355706Z   "skipPassedRulesReport": false,
+2026-03-22T23:21:22.1356328Z   "outputFilePath": "avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.md",
+2026-03-22T23:21:22.1357461Z   "inputFilePath": "avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.csv"
+2026-03-22T23:21:22.1358076Z }[0m
+2026-03-22T23:21:22.1801090Z ##[endgroup]
+2026-03-22T23:21:22.2271868Z Script execution Complete
+2026-03-22T23:21:22.2336268Z ##[group]Run # Grouping task logs
+2026-03-22T23:21:22.2336548Z [36;1m# Grouping task logs[0m
+2026-03-22T23:21:22.2337181Z [36;1mWrite-Output '::group::Output to GitHub job summaries'[0m
+2026-03-22T23:21:22.2337684Z [36;1m[0m
+2026-03-22T23:21:22.2338279Z [36;1m$mdPSRuleOutputFilePath = Join-Path $env:GITHUB_WORKSPACE 'avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.md'[0m
+2026-03-22T23:21:22.2338907Z [36;1m[0m
+2026-03-22T23:21:22.2339142Z [36;1mif (-not (Test-Path $mdPSRuleOutputFilePath)) {[0m
+2026-03-22T23:21:22.2339791Z [36;1m  Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPSRuleOutputFilePath)[0m
+2026-03-22T23:21:22.2340369Z [36;1m  return ''[0m
+2026-03-22T23:21:22.2340554Z [36;1m} else {[0m
+2026-03-22T23:21:22.2340839Z [36;1m  Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY[0m
+2026-03-22T23:21:22.2341447Z [36;1m  Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose[0m
+2026-03-22T23:21:22.2341931Z [36;1m}[0m
+2026-03-22T23:21:22.2342089Z [36;1m[0m
+2026-03-22T23:21:22.2342263Z [36;1mWrite-Output '::endgroup::'[0m
+2026-03-22T23:21:22.2392786Z shell: /usr/bin/pwsh -command ". '{0}'"
+2026-03-22T23:21:22.2393053Z env:
+2026-03-22T23:21:22.2393724Z   ARM_MGMTGROUP_ID: ***
+2026-03-22T23:21:22.2393962Z   TOKEN_NAMEPREFIX: ***
+2026-03-22T23:21:22.2394182Z   CI_KEY_VAULT_NAME: avm-ci-kv-chirag1603
+2026-03-22T23:21:22.2394438Z   AZURE_HTTP_USER_AGENT: 
+2026-03-22T23:21:22.2394655Z   AZUREPS_HOST_ENVIRONMENT: 
+2026-03-22T23:21:22.2394869Z ##[endgroup]
+2026-03-22T23:21:22.4877903Z ##[group]Output to GitHub job summaries
+2026-03-22T23:21:22.5331369Z [33;1mVERBOSE: Successfully printed out file [/home/runner/work/bicep-registry-modules/bicep-registry-modules/avm/res/azure-stack-hci/cluster/tests/e2e/defaults/main.test.bicep-PSRule-output.md] to Job Summaries[0m
+2026-03-22T23:21:22.5333847Z ##[endgroup]
+2026-03-22T23:21:22.5831263Z Post job cleanup.
+2026-03-22T23:21:22.6633621Z [command]/usr/bin/git version
+2026-03-22T23:21:22.6671754Z git version 2.53.0
+2026-03-22T23:21:22.6711060Z Temporarily overriding HOME='/home/runner/work/_temp/791197a0-ce28-45e9-b70e-63d123539b63' before making global git config changes
+2026-03-22T23:21:22.6712404Z Adding repository directory to the temporary git global config as a safe directory
+2026-03-22T23:21:22.6717620Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/bicep-registry-modules/bicep-registry-modules
+2026-03-22T23:21:22.6756536Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-03-22T23:21:22.6791245Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-03-22T23:21:22.7072828Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-03-22T23:21:22.7096122Z http.https://github.com/.extraheader
+2026-03-22T23:21:22.7107615Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-03-22T23:21:22.7140699Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-03-22T23:21:22.7388113Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-03-22T23:21:22.7437219Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-03-22T23:21:22.7795791Z Cleaning up orphan processes
+2026-03-22T23:21:22.8092049Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: azure/powershell@v2. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

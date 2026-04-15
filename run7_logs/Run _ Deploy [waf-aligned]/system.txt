@@ -1,0 +1,15 @@
+2026-04-06T10:30:32.5600000Z Evaluating call-workflow-passing-data.if
+2026-04-06T10:30:32.5600000Z Evaluating: success()
+2026-04-06T10:30:32.5600000Z Result: true
+2026-04-06T10:30:32.5600000Z Evaluating call-workflow-passing-data.job_module_deploy_validation.if
+2026-04-06T10:30:32.5600000Z Evaluating: (!cancelled() && ((fromJson(inputs.workflowInput)).deploymentValidation == 'true') && (needs.job_module_static_validation.result != 'failure') && (needs.job_psrule_must.result != 'failure'))
+2026-04-06T10:30:32.5600000Z Expanded: (!false && ('true' == 'true') && ('success' != 'failure') && ('success' != 'failure'))
+2026-04-06T10:30:32.5600000Z Result: true
+2026-04-06T10:30:32.5690000Z Requested labels: ubuntu-latest
+2026-04-06T10:30:32.5690000Z Job defined at: chirag1603/bicep-registry-modules/.github/workflows/avm.template.module.yml@refs/heads/avm-res-azure-stack-hci-virtual-machine-instance
+2026-04-06T10:30:32.5690000Z Reusable workflow chain:
+2026-04-06T10:30:32.5690000Z chirag1603/bicep-registry-modules/.github/workflows/avm.res.azure-stack-hci.virtual-machine-instance.yml@refs/heads/avm-res-azure-stack-hci-virtual-machine-instance (5cd24495ff315d2f2b4d8637cb7f134b70aae6e3)
+2026-04-06T10:30:32.5690000Z -> chirag1603/bicep-registry-modules/.github/workflows/avm.template.module.yml@refs/heads/avm-res-azure-stack-hci-virtual-machine-instance (5cd24495ff315d2f2b4d8637cb7f134b70aae6e3)
+2026-04-06T10:30:32.5690000Z Waiting for a runner to pick up this job...
+2026-04-06T10:30:33.0820000Z Job is waiting for a hosted runner to come online.
+2026-04-06T10:30:33.0830000Z Job is about to start running on the hosted runner: GitHub Actions 1000000973
