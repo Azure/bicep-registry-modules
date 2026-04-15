@@ -2810,8 +2810,8 @@ param vmPriority = 'Regular'
 | [`scaleSetFaultDomain`](#parameter-scalesetfaultdomain) | int | Fault Domain count for each placement group. |
 | [`scheduledEventsProfile`](#parameter-scheduledeventsprofile) | object | Specifies Scheduled Event related configurations. |
 | [`secrets`](#parameter-secrets) | array | Specifies set of certificates that should be installed onto the virtual machines in the scale set. |
-| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
-| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings. |
+| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
+| [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`singlePlacementGroup`](#parameter-singleplacementgroup) | bool | When true this limits the scale set to a single placement group, of max size 100 virtual machines. NOTE: If singlePlacementGroup is true, it may be modified to false. However, if singlePlacementGroup is false, it may not be modified to true. |
 | [`skuCapacity`](#parameter-skucapacity) | int | The initial instance count of scale set VMs. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2820,7 +2820,7 @@ param vmPriority = 'Regular'
 | [`upgradePolicyMode`](#parameter-upgradepolicymode) | string | Specifies the mode of an upgrade to virtual machines in the scale set.' Manual - You control the application of updates to virtual machines in the scale set. You do this by using the manualUpgrade action. ; Automatic - All virtual machines in the scale set are automatically updated at the same time. - Automatic, Manual, Rolling. |
 | [`vmNamePrefix`](#parameter-vmnameprefix) | string | Specifies the computer name prefix for all of the virtual machines in the scale set. |
 | [`vmPriority`](#parameter-vmpriority) | string | Specifies the priority for the virtual machine. |
-| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`winRM`](#parameter-winrm) | object | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
 | [`zoneBalance`](#parameter-zonebalance) | bool | Whether to force strictly even Virtual Machine distribution cross x-zones in case there is zone outage. |
 
@@ -3993,7 +3993,7 @@ Specifies set of certificates that should be installed onto the virtual machines
 
 ### Parameter: `secureBootEnabled`
 
-Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool
@@ -4001,7 +4001,7 @@ Specifies whether secure boot should be enabled on the virtual machine scale set
 
 ### Parameter: `securityType`
 
-Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings.
+Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: string
@@ -4087,7 +4087,7 @@ Specifies the priority for the virtual machine.
 
 ### Parameter: `vTpmEnabled`
 
-Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool
