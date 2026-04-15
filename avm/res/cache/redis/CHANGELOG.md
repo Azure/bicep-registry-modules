@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fixed `passive-geo-replication` test
+- Recompiled the template with latest Bicep version `0.42.1.51946`
 
 ### Breaking Changes
 
