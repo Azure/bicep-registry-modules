@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "7642435634287381284"
+      "templateHash": "13283570964716165353"
     },
     "name": "Using default config",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -4758,7 +4758,7 @@
           },
           "version": {
             "value": {
-              "name": "[reference('nestedDependencies').outputs.imageVersionName.value]"
+              "name": ""
             }
           }
         },
@@ -5074,7 +5074,6 @@
       },
       "dependsOn": [
         "azlocal",
-        "nestedDependencies",
         "resourceGroup"
       ]
     },

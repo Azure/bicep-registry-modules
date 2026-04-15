@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "6732258936045749195"
+      "templateHash": "1146663403747986708"
     },
     "name": "WAF-aligned",
     "description": "This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework."
@@ -4758,7 +4758,7 @@
           },
           "version": {
             "value": {
-              "name": "[reference('nestedDependencies').outputs.imageVersionName.value]"
+              "name": ""
             }
           }
         },
@@ -5074,7 +5074,6 @@
       },
       "dependsOn": [
         "azlocal",
-        "nestedDependencies",
         "resourceGroup"
       ]
     },
