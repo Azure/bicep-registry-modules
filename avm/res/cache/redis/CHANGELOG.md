@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis/CHANGELOG.md).
 
+## 0.17.1
+
+### Changes
+
+- Fixed `passive-geo-replication` test
+
+### Breaking Changes
+
+- None
+
 ## 0.17.0
 
 ### Changes
