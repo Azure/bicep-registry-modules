@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "7960675446102375076"
+      "templateHash": "9152305313654163238"
     },
     "name": "Using default config",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -117,7 +117,7 @@
         "mode": "Incremental",
         "parameters": {
           "clusterName": {
-            "value": "[format('{0}{1}01', parameters('namePrefix'), parameters('serviceShort'))]"
+            "value": "[format('{0}{1}1', parameters('namePrefix'), parameters('serviceShort'))]"
           },
           "clusterWitnessStorageAccountName": {
             "value": "[format('dep{0}wst{1}', parameters('namePrefix'), parameters('serviceShort'))]"

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "10423961287344826736"
+      "templateHash": "5821205397364458715"
     },
     "name": "WAF-aligned",
     "description": "This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework."
@@ -117,7 +117,7 @@
         "mode": "Incremental",
         "parameters": {
           "clusterName": {
-            "value": "[format('{0}{1}01', parameters('namePrefix'), parameters('serviceShort'))]"
+            "value": "[format('{0}{1}1', parameters('namePrefix'), parameters('serviceShort'))]"
           },
           "clusterWitnessStorageAccountName": {
             "value": "[format('dep{0}wst{1}', parameters('namePrefix'), parameters('serviceShort'))]"
