@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Added parameters for AI Search SKU, Replica count, and Partition count
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes
