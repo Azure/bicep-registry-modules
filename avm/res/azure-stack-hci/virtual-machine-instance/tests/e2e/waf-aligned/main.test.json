@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "1146663403747986708"
+      "templateHash": "2918879814641054614"
     },
     "name": "WAF-aligned",
     "description": "This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework."
@@ -4758,7 +4758,7 @@
           },
           "version": {
             "value": {
-              "name": ""
+              "name": "20348.5020.260413"
             }
           }
         },

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "13283570964716165353"
+      "templateHash": "1493530959662241956"
     },
     "name": "Using default config",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -4758,7 +4758,7 @@
           },
           "version": {
             "value": {
-              "name": ""
+              "name": "20348.5020.260413"
             }
           }
         },
