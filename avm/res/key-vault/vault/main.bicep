@@ -150,7 +150,6 @@ var enableReferencedModulesTelemetry bool = false
 
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    // roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
     roleDefinitionId: roleDefinitions(roleAssignment.roleDefinitionIdOrName) ?? (contains(
         roleAssignment.roleDefinitionIdOrName,
         '/providers/Microsoft.Authorization/roleDefinitions/'
