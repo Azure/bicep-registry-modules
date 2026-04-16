@@ -190,24 +190,9 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
   ]
 }
 
-// Assign 'Azure Connected Machine Resource Manager' role to the HCI RP on this resource group.
-// Required for Edge Marketplace to serve images to Azure Local clusters.
-module hciRpRoleAssignment 'dependencies.bicep' = if (!empty(hciResourceProviderObjectId)) {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-hciRpRole-${serviceShort}'
-  scope: resourceGroup
-  params: {
-    principalId: hciResourceProviderObjectId
-    roleDefinitionId: 'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-    roleDescription: 'Allows HCI RP to manage marketplace gallery images via Edge Marketplace'
-  }
-}
-
 module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-mgi-${serviceShort}'
   scope: resourceGroup
-  dependsOn: [
-    hciRpRoleAssignment
-  ]
   params: {
     name: '${namePrefix}${serviceShort}marketplaceimage'
     customLocationResourceId: customLocation.id
@@ -218,7 +203,7 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
     }
     osType: 'Windows'
     version: {
-      name: '20348.5020.260413'
+      name: '20348.4893.260303'
     }
   }
 }

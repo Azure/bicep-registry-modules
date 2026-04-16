@@ -37,6 +37,309 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>`.
 
+- [Using default config](#example-1-using-default-config)
+- [WAF-aligned](#example-2-waf-aligned)
+
+### Example 1: _Using default config_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>' = {
+  params: {
+    // Required parameters
+    customLocationResourceId: '<customLocationResourceId>'
+    hardwareProfile: {
+      memoryMB: 4096
+      processors: 2
+    }
+    name: '<name>'
+    networkProfile: {}
+    osProfile: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'Administrator'
+      computerName: '<computerName>'
+      linuxConfiguration: {}
+      windowsConfiguration: {
+        provisionVMAgent: true
+        provisionVMConfigAgent: true
+      }
+    }
+    storageProfile: {
+      imageReference: '<imageReference>'
+      osDisk: {
+        osType: 'Windows'
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
+    },
+    "hardwareProfile": {
+      "value": {
+        "memoryMB": 4096,
+        "processors": 2
+      }
+    },
+    "name": {
+      "value": "<name>"
+    },
+    "networkProfile": {
+      "value": {}
+    },
+    "osProfile": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "Administrator",
+        "computerName": "<computerName>",
+        "linuxConfiguration": {},
+        "windowsConfiguration": {
+          "provisionVMAgent": true,
+          "provisionVMConfigAgent": true
+        }
+      }
+    },
+    "storageProfile": {
+      "value": {
+        "imageReference": "<imageReference>",
+        "osDisk": {
+          "osType": "Windows"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
+
+// Required parameters
+param customLocationResourceId = '<customLocationResourceId>'
+param hardwareProfile = {
+  memoryMB: 4096
+  processors: 2
+}
+param name = '<name>'
+param networkProfile = {}
+param osProfile = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'Administrator'
+  computerName: '<computerName>'
+  linuxConfiguration: {}
+  windowsConfiguration: {
+    provisionVMAgent: true
+    provisionVMConfigAgent: true
+  }
+}
+param storageProfile = {
+  imageReference: '<imageReference>'
+  osDisk: {
+    osType: 'Windows'
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>' = {
+  params: {
+    // Required parameters
+    customLocationResourceId: '<customLocationResourceId>'
+    hardwareProfile: {
+      dynamicMemoryConfig: {
+        maximumMemoryMB: 8192
+        minimumMemoryMB: 512
+        targetMemoryBuffer: 20
+      }
+      memoryMB: 4096
+      processors: 2
+      vmSize: 'Custom'
+    }
+    name: '<name>'
+    networkProfile: {}
+    osProfile: {
+      adminPassword: '<adminPassword>'
+      adminUsername: 'Administrator'
+      computerName: '<computerName>'
+      linuxConfiguration: {}
+      windowsConfiguration: {
+        enableAutomaticUpdates: true
+        provisionVMAgent: true
+        provisionVMConfigAgent: true
+      }
+    }
+    storageProfile: {
+      imageReference: '<imageReference>'
+      osDisk: {
+        osType: 'Windows'
+      }
+    }
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
+    },
+    "hardwareProfile": {
+      "value": {
+        "dynamicMemoryConfig": {
+          "maximumMemoryMB": 8192,
+          "minimumMemoryMB": 512,
+          "targetMemoryBuffer": 20
+        },
+        "memoryMB": 4096,
+        "processors": 2,
+        "vmSize": "Custom"
+      }
+    },
+    "name": {
+      "value": "<name>"
+    },
+    "networkProfile": {
+      "value": {}
+    },
+    "osProfile": {
+      "value": {
+        "adminPassword": "<adminPassword>",
+        "adminUsername": "Administrator",
+        "computerName": "<computerName>",
+        "linuxConfiguration": {},
+        "windowsConfiguration": {
+          "enableAutomaticUpdates": true,
+          "provisionVMAgent": true,
+          "provisionVMConfigAgent": true
+        }
+      }
+    },
+    "storageProfile": {
+      "value": {
+        "imageReference": "<imageReference>",
+        "osDisk": {
+          "osType": "Windows"
+        }
+      }
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/virtual-machine-instance:<version>'
+
+// Required parameters
+param customLocationResourceId = '<customLocationResourceId>'
+param hardwareProfile = {
+  dynamicMemoryConfig: {
+    maximumMemoryMB: 8192
+    minimumMemoryMB: 512
+    targetMemoryBuffer: 20
+  }
+  memoryMB: 4096
+  processors: 2
+  vmSize: 'Custom'
+}
+param name = '<name>'
+param networkProfile = {}
+param osProfile = {
+  adminPassword: '<adminPassword>'
+  adminUsername: 'Administrator'
+  computerName: '<computerName>'
+  linuxConfiguration: {}
+  windowsConfiguration: {
+    enableAutomaticUpdates: true
+    provisionVMAgent: true
+    provisionVMConfigAgent: true
+  }
+}
+param storageProfile = {
+  imageReference: '<imageReference>'
+  osDisk: {
+    osType: 'Windows'
+  }
+}
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
