@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "4539260812527289484"
+      "templateHash": "10738295946696731890"
     },
     "name": "WAF-aligned",
     "description": "This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework."
@@ -4758,7 +4758,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.40.2.10011",
-              "templateHash": "6704509290169643739"
+              "templateHash": "6112575803954279851"
             }
           },
           "parameters": {
@@ -4793,7 +4793,7 @@
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(resourceGroup().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+              "name": "[guid(subscription().subscriptionId, parameters('principalId'), 'ConnectedMachineResourceManagerRolePermissions', resourceGroup().id)]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
                 "principalId": "[parameters('principalId')]",

@@ -12,8 +12,10 @@ param principalType string = 'ServicePrincipal'
 @sys.description('Optional. The description of the role assignment.')
 param roleDescription string = ''
 
+// Use the same GUID formula as avm/res/azure-stack-hci/cluster module's
+// spConnectedMachineResourceManagerRolePermissions to ensure idempotent PUT.
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, principalId, roleDefinitionId)
+  name: guid(subscription().subscriptionId, principalId, 'ConnectedMachineResourceManagerRolePermissions', resourceGroup().id)
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId)
     principalId: principalId
