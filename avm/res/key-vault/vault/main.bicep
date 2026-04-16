@@ -72,6 +72,24 @@ param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
+@metadata({
+  example: '''
+  - 'Key Vault Administrator'
+  - 'Key Vault Certificates Officer'
+  - 'Key Vault Certificate User'
+  - 'Key Vault Contributor'
+  - 'Key Vault Crypto Officer'
+  - 'Key Vault Crypto Service Encryption User'
+  - 'Key Vault Crypto User'
+  - 'Key Vault Reader'
+  - 'Key Vault Secrets Officer'
+  - 'Key Vault Secrets User'
+  - 'Owner'
+  - 'Reader'
+  - 'Role Based Access Control Administrator'
+  - 'User Access Administrator'
+  '''
+})
 param roleAssignments roleAssignmentType[]?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
