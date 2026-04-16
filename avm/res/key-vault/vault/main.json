@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "17026380719198338445"
+      "templateHash": "10344705491435215007"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -1253,6 +1253,7 @@
       },
       "nullable": true,
       "metadata": {
+        "example": "  - 'Key Vault Administrator'\n  - 'Key Vault Certificates Officer'\n  - 'Key Vault Certificate User'\n  - 'Key Vault Contributor'\n  - 'Key Vault Crypto Officer'\n  - 'Key Vault Crypto Service Encryption User'\n  - 'Key Vault Crypto User'\n  - 'Key Vault Reader'\n  - 'Key Vault Secrets Officer'\n  - 'Key Vault Secrets User'\n  - 'Owner'\n  - 'Reader'\n  - 'Role Based Access Control Administrator'\n  - 'User Access Administrator'\n  ",
         "description": "Optional. Array of role assignments to create."
       }
     },
