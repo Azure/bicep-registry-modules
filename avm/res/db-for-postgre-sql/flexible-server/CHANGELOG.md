@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Publishing child module `avm/res/db-for-postgre-sql/flexible-server/configuration`
 - Publishing child module `avm/res/db-for-postgre-sql/flexible-server/database`
 - Publishing child module `avm/res/db-for-postgre-sql/flexible-server/firewall-rule`
+- Updated `Microsoft.DBforPostgreSQL/flexibleServers` existing resource reference in child modules from API version `2025-06-01-preview` to `2025-08-01` (latest stable GA)
 
 ### Breaking Changes
 
