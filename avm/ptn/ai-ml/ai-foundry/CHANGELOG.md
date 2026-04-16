@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Introduced `aiSearchConfigurationType` to replace `resourceConfigurationType` for AI Search configuration and added properties to set sku (`sku`), replica count (`replicaCount`), and partition count (`partitionCount`)
 - Introduced `cosmosDbConfigurationType` to replace `resourceConfigurationType` for Cosmos DB configuration and added properties to enable zone redundancy (`enableZoneRedundancy`) and serverless pricing model (`enableServerless`)
+- Updated interior module versions
 
 ### Breaking Changes
 
