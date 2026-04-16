@@ -186,11 +186,11 @@ module hciImage 'br/public:avm/res/azure-stack-hci/marketplace-gallery-image:0.1
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
+      sku: '2022-datacenter-azure-edition-core'
     }
     osType: 'Windows'
     version: {
-      name: '20348.4893.260303'
+      name: '20348.4830.260305'
     }
   }
 }
