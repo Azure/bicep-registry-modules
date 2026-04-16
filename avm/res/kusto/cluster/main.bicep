@@ -106,7 +106,20 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. Array of role assignments to create.')
+@description('''
+Optional. Array of role assignments to create.
+- 'Contributor'
+- 'Key Vault Administrator'
+- 'Key Vault Contributor'
+- 'Key Vault Crypto Officer'
+- 'Key Vault Crypto Service Encryption User'
+- 'Key Vault Crypto User'
+- 'Key Vault Reader'
+- 'Owner'
+- 'Reader'
+- 'Role Based Access Control Administrator'
+- 'User Access Administrator'
+''')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
@@ -155,15 +168,9 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var builtInRoleNames = {
-  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
-  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-}
-
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+    roleDefinitionId: roleDefinitions(roleAssignment.roleDefinitionIdOrName).id ?? (contains(
         roleAssignment.roleDefinitionIdOrName,
         '/providers/Microsoft.Authorization/roleDefinitions/'
       )

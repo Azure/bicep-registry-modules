@@ -285,7 +285,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'secretName'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Owner'
+              roleDefinitionIdOrName:
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -315,5 +315,13 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+resource myRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: roleDefinitions().id
+  properties: {
+    principalId:
+    roleDefinitionId:
+  }
+}
 
 output resourceId string = testDeployment[0].outputs.resourceId
