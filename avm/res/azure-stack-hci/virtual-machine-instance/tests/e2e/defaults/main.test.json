@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "1493530959662241956"
+      "templateHash": "10248846906598689470"
     },
     "name": "Using default config",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -4729,6 +4729,85 @@
         "resourceGroup"
       ]
     },
+    "hciRpRoleAssignment": {
+      "condition": "[not(empty(parameters('hciResourceProviderObjectId')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-hciRpRole-{1}', uniqueString(deployment().name, variables('enforcedLocation')), parameters('serviceShort'))]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "principalId": {
+            "value": "[parameters('hciResourceProviderObjectId')]"
+          },
+          "roleDefinitionId": {
+            "value": "f5819b54-e033-4d82-ac66-4fec3cbf3f4c"
+          },
+          "roleDescription": {
+            "value": "Allows HCI RP to manage marketplace gallery images via Edge Marketplace"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.40.2.10011",
+              "templateHash": "6704509290169643739"
+            }
+          },
+          "parameters": {
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID to assign the role to."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The role definition ID to assign."
+              }
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": "ServicePrincipal",
+              "metadata": {
+                "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "roleDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The description of the role assignment."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceGroup().id, parameters('principalId'), parameters('roleDefinitionId'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "[parameters('principalType')]",
+                "description": "[parameters('roleDescription')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "resourceGroup"
+      ]
+    },
     "hciImage": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -5074,6 +5153,7 @@
       },
       "dependsOn": [
         "azlocal",
+        "hciRpRoleAssignment",
         "resourceGroup"
       ]
     },
