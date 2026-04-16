@@ -1,1 +1,0 @@
-ERROR: An error occurred reading file. Could not find file 'C:\Users\chchoudha\repo\bicep-registry-modules\workload-deployment.bicepparam'.

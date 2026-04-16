@@ -1,2 +1,0 @@
-gh: Not Found (HTTP 404)
-{"message":"Not Found","documentation_url":"https://docs.github.com/rest/actions/workflow-jobs#download-job-logs-for-a-workflow-run","status":"404"}
