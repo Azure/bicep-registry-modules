@@ -60,6 +60,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -157,6 +159,7 @@ module trafficController_frontends 'frontend/main.bicep' = [
       trafficControllerName: trafficController.name
       name: frontend.name
       location: location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -169,6 +172,7 @@ module trafficController_associations 'association/main.bicep' = [
       name: association.name
       location: location
       subnetResourceId: association.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -181,6 +185,7 @@ module trafficController_securityPolicies 'security-policy/main.bicep' = [
       name: securityPolicy.name
       location: location
       wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       trafficController_associations
