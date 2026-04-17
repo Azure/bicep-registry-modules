@@ -71,9 +71,33 @@ param stopOnNoConnect stopOnNoConnectType?
 @description('Optional. The schedule for the pool. Dev boxes in this pool will auto-stop every day as per the schedule configuration.')
 param schedule poolScheduleType?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.devcenter-project-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource project 'Microsoft.DevCenter/projects@2025-02-01' existing = {
   name: projectName
@@ -115,6 +139,7 @@ module pool_schedule 'schedule/main.bicep' = if (schedule != null) {
     timeZone: schedule!.timeZone
     poolName: pool.name
     projectName: project.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
