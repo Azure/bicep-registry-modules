@@ -260,6 +260,10 @@ var sharedSelfHostedIntegrationRuntimeResourceIds = [
 module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
   for (sharedSelfHostedIntegrationRuntimeResourceId, index) in sharedSelfHostedIntegrationRuntimeResourceIds: {
     name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    scope: resourceGroup(
+      split(sharedSelfHostedIntegrationRuntimeResourceId, '/')[2],
+      split(sharedSelfHostedIntegrationRuntimeResourceId, '/')[4]
+    )
     params: {
       principalId: dataFactory.?identity.?principalId
       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
