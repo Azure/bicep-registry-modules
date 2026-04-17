@@ -115,7 +115,7 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments roleAssignmentType[] = []
 
-@description('Supply an array of objects containing the details of the PIM role assignments to create.')
+@sys.description('Supply an array of objects containing the details of the PIM role assignments to create.')
 param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
@@ -235,6 +235,33 @@ param networkSecurityGroups networkSecurityGroupType[] = []
 
 @sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
 param networkSecurityGroupResourceGroupName string = ''
+
+@sys.description('Optional. The name of the budget.')
+param budgetName string = ''
+
+@sys.description('Optional. The total amount of cost or usage to track with the budget.')
+param budgetAmount int = 100
+
+@sys.description('Optional. The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).')
+param budgetStartDate string = '${utcNow('yyyy')}-${utcNow('MM')}-01T00:00:00Z'
+
+@sys.description('Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided.')
+param budgetContactEmails array = []
+
+@sys.description('Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided.')
+param budgetActionGroups array = []
+
+@sys.description('Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided.')
+param budgetContactRoles array = []
+
+@sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
+param budgetCategory string = 'Cost'
+
+@sys.description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+param budgetThresholdType string = 'Forecasted'
+
+@sys.description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
+param budgetThresholds array = [90]
 
 // VARIABLES
 
@@ -371,6 +398,7 @@ var deploymentNames = {
     'lz-vend-ds-pdns-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName,deploymentScriptLocation,deploymentScriptStorageAccountName, deploymentScriptVirtualNetworkName, deployment().name)}',
     64
   )
+  createBudget: take('lz-vend-budget-create-${uniqueString(subscriptionId, budgetName, deployment().name)}', 64)
 }
 
 // Role Assignments filtering and splitting
@@ -563,6 +591,23 @@ module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
     tags: subscriptionTags
   }
 }
+
+module budgetAlert 'br/public:avm/res/consumption/budget:0.3.8' = if (!empty(budgetName)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createBudget
+  params: {
+    name: budgetName
+    amount: budgetAmount
+    category: budgetCategory
+    thresholdType: budgetThresholdType
+    startDate: budgetStartDate
+    contactEmails: budgetContactEmails
+    actionGroups: budgetActionGroups
+    contactRoles: budgetContactRoles
+    thresholds: budgetThresholds
+  }
+}
+
 module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.3' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForLzNetworking

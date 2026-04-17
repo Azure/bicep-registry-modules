@@ -348,7 +348,7 @@ module workspace_connections 'connection/main.bicep' = [
   }
 ]
 
-module workspace_datastores 'datastores/main.bicep' = [
+module workspace_datastores 'datastore/main.bicep' = [
   for datastore in (datastores ?? []): {
     name: '${workspace.name}-${datastore.name}-datastore'
     params: {

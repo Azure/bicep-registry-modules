@@ -5,13 +5,44 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "11496946068428581447"
+      "version": "0.42.1.51946",
+      "templateHash": "4045047481093727041"
     },
     "name": "P2S VPN Gateway",
     "description": "This module deploys a Virtual Hub P2S Gateway."
   },
   "definitions": {
+    "ipamPoolPrefixAllocationType": {
+      "type": "object",
+      "properties": {
+        "numberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of IP addresses to allocate."
+          }
+        },
+        "pool": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the Azure IPAM Pool resource."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The associated Azure IPAM Pool resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. A Type representing an IPAM Pool prefix allocation for the VPN Client Address Pool."
+      }
+    },
     "vnetRoutesStaticRoutesType": {
       "type": "object",
       "properties": {
@@ -174,6 +205,16 @@
         "description": "Optional. Enable/Disable Internet Security; \"Propagate Default Route\"."
       }
     },
+    "configurationPolicyGroupAssociationResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource IDs of configuration policy groups to associate with the P2S connection configuration."
+      }
+    },
     "inboundRouteMapResourceId": {
       "type": "string",
       "nullable": true,
@@ -212,6 +253,16 @@
         "description": "Optional. The address prefixes for the VPN Client Address Pool."
       }
     },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipamPoolPrefixAllocationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A list of IPAM Pool prefix allocations for the VPN Client Address Pool."
+      }
+    },
     "virtualHubResourceId": {
       "type": "string",
       "metadata": {
@@ -236,7 +287,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/p2svpnGateways@2024-10-01#properties/tags"
+          "source": "Microsoft.Network/p2svpnGateways@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -283,7 +334,7 @@
     },
     "p2sVpnGateway": {
       "type": "Microsoft.Network/p2svpnGateways",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -294,6 +345,15 @@
           {
             "name": "[parameters('p2SConnectionConfigurationsName')]",
             "properties": {
+              "copy": [
+                {
+                  "name": "configurationPolicyGroupAssociations",
+                  "count": "[length(coalesce(parameters('configurationPolicyGroupAssociationResourceIds'), createArray()))]",
+                  "input": {
+                    "id": "[coalesce(parameters('configurationPolicyGroupAssociationResourceIds'), createArray())[copyIndex('configurationPolicyGroupAssociations')]]"
+                  }
+                }
+              ],
               "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
               "routingConfiguration": {
                 "associatedRouteTable": {
@@ -316,7 +376,8 @@
                 "vnetRoutes": "[parameters('vnetRoutesStaticRoutes')]"
               },
               "vpnClientAddressPool": {
-                "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]"
+                "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]",
+                "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]"
               }
             }
           }
@@ -372,7 +433,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('p2sVpnGateway', '2024-10-01', 'full').location]"
+      "value": "[reference('p2sVpnGateway', '2025-05-01', 'full').location]"
     }
   }
 }
