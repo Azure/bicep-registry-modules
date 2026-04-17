@@ -257,25 +257,18 @@ var sharedSelfHostedIntegrationRuntimeResourceIds = [
   for integrationRuntime in sharedSelfHostedIntegrationRuntimes: integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? ''
 ]
 
-resource existingAdf 'Microsoft.DataFactory/factories@2018-06-01' existing = if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
-  name: name
-  dependsOn: [
-    dataFactory
-  ]
-}
-
-// resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-//   for (sharedSelfHostedIntegrationRuntimeResourceId, index) in (sharedSelfHostedIntegrationRuntimeResourceIds ?? []): if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
-//     name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-//     properties: {
-//       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
-//       principalType: 'ServicePrincipal'
-//       principalId: existingAdf!.identity.principalId
-//       delegatedManagedIdentityResourceId: sharedSelfHostedIntegrationRuntimeResourceId
-//     }
-//     scope: dataFactory
-//   }
-// ]
+resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (sharedSelfHostedIntegrationRuntimeResourceId, index) in (sharedSelfHostedIntegrationRuntimeResourceIds ?? []): if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
+    name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    properties: {
+      roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
+      principalType: 'ServicePrincipal'
+      principalId: dataFactory.identity.principalId
+      delegatedManagedIdentityResourceId: sharedSelfHostedIntegrationRuntimeResourceId
+    }
+    scope: dataFactory
+  }
+]
 
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
   for (integrationRuntime, index) in (integrationRuntimes ?? []): {
@@ -449,8 +442,6 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: dataFactory_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
-
-output existingAdfResourceId string? = length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0 ? existingAdf.id : null
 
 // =============== //
 //   Definitions   //
