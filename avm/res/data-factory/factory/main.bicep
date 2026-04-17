@@ -257,16 +257,15 @@ var sharedSelfHostedIntegrationRuntimeResourceIds = [
   for integrationRuntime in sharedSelfHostedIntegrationRuntimes: integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? ''
 ]
 
-resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (sharedSelfHostedIntegrationRuntimeResourceId, index) in (sharedSelfHostedIntegrationRuntimeResourceIds ?? []): if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
+module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (sharedSelfHostedIntegrationRuntimeResourceId, index) in sharedSelfHostedIntegrationRuntimeResourceIds: {
     name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-    properties: {
+    params: {
+      principalId: dataFactory.?identity.?principalId
       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
-      principalId: dataFactory.?identity.?principalId
-      delegatedManagedIdentityResourceId: sharedSelfHostedIntegrationRuntimeResourceId
+      resourceId: sharedSelfHostedIntegrationRuntimeResourceId
     }
-    scope: dataFactory
   }
 ]
 
@@ -283,7 +282,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
-      //dataFactory_roleAssignmentsSharedSHIR
+      dataFactory_roleAssignmentsSharedSHIR
     ]
   }
 ]
