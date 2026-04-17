@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17981241737277884157"
+      "version": "0.42.1.51946",
+      "templateHash": "15861245315634888557"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -1260,8 +1260,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2871578114620433905"
+              "version": "0.42.1.51946",
+              "templateHash": "2703739893217916427"
             },
             "name": "Redis Cache Access Policy",
             "description": "This module deploys an access policy for Redis Cache."
@@ -1363,8 +1363,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12811597884814941686"
+              "version": "0.42.1.51946",
+              "templateHash": "12526434038265265064"
             },
             "name": "Redis Cache Access Policy Assignment",
             "description": "This module deploys an access policy assignment for Redis Cache."
@@ -2148,8 +2148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10450955312954593325"
+              "version": "0.42.1.51946",
+              "templateHash": "8140610907863327072"
             },
             "name": "Redis Cache Firewall Rules",
             "description": "This module creates a firewall rule for Redis Cache."
@@ -2251,8 +2251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7483888538456181375"
+              "version": "0.42.1.51946",
+              "templateHash": "4679093398217777140"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2377,8 +2377,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18424648389278278255"
+              "version": "0.42.1.51946",
+              "templateHash": "14171990099652334019"
             }
           },
           "definitions": {
