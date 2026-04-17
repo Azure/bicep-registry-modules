@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.15.3
+
+### Changes
+
+- Publishing child module `avm/res/db-for-postgre-sql/flexible-server/administrator`
+- Publishing child module `avm/res/db-for-postgre-sql/flexible-server/advanced-threat-protection-setting`
+- Publishing child module `avm/res/db-for-postgre-sql/flexible-server/configuration`
+- Publishing child module `avm/res/db-for-postgre-sql/flexible-server/database`
+- Publishing child module `avm/res/db-for-postgre-sql/flexible-server/firewall-rule`
+- Updated `Microsoft.DBforPostgreSQL/flexibleServers` existing resource reference in child modules from API version `2025-06-01-preview` to `2025-08-01` (latest stable GA)
+
+### Breaking Changes
+
+- None
+
 ## 0.15.2
 
 ### Changes
