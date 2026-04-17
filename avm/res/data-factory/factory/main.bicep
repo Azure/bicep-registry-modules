@@ -247,6 +247,34 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
   }
 }
 
+// fetch Self-Hosted Integration Runtimes with linked resource IDs to create role assignments for shared SHIRs if any are defined in the parameters. This allows the template to grant necessary permissions to ADF for accessing shared SHIRs without hardcoding specific SHIR resource IDs, while still ensuring that ARM what-if can evaluate the presence of SHIR role assignments based on the existence of linked SHIR resource IDs in the parameters.
+var sharedSelfHostedIntegrationRuntimes = filter(
+  integrationRuntimes ?? [],
+  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '')
+)
+
+var sharedSelfHostedIntegrationRuntimeResourceIds = [
+  for integrationRuntime in sharedSelfHostedIntegrationRuntimes: integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? ''
+]
+
+resource existingAdf 'Microsoft.DataFactory/factories@2018-06-01' existing = if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
+  name: dataFactory.name
+  scope: resourceGroup()
+}
+
+resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (sharedSelfHostedIntegrationRuntimeResourceId, index) in (sharedSelfHostedIntegrationRuntimeResourceIds ?? []): if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
+    name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    properties: {
+      roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
+      principalType: 'ServicePrincipal'
+      principalId: existingAdf!.identity.principalId
+      delegatedManagedIdentityResourceId: sharedSelfHostedIntegrationRuntimeResourceId
+    }
+    scope: dataFactory
+  }
+]
+
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
   for (integrationRuntime, index) in (integrationRuntimes ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
@@ -260,6 +288,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
+      dataFactory_roleAssignmentsSharedSHIR
     ]
   }
 ]
