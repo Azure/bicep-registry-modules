@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Publishing child module `avm/res/compute/virtual-machine-scale-set/extension` to the Bicep public registry.
 
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes

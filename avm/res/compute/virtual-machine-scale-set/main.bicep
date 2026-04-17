@@ -316,8 +316,6 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-var enableReferencedModulesTelemetry = false
-
 var networkInterfaceConfigurations = [
   for (nicConfiguration, index) in nicConfigurations: {
     name: nicConfiguration.?name ?? '${name}${nicConfiguration.?nicSuffix}configuration-${index}'
@@ -465,6 +463,8 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
