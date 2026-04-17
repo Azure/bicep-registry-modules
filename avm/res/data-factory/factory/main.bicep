@@ -258,8 +258,10 @@ var sharedSelfHostedIntegrationRuntimeResourceIds = [
 ]
 
 resource existingAdf 'Microsoft.DataFactory/factories@2018-06-01' existing = if (length(sharedSelfHostedIntegrationRuntimeResourceIds) > 0) {
-  name: dataFactory.name
-  scope: resourceGroup()
+  name: name
+  dependsOn: [
+    dataFactory
+  ]
 }
 
 // resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
