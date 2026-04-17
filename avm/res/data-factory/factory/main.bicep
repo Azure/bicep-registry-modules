@@ -263,7 +263,7 @@ resource dataFactory_roleAssignmentsSharedSHIR 'Microsoft.Authorization/roleAssi
     properties: {
       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
-      principalId: dataFactory.identity.principalId
+      principalId: dataFactory.?identity.?principalId
       delegatedManagedIdentityResourceId: sharedSelfHostedIntegrationRuntimeResourceId
     }
     scope: dataFactory
