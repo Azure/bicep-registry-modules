@@ -380,6 +380,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
     tags: union(existingTags, allTags, {
       TemplateName: 'CWYD'
       CreatedBy: createdBy
+      DeploymentName: deployment().name
     })
   }
 }
