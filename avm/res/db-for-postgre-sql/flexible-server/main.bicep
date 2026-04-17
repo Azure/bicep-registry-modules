@@ -15,7 +15,7 @@ param administratorLoginPassword string?
 param administrators administratorType[]?
 
 @description('Optional. The authentication configuration for the server.')
-param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.authConfig = {
+param authConfig resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview'>.properties.authConfig = {
   activeDirectoryAuth: 'Enabled'
   passwordAuth: 'Disabled'
 }
@@ -134,7 +134,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
-param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.properties.maintenanceWindow = {
+param maintenanceWindow resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview'>.properties.maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
   startHour: 1
@@ -193,7 +193,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -286,7 +286,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview' = {
   name: name
   location: location
   tags: tags

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "4389878267171203991"
+      "templateHash": "6637180876404168058"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -779,7 +779,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/authConfig"
         },
         "description": "Optional. The authentication configuration for the server."
       },
@@ -960,7 +960,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/maintenanceWindow"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/maintenanceWindow"
         },
         "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       },
@@ -1082,7 +1082,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/tags"
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1178,7 +1178,7 @@
     },
     "flexibleServer": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2025-06-01-preview",
+      "apiVersion": "2026-01-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1333,7 +1333,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "9883968622726198178"
+              "templateHash": "10070356005645149596"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1397,12 +1397,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2025-08-01",
+              "apiVersion": "2026-01-01-preview",
               "name": "[parameters('flexibleServerName')]"
             },
             "database": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-              "apiVersion": "2025-06-01-preview",
+              "apiVersion": "2026-01-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "collation": "[parameters('collation')]",
@@ -1477,7 +1477,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "10104915575701365639"
+              "templateHash": "15652021559517032270"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1538,7 +1538,7 @@
             },
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-              "apiVersion": "2025-08-01",
+              "apiVersion": "2026-01-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -1616,7 +1616,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "4186762753129905753"
+              "templateHash": "15836665107811825256"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1680,12 +1680,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2025-08-01",
+              "apiVersion": "2026-01-01-preview",
               "name": "[parameters('flexibleServerName')]"
             },
             "configuration": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-              "apiVersion": "2025-06-01-preview",
+              "apiVersion": "2026-01-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "source": "[parameters('source')]",
@@ -1763,7 +1763,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "15333339431228274390"
+              "templateHash": "11106391577903359494"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1837,7 +1837,7 @@
             },
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-              "apiVersion": "2025-06-01-preview",
+              "apiVersion": "2026-01-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
               "properties": {
                 "principalName": "[parameters('principalName')]",
@@ -1904,7 +1904,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "5286375687485529041"
+              "templateHash": "11330743593491630278"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1957,7 +1957,7 @@
             },
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
-              "apiVersion": "2025-06-01-preview",
+              "apiVersion": "2026-01-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
               "properties": {
                 "state": "[parameters('serverThreatProtection')]"
@@ -1984,7 +1984,7 @@
               "metadata": {
                 "description": "The advanced threat protection state for the flexible server."
               },
-              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2025-06-01-preview').state]"
+              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2026-01-01-preview').state]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -2690,7 +2690,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('flexibleServer', '2025-06-01-preview', 'full').location]"
+      "value": "[reference('flexibleServer', '2026-01-01-preview', 'full').location]"
     },
     "fqdn": {
       "type": "string",
@@ -2725,7 +2725,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned managed identity."
       },
-      "value": "[tryGet(tryGet(reference('flexibleServer', '2025-06-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('flexibleServer', '2026-01-01-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
