@@ -72,18 +72,7 @@ param backupRetentionDays int = 7
 @description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if \'cMKKeyName\' is not empty.')
 param geoRedundantBackup string = 'Enabled' // Enabled by default for WAF-alignment (ref: https://azure.github.io/PSRule.Rules.Azure/en/rules/Azure.PostgreSQL.GeoRedundantBackup/)
 
-@allowed([
-  32
-  64
-  128
-  256
-  512
-  1024
-  2048
-  4096
-  8192
-  16384
-])
+@minValue(32)
 @description('Optional. Max storage allowed for a server.')
 param storageSizeGB int = 32
 
@@ -93,6 +82,39 @@ param storageSizeGB int = 32
 ])
 @description('Optional. Flag to enable / disable Storage Auto grow for flexible server.')
 param autoGrow string?
+
+@allowed([
+  'Premium_LRS'
+  'PremiumV2_LRS'
+  'UltraSSD_LRS'
+])
+@description('Optional. Type of storage assigned to a server. Allowed values are Premium_LRS, PremiumV2_LRS, or UltraSSD_LRS. If not specified, it defaults to Premium_LRS.')
+param storageType string?
+
+@allowed([
+  'P1'
+  'P2'
+  'P3'
+  'P4'
+  'P6'
+  'P10'
+  'P15'
+  'P20'
+  'P30'
+  'P40'
+  'P50'
+  'P60'
+  'P70'
+  'P80'
+])
+@description('Optional. Storage tier of a server.')
+param storageTier string?
+
+@description('Optional. Maximum IOPS supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS.')
+param storageIops int?
+
+@description('Optional. Maximum throughput supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS.')
+param storageThroughput int?
 
 @allowed([
   '11'
@@ -255,7 +277,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.dbforpostgresql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -351,6 +373,10 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-pr
     storage: {
       storageSizeGB: storageSizeGB
       autoGrow: autoGrow
+      type: storageType
+      tier: storageTier
+      iops: storageIops
+      throughput: storageThroughput
     }
     version: version
   }
@@ -490,7 +516,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-PostgreSQL-PrivateEndpoint-${index}'
     scope: resourceGroup(

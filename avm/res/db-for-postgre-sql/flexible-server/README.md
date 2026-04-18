@@ -32,8 +32,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/databases)</li></ul> |
 | `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/firewallRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -334,6 +334,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       ]
     }
     serverThreatProtection: 'Enabled'
+    storageTier: 'P10'
+    storageType: 'Premium_LRS'
   }
 }
 ```
@@ -408,6 +410,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     },
     "serverThreatProtection": {
       "value": "Enabled"
+    },
+    "storageTier": {
+      "value": "P10"
+    },
+    "storageType": {
+      "value": "Premium_LRS"
     }
   }
 }
@@ -452,6 +460,8 @@ param managedIdentities = {
   ]
 }
 param serverThreatProtection = 'Enabled'
+param storageTier = 'P10'
+param storageType = 'Premium_LRS'
 ```
 
 </details>
@@ -1674,7 +1684,11 @@ param tags = {
 | [`replicationRole`](#parameter-replicationrole) | string | The replication role for the server. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
+| [`storageIops`](#parameter-storageiops) | int | Maximum IOPS supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
+| [`storageThroughput`](#parameter-storagethroughput) | int | Maximum throughput supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS. |
+| [`storageTier`](#parameter-storagetier) | string | Storage tier of a server. |
+| [`storageType`](#parameter-storagetype) | string | Type of storage assigned to a server. Allowed values are Premium_LRS, PremiumV2_LRS, or UltraSSD_LRS. If not specified, it defaults to Premium_LRS. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
 
@@ -2926,6 +2940,13 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
   ]
   ```
 
+### Parameter: `storageIops`
+
+Maximum IOPS supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS.
+
+- Required: No
+- Type: int
+
 ### Parameter: `storageSizeGB`
 
 Max storage allowed for a server.
@@ -2933,19 +2954,53 @@ Max storage allowed for a server.
 - Required: No
 - Type: int
 - Default: `32`
+- MinValue: 32
+
+### Parameter: `storageThroughput`
+
+Maximum throughput supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS.
+
+- Required: No
+- Type: int
+
+### Parameter: `storageTier`
+
+Storage tier of a server.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
-    32
-    64
-    128
-    256
-    512
-    1024
-    2048
-    4096
-    8192
-    16384
+    'P1'
+    'P10'
+    'P15'
+    'P2'
+    'P20'
+    'P3'
+    'P30'
+    'P4'
+    'P40'
+    'P50'
+    'P6'
+    'P60'
+    'P70'
+    'P80'
+  ]
+  ```
+
+### Parameter: `storageType`
+
+Type of storage assigned to a server. Allowed values are Premium_LRS, PremiumV2_LRS, or UltraSSD_LRS. If not specified, it defaults to Premium_LRS.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'PremiumV2_LRS'
+    'UltraSSD_LRS'
   ]
   ```
 
