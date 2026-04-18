@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4431334684802902206"
+      "version": "0.42.1.51946",
+      "templateHash": "2627451480057620433"
     },
     "name": "Digital Twins Instances",
     "description": "This module deploys an Azure Digital Twins Instance."
@@ -1310,6 +1310,9 @@
           },
           "properties": {
             "value": "[coalesce(parameters('endpoints'), createArray())[copyIndex()].properties]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1319,8 +1322,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "16925483227622997507"
+              "version": "0.42.1.51946",
+              "templateHash": "11469845121376262577"
             },
             "name": "Digital Twins Instance Endpoint",
             "description": "This module deploys a Digital Twins Instance Endpoint."
@@ -1642,6 +1645,13 @@
               "metadata": {
                 "description": "Required. The properties of the endpoint."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -1683,6 +1693,26 @@
               "subscriptionId": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[2]]",
               "resourceGroup": "[split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[4]]",
               "name": "[format('{0}/{1}', split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')[8], last(split(parameters('properties').authentication.serviceBusNamespaceTopicResourceId, '/')))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.digitaltwins-digitaltwinsinstance-en.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "eventGridTopic": {
               "condition": "[equals(parameters('properties').endpointType, 'EventGrid')]",
