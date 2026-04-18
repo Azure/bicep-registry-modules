@@ -22,6 +22,28 @@ param autoscaleSettingsMaxThroughput int = 4000
 @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.')
 param throughput int?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-cassandrkeyspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
@@ -49,6 +71,8 @@ resource cassandraKeyspace 'Microsoft.DocumentDB/databaseAccounts/cassandraKeysp
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module cassandraKeyspace_tables 'table/main.bicep' = [
   for table in tables: {
     name: '${uniqueString(deployment().name, cassandraKeyspace.name)}-cassandradb-${table.name}'
@@ -62,6 +86,7 @@ module cassandraKeyspace_tables 'table/main.bicep' = [
       autoscaleSettingsMaxThroughput: table.?autoscaleSettingsMaxThroughput
       defaultTtl: table.?defaultTtl
       tags: table.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -77,6 +102,7 @@ module cassandraKeyspace_views 'view/main.bicep' = [
       throughput: view.?throughput
       autoscaleSettingsMaxThroughput: view.?autoscaleSettingsMaxThroughput
       tags: view.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
