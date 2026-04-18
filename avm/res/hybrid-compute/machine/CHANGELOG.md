@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/hybrid-compute/machine/CHANGELOG.md).
 
+## 0.4.3
+
+### Changes
+
+- Publishing child modules: `extension`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.2
 
 ### Changes
