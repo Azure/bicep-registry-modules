@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.11.2
+
+### Changes
+
+- Publishing child modules `backup-config`, `backup-fabric/protection-container/protected-item`, `backup-policy`, `replication-alert-setting`, `replication-fabric`, `replication-fabric/replication-protection-container`, `replication-fabric/replication-protection-container/replication-protection-container-mapping`, and `replication-policy`.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes
