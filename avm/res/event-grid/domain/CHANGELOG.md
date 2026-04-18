@@ -12,16 +12,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
-## 0.8.4
-
-### Changes
-
-- Publishing child modules: `event-subscription`, `topic`
-
-### Breaking Changes
-
-- None
-
 ## 0.8.3
 
 ### Changes
