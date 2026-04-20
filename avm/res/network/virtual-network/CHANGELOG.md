@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Enabling child module `avm/res/network/virtual-network/virtual-network-peering` for publishing
+- Publishing child module `avm/res/network/virtual-network/virtual-network-peering`
 
 ### Breaking Changes
 
