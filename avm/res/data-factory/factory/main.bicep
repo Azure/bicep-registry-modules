@@ -255,7 +255,7 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
 
 // The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
 module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
-  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: if (sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '' != '' && sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '' == 'RBAC') {
+  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: if ((sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') != '' && (sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC') {
     name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
     scope: resourceGroup(
       split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
