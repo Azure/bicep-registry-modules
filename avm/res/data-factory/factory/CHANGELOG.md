@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
-## 0.11.1
+## 0.11.2
 
 ### Changes
 
@@ -10,6 +10,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Publishing child module `avm/res/data-factory/factory/linked-service`
 - Publishing child module `avm/res/data-factory/factory/managed-virtual-network`
 - Publishing child module `avm/res/data-factory/factory/managed-virtual-network/managed-private-endpoint`
+
+### Breaking Changes
+
+- None
+
+## 0.11.1
+
+### Changes
+
+- Updated 'private-endpoint' reference to `0.12.0`
+- Updated all 'avm-common-types' reference to `0.7.0`
 
 ### Breaking Changes
 
