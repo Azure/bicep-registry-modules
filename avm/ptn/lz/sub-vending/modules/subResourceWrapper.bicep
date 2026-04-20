@@ -350,6 +350,10 @@ var deploymentNames = {
     'lz-vend-umi-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
     64
   )
+  createLzUMIRoleAssignmentsAbsoluteScopeMg: take(
+    'lz-vend-umi-rbac-abs-mg-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
   createResourceGroupForDeploymentScript: take(
     'lz-vend-rsg-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deployment().name)}',
     64
@@ -437,10 +441,10 @@ var pimRoleAssignmentsResourceGroupNotSelf = filter(
   assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
 
-// UMI Role Assignments filtering and splitting
+// UMI Role Assignments filtering and splitting.
 var umiRoleAssignmentsSubscription = [
   for (item, i) in userAssignedManagedIdentities: map(
-    filter(item.?roleAssignments ?? [], assignment => !contains(assignment.relativeScope, '/resourceGroups/')),
+    filter(item.?roleAssignments ?? [], assignment => !contains(assignment.?relativeScope, '/resourceGroups/') && !contains(assignment.?absoluteScope, '/resourceGroups/')),
     assignment => union(assignment, { identityIndex: i })
   )
 ]
@@ -449,7 +453,7 @@ var umiRoleAssignmentsSubscriptionFlattened = flatten(umiRoleAssignmentsSubscrip
 
 var umiRoleAssignmentsResourceGroups = [
   for (item, i) in userAssignedManagedIdentities: map(
-    filter(item.?roleAssignments ?? [], assignment => contains(assignment.relativeScope, '/resourceGroups/')),
+    filter(item.?roleAssignments ?? [], assignment => contains(assignment.?relativeScope, '/resourceGroups/') || contains(assignment.?absoluteScope, '/resourceGroups/')),
     assignment => union(assignment, { identityIndex: i })
   )
 ]
@@ -458,13 +462,23 @@ var umiRoleAssignmentsResourceGroupsFlattened = flatten(umiRoleAssignmentsResour
 
 var umiRoleAssignmentsResourceGroupSelfFlattened = filter(
   umiRoleAssignmentsResourceGroupsFlattened,
-  assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  assignment => contains(assignment.?relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
 
 var umiRoleAssignmentsResourceGroupNotSelfFlattened = filter(
   umiRoleAssignmentsResourceGroupsFlattened,
-  assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  assignment => !contains(assignment.?relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
+
+// UMI Role Assignments with absolute scope - MG scope only
+var umiRoleAssignmentsAbsoluteMg = [
+  for (item, i) in userAssignedManagedIdentities: map(
+    filter(item.?roleAssignments ?? [], assignment => contains(assignment.?absoluteScope, '/managementGroups/')),
+    assignment => union(assignment, { identityIndex: i })
+  )
+]
+
+var umiRoleAssignmentsAbsoluteMgFlattened = flatten(umiRoleAssignmentsAbsoluteMg)
 
 // Check hubNetworkResourceId to see if it's a virtual WAN connection instead of normal virtual network peering
 var virtualHubResourceIdChecked = (!empty(hubNetworkResourceId) && contains(
@@ -1073,7 +1087,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-
 module createLzUMIRoleAssignmentsSub 'br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name, assignment.definition, assignment.?relativeScope ?? assignment.?absoluteScope)}',
       64
     )
     params: {
@@ -1099,7 +1113,11 @@ module createLzUMIRoleAssignmentsSub 'br/public:avm/res/authorization/role-assig
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
-    scope: subscription(subscriptionId)
+    scope: subscription(
+      !empty(assignment.?absoluteScope)
+        ? split(assignment.absoluteScope, '/')[2] // /subscriptions/00000000-0000-0000-0000-000000000000
+        : subscriptionId
+      )
   }
 ]
 
@@ -1138,7 +1156,7 @@ module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/res/authorization/role-
 module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1' = [
   for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
     name: take(
-      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name,assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name, assignment.definition, assignment.?relativeScope ?? assignment.?absoluteScope)}',
       64
     )
     params: {
@@ -1163,7 +1181,47 @@ module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/res/authorization/ro
                             ? assignment.?roleAssignmentCondition.?delegationCode
                             : null
     }
-    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
+    scope: resourceGroup(
+      !empty(assignment.?absoluteScope) ? split(assignment.absoluteScope, '/')[2] : subscriptionId, // /subscriptions/00000000-0000-0000-0000-000000000000
+      !empty(assignment.?absoluteScope)
+        ? split(assignment.absoluteScope, '/')[4] // /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-abc-example
+        : split(assignment.relativeScope, '/')[2] // /resourceGroups/rg-abc-example
+    )
+  }
+]
+
+module createLzUMIRoleAssignmentsAbsoluteScopeMg 'br/public:avm/res/authorization/role-assignment/mg-scope:0.1.2' = [
+  for (assignment, i) in umiRoleAssignmentsAbsoluteMgFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsAbsoluteMgFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsAbsoluteScopeMg}-${uniqueString(createUserAssignedManagedIdentity[assignment.identityIndex].name, assignment.definition, assignment.absoluteScope)}',
+      64
+    )
+    params: {
+      managementGroupId: split(assignment.absoluteScope, '/')[2] // /managementGroups/mg_corp
+      principalId: createUserAssignedManagedIdentity[assignment.identityIndex].?outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      description: assignment.?description
+      enableTelemetry: enableTelemetry
+      location: deployment().location
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+    scope: managementGroup(split(assignment.absoluteScope, '/')[2]) // /managementGroups/mg_corp
   }
 ]
 
@@ -2235,8 +2293,11 @@ type roleAssignmentUMIType = {
   @description('Required. The role definition ID or name.')
   definition: string
 
-  @description('Required. The relative scope of the role assignment.')
-  relativeScope: string
+  @description('Conditional. The relative scope of the role assignment. Required if `absoluteScope` is empty ')
+  relativeScope: string?
+
+  @description('Conditional. The absolute scope of the role assignment. Required if `relativeScope` is empty')
+  absoluteScope: string?
 
   @description('Optional. The condition for the role assignment.')
   roleAssignmentCondition: roleAssignmentConditionType?
