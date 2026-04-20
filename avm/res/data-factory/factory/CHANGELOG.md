@@ -6,7 +6,21 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for deploying shared Self-Hosted Integration Runtime
+- Added support for deploying linked Self-Hosted Integration Runtime by providing:
+```
+  integrationRuntimes: [
+        {
+          name: '<Self-Hosted Integration Runtime name>'
+          type: 'SelfHosted'
+          typeProperties: {
+            linkedInfo: {
+              authorizationType: 'RBAC'
+              resourceId: '<Linked Self-Hosted Integration Runtime ResourceId>'
+            }
+          }
+        }
+      ]
+```
 
 ### Breaking Changes
 
