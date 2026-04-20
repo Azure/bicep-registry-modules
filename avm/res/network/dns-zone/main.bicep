@@ -276,7 +276,7 @@ module dnsZone_TXT 'txt/main.bicep' = [
   }
 ]
 
-module dnsZone_dnssecConfig 'dnssecConfigs/main.bicep' = if (dnssecConfig == true) {
+module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (dnssecConfig == true) {
   name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
   params: {
     dnsZoneName: dnsZone.name
