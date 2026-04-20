@@ -250,7 +250,7 @@ resource topic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
   }
 ]
 
-module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module topic_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-topic-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -332,6 +332,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = topic.location
+
+@description('The public endpoint of the event grid topic.')
+output endpoint string = topic.properties.endpoint
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = topic.?identity.?principalId

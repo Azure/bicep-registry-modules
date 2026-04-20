@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.39.26.7824",
-      "templateHash": "13928174215528939368"
+      "version": "0.41.2.15936",
+      "templateHash": "14596822136960656169"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table."
@@ -355,12 +355,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[parameters('workspaceName')]"
     },
     "table": {
       "type": "Microsoft.OperationalInsights/workspaces/tables",
-      "apiVersion": "2025-02-01",
+      "apiVersion": "2025-07-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "plan": "[parameters('plan')]",
@@ -378,7 +378,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}/tables/{1}', parameters('workspaceName'), parameters('name'))]",
+      "scope": "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/document-knowledge-mining/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated AKS (Azure Kubernetes Service) version to the latest 1.34.2
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

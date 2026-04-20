@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.applicationGatewayWe
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nagwafpmax'
+param serviceShort string = 'nagwafptstmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,9 +26,18 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -65,6 +74,32 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      roleAssignments: [
+        {
+          name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+          roleDefinitionIdOrName: 'Network Contributor'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: subscriptionResourceId(
+            'Microsoft.Authorization/roleDefinitions',
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+          )
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

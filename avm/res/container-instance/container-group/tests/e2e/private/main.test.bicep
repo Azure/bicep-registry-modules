@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
@@ -96,6 +95,15 @@ module testDeployment '../../../main.bicep' = [
                 memoryInGB: '2'
               }
             }
+          }
+        }
+      ]
+      extensions: [
+        {
+          name: 'vk-realtime-metrics'
+          properties: {
+            extensionType: 'realtime-metrics' // The extension type 'realtime-metrics' are only supported for container group with virtual network.
+            version: '1.0'
           }
         }
       ]

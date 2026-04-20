@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/private-link-hub/CHANGELOG.md).
 
+## 0.6.7
+
+### Changes
+
+- Updated API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.6.6
 
 ### Changes

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "15397070691540239144"
+      "version": "0.41.2.15936",
+      "templateHash": "10320403358700650147"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service."
@@ -335,18 +335,19 @@
     }
   },
   "variables": {
-    "name": "default"
+    "name": "default",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('storageAccountName')]"
     },
     "tableServices": {
       "type": "Microsoft.Storage/storageAccounts/tableServices",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), variables('name'))]",
       "properties": {
         "cors": "[if(not(equals(parameters('corsRules'), null())), createObject('corsRules', parameters('corsRules')), null())]"
@@ -359,7 +360,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Storage/storageAccounts/{0}/tableServices/{1}', parameters('storageAccountName'), variables('name'))]",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts/tableServices', parameters('storageAccountName'), variables('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', variables('name')))]",
       "properties": {
         "copy": [
@@ -415,6 +416,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -424,8 +428,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "2494851345252564065"
+              "version": "0.41.2.15936",
+              "templateHash": "11362260974696477885"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table."
@@ -530,6 +534,13 @@
               "metadata": {
                 "description": "Required. Name of the table."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -558,18 +569,38 @@
             "storageAccount::tableServices": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts/tableServices",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.storage-table.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[parameters('storageAccountName')]"
             },
             "table": {
               "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2025-06-01",
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]"
             },
             "table_roleAssignments": {
@@ -579,7 +610,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Storage/storageAccounts/{0}/tableServices/{1}/tables/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Storage/storageAccounts/tableServices/tables', parameters('storageAccountName'), 'default', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

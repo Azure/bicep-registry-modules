@@ -11,16 +11,40 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
-param properties resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.properties
+param properties resourceInput<'Microsoft.Cdn/profiles/endpoints@2025-06-01'>.properties
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'microsoft.cdn/profiles/endpoints@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.Cdn/profiles/endpoints@2025-06-01'>.tags?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cdn-profile-endpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 }
 
-resource endpoint 'microsoft.cdn/profiles/endpoints@2025-04-15' = {
+resource endpoint 'Microsoft.Cdn/profiles/endpoints@2025-06-01' = {
   parent: profile
   name: name
   location: location
@@ -32,6 +56,7 @@ module endpoint_origins 'origin/main.bicep' = [
   for origin in properties.origins: {
     name: '${name}-origins-${origin.name}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       profileName: profile.name
       endpointName: endpoint.name
       name: origin.name

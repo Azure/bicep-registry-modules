@@ -2,10 +2,93 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
-## 0.4.2
+## 0.7.0
 
 ### Changes
 
+- Added the ability to deploy budgets as part of subscription vending
+
+### Breaking Changes
+
+- None
+
+## 0.6.1
+
+### Changes
+
+- UMI role assignments now use an embedded `identityIndex` instead of the flattened loop counter, preventing `createUserAssignedManagedIdentity[N]` validation failures when identities have more than one role assignment each.
+- RG-scoped UMI role assignment variables no longer loop over the identities array before filtering, eliminating duplicate role assignment deployments.
+
+### Breaking Changes
+
+- None
+
+## 0.6.0
+
+### Changes
+
+- Replace calls to `avm/ptn/authorization/role-assignment` module with calls to new more specific child modules in `avm/res/authorization/role-assignment` for both subscription and resource group scope role assignments to remove unnecessary parameters and simplify usage.
+
+### Breaking Changes
+
+- Removed some parameters into child module calls, these technically shouldn't be breaking for consumers but for awareness:
+  - `subscriptionId` and `resourceGroupName` parameters removed from main module and added to deployment script role assignment module calls with values passed in from main module parameters
+  - `scope` property added to deployment script role assignment module calls with appropriate scope based on parameters passed into main module
+## 0.5.4
+
+### Changes
+
+- Add defaultOutboundAccess property to subnets
+
+### Breaking Changes
+
+- None
+
+## 0.5.3
+
+### Changes
+
+- Fix networkPolicies property
+- Bump old modules' versions
+
+### Breaking Changes
+
+- None
+
+## 0.5.2
+
+### Changes
+
+- Updated `avm/ptn/authorization/role-assignment` module reference from version `0.2.2` to `0.2.4` to include fix for management group scoped role definitions
+- Updated `avm/ptn/authorization/pim-role-assignment` module reference from version `0.1.1` to `0.1.2` to include fix for management group scoped role definitions
+
+### Breaking Changes
+
+- None
+
+## 0.5.1
+
+### Changes
+
+- Fixed deployment failures when `deployment().location` contains spaces (e.g., 'West Europe', 'East US 2') by implementing location normalization for resource names
+- Added 73-region mapping dictionary to convert display names with spaces to short names without spaces
+- Normalized 8 resource name parameters that use `deployment().location` in their default values
+- Resource names now use lowercase names without spaces while respecting user-provided custom values
+
+### Breaking Changes
+
+- **None** - Changes are backward compatible and only affect default parameter values when `deployment().location` contains spaces
+
+## 0.5.0
+
+### Changes
+
+- Added support for Azure Virtual Network Manager IPAM (IP Address Management) pools for automatic IP address allocation
+- Added new parameter `virtualNetworkIpamPoolNumberOfIpAddresses` to specify the number of IP addresses to allocate from an IPAM pool
+- Updated `virtualNetworkAddressSpace` parameter to accept either CIDR notation or IPAM pool resource IDs
+- Added IPAM support for both primary virtual network and additional virtual networks
+- Added IPAM support for subnet address allocation via `ipamPoolPrefixAllocations` property in subnet definitions
+- Updated IPAM test scenario to demonstrate automatic subnet IP allocation from IPAM pools
 - Clarified `resourceProviders` parameter documentation to accurately reflect default behavior
 
 ### Breaking Changes

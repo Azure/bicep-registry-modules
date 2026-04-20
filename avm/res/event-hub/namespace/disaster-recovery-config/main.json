@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "2531448599378855086"
+      "version": "0.41.2.15936",
+      "templateHash": "18013542226581582439"
     },
     "name": "Event Hub Namespace Disaster Recovery Configs",
     "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."

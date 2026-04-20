@@ -11,46 +11,48 @@ param location string = resourceGroup().location
 @allowed(['PythonLTS', 'CustomContainer'])
 param containerType string
 
-@description('Optional. Custom container definitions. Only required if containerType is CustomContainer.')
-param containers sessionContainerType[]?
+@description('Optional. The custom container configuration if the containerType is CustomContainer. Only set if containerType is CustomContainer.')
+param customContainerTemplate resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.customContainerTemplate?
 
-@description('Optional. Required if containerType == \'CustomContainer\'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer.')
-param targetIngressPort int?
+@description('Optional. The pool configuration if the poolManagementType is dynamic.')
+param dynamicPoolConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.dynamicPoolConfiguration = {
+  lifecycleConfiguration: {
+    cooldownPeriodInSeconds: 300
+    lifecycleType: 'Timed'
+  }
+}
 
-@description('Optional. Container registry credentials. Only required if containerType is CustomContainer and the container registry requires authentication.')
-param registryCredentials sessionRegistryCredentialsType?
+@description('Optional. The scale configuration of the session pool.')
+param scaleConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.scaleConfiguration = {
+  maxConcurrentSessions: 5
+}
 
-@description('Optional. The cooldown period of a session in seconds.')
-param cooldownPeriodInSeconds int = 300
-
-@description('Optional. The maximum count of sessions at the same time.')
-param maxConcurrentSessions int = 5
-
-@description('Optional. The minimum count of ready session instances.')
-param readySessionInstances int?
-
-@description('Optional. Network status for the sessions. Defaults to EgressDisabled.')
-@allowed(['EgressEnabled', 'EgressDisabled'])
-param sessionNetworkStatus string = 'EgressDisabled'
+@description('Optional. The network configuration of the sessions in the session pool.')
+param sessionNetworkConfiguration resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.sessionNetworkConfiguration = {
+  status: 'EgressDisabled'
+}
 
 @description('Optional. The pool management type of the session pool. Defaults to Dynamic.')
 @allowed(['Dynamic', 'Manual'])
 param poolManagementType string = 'Dynamic'
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Settings for a Managed Identity that is assigned to the Session pool.')
-param managedIdentitySettings managedIdentitySettingType[]?
+param managedIdentitySettings resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.managedIdentitySettings?
+
+@description('Optional. The secrets of the session pool.')
+param secrets resourceInput<'Microsoft.App/sessionPools@2025-07-01'>.properties.secrets?
 
 @description('Optional. Resource ID of the session pool\'s environment.')
 param environmentResourceId string?
@@ -70,8 +72,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -132,34 +134,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource sessionPool 'Microsoft.App/sessionPools@2024-10-02-preview' = {
+resource sessionPool 'Microsoft.App/sessionPools@2025-07-01' = {
   name: name
   location: location
   identity: identity
   properties: {
     containerType: containerType
     environmentId: environmentResourceId
-    customContainerTemplate: containerType == 'CustomContainer'
-      ? {
-          containers: containers
-          ingress: {
-            targetPort: targetIngressPort
-          }
-          registryCredentials: registryCredentials
-        }
-      : null
-    dynamicPoolConfiguration: {
-      cooldownPeriodInSeconds: cooldownPeriodInSeconds
-      executionType: 'Timed'
-    }
+    customContainerTemplate: containerType == 'CustomContainer' ? customContainerTemplate : null
+    dynamicPoolConfiguration: poolManagementType == 'Dynamic' ? dynamicPoolConfiguration : null
+    secrets: secrets
     managedIdentitySettings: managedIdentitySettings
-    scaleConfiguration: {
-      maxConcurrentSessions: maxConcurrentSessions
-      readySessionInstances: readySessionInstances
-    }
-    sessionNetworkConfiguration: {
-      status: sessionNetworkStatus
-    }
+    scaleConfiguration: scaleConfiguration
+    sessionNetworkConfiguration: sessionNetworkConfiguration
     poolManagementType: poolManagementType
   }
   tags: tags
@@ -205,79 +192,4 @@ output resourceGroupName string = resourceGroup().name
 output managementEndpoint string = sessionPool.properties.poolManagementEndpoint
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = sessionPool.?identity.?principalId ?? ''
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('Optional. Custom container definition.')
-type sessionContainerType = {
-  @description('Optional. Container start command arguments.')
-  args: string[]?
-
-  @description('Optional. Container start command.')
-  command: string[]?
-
-  @description('Optional. Container environment variables.')
-  env: sessionContainerEnvType[]?
-
-  @description('Required. Container image tag.')
-  image: string
-
-  @description('Required. Custom container name.')
-  name: string
-
-  @description('Required. Container resource requirements.')
-  resources: sessionContainerResourceType
-}
-
-@export()
-@description('Optional. Environment variable definition for a container. Only used with custom containers.')
-type sessionContainerEnvType = {
-  @description('Required. Environment variable name.')
-  name: string
-
-  @description('Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value.')
-  secretRef: string?
-
-  @description('Optional. Required if secretRef is not set. Non-secret environment variable value.')
-  value: string?
-}
-
-@export()
-@description('Optional. Container resource requirements. Only used with custom containers.')
-type sessionContainerResourceType = {
-  @description('Required. Required CPU in cores, e.g. 0.5.')
-  cpu: string
-
-  @description('Required. Required memory, e.g. "1.25Gi".')
-  memory: string
-}
-
-@export()
-@description('Optional. Container registry credentials. Only used with custom containers.')
-type sessionRegistryCredentialsType = {
-  @description('Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use "system".')
-  identity: string?
-
-  @description('Optional. The name of the secret that contains the registry login password. Not used if identity is specified.')
-  passwordSecretRef: string?
-
-  @description('Required. Container registry server.')
-  server: string
-
-  @description('Required. Container registry username.')
-  username: string
-}
-
-@export()
-@description('Optional. Managed Identity settings for the session pool.')
-type managedIdentitySettingType = {
-  @description('Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or "system" for system-assigned identity.')
-  identity: string
-
-  @description('Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: "All", "Init", "Main", "None".')
-  lifecycle: string
-}
+output systemAssignedMIPrincipalId string? = sessionPool.?identity.?principalId

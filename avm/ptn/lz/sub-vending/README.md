@@ -28,12 +28,13 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Authorization/roleAssignmentScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignmentschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests)</li></ul> |
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleeligibilityschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests)</li></ul> |
+| `Microsoft.Consumption/budgets` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.consumption_budgets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Consumption/2023-11-01/budgets)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Management/managementGroups/subscriptions` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.management_managementgroups_subscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions)</li></ul> |
-| `Microsoft.Network/bastionHosts` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/bastionHosts)</li></ul> |
 | `Microsoft.Network/natGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_natgateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/natGateways)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups)</li></ul> |
 | `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
@@ -49,15 +50,16 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/publicIPPrefixes` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipprefixes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/publicIPPrefixes)</li></ul> |
 | `Microsoft.Network/routeTables` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_routetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/routeTables)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
 | `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
-| `Microsoft.Resources/resourceGroups` | 2021-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups)</li></ul> |
+| `Microsoft.Resources/resourceGroups` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_resourcegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/resourceGroups)</li></ul> |
 | `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices)</li></ul> |
@@ -83,15 +85,17 @@ The following section provides usage examples for the module, which were used to
 
 - [Multiple virtual networks.](#example-1-multiple-virtual-networks)
 - [Deploy subscription with Bastion.](#example-2-deploy-subscription-with-bastion)
-- [Using only defaults.](#example-3-using-only-defaults)
-- [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-8-using-rbac-conditions)
-- [Using standalone NSG deployment.](#example-9-using-standalone-nsg-deployment)
-- [Using user-assigned managed identities.](#example-10-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-11-vwan-topology)
+- [Deploy subscription with a budget.](#example-3-deploy-subscription-with-a-budget)
+- [Using only defaults.](#example-4-using-only-defaults)
+- [Hub and spoke topology.](#example-5-hub-and-spoke-topology)
+- [Using IPAM pool for address allocation.](#example-6-using-ipam-pool-for-address-allocation)
+- [Hub and spoke topology with NAT gateway.](#example-7-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-8-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-9-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-10-using-rbac-conditions)
+- [Using standalone NSG deployment.](#example-11-using-standalone-nsg-deployment)
+- [Using user-assigned managed identities.](#example-12-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-13-vwan-topology)
 
 ### Example 1: _Multiple virtual networks._
 
@@ -681,7 +685,120 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 3: _Using only defaults._
+### Example 3: _Deploy subscription with a budget._
+
+This instance deploys a subscription with a budget.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/budgets]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: {
+    budgetAmount: 100
+    budgetName: 'budget-ssabudg'
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "budgetAmount": {
+      "value": 100
+    },
+    "budgetName": {
+      "value": "budget-ssabudg"
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param budgetAmount = 100
+param budgetName = 'budget-ssabudg'
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -784,7 +901,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 4: _Hub and spoke topology._
+### Example 5: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -1111,7 +1228,266 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 5: _Hub and spoke topology with NAT gateway._
+### Example 6: _Using IPAM pool for address allocation._
+
+This instance deploys the module with a virtual network that uses Azure Virtual Network Manager IPAM for automatic IP address allocation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ipam]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: {
+    deploymentScriptLocation: '<deploymentScriptLocation>'
+    deploymentScriptManagedIdentityName: '<deploymentScriptManagedIdentityName>'
+    deploymentScriptName: 'ds-ssaipam'
+    deploymentScriptNetworkSecurityGroupName: '<deploymentScriptNetworkSecurityGroupName>'
+    deploymentScriptResourceGroupName: '<deploymentScriptResourceGroupName>'
+    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
+    deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '<ipamPoolResourceId>'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkIpamPoolNumberOfIpAddresses: '256'
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '32'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'Subnet2'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentScriptLocation": {
+      "value": "<deploymentScriptLocation>"
+    },
+    "deploymentScriptManagedIdentityName": {
+      "value": "<deploymentScriptManagedIdentityName>"
+    },
+    "deploymentScriptName": {
+      "value": "ds-ssaipam"
+    },
+    "deploymentScriptNetworkSecurityGroupName": {
+      "value": "<deploymentScriptNetworkSecurityGroupName>"
+    },
+    "deploymentScriptResourceGroupName": {
+      "value": "<deploymentScriptResourceGroupName>"
+    },
+    "deploymentScriptStorageAccountName": {
+      "value": "<deploymentScriptStorageAccountName>"
+    },
+    "deploymentScriptVirtualNetworkName": {
+      "value": "<deploymentScriptVirtualNetworkName>"
+    },
+    "resourceProviders": {
+      "value": {
+        "Microsoft.Network": []
+      }
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "<ipamPoolResourceId>"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkIpamPoolNumberOfIpAddresses": {
+      "value": "256"
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "32",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "Subnet2"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param deploymentScriptLocation = '<deploymentScriptLocation>'
+param deploymentScriptManagedIdentityName = '<deploymentScriptManagedIdentityName>'
+param deploymentScriptName = 'ds-ssaipam'
+param deploymentScriptNetworkSecurityGroupName = '<deploymentScriptNetworkSecurityGroupName>'
+param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
+param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
+param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
+param resourceProviders = {
+  'Microsoft.Network': []
+}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '<ipamPoolResourceId>'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkIpamPoolNumberOfIpAddresses = '256'
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '32'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'Subnet2'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 7: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -1356,7 +1732,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 6: _Using PIM Active Role assignments._
+### Example 8: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
 
@@ -1553,7 +1929,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using PIM Eligible Role assignments._
+### Example 9: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
 
@@ -1728,7 +2104,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 8: _Using RBAC conditions._
+### Example 10: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -1898,7 +2274,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 9: _Using standalone NSG deployment._
+### Example 11: _Using standalone NSG deployment._
 
 This instance deploys the module to test standalone NSG deployments.
 
@@ -2110,7 +2486,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 10: _Using user-assigned managed identities._
+### Example 12: _Using user-assigned managed identities._
 
 This instance deploys the module with user-assigned managed identities.
 
@@ -2350,7 +2726,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 11: _Vwan topology._
+### Example 13: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -2572,6 +2948,15 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalVirtualNetworks`](#parameter-additionalvirtualnetworks) | array | A list of additional virtual networks to create. |
+| [`budgetActionGroups`](#parameter-budgetactiongroups) | array | List of action group resource IDs that will receive the alert. |
+| [`budgetAmount`](#parameter-budgetamount) | int | The total amount of cost or usage to track with the budget. |
+| [`budgetCategory`](#parameter-budgetcategory) | string | The category of the budget, whether the budget tracks cost or usage. |
+| [`budgetContactEmails`](#parameter-budgetcontactemails) | array | The list of email addresses to send the budget notification to when the thresholds are exceeded. |
+| [`budgetContactRoles`](#parameter-budgetcontactroles) | array | The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided. |
+| [`budgetName`](#parameter-budgetname) | string | The name of the budget. |
+| [`budgetStartDate`](#parameter-budgetstartdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
+| [`budgetThresholds`](#parameter-budgetthresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`budgetThresholdType`](#parameter-budgetthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -2606,7 +2991,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`userAssignedIdentityResourceGroupName`](#parameter-userassignedidentityresourcegroupname) | string | The name of the resource group to create the user-assigned managed identities in. |
 | [`userAssignedManagedIdentities`](#parameter-userassignedmanagedidentities) | array | The list of user-assigned managed identities. |
 | [`vHubRoutingIntentEnabled`](#parameter-vhubroutingintentenabled) | bool | Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.<p> |
-| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
+| [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p> |
 | [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
 | [`virtualNetworkDdosPlanResourceId`](#parameter-virtualnetworkddosplanresourceid) | string | The resource ID of an existing DDoS Network Protection Plan that you wish to link to this Virtual Network.<p> |
 | [`virtualNetworkDeployBastion`](#parameter-virtualnetworkdeploybastion) | bool | Whether to deploy a Bastion host to the created virtual network. |
@@ -2614,6 +2999,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkDeployNatGateway`](#parameter-virtualnetworkdeploynatgateway) | bool | Whether to deploy a NAT gateway to the created virtual network. |
 | [`virtualNetworkDnsServers`](#parameter-virtualnetworkdnsservers) | array | The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.<p> |
 | [`virtualNetworkEnabled`](#parameter-virtualnetworkenabled) | bool | Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you also provide values for the following parameters at a minimum:<p><li>`virtualNetworkResourceGroupName`<li>`virtualNetworkResourceGroupLockEnabled`<li>`virtualNetworkLocation`<li>`virtualNetworkName`<li>`virtualNetworkAddressSpace`<p><p>> Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.<p> |
+| [`virtualNetworkIpamPoolNumberOfIpAddresses`](#parameter-virtualnetworkipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p> |
 | [`virtualNetworkLocation`](#parameter-virtualnetworklocation) | string | The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.<p> |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.<p> |
 | [`virtualNetworkNatGatewayConfiguration`](#parameter-virtualnetworknatgatewayconfiguration) | object | The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway. |
@@ -2641,7 +3027,7 @@ A list of additional virtual networks to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
+| [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses. |
 | [`location`](#parameter-additionalvirtualnetworkslocation) | string | The location of the virtual network. |
 | [`name`](#parameter-additionalvirtualnetworksname) | string | The name of the virtual network resource. |
 | [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
@@ -2656,6 +3042,7 @@ A list of additional virtual networks to create.
 | [`deployBastion`](#parameter-additionalvirtualnetworksdeploybastion) | bool | The option to deploy Azure Bastion in the virtual network. |
 | [`deployNatGateway`](#parameter-additionalvirtualnetworksdeploynatgateway) | bool | Flag to deploy a NAT gateway. |
 | [`dnsServers`](#parameter-additionalvirtualnetworksdnsservers) | array | The list of DNS servers for the virtual network. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-additionalvirtualnetworksipampoolnumberofipaddresses) | string | The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID. |
 | [`natGatewayConfiguration`](#parameter-additionalvirtualnetworksnatgatewayconfiguration) | object | The configuration for deploying a NAT gateway. |
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
@@ -2665,7 +3052,7 @@ A list of additional virtual networks to create.
 
 ### Parameter: `additionalVirtualNetworks.addressPrefixes`
 
-The address prefixes for the virtual network.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16"]`) OR a single IPAM pool resource ID. When specifying an IPAM pool resource ID, you must also set ipamPoolNumberOfIpAddresses.
 
 - Required: Yes
 - Type: array
@@ -2732,6 +3119,13 @@ The list of DNS servers for the virtual network.
 
 - Required: No
 - Type: array
+
+### Parameter: `additionalVirtualNetworks.ipamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when addressPrefixes contains an IPAM pool resource ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `additionalVirtualNetworks.natGatewayConfiguration`
 
@@ -2877,6 +3271,7 @@ The subnets for the virtual network.
 | [`associateWithNatGateway`](#parameter-additionalvirtualnetworkssubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-additionalvirtualnetworkssubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-additionalvirtualnetworkssubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-additionalvirtualnetworkssubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-additionalvirtualnetworkssubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -2934,6 +3329,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `additionalVirtualNetworks.subnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `additionalVirtualNetworks.subnets.natGatewayResourceId`
 
@@ -3242,6 +3644,83 @@ Enables the use of remote gateways in the spefcified hub virtual network. If no 
 
 - Required: No
 - Type: bool
+
+### Parameter: `budgetActionGroups`
+
+List of action group resource IDs that will receive the alert.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `budgetAmount`
+
+The total amount of cost or usage to track with the budget.
+
+- Required: No
+- Type: int
+- Default: `100`
+
+### Parameter: `budgetCategory`
+
+The category of the budget, whether the budget tracks cost or usage.
+
+- Required: No
+- Type: string
+- Default: `'Cost'`
+
+### Parameter: `budgetContactEmails`
+
+The list of email addresses to send the budget notification to when the thresholds are exceeded.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `budgetContactRoles`
+
+The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided.
+
+- Required: No
+- Type: array
+- Default: `[if(and(empty(parameters('budgetActionGroups')), empty(parameters('budgetContactEmails'))), createArray('Owner'), createArray())]`
+
+### Parameter: `budgetName`
+
+The name of the budget.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `budgetStartDate`
+
+The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).
+
+- Required: No
+- Type: string
+- Default: `[format('{0}-{1}-01T00:00:00Z', utcNow('yyyy'), utcNow('MM'))]`
+
+### Parameter: `budgetThresholds`
+
+Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    90
+  ]
+  ```
+
+### Parameter: `budgetThresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: No
+- Type: string
+- Default: `'Forecasted'`
 
 ### Parameter: `deploymentScriptLocation`
 
@@ -4082,8 +4561,6 @@ An object of resource providers and resource providers features to register. If 
       'Microsoft.Management': []
       'Microsoft.Maps': []
       'Microsoft.MarketplaceOrdering': []
-      'Microsoft.Media': []
-      'Microsoft.MixedReality': []
       'Microsoft.Network': []
       'Microsoft.NotificationHubs': []
       'Microsoft.OperationalInsights': []
@@ -4979,7 +5456,7 @@ Indicates whether routing intent is enabled on the Virtual Hub within the Virtua
 
 ### Parameter: `virtualNetworkAddressSpace`
 
-The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.
+An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.<p>
 
 - Required: No
 - Type: array
@@ -5116,6 +5593,13 @@ Whether to create a Virtual Network or not.<p><p>If set to `true` ensure you als
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `virtualNetworkIpamPoolNumberOfIpAddresses`
+
+The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.<p>
+
+- Required: No
+- Type: string
 
 ### Parameter: `virtualNetworkLocation`
 
@@ -5294,6 +5778,7 @@ The subnets of the Virtual Network that will be created by this module.
 | [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipamPoolPrefixAllocations`](#parameter-virtualnetworksubnetsipampoolprefixallocations) | array | Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -5351,6 +5836,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.ipamPoolPrefixAllocations`
+
+Array of IPAM pool prefix allocations for dynamic IP address assignment. Each allocation specifies a pool resource ID and the number of IP addresses to allocate.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualNetworkSubnets.natGatewayResourceId`
 
@@ -5712,17 +6204,20 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.1` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
+| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/consumption/budget:0.3.8` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.3` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.4.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
 | `br/public:avm/res/network/route-table:0.5.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.2` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.3` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.26.2` | Remote reference |
 
 ## Notes

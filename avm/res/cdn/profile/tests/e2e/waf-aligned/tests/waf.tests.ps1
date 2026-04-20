@@ -19,7 +19,7 @@ Describe 'Validate resource deployment' {
             $resourceGroupName = $TestInputData.DeploymentOutputs.resourceGroupName.Value
             $cdnProfileName = $TestInputData.DeploymentOutputs.name.Value
             $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
-            $expectedOriginGroups = @("dep-$namePrefix-waf-api-origin-group")
+            $expectedOriginGroups = @("$namePrefix-waf-api-origin-group")
 
             $originGroupTestCases = [System.Collections.ArrayList]@()
             foreach ($originGroup in $expectedOriginGroups) {
@@ -55,10 +55,10 @@ Describe 'Validate resource deployment' {
             $cdnProfileName = $TestInputData.DeploymentOutputs.name.Value
             $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
             $expectedOriginGroups = @{
-                "dep-$namePrefix-waf-api-origin-group" = @(
-                    "dep-$namePrefix-waf-api-origin",
-                    "dep-$namePrefix-waf-api-origin-no-2",
-                    "dep-$namePrefix-waf-api-origin-no-3"
+                "$namePrefix-waf-api-origin-group" = @(
+                    "$namePrefix-waf-api-origin",
+                    "$namePrefix-waf-api-origin-no-2",
+                    "$namePrefix-waf-api-origin-no-3"
                 )
             }
 

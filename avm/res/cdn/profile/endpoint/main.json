@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "6059760264549740383"
+      "version": "0.42.1.51946",
+      "templateHash": "13465865857340956298"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint."
@@ -35,7 +35,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Cdn/profiles/endpoints@2025-04-15#properties/properties"
+          "source": "Microsoft.Cdn/profiles/endpoints@2025-06-01#properties/properties"
         },
         "description": "Required. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details)."
       }
@@ -44,14 +44,44 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Cdn/profiles/endpoints@2025-04-15#properties/tags"
+          "source": "Microsoft.Cdn/profiles/endpoints@2025-06-01#properties/tags"
         },
         "description": "Optional. Endpoint tags."
       },
       "nullable": true
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.cdn-profile-endpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
@@ -60,7 +90,7 @@
     },
     "endpoint": {
       "type": "Microsoft.Cdn/profiles/endpoints",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": "[parameters('properties')]",
@@ -80,6 +110,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "profileName": {
             "value": "[parameters('profileName')]"
           },
@@ -127,8 +160,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "9952737084200971148"
+              "version": "0.42.1.51946",
+              "templateHash": "15782891658132953779"
             },
             "name": "CDN Profiles Endpoints Origins",
             "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -221,9 +254,36 @@
               "metadata": {
                 "description": "Optional. The name of the CDN profile. Default to \"default\"."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.cdn-profile-endpointorigin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -307,7 +367,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('endpoint', '2025-04-15', 'full').location]"
+      "value": "[reference('endpoint', '2025-06-01', 'full').location]"
     },
     "endpointProperties": {
       "type": "object",

@@ -11,7 +11,7 @@ targetScope = 'managementGroup'
 param name string
 
 @description('Optional. The friendly name of the management group. If no value is passed then this field will be set to the group ID.')
-param displayName string = ''
+param displayName string?
 
 @description('Optional. The management group parent ID. Defaults to current scope.')
 param parentId string = last(split(az.managementGroup().id, '/'))!
@@ -42,12 +42,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource parentManagementGroup 'Microsoft.Management/managementGroups@2021-04-01' existing = {
+resource parentManagementGroup 'Microsoft.Management/managementGroups@2023-04-01' existing = {
   name: parentId
   scope: tenant()
 }
 
-resource managementGroup 'Microsoft.Management/managementGroups@2021-04-01' = {
+resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   name: name
   scope: tenant()
   properties: {

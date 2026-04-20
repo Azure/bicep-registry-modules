@@ -10,7 +10,7 @@ param virtualHubName string
 @description('Required. The name of the Public IP to create.')
 param publicIPName string
 
-resource virtualWan 'Microsoft.Network/virtualWans@2024-05-01' = {
+resource virtualWan 'Microsoft.Network/virtualWans@2025-05-01' = {
   name: virtualWanName
   location: location
   properties: {
@@ -20,7 +20,7 @@ resource virtualWan 'Microsoft.Network/virtualWans@2024-05-01' = {
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' = {
   name: virtualHubName
   location: location
   properties: {
@@ -31,7 +31,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2025-05-01' = {
   name: publicIPName
   location: location
   sku: {

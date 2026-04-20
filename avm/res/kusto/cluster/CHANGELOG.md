@@ -2,6 +2,37 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
+## 0.10.0
+
+### Changes
+
+- Updated 'kustoClusterPrincipalAssignment' resource name to use a combination of 'principalId' and 'role' for uniqueness.
+
+### Breaking Changes
+
+- The `kustoClusterPrincipalAssignment` resource name changed from `principalId` to `uniqueString(principalId, role)`. Existing principal assignments will be orphaned and may need to be manually removed before redeploying.
+
+## 0.9.2
+
+### Changes
+
+- Added missing role option 'AllDatabasesAdmin' to allowed values in 'role' parameter.
+
+### Breaking Changes
+
+- None
+
+## 0.9.1
+
+### Changes
+
+- Added missing role option 'AllDatabasesMonitor' to 'role' parameter in 'kustoClusterRoleAssignment' object type.
+- Updated 'zones' property assignment to handle empty 'availabilityZones' parameter correctly.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.0
 
 ### Changes

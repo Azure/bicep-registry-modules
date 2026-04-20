@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [string]
@@ -218,15 +218,46 @@ PARTITION_MSFT_RECOVERY_GUID - de94bba4-06d1-4d40-a16a-bfd50179d6ac   # Recovery
         $systemPartition | Remove-PartitionAccessPath -AccessPath $systemPartition.AccessPaths[0]
     } finally {
         Write-ActionInfo "Dismounting $VHDFormat..."
-        Dismount-VHD -Path $VhdxPath
+        try {
+            Dismount-VHD -Path $VhdxPath -ErrorAction Stop
+        } catch {
+            Write-ActionInfo "WARNING: Dismount-VHD failed: $_. Continuing cleanup..."
+        }
 
         #ejecting .iso - releasing drive letter.
         Write-ActionInfo 'Dismounting .iso...'
-        Dismount-DiskImage -ImagePath $IsoPath
+        $dismountRetries = 3
+        for ($r = 1; $r -le $dismountRetries; $r++) {
+            try {
+                Dismount-DiskImage -ImagePath $IsoPath -ErrorAction Stop
+                Write-ActionInfo 'ISO dismounted successfully.'
+                break
+            } catch {
+                Write-ActionInfo "Dismount-DiskImage attempt $r/$dismountRetries failed: $_"
+                if ($r -lt $dismountRetries) {
+                    Start-Sleep -Seconds 5
+                } else {
+                    Write-ActionInfo 'WARNING: Could not dismount ISO after retries. The VHDX was created successfully; continuing.'
+                }
+            }
+        }
     }
 }
 
 $ErrorActionPreference = 'Stop'
+
+# Clean up any leftover ISO mount from a previous failed run
+if (Test-Path 'c:\isos\hci_os.iso') {
+    try {
+        $diskImage = Get-DiskImage -ImagePath 'c:\isos\hci_os.iso' -ErrorAction SilentlyContinue
+        if ($diskImage -and $diskImage.Attached) {
+            log 'Found leftover mounted ISO from previous run, dismounting...'
+            Dismount-DiskImage -ImagePath 'c:\isos\hci_os.iso' -ErrorAction SilentlyContinue
+        }
+    } catch {
+        log "WARNING: Could not check/dismount leftover ISO: $_"
+    }
+}
 
 # download HCI VHDX or ISO
 If (!(Test-Path -Path 'c:\ISOs')) {
@@ -257,11 +288,21 @@ If ($hciVHDXDownloadURL) {
         New-VHDXFromISO -IsoPath 'c:\isos\hci_os.iso' -VhdxPath 'c:\isos\hci_os.vhdx'
     } Else {
         log 'HCI VHDX already exists, skipping conversion...'
-
     }
 } Else {
-    log 'No download URL provided, cannot continue...'
-    Write-Error 'No download URL provided, cannot continue...' -ErrorAction Stop
+    # No download URL provided - expect VHDX to already exist from pre-baked gallery image
+    log 'No download URL provided - checking for pre-baked VHDX from gallery image...'
+    If (Test-Path 'C:\ISOs\hci_os.vhdx') {
+        log 'Pre-baked VHDX found at C:\ISOs\hci_os.vhdx - proceeding...'
+    } Else {
+        log 'ERROR: No download URL provided AND no pre-baked VHDX found at C:\ISOs\hci_os.vhdx'
+        log 'ERROR: Possible reasons:'
+        log 'ERROR:   1. Gallery image was not built correctly - VHDX was not downloaded during image creation'
+        log 'ERROR:   2. Wrong gallery image version is being used'
+        log 'ERROR:   3. Sysprep wiped C:\ISOs\ during image capture'
+        log 'ERROR: Check the gallery image and rebuild if necessary'
+        Write-Error 'Pre-baked VHDX not found at C:\ISOs\hci_os.vhdx - cannot continue' -ErrorAction Stop
+    }
 }
 
 # create mount point directories on C:\
@@ -296,31 +337,24 @@ For ($i = 0; $i -lt $hciNodeCount; $i++) {
     }
 }
 
-# install RRAS configure for routing
-log 'Installing RRAS and configuring for routing...'
-While (!(Test-Path -Path 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1')) {
-    Start-Sleep -Seconds 5
-    log 'Waiting for RRAS module to be available...'
-}
-Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\RemoteAccess\RemoteAccess.psd1'
-Install-RemoteAccess -VpnType RoutingOnly
-Set-Service -Name RemoteAccess -StartupType Automatic -PassThru | Start-Service
-
 # install domain controller
 log 'Checking whether AD is installed...'
 If (!(Test-ADConnection)) {
     log 'AD is not installed, installing...'
-    Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\ADDSDeployment\ADDSDeployment.psd1'
 
+    # Install AD DS role if not present - removed from image before sysprep
+    if ((Get-WindowsFeature -Name AD-Domain-Services).InstallState -ne 'Installed') {
+        log 'Installing AD DS role...'
+        Add-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
+        log 'AD DS role installed successfully'
+    }
+
+    Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\ADDSDeployment\ADDSDeployment.psd1'
     $ADRecoveryPassword = ConvertTo-SecureString -Force -AsPlainText (New-Guid).guid
     Install-ADDSForest -DomainName hci.local -DomainNetbiosName hci -ForestMode Default -DomainMode Default -InstallDns:$true -SafeModeAdministratorPassword $ADRecoveryPassword -NoRebootOnCompletion:$true -Force:$true
 } Else {
     log 'AD is already installed, skipping...'
 }
-
-log 'Adding DNS forwarders...'
-Import-Module 'C:\Windows\System32\WindowsPowerShell\v1.0\Modules\DnsServer\DnsServer.psd1'
-Add-DnsServerForwarder -IPAddress 8.8.8.8
 
 # create reboot status file
 If (Test-Path -Path 'C:\temp\Reboot2Completed.status') {
