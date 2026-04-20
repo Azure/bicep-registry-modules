@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "7852650578923647167"
+      "templateHash": "8430698411546496464"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -23,16 +23,7 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "centralus",
-        "eastasia",
-        "eastus2",
-        "japaneast",
-        "northeurope",
-        "southeastasia",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
@@ -94,7 +85,7 @@
       "type": "string",
       "defaultValue": "gpt-5.1",
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy: gpt-5.1"
+        "description": "Optional. Name of the GPT model to deploy: gpt-5.1."
       }
     },
     "gptModelVersion": {
@@ -35137,8 +35128,8 @@
         "avmContainerApp_API",
         "avmContainerApp_Workflow",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "virtualNetwork"
       ]
     },
@@ -38736,6 +38727,9 @@
           },
           "subnetResourceId": {
             "value": "[reference('virtualNetwork').outputs.backendSubnetResourceId.value]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -39450,10 +39444,10 @@
       },
       "dependsOn": [
         "avmAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
@@ -42037,6 +42031,9 @@
           },
           "subnetResourceId": {
             "value": "[reference('virtualNetwork').outputs.backendSubnetResourceId.value]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -42751,9 +42748,9 @@
       },
       "dependsOn": [
         "avmAiServices_cu",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
@@ -66217,84 +66214,84 @@
     }
   },
   "outputs": {
-    "CONTAINER_WEB_APP_NAME": {
+    "containerWebAppName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Container App used for Web App."
       },
       "value": "[reference('avmContainerApp_Web').outputs.name.value]"
     },
-    "CONTAINER_API_APP_NAME": {
+    "containerApiAppName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Container App used for API."
       },
       "value": "[reference('avmContainerApp_API').outputs.name.value]"
     },
-    "CONTAINER_WEB_APP_FQDN": {
+    "containerWebAppFqdn": {
       "type": "string",
       "metadata": {
         "description": "The FQDN of the Container App."
       },
       "value": "[reference('avmContainerApp_Web').outputs.fqdn.value]"
     },
-    "CONTAINER_API_APP_FQDN": {
+    "containerApiAppFqdn": {
       "type": "string",
       "metadata": {
         "description": "The FQDN of the Container App API."
       },
       "value": "[reference('avmContainerApp_API').outputs.fqdn.value]"
     },
-    "CONTAINER_APP_NAME": {
+    "containerAppName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Container App used for APP."
       },
       "value": "[reference('avmContainerApp').outputs.name.value]"
     },
-    "CONTAINER_WORKFLOW_APP_NAME": {
+    "containerWorkflowAppName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Container App used for Workflow."
       },
       "value": "[reference('avmContainerApp_Workflow').outputs.name.value]"
     },
-    "CONTAINER_APP_USER_IDENTITY_ID": {
+    "containerAppUserIdentityId": {
       "type": "string",
       "metadata": {
         "description": "The user identity resource ID used fot the Container APP."
       },
       "value": "[reference('avmContainerRegistryReader').outputs.resourceId.value]"
     },
-    "CONTAINER_APP_USER_PRINCIPAL_ID": {
+    "containerAppUserPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "The user identity Principal ID used fot the Container APP."
       },
       "value": "[reference('avmContainerRegistryReader').outputs.principalId.value]"
     },
-    "CONTAINER_REGISTRY_NAME": {
+    "containerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Azure Container Registry."
       },
       "value": "[reference('avmContainerRegistry').outputs.name.value]"
     },
-    "CONTAINER_REGISTRY_LOGIN_SERVER": {
+    "containerRegistryLoginServer": {
       "type": "string",
       "metadata": {
         "description": "The login server of the Azure Container Registry."
       },
       "value": "[reference('avmContainerRegistry').outputs.loginServer.value]"
     },
-    "CONTENT_UNDERSTANDING_ACCOUNT_NAME": {
+    "contentUnderstandingAccountName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Content Understanding AI Services account."
       },
       "value": "[reference('avmAiServices_cu').outputs.name.value]"
     },
-    "AZURE_RESOURCE_GROUP": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The resource group the resources were deployed into."

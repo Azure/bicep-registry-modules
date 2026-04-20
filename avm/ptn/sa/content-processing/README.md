@@ -155,13 +155,13 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
-    solutionName: 'scpmin'
+    location: '<location>'
+    solutionName: 'scpdef'
   }
 }
 ```
@@ -182,9 +182,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": false
@@ -198,8 +195,11 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "enableScalability": {
       "value": false
     },
+    "location": {
+      "value": "<location>"
+    },
     "solutionName": {
-      "value": "scpmin"
+      "value": "scpdef"
     }
   }
 }
@@ -217,13 +217,13 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
-param solutionName = 'scpmin'
+param location = '<location>'
+param solutionName = 'scpdef'
 ```
 
 </details>
@@ -245,7 +245,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
@@ -253,6 +252,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: false
     enableTelemetry: true
     gptDeploymentCapacity: 10
+    location: '<location>'
     solutionName: 'scpmin'
   }
 }
@@ -274,9 +274,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": false
@@ -295,6 +292,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "scpmin"
@@ -315,7 +315,6 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
@@ -323,6 +322,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
+param location = '<location>'
 param solutionName = 'scpmin'
 ```
 
@@ -345,7 +345,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     enableMonitoring: true
     enablePrivateNetworking: true
@@ -353,6 +352,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableScalability: true
     enableTelemetry: true
     gptDeploymentCapacity: 10
+    location: '<location>'
     solutionName: 'scpegwaf'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -376,9 +376,6 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "enableMonitoring": {
       "value": true
@@ -397,6 +394,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "scpegwaf"
@@ -423,7 +423,6 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param enableMonitoring = true
 param enablePrivateNetworking = true
@@ -431,6 +430,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param gptDeploymentCapacity = 10
+param location = '<location>'
 param solutionName = 'scpegwaf'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -463,7 +463,7 @@ param vmAdminUsername = 'adminuser'
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1 |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`imageTag`](#parameter-imagetag) | string | The image tag for the container images. |
 | [`solutionName`](#parameter-solutionname) | string | Name of the solution to deploy. This should be 3-20 characters long. |
@@ -497,21 +497,9 @@ Location for the Azure AI Services deployment.
 
 Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
 
-- Required: Yes
+- Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'centralus'
-    'eastasia'
-    'eastus2'
-    'japaneast'
-    'northeurope'
-    'southeastasia'
-    'uksouth'
-  ]
-  ```
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `containerRegistryEndpoint`
 
@@ -619,7 +607,7 @@ Capacity of the GPT deployment: (minimum 10).
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy: gpt-5.1
+Name of the GPT model to deploy: gpt-5.1.
 
 - Required: No
 - Type: string
@@ -705,18 +693,18 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `AZURE_RESOURCE_GROUP` | string | The resource group the resources were deployed into. |
-| `CONTAINER_API_APP_FQDN` | string | The FQDN of the Container App API. |
-| `CONTAINER_API_APP_NAME` | string | The name of the Container App used for API. |
-| `CONTAINER_APP_NAME` | string | The name of the Container App used for APP. |
-| `CONTAINER_APP_USER_IDENTITY_ID` | string | The user identity resource ID used fot the Container APP. |
-| `CONTAINER_APP_USER_PRINCIPAL_ID` | string | The user identity Principal ID used fot the Container APP. |
-| `CONTAINER_REGISTRY_LOGIN_SERVER` | string | The login server of the Azure Container Registry. |
-| `CONTAINER_REGISTRY_NAME` | string | The name of the Azure Container Registry. |
-| `CONTAINER_WEB_APP_FQDN` | string | The FQDN of the Container App. |
-| `CONTAINER_WEB_APP_NAME` | string | The name of the Container App used for Web App. |
-| `CONTAINER_WORKFLOW_APP_NAME` | string | The name of the Container App used for Workflow. |
-| `CONTENT_UNDERSTANDING_ACCOUNT_NAME` | string | The name of the Content Understanding AI Services account. |
+| `containerApiAppFqdn` | string | The FQDN of the Container App API. |
+| `containerApiAppName` | string | The name of the Container App used for API. |
+| `containerAppName` | string | The name of the Container App used for APP. |
+| `containerAppUserIdentityId` | string | The user identity resource ID used fot the Container APP. |
+| `containerAppUserPrincipalId` | string | The user identity Principal ID used fot the Container APP. |
+| `containerRegistryLoginServer` | string | The login server of the Azure Container Registry. |
+| `containerRegistryName` | string | The name of the Azure Container Registry. |
+| `containerWebAppFqdn` | string | The FQDN of the Container App. |
+| `containerWebAppName` | string | The name of the Container App used for Web App. |
+| `containerWorkflowAppName` | string | The name of the Container App used for Workflow. |
+| `contentUnderstandingAccountName` | string | The name of the Content Understanding AI Services account. |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Cross-referenced modules
 

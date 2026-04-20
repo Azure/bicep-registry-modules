@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/content-processing/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Removed existing Log Analytics and existing AI Foundry project ID paths from module inputs and nested modules.
+- Fixed module and test template validation issues (parameter descriptions/defaults, telemetry pass-through, output naming, and test parameter alignment).
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

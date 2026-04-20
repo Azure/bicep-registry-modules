@@ -12,17 +12,7 @@ param solutionName string = 'cps'
 
 @metadata({ azd: { type: 'location' } })
 @description('Required. Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).')
-@allowed([
-  'australiaeast'
-  'centralus'
-  'eastasia'
-  'eastus2'
-  'japaneast'
-  'northeurope'
-  'southeastasia'
-  'uksouth'
-])
-param location string
+param location string = resourceGroup().location
 
 @minLength(1)
 @description('Optional. Location for the Azure AI Content Understanding service deployment.')
@@ -63,7 +53,7 @@ param azureAiServiceLocation string
 ])
 param deploymentType string = 'GlobalStandard'
 
-@description('Optional. Name of the GPT model to deploy: gpt-5.1')
+@description('Optional. Name of the GPT model to deploy: gpt-5.1.')
 param gptModelName string = 'gpt-5.1'
 
 @minLength(1)
@@ -807,6 +797,7 @@ module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoi
       ]
     }
     subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -885,6 +876,7 @@ module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-en
       ]
     }
     subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1845,37 +1837,37 @@ module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.19
 // ============ //
 
 @description('The name of the Container App used for Web App.')
-output CONTAINER_WEB_APP_NAME string = avmContainerApp_Web.outputs.name
+output containerWebAppName string = avmContainerApp_Web.outputs.name
 
 @description('The name of the Container App used for API.')
-output CONTAINER_API_APP_NAME string = avmContainerApp_API.outputs.name
+output containerApiAppName string = avmContainerApp_API.outputs.name
 
 @description('The FQDN of the Container App.')
-output CONTAINER_WEB_APP_FQDN string = avmContainerApp_Web.outputs.fqdn
+output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
 
 @description('The FQDN of the Container App API.')
-output CONTAINER_API_APP_FQDN string = avmContainerApp_API.outputs.fqdn
+output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
 
 @description('The name of the Container App used for APP.')
-output CONTAINER_APP_NAME string = avmContainerApp.outputs.name
+output containerAppName string = avmContainerApp.outputs.name
 
 @description('The name of the Container App used for Workflow.')
-output CONTAINER_WORKFLOW_APP_NAME string = avmContainerApp_Workflow.outputs.name
+output containerWorkflowAppName string = avmContainerApp_Workflow.outputs.name
 
 @description('The user identity resource ID used fot the Container APP.')
-output CONTAINER_APP_USER_IDENTITY_ID string = avmContainerRegistryReader.outputs.resourceId
+output containerAppUserIdentityId string = avmContainerRegistryReader.outputs.resourceId
 
 @description('The user identity Principal ID used fot the Container APP.')
-output CONTAINER_APP_USER_PRINCIPAL_ID string = avmContainerRegistryReader.outputs.principalId
+output containerAppUserPrincipalId string = avmContainerRegistryReader.outputs.principalId
 
 @description('The name of the Azure Container Registry.')
-output CONTAINER_REGISTRY_NAME string = avmContainerRegistry.outputs.name
+output containerRegistryName string = avmContainerRegistry.outputs.name
 
 @description('The login server of the Azure Container Registry.')
-output CONTAINER_REGISTRY_LOGIN_SERVER string = avmContainerRegistry.outputs.loginServer
+output containerRegistryLoginServer string = avmContainerRegistry.outputs.loginServer
 
 @description('The name of the Content Understanding AI Services account.')
-output CONTENT_UNDERSTANDING_ACCOUNT_NAME string = avmAiServices_cu.outputs.name
+output contentUnderstandingAccountName string = avmAiServices_cu.outputs.name
 
 @description('The resource group the resources were deployed into.')
-output AZURE_RESOURCE_GROUP string = resourceGroup().name
+output resourceGroupName string = resourceGroup().name
