@@ -161,7 +161,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enableRedundancy: false
     enableScalability: false
     location: '<location>'
-    solutionName: 'scpdef'
+    solutionName: 'scpdmin'
   }
 }
 ```
@@ -199,7 +199,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "<location>"
     },
     "solutionName": {
-      "value": "scpdef"
+      "value": "scpdmin"
     }
   }
 }
@@ -223,7 +223,7 @@ param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
 param location = '<location>'
-param solutionName = 'scpdef'
+param solutionName = 'scpdmin'
 ```
 
 </details>
@@ -446,7 +446,6 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for the Azure AI Services deployment. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 
 **Optional parameters**
 
@@ -466,6 +465,7 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`imageTag`](#parameter-imagetag) | string | The image tag for the container images. |
+| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`solutionName`](#parameter-solutionname) | string | Name of the solution to deploy. This should be 3-20 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
@@ -492,14 +492,6 @@ Location for the Azure AI Services deployment.
     'uksouth'
   ]
   ```
-
-### Parameter: `location`
-
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `containerRegistryEndpoint`
 
@@ -634,6 +626,14 @@ The image tag for the container images.
 - Required: No
 - Type: string
 - Default: `'latest_v2'`
+
+### Parameter: `location`
+
+Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions).
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `solutionName`
 
