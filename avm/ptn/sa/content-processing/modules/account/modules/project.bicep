@@ -18,7 +18,6 @@ resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2024-10-01' e
   name: aiServicesName
 }
 
-// Create new AI project
 resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-preview' = {
   parent: cogServiceReference
   name: name

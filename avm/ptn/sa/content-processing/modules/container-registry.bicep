@@ -29,8 +29,8 @@ param enableTelemetry bool
 @description('Required. Enable Redundancy for the AVM deployment.')
 param enableRedundancy bool
 
-@description('Required. The secondary location for the Azure Container Registry replication, if redundancy is enabled.')
-param secondaryLocation string
+@description('Required. The replica location for the Azure Container Registry replication, if redundancy is enabled.')
+param replicaLocation string
 
 @description('Optional. Enable private networking for the Container Registry.')
 param enablePrivateNetworking bool = false
@@ -55,8 +55,8 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
     replications: enableRedundancy
       ? [
           {
-            location: secondaryLocation
-            name: 'acrrepl${replace(secondaryLocation, '-', '')}'
+            location: replicaLocation
+            name: 'acrrepl${replace(replicaLocation, '-', '')}'
           }
         ]
       : null
