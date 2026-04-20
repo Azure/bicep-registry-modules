@@ -101,9 +101,20 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+// For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, the Data Factory's system assigned identity is required to perform the role assignment on the linked resource.
+// https://learn.microsoft.com/en-us/azure/data-factory/create-shared-self-hosted-integration-runtime-powershell#known-limitations-of-self-hosted-ir-sharing
+var sharedSelfHostedIntegrationRuntimes = filter(
+  integrationRuntimes ?? [],
+  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
+)
+
+// Automatically enable the system assigned managed identity if there are shared Self-Hosted Integration Runtimes with RBAC authorization, as it is required for the role assignment to function correctly.
+var systemAssignedRequired = !empty(sharedSelfHostedIntegrationRuntimes)
+var systemAssignedEnabled = (managedIdentities.?systemAssigned ?? false) || systemAssignedRequired
+
+var identity = (!empty(managedIdentities) || systemAssignedRequired)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false)
+      type: systemAssignedEnabled
         ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
         : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -153,10 +164,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
 }
 
 // For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, assign the Data Factory's system assigned identity the Contributor role on the linked resource to ensure proper permissions for the SHIR to function.
-var sharedSelfHostedIntegrationRuntimes = filter(
-  integrationRuntimes ?? [],
-  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '')
-)
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
@@ -255,7 +262,7 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
 
 // The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
 module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
-  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: if ((sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') != '' && (sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC') {
+  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: {
     name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
     scope: resourceGroup(
       split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
