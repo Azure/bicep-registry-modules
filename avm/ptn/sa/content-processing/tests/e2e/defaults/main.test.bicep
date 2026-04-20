@@ -26,11 +26,14 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location // Using a valid location for Azure AI Services that supports the required resources
+var enforcedLocation = 'eastus2'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -44,8 +47,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
-      location: resourceLocation
-      azureAiServiceLocation: resourceLocation
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
       enablePrivateNetworking: true
       enableMonitoring: false
       enableRedundancy: true
