@@ -1,4 +1,4 @@
-# Public DNS Zones `[Microsoft.Network/dnsZones]`
+# Public DNS Zones `[Microsoft.network/dnszone]`
 
 This module deploys a Public DNS zone.
 
