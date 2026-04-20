@@ -164,7 +164,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
 }
 
 // For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, assign the Data Factory's system assigned identity the Contributor role on the linked resource to ensure proper permissions for the SHIR to function.
-
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
