@@ -26,6 +26,28 @@ param conditions resourceInput<'Microsoft.Cdn/profiles/ruleSets/rules@2025-04-15
 @description('Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue.')
 param matchProcessingBehavior string = 'Continue'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cdn-profile-rulesetrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 
