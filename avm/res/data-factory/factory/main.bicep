@@ -152,6 +152,12 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
+// For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, assign the Data Factory's system assigned identity the Contributor role on the linked resource to ensure proper permissions for the SHIR to function.
+var sharedSelfHostedIntegrationRuntimes = filter(
+  integrationRuntimes ?? [],
+  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '')
+)
+
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
@@ -247,28 +253,19 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
   }
 }
 
-// fetch Self-Hosted Integration Runtimes with linked resource IDs to create role assignments for shared SHIRs if any are defined in the parameters. This allows the template to grant necessary permissions to ADF for accessing shared SHIRs without hardcoding specific SHIR resource IDs, while still ensuring that ARM what-if can evaluate the presence of SHIR role assignments based on the existence of linked SHIR resource IDs in the parameters.
-var sharedSelfHostedIntegrationRuntimes = filter(
-  integrationRuntimes ?? [],
-  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '')
-)
-
-var sharedSelfHostedIntegrationRuntimeResourceIds = [
-  for integrationRuntime in sharedSelfHostedIntegrationRuntimes: integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? ''
-]
-
+// The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
 module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
-  for (sharedSelfHostedIntegrationRuntimeResourceId, index) in sharedSelfHostedIntegrationRuntimeResourceIds: {
-    name: guid(sharedSelfHostedIntegrationRuntimeResourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: if (sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '' != '' && sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '' == 'RBAC') {
+    name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
     scope: resourceGroup(
-      split(sharedSelfHostedIntegrationRuntimeResourceId, '/')[2],
-      split(sharedSelfHostedIntegrationRuntimeResourceId, '/')[4]
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[4]
     )
     params: {
       principalId: dataFactory.?identity.?principalId
       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
-      resourceId: sharedSelfHostedIntegrationRuntimeResourceId
+      resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
     }
   }
 ]
