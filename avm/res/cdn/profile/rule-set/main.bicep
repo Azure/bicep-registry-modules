@@ -13,6 +13,8 @@ param rules ruleType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cdn-profile-ruleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
@@ -45,6 +47,7 @@ module ruleSet_rules 'rule/main.bicep' = [
   for (rule, index) in (rules ?? []): {
     name: '${uniqueString(deployment().name)}-RuleSet-Rule-${rule.name}-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       profileName: profileName
       ruleSetName: name
       name: rule.name
