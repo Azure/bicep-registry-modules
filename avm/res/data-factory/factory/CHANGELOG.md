@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.11.2
+
+### Changes
+
+- Added support for deploying shared Self-Hosted Integration Runtime
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

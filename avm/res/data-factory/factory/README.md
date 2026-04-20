@@ -2187,6 +2187,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
