@@ -46,10 +46,10 @@ module testDeployment '../../../main.bicep' = [
       solutionName: '${namePrefix}${serviceShort}'
       location: resourceLocation
       azureAiServiceLocation: resourceLocation
-      enablePrivateNetworking: false
+      enablePrivateNetworking: true
       enableMonitoring: false
-      enableRedundancy: false
-      enableScalability: false
+      enableRedundancy: true
+      enableScalability: true
     }
   }
 ]

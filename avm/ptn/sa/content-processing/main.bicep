@@ -916,7 +916,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
 
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    zoneRedundant: (enablePrivateNetworking) ? true : false // Enable zone redundancy if private networking is enabled
+    zoneRedundant: enableRedundancy
     infrastructureSubnetResourceId: (enablePrivateNetworking)
       ? virtualNetwork!.outputs.containersSubnetResourceId // Use the container app subnet
       : null // Use the container app subnet
@@ -1283,7 +1283,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
     defaultConsistencyLevel: 'Session'
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
-    zoneRedundant: false
+    zoneRedundant: enableRedundancy
 
     // WAF related parameters
     networkRestrictions: {

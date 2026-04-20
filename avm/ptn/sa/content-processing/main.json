@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "1362111654499572801"
+      "templateHash": "16214527702463062562"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -35128,8 +35128,8 @@
         "avmContainerApp_API",
         "avmContainerApp_Workflow",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "virtualNetwork"
       ]
     },
@@ -39444,10 +39444,10 @@
       },
       "dependsOn": [
         "avmAiServices",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "virtualNetwork"
       ]
     },
@@ -42802,7 +42802,9 @@
           "platformReservedDnsIP": {
             "value": "172.17.17.17"
           },
-          "zoneRedundant": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
+          "zoneRedundant": {
+            "value": "[parameters('enableRedundancy')]"
+          },
           "infrastructureSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.containersSubnetResourceId.value), createObject('value', null()))]"
         },
         "template": {
@@ -50765,7 +50767,7 @@
             "value": 100
           },
           "zoneRedundant": {
-            "value": false
+            "value": "[parameters('enableRedundancy')]"
           },
           "networkRestrictions": {
             "value": {
