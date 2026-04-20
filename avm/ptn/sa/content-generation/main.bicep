@@ -100,19 +100,19 @@ param deployBastionAndJumpbox bool = false
 param tags object = {}
 
 @description('Optional. Enable monitoring for applicable resources (WAF-aligned).')
-param enableMonitoring bool = false
+param enableMonitoring bool = true
 
 @description('Optional. Enable Azure AI Foundry mode for multi-agent orchestration.')
 param useFoundryMode bool = true
 
 @description('Optional. Enable scalability for applicable resources (WAF-aligned).')
-param enableScalability bool = false
+param enableScalability bool = true
 
 @description('Optional. Enable redundancy for applicable resources (WAF-aligned).')
-param enableRedundancy bool = false
+param enableRedundancy bool = true
 
 @description('Optional. Enable private networking for applicable resources (WAF-aligned).')
-param enablePrivateNetworking bool = false
+param enablePrivateNetworking bool = true
 
 @description('Optional. The existing Container Registry name (without .azurecr.io). Must contain pre-built images: content-gen-app and content-gen-api.')
 param acrName string = 'contentgencontainerreg'

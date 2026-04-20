@@ -47,6 +47,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 15)
       azureAiServiceLocation: enforcedLocation
+      enableMonitoring: false
+      enableRedundancy: false
+      enableScalability: false
+      enablePrivateNetworking: false
     }
   }
 ]

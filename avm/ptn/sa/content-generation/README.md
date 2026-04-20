@@ -116,79 +116,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-generation:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Sandbox configuration with default parameter values_
+### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters, designed for Sandbox environments.
+This instance deploys the module with the minimum set of required parameters.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
-  params: {
-    // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
-    // Non-required parameters
-    solutionName: '<solutionName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
-    },
-    // Non-required parameters
-    "solutionName": {
-      "value": "<solutionName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/content-generation:<version>'
-
-// Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
-// Non-required parameters
-param solutionName = '<solutionName>'
-```
-
-</details>
-<p>
-
-### Example 2: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
 
 <details>
@@ -202,10 +138,6 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
     cosmosDbReplicaLocation: 'canadacentral'
-    enableMonitoring: true
-    enablePrivateNetworking: true
-    enableRedundancy: true
-    enableScalability: true
     solutionName: '<solutionName>'
   }
 }
@@ -231,17 +163,160 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     "cosmosDbReplicaLocation": {
       "value": "canadacentral"
     },
+    "solutionName": {
+      "value": "<solutionName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-generation:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param cosmosDbReplicaLocation = 'canadacentral'
+param solutionName = '<solutionName>'
+```
+
+</details>
+<p>
+
+### Example 2: _Sandbox configuration with default parameter values_
+
+This instance deploys the module with the minimum set of required parameters, designed for Sandbox environments.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enableRedundancy: false
+    enableScalability: false
+    solutionName: '<solutionName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
     "enableMonitoring": {
-      "value": true
+      "value": false
     },
     "enablePrivateNetworking": {
-      "value": true
+      "value": false
     },
     "enableRedundancy": {
-      "value": true
+      "value": false
     },
     "enableScalability": {
-      "value": true
+      "value": false
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-generation:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enableRedundancy = false
+param enableScalability = false
+param solutionName = '<solutionName>'
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    cosmosDbReplicaLocation: 'canadacentral'
+    solutionName: '<solutionName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "cosmosDbReplicaLocation": {
+      "value": "canadacentral"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -264,10 +339,6 @@ using 'br/public:avm/ptn/sa/content-generation:<version>'
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
 param cosmosDbReplicaLocation = 'canadacentral'
-param enableMonitoring = true
-param enablePrivateNetworking = true
-param enableRedundancy = true
-param enableScalability = true
 param solutionName = '<solutionName>'
 ```
 
@@ -392,7 +463,7 @@ Enable monitoring for applicable resources (WAF-aligned).
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePrivateNetworking`
 
@@ -400,7 +471,7 @@ Enable private networking for applicable resources (WAF-aligned).
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableRedundancy`
 
@@ -408,7 +479,7 @@ Enable redundancy for applicable resources (WAF-aligned).
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableScalability`
 
@@ -416,7 +487,7 @@ Enable scalability for applicable resources (WAF-aligned).
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 

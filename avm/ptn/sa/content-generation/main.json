@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14960977682735787951"
+      "version": "0.42.1.51946",
+      "templateHash": "15662315628313743409"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -158,7 +158,7 @@
     },
     "enableMonitoring": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable monitoring for applicable resources (WAF-aligned)."
       }
@@ -172,21 +172,21 @@
     },
     "enableScalability": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable scalability for applicable resources (WAF-aligned)."
       }
     },
     "enableRedundancy": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable redundancy for applicable resources (WAF-aligned)."
       }
     },
     "enablePrivateNetworking": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable private networking for applicable resources (WAF-aligned)."
       }
@@ -4812,8 +4812,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12733624214040002225"
+              "version": "0.42.1.51946",
+              "templateHash": "561139981126910307"
             }
           },
           "parameters": {
@@ -14019,8 +14019,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "29559710278213235"
+              "version": "0.42.1.51946",
+              "templateHash": "2801742126831419095"
             }
           },
           "parameters": {
@@ -31205,8 +31205,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17223739527994636068"
+              "version": "0.42.1.51946",
+              "templateHash": "6149050805783819921"
             }
           },
           "definitions": {
@@ -32234,8 +32234,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "5518029515589119726"
+                      "version": "0.42.1.51946",
+                      "templateHash": "12846584330925464650"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -33267,8 +33267,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14897996362401141983"
+              "version": "0.42.1.51946",
+              "templateHash": "13509053465698165199"
             }
           },
           "parameters": {
