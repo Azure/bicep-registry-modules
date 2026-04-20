@@ -2,6 +2,9 @@
 @secure()
 param deploymentUserPassword string
 
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM.')
+param hciHostImageReferenceId string = ''
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -63,15 +66,16 @@ param maintenanceConfigurationAssignmentName string
 @description('Required. The name prefix for the \'wait\' deployment scripts to create.')
 param waitDeploymentScriptPrefixName string
 
-var clusterNodeNames = ['hcinode1', 'hcinode2']
+var clusterNodeNames = ['hcinode1']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
-    hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
+    imageReferenceId: hciHostImageReferenceId
+    hciVHDXDownloadURL: 'https://azlocalvhds.blob.core.windows.net/images/AzLocal2601.vhdx'
     hciNodeCount: length(clusterNodeNames)
-    hostVMSize: 'Standard_E32bds_v5'
+    hostVMSize: 'Standard_E48bds_v5'
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
