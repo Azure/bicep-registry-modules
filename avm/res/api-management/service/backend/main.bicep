@@ -19,7 +19,7 @@ param protocol string = 'http'
 @sys.description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
 param proxy resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.proxy?
 
-@sys.description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
+@sys.description('Optional. Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
 param resourceId string?
 
 @sys.description('Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools.')

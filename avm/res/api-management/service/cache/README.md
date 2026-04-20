@@ -45,7 +45,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Cache description. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`resourceId`](#parameter-resourceid) | string | Original uri of entity in external system cache points to. |
+| [`resourceId`](#parameter-resourceid) | string | Original URI of entity in external system cache points to. |
 
 ### Parameter: `connectionString`
 
@@ -92,7 +92,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `resourceId`
 
-Original uri of entity in external system cache points to.
+Original URI of entity in external system cache points to.
 
 - Required: No
 - Type: string

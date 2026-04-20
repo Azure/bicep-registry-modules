@@ -71,6 +71,17 @@ module testDeployment '../../../main.bicep' = [
       vpnGatewayScaleUnit: 5
       vpnServerConfigurationResourceId: nestedDependencies.outputs.vpnServerConfigurationResourceId
       p2SConnectionConfigurationsName: 'p2sConnectionConfig'
+      configurationPolicyGroupAssociationResourceIds: [
+        nestedDependencies.outputs.configurationPolicyGroupResourceId
+      ]
+      ipamPoolPrefixAllocations: [
+        {
+          numberOfIpAddresses: '256'
+          pool: {
+            id: 'testIpamPoolResourceId'
+          }
+        }
+      ]
     }
   }
 ]

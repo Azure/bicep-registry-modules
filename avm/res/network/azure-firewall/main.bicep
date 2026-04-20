@@ -56,7 +56,7 @@ param autoscaleMaxCapacity resourceInput<'Microsoft.Network/azureFirewalls@2025-
 @description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
 param autoscaleMinCapacity resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>.properties.autoscaleConfiguration.minCapacity?
 
-@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@description('Optional. The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones.')
 @allowed([
   1
   2
@@ -275,7 +275,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' 
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2025-05-01' = {
   name: name
   location: location
-  zones: map(availabilityZones, zone => '${zone}')
+  zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
   tags: tags
   extendedLocation: extendedLocation
   properties: azureSkuName == 'AZFW_VNet'

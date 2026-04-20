@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
 
+## 0.19.1
+
+### Changes
+
+- Publishing child module `avm/res/cdn/profile/origin-group/origin`
+
+### Breaking Changes
+
+- None
+
+## 0.19.0
+
+### Changes
+
+- Add `authentication` parameter to `originGroupType` and pass through to child originGroups from `avm/res/cdn/profile` (#6630)
+
+### Breaking Changes
+
+- None
+
 ## 0.18.0
 
 ### Changes

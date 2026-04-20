@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/insights/data-collection-rule/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Updated common types to use 'avm-common-types' version `0.7.0`.
+
+### Breaking Changes
+
+- Remove deprecated 'AgentDirectToStore' kind
+
 ## 0.10.0
 
 ### Changes

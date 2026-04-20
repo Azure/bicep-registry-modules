@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 param definitionParameters resourceInput<'Microsoft.Logic/workflows@2019-05-01'>.properties.parameters?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The integration account.')
@@ -90,9 +90,11 @@ var formattedUserAssignedIdentities = reduce(
 
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? 'SystemAssigned'
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      type: (managedIdentities.?systemAssigned ?? false) && !empty(managedIdentities.?userAssignedResourceIds ?? [])
+        ? 'SystemAssigned,UserAssigned'
+        : (managedIdentities.?systemAssigned ?? false)
+            ? 'SystemAssigned'
+            : (!empty(managedIdentities.?userAssignedResourceIds ?? []) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null

@@ -12,7 +12,7 @@ This module deploys Azure Automation Account Credential.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Automation/automationAccounts/credentials` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/credentials` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/credentials)</li></ul> |
 
 ## Parameters
 
