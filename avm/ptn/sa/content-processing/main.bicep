@@ -164,6 +164,27 @@ var replicaRegionPairs = {
 var replicaLocation = replicaRegionPairs[?location]
 
 // ========== Virtual Network ========== //
+// Minimal VNet for CAE zone redundancy when enableRedundancy is true but enablePrivateNetworking is false.
+// This avoids deploying the full private networking stack (Bastion, VM, etc.) while still providing
+// the infrastructure subnet required for Container App Environment zone redundancy.
+module minimalContainersVnet 'br/public:avm/res/network/virtual-network:0.7.1' = if (enableRedundancy && !enablePrivateNetworking) {
+  name: take('avm.res.network.virtual-network.minimal.${solutionSuffix}', 64)
+  params: {
+    name: 'vnet-${solutionSuffix}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    addressPrefixes: ['10.0.0.0/16']
+    subnets: [
+      {
+        name: 'containers'
+        addressPrefixes: ['10.0.2.0/24']
+        delegation: 'Microsoft.App/environments'
+      }
+    ]
+  }
+}
+
 module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
   name: take('module.virtual-network.${solutionSuffix}', 64)
   params: {
@@ -917,9 +938,9 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     zoneRedundant: enableRedundancy
-    infrastructureSubnetResourceId: (enablePrivateNetworking)
-      ? virtualNetwork!.outputs.containersSubnetResourceId // Use the container app subnet
-      : null // Use the container app subnet
+    infrastructureSubnetResourceId: enablePrivateNetworking
+      ? virtualNetwork!.outputs.containersSubnetResourceId // Full private networking - use full VNet subnet
+      : (enableRedundancy ? '${minimalContainersVnet!.outputs.resourceId}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
   }
 }
 
