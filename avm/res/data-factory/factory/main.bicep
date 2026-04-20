@@ -272,6 +272,7 @@ module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/re
       roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
       resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
