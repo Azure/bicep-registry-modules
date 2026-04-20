@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.11.1
+
+### Changes
+
+- Updated 'private-endpoint' reference to `0.12.0`
+- Updated all 'avm-common-types' reference to `0.7.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes
