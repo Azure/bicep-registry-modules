@@ -1,4 +1,4 @@
-# Public DNS Zone PTR record `[Microsoft.Network/dnsZones/PTR]`
+# Public DNS Zone PTR record `[Microsoft.network/dnszone/ptr]`
 
 This module deploys a Public DNS Zone PTR record.
 

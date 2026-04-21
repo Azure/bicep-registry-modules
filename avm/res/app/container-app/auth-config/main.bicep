@@ -22,9 +22,31 @@ param login resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.
 @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
 param platform resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.platform?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // =============== //
 //    Resources    //
 // =============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-containerapp-authconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource containerApp 'Microsoft.App/containerApps@2026-01-01' existing = {
   name: containerAppName
