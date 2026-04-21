@@ -35,6 +35,9 @@ param replicaLocation string
 @description('Optional. Enable private networking for the Container Registry.')
 param enablePrivateNetworking bool = false
 
+@description('Optional. Enforce firewall restrictions for Container Registry even when private networking is disabled.')
+param enforceFirewallRestrictions bool = false
+
 @description('Optional. Backend subnet resource ID for private endpoints.')
 param backendSubnetResourceId string = ''
 
@@ -61,7 +64,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3
         ]
       : null
     // WAF aligned configuration for Private Networking - Network access restrictions
-    networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+    networkRuleSetDefaultAction: (enablePrivateNetworking || enforceFirewallRestrictions) ? 'Deny' : 'Allow'
     networkRuleSetIpRules: enablePrivateNetworking ? [] : []
     exportPolicyStatus: enablePrivateNetworking ? 'disabled' : 'enabled'
     privateEndpoints: enablePrivateNetworking

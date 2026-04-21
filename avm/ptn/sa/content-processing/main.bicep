@@ -594,7 +594,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: location
     acrSku: enableRedundancy || enablePrivateNetworking ? 'Premium' : 'Standard'
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: (enablePrivateNetworking || enableRedundancy) ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     roleAssignments: [
       {
@@ -608,6 +608,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     enableRedundancy: enableRedundancy
     replicaLocation: replicaLocation
     enablePrivateNetworking: enablePrivateNetworking
+    enforceFirewallRestrictions: enableRedundancy
     backendSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.backendSubnetResourceId : ''
     privateDnsZoneResourceId: enablePrivateNetworking
       ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
@@ -663,7 +664,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
+      defaultAction: (enablePrivateNetworking || enableRedundancy) ? 'Deny' : 'Allow'
       ipRules: []
     }
     supportsHttpsTrafficOnly: true
