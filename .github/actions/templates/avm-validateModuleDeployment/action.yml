@@ -265,10 +265,14 @@ runs:
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          $resolvedTemplateFilePath = $moduleTestFilePath
 
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
+            $compiledTemplateFilePath = Join-Path $env:RUNNER_TEMP ('{0}.json' -f (Split-Path $moduleTestFilePath -LeafBase))
+            bicep build $moduleTestFilePath --outfile $compiledTemplateFilePath
+            $resolvedTemplateFilePath = $compiledTemplateFilePath
+            $moduleTemplateContent = Get-Content $compiledTemplateFilePath -Raw | ConvertFrom-Json -AsHashtable
             $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
           } else {
             $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
@@ -278,7 +282,7 @@ runs:
           # Invoke validation #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath           = $moduleTestFilePath
+            TemplateFilePath           = $resolvedTemplateFilePath
             DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
@@ -345,10 +349,14 @@ runs:
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          $resolvedTemplateFilePath = $moduleTestFilePath
 
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
+            $compiledTemplateFilePath = Join-Path $env:RUNNER_TEMP ('{0}.json' -f (Split-Path $moduleTestFilePath -LeafBase))
+            bicep build $moduleTestFilePath --outfile $compiledTemplateFilePath
+            $resolvedTemplateFilePath = $compiledTemplateFilePath
+            $moduleTemplateContent = Get-Content $compiledTemplateFilePath -Raw | ConvertFrom-Json -AsHashtable
             $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
           } else {
             $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
@@ -358,7 +366,7 @@ runs:
           # Invoke deployment #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath           = $moduleTestFilePath
+            TemplateFilePath           = $resolvedTemplateFilePath
             DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
