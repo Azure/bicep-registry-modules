@@ -1,4 +1,4 @@
-# Public DNS Zone TXT record `[Microsoft.Network/dnsZones/TXT]`
+# Public DNS Zone TXT record `[Microsoft.network/dnszone/txt]`
 
 This module deploys a Public DNS Zone TXT record.
 
