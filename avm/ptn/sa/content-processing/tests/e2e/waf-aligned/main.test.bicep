@@ -40,7 +40,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.json' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
   params: {
