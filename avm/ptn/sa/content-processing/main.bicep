@@ -167,19 +167,29 @@ var replicaLocation = replicaRegionPairs[?location]
 // Minimal VNet for CAE zone redundancy when enableRedundancy is true but enablePrivateNetworking is false.
 // This avoids deploying the full private networking stack (Bastion, VM, etc.) while still providing
 // the infrastructure subnet required for Container App Environment zone redundancy.
-module minimalContainersVnet 'br/public:avm/res/network/virtual-network:0.7.1' = if (enableRedundancy && !enablePrivateNetworking) {
-  name: take('avm.res.network.virtual-network.minimal.${solutionSuffix}', 64)
-  params: {
-    name: 'vnet-${solutionSuffix}'
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    addressPrefixes: ['10.0.0.0/16']
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource minimalContainersVnet 'Microsoft.Network/virtualNetworks@2024-05-01' = if (enableRedundancy && !enablePrivateNetworking) {
+  name: 'vnet-${solutionSuffix}'
+  location: location
+  tags: tags
+  properties: {
+    addressSpace: {
+      addressPrefixes: ['10.0.0.0/16']
+    }
     subnets: [
       {
         name: 'containers'
-        addressPrefixes: ['10.0.2.0/24']
-        delegation: 'Microsoft.App/environments'
+        properties: {
+          addressPrefix: '10.0.2.0/24'
+          delegations: [
+            {
+              name: 'Microsoft.App.environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
+        }
       }
     ]
   }
@@ -941,7 +951,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
     zoneRedundant: enableRedundancy
     infrastructureSubnetResourceId: enablePrivateNetworking
       ? virtualNetwork!.outputs.containersSubnetResourceId // Full private networking - use full VNet subnet
-      : (enableRedundancy ? '${minimalContainersVnet!.outputs.resourceId}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
+      : (enableRedundancy ? '${minimalContainersVnet!.id}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
   }
 }
 
