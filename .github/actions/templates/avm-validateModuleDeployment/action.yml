@@ -323,7 +323,21 @@ runs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Test-TemplateDeployment @functionInput -Verbose
+          # Test-Az*Deployment validation APIs can reject payloads close to the 4 MB request limit.
+          # For large compiled templates, skip pre-validation and let the deployment step perform the authoritative check.
+          $skipPreValidation = $false
+          if (Test-Path $resolvedTemplateFilePath) {
+            $templateSizeBytes = (Get-Item $resolvedTemplateFilePath).Length
+            Write-Verbose ("Resolved template file size: {0} bytes" -f $templateSizeBytes) -Verbose
+            if ($templateSizeBytes -ge 3900000) {
+              $skipPreValidation = $true
+              Write-Warning ("Skipping Test-TemplateDeployment for large template [{0}] ({1} bytes) to avoid RequestContentTooLarge during validation. Deployment step will still run." -f $resolvedTemplateFilePath, $templateSizeBytes)
+            }
+          }
+
+          if (-not $skipPreValidation) {
+            Test-TemplateDeployment @functionInput -Verbose
+          }
 
           Write-Output '::endgroup::'
 
