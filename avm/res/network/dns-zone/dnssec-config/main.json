@@ -1,0 +1,58 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.42.1.51946",
+      "templateHash": "7182596514441476272"
+    },
+    "name": "Public DNS Zone DNSSEC Config",
+    "description": "This module deploys a Public DNS Zone DNSSEC configuration."
+  },
+  "parameters": {
+    "dnsZoneName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent DNS zone. Required if the template is used in a standalone deployment."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/dnsZones/dnssecConfigs",
+      "apiVersion": "2023-07-01-preview",
+      "name": "[format('{0}/{1}', parameters('dnsZoneName'), 'default')]"
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DNSSEC configuration."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the DNSSEC configuration."
+      },
+      "value": "[resourceId('Microsoft.Network/dnsZones/dnssecConfigs', parameters('dnsZoneName'), 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the DNSSEC configuration was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "signingKeys": {
+      "type": "array",
+      "metadata": {
+        "description": "The signing keys of the DNSSEC configuration."
+      },
+      "value": "[reference(resourceId('Microsoft.Network/dnsZones/dnssecConfigs', parameters('dnsZoneName'), 'default'), '2023-07-01-preview').signingKeys]"
+    }
+  }
+}
