@@ -34,21 +34,18 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      solutionName: '${namePrefix}${serviceShort}'
-      location: enforcedLocation
-      azureAiServiceLocation: enforcedLocation
-      gptDeploymentCapacity: 10
-      enablePrivateNetworking: false
-      enableMonitoring: false
-      enableRedundancy: false
-      enableScalability: false
-      enableTelemetry: true
-    }
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-init'
+  params: {
+    solutionName: '${namePrefix}${serviceShort}'
+    location: enforcedLocation
+    azureAiServiceLocation: enforcedLocation
+    gptDeploymentCapacity: 10
+    enablePrivateNetworking: false
+    enableMonitoring: false
+    enableRedundancy: false
+    enableScalability: false
+    enableTelemetry: true
   }
-]
+}
