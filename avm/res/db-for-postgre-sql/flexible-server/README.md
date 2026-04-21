@@ -317,7 +317,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       activeDirectoryAuth: 'Disabled'
       passwordAuth: 'Enabled'
     }
-    autoGrow: 'Enabled'
+    autoGrow: 'Disabled'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -334,8 +334,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       ]
     }
     serverThreatProtection: 'Enabled'
-    storageTier: 'P10'
-    storageType: 'Premium_LRS'
+    storageIops: 3000
+    storageSizeGB: 64
+    storageThroughput: 125
+    storageType: 'PremiumV2_LRS'
   }
 }
 ```
@@ -379,7 +381,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     },
     "autoGrow": {
-      "value": "Enabled"
+      "value": "Disabled"
     },
     "customerManagedKey": {
       "value": {
@@ -411,11 +413,17 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "serverThreatProtection": {
       "value": "Enabled"
     },
-    "storageTier": {
-      "value": "P10"
+    "storageIops": {
+      "value": 3000
+    },
+    "storageSizeGB": {
+      "value": 64
+    },
+    "storageThroughput": {
+      "value": 125
     },
     "storageType": {
-      "value": "Premium_LRS"
+      "value": "PremiumV2_LRS"
     }
   }
 }
@@ -443,7 +451,7 @@ param authConfig = {
   activeDirectoryAuth: 'Disabled'
   passwordAuth: 'Enabled'
 }
-param autoGrow = 'Enabled'
+param autoGrow = 'Disabled'
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -460,8 +468,10 @@ param managedIdentities = {
   ]
 }
 param serverThreatProtection = 'Enabled'
-param storageTier = 'P10'
-param storageType = 'Premium_LRS'
+param storageIops = 3000
+param storageSizeGB = 64
+param storageThroughput = 125
+param storageType = 'PremiumV2_LRS'
 ```
 
 </details>

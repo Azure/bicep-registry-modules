@@ -84,9 +84,11 @@ module testDeployment '../../../main.bicep' = [
         systemAssigned: true
       }
       serverThreatProtection: 'Enabled'
-      autoGrow: 'Enabled'
-      storageType: 'Premium_LRS'
-      storageTier: 'P10'
+      storageSizeGB: 64
+      autoGrow: 'Disabled'
+      storageType: 'PremiumV2_LRS'
+      storageIops: 3000
+      storageThroughput: 125
     }
   }
 ]
