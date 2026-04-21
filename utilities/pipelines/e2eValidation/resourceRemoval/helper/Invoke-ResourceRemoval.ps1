@@ -648,6 +648,100 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Network/virtualHubs' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+
+            # Pre-Removal: remove any gateways still attached to the hub
+            $vpnGateways = Get-AzVpnGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $ResourceId }
+            foreach ($vpnGw in $vpnGateways) {
+                Write-Verbose ('    [-] Removing VPN Gateway [{0}] from Virtual Hub [{1}]' -f $vpnGw.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess("VPN Gateway [$($vpnGw.Name)]", 'Remove')) {
+                    $null = Remove-AzVpnGateway -ResourceGroupName $resourceGroupName -Name $vpnGw.Name -Force -ErrorAction 'Stop'
+                }
+            }
+
+            $erGateways = Get-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $ResourceId }
+            foreach ($erGw in $erGateways) {
+                Write-Verbose ('    [-] Removing ExpressRoute Gateway [{0}] from Virtual Hub [{1}]' -f $erGw.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess("ExpressRoute Gateway [$($erGw.Name)]", 'Remove')) {
+                    $null = Remove-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -Name $erGw.Name -Force -ErrorAction 'Stop'
+                }
+            }
+
+            $p2sGateways = Get-AzP2sVpnGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $ResourceId }
+            foreach ($p2sGw in $p2sGateways) {
+                Write-Verbose ('    [-] Removing P2S VPN Gateway [{0}] from Virtual Hub [{1}]' -f $p2sGw.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess("P2S VPN Gateway [$($p2sGw.Name)]", 'Remove')) {
+                    $null = Remove-AzP2sVpnGateway -ResourceGroupName $resourceGroupName -Name $p2sGw.Name -Force -ErrorAction 'Stop'
+                }
+            }
+
+            # Actual removal
+            if ($PSCmdlet.ShouldProcess("Virtual Hub [$resourceName]", 'Remove')) {
+                $null = Remove-AzVirtualHub -ResourceGroupName $resourceGroupName -Name $resourceName -Force -ErrorAction 'Stop'
+            }
+            break
+        }
+        'Microsoft.Network/virtualWans' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+
+            # Pre-Removal: remove any remaining Virtual Hubs still associated with the Virtual WAN
+            $virtualHubs = Get-AzVirtualHub -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualWan.Id -eq $ResourceId }
+            foreach ($hub in $virtualHubs) {
+                $hubName = $hub.Name
+                Write-Verbose ('    [-] Removing remaining Virtual Hub [{0}] from Virtual WAN [{1}]' -f $hubName, $resourceName) -Verbose
+
+                # Remove gateways attached to the hub before removing the hub itself
+                $vpnGateways = Get-AzVpnGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $hub.Id }
+                foreach ($vpnGw in $vpnGateways) {
+                    Write-Verbose ('        [-] Removing VPN Gateway [{0}]' -f $vpnGw.Name) -Verbose
+                    if ($PSCmdlet.ShouldProcess("VPN Gateway [$($vpnGw.Name)]", 'Remove')) {
+                        $null = Remove-AzVpnGateway -ResourceGroupName $resourceGroupName -Name $vpnGw.Name -Force -ErrorAction 'Stop'
+                    }
+                }
+
+                $erGateway = Get-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $hub.Id }
+                if ($erGateway) {
+                    Write-Verbose ('        [-] Removing ExpressRoute Gateway [{0}]' -f $erGateway.Name) -Verbose
+                    if ($PSCmdlet.ShouldProcess("ExpressRoute Gateway [$($erGateway.Name)]", 'Remove')) {
+                        $null = Remove-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -Name $erGateway.Name -Force -ErrorAction 'Stop'
+                    }
+                }
+
+                $p2sGateway = Get-AzP2sVpnGateway -ResourceGroupName $resourceGroupName -ErrorAction 'SilentlyContinue' | Where-Object { $_.VirtualHub.Id -eq $hub.Id }
+                if ($p2sGateway) {
+                    Write-Verbose ('        [-] Removing P2S VPN Gateway [{0}]' -f $p2sGateway.Name) -Verbose
+                    if ($PSCmdlet.ShouldProcess("P2S VPN Gateway [$($p2sGateway.Name)]", 'Remove')) {
+                        $null = Remove-AzP2sVpnGateway -ResourceGroupName $resourceGroupName -Name $p2sGateway.Name -Force -ErrorAction 'Stop'
+                    }
+                }
+
+                if ($PSCmdlet.ShouldProcess("Virtual Hub [$hubName]", 'Remove')) {
+                    $null = Remove-AzVirtualHub -ResourceGroupName $resourceGroupName -Name $hubName -Force -ErrorAction 'Stop'
+                }
+            }
+
+            # Actual removal with polling, as Virtual WAN deletion can take several minutes
+            if ($PSCmdlet.ShouldProcess("Virtual WAN [$resourceName]", 'Remove')) {
+                $null = Remove-AzVirtualWan -ResourceGroupName $resourceGroupName -Name $resourceName -Force -ErrorAction 'Stop'
+                $retryCount = 0
+                $maxRetries = 60  # up to ~30 minutes (60 × 30s)
+                do {
+                    $wan = Get-AzVirtualWan -ResourceGroupName $resourceGroupName -Name $resourceName -ErrorAction 'SilentlyContinue'
+                    if ($wan) {
+                        $retryCount++
+                        Write-Verbose ("Virtual WAN [$resourceName] still deleting. Waiting 30 seconds. [{0}/{1}]" -f $retryCount, $maxRetries) -Verbose
+                        Start-Sleep -Seconds 30
+                    }
+                } while ($wan -and $retryCount -lt $maxRetries)
+                if ($wan) {
+                    throw "Virtual WAN [$resourceName] did not finish deleting within the expected time."
+                }
+            }
+            break
+        }
         ### CODE LOCATION: Add custom removal action here
         default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
