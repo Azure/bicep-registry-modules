@@ -10,11 +10,11 @@ param staticSiteName string
 @description('Optional. Validation method for adding a custom domain.')
 param validationMethod string = 'cname-delegation'
 
-resource staticSite 'Microsoft.Web/staticSites@2022-03-01' existing = {
+resource staticSite 'Microsoft.Web/staticSites@2025-03-01' existing = {
   name: staticSiteName
 }
 
-resource customDomain 'Microsoft.Web/staticSites/customDomains@2022-03-01' = {
+resource customDomain 'Microsoft.Web/staticSites/customDomains@2025-03-01' = {
   name: name
   parent: staticSite
   properties: {
