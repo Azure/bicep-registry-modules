@@ -1,4 +1,4 @@
-# Public DNS Zone SOA record `[Microsoft.Network/dnsZones/SOA]`
+# Public DNS Zone SOA record `[Microsoft.network/dnszone/soa]`
 
 This module deploys a Public DNS Zone SOA record.
 
