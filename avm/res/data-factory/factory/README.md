@@ -1358,6 +1358,7 @@ An array of objects for the configuration of an Integration Runtime.
 | :-- | :-- | :-- |
 | [`integrationRuntimeCustomDescription`](#parameter-integrationruntimesintegrationruntimecustomdescription) | string | Specify custom description for the integration runtime. |
 | [`managedVirtualNetworkName`](#parameter-integrationruntimesmanagedvirtualnetworkname) | string | Specify managed vritual network name for the integration runtime to link to. |
+| [`roleDefinitionId`](#parameter-integrationruntimesroledefinitionid) | string | The role definition ID (GUID or full resource ID) to assign to the Data Factory's system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role. |
 | [`typeProperties`](#parameter-integrationruntimestypeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
 
 ### Parameter: `integrationRuntimes.name`
@@ -1391,6 +1392,13 @@ Specify custom description for the integration runtime.
 ### Parameter: `integrationRuntimes.managedVirtualNetworkName`
 
 Specify managed vritual network name for the integration runtime to link to.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.roleDefinitionId`
+
+The role definition ID (GUID or full resource ID) to assign to the Data Factory's system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.
 
 - Required: No
 - Type: string

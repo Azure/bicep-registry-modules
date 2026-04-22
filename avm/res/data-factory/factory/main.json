@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "4308453810042127234"
+      "templateHash": "15512995314437939074"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -75,6 +75,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
+          }
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role definition ID (GUID or full resource ID) to assign to the Data Factory's system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role."
           }
         }
       },
@@ -1018,9 +1025,8 @@
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "sharedSelfHostedIntegrationRuntimes": "[filter(coalesce(parameters('integrationRuntimes'), createArray()), lambda('integrationRuntime', and(and(equals(lambdaVariables('integrationRuntime').type, 'SelfHosted'), not(empty(coalesce(tryGet(tryGet(tryGet(lambdaVariables('integrationRuntime'), 'typeProperties'), 'linkedInfo'), 'resourceId'), '')))), equals(coalesce(tryGet(tryGet(tryGet(lambdaVariables('integrationRuntime'), 'typeProperties'), 'linkedInfo'), 'authorizationType'), ''), 'RBAC'))))]",
-    "systemAssignedRequired": "[not(empty(variables('sharedSelfHostedIntegrationRuntimes')))]",
-    "systemAssignedEnabled": "[or(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), variables('systemAssignedRequired'))]",
-    "identity": "[if(or(not(empty(parameters('managedIdentities'))), variables('systemAssignedRequired')), createObject('type', if(variables('systemAssignedEnabled'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "sharedSHIRRequiresSystemAssignedIdentity": "[if(and(not(empty(variables('sharedSelfHostedIntegrationRuntimes'))), not(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()))), fail('When one or more Self-Hosted Integration Runtimes are configured with a linked resource using RBAC authorization (shared SHIR), a system-assigned managed identity must be enabled on the Data Factory by setting ''managedIdentities.systemAssigned'' to true.'), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Data Factory Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '673868aa-7521-48a0-acc6-0f60742d39f5')]",
@@ -1471,16 +1477,19 @@
         "mode": "Incremental",
         "parameters": {
           "principalId": {
-            "value": "[tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId')]"
+            "value": "[coalesce(tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId'), variables('sharedSHIRRequiresSystemAssignedIdentity'))]"
           },
           "roleDefinitionId": {
-            "value": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            "value": "[coalesce(tryGet(variables('sharedSelfHostedIntegrationRuntimes')[copyIndex()], 'roleDefinitionId'), roleDefinitions('Contributor').id)]"
           },
           "principalType": {
             "value": "ServicePrincipal"
           },
           "resourceId": {
             "value": "[tryGet(tryGet(tryGet(variables('sharedSelfHostedIntegrationRuntimes')[copyIndex()], 'typeProperties'), 'linkedInfo'), 'resourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
