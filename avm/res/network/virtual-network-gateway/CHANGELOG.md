@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.10.2
+
+### Changes
+
+- Fixed Point-to-Site VPN client configuration so Entra ID and certificate authentication can be configured together in `vpnClientConfiguration`.
+- Added deployment test coverage for combined Point-to-Site authentication.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.1
 
 ### Changes
