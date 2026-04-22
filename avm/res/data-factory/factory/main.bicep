@@ -108,13 +108,14 @@ var sharedSelfHostedIntegrationRuntimes = filter(
   integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
 )
 
-// Automatically enable the system assigned managed identity if there are shared Self-Hosted Integration Runtimes with RBAC authorization, as it is required for the role assignment to function correctly.
-var systemAssignedRequired = !empty(sharedSelfHostedIntegrationRuntimes)
-var systemAssignedEnabled = (managedIdentities.?systemAssigned ?? false) || systemAssignedRequired
+// Validate that a system-assigned managed identity is enabled when one or more shared Self-Hosted Integration Runtimes with RBAC authorization are configured, since the Data Factory's system-assigned identity is required to perform the role assignment on the linked resource.
+var sharedSHIRRequiresSystemAssignedIdentity = !empty(sharedSelfHostedIntegrationRuntimes) && !(managedIdentities.?systemAssigned ?? false)
+  ? fail('When one or more Self-Hosted Integration Runtimes are configured with a linked resource using RBAC authorization (shared SHIR), a system-assigned managed identity must be enabled on the Data Factory by setting \'managedIdentities.systemAssigned\' to true.')
+  : null
 
-var identity = (!empty(managedIdentities) || systemAssignedRequired)
+var identity = !empty(managedIdentities)
   ? {
-      type: systemAssignedEnabled
+      type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
         : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -163,7 +164,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
-// For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, assign the Data Factory's system assigned identity the Contributor role on the linked resource to ensure proper permissions for the SHIR to function.
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
@@ -268,8 +268,8 @@ module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/re
       split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[4]
     )
     params: {
-      principalId: dataFactory.?identity.?principalId
-      roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor role for shared SHIR
+      principalId: dataFactory.?identity.?principalId ?? sharedSHIRRequiresSystemAssignedIdentity
+      roleDefinitionId: sharedSelfHostedIntegrationRuntime.?roleDefinitionId ?? roleDefinitions('Contributor').id // Defaults to Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
       resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
       enableTelemetry: enableReferencedModulesTelemetry
@@ -481,6 +481,9 @@ type integrationRuntimesType = {
 
   @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
   typeProperties: object?
+
+  @description('Optional. The role definition ID (GUID or full resource ID) to assign to the Data Factory\'s system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.')
+  roleDefinitionId: string?
 }
 
 @export()

@@ -42,6 +42,19 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      integrationRuntimes: [
+        {
+          name: 'TestRuntime'
+          type: 'SelfHosted'
+          typeProperties: {
+            linkedInfo: {
+              authorizationType: 'RBAC'
+              resourceId: '/subscriptions/25e36faf-608c-46e0-a99e-f2463241028e/resourcegroups/adf-share-test/providers/Microsoft.DataFactory/factories/adf-share-test-01/integrationruntimes/integrationRuntime1'
+              roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+          }
+        }
+      ]
     }
   }
 ]
