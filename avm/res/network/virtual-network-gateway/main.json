@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "8965506691119170865"
+      "templateHash": "11458957035925900340"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -811,11 +811,6 @@
       "defaultValue": "[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
-        "VpnGw1",
-        "VpnGw2",
-        "VpnGw3",
-        "VpnGw4",
-        "VpnGw5",
         "VpnGw1AZ",
         "VpnGw2AZ",
         "VpnGw3AZ",

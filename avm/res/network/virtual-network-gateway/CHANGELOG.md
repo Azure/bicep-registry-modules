@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Removed unsupported non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`) from the `skuName` allowed values.
+
+### Breaking Changes
+
+- Deployments can no longer specify non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`). Use the corresponding `VpnGw1AZ` to `VpnGw5AZ` SKUs instead.
+
 ## 0.10.2
 
 ### Changes

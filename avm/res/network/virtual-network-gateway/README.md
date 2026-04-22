@@ -51,9 +51,8 @@ The following section provides usage examples for the module, which were used to
 - [ExpressRoute](#example-10-expressroute)
 - [Using large parameter set](#example-11-using-large-parameter-set)
 - [P2S Entra ID and Certificate Authentication](#example-12-p2s-entra-id-and-certificate-authentication)
-- [Using SKU without Availability Zones](#example-13-using-sku-without-availability-zones)
-- [VPN](#example-14-vpn)
-- [WAF-aligned](#example-15-waf-aligned)
+- [VPN](#example-13-vpn)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _VPN Active Active with BGP settings_
 
@@ -2026,98 +2025,7 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 13: _Using SKU without Availability Zones_
-
-This instance deploys the module with a SKU that does not support Availability Zones.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn-no-az]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
-  params: {
-    // Required parameters
-    clusterSettings: {
-      clusterMode: 'activePassiveNoBgp'
-    }
-    gatewayType: 'Vpn'
-    name: 'nvgnaz001'
-    virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    // Non-required parameters
-    publicIpAvailabilityZones: []
-    skuName: 'VpnGw1'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "clusterSettings": {
-      "value": {
-        "clusterMode": "activePassiveNoBgp"
-      }
-    },
-    "gatewayType": {
-      "value": "Vpn"
-    },
-    "name": {
-      "value": "nvgnaz001"
-    },
-    "virtualNetworkResourceId": {
-      "value": "<virtualNetworkResourceId>"
-    },
-    // Non-required parameters
-    "publicIpAvailabilityZones": {
-      "value": []
-    },
-    "skuName": {
-      "value": "VpnGw1"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/network/virtual-network-gateway:<version>'
-
-// Required parameters
-param clusterSettings = {
-  clusterMode: 'activePassiveNoBgp'
-}
-param gatewayType = 'Vpn'
-param name = 'nvgnaz001'
-param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-// Non-required parameters
-param publicIpAvailabilityZones = []
-param skuName = 'VpnGw1'
-```
-
-</details>
-<p>
-
-### Example 14: _VPN_
+### Example 13: _VPN_
 
 This instance deploys the module with the VPN set of required parameters.
 
@@ -2266,7 +2174,7 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 15: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3861,15 +3769,10 @@ The SKU of the Gateway.
     'HighPerformance'
     'Standard'
     'UltraPerformance'
-    'VpnGw1'
     'VpnGw1AZ'
-    'VpnGw2'
     'VpnGw2AZ'
-    'VpnGw3'
     'VpnGw3AZ'
-    'VpnGw4'
     'VpnGw4AZ'
-    'VpnGw5'
     'VpnGw5AZ'
   ]
   ```
