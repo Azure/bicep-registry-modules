@@ -6,22 +6,12 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Fixed Point-to-Site VPN client configuration so Entra ID and certificate authentication can be configured together in `vpnClientConfiguration`.
 - Removed unsupported non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`) from the `skuName` allowed values.
 
 ### Breaking Changes
 
 - Deployments can no longer specify non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`). Use the corresponding `VpnGw1AZ` to `VpnGw5AZ` SKUs instead.
-
-## 0.10.2
-
-### Changes
-
-- Fixed Point-to-Site VPN client configuration so Entra ID and certificate authentication can be configured together in `vpnClientConfiguration`.
-- Added deployment test coverage for combined Point-to-Site authentication.
-
-### Breaking Changes
-
-- None
 
 ## 0.10.1
 
