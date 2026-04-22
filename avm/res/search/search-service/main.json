@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5939210707255201210"
+      "version": "0.42.1.51946",
+      "templateHash": "6110048859359546628"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -662,7 +662,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.Search/searchServices@2025-05-01#properties/properties/properties/authOptions"
         },
-        "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
+        "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. This parameter is ignored if 'disableLocalAuth' is set to true."
       },
       "nullable": true
     },
@@ -670,7 +670,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined."
+        "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication."
       }
     },
     "enableTelemetry": {
@@ -792,7 +792,7 @@
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export. This parameter is ignored if 'disableLocalAuth' is set to true."
       }
     },
     "replicaCount": {
@@ -879,6 +879,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "shouldExportSecrets": "[and(not(equals(parameters('secretsExportConfiguration'), null())), not(parameters('disableLocalAuth')))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', '')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -924,7 +925,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "authOptions": "[parameters('authOptions')]",
+        "authOptions": "[if(parameters('disableLocalAuth'), null(), parameters('authOptions'))]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "encryptionWithCmk": {
           "enforcement": "[parameters('cmkEnforcement')]"
@@ -1718,8 +1719,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9750075626706743095"
+              "version": "0.42.1.51946",
+              "templateHash": "9681817997999190354"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1812,7 +1813,7 @@
       ]
     },
     "secretsExport": {
-      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+      "condition": "[variables('shouldExportSecrets')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
@@ -1838,8 +1839,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8544068785243722356"
+              "version": "0.42.1.51946",
+              "templateHash": "9545753382768322909"
             }
           },
           "definitions": {
@@ -2011,21 +2012,21 @@
       "metadata": {
         "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
       },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+      "value": "[if(variables('shouldExportSecrets'), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
     },
     "primaryKey": {
       "type": "securestring",
       "metadata": {
-        "description": "The primary admin API key of the search service."
+        "description": "The primary admin API key of the search service. Empty when local auth is disabled."
       },
-      "value": "[listAdminKeys('searchService', '2025-05-01').primaryKey]"
+      "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').primaryKey, '')]"
     },
     "secondaryKey": {
       "type": "securestring",
       "metadata": {
-        "description": "The secondaryKey admin API key of the search service."
+        "description": "The secondary admin API key of the search service. Empty when local auth is disabled."
       },
-      "value": "[listAdminKeys('searchService', '2025-05-01').secondaryKey]"
+      "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').secondaryKey, '')]"
     }
   }
 }
