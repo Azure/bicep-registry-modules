@@ -199,6 +199,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -307,6 +309,7 @@ module containerAppAuthConfigs 'auth-config/main.bicep' = if (!empty(authConfig)
   name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
+    enableTelemetry: enableReferencedModulesTelemetry
     encryptionSettings: authConfig.?encryptionSettings
     globalValidation: authConfig.?globalValidation
     httpSettings: authConfig.?httpSettings
