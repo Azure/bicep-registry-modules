@@ -1,6 +1,12 @@
 @description('Optional. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param deploymentUserPassword string
+
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciHostImageReferenceId string = ''
+
 @description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param localAdminPassword string
@@ -51,12 +57,17 @@ param diskNamePrefix string = 'dep-disk'
 @description('Required. The name prefix for the wait deployment scripts.')
 param waitDeploymentScriptPrefixName string = 'dep-wait'
 
-var clusterNodeNames = ['hcinode1', 'hcinode2']
+@description('Optional. The HCI marketplace image version to store in Key Vault for guest VM deployments.')
+param hciImageVersionName string = '20348.2461.240510'
+
+var clusterNodeNames = ['hcinode1']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
+
 module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
+    imageReferenceId: hciHostImageReferenceId
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword
@@ -72,6 +83,8 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     userAssignedIdentityName: userAssignedIdentityName
     virtualMachineName: virtualMachineName
     waitDeploymentScriptPrefixName: waitDeploymentScriptPrefixName
+    hciVHDXDownloadURL: ''    // empty - VHDX pre-baked in gallery image
+    hciISODownloadURL: ''     // empty - VHDX pre-baked in gallery image
   }
 }
 
@@ -84,6 +97,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   location: location
   properties: {}
 }
+
 module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs'
   params: {
@@ -102,15 +116,24 @@ module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
     softDeleteRetentionDays: 30
     tenantId: subscription().tenantId
     vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
+    hciImageVersionName: hciImageVersionName
   }
 }
+
 @description('The name of the created cluster')
 output clusterName string = cluster.name
+
 @description('The name of the cluster\'s nodes.')
 output clusterNodeNames array = clusterNodeNames
+
 @description('The name of the storage account used as the cluster witness.')
 output clusterWitnessStorageAccountName string = clusterWitnessStorageAccountName
+
 @description('The OU path for the domain.')
 output domainOUPath string = domainOUPath
+
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVaultName
+
+@description('The HCI marketplace image version stored in Key Vault for guest VM deployments.')
+output imageVersionName string = hciClusterPreqs.outputs.imageVersionName
