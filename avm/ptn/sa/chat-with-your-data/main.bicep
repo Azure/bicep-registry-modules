@@ -171,7 +171,7 @@ param azureOpenAITopP string = '1'
 param azureOpenAIMaxTokens string = '1000'
 
 @description('Optional. Azure OpenAI Stop Sequence.')
-param azureOpenAIStopSequence string = ''
+param azureOpenAIStopSequence string = '\\n'
 
 @description('Optional. Azure OpenAI System Message.')
 param azureOpenAISystemMessage string = 'You are an AI assistant that helps people find information.'
@@ -183,16 +183,19 @@ param azureOpenAIApiVersion string = '2024-02-01'
 param azureOpenAIStream string = 'true'
 
 @description('Optional. Azure OpenAI Embedding Model Deployment Name.')
-param azureOpenAIEmbeddingModel string = 'text-embedding-ada-002'
+param azureOpenAIEmbeddingModel string = 'text-embedding-3-small'
 
 @description('Optional. Azure OpenAI Embedding Model Name.')
-param azureOpenAIEmbeddingModelName string = 'text-embedding-ada-002'
+param azureOpenAIEmbeddingModelName string = 'text-embedding-3-small'
 
 @description('Optional. Azure OpenAI Embedding Model Version.')
-param azureOpenAIEmbeddingModelVersion string = '2'
+param azureOpenAIEmbeddingModelVersion string = '1'
 
 @description('Optional. Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota .')
 param azureOpenAIEmbeddingModelCapacity int = 100
+
+@description('Optional. Azure Search vector field dimensions. Must match the embedding model dimensions. 1536 for text-embedding-3-small, 3072 for text-embedding-3-large. See https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-azure-openai-embedding#supported-dimensions-by-modelname.(Only for databaseType=CosmosDB)')
+param azureSearchDimensions string = '1536'
 
 @description('Optional. Name of Computer Vision Resource (if useAdvancedImageProcessing=true).')
 var computerVisionName string = 'cv-${solutionSuffix}'
@@ -315,7 +318,7 @@ param enableRedundancy bool = false
 param enablePrivateNetworking bool = false
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
-param vmSize string = 'Standard_DS2_v2'
+param vmSize string = 'Standard_D2s_v5'
 
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
@@ -329,13 +332,12 @@ param virtualMachineAdminPassword string = ''
 param enableTelemetry bool = true
 
 @description('Optional. Image version tag to use.')
-param appversion string = 'latest_waf_2025-11-17_3662'
+param appversion string = 'latest_waf_2026-04-20_4083'
 
 var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
-var eventGridSystemTopicName = 'doc-processing'
-var baseUrl = 'https://raw.githubusercontent.com/Azure-Samples/chat-with-your-data-solution-accelerator/main/'
+var eventGridSystemTopicName = 'evgt-${solutionSuffix}'
 var registryName = 'cwydcontainerreg'
 
 var openAIFunctionsSystemPrompt = '''You help employees to navigate only private information sources.
@@ -350,11 +352,11 @@ var openAIFunctionsSystemPrompt = '''You help employees to navigate only private
     You **must respond** "The requested information is not available in the retrieved data. Please try another query or topic.", If its not related to uploaded documents.'''
 
 var semanticKernelSystemPrompt = '''You help employees to navigate only private information sources.
-    You must prioritize the function call over your general knowledge for any question by calling the search_documents function.
-    Call the text_processing function when the user request an operation on the current context, such as translate, summarize, or paraphrase. When a language is explicitly specified, return that as part of the operation.
+    You should prioritize the function call over your general knowledge for any question by calling the search_documents function.
+    Call the text_processing function when the user requests an operation on the current context, such as translate, summarize, or paraphrase. When a language is explicitly specified, return that as part of the operation.
     When directly replying to the user, always reply in the language the user is speaking.
     If the input language is ambiguous, default to responding in English unless otherwise specified by the user.
-    You **must not** respond if asked to List all documents in your repository.'''
+    Do not list all documents in your repository if asked.'''
 
 var allTags = union(
   {
@@ -376,8 +378,6 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
       ...allTags
       TemplateName: 'CWYD'
       CreatedBy: createdBy
-      SecurityControl: 'Ignore'
-      DeploymentName: deployment().name
     }
   }
 }
@@ -452,7 +452,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
 
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -485,11 +485,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    vmSize: vmSize ?? 'Standard_D2s_v5'
     location: location
     adminUsername: !empty(virtualMachineAdminUsername) ? virtualMachineAdminUsername : 'JumpboxAdminUser'
     adminPassword: !empty(virtualMachineAdminPassword) ? virtualMachineAdminPassword : 'JumpboxAdminP@ssw0rd1234!'
@@ -551,7 +551,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -589,7 +589,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 // ========== Managed Identity ========== //
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module managedIdentityModule 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+module managedIdentityModule 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -733,7 +733,7 @@ var allowAllIPsFirewall = false
 var allowAzureIPsFirewall = true
 var postgresResourceName = '${azurePostgresDBAccountName}-postgres'
 var postgresDBName = 'postgres'
-module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.0' = if (databaseType == 'PostgreSQL') {
+module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.3' = if (databaseType == 'PostgreSQL') {
   name: take('avm.res.db-for-postgre-sql.flexible-server.${azurePostgresDBAccountName}', 64)
   params: {
     name: postgresResourceName
@@ -820,25 +820,6 @@ module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.
       }
     ]
   }
-}
-
-module pgSqlDelayScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (databaseType == 'PostgreSQL') {
-  name: take('avm.res.deployment-script.delay.${postgresResourceName}', 64)
-  params: {
-    name: 'delay-for-postgres-${solutionSuffix}'
-    location: resourceGroup().location
-    tags: tags
-    kind: 'AzurePowerShell'
-    enableTelemetry: enableTelemetry
-    scriptContent: 'start-sleep -Seconds 300'
-    azPowerShellVersion: '11.0'
-    timeout: 'PT15M'
-    cleanupPreference: 'Always'
-    retentionInterval: 'PT1H'
-  }
-  dependsOn: [
-    postgresDBModule
-  ]
 }
 
 // Store secrets in a keyvault
@@ -1078,7 +1059,7 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseType == 'CosmosDB') {
+module search 'br/public:avm/res/search/search-service:0.12.0' = if (databaseType == 'CosmosDB') {
   name: take('avm.res.search.search-service.${azureAISearchName}', 64)
   params: {
     // Required parameters
@@ -1093,7 +1074,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
       }
     }
     disableLocalAuth: false
-    hostingMode: 'default'
+    hostingMode: 'Default'
     networkRuleSet: {
       bypass: 'AzureServices'
       ipRules: []
@@ -1169,7 +1150,7 @@ module search 'br/public:avm/res/search/search-service:0.11.1' = if (databaseTyp
 // AVM WAF - Server Farm + Web Site conversions
 var webServerFarmResourceName = hostingPlanName
 
-module webServerFarm 'br/public:avm/res/web/serverfarm:0.5.0' = {
+module webServerFarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
   name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
   scope: resourceGroup()
   params: {
@@ -1198,6 +1179,7 @@ module web 'modules/app/web.bicep' = {
     name: hostingModel == 'container' ? '${websiteName}-docker' : websiteName
     location: location
     tags: union(tags, { 'azd-service-name': hostingModel == 'container' ? 'web-docker' : 'web' })
+    allTags: allTags
     kind: hostingModel == 'container' ? 'app,linux,container' : 'app,linux'
     serverFarmResourceId: webServerFarm.outputs.resourceId
     // runtime settings apply only for code-hosted apps
@@ -1255,6 +1237,9 @@ module web 'modules/app/web.bicep' = {
         MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
         AZURE_CLIENT_ID: managedIdentityModule.outputs.clientId // Required so LangChain AzureSearch vector store authenticates with this user-assigned managed identity
         APP_ENV: appEnvironment
+        AZURE_SEARCH_DIMENSIONS: azureSearchDimensions
+        PACKAGE_LOGGING_LEVEL: 'WARNING'
+        AZURE_LOGGING_PACKAGES: ''
       },
       databaseType == 'CosmosDB'
         ? {
@@ -1303,6 +1288,7 @@ module adminweb 'modules/app/adminweb.bicep' = {
     name: hostingModel == 'container' ? '${adminWebsiteName}-docker' : adminWebsiteName
     location: location
     tags: union(tags, { 'azd-service-name': hostingModel == 'container' ? 'adminweb-docker' : 'adminweb' })
+    allTags: allTags
     kind: hostingModel == 'container' ? 'app,linux,container' : 'app,linux'
     serverFarmResourceId: webServerFarm.outputs.resourceId
     // runtime settings apply only for code-hosted apps
@@ -1350,6 +1336,9 @@ module adminweb 'modules/app/adminweb.bicep' = {
         MANAGED_IDENTITY_CLIENT_ID: managedIdentityModule.outputs.clientId
         MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
         APP_ENV: appEnvironment
+        AZURE_SEARCH_DIMENSIONS: azureSearchDimensions
+        PACKAGE_LOGGING_LEVEL: 'WARNING'
+        AZURE_LOGGING_PACKAGES: ''
       },
       databaseType == 'CosmosDB'
         ? {
@@ -1408,7 +1397,6 @@ module function 'modules/app/function.bicep' = {
     serverFarmResourceId: webServerFarm.outputs.resourceId
     applicationInsightsName: enableMonitoring ? monitoring!.outputs.applicationInsightsName : ''
     storageAccountName: storage.outputs.name
-    clientKey: clientKey
     userAssignedIdentityResourceId: managedIdentityModule.outputs.resourceId
     userAssignedIdentityClientId: managedIdentityModule.outputs.clientId
     // WAF aligned configurations
@@ -1441,12 +1429,17 @@ module function 'modules/app/function.bicep' = {
         ORCHESTRATION_STRATEGY: orchestrationStrategy
         LOGLEVEL: logLevel
         AZURE_OPENAI_SYSTEM_MESSAGE: azureOpenAISystemMessage
+        OPEN_AI_FUNCTIONS_SYSTEM_PROMPT: openAIFunctionsSystemPrompt
+        SEMANTIC_KERNEL_SYSTEM_PROMPT: semanticKernelSystemPrompt
         DATABASE_TYPE: databaseType
         MANAGED_IDENTITY_CLIENT_ID: managedIdentityModule.outputs.clientId
         MANAGED_IDENTITY_RESOURCE_ID: managedIdentityModule.outputs.resourceId
         AZURE_CLIENT_ID: managedIdentityModule.outputs.clientId // Required so LangChain AzureSearch vector store authenticates with this user-assigned managed identity
         APP_ENV: appEnvironment
         BACKEND_URL: backendUrl
+        AZURE_SEARCH_DIMENSIONS: azureSearchDimensions
+        PACKAGE_LOGGING_LEVEL: 'WARNING'
+        AZURE_LOGGING_PACKAGES: ''
       },
       databaseType == 'CosmosDB'
         ? {
@@ -1720,7 +1713,7 @@ module avmEventGridSystemTopic 'br/public:avm/res/event-grid/system-topic:0.6.4'
       : []
     eventSubscriptions: [
       {
-        name: eventGridSystemTopicName
+        name: 'evts-${solutionSuffix}'
         destination: {
           endpointType: 'StorageQueue'
           properties: {
@@ -1793,37 +1786,6 @@ module systemAssignedIdentityRoleAssignments './modules/app/roleassignments.bice
   params: {
     roleAssignments: systemAssignedRoleAssignments
   }
-}
-
-//========== Deployment script to upload data ========== //
-module createIndex 'br/public:avm/res/resources/deployment-script:0.5.1' = if (databaseType == 'PostgreSQL') {
-  name: take('avm.res.resources.deployment-script.createIndex', 64)
-  params: {
-    kind: 'AzureCLI'
-    name: 'copy_demo_Data_${solutionSuffix}'
-    azCliVersion: '2.52.0'
-    cleanupPreference: 'Always'
-    location: location
-    enableTelemetry: enableTelemetry
-    managedIdentities: {
-      userAssignedResourceIds: [
-        managedIdentityModule.outputs.resourceId
-      ]
-    }
-    retentionInterval: 'PT1H'
-    runOnce: true
-    primaryScriptUri: '${baseUrl}scripts/run_create_table_script.sh'
-    arguments: '${baseUrl} ${resourceGroup().name} ${postgresDBModule!.outputs.fqdn} ${managedIdentityModule.outputs.name}'
-    storageAccountResourceId: storage.outputs.resourceId
-    subnetResourceIds: enablePrivateNetworking
-      ? [
-          virtualNetwork!.outputs.deploymentScriptsSubnetResourceId
-        ]
-      : null
-    tags: tags
-    timeout: 'PT30M'
-  }
-  dependsOn: [pgSqlDelayScript]
 }
 
 var azureOpenAIModelInfo = string({
@@ -2019,3 +1981,14 @@ output openAiFunctionsSystemPromptOutput string = openAIFunctionsSystemPrompt
 
 @description('System prompt used by the Semantic Kernel orchestration.')
 output semanticKernelSystemPromptOutput string = semanticKernelSystemPrompt
+
+@description('Resource name of the web app service (used by azd deploy).')
+output serviceWebResourceName string = hostingModel == 'container' ? '${websiteName}-docker' : websiteName
+
+@description('Resource name of the admin web app service (used by azd deploy).')
+output serviceAdminWebResourceName string = hostingModel == 'container'
+  ? '${adminWebsiteName}-docker'
+  : adminWebsiteName
+
+@description('Resource name of the function app service (used by azd deploy).')
+output serviceFunctionResourceName string = hostingModel == 'container' ? '${functionName}-docker' : functionName

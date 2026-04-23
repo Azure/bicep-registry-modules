@@ -72,16 +72,6 @@ param subnets subnetType[] = [
     }
   }
   {
-    name: 'deployment-scripts'
-    addressPrefixes: ['10.0.4.0/24']
-    networkSecurityGroup: {
-      name: 'nsg-deployment-scripts'
-      securityRules: []
-    }
-    delegation: 'Microsoft.ContainerInstance/containerGroups'
-    serviceEndpoints: ['Microsoft.Storage']
-  }
-  {
     name: 'AzureBastionSubnet' // Required name for Azure Bastion
     addressPrefixes: ['10.0.10.0/26']
     networkSecurityGroup: {
@@ -181,7 +171,7 @@ param resourceSuffix string
 // VM Size Notes:
 // 1 B-series VMs (like Standard_B2ms) do not support accelerated networking.
 // 2 Pick a VM size that does support accelerated networking (the usual jump-box candidates):
-//     Standard_DS2_v2 (2 vCPU, 7 GiB RAM, Premium SSD) // The most broadly available (it's a legacy SKU supported in virtually every region).
+//     Standard_D2s_v5 (2 vCPU, 8 GiB RAM, Premium SSD) // Current-gen, widely available across most Azure regions.
 //     Standard_D2s_v3 (2 vCPU, 8 GiB RAM, Premium SSD) //  next most common
 //     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD)  // Newest, so fewer regions availabl
 
@@ -219,7 +209,7 @@ param resourceSuffix string
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
@@ -236,7 +226,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.1' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
     name: name
@@ -301,10 +291,6 @@ output bastionSubnetResourceId string = contains(map(subnets, subnet => subnet.n
 output jumpboxSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'jumpbox')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'jumpbox')]
   : ''
-output deploymentScriptsSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'deployment-scripts')
-  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'deployment-scripts')]
-  : ''
-
 @export()
 @description('Custom type definition for subnet resource information as output')
 type subnetOutputType = {
