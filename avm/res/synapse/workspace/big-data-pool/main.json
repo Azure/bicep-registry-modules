@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "674250053488177162"
+      "templateHash": "9197580415545886437"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -808,7 +808,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "9817740785600293145"
+              "templateHash": "2092559881266794840"
             }
           },
           "definitions": {
@@ -1029,7 +1029,7 @@
               "minValue": -1,
               "maxValue": 10080,
               "metadata": {
-                "description": "Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided."
+                "description": "Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. 10,080 equals 7 days in minutes."
               }
             },
             "sparkVersion": {
@@ -1113,10 +1113,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Synapse/workspaces/bigDataPools@2021-06-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -1143,10 +1146,10 @@
                 "sparkConfigProperties": "[parameters('sparkConfigProperties')]",
                 "sessionLevelPackagesEnabled": "[parameters('sessionLevelPackagesEnabled')]",
                 "cacheSize": "[parameters('cacheSize')]",
-                "defaultSparkLogFolder": "[if(not(empty(parameters('defaultSparkLogFolder'))), parameters('defaultSparkLogFolder'), null())]",
+                "defaultSparkLogFolder": "[parameters('defaultSparkLogFolder')]",
                 "isAutotuneEnabled": "[parameters('autotuneEnabled')]",
                 "isComputeIsolationEnabled": "[parameters('computeIsolationEnabled')]",
-                "sparkEventsFolder": "[if(not(empty(parameters('sparkEventsFolder'))), parameters('sparkEventsFolder'), null())]",
+                "sparkEventsFolder": "[parameters('sparkEventsFolder')]",
                 "libraryRequirements": "[parameters('libraryRequirements')]",
                 "customLibraries": "[parameters('customLibraries')]"
               }
@@ -1834,7 +1837,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "9817740785600293145"
+              "templateHash": "2092559881266794840"
             }
           },
           "definitions": {
@@ -2055,7 +2058,7 @@
               "minValue": -1,
               "maxValue": 10080,
               "metadata": {
-                "description": "Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided."
+                "description": "Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. 10,080 equals 7 days in minutes."
               }
             },
             "sparkVersion": {
@@ -2139,10 +2142,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Synapse/workspaces/bigDataPools@2021-06-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             }
           },
           "resources": {
@@ -2169,10 +2175,10 @@
                 "sparkConfigProperties": "[parameters('sparkConfigProperties')]",
                 "sessionLevelPackagesEnabled": "[parameters('sessionLevelPackagesEnabled')]",
                 "cacheSize": "[parameters('cacheSize')]",
-                "defaultSparkLogFolder": "[if(not(empty(parameters('defaultSparkLogFolder'))), parameters('defaultSparkLogFolder'), null())]",
+                "defaultSparkLogFolder": "[parameters('defaultSparkLogFolder')]",
                 "isAutotuneEnabled": "[parameters('autotuneEnabled')]",
                 "isComputeIsolationEnabled": "[parameters('computeIsolationEnabled')]",
-                "sparkEventsFolder": "[if(not(empty(parameters('sparkEventsFolder'))), parameters('sparkEventsFolder'), null())]",
+                "sparkEventsFolder": "[parameters('sparkEventsFolder')]",
                 "libraryRequirements": "[parameters('libraryRequirements')]",
                 "customLibraries": "[parameters('customLibraries')]"
               }

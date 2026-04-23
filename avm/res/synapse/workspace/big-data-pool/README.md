@@ -107,7 +107,7 @@ Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabl
 Auto-scaling properties.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `autotuneEnabled`
 
@@ -300,14 +300,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 Dynamic Executor Allocation.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `libraryRequirements`
 
 Library version requirements.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `location`
 
@@ -504,7 +504,7 @@ Whether session level packages enabled. Disabled if value not provided.
 Spark configuration file to specify additional properties.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `sparkEventsFolder`
 

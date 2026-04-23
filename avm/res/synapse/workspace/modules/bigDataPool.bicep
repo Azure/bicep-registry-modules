@@ -43,7 +43,7 @@ param nodeCount int = 3
 @description('Optional. Dynamic Executor Allocation.')
 param dynamicExecutorAllocation dynamicExecutorAllocationType?
 
-@description('Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided.')
+@description('Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. 10,080 equals 7 days in minutes.')
 @minValue(-1)
 @maxValue(10080) // 7 days in minutes
 param autoPauseDelayInMinutes int = -1
@@ -85,7 +85,7 @@ param libraryRequirements libraryRequirementsType?
 param customLibraries customLibraryType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01'>.tags?
 
 // ================ //
 // Resources        //
@@ -134,10 +134,10 @@ resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
     sparkConfigProperties: sparkConfigProperties
     sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
     cacheSize: cacheSize
-    defaultSparkLogFolder: !empty(defaultSparkLogFolder) ? defaultSparkLogFolder : null
+    defaultSparkLogFolder: defaultSparkLogFolder
     isAutotuneEnabled: autotuneEnabled
     isComputeIsolationEnabled: computeIsolationEnabled
-    sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+    sparkEventsFolder: sparkEventsFolder
     libraryRequirements: libraryRequirements
     customLibraries: customLibraries
   }
