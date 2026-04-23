@@ -12,11 +12,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
         {
           name: '<Self-Hosted Integration Runtime name>'
           type: 'SelfHosted'
+          linkedResourceRoleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Optional, Defaults to Contributor role for SHIR
           typeProperties: {
             linkedInfo: {
               authorizationType: 'RBAC'
               resourceId: '<Linked Self-Hosted Integration Runtime ResourceId>'
-              roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Optional, Defaults to Contributor role for SHIR
             }
           }
         }

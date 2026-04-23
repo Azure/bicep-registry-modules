@@ -269,7 +269,7 @@ module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/re
     )
     params: {
       principalId: dataFactory.?identity.?principalId ?? sharedSHIRRequiresSystemAssignedIdentity
-      roleDefinitionId: sharedSelfHostedIntegrationRuntime.?roleDefinitionId ?? roleDefinitions('Contributor').id // Defaults to Contributor role for shared SHIR
+      roleDefinitionId: sharedSelfHostedIntegrationRuntime.?linkedResourceRoleDefinitionId ?? roleDefinitions('Contributor').id // Defaults to Contributor role for shared SHIR
       principalType: 'ServicePrincipal'
       resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
       enableTelemetry: enableReferencedModulesTelemetry
@@ -483,7 +483,7 @@ type integrationRuntimesType = {
   typeProperties: object?
 
   @description('Optional. The role definition ID (GUID or full resource ID) to assign to the Data Factory\'s system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.')
-  roleDefinitionId: string?
+  linkedResourceRoleDefinitionId: string?
 }
 
 @export()
