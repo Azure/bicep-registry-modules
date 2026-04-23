@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "15512995314437939074"
+      "templateHash": "1274566977315818724"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -77,7 +77,7 @@
             "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
           }
         },
-        "roleDefinitionId": {
+        "linkedResourceRoleDefinitionId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1480,7 +1480,7 @@
             "value": "[coalesce(tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId'), variables('sharedSHIRRequiresSystemAssignedIdentity'))]"
           },
           "roleDefinitionId": {
-            "value": "[coalesce(tryGet(variables('sharedSelfHostedIntegrationRuntimes')[copyIndex()], 'roleDefinitionId'), roleDefinitions('Contributor').id)]"
+            "value": "[coalesce(tryGet(variables('sharedSelfHostedIntegrationRuntimes')[copyIndex()], 'linkedResourceRoleDefinitionId'), roleDefinitions('Contributor').id)]"
           },
           "principalType": {
             "value": "ServicePrincipal"
