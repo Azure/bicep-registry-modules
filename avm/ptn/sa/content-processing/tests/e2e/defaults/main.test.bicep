@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
     azureAiServiceLocation: enforcedLocation
     enablePrivateNetworking: false
     enableMonitoring: false
-    enableRedundancy: true
-    enableScalability: true
+    enableRedundancy: false
+    enableScalability: false
   }
 }

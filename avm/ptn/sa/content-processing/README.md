@@ -146,8 +146,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
-    enableRedundancy: true
-    enableScalability: true
+    enableRedundancy: false
+    enableScalability: false
     location: '<location>'
     solutionName: 'scpdmin'
   }
@@ -178,10 +178,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": false
     },
     "enableRedundancy": {
-      "value": true
+      "value": false
     },
     "enableScalability": {
-      "value": true
+      "value": false
     },
     "location": {
       "value": "<location>"
@@ -208,8 +208,8 @@ param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
-param enableRedundancy = true
-param enableScalability = true
+param enableRedundancy = false
+param enableScalability = false
 param location = '<location>'
 param solutionName = 'scpdmin'
 ```
