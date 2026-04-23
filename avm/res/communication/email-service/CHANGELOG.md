@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/communication/email-service/CHANGELOG.md).
 
+## 0.4.5
+
+### Changes
+
+- Publishing child module `avm/res/communication/email-service/domain`.
+- Publishing child module `avm/res/communication/email-service/domain/sender-username`.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.4
 
 ### Changes
