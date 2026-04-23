@@ -623,9 +623,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     enablePrivateNetworking: enablePrivateNetworking
     enforceFirewallRestrictions: enableRedundancy
     backendSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.backendSubnetResourceId : ''
-    privateDnsZoneResourceId: enablePrivateNetworking
-      ? privateDnsZoneResources[dnsZoneIndex.containerRegistry]!.id
-      : ''
+    privateDnsZoneResourceId: enablePrivateNetworking ? privateDnsZoneResources[dnsZoneIndex.containerRegistry]!.id : ''
   }
 }
 
