@@ -187,13 +187,15 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeName = "hcinode$i"
     $hciNodePath = "C:\diskMounts\$hciNodeName"
 
-    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 32GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
+    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 48GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
 }
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
+log 'Stopping VMs before changing processor settings...'
+Get-VM | Stop-VM -Force -TurnOff
 log 'Setting VM processor count to 16 and enabling virtualization extensions...'
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
