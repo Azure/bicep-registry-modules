@@ -388,7 +388,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`azureSearchChunkColumn`](#parameter-azuresearchchunkcolumn) | string | Chunk column. |
 | [`azureSearchContentColumn`](#parameter-azuresearchcontentcolumn) | string | Content columns. |
 | [`azureSearchConversationLogIndex`](#parameter-azuresearchconversationlogindex) | string | Azure AI Search Conversation Log Index. |
-| [`azureSearchDimensions`](#parameter-azuresearchdimensions) | string | Azure Search vector field dimensions. Must match the embedding model dimensions. 1536 for text-embedding-3-small, 3072 for text-embedding-3-large. See https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-azure-openai-embedding#supported-dimensions-by-modelname.(Only for databaseType=CosmosDB) |
+| [`azureSearchDimensions`](#parameter-azuresearchdimensions) | string | Azure AI Search vector field dimensions that must match the selected embedding model (1536 for text-embedding-3-small, 3072 for text-embedding-3-large). Only applies when databaseType is CosmosDB. |
 | [`azureSearchEnableInDomain`](#parameter-azuresearchenableindomain) | string | Enable in domain. |
 | [`azureSearchFieldId`](#parameter-azuresearchfieldid) | string | Id columns. |
 | [`azureSearchFieldsMetadata`](#parameter-azuresearchfieldsmetadata) | string | Metadata column. |
@@ -614,7 +614,7 @@ Azure AI Search Conversation Log Index.
 
 ### Parameter: `azureSearchDimensions`
 
-Azure Search vector field dimensions. Must match the embedding model dimensions. 1536 for text-embedding-3-small, 3072 for text-embedding-3-large. See https://learn.microsoft.com/en-us/azure/search/cognitive-search-skill-azure-openai-embedding#supported-dimensions-by-modelname.(Only for databaseType=CosmosDB)
+Azure AI Search vector field dimensions that must match the selected embedding model (1536 for text-embedding-3-small, 3072 for text-embedding-3-large). Only applies when databaseType is CosmosDB.
 
 - Required: No
 - Type: string

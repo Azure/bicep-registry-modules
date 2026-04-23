@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/chat-with-your-data/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Synced infrastructure Bicep files with upstream chat-with-your-data-solution-accelerator repository.
+- Added allTags parameter to prevent azd-service-name tags from bleeding into private endpoints.
+- Added service name outputs for web, adminweb, and function apps.
+- Removed unused deployment scripts and related infrastructure.
+- Fixed parameter description formatting for AVM compliance.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
