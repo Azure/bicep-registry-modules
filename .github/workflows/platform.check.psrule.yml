@@ -75,7 +75,7 @@ jobs:
       # [Token replacement] task(s)
       # ---------------------------
       - name: Replace tokens in relevant files
-        uses: azure/powershell@v2
+        uses: azure/powershell@v3
         with:
           azPSVersion: "latest"
           inlineScript: |
@@ -156,7 +156,7 @@ jobs:
       #-----------------------------
       - name: Parse CSV content
         if: always()
-        uses: azure/powershell@v2
+        uses: azure/powershell@v3
         with:
           azPSVersion: "latest"
           inlineScript: |
