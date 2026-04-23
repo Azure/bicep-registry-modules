@@ -490,7 +490,6 @@ resource proximityPlacementGroupRes 'Microsoft.Compute/proximityPlacementGroups@
   name: proximityPlacementGroupResourceName
   location: location
   tags: tags
-  zones: enableRedundancy ? ['1'] : null
 }
 
 // ========== Private DNS Zones ========== //
@@ -939,6 +938,11 @@ resource contentUnderstandingPrivateEndpointDnsGroup 'Microsoft.Network/privateE
   }
 }
 
+// Existing resource reference for Log Analytics Workspace to access listKeys() securely
+resource logAnalyticsWorkspaceRef 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (enableMonitoring) {
+  name: 'log-${solutionSuffix}'
+}
+
 // ========== Container App Environment ========== //
 module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
@@ -955,10 +959,8 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
           destination: 'log-analytics'
           logAnalyticsConfiguration: {
             customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
-            sharedKey: listKeys(
-              resourceId('Microsoft.OperationalInsights/workspaces', 'log-${solutionSuffix}'),
-              '2023-09-01'
-            ).primarySharedKey
+            #disable-next-line use-recent-api-versions // Using listKeys with existing resource reference for secure output
+            sharedKey: logAnalyticsWorkspaceRef!.listKeys().primarySharedKey
           }
         }
       : null

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "11813080605771659219"
+      "templateHash": "5764239251363606109"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -349,8 +349,7 @@
       "apiVersion": "2024-07-01",
       "name": "[variables('proximityPlacementGroupResourceName')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
-      "zones": "[if(parameters('enableRedundancy'), createArray('1'), null())]"
+      "tags": "[parameters('tags')]"
     },
     "privateDnsZoneResources": {
       "copy": {
@@ -555,6 +554,13 @@
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]"
       ]
+    },
+    "logAnalyticsWorkspaceRef": {
+      "condition": "[parameters('enableMonitoring')]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2025-02-01",
+      "name": "[format('log-{0}', variables('solutionSuffix'))]"
     },
     "containerRegistryReaderIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
@@ -36014,7 +36020,7 @@
               "systemAssigned": true
             }
           },
-          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listKeys(resourceId('Microsoft.OperationalInsights/workspaces', format('log-{0}', variables('solutionSuffix'))), '2023-09-01').primarySharedKey))), createObject('value', null()))]",
+          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listKeys('logAnalyticsWorkspaceRef', '2025-02-01').primarySharedKey))), createObject('value', null()))]",
           "workloadProfiles": {
             "value": [
               {
