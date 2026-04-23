@@ -260,10 +260,10 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     }
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
-    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
+    maintenanceConfigurationResourceId: maintenanceConfigurationRes!.id
     enableAutomaticUpdates: true
     encryptionAtHost: false
-    proximityPlacementGroupResourceId: proximityPlacementGroup!.outputs.resourceId
+    proximityPlacementGroupResourceId: proximityPlacementGroupRes!.id
     availabilityZone: enableRedundancy ? 1 : -1
     imageReference: {
       publisher: 'microsoft-dsvm'
@@ -344,13 +344,12 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
-  name: take('avm.res.maintenance-configuration.${jumpboxVmName}', 64)
-  params: {
-    name: 'mc-${jumpboxVmName}'
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource maintenanceConfigurationRes 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = if (enablePrivateNetworking) {
+  name: 'mc-${jumpboxVmName}'
+  location: location
+  tags: tags
+  properties: {
     extensionProperties: {
       InGuestPatchMode: 'User'
     }
@@ -486,15 +485,12 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
 }
 
 var proximityPlacementGroupResourceName = 'ppg-${solutionSuffix}'
-module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = if (enablePrivateNetworking) {
-  name: take('avm.res.compute.proximity-placement-group.${proximityPlacementGroupResourceName}', 64)
-  params: {
-    name: proximityPlacementGroupResourceName
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-    availabilityZone: enableRedundancy ? 1 : -1
-  }
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource proximityPlacementGroupRes 'Microsoft.Compute/proximityPlacementGroups@2024-07-01' = if (enablePrivateNetworking) {
+  name: proximityPlacementGroupResourceName
+  location: location
+  tags: tags
+  zones: enableRedundancy ? ['1'] : null
 }
 
 // ========== Private DNS Zones ========== //
@@ -523,15 +519,27 @@ var dnsZoneIndex = {
   containerRegistry: 8
 }
 
+// Using raw ARM resources instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+resource privateDnsZoneResources 'Microsoft.Network/privateDnsZones@2024-06-01' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
-    name: take('avm.res.network.private-dns-zone.${split(zone, '.')[1]}', 64)
-    params: {
-      name: zone
-      tags: tags
-      enableTelemetry: enableTelemetry
-      virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork!.outputs.resourceId }]
+    name: zone
+    location: 'global'
+    tags: tags
+  }
+]
+
+@batchSize(5)
+resource privateDnsZoneVnetLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = [
+  for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
+    name: 'link-vnet-${solutionSuffix}'
+    parent: privateDnsZoneResources[i]
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork!.outputs.resourceId
+      }
+      registrationEnabled: false
     }
   }
 ]
@@ -550,20 +558,18 @@ module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enabl
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.7.0' = if (enableMonitoring) {
-  name: take('avm.res.insights.component.${solutionSuffix}', 64)
-  params: {
-    name: 'appi-${solutionSuffix}'
-    location: location
-    enableTelemetry: enableTelemetry
-    retentionInDays: 365
-    kind: 'web'
-    disableIpMasking: false
-    flowType: 'Bluefield'
-    // WAF aligned configuration for Monitoring
-    workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
-    tags: tags
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource applicationInsightsRes 'Microsoft.Insights/components@2020-02-02' = if (enableMonitoring) {
+  name: 'appi-${solutionSuffix}'
+  location: location
+  tags: tags
+  kind: 'web'
+  properties: {
+    Application_Type: 'web'
+    DisableIpMasking: false
+    Flow_Type: 'Bluefield'
+    RetentionInDays: 365
+    WorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
   }
 }
 
@@ -588,14 +594,11 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
 }
 
 // ========== Managed Identity ========== //
-module avmManagedIdentity './modules/managed-identity.bicep' = {
-  name: take('module.managed-identity.${solutionSuffix}', 64)
-  params: {
-    name: 'id-${solutionSuffix}'
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'id-${solutionSuffix}'
+  location: location
+  tags: tags
 }
 
 module avmContainerRegistry 'modules/container-registry.bicep' = {
@@ -608,7 +611,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     zoneRedundancy: 'Disabled'
     roleAssignments: [
       {
-        principalId: avmContainerRegistryReader.outputs.principalId
+        principalId: containerRegistryReaderIdentity.properties.principalId
         roleDefinitionIdOrName: 'AcrPull'
         principalType: 'ServicePrincipal'
       }
@@ -621,7 +624,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
     enforceFirewallRestrictions: enableRedundancy
     backendSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.backendSubnetResourceId : ''
     privateDnsZoneResourceId: enablePrivateNetworking
-      ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
+      ? privateDnsZoneResources[dnsZoneIndex.containerRegistry]!.id
       : ''
   }
 }
@@ -637,7 +640,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
     enableTelemetry: enableTelemetry
     roleAssignments: [
       {
-        principalId: avmManagedIdentity.outputs.principalId
+        principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         principalType: 'ServicePrincipal'
       }
@@ -693,7 +696,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
               privateDnsZoneGroupConfigs: [
                 {
                   name: 'storage-dns-zone-group-blob'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZoneResources[dnsZoneIndex.storageBlob]!.id
                 }
               ]
             }
@@ -707,7 +710,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
               privateDnsZoneGroupConfigs: [
                 {
                   name: 'storage-dns-zone-group-queue'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageQueue]!.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZoneResources[dnsZoneIndex.storageQueue]!.id
                 }
               ]
             }
@@ -739,7 +742,7 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     roleAssignments: [
       {
-        principalId: avmManagedIdentity.outputs.principalId
+        principalId: managedIdentity.properties.principalId
         roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
         principalType: 'ServicePrincipal'
       }
@@ -792,12 +795,12 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
   }
 }
 
-module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.8.1' = if (enablePrivateNetworking) {
-  name: take('avm.res.network.private-endpoint.${solutionSuffix}', 64)
-  params: {
-    name: 'pep-aiservices-${solutionSuffix}'
-    location: location
-    tags: tags
+// Using raw ARM resources instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource cognitiveServicePrivateEndpointRes 'Microsoft.Network/privateEndpoints@2024-05-01' = if (enablePrivateNetworking) {
+  name: 'pep-aiservices-${solutionSuffix}'
+  location: location
+  tags: tags
+  properties: {
     customNetworkInterfaceName: 'nic-aiservices-${solutionSuffix}'
     privateLinkServiceConnections: [
       {
@@ -808,28 +811,42 @@ module cognitiveServicePrivateEndpoint 'br/public:avm/res/network/private-endpoi
         }
       }
     ]
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          name: 'ai-services-dns-zone-cognitiveservices'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-        }
-        {
-          name: 'ai-services-dns-zone-openai'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
-        }
-        {
-          name: 'ai-services-dns-zone-aiservices'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
-        }
-        {
-          name: 'ai-services-dns-zone-contentunderstanding'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.contentUnderstanding]!.outputs.resourceId
-        }
-      ]
+    subnet: {
+      id: virtualNetwork!.outputs.backendSubnetResourceId
     }
-    subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-    enableTelemetry: enableTelemetry
+  }
+}
+
+resource cognitiveServicePrivateEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = if (enablePrivateNetworking) {
+  parent: cognitiveServicePrivateEndpointRes
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'ai-services-dns-zone-cognitiveservices'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.cognitiveServices]!.id
+        }
+      }
+      {
+        name: 'ai-services-dns-zone-openai'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.openAI]!.id
+        }
+      }
+      {
+        name: 'ai-services-dns-zone-aiservices'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.aiServices]!.id
+        }
+      }
+      {
+        name: 'ai-services-dns-zone-contentunderstanding'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.contentUnderstanding]!.id
+        }
+      }
+    ]
   }
 }
 
@@ -843,7 +860,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.14.1' = 
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
-        avmManagedIdentity.outputs.resourceId // Use the managed identity created above
+        managedIdentity.id // Use the managed identity created above
       ]
     }
     kind: 'AIServices'
@@ -875,12 +892,12 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.14.1' = 
   }
 }
 
-module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.8.1' = if (enablePrivateNetworking) {
-  name: take('avm.res.network.private-endpoint.aicu-${solutionSuffix}', 64)
-  params: {
-    name: 'pep-aicu-${solutionSuffix}'
-    location: location
-    tags: tags
+// Using raw ARM resources instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource contentUnderstandingPrivateEndpointRes 'Microsoft.Network/privateEndpoints@2024-05-01' = if (enablePrivateNetworking) {
+  name: 'pep-aicu-${solutionSuffix}'
+  location: location
+  tags: tags
+  properties: {
     customNetworkInterfaceName: 'nic-aicu-${solutionSuffix}'
     privateLinkServiceConnections: [
       {
@@ -891,24 +908,36 @@ module contentUnderstandingPrivateEndpoint 'br/public:avm/res/network/private-en
         }
       }
     ]
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          name: 'aicu-dns-zone-cognitiveservices'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-        }
-        {
-          name: 'ai-services-dns-zone-aiservices'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
-        }
-        {
-          name: 'aicu-dns-zone-contentunderstanding'
-          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.contentUnderstanding]!.outputs.resourceId
-        }
-      ]
+    subnet: {
+      id: virtualNetwork!.outputs.backendSubnetResourceId
     }
-    subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-    enableTelemetry: enableTelemetry
+  }
+}
+
+resource contentUnderstandingPrivateEndpointDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-05-01' = if (enablePrivateNetworking) {
+  parent: contentUnderstandingPrivateEndpointRes
+  name: 'default'
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'aicu-dns-zone-cognitiveservices'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.cognitiveServices]!.id
+        }
+      }
+      {
+        name: 'ai-services-dns-zone-aiservices'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.aiServices]!.id
+        }
+      }
+      {
+        name: 'aicu-dns-zone-contentunderstanding'
+        properties: {
+          privateDnsZoneId: privateDnsZoneResources[dnsZoneIndex.contentUnderstanding]!.id
+        }
+      }
+    ]
   }
 }
 
@@ -956,14 +985,11 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
 }
 
 // //=========== Managed Identity for Container Registry ========== //
-module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
-  name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
-  params: {
-    name: 'id-acr-${solutionSuffix}'
-    location: location
-    tags: tags
-    enableTelemetry: enableTelemetry
-  }
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under the 4MB ARM API limit.
+resource containerRegistryReaderIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'id-acr-${solutionSuffix}'
+  location: location
+  tags: tags
 }
 
 // ========== Container App  ========== //
@@ -979,7 +1005,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
 
@@ -1041,7 +1067,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
     containers: [
@@ -1164,7 +1190,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
     ingressExternal: true
@@ -1246,7 +1272,7 @@ module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
     containers: [
@@ -1334,7 +1360,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
               privateDnsZoneGroupConfigs: [
                 {
                   name: 'cosmosdb-dns-zone-group'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId
+                  privateDnsZoneResourceId: privateDnsZoneResources[dnsZoneIndex.cosmosDB]!.id
                 }
               ]
             }
@@ -1589,7 +1615,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
           privateDnsZoneGroupConfigs: [
             {
               name: 'appconfig-dns-zone-group'
-              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.appConfig]!.outputs.resourceId
+              privateDnsZoneResourceId: privateDnsZoneResources[dnsZoneIndex.appConfig]!.id
             }
           ]
         }
@@ -1617,7 +1643,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
     containers: [
@@ -1674,8 +1700,8 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
     }
   }
   dependsOn: [
-    cognitiveServicePrivateEndpoint
-    contentUnderstandingPrivateEndpoint
+    cognitiveServicePrivateEndpointRes
+    contentUnderstandingPrivateEndpointRes
   ]
 }
 
@@ -1692,7 +1718,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
 
@@ -1801,7 +1827,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     }
   }
   dependsOn: [
-    cognitiveServicePrivateEndpoint
+    cognitiveServicePrivateEndpointRes
   ]
 }
 
@@ -1819,7 +1845,7 @@ module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.19
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        avmContainerRegistryReader.outputs.resourceId
+        containerRegistryReaderIdentity.id
       ]
     }
     containers: [
@@ -1887,10 +1913,10 @@ output containerAppName string = avmContainerApp.outputs.name
 output containerWorkflowAppName string = avmContainerApp_Workflow.outputs.name
 
 @description('The user identity resource ID used fot the Container APP.')
-output containerAppUserIdentityId string = avmContainerRegistryReader.outputs.resourceId
+output containerAppUserIdentityId string = containerRegistryReaderIdentity.id
 
 @description('The user identity Principal ID used fot the Container APP.')
-output containerAppUserPrincipalId string = avmContainerRegistryReader.outputs.principalId
+output containerAppUserPrincipalId string = containerRegistryReaderIdentity.properties.principalId
 
 @description('The name of the Azure Container Registry.')
 output containerRegistryName string = avmContainerRegistry.outputs.name
