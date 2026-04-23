@@ -25,8 +25,8 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-#disable-next-line no-hardcoded-location // Using a valid location for Azure AI Services that supports the required resources
-var enforcedLocation = 'eastus2'
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Cosmos DB zone redundancy in eastus2
+var enforcedLocation = 'australiaeast'
 
 // General resources
 // =================
@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
     azureAiServiceLocation: enforcedLocation
     enablePrivateNetworking: false
     enableMonitoring: false
-    enableRedundancy: false
-    enableScalability: false
+    enableRedundancy: true
+    enableScalability: true
   }
 }
