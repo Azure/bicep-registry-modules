@@ -139,61 +139,79 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
-param serviceShort string = 'scpdmin'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-#disable-next-line no-hardcoded-location // Using a valid location for Azure AI Services that supports the required resources
-var enforcedLocation = 'eastus2'
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
-}
-
-// ============== //
-// Test Execution //
-// ============== //
-
-module testDeployment '../../../main.json' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
-    solutionName: '${namePrefix}${serviceShort}'
-    location: enforcedLocation
-    azureAiServiceLocation: enforcedLocation
-    enablePrivateNetworking: false
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
     enableMonitoring: false
+    enablePrivateNetworking: false
     enableRedundancy: true
     enableScalability: true
+    location: '<location>'
+    solutionName: 'scpdmin'
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scpdmin"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enableRedundancy = true
+param enableScalability = true
+param location = '<location>'
+param solutionName = 'scpdmin'
 ```
 
 </details>
@@ -211,57 +229,89 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the Content Processing Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'scpmin'
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-// ============ //
-// Dependencies //
-// ============ //
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'australiaeast'
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
-}
-
-// ============== //
-// Test Execution //
-// ============== //
-
-module testDeployment '../../../main.json' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-init'
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
-    solutionName: '${namePrefix}${serviceShort}'
-    location: enforcedLocation
-    azureAiServiceLocation: enforcedLocation
-    gptDeploymentCapacity: 10
-    enablePrivateNetworking: false
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
     enableMonitoring: false
+    enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
+    gptDeploymentCapacity: 10
+    location: '<location>'
+    solutionName: 'scpmin'
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "gptDeploymentCapacity": {
+      "value": 10
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scpmin"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = true
+param gptDeploymentCapacity = 10
+param location = '<location>'
+param solutionName = 'scpmin'
 ```
 
 </details>
@@ -279,65 +329,99 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-targetScope = 'subscription'
-
-metadata name = 'Waf-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the Content Processing Solution Accelerator'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
-param serviceShort string = 'scpegwaf'
-
-param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to set for the Virtual Machine.')
-@secure()
-param virtualMachineAdminPassword string = newGuid()
-
-// ============ //
-// Dependencies //
-// ============ //
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'australiaeast'
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
-}
-
-// ============== //
-// Test Execution //
-// ============== //
-
-module testDeployment '../../../main.json' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
-    solutionName: '${namePrefix}${serviceShort}'
-    location: enforcedLocation
-    azureAiServiceLocation: enforcedLocation
-    gptDeploymentCapacity: 10
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
-    enablePrivateNetworking: true
-    enableMonitoring: true
-    enableRedundancy: true
+    gptDeploymentCapacity: 10
+    location: '<location>'
+    solutionName: 'scpegwaf'
+    vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
-    vmAdminPassword: virtualMachineAdminPassword
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "gptDeploymentCapacity": {
+      "value": 10
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "scpegwaf"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableRedundancy = true
+param enableScalability = true
+param enableTelemetry = true
+param gptDeploymentCapacity = 10
+param location = '<location>'
+param solutionName = 'scpegwaf'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
