@@ -107,7 +107,7 @@ Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabl
 Auto-scaling properties.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `autotuneEnabled`
 
@@ -300,14 +300,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 Dynamic Executor Allocation.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `libraryRequirements`
 
 Library version requirements.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `location`
 
@@ -504,7 +504,7 @@ Whether session level packages enabled. Disabled if value not provided.
 Spark configuration file to specify additional properties.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `sparkEventsFolder`
 
@@ -549,6 +549,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
