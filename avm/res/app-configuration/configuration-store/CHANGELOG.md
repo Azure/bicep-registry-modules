@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app-configuration/configuration-store/CHANGELOG.md).
 
+## 0.9.3
+
+### Changes
+
+- Publishing child module `avm/res/app-configuration/configuration-store/key-value`.
+- Publishing child module `avm/res/app-configuration/configuration-store/replica`.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.2
 
 ### Changes
