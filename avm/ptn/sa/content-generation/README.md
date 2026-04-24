@@ -135,9 +135,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   params: {
     // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
+    azureAiServiceLocation: 'swedencentral'
     // Non-required parameters
     cosmosDbReplicaLocation: 'canadacentral'
+    secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
 }
@@ -157,11 +158,14 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   "parameters": {
     // Required parameters
     "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
+      "value": "swedencentral"
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
       "value": "canadacentral"
+    },
+    "secondaryLocation": {
+      "value": "<secondaryLocation>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -181,9 +185,10 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
 using 'br/public:avm/ptn/sa/content-generation:<version>'
 
 // Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
+param azureAiServiceLocation = 'swedencentral'
 // Non-required parameters
 param cosmosDbReplicaLocation = 'canadacentral'
+param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```
 
@@ -205,12 +210,13 @@ You can find the full example and the setup of its dependencies in the deploymen
 module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   params: {
     // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
+    azureAiServiceLocation: 'swedencentral'
     // Non-required parameters
     enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
+    secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
 }
@@ -230,7 +236,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   "parameters": {
     // Required parameters
     "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
+      "value": "swedencentral"
     },
     // Non-required parameters
     "enableMonitoring": {
@@ -244,6 +250,9 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     },
     "enableScalability": {
       "value": false
+    },
+    "secondaryLocation": {
+      "value": "<secondaryLocation>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -263,12 +272,13 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
 using 'br/public:avm/ptn/sa/content-generation:<version>'
 
 // Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
+param azureAiServiceLocation = 'swedencentral'
 // Non-required parameters
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
+param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```
 
@@ -290,9 +300,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   params: {
     // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
+    azureAiServiceLocation: 'swedencentral'
     // Non-required parameters
     cosmosDbReplicaLocation: 'canadacentral'
+    secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
 }
@@ -312,11 +323,14 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
   "parameters": {
     // Required parameters
     "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
+      "value": "swedencentral"
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
       "value": "canadacentral"
+    },
+    "secondaryLocation": {
+      "value": "<secondaryLocation>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -336,9 +350,10 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
 using 'br/public:avm/ptn/sa/content-generation:<version>'
 
 // Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
+param azureAiServiceLocation = 'swedencentral'
 // Non-required parameters
 param cosmosDbReplicaLocation = 'canadacentral'
+param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```
 
