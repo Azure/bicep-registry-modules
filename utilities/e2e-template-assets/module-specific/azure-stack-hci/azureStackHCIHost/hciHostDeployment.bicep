@@ -257,7 +257,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     storageProfile: {
       imageReference: !empty(imageReferenceId)
-        ? { id: imageReferenceId }
+        ? (startsWith(imageReferenceId, '/SharedGalleries/')
+          ? { sharedGalleryImageId: imageReferenceId }
+          : { id: imageReferenceId })
         : {
             publisher: 'MicrosoftWindowsServer'
             offer: 'WindowsServer'
