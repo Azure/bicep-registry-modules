@@ -1,4 +1,4 @@
-# Public DNS Zone MX record `[Microsoft.Network/dnsZones/MX]`
+# Public DNS Zone MX record `[Microsoft.network/dnszone/mx]`
 
 This module deploys a Public DNS Zone MX record.
 
