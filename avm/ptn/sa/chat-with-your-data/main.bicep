@@ -338,7 +338,7 @@ var blobContainerName = 'documents'
 var queueName = 'doc-processing'
 var clientKey = '${uniqueString(guid(subscription().id, deployment().name))}${newGuidString}'
 var eventGridSystemTopicName = 'evgt-${solutionSuffix}'
-var registryName = 'cwydcontainerreg'
+var registryName = 'cwydcontainerreg' // Update Registry name
 
 var openAIFunctionsSystemPrompt = '''You help employees to navigate only private information sources.
     You must prioritize the function call over your general knowledge for any question by calling the search_documents function.
@@ -365,6 +365,8 @@ var allTags = union(
   tags
 )
 
+var existingTags = resourceGroup().tags ?? {}
+
 @description('Optional. Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
@@ -373,12 +375,11 @@ param createdBy string = contains(deployer(), 'userPrincipalName')
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: {
-      ...resourceGroup().tags
-      ...allTags
+    tags: union(existingTags, allTags, {
       TemplateName: 'CWYD'
       CreatedBy: createdBy
-    }
+      DeploymentName: deployment().name
+    })
   }
 }
 
@@ -459,20 +460,18 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
     skuName: 'Standard'
     location: location
     virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
-    diagnosticSettings: enableMonitoring
-      ? [
+    diagnosticSettings: [
+      {
+        name: 'bastionDiagnostics'
+        workspaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
+        logCategoriesAndGroups: [
           {
-            name: 'bastionDiagnostics'
-            workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
-            logCategoriesAndGroups: [
-              {
-                categoryGroup: 'allLogs'
-                enabled: true
-              }
-            ]
+            categoryGroup: 'allLogs'
+            enabled: true
           }
         ]
-      : null
+      }
+    ]
     tags: tags
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
@@ -525,26 +524,24 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
             subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
           }
         ]
-        diagnosticSettings: enableMonitoring
-          ? [
+        diagnosticSettings: [
+          {
+            name: 'jumpboxDiagnostics'
+            workspaceResourceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : ''
+            logCategoriesAndGroups: [
               {
-                name: 'jumpboxNicDiagnostics'
-                workspaceResourceId: monitoring!.outputs.logAnalyticsWorkspaceId
-                logCategoriesAndGroups: [
-                  {
-                    categoryGroup: 'allLogs'
-                    enabled: true
-                  }
-                ]
-                metricCategories: [
-                  {
-                    category: 'AllMetrics'
-                    enabled: true
-                  }
-                ]
+                categoryGroup: 'allLogs'
+                enabled: true
               }
             ]
-          : null
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+                enabled: true
+              }
+            ]
+          }
+        ]
       }
     ]
     enableTelemetry: enableTelemetry
@@ -1059,8 +1056,17 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-module search 'br/public:avm/res/search/search-service:0.12.0' = if (databaseType == 'CosmosDB') {
-  name: take('avm.res.search.search-service.${azureAISearchName}', 64)
+resource search 'Microsoft.Search/searchServices@2024-06-01-preview' = if (databaseType == 'CosmosDB') {
+  name: azureAISearchName
+  location: location
+  sku: {
+    name: azureSearchSku
+  }
+}
+
+// Separate module for Search Service to enable managed identity and update other properties, as this reduces deployment time for the search service
+module searchUpdate 'br/public:avm/res/search/search-service:0.12.0' = if (databaseType == 'CosmosDB') {
+  name: take('avm.res.search.update.${azureAISearchName}', 64)
   params: {
     // Required parameters
     name: azureAISearchName
@@ -1145,6 +1151,9 @@ module search 'br/public:avm/res/search/search-service:0.12.0' = if (databaseTyp
         : []
     )
   }
+  dependsOn: [
+    search
+  ]
 }
 
 // AVM WAF - Server Farm + Web Site conversions
@@ -1747,21 +1756,21 @@ var systemAssignedRoleAssignments = union(
   databaseType == 'CosmosDB'
     ? [
         {
-          principalId: search.outputs.systemAssignedMIPrincipalId
+          principalId: searchUpdate.?outputs.systemAssignedMIPrincipalId
           resourceId: storage.outputs.resourceId
           roleName: 'Storage Blob Data Contributor'
           roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
           principalType: 'ServicePrincipal'
         }
         {
-          principalId: search.outputs.systemAssignedMIPrincipalId
+          principalId: searchUpdate.?outputs.systemAssignedMIPrincipalId
           resourceId: openai.outputs.resourceId
           roleName: 'Cognitive Services User'
           roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
           principalType: 'ServicePrincipal'
         }
         {
-          principalId: search.outputs.systemAssignedMIPrincipalId
+          principalId: searchUpdate.?outputs.systemAssignedMIPrincipalId
           resourceId: openai.outputs.resourceId
           roleName: 'Cognitive Services OpenAI User'
           roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
@@ -1830,7 +1839,7 @@ var azureSpeechServiceInfo = string({
 var azureSearchServiceInfo = databaseType == 'CosmosDB'
   ? string({
       service_name: azureAISearchName
-      service: search!.outputs.endpoint
+      service: searchUpdate!.outputs.endpoint
       use_semantic_search: azureSearchUseSemanticSearch
       semantic_search_config: azureSearchSemanticSearchConfig
       index_is_prechunked: azureSearchIndexIsPrechunked
