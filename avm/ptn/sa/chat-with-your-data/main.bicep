@@ -365,7 +365,7 @@ var allTags = union(
   tags
 )
 
-var existingTags = resourceGroup().tags ?? {}
+var existingTags = (resourceGroup().?tags) ?? {}
 
 @description('Optional. Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
