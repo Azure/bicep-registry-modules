@@ -302,7 +302,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
       }
     ]
     extensionAadJoinConfig: {
-      enabled: true
+      enabled: false
       tags: tags
       typeHandlerVersion: '1.0'
       settings: {
@@ -982,6 +982,9 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
       ? virtualNetwork!.outputs.containersSubnetResourceId // Full private networking - use full VNet subnet
       : (enableRedundancy ? '${minimalContainersVnet!.id}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
   }
+  dependsOn: [
+    logAnalyticsWorkspace
+  ]
 }
 
 // //=========== Managed Identity for Container Registry ========== //
@@ -1606,6 +1609,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
     enablePurgeProtection: enablePurgeProtection
     enableTelemetry: enableTelemetry
     tags: tags
+    managedIdentities: { systemAssigned: true }
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
