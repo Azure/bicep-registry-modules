@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.19.2
+
+### Changes
+
+- Publishing child modules: `cassandra-keyspace`, `cassandra-keyspace/table`, `cassandra-keyspace/view`, `cassandra-role-assignment`, `cassandra-role-definition`, `gremlin-database`, `gremlin-database/graph`, `mongodb-database`, `mongodb-database/collection`, `sql-database`, `sql-database/container`, `table`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes
