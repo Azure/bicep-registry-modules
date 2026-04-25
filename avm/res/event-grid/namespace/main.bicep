@@ -356,6 +356,7 @@ module namespace_topics 'topic/main.bicep' = [
       publisherType: topic.?publisherType
       roleAssignments: topic.?roleAssignments
       eventSubscriptions: topic.?eventSubscriptions
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -368,6 +369,7 @@ module namespace_caCertificates 'ca-certificate/main.bicep' = [
       namespaceName: namespace.name
       description: caCertificate.?description
       encodedCertificate: caCertificate.encodedCertificate
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -384,6 +386,7 @@ module namespace_clients 'client/main.bicep' = [
       clientCertificateAuthenticationAllowedThumbprints: client.?clientCertificateAuthenticationAllowedThumbprints
       attributes: client.?attributes
       state: client.?state
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -396,6 +399,7 @@ module namespace_clientGroups 'client-group/main.bicep' = [
       namespaceName: namespace.name
       query: clientGroup.query
       description: clientGroup.?description
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -409,6 +413,7 @@ module namespace_topicSpaces 'topic-space/main.bicep' = [
       description: topicSpaces.?description
       topicTemplates: topicSpaces.topicTemplates
       roleAssignments: topicSpaces.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -423,6 +428,7 @@ module namespace_permissionBindings 'permission-binding/main.bicep' = [
       clientGroupName: permissionBinding.clientGroupName
       topicSpaceName: permissionBinding.topicSpaceName
       permission: permissionBinding.permission
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       namespace_clientGroups
