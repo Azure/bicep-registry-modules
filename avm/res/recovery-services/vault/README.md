@@ -550,7 +550,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     backupConfig: {
       enhancedSecurityState: 'Disabled'
-      softDeleteFeatureState: 'Disabled'
+      softDeleteFeatureState: 'Enabled'
     }
     backupPolicies: [
       {
@@ -950,7 +950,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "backupConfig": {
       "value": {
         "enhancedSecurityState": "Disabled",
-        "softDeleteFeatureState": "Disabled"
+        "softDeleteFeatureState": "Enabled"
       }
     },
     "backupPolicies": {
@@ -1374,7 +1374,7 @@ param name = 'rsvmax001'
 // Non-required parameters
 param backupConfig = {
   enhancedSecurityState: 'Disabled'
-  softDeleteFeatureState: 'Disabled'
+  softDeleteFeatureState: 'Enabled'
 }
 param backupPolicies = [
   {
@@ -1774,7 +1774,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     backupConfig: {
       enhancedSecurityState: 'Disabled'
-      softDeleteFeatureState: 'Disabled'
+      softDeleteFeatureState: 'Enabled'
     }
     backupPolicies: [
       {
@@ -2139,7 +2139,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "backupConfig": {
       "value": {
         "enhancedSecurityState": "Disabled",
-        "softDeleteFeatureState": "Disabled"
+        "softDeleteFeatureState": "Enabled"
       }
     },
     "backupPolicies": {
@@ -2518,7 +2518,7 @@ param name = 'rsvwaf001'
 // Non-required parameters
 param backupConfig = {
   enhancedSecurityState: 'Disabled'
-  softDeleteFeatureState: 'Disabled'
+  softDeleteFeatureState: 'Enabled'
 }
 param backupPolicies = [
   {

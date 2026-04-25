@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       backupConfig: {
         enhancedSecurityState: 'Disabled'
-        softDeleteFeatureState: 'Disabled'
+        softDeleteFeatureState: 'Enabled'
       }
       redundancySettings: {
         standardTierStorageRedundancy: 'LocallyRedundant'

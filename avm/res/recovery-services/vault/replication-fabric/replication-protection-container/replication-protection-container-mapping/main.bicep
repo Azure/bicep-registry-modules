@@ -30,6 +30,9 @@ param policyName string = ''
 @description('Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`.')
 param name string = ''
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var calcPolicyResourceId = !empty(policyResourceId)
   ? policyResourceId
   : subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', recoveryVaultName, policyName)
@@ -44,6 +47,25 @@ var calcTargetProtectionContainerResourceId = !empty(targetProtectionContainerRe
 var mappingName = !empty(name)
   ? name
   : '${sourceProtectionContainerName}-${split(calcTargetProtectionContainerResourceId!, '/')[10]}'
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.recsvcs-vault-repfabrepprotcontmap.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2024-10-01' existing = {
   name: recoveryVaultName
