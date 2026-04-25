@@ -69,7 +69,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     domainOUPath: domainOUPath
     imageReferenceId: hciHostImageReferenceId
     hciNodeCount: length(clusterNodeNames)
-    hostVMSize: 'Standard_E32bds_v5'
+    hostVMSize: 'Standard_E48bds_v5'
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
