@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4582892619220022724"
+      "version": "0.42.1.51946",
+      "templateHash": "16180159203938991357"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic."
@@ -1182,6 +1182,9 @@
           },
           "retryPolicy": {
             "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'retryPolicy')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1191,13 +1194,20 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6463222095552287196"
+              "version": "0.42.1.51946",
+              "templateHash": "1659215152319178191"
             },
             "name": "EventGrid Topic Event Subscriptions",
             "description": "This module deploys an Event Grid Topic Event Subscription."
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "name": {
               "type": "string",
               "metadata": {
@@ -1302,6 +1312,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-topic-eventsub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "topic": {
               "existing": true,
               "type": "Microsoft.EventGrid/topics",
