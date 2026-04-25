@@ -1,6 +1,9 @@
 metadata name = 'Arc Machine Extensions'
 metadata description = 'This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Required. The name of the parent Arc Machine that extension is provisioned for.')
 param arcMachineName string
 
@@ -40,6 +43,24 @@ param tags object?
 
 resource machine 'Microsoft.HybridCompute/machines@2024-07-10' existing = {
   name: arcMachineName
+}
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.hybridcompute-machine-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource extension 'Microsoft.HybridCompute/machines/extensions@2024-07-10' = {
