@@ -1,4 +1,4 @@
-metadata name = 'SQL Managed Instance Administrators'
+metadata name = 'SQL Managed Instance Administrator'
 metadata description = 'This module deploys a SQL Managed Instance Administrator.'
 
 @description('Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment.')

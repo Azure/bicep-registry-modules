@@ -32,7 +32,7 @@ param skuTier string = 'GeneralPurpose'
 param storageSizeInGB int = 32
 
 @description('Optional. The number of vCores.')
-param vCores resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.properties.vCores = 4
+param vCores resourceInput<'Microsoft.Sql/managedInstances@2024-05-01-preview'>.properties.vCores = 4
 
 @description('Optional. The license type. Possible values are \'LicenseIncluded\' (regular price inclusive of a new SQL license) and \'BasePrice\' (discounted AHB price for bringing your own SQL licenses).')
 @allowed([
@@ -103,7 +103,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/managedInstances@2024-05-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -263,7 +263,7 @@ var maintenanceConfigurationId = maintenanceWindow == 'Custom1' || maintenanceWi
   : null
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
