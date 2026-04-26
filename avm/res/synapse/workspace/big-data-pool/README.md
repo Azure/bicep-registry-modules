@@ -16,6 +16,7 @@ This module deploys a Synapse Workspaces Big Data Pool.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 | `Microsoft.Synapse/workspaces/bigDataPools` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_bigdatapools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/bigDataPools)</li></ul> |
 
 ## Parameters
@@ -38,20 +39,22 @@ This module deploys a Synapse Workspaces Big Data Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelayInMinutes`](#parameter-autopausedelayinminutes) | int | Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. |
-| [`autoScale`](#parameter-autoscale) | object | Auto-scaling properties. |
+| [`autoScale`](#parameter-autoscale) |  | Auto-scaling properties. |
 | [`autotuneEnabled`](#parameter-autotuneenabled) | bool | Whether Auto-tune is Enabled or not. Disabled if value not provided. |
 | [`cacheSize`](#parameter-cachesize) | int | The cache size. |
 | [`computeIsolationEnabled`](#parameter-computeisolationenabled) | bool | Whether Compute Isolation is enabled or not. Disabled if value not provided. |
+| [`customLibraries`](#parameter-customlibraries) | array | List of custom libraries/packages associated with the spark pool. |
 | [`defaultSparkLogFolder`](#parameter-defaultsparklogfolder) | string | The default folder where Spark logs will be written. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`dynamicExecutorAllocation`](#parameter-dynamicexecutorallocation) | object | Dynamic Executor Allocation. |
+| [`dynamicExecutorAllocation`](#parameter-dynamicexecutorallocation) |  | Dynamic Executor Allocation. |
+| [`libraryRequirements`](#parameter-libraryrequirements) |  | Library version requirements. |
 | [`location`](#parameter-location) | string | The geo-location where the resource lives. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nodeCount`](#parameter-nodecount) | int | The number of nodes in the Big Data pool if Auto-scaling is disabled. |
 | [`nodeSizeFamily`](#parameter-nodesizefamily) | string | The kind of nodes that the Big Data pool provides. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sessionLevelPackagesEnabled`](#parameter-sessionlevelpackagesenabled) | bool | Whether session level packages enabled. Disabled if value not provided. |
-| [`sparkConfigProperties`](#parameter-sparkconfigproperties) | object | Spark configuration file to specify additional properties. |
+| [`sparkConfigProperties`](#parameter-sparkconfigproperties) |  | Spark configuration file to specify additional properties. |
 | [`sparkEventsFolder`](#parameter-sparkeventsfolder) | string | The Spark events folder. |
 | [`sparkVersion`](#parameter-sparkversion) | string | The Apache Spark version. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -104,32 +107,7 @@ Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabl
 Auto-scaling properties.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maxNodeCount`](#parameter-autoscalemaxnodecount) | int | Synapse workspace Big Data Pools Auto-scaling maximum node count. |
-| [`minNodeCount`](#parameter-autoscaleminnodecount) | int | Synapse workspace Big Data Pools Auto-scaling minimum node count. |
-
-### Parameter: `autoScale.maxNodeCount`
-
-Synapse workspace Big Data Pools Auto-scaling maximum node count.
-
-- Required: Yes
-- Type: int
-- MinValue: 3
-- MaxValue: 200
-
-### Parameter: `autoScale.minNodeCount`
-
-Synapse workspace Big Data Pools Auto-scaling minimum node count.
-
-- Required: Yes
-- Type: int
-- MinValue: 3
-- MaxValue: 200
+- Type: 
 
 ### Parameter: `autotuneEnabled`
 
@@ -156,6 +134,13 @@ Whether Compute Isolation is enabled or not. Disabled if value not provided.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `customLibraries`
+
+List of custom libraries/packages associated with the spark pool.
+
+- Required: No
+- Type: array
 
 ### Parameter: `defaultSparkLogFolder`
 
@@ -315,32 +300,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 Dynamic Executor Allocation.
 
 - Required: No
-- Type: object
+- Type: 
 
-**Required parameters**
+### Parameter: `libraryRequirements`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maxExecutors`](#parameter-dynamicexecutorallocationmaxexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1). |
-| [`minExecutors`](#parameter-dynamicexecutorallocationminexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors. |
+Library version requirements.
 
-### Parameter: `dynamicExecutorAllocation.maxExecutors`
-
-Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1).
-
-- Required: Yes
-- Type: int
-- MinValue: 1
-- MaxValue: 10
-
-### Parameter: `dynamicExecutorAllocation.minExecutors`
-
-Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.
-
-- Required: Yes
-- Type: int
-- MinValue: 1
-- MaxValue: 10
+- Required: No
+- Type: 
 
 ### Parameter: `location`
 
@@ -537,43 +504,7 @@ Whether session level packages enabled. Disabled if value not provided.
 Spark configuration file to specify additional properties.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`configurationType`](#parameter-sparkconfigpropertiesconfigurationtype) | string | The configuration type. |
-| [`content`](#parameter-sparkconfigpropertiescontent) | string | The configuration content. |
-| [`filename`](#parameter-sparkconfigpropertiesfilename) | string | The configuration filename. |
-
-### Parameter: `sparkConfigProperties.configurationType`
-
-The configuration type.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Artifact'
-    'File'
-  ]
-  ```
-
-### Parameter: `sparkConfigProperties.content`
-
-The configuration content.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sparkConfigProperties.filename`
-
-The configuration filename.
-
-- Required: Yes
-- Type: string
+- Type: 
 
 ### Parameter: `sparkEventsFolder`
 
@@ -618,5 +549,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |

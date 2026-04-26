@@ -29,6 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 | `Microsoft.Synapse/workspaces` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces)</li></ul> |
 | `Microsoft.Synapse/workspaces/administrators` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators)</li></ul> |
 | `Microsoft.Synapse/workspaces/bigDataPools` | 2021-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.synapse_workspaces_bigdatapools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/bigDataPools)</li></ul> |
@@ -89,6 +90,10 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           maxExecutors: 4
           minExecutors: 1
         }
+        libraryRequirements: {
+          content: 'numpy==1.26.4\npandas==2.2.3'
+          filename: 'requirements.txt'
+        }
         name: 'depbdp01'
         nodeSize: 'Small'
         nodeSizeFamily: 'MemoryOptimized'
@@ -100,6 +105,9 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         nodeSizeFamily: 'MemoryOptimized'
       }
     ]
+    tags: {
+      SecurityControl: 'Ignore'
+    }
   }
 }
 ```
@@ -144,6 +152,10 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
             "maxExecutors": 4,
             "minExecutors": 1
           },
+          "libraryRequirements": {
+            "content": "numpy==1.26.4\npandas==2.2.3",
+            "filename": "requirements.txt"
+          },
           "name": "depbdp01",
           "nodeSize": "Small",
           "nodeSizeFamily": "MemoryOptimized",
@@ -155,6 +167,11 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           "nodeSizeFamily": "MemoryOptimized"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "SecurityControl": "Ignore"
+      }
     }
   }
 }
@@ -189,6 +206,10 @@ param bigDataPools = [
       maxExecutors: 4
       minExecutors: 1
     }
+    libraryRequirements: {
+      content: 'numpy==1.26.4\npandas==2.2.3'
+      filename: 'requirements.txt'
+    }
     name: 'depbdp01'
     nodeSize: 'Small'
     nodeSizeFamily: 'MemoryOptimized'
@@ -200,6 +221,9 @@ param bigDataPools = [
     nodeSizeFamily: 'MemoryOptimized'
   }
 ]
+param tags = {
+  SecurityControl: 'Ignore'
+}
 ```
 
 </details>
@@ -1880,20 +1904,22 @@ List of Big Data Pools to be created in the workspace.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelayInMinutes`](#parameter-bigdatapoolsautopausedelayinminutes) | int | Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided. |
-| [`autoScale`](#parameter-bigdatapoolsautoscale) | object | The auto scale configuration. |
+| [`autoScale`](#parameter-bigdatapoolsautoscale) |  | The auto scale configuration. |
 | [`autotuneEnabled`](#parameter-bigdatapoolsautotuneenabled) | bool | Enable or disable autotune. |
 | [`cacheSize`](#parameter-bigdatapoolscachesize) | int | The cache size of the pool. |
 | [`computeIsolationEnabled`](#parameter-bigdatapoolscomputeisolationenabled) | bool | Enable or disable compute isolation. |
+| [`customLibraries`](#parameter-bigdatapoolscustomlibraries) | array | List of custom libraries/packages associated with the spark pool. |
 | [`defaultSparkLogFolder`](#parameter-bigdatapoolsdefaultsparklogfolder) | string | The default Spark log folder. |
 | [`diagnosticSettings`](#parameter-bigdatapoolsdiagnosticsettings) | array | The diagnostic settings of the service. |
-| [`dynamicExecutorAllocation`](#parameter-bigdatapoolsdynamicexecutorallocation) | object | The dynamic executor allocation configuration. |
+| [`dynamicExecutorAllocation`](#parameter-bigdatapoolsdynamicexecutorallocation) |  | The dynamic executor allocation configuration. |
+| [`libraryRequirements`](#parameter-bigdatapoolslibraryrequirements) |  | Library version requirements. |
 | [`lock`](#parameter-bigdatapoolslock) | object | The lock settings of the service. |
 | [`nodeCount`](#parameter-bigdatapoolsnodecount) | int | The number of nodes in the Big Data pool if Auto-scaling is disabled. |
 | [`nodeSize`](#parameter-bigdatapoolsnodesize) | string | The node size of the pool. |
 | [`nodeSizeFamily`](#parameter-bigdatapoolsnodesizefamily) | string | The node size family of the pool. |
 | [`roleAssignments`](#parameter-bigdatapoolsroleassignments) | array | Array of role assignments to create. |
 | [`sessionLevelPackagesEnabled`](#parameter-bigdatapoolssessionlevelpackagesenabled) | bool | Enable or disable session level packages. |
-| [`sparkConfigProperties`](#parameter-bigdatapoolssparkconfigproperties) | object | The Spark configuration properties. |
+| [`sparkConfigProperties`](#parameter-bigdatapoolssparkconfigproperties) |  | The Spark configuration properties. |
 | [`sparkEventsFolder`](#parameter-bigdatapoolssparkeventsfolder) | string | The Spark events folder. |
 | [`sparkVersion`](#parameter-bigdatapoolssparkversion) | string | The Spark version. |
 | [`tags`](#parameter-bigdatapoolstags) | object | Tags of the resource. |
@@ -1917,32 +1943,7 @@ Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabl
 The auto scale configuration.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maxNodeCount`](#parameter-bigdatapoolsautoscalemaxnodecount) | int | Synapse workspace Big Data Pools Auto-scaling maximum node count. |
-| [`minNodeCount`](#parameter-bigdatapoolsautoscaleminnodecount) | int | Synapse workspace Big Data Pools Auto-scaling minimum node count. |
-
-### Parameter: `bigDataPools.autoScale.maxNodeCount`
-
-Synapse workspace Big Data Pools Auto-scaling maximum node count.
-
-- Required: Yes
-- Type: int
-- MinValue: 3
-- MaxValue: 200
-
-### Parameter: `bigDataPools.autoScale.minNodeCount`
-
-Synapse workspace Big Data Pools Auto-scaling minimum node count.
-
-- Required: Yes
-- Type: int
-- MinValue: 3
-- MaxValue: 200
+- Type: 
 
 ### Parameter: `bigDataPools.autotuneEnabled`
 
@@ -1964,6 +1965,13 @@ Enable or disable compute isolation.
 
 - Required: No
 - Type: bool
+
+### Parameter: `bigDataPools.customLibraries`
+
+List of custom libraries/packages associated with the spark pool.
+
+- Required: No
+- Type: array
 
 ### Parameter: `bigDataPools.defaultSparkLogFolder`
 
@@ -2123,32 +2131,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 The dynamic executor allocation configuration.
 
 - Required: No
-- Type: object
+- Type: 
 
-**Required parameters**
+### Parameter: `bigDataPools.libraryRequirements`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`maxExecutors`](#parameter-bigdatapoolsdynamicexecutorallocationmaxexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1). |
-| [`minExecutors`](#parameter-bigdatapoolsdynamicexecutorallocationminexecutors) | int | Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors. |
+Library version requirements.
 
-### Parameter: `bigDataPools.dynamicExecutorAllocation.maxExecutors`
-
-Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1).
-
-- Required: Yes
-- Type: int
-- MinValue: 1
-- MaxValue: 10
-
-### Parameter: `bigDataPools.dynamicExecutorAllocation.minExecutors`
-
-Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.
-
-- Required: Yes
-- Type: int
-- MinValue: 1
-- MaxValue: 10
+- Required: No
+- Type: 
 
 ### Parameter: `bigDataPools.lock`
 
@@ -2330,43 +2320,7 @@ Enable or disable session level packages.
 The Spark configuration properties.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`configurationType`](#parameter-bigdatapoolssparkconfigpropertiesconfigurationtype) | string | The configuration type. |
-| [`content`](#parameter-bigdatapoolssparkconfigpropertiescontent) | string | The configuration content. |
-| [`filename`](#parameter-bigdatapoolssparkconfigpropertiesfilename) | string | The configuration filename. |
-
-### Parameter: `bigDataPools.sparkConfigProperties.configurationType`
-
-The configuration type.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Artifact'
-    'File'
-  ]
-  ```
-
-### Parameter: `bigDataPools.sparkConfigProperties.content`
-
-The configuration content.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `bigDataPools.sparkConfigProperties.filename`
-
-The configuration filename.
-
-- Required: Yes
-- Type: string
+- Type: 
 
 ### Parameter: `bigDataPools.sparkEventsFolder`
 
@@ -3738,9 +3692,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
