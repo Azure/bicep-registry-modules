@@ -103,6 +103,20 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
+      // Regression coverage for #5995: includes a read-only `certificateStatus` field that the module
+      // must strip from `hostnameConfigurations` before submitting to ARM. If the strip regresses, the
+      // APIM RP would reject this PUT (especially during the Managed Certificates suspension window:
+      // https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025).
+      hostnameConfigurations: [
+        {
+          type: 'Proxy'
+          hostName: '${apimName}.azure-api.net'
+          certificateSource: 'BuiltIn'
+          negotiateClientCertificate: false
+          #disable-next-line BCP037
+          certificateStatus: 'In-progress'
+        }
+      ]
       apis: [
         {
           displayName: 'Echo API'
