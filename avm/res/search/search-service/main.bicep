@@ -8,10 +8,10 @@ metadata description = 'This module deploys a Search Service.'
 @description('Required. The name of the Azure Cognitive Search service to create or update. Search service names must only contain lowercase letters, digits or dashes, cannot use dash as the first two or last one characters, cannot contain consecutive dashes, and must be between 2 and 60 characters in length. Search service names must be globally unique since they are part of the service URI (https://<name>.search.windows.net). You cannot change the service name after the service is created.')
 param name string
 
-@description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
+@description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. This parameter is ignored if \'disableLocalAuth\' is set to true.')
 param authOptions resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.properties.authOptions?
 
-@description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
+@description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication.')
 param disableLocalAuth bool = true
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -74,7 +74,7 @@ param sharedPrivateLinkResources array = []
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export. This parameter is ignored if \'disableLocalAuth\' is set to true.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The number of replicas in the search service. If specified, it must be a value between 1 and 12 inclusive for standard SKUs or between 1 and 3 inclusive for basic SKU.')
@@ -122,6 +122,7 @@ param tags resourceInput<'Microsoft.Search/searchServices@2025-05-01'>.tags?
 // ============= //
 
 var enableReferencedModulesTelemetry = false
+var shouldExportSecrets = secretsExportConfiguration != null && !disableLocalAuth
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -179,7 +180,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.search-searchservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -206,7 +207,7 @@ resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
   tags: tags
   identity: identity
   properties: {
-    authOptions: authOptions
+    authOptions: disableLocalAuth ? null : authOptions
     disableLocalAuth: disableLocalAuth
     encryptionWithCmk: {
       enforcement: cmkEnforcement
@@ -278,7 +279,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -351,7 +352,7 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
   }
 ]
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+module secretsExport 'modules/keyVaultExport.bicep' = if (shouldExportSecrets) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
     split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
@@ -415,17 +416,17 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+output exportedSecrets secretsOutputType = shouldExportSecrets
   ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @secure()
-@description('The primary admin API key of the search service.')
-output primaryKey string = searchService.listAdminKeys().primaryKey
+@description('The primary admin API key of the search service. Empty when local auth is disabled.')
+output primaryKey string = !disableLocalAuth ? searchService.listAdminKeys().primaryKey : ''
 
 @secure()
-@description('The secondaryKey admin API key of the search service.')
-output secondaryKey string = searchService.listAdminKeys().secondaryKey
+@description('The secondary admin API key of the search service. Empty when local auth is disabled.')
+output secondaryKey string = !disableLocalAuth ? searchService.listAdminKeys().secondaryKey : ''
 
 // =============== //
 //   Definitions   //
