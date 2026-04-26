@@ -1,4 +1,4 @@
-# Public DNS Zone DNSSEC Config `[Microsoft.network/dnszone/dnssecconfig]`
+# Public DNS Zone DNSSEC Config `[Microsoft.Network/dnsZones/dnssecConfigs]`
 
 This module deploys a Public DNS Zone DNSSEC configuration.
 
