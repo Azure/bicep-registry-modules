@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10902329999052367737"
+      "version": "0.40.2.10011",
+      "templateHash": "9300191786008581513"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -314,7 +314,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetwork.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -333,7 +333,7 @@
     },
     "logicalNetwork": {
       "type": "Microsoft.AzureStackHCI/logicalNetworks",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2024-10-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -411,7 +411,7 @@
       "metadata": {
         "description": "The location of the logical network."
       },
-      "value": "[reference('logicalNetwork', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('logicalNetwork', '2024-10-01-preview', 'full').location]"
     }
   }
 }

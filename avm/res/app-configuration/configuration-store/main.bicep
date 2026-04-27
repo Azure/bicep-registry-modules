@@ -233,6 +233,7 @@ module configurationStore_keyValues 'key-value/main.bicep' = [
       value: keyValue.value
       contentType: keyValue.?contentType
       tags: keyValue.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -244,6 +245,7 @@ module configurationStore_replicas 'replica/main.bicep' = [
       appConfigurationName: configurationStore.name
       replicaLocation: replicaLocation.replicaLocation
       name: replicaLocation.?name
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

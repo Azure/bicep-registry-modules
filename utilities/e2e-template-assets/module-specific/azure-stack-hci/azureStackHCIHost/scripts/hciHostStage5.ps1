@@ -50,7 +50,16 @@ $existingSwitches = Get-VMSwitch
 
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
@@ -61,7 +70,16 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
@@ -169,13 +187,15 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeName = "hcinode$i"
     $hciNodePath = "C:\diskMounts\$hciNodeName"
 
-    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 32GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
+    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 48GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
 }
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
+log 'Stopping VMs before changing processor settings...'
+Get-VM | Stop-VM -Force -TurnOff
 log 'Setting VM processor count to 16 and enabling virtualization extensions...'
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
