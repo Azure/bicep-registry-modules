@@ -114,7 +114,8 @@ jobs:
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_module_static_validation.result != 'failure' &&
-      needs.job_psrule_must.result != 'failure'
+      needs.job_psrule_must.result != 'failure' &&
+      !contains(fromJson('["avm/res/azure-stack-hci/cluster"]'), inputs.modulePath)
     needs:
       - job_module_static_validation
       - job_psrule_must
