@@ -31,6 +31,7 @@ param identifier resourceInput<'Microsoft.AzureStackHCI/marketplaceGalleryImages
 @allowed([
   'V1'
   'V2'
+  'NA'
 ])
 param hyperVGeneration string = 'V2'
 
@@ -85,7 +86,7 @@ var formattedRoleAssignments = [
 // ============= //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.azurestackhci-markplgalleryimg.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -141,7 +142,7 @@ resource marketplaceGalleryImage_roleAssignments 'Microsoft.Authorization/roleAs
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: marketplaceGalleryImage
