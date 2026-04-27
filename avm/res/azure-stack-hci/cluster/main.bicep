@@ -369,7 +369,8 @@ resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-0
   }
 }
 
-// Use deployment script to run the shell script
+// Use deployment script to run the full deployment inline (single-phase approach)
+// This eliminates the two-phase overhead of ACI cleanup → separate Bicep deploy
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
@@ -383,8 +384,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.67.0'
     timeout: 'PT5H'
-    retentionInterval: 'PT26H'
-    cleanupPreference: 'OnExpiration'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'OnSuccess'
     environmentVariables: [
       {
         name: 'RESOURCE_GROUP_NAME'
@@ -398,37 +399,46 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         name: 'CLUSTER_NAME'
         value: cluster.name
       }
+      {
+        name: 'CLUSTER_AD_NAME'
+        value: clusterADName ?? cluster.name
+      }
+      {
+        name: 'CLOUD_ID'
+        value: cluster.properties.cloudId
+      }
+      {
+        name: 'USE_SHARED_KEYVAULT'
+        value: string(useSharedKeyVault)
+      }
+      {
+        name: 'DEPLOYMENT_OPERATIONS'
+        value: join(sortedDeploymentOperations, ',')
+      }
+      {
+        name: 'OPERATION_TYPE'
+        value: operationType
+      }
+      {
+        name: 'DEPLOYMENT_SETTINGS'
+        value: string(deploymentSettings)
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
+        value: base64(loadTextContent('./modules/deployment-setting.bicep'))
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
+        value: base64(loadTextContent('./deployment-setting/main.bicep'))
+      }
+      {
+        name: 'NEED_ARB_SECRET'
+        value: empty(servicePrincipalId) || empty(servicePrincipalSecret) ? string(false) : string(true)
+      }
     ]
     scriptContent: loadTextContent('./src/deploy.sh')
   }
   dependsOn: [
-    edgeDevices
-    spConnectedMachineResourceManagerRolePermissions
-    nodeAzureConnectedMachineResourceManagerRolePermissions
-    nodeazureStackHCIDeviceManagementRole
-    nodereaderRoleIDPermissions
-    roleAssignmentContributor
-    roleAssignmentReader
-    roleAssignmentRBACAdmin
-    secrets
-  ]
-}
-
-// Deploy the deployment settings directly via Bicep (not via deploy.sh) to avoid ACI container memory limits
-module clusterDeploymentSettings './modules/deployment-setting.bicep' = {
-  name: 'hci-deploymentSettings-${uniqueString(resourceGroup().id)}'
-  params: {
-    deploymentOperations: sortedDeploymentOperations
-    deploymentSettings: deploymentSettings
-    useSharedKeyVault: useSharedKeyVault
-    operationType: operationType
-    clusterName: cluster.name
-    clusterADName: clusterADName ?? cluster.name
-    cloudId: cluster.properties.cloudId
-    needArbSecret: !(empty(servicePrincipalId) || empty(servicePrincipalSecret))
-  }
-  dependsOn: [
-    deploymentScript // Wait for secrets + cleanup to complete first
     edgeDevices
     spConnectedMachineResourceManagerRolePermissions
     nodeAzureConnectedMachineResourceManagerRolePermissions

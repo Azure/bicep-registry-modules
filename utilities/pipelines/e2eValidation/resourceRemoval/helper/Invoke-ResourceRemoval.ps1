@@ -625,6 +625,29 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Network/expressRouteGateways' {
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            if ($PSCmdlet.ShouldProcess("Express Route Gateway [$resourceName]", 'Remove')) {
+                # Express Route Gateways can take 20-30+ minutes to delete. Use the dedicated cmdlet
+                # and poll until the resource is gone to avoid ARM client-side timeout errors.
+                $null = Remove-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -Name $resourceName -Force -ErrorAction 'Stop'
+                $retryCount = 0
+                $maxRetries = 60  # up to ~30 minutes (60 × 30s)
+                do {
+                    $gateway = Get-AzExpressRouteGateway -ResourceGroupName $resourceGroupName -Name $resourceName -ErrorAction 'SilentlyContinue'
+                    if ($gateway) {
+                        $retryCount++
+                        Write-Verbose ("Express Route Gateway [$resourceName] still deleting. Waiting 30 seconds. [{0}/{1}]" -f $retryCount, $maxRetries) -Verbose
+                        Start-Sleep -Seconds 30
+                    }
+                } while ($gateway -and $retryCount -lt $maxRetries)
+                if ($gateway) {
+                    throw "Express Route Gateway [$resourceName] did not finish deleting within the expected time."
+                }
+            }
+            break
+        }
         ### CODE LOCATION: Add custom removal action here
         default {
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {

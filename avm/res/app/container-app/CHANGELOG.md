@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/container-app/CHANGELOG.md).
 
+## 0.22.1
+
+### Changes
+
+- Publishing child module `avm/res/app/container-app/auth-config`.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.0
 
 ### New Features

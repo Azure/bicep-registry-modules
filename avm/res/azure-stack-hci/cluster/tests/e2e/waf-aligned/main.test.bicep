@@ -37,6 +37,11 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciHostImageReferenceId string = ''
+
 @description('Optional. The location to deploy resources into. Defaults to southeastasia. Can be overridden via the CI customLocation input when quota is unavailable.')
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region is used as default in the AVM testing subscription
 param enforcedLocation string = 'southeastasia'
@@ -69,6 +74,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
     waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
+    hciHostImageReferenceId: hciHostImageReferenceId
     location: enforcedLocation
   }
 }

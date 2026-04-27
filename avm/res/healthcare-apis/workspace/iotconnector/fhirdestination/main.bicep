@@ -30,9 +30,31 @@ param location string = resourceGroup().location
 @description('Optional. Determines how resource identity is resolved on the destination.')
 param resourceIdentityResolutionType string = 'Lookup'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // =========== //
 // Deployments //
 // =========== //
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.healthcapis-workspace-iotconnfhirdst.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource workspace 'Microsoft.HealthcareApis/workspaces@2022-06-01' existing = {
   name: workspaceName
 
