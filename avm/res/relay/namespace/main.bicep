@@ -133,6 +133,7 @@ module namespace_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: namespace.name
       name: authorizationRule.name
       rights: authorizationRule.?rights
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -146,6 +147,7 @@ module namespace_networkRuleSet 'network-rule-set/main.bicep' = if (!empty(netwo
       : 'Enabled')
     defaultAction: networkRuleSets.?defaultAction
     ipRules: networkRuleSets.?ipRules
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -158,6 +160,7 @@ module namespace_hybridConnections 'hybrid-connection/main.bicep' = [
       authorizationRules: hybridConnection.?authorizationRules
       requiresClientAuthorization: hybridConnection.?requiresClientAuthorization
       userMetadata: hybridConnection.userMetadata
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -173,6 +176,7 @@ module namespace_wcfRelays 'wcf-relay/main.bicep' = [
       requiresClientAuthorization: wcfRelay.?requiresClientAuthorization
       requiresTransportSecurity: wcfRelay.?requiresTransportSecurity
       userMetadata: wcfRelay.?userMetadata
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
