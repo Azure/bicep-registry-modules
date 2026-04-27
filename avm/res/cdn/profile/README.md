@@ -893,6 +893,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logAnalyticsDestinationType: 'Dedicated'
         logCategoriesAndGroups: [
           {
             categoryGroup: 'allLogs'
@@ -1131,6 +1132,7 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logAnalyticsDestinationType": "Dedicated",
           "logCategoriesAndGroups": [
             {
               "categoryGroup": "allLogs",
@@ -1375,6 +1377,7 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
+    logAnalyticsDestinationType: 'Dedicated'
     logCategoriesAndGroups: [
       {
         categoryGroup: 'allLogs'
