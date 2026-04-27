@@ -157,7 +157,9 @@ jobs:
     if: |
       !cancelled() &&
       needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success'
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository	 == 'Azure/bicep-registry-modules'
     needs:
       - job_module_static_validation
       - job_module_deploy_validation
