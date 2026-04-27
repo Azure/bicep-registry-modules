@@ -157,7 +157,8 @@ jobs:
     # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
       !cancelled() &&
-      needs.job_module_static_validation.result == 'success'
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success'
     needs:
       - job_module_static_validation
       - job_module_deploy_validation
