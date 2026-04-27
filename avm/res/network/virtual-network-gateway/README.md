@@ -50,7 +50,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-9-using-only-defaults)
 - [ExpressRoute](#example-10-expressroute)
 - [Using large parameter set](#example-11-using-large-parameter-set)
-- [Using SKU without Availability Zones](#example-12-using-sku-without-availability-zones)
+- [P2S Entra ID and Certificate Authentication](#example-12-p2s-entra-id-and-certificate-authentication)
 - [VPN](#example-13-vpn)
 - [WAF-aligned](#example-14-waf-aligned)
 
@@ -1879,11 +1879,11 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 12: _Using SKU without Availability Zones_
+### Example 12: _P2S Entra ID and Certificate Authentication_
 
-This instance deploys the module with a SKU that does not support Availability Zones.
+This instance deploys the module with Point-to-Site VPN configured for both Entra ID and certificate authentication.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vpn-no-az]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/p2sEntraCertificate]
 
 
 <details>
@@ -1898,11 +1898,26 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgnaz001'
+    name: 'nvgp2sec001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    publicIpAvailabilityZones: []
-    skuName: 'VpnGw1'
+    clientRevokedCertThumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+    clientRootCertData: 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+    skuName: 'VpnGw2AZ'
+    vpnClientAadConfiguration: {
+      aadAudience: '11111111-1234-4321-1234-111111111111'
+      aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+      aadTenant: '<aadTenant>'
+      vpnAuthenticationTypes: [
+        'AAD'
+      ]
+      vpnClientProtocols: [
+        'OpenVPN'
+      ]
+    }
+    vpnClientAddressPoolPrefix: '172.16.10.0/24'
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
   }
 }
 ```
@@ -1929,17 +1944,42 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgnaz001"
+      "value": "nvgp2sec001"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "publicIpAvailabilityZones": {
-      "value": []
+    "clientRevokedCertThumbprint": {
+      "value": "1f24c630cda418ef2069ffad4fdd5f463a1b69aa"
+    },
+    "clientRootCertData": {
+      "value": "MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f"
     },
     "skuName": {
-      "value": "VpnGw1"
+      "value": "VpnGw2AZ"
+    },
+    "vpnClientAadConfiguration": {
+      "value": {
+        "aadAudience": "11111111-1234-4321-1234-111111111111",
+        "aadIssuer": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/",
+        "aadTenant": "<aadTenant>",
+        "vpnAuthenticationTypes": [
+          "AAD"
+        ],
+        "vpnClientProtocols": [
+          "OpenVPN"
+        ]
+      }
+    },
+    "vpnClientAddressPoolPrefix": {
+      "value": "172.16.10.0/24"
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
     }
   }
 }
@@ -1960,11 +2000,26 @@ param clusterSettings = {
   clusterMode: 'activePassiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgnaz001'
+param name = 'nvgp2sec001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
-param publicIpAvailabilityZones = []
-param skuName = 'VpnGw1'
+param clientRevokedCertThumbprint = '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
+param clientRootCertData = 'MIIDXzCCAkegAwIBAgILBAAAAAABIVhTCKIwDQYJKoZIhvcNAQELBQAwTDEgMB4GA1UECxMXR4xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb8JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wHhcNMDkwMzE4MTAwMDAwWhcNMjkwMzE4MTAwMDAwWjBMMSAwHgYDVQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UEAxMKR2xvYmFsU2lnbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMwldpB5BngiFvXAg7aEyiie/QV2EcWtiHL8RgJDx7KKnQRfJMsuS+FggkbhUqsMgUdwbN1k0ev1LKMPgj0MK66X17YUhhB5uzsTgHeMCOFJ0mpiLx9e+pZo34knlTifBtc+ycsmWQ1z3rDI6SYOgxXG71uL0gRgykmmKPZpO/bLyCiR5Z2KYVc3rHQU3HTgOu5yLy6c+9C7v/U9AOEGM+iCK65TpjoWc4zdQQ4gOsC0p6Hpsk+QLjJg6VfLuQSSaGjlOCZgdbKfd/+RFO+uIEn8rUAVSNECMWEZXriX7613t2Saer9fwRPvm2L7DWzgVGkWqQPabumDk3F2xmmFghcCAwEAAaNCMEAwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFI/wS3+oLkUkrk1Q+mOai97i3Ru8MA0GCSqGSIb3DQEBCwUAA4IBAQBLQNvAUKr+yAzv95ZURUm7lgAJQayzE4aGKAczymvmdLm6AC2upArT9fHxD4q/c2dKg8dEe3jgr25sbwMpjjM5RcOO5LlXbKr8EpbsU8Yt5CRsuZRj+9xTaGdWPoO4zzUhw8lo/s7awlOqzJCK6fBdRoyV3XpYKBovHd7NADdBj+1EbddTKJd+82cEHhXXipa0095MJ6RMG3NzdvQXmcIfeg7jLQitChws/zyrVQ4PkX4268NXSb7hLi18YIvDQVETI53O9zJrlAGomecsMx86OyXShkDOOyyGeMlhLxS67ttVb9+E7gUJTb0o2HLO02JQZR7rkpeDMdmztcpHWD8f'
+param skuName = 'VpnGw2AZ'
+param vpnClientAadConfiguration = {
+  aadAudience: '11111111-1234-4321-1234-111111111111'
+  aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
+  aadTenant: '<aadTenant>'
+  vpnAuthenticationTypes: [
+    'AAD'
+  ]
+  vpnClientProtocols: [
+    'OpenVPN'
+  ]
+}
+param vpnClientAddressPoolPrefix = '172.16.10.0/24'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
 ```
 
 </details>
@@ -2494,7 +2549,7 @@ param vpnType = 'RouteBased'
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
 | [`autoScaleConfiguration`](#parameter-autoscaleconfiguration) | object | Autoscale configuration for virtual network gateway. Only applicable for certain SKUs. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
-| [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
+| [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication. |
 | [`customRoutes`](#parameter-customroutes) | object | The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
@@ -2519,7 +2574,7 @@ param vpnType = 'RouteBased'
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`vpnClientAadConfiguration`](#parameter-vpnclientaadconfiguration) | object | Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided. |
+| [`vpnClientAadConfiguration`](#parameter-vpnclientaadconfiguration) | object | Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication. |
 | [`vpnClientAddressPoolPrefix`](#parameter-vpnclientaddresspoolprefix) | string | The IP address range from which VPN clients will receive an IP address when connected. Range specified must not overlap with on-premise network. |
 | [`vpnGatewayGeneration`](#parameter-vpngatewaygeneration) | string | The generation for this VirtualNetworkGateway. Must be None if virtualNetworkGatewayType is not VPN. |
 | [`vpnType`](#parameter-vpntype) | string | Specifies the VPN type. |
@@ -2854,7 +2909,7 @@ Thumbprint of the revoked certificate. This would revoke VPN client certificates
 
 ### Parameter: `clientRootCertData`
 
-Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided.
+Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication.
 
 - Required: No
 - Type: string
@@ -3714,15 +3769,10 @@ The SKU of the Gateway.
     'HighPerformance'
     'Standard'
     'UltraPerformance'
-    'VpnGw1'
     'VpnGw1AZ'
-    'VpnGw2'
     'VpnGw2AZ'
-    'VpnGw3'
     'VpnGw3AZ'
-    'VpnGw4'
     'VpnGw4AZ'
-    'VpnGw5'
     'VpnGw5AZ'
   ]
   ```
@@ -3736,7 +3786,7 @@ Tags of the resource.
 
 ### Parameter: `vpnClientAadConfiguration`
 
-Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.
+Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication.
 
 - Required: No
 - Type: object
