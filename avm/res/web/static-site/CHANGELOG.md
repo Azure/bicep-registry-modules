@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/static-site/CHANGELOG.md).
 
+## 0.9.4
+
+### Changes
+
+- Updated `type` API Versions and fixed Private DNS Zone Name during creation.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.3
 
 ### Changes

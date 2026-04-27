@@ -640,7 +640,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
   }
 }
 
-module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
+module managedCluster_maintenanceConfigurations 'maintenance-configuration/main.bicep' = [
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {

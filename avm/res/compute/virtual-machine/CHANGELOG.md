@@ -9,7 +9,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Skip pre-creating managedDataDisks when createOption is 'FromImage'
 - Preserve 'FromImage' createOption instead of overriding to 'Attach'
 - Don't set managedDisk.id for 'FromImage' disks (only storageAccountType)
-- Fixed typo: createoption → createOption
+- Fixed typo: `createoption` → `createOption`
+- Updated avm-common-types references to `0.7.0`
 
 ### Breaking Changes
 - The settings property support to the extensionMonitoringAgentConfig parameter for the Azure Monitor Agent extension.

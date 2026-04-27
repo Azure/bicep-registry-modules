@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "6127878029192778391"
+      "version": "0.41.2.15936",
+      "templateHash": "15057970563566829605"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -1040,7 +1040,7 @@
           "type": "object",
           "properties": {
             "backendAddressPool": {
-              "$ref": "#/definitions/subResourceType",
+              "$ref": "#/definitions/_1.subResourceType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. A reference to backendAddressPool resource."
@@ -1068,7 +1068,7 @@
               }
             },
             "frontendIPConfiguration": {
-              "$ref": "#/definitions/subResourceType",
+              "$ref": "#/definitions/_1.subResourceType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. A reference to frontend IP addresses."
@@ -1116,6 +1116,24 @@
       },
       "metadata": {
         "description": "The type for the inbound NAT rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+        }
+      }
+    },
+    "_1.subResourceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the sub resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
@@ -1788,7 +1806,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1857,7 +1875,7 @@
           }
         },
         "gatewayLoadBalancer": {
-          "$ref": "#/definitions/subResourceType",
+          "$ref": "#/definitions/_1.subResourceType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The gateway load balancer settings."
@@ -1969,7 +1987,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -1997,7 +2015,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -2026,8 +2044,9 @@
         }
       },
       "metadata": {
+        "description": "The type for the network interface IP configuration output.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     },
@@ -2102,7 +2121,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -2120,7 +2139,7 @@
       "metadata": {
         "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.3"
         }
       }
     }
@@ -3146,8 +3165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "14748641177384511224"
+              "version": "0.41.2.15936",
+              "templateHash": "5982155361487304817"
             }
           },
           "definitions": {
@@ -6024,8 +6043,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6251,8 +6270,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6483,8 +6502,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6713,8 +6732,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6945,8 +6964,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7172,8 +7191,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7407,8 +7426,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7647,8 +7666,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7880,8 +7899,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8109,8 +8128,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8355,8 +8374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8589,8 +8608,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "10418958580450758190"
+              "version": "0.41.2.15936",
+              "templateHash": "3581830278162851734"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8809,8 +8828,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "2216731254409580139"
+              "version": "0.41.2.15936",
+              "templateHash": "17448691641471706096"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."

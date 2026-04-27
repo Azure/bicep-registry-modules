@@ -280,7 +280,7 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
-module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
+module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(certificate)) {
   name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
   params: {
     name: certificate.?name ?? 'cert-${name}'
@@ -322,7 +322,7 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
-import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
+import { certificateKeyVaultPropertiesType } from 'certificate/main.bicep'
 
 @export()
 @description('The type for a certificate.')

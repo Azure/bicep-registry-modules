@@ -10,20 +10,29 @@ Azure Verified Modules (AVM) are pre-built, tested, and validated Bicep modules 
 
 This repository contains **Azure Verified Modules (AVM)** for Bicep - the official Microsoft standard for reusable Azure infrastructure modules. The codebase follows strict AVM specifications and is organized into three main module types:
 
-- **`avm/res/`** - Resource modules (individual Azure resources)
-- **`avm/ptn/`** - Pattern modules (multi-resource solutions)
-- **`avm/utl/`** - Utility modules (shared types and functions)
+- **`avm/res/`** - Resource modules (individual Azure resources) - [Resource module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv)
+- **`avm/ptn/`** - Pattern modules (multi-resource solutions) - [Pattern module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv)
+- **`avm/utl/`** - Utility modules (shared types and functions) - [Utility module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv)
 
 ## Critical Compliance Requirements
+
+### Pre-flight check
+
+> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
+
+```json
+{
+  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
+  "model": "<your model name>"
+}
+```
+
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
 ** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
 For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
-
-### Running local validation tests
-
-**⚠️ MANDATORY for GitHub Copilot Agents**: When GitHub Copilot Agent or GitHub Copilot Coding Agent is working on AVM Bicep repositories and any of the files in the `./avm/**` folder are changed, the following local validation tests MUST be executed before any pull request is created or updated: `./utilities/tools/Test-ModuleLocally.ps1`. **Failure to run these tests will cause PR validation failures and prevent successful merges.** Do not run deployment tests unless it is asked for by the user or other instructions.
 
 ### Updating README.md Documentation
 
@@ -88,6 +97,38 @@ You have exactly these two options (do not use any other method or tool to do th
 - `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
 - `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
 
+## Running PowerShell Scripts (Example)
+
+**🛑 NEVER use the `&` (call) operator to invoke PowerShell scripts.** The `&` operator loads and invokes a script in a single step, which is not permitted.
+
+Instead, always use the **dot-source** (`. `) approach as per the example below.
+
+> Note: This is just an example of how to run any PowerShell script in this repository, and does not mean that this script always needs exactly these parameters.
+
+1. **Dot-source the script** to load its functions into the current session:
+
+   ```powershell
+   . .\utilities\tools\Set-AVMModule.ps1
+   ```
+
+2. **Call the function by name** with any required parameters:
+
+   ```powershell
+   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network' -Recurse
+   ```
+
+> [!IMPORTANT]
+>
+> - **Correct** (two-step, dot-source then call):
+>   ```powershell
+>   . .\utilities\tools\Set-AVMModule.ps1
+>   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+> - **Wrong** (single-step `&` invocation — **NEVER** do this):
+>   ```powershell
+>   & .\utilities\tools\Set-AVMModule.ps1 -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+
 ## Quality Assurance and Troubleshooting
 
 ### Code Quality
@@ -118,10 +159,24 @@ You have exactly these two options (do not use any other method or tool to do th
 - **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
 - **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
 
+## Output and formatting
+
+### Files Modified (Summary)
+
+Whenever you modify, create or delete any files, you MUST summarize the changes in a table format with three columns: `#` (numbered list of changes), `File` (file path), and `Change` (brief description of the change made).
+
+For example:
+
+| #   | Change type                              | File                                                            | Change                                      |
+| --- | ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| 1   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| ..  | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| n   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+
 ## Skills
 
 When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding to acquire the full instructions from the file path before proceeding.
 
 | Skill                       | Description                                                                                                                                                                                      | File                                                  |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| AVM-Child-Module-Publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
+| avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |

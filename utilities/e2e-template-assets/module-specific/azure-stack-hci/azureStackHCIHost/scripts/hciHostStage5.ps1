@@ -50,7 +50,16 @@ $existingSwitches = Get-VMSwitch
 
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
@@ -61,7 +70,16 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
@@ -137,14 +155,23 @@ While (!(Test-ADConnection) -and $count -lt 120) {
     $count++
 }
 
-# authorize DHCP servers in AD for DNS updates
 log 'Authorizing DHCP servers in AD for DNS updates...'
-try {
-    $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
-} catch {
-    log 'Failed to query authorized DHCP servers in AD. Waiting 120 seconds before retrying...'
-    Start-Sleep -Seconds 120
-    $existingAuthorizedServers = Get-DhcpServerInDC
+$dhcpRetries = 5
+$existingAuthorizedServers = $null
+for ($r = 1; $r -le $dhcpRetries; $r++) {
+    try {
+        $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
+        log "Successfully queried authorized DHCP servers (attempt $r)"
+        break
+    } catch {
+        log "Failed to query authorized DHCP servers in AD (attempt $r/$dhcpRetries): $($_.Exception.Message)"
+        if ($r -lt $dhcpRetries) {
+            log "Waiting 60 seconds before retrying..."
+            Start-Sleep -Seconds 60
+        } else {
+            throw "Failed to query DHCP servers after $dhcpRetries attempts: $($_.Exception.Message)"
+        }
+    }
 }
 
 If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 172.20.0.1 }
@@ -160,13 +187,15 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeName = "hcinode$i"
     $hciNodePath = "C:\diskMounts\$hciNodeName"
 
-    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 32GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
+    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 48GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
 }
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
+log 'Stopping VMs before changing processor settings...'
+Get-VM | Stop-VM -Force -TurnOff
 log 'Setting VM processor count to 16 and enabling virtualization extensions...'
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
@@ -381,9 +410,27 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         Write-Error "Failed to start HCI node VMs. $_"
     }
 
-    #wait for vms to boot
-    log 'Waiting 300s for VMs to boot and apply sysprep...'
-    Start-Sleep -Seconds 300
+    #wait for vms to boot - poll heartbeat instead of fixed sleep
+    log 'Waiting for VMs to boot and apply sysprep (polling heartbeat, max 10 min)...'
+    $bootTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $allReady = $false
+    while (-not $allReady -and $bootTimer.Elapsed.TotalMinutes -lt 10) {
+        $vms = Get-VM
+        $readyVMs = $vms | Where-Object { $_.Heartbeat -eq 'OkApplicationsHealthy' -or $_.Heartbeat -eq 'OkApplicationsUnknown' }
+        if ($readyVMs.Count -eq $vms.Count) {
+            log "All $($vms.Count) VMs have heartbeat after $([math]::Round($bootTimer.Elapsed.TotalSeconds))s."
+            $allReady = $true
+        } else {
+            log "[$([math]::Round($bootTimer.Elapsed.TotalSeconds))s] $($readyVMs.Count)/$($vms.Count) VMs ready (heartbeat). Waiting 30s..."
+            Start-Sleep -Seconds 30
+        }
+    }
+    if (-not $allReady) {
+        log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
+    }
+    # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
+    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 60
 } Else {
     log 'HCI node VMs are already running.'
 }

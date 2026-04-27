@@ -28,6 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Authorization/roleAssignmentScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignmentschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests)</li></ul> |
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | 2022-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleeligibilityschedulerequests.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests)</li></ul> |
+| `Microsoft.Consumption/budgets` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.consumption_budgets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Consumption/2023-11-01/budgets)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -84,16 +85,17 @@ The following section provides usage examples for the module, which were used to
 
 - [Multiple virtual networks.](#example-1-multiple-virtual-networks)
 - [Deploy subscription with Bastion.](#example-2-deploy-subscription-with-bastion)
-- [Using only defaults.](#example-3-using-only-defaults)
-- [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
-- [Using IPAM pool for address allocation.](#example-5-using-ipam-pool-for-address-allocation)
-- [Hub and spoke topology with NAT gateway.](#example-6-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-7-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-8-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-9-using-rbac-conditions)
-- [Using standalone NSG deployment.](#example-10-using-standalone-nsg-deployment)
-- [Using user-assigned managed identities.](#example-11-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-12-vwan-topology)
+- [Deploy subscription with a budget.](#example-3-deploy-subscription-with-a-budget)
+- [Using only defaults.](#example-4-using-only-defaults)
+- [Hub and spoke topology.](#example-5-hub-and-spoke-topology)
+- [Using IPAM pool for address allocation.](#example-6-using-ipam-pool-for-address-allocation)
+- [Hub and spoke topology with NAT gateway.](#example-7-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-8-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-9-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-10-using-rbac-conditions)
+- [Using standalone NSG deployment.](#example-11-using-standalone-nsg-deployment)
+- [Using user-assigned managed identities.](#example-12-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-13-vwan-topology)
 
 ### Example 1: _Multiple virtual networks._
 
@@ -683,7 +685,120 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 3: _Using only defaults._
+### Example 3: _Deploy subscription with a budget._
+
+This instance deploys a subscription with a budget.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/budgets]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  params: {
+    budgetAmount: 100
+    budgetName: 'budget-ssabudg'
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "budgetAmount": {
+      "value": 100
+    },
+    "budgetName": {
+      "value": "budget-ssabudg"
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param budgetAmount = 100
+param budgetName = 'budget-ssabudg'
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -786,7 +901,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 4: _Hub and spoke topology._
+### Example 5: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -1113,7 +1228,7 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 5: _Using IPAM pool for address allocation._
+### Example 6: _Using IPAM pool for address allocation._
 
 This instance deploys the module with a virtual network that uses Azure Virtual Network Manager IPAM for automatic IP address allocation.
 
@@ -1372,7 +1487,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 6: _Hub and spoke topology with NAT gateway._
+### Example 7: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -1617,7 +1732,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 7: _Using PIM Active Role assignments._
+### Example 8: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
 
@@ -1814,7 +1929,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 8: _Using PIM Eligible Role assignments._
+### Example 9: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
 
@@ -1989,7 +2104,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 9: _Using RBAC conditions._
+### Example 10: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -2159,7 +2274,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 10: _Using standalone NSG deployment._
+### Example 11: _Using standalone NSG deployment._
 
 This instance deploys the module to test standalone NSG deployments.
 
@@ -2371,7 +2486,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 11: _Using user-assigned managed identities._
+### Example 12: _Using user-assigned managed identities._
 
 This instance deploys the module with user-assigned managed identities.
 
@@ -2611,7 +2726,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 12: _Vwan topology._
+### Example 13: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -2833,6 +2948,15 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`additionalVirtualNetworks`](#parameter-additionalvirtualnetworks) | array | A list of additional virtual networks to create. |
+| [`budgetActionGroups`](#parameter-budgetactiongroups) | array | List of action group resource IDs that will receive the alert. |
+| [`budgetAmount`](#parameter-budgetamount) | int | The total amount of cost or usage to track with the budget. |
+| [`budgetCategory`](#parameter-budgetcategory) | string | The category of the budget, whether the budget tracks cost or usage. |
+| [`budgetContactEmails`](#parameter-budgetcontactemails) | array | The list of email addresses to send the budget notification to when the thresholds are exceeded. |
+| [`budgetContactRoles`](#parameter-budgetcontactroles) | array | The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided. |
+| [`budgetName`](#parameter-budgetname) | string | The name of the budget. |
+| [`budgetStartDate`](#parameter-budgetstartdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
+| [`budgetThresholds`](#parameter-budgetthresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`budgetThresholdType`](#parameter-budgetthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -3520,6 +3644,83 @@ Enables the use of remote gateways in the spefcified hub virtual network. If no 
 
 - Required: No
 - Type: bool
+
+### Parameter: `budgetActionGroups`
+
+List of action group resource IDs that will receive the alert.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `budgetAmount`
+
+The total amount of cost or usage to track with the budget.
+
+- Required: No
+- Type: int
+- Default: `100`
+
+### Parameter: `budgetCategory`
+
+The category of the budget, whether the budget tracks cost or usage.
+
+- Required: No
+- Type: string
+- Default: `'Cost'`
+
+### Parameter: `budgetContactEmails`
+
+The list of email addresses to send the budget notification to when the thresholds are exceeded.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `budgetContactRoles`
+
+The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided.
+
+- Required: No
+- Type: array
+- Default: `[if(and(empty(parameters('budgetActionGroups')), empty(parameters('budgetContactEmails'))), createArray('Owner'), createArray())]`
+
+### Parameter: `budgetName`
+
+The name of the budget.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `budgetStartDate`
+
+The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).
+
+- Required: No
+- Type: string
+- Default: `[format('{0}-{1}-01T00:00:00Z', utcNow('yyyy'), utcNow('MM'))]`
+
+### Parameter: `budgetThresholds`
+
+Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    90
+  ]
+  ```
+
+### Parameter: `budgetThresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: No
+- Type: string
+- Default: `'Forecasted'`
 
 ### Parameter: `deploymentScriptLocation`
 
@@ -6006,6 +6207,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/pim-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/authorization/role-assignment/rg-scope:0.1.1` | Remote reference |
 | `br/public:avm/res/authorization/role-assignment/sub-scope:0.1.1` | Remote reference |
+| `br/public:avm/res/consumption/budget:0.3.8` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.3` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
