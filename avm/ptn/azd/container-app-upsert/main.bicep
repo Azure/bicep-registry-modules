@@ -35,7 +35,7 @@ param containerMinReplicas int = 2
 @description('Optional. The name of the container.')
 param containerName string = 'main'
 
-import { containerAppProbeType } from 'br/public:avm/ptn/azd/acr-container-app:0.2.0'
+import { containerAppProbeType, volumeType, volumeMountType } from 'br/public:avm/ptn/azd/acr-container-app:0.5.0'
 @description('Optional. List of probes for the container.')
 param containerProbes containerAppProbeType[]?
 
@@ -87,6 +87,12 @@ param serviceBinds array = []
 @description('Optional. The target port for the container.')
 param targetPort int = 80
 
+@description('Optional. The list of volumes that can be mounted by containers in the container app.')
+param volumes volumeType[]?
+
+@description('Optional. Volume mounts for the primary container.')
+param volumeMounts volumeMountType[]?
+
 @description('Optional. The principal ID of the principal to assign the role to.')
 param identityPrincipalId string = ''
 
@@ -119,7 +125,7 @@ resource existingApp 'Microsoft.App/containerApps@2025-01-01' existing = if (exi
   name: name
 }
 
-module app 'br/public:avm/ptn/azd/acr-container-app:0.2.0' = {
+module app 'br/public:avm/ptn/azd/acr-container-app:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-container-app-update'
   params: {
     name: name
@@ -147,6 +153,8 @@ module app 'br/public:avm/ptn/azd/acr-container-app:0.2.0' = {
     imageName: !empty(imageName) ? imageName : exists ? existingApp!.properties.template.containers[0].image : ''
     targetPort: targetPort
     serviceBinds: serviceBinds
+    volumes: volumes
+    volumeMounts: volumeMounts
     principalId: !empty(identityName) && !empty(containerRegistryName) ? identityPrincipalId : ''
     userAssignedIdentityResourceId: !empty(identityName) && !empty(containerRegistryName)
       ? userAssignedIdentityResourceId

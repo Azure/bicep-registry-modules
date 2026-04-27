@@ -2,7 +2,7 @@
 param location string
 
 @description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
-param hostVMSize string = 'Standard_E32bds_v5'
+param hostVMSize string = 'Standard_E48bds_v5'
 
 @description('Optional. The number of Azure Stack HCI nodes to deploy.')
 param hciNodeCount int = 2
@@ -257,7 +257,9 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
     }
     storageProfile: {
       imageReference: !empty(imageReferenceId)
-        ? { id: imageReferenceId }
+        ? (startsWith(imageReferenceId, '/SharedGalleries/')
+          ? { sharedGalleryImageId: imageReferenceId }
+          : { id: imageReferenceId })
         : {
             publisher: 'MicrosoftWindowsServer'
             offer: 'WindowsServer'
@@ -298,13 +300,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
           }
         }
       }
-    }
-    securityProfile: {
-      uefiSettings: {
-        secureBootEnabled: true
-        vTpmEnabled: true
-      }
-      securityType: 'TrustedLaunch'
     }
     licenseType: 'Windows_Server'
   }
