@@ -86,6 +86,14 @@ runs:
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
           }
 
+          # skip deployment test for certain modules that are known to cause issues in CI (e.g. due to a very long deployment time that may cause CI to time out), but without failing the whole pipeline
+          if ($('{{ inputs.modulePath }}') -in @(
+            'avm/res/azure-stack-hci/cluster'
+          )) {
+            Write-Warning -Message "Module path '${{ inputs.modulePath }}' is currently set to be skipped for deployment validation in CI due to known issues. Please check the module's README for more details."
+            Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
+          }
+
     # [Azure login] task(s)
     # ------------------------------
     - name: "Set OIDC temporary exception"
