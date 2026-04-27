@@ -119,11 +119,6 @@ param vpnGatewayGeneration string = 'None'
 @description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
-  'VpnGw1'
-  'VpnGw2'
-  'VpnGw3'
-  'VpnGw4'
-  'VpnGw5'
   'VpnGw1AZ'
   'VpnGw2AZ'
   'VpnGw3AZ'
@@ -179,7 +174,7 @@ param natRules natRuleType[]?
 @description('Optional. EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway.')
 param enableBgpRouteTranslationForNat bool = false
 
-@description('Optional. Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided.')
+@description('Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication.')
 param clientRootCertData string = ''
 
 @description('Optional. Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.')
@@ -207,7 +202,7 @@ param tags resourceInput<'Microsoft.Network/virtualNetworkGateways@2024-07-01'>.
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
+@description('Optional. Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication.')
 param vpnClientAadConfiguration vpnClientAadConfigurationType?
 
 @description('Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities.')
@@ -404,22 +399,26 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           }
         ]
 
-var vpnClientConfiguration = !empty(clientRootCertData)
+var hasClientRootCertificate = !empty(clientRootCertData)
+var hasVpnClientAadConfiguration = !empty(vpnClientAadConfiguration)
+var vpnClientConfiguration = hasClientRootCertificate || hasVpnClientAadConfiguration
   ? {
       vpnClientAddressPool: {
         addressPrefixes: [
           vpnClientAddressPoolPrefix
         ]
       }
-      vpnClientRootCertificates: [
-        {
-          name: 'RootCert1'
-          properties: {
-            publicCertData: clientRootCertData
-          }
-        }
-      ]
-      vpnClientRevokedCertificates: !empty(clientRevokedCertThumbprint)
+      vpnClientRootCertificates: hasClientRootCertificate
+        ? [
+            {
+              name: 'RootCert1'
+              properties: {
+                publicCertData: clientRootCertData
+              }
+            }
+          ]
+        : null
+      vpnClientRevokedCertificates: hasClientRootCertificate && !empty(clientRevokedCertThumbprint)
         ? [
             {
               name: 'RevokedCert1'
@@ -429,21 +428,17 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             }
           ]
         : null
+      aadTenant: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadTenant : null
+      aadAudience: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadAudience : null
+      aadIssuer: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadIssuer : null
+      vpnAuthenticationTypes: hasVpnClientAadConfiguration
+        ? (hasClientRootCertificate && !contains(vpnClientAadConfiguration!.vpnAuthenticationTypes, 'Certificate')
+            ? concat(vpnClientAadConfiguration!.vpnAuthenticationTypes, ['Certificate'])
+            : vpnClientAadConfiguration!.vpnAuthenticationTypes)
+        : null
+      vpnClientProtocols: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.vpnClientProtocols : null
     }
-  : !empty(vpnClientAadConfiguration)
-      ? {
-          vpnClientAddressPool: {
-            addressPrefixes: [
-              vpnClientAddressPoolPrefix
-            ]
-          }
-          aadTenant: vpnClientAadConfiguration!.aadTenant
-          aadAudience: vpnClientAadConfiguration!.aadAudience
-          aadIssuer: vpnClientAadConfiguration!.aadIssuer
-          vpnAuthenticationTypes: vpnClientAadConfiguration!.vpnAuthenticationTypes
-          vpnClientProtocols: vpnClientAadConfiguration!.vpnClientProtocols
-        }
-      : null
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')

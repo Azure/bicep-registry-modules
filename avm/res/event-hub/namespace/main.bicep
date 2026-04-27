@@ -259,6 +259,7 @@ module eventHubNamespace_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: eventHubNamespace.name
       name: authorizationRule.name
       rights: authorizationRule.?rights ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -269,6 +270,7 @@ module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.b
     namespaceName: eventHubNamespace.name
     name: disasterRecoveryConfig!.name
     partnerNamespaceResourceId: disasterRecoveryConfig.?partnerNamespaceResourceId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -306,6 +308,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
     trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled
     ipRules: networkRuleSets.?ipRules
     virtualNetworkRules: networkRuleSets.?virtualNetworkRules
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

@@ -367,6 +367,7 @@ The hypervisor generation of the Virtual Machine.
 - Allowed:
   ```Bicep
   [
+    'NA'
     'V1'
     'V2'
   ]
