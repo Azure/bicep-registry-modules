@@ -306,7 +306,7 @@ The domain name specific to the Azure AD DS service.
 - Example:
   ```Bicep
   - 'contoso.onmicrosoft.com'
-  - 'aaddscontoso.com'
+  - 'aad-ds-contoso.com'
   ```
 
 ### Parameter: `pfxCertificate`
