@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.RecoveryServices/vaults` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupconfig` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupconfig` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2026-01-01/vaults/backupconfig)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupPolicies` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationalertsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationAlertSettings)</li></ul> |
@@ -2921,6 +2921,7 @@ The backup configuration.
 | [`name`](#parameter-backupconfigname) | string | Name of the Azure Recovery Service Vault Backup Policy. |
 | [`resourceGuardOperationRequests`](#parameter-backupconfigresourceguardoperationrequests) | array | ResourceGuard Operation Requests. |
 | [`softDeleteFeatureState`](#parameter-backupconfigsoftdeletefeaturestate) | string | Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes. |
+| [`softDeleteRetentionPeriodInDays`](#parameter-backupconfigsoftdeleteretentionperiodindays) | int | Soft delete retention period in days. |
 | [`storageModelType`](#parameter-backupconfigstoragemodeltype) | string | Storage type. |
 | [`storageType`](#parameter-backupconfigstoragetype) | string | Storage type. |
 | [`storageTypeState`](#parameter-backupconfigstoragetypestate) | string | Once a machine is registered against a resource, the storageTypeState is always Locked. |
@@ -2969,10 +2970,19 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
+    'Invalid'
   ]
   ```
+
+### Parameter: `backupConfig.softDeleteRetentionPeriodInDays`
+
+Soft delete retention period in days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `backupConfig.storageModelType`
 

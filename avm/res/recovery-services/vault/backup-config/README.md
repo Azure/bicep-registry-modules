@@ -12,7 +12,7 @@ This module deploys a Recovery Services Vault Backup Config.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.RecoveryServices/vaults/backupconfig` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupconfig` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2026-01-01/vaults/backupconfig)</li></ul> |
 
 ## Parameters
 
@@ -31,6 +31,7 @@ This module deploys a Recovery Services Vault Backup Config.
 | [`name`](#parameter-name) | string | Name of the Azure Recovery Service Vault Backup Policy. |
 | [`resourceGuardOperationRequests`](#parameter-resourceguardoperationrequests) | array | ResourceGuard Operation Requests. |
 | [`softDeleteFeatureState`](#parameter-softdeletefeaturestate) | string | Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes. |
+| [`softDeleteRetentionPeriodInDays`](#parameter-softdeleteretentionperiodindays) | int | Soft delete retention period in days. |
 | [`storageModelType`](#parameter-storagemodeltype) | string | Storage type. |
 | [`storageType`](#parameter-storagetype) | string | Storage type. |
 | [`storageTypeState`](#parameter-storagetypestate) | string | Once a machine is registered against a resource, the storageTypeState is always Locked. |
@@ -91,10 +92,19 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
+    'Invalid'
   ]
   ```
+
+### Parameter: `softDeleteRetentionPeriodInDays`
+
+Soft delete retention period in days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `storageModelType`
 
