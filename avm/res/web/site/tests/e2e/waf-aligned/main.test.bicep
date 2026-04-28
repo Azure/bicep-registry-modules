@@ -19,8 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Note, we enforce the location due to quota restrictions in other regions (esp. east-us)
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
-
+var enforcedLocation = 'swedencentral'
 // ============ //
 // Dependencies //
 // ============ //
@@ -37,6 +36,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -103,6 +104,28 @@ module testDeployment '../../../main.bicep' = [
         contentShareTraffic: true
         imagePullTraffic: true
       }
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+        }
+      ]
     }
   }
 ]

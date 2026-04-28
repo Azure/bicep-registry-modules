@@ -5,3 +5,4 @@ last-moduleIndex.json
 generated-moduleIndex.json
 .DS_Store
 .idea
+**/AzureBackupGeoCodeMappings.json

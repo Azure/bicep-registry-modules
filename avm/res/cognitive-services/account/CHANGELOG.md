@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Updated `model.version` in `deploymentType` to be a conditional parameter.
+
+### Breaking Changes
+
+- None
+
+## 0.14.1
+
+### Changes
+
+- Added `primaryKey` and `primaryKey` outputs
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes

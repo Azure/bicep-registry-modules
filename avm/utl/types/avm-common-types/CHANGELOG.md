@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/utl/types/avm-common-types/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Added an additional type for customer-managed keys that only allow specifying the key vault & key to be used.
+
+### Breaking Changes
+
+- None
+
 ## 0.6.1
 
 ### Changes
@@ -69,7 +79,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Common-Types: Fixed incorrect parameter description: The FQDN parameter is optional, yet the description said it was required.
 - Diverse: Fixed metadata descriptions
 - Fixed static test validating parameter descriptions
-- It checked for a line that looke like ('Required. even though the value of the $description variable at the time only has the description's value, that is Required.
+  - It checked for a line that looks like "'Required.", even though the value of the $description variable at the time only has the description's value, that is Required.
 - Added test that tests the reverse, that is, that a parameter's description starts with Required. in its title if it is required
 
 ### Breaking Changes

@@ -14,6 +14,8 @@ param resourceGroupName string = 'dep-${namePrefix}-aiplatform-baseline-${servic
 // Enforce uksouth to avoid restrictions around VM zones in certain regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
+#disable-next-line no-hardcoded-location
+var enforcedPairedLocation = 'ukwest'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'aipbwaf'
@@ -62,6 +64,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
       managedIdentityName: nestedDependencies.outputs.managedIdentityName
+      containerRegistryConfiguration: {
+        replications: [
+          {
+            location: enforcedPairedLocation
+            name: enforcedPairedLocation
+          }
+        ]
+      }
       virtualMachineConfiguration: {
         adminUsername: 'localAdminUser'
         adminPassword: password

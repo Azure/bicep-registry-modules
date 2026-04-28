@@ -13,8 +13,8 @@ A network group is a collection of same-type network resources that you can asso
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/networkManagers/networkGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups)</li></ul> |
-| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
+| `Microsoft.Network/networkManagers/networkGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/networkGroups)</li></ul> |
+| `Microsoft.Network/networkManagers/networkGroups/staticMembers` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkmanagers_networkgroups_staticmembers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkManagers/networkGroups/staticMembers)</li></ul> |
 
 ## Parameters
 
@@ -67,13 +67,6 @@ The type of the group member. Subnet member type is used for routing configurati
 - Required: No
 - Type: string
 - Default: `'VirtualNetwork'`
-- Allowed:
-  ```Bicep
-  [
-    'Subnet'
-    'VirtualNetwork'
-  ]
-  ```
 
 ### Parameter: `staticMembers`
 

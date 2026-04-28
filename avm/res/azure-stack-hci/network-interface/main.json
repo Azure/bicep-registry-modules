@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "15100144726254601129"
+      "version": "0.41.2.15936",
+      "templateHash": "8402604330285094389"
     },
     "name": "Azure Stack HCI Network Interface",
     "description": "This module deploys an Azure Stack HCI network interface."
@@ -257,7 +257,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.AzureStackHCI/networkInterfaces/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

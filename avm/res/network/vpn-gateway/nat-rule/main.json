@@ -5,35 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "2314597227337579115"
+      "version": "0.41.2.15936",
+      "templateHash": "10981811082187228460"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a VPN Gateway NAT Rule."
-  },
-  "definitions": {
-    "vpnNatRuleMappingType": {
-      "type": "object",
-      "properties": {
-        "addressSpace": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Address space for VPN NAT rule mapping."
-          }
-        },
-        "portRange": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Port range for VPN NAT rule mapping."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a VPN NAT rule mapping."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -50,23 +26,23 @@
     },
     "externalMappings": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/vpnNatRuleMappingType"
-      },
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways/natRules@2024-07-01#properties/properties/properties/externalMappings"
+        },
         "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
-      }
+      },
+      "defaultValue": []
     },
     "internalMappings": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/vpnNatRuleMappingType"
-      },
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways/natRules@2024-07-01#properties/properties/properties/internalMappings"
+        },
         "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
-      }
+      },
+      "defaultValue": []
     },
     "ipConfigurationId": {
       "type": "string",

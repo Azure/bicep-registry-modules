@@ -19,6 +19,7 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
@@ -42,7 +43,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: generate-token
         with:
           app-id: ${{ secrets.TEAM_LINTER_APP_ID }}

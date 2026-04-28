@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "8803020983329720581"
+      "version": "0.41.2.15936",
+      "templateHash": "4317231688156773496"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy."

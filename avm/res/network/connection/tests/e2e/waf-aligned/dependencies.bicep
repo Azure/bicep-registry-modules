@@ -44,10 +44,15 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   location: location
   properties: {
     publicIPAllocationMethod: 'Static'
-  }  
+  }
   sku: {
     name: 'Standard'
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 resource primaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01' = {
@@ -72,8 +77,8 @@ resource primaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01
     vpnType: 'RouteBased'
     vpnGatewayGeneration: 'Generation2'
     sku: {
-      name: 'VpnGw2'
-      tier: 'VpnGw2'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
   }
 }
@@ -103,10 +108,15 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-07-01' = {
   location: location
   properties: {
     publicIPAllocationMethod: 'Static'
-  }  
+  }
   sku: {
     name: 'Standard'
-  }  
+  }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-01' = {
@@ -131,8 +141,8 @@ resource secondaryVNETGateway 'Microsoft.Network/virtualNetworkGateways@2024-07-
     vpnType: 'RouteBased'
     vpnGatewayGeneration: 'Generation2'
     sku: {
-      name: 'VpnGw2'
-      tier: 'VpnGw2'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
   }
 }

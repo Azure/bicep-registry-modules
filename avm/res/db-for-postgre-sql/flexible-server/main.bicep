@@ -315,7 +315,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-pr
           primaryKeyURI: !empty(customerManagedKey.?keyVersion)
             ? (!isHSMManagedCMK
                 ? '${cMKKeyVault::cMKKey!.properties.keyUri}/${customerManagedKey!.keyVersion!}'
-                : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/${customerManagedKey!.keyVersion!}')
+                : 'https://${last(split((customerManagedKey.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/keys/${customerManagedKey!.keyName}/${customerManagedKey!.keyVersion!}')
             : (customerManagedKey.?autoRotationEnabled ?? true)
                 ? (!isHSMManagedCMK
                     ? cMKKeyVault::cMKKey!.properties.keyUri
@@ -391,6 +391,7 @@ module flexibleServer_databases 'database/main.bicep' = [
       flexibleServerName: flexibleServer.name
       collation: database.?collation
       charset: database.?charset
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       flexibleServer_roleAssignments
@@ -406,6 +407,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
       flexibleServerName: flexibleServer.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       flexibleServer_databases
@@ -422,6 +424,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
       flexibleServerName: flexibleServer.name
       source: configuration.?source
       value: configuration.?value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       flexibleServer_firewallRules
@@ -438,6 +441,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       principalName: administrator.principalName
       principalType: administrator.principalType
       tenantId: administrator.?tenantId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       flexibleServer_configurations
@@ -450,6 +454,7 @@ module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setti
   params: {
     serverThreatProtection: serverThreatProtection
     flexibleServerName: flexibleServer.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     flexibleServer_administrators

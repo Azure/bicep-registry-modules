@@ -45,20 +45,36 @@ if (-not $certificate) {
     $null = Add-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -CertificatePolicy $certPolicy
     Write-Verbose ('Initiated creation of certificate [{0}] in key vault [{1}]' -f $CertName, $KeyVaultName) -Verbose
 
-    while (-not (Get-AzKeyVaultCertificateOperation -VaultName $KeyVaultName -Name $CertName).Status -eq 'completed') {
-        Write-Verbose 'Waiting 10 seconds for certificate creation' -Verbose
-        Start-Sleep 10
+    $maxRetries = 10
+    $retryCount = 0
+    $WaitIntervalInSeconds = 10
+    while (-not (Get-AzKeyVaultCertificateOperation -VaultName $KeyVaultName -Name $CertName -Verbose).Status -eq 'completed' -and $retryCount -lt $maxRetries) {
+        Write-Verbose ('    [⏱️] Waiting {0} seconds for certificate creation to finish. [{1}/{2}]' -f $WaitIntervalInSeconds, $retryCount, $MaxRetries) -Verbose
+        Start-Sleep $WaitIntervalInSeconds
+        $retryCount++
+    }
+    if ($retryCount -eq $maxRetries) {
+        throw "Certificate creation operation did not complete after [$maxRetries] attempts. Please review."
     }
 
     Write-Verbose 'Certificate created' -Verbose
 }
 
 $secretId = $certificate.SecretId
-while ([String]::IsNullOrEmpty($secretId)) {
-    Write-Verbose 'Waiting 10 seconds until certificate can be fetched' -Verbose
-    Start-Sleep 10
+
+$maxRetries = 10
+$retryCount = 0
+$WaitIntervalInSeconds = 10
+while ([String]::IsNullOrEmpty($secretId) -and $retryCount -lt $maxRetries) {
+    Write-Verbose ('    [⏱️] Waiting {0} seconds until certificate can be fetched. [{1}/{2}]' -f $WaitIntervalInSeconds, $retryCount, $MaxRetries) -Verbose
+
+    Start-Sleep $WaitIntervalInSeconds
     $certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'Stop'
     $secretId = $certificate.SecretId
+    $retryCount++
+}
+if ($retryCount -eq $maxRetries -and [String]::IsNullOrEmpty($secretId)) {
+    throw "Failed to fetch certificate secret reference after [$maxRetries] attempts. Please review."
 }
 
 # Write into Deployment Script output stream

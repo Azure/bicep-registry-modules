@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "4781753017990092454"
+      "version": "0.41.2.15936",
+      "templateHash": "7473842801171960215"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -21,14 +21,15 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Resource Name."
+        "description": "Required. Logger name."
       }
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
+      "maxLength": 256,
       "metadata": {
-        "description": "Optional. Logger description."
+        "description": "Optional. Description of the logger."
       }
     },
     "isBuffered": {
@@ -53,7 +54,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+        "description": "Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
       }
     },
     "credentials": {
@@ -62,7 +63,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/loggers@2024-05-01#properties/properties/properties/credentials"
         },
-        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub."
+        "description": "Conditional. The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub, ignored if loggerType = azureMonitor."
       },
       "nullable": true
     },
@@ -84,7 +85,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.apimgmt-logger.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -101,17 +102,11 @@
         }
       }
     },
-    "loggers": {
+    "logger": {
       "type": "Microsoft.ApiManagement/service/loggers",
       "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": {
-        "credentials": "[parameters('credentials')]",
-        "description": "[parameters('description')]",
-        "isBuffered": "[parameters('isBuffered')]",
-        "loggerType": "[parameters('type')]",
-        "resourceId": "[parameters('targetResourceId')]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('description', parameters('description'), 'isBuffered', parameters('isBuffered'), 'loggerType', parameters('type'), 'resourceId', parameters('targetResourceId')), if(not(equals(parameters('type'), 'azureMonitor')), createObject('credentials', parameters('credentials')), createObject())))]"
     }
   },
   "outputs": {
@@ -132,7 +127,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the named value was deployed into."
+        "description": "The resource group the logger was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

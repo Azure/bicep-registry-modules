@@ -49,6 +49,11 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   'Azure Relay Listener': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -99,6 +104,25 @@ resource hybridConnection 'Microsoft.Relay/namespaces/hybridConnections@2021-11-
   }
 }
 
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.relay-namespace-hybconn.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 module hybridConnection_authorizationRules 'authorization-rule/main.bicep' = [
   for (authorizationRule, index) in authorizationRules: {
     name: '${deployment().name}-AuthorizationRule-${index}'
@@ -107,6 +131,7 @@ module hybridConnection_authorizationRules 'authorization-rule/main.bicep' = [
       hybridConnectionName: hybridConnection.name
       name: authorizationRule.name
       rights: authorizationRule.?rights
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

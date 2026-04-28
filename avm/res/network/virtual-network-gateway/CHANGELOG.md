@@ -2,6 +2,29 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network-gateway/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Fixed Point-to-Site VPN client configuration so Entra ID and certificate authentication can be configured together in `vpnClientConfiguration`.
+- Removed unsupported non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`) from the `skuName` allowed values.
+
+### Breaking Changes
+
+- Deployments can no longer specify non-Availability Zone VPN gateway SKUs (`VpnGw1` to `VpnGw5`). Use the corresponding `VpnGw1AZ` to `VpnGw5AZ` SKUs instead.
+
+## 0.10.1
+
+### Changes
+
+- Fixed hardcoded Public IP `dnsSettings.domainNameLabelScope` (preview feature) by making it optional/configurable to avoid deployment failures in regions where the feature isn't available.
+- Updated existing `Microsoft.Network/publicIPAddresses` API version to `2025-01-01`.
+- Updated referenced `br/public:avm/res/network/public-ip-address` module version to `0.10.0`.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.0
 
 ### Changes

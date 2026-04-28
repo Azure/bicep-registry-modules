@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "15535153774960936181"
+      "version": "0.40.2.10011",
+      "templateHash": "7711635052619178872"
     },
     "name": "Azure Stack HCI Marketplace Gallery Image",
     "description": "This module deploys an Azure Stack HCI Marketplace Gallery Image."
@@ -139,7 +139,8 @@
       "defaultValue": "V2",
       "allowedValues": [
         "V1",
-        "V2"
+        "V2",
+        "NA"
       ],
       "metadata": {
         "description": "Optional. The hypervisor generation of the Virtual Machine."
@@ -213,7 +214,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[take(format('46d3xbcp.res.azurestackhci-markplgalleryimg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -260,7 +261,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.AzureStackHCI/marketplaceGalleryImages/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.AzureStackHCI/marketplaceGalleryImages', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/marketplaceGalleryImages', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",

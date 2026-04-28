@@ -26,11 +26,11 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Web/sites/slots` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots)</li></ul> |
-| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
-| `Microsoft.Web/sites/slots/config` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Web/sites/slots` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots)</li></ul> |
+| `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
+| `Microsoft.Web/sites/slots/config` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/config)</li></ul> |
 | `Microsoft.Web/sites/slots/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions)</li></ul> |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays)</li></ul> |
 
@@ -67,16 +67,20 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`customDomainVerificationId`](#parameter-customdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
+| [`daprConfig`](#parameter-daprconfig) | object | Dapr configuration of the app. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsConfiguration`](#parameter-dnsconfiguration) | object | Property to configure various DNS related settings for a site. |
+| [`e2eEncryptionEnabled`](#parameter-e2eencryptionenabled) | bool | End to End Encryption Setting. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extensions`](#parameter-extensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App config object. |
+| [`hostNamesDisabled`](#parameter-hostnamesdisabled) | bool | True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process. |
 | [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-httpsonly) | bool | Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests. |
 | [`hybridConnectionRelays`](#parameter-hybridconnectionrelays) | array | Names of hybrid connection relays to connect app with. |
 | [`hyperV`](#parameter-hyperv) | bool | Hyper-V sandbox. |
+| [`ipMode`](#parameter-ipmode) | string | Specifies the IP mode of the app. |
 | [`keyVaultAccessIdentityResourceId`](#parameter-keyvaultaccessidentityresourceid) | string | The resource ID of the assigned identity to be used to access a key vault with. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -86,12 +90,17 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow or block all public traffic. |
 | [`redundancyMode`](#parameter-redundancymode) | string | Site redundancy mode. |
+| [`reserved`](#parameter-reserved) | bool | True if reserved (Linux); otherwise, false (Windows). |
+| [`resourceConfig`](#parameter-resourceconfig) | object | Function app resource requirements. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`scmSiteAlsoStopped`](#parameter-scmsitealsostopped) | bool | Stop SCM (KUDU) site when the app is stopped. |
 | [`serverFarmResourceId`](#parameter-serverfarmresourceid) | string | The resource ID of the app service plan to use for the slot. |
 | [`siteConfig`](#parameter-siteconfig) | object | The site config object. |
+| [`sshEnabled`](#parameter-sshenabled) | bool | Whether to enable SSH access. |
 | [`storageAccountRequired`](#parameter-storageaccountrequired) | bool | Checks if Customer provided storage account is required. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworksubnetresourceid) | string | Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}. |
+| [`workloadProfileName`](#parameter-workloadprofilename) | string | Workload profile name for function app to execute on. |
 
 ### Parameter: `kind`
 
@@ -144,15 +153,6 @@ Specifies the scope of uniqueness for the default hostname during resource creat
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'NoReuse'
-    'ResourceGroupReuse'
-    'SubscriptionReuse'
-    'TenantReuse'
-  ]
-  ```
 
 ### Parameter: `basicPublishingCredentialsPolicies`
 
@@ -248,14 +248,6 @@ This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false mean
 - Required: No
 - Type: string
 - Default: `'Optional'`
-- Allowed:
-  ```Bicep
-  [
-    'Optional'
-    'OptionalInteractiveUser'
-    'Required'
-  ]
-  ```
 
 ### Parameter: `cloningInfo`
 
@@ -4611,6 +4603,13 @@ Maximum allowed daily memory-time quota (applicable on dynamic apps only).
 - Required: No
 - Type: int
 
+### Parameter: `daprConfig`
+
+Dapr configuration of the app.
+
+- Required: No
+- Type: object
+
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.
@@ -4764,6 +4763,13 @@ Property to configure various DNS related settings for a site.
 - Required: No
 - Type: object
 
+### Parameter: `e2eEncryptionEnabled`
+
+End to End Encryption Setting.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enabled`
 
 Setting this value to false disables the app (takes the app offline).
@@ -4793,6 +4799,13 @@ The Function App config object.
 
 - Required: No
 - Type: object
+
+### Parameter: `hostNamesDisabled`
+
+True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `hostNameSslStates`
 
@@ -4849,6 +4862,13 @@ Hyper-V sandbox.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `ipMode`
+
+Specifies the IP mode of the app.
+
+- Required: No
+- Type: string
 
 ### Parameter: `keyVaultAccessIdentityResourceId`
 
@@ -5376,13 +5396,6 @@ Allow or block all public traffic.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `redundancyMode`
 
@@ -5391,16 +5404,20 @@ Site redundancy mode.
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed:
-  ```Bicep
-  [
-    'ActiveActive'
-    'Failover'
-    'GeoRedundant'
-    'Manual'
-    'None'
-  ]
-  ```
+
+### Parameter: `reserved`
+
+True if reserved (Linux); otherwise, false (Windows).
+
+- Required: No
+- Type: bool
+
+### Parameter: `resourceConfig`
+
+Function app resource requirements.
+
+- Required: No
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -5508,6 +5525,14 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `scmSiteAlsoStopped`
+
+Stop SCM (KUDU) site when the app is stopped.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `serverFarmResourceId`
 
 The resource ID of the app service plan to use for the slot.
@@ -5527,6 +5552,13 @@ The site config object.
       alwaysOn: true
   }
   ```
+
+### Parameter: `sshEnabled`
+
+Whether to enable SSH access.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `storageAccountRequired`
 
@@ -5550,6 +5582,13 @@ Azure Resource Manager ID of the Virtual network and subnet to be joined by Regi
 - Required: No
 - Type: string
 
+### Parameter: `workloadProfileName`
+
+Workload profile name for function app to execute on.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
@@ -5567,8 +5606,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Notes

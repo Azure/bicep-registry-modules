@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param (
     [Parameter()]
     [String]
@@ -99,7 +99,13 @@ log "Logging in to Azure with user-assigned managed identity '$($userAssignedMan
 Login-AzAccount -Identity -Subscription $subscriptionId -AccountId $userAssignedManagedIdentityClientId
 
 log 'Getting access token for Azure Stack HCI Arc initialization...'
-$t = Get-AzAccessToken -ResourceUrl 'https://management.azure.com' | Select-Object -ExpandProperty Token
+$tokenResult = Get-AzAccessToken -ResourceUrl 'https://management.azure.com'
+# Handle both old (plain string) and new (SecureString) Az.Accounts token formats
+if ($tokenResult.Token -is [System.Security.SecureString]) {
+    $t = [System.Net.NetworkCredential]::new('', $tokenResult.Token).Password
+} else {
+    $t = $tokenResult.Token
+}
 
 # pre-create AD objects
 log 'Pre-creating AD objects with deployment username '$deploymentUsername'...'
@@ -265,22 +271,39 @@ if (![string]::IsNullOrEmpty($proxyServerEndpoint) -and ![string]::IsNullOrEmpty
     log "Skipping proxy settings because both -proxyServerEndpoint and -proxyBypassString were not passed... (proxyServerEndpoint: '$proxyServerEndpoint', proxyBypassString:'$proxyBypassString')"
 }
 
-## test node internet connection - required for Azure Arc initialization
+## test node internet connection with retry - required for Azure Arc initialization
 $firstVM = Get-VM | Select-Object -First 1
-log "Testing node internet connection on VM '$($firstVM.Name)'..."
-$testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
-    [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing)
+log "Testing node internet connection on VM '$($firstVM.Name)' with retry..."
+$testNodeInternetConnection = $false
+$internetRetryCount = 0
+$internetMaxRetries = 6
+while (!$testNodeInternetConnection -and $internetRetryCount -lt $internetMaxRetries) {
+    try {
+        $testNodeInternetConnection = Invoke-Command -VMName $firstVM.Name -Credential $adminCred {
+            [bool](Invoke-RestMethod ipinfo.io -UseBasicParsing -TimeoutSec 30)
+        } -ErrorAction SilentlyContinue
+    } catch {
+        log "Internet test attempt $($internetRetryCount + 1) failed: $_"
+    }
+    if (!$testNodeInternetConnection) {
+        $internetRetryCount++
+        if ($internetRetryCount -lt $internetMaxRetries) {
+            log "Node '$($firstVM.Name)' internet check failed (attempt $internetRetryCount/$internetMaxRetries). Restarting RRAS NAT and retrying in 30s..."
+            Restart-Service RemoteAccess -Force -ErrorAction SilentlyContinue
+            Start-Sleep -Seconds 30
+        }
+    }
 }
 
 If (!$testNodeInternetConnection) {
-    log "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
-    Write-Error "Node '$($firstVM.name)' does not have internet connection. Check RRAS NAT configuration. Exiting..."
+    log "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
+    Write-Error "Node '$($firstVM.name)' does not have internet connection after $internetMaxRetries retries. Check RRAS NAT configuration. Exiting..."
     Exit 1
 } Else {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
 }
 
-## create jobs for each node to initialize Azure Arc
+## create jobs for each node to initialize Azure Arc using new approach
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
@@ -296,11 +319,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $proxyBypassString = $args[8]
 
     $optionalParameters = @{}
-
     If ($arcGatewayId) {
-        $optionalParameters += @{
-            'arcGatewayId' = $arcGatewayId
-        }
+        $optionalParameters += @{ 'arcGatewayId' = $arcGatewayId }
     }
     If ($proxyServerEndpoint) {
         $optionalParameters += @{
@@ -308,100 +328,24 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             'proxyBypass' = $proxyBypassString
         }
     }
-
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-    If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module Az.Resources
-    Install-Module -Name AzsHCI.ARCinstaller # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
-    Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-
-    #wait for bootstrap service to be reachable
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
-        Start-Sleep -Seconds 30
-    }
-    If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error 'Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting...' -ErrorAction Stop
-    }
-
     try {
-        # Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
+        # Use new bootstrapping approach for newer HCI OS versions
+        # Invoke-AzStackHciArcInitialization is the recommended approach per:
+        # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
-        function Install-ModuleIfMissing {
-            param(
-                [Parameter(Mandatory = $true)]
-                [string]$Name,
-                [Parameter(Mandatory = $false)]
-                [string]$Repository = 'PSGallery',
-                [Parameter(Mandatory = $false)]
-                [switch]$Force,
-                [Parameter(Mandatory = $false)]
-                [switch]$AllowClobber
-            )
-            $module = Get-Module -Name $Name -ListAvailable
-            if (!$module) {
-                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
-            }
-        }
+        Invoke-AzStackHciArcInitialization `
+            -SubscriptionID $subscriptionId `
+            -ResourceGroup $resourceGroupName `
+            -TenantID $tenantId `
+            -Cloud AzureCloud `
+            -AccountID $accountName `
+            -ArmAccessToken $t `
+            -Region $location `
+            @optionalParameters
 
-        wget -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
-
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
-        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
-
-        $machineName = [System.Net.Dns]::GetHostName()
-        $correlationID = New-Guid
-
-        $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
-        & "$azcmagentPath" --version
-        & "$azcmagentPath" connect --resource-group "$resourceGroupName" --resource-name "$machineName" --tenant-id "$tenantId" --location "$location" --subscription-id "$subscriptionId" --cloud 'AzureCloud' --correlation-id "$correlationID" --access-token "$t";
-        if ($LASTEXITCODE -ne 0) {
-            throw 'Arc server connection failed'
-        }
-
-        Write-Output 'PUT edge device resource to install mandatory extensions'
-        $uri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.HybridCompute/machines/$machineName/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
-        $body = @{
-            'kind'       = 'HCI';
-            'properties' = @{};
-        }
-        $headers = @{
-            'Authorization' = "Bearer $t";
-        }
-        Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
-
-        Write-Output 'Waiting for Edge device resource to be ready'
-        Start-Sleep -Seconds 600
-        $waitInterval = 60
-        $maxWaitCount = 15
-        $ready = $false
-        for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
-            $headers = @{
-                'Authorization' = "Bearer $t";
-            }
-            try {
-                $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
-                if ($response.properties.provisioningState -eq 'Succeeded') {
-                    $ready = $true
-                    break
-                }
-            } catch {
-                Write-Output "Failed to get Edge device resource: $_"
-            } finally {
-                Write-Output 'Waiting for Edge device resource to be ready'
-                Start-Sleep -Seconds $waitInterval
-            }
-        }
-
-        if (!$ready) {
-            throw 'Edge device resource is not ready after 30 minutes.'
-        }
+        Write-Output "[$env:COMPUTERNAME] Arc initialization completed successfully"
     } catch {
         Write-Error $_ -ErrorAction Stop
     }
@@ -422,7 +366,6 @@ $arcInitializationJobs | ForEach-Object {
             Exit 1
         } Else {
             log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
-
         }
     }
 }

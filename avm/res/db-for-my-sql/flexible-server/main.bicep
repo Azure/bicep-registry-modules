@@ -93,7 +93,7 @@ param customerManagedKeyGeo customerManagedKeyType?
 @description('Optional. The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning.')
 param highAvailability string = 'ZoneRedundant'
 
-@description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
+@description('Optional. Properties for the maintenance window. If provided, "customWindow" property must exist and set to "Enabled".')
 param maintenanceWindow resourceInput<'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview'>.properties.maintenanceWindow = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
@@ -161,6 +161,8 @@ param storageSizeGB int = 64
 @allowed([
   '5.7'
   '8.0.21'
+  '8.4'
+  '9.3'
 ])
 @description('Optional. MySQL Server version.')
 param version string = '8.0.21'
@@ -398,7 +400,7 @@ resource flexibleServer_roleAssignments 'Microsoft.Authorization/roleAssignments
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: flexibleServer
@@ -413,6 +415,7 @@ module flexibleServer_databases 'database/main.bicep' = [
       flexibleServerName: flexibleServer.name
       collation: database.?collation ?? ''
       charset: database.?charset ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -425,6 +428,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
       flexibleServerName: flexibleServer.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -438,6 +442,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
       tenantId: administrator.?tenantId ?? tenant().tenantId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -450,6 +455,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
       flexibleServerName: flexibleServer.name
       source: configuration.?source
       value: configuration.?value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -459,9 +465,11 @@ module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.
   params: {
     flexibleServerName: flexibleServer.name
     advancedThreatProtection: advancedThreatProtection
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
+#disable-next-line use-recent-api-versions
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

@@ -24,7 +24,7 @@ param sku string
 @description('Optional. Send and receive timeout on forwarding request to the origin.')
 param originResponseTimeoutSeconds int = 60
 
-@description('Optional. Endpoint properties (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties for details).')
+@description('Optional. Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details).')
 param endpoint endpointType?
 
 @description('Optional. Array of secret objects.')
@@ -117,11 +117,13 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
@@ -214,6 +216,7 @@ resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpoint)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     profileName: profile.name
     name: endpoint.?name ?? '${profile.name}-endpoint'
     properties: endpoint!.properties
@@ -226,6 +229,7 @@ module profile_secrets 'secret/main.bicep' = [
   for (secret, index) in (secrets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-Secret-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: secret.name
       profileName: profile.name
       type: secret.type
@@ -244,6 +248,7 @@ module profile_customDomains 'custom-domain/main.bicep' = [
       profile_secrets
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: customDomain.name
       profileName: profile.name
       hostName: customDomain.hostName
@@ -263,8 +268,10 @@ module profile_originGroups 'origin-group/main.bicep' = [
   for (origingroup, index) in (originGroups ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: origingroup.name
       profileName: profile.name
+      authentication: origingroup.?authentication
       loadBalancingSettings: origingroup.loadBalancingSettings
       healthProbeSettings: origingroup.?healthProbeSettings
       sessionAffinityState: origingroup.?sessionAffinityState
@@ -277,7 +284,11 @@ module profile_originGroups 'origin-group/main.bicep' = [
 module profile_ruleSets 'rule-set/main.bicep' = [
   for (ruleSet, index) in (ruleSets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
+    dependsOn: [
+      profile_originGroups
+    ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: ruleSet.name
       profileName: profile.name
       rules: ruleSet.?rules
@@ -294,6 +305,7 @@ module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
       profile_ruleSets
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: afdEndpoint.name
       location: location
       profileName: profile.name
@@ -313,6 +325,7 @@ module profile_securityPolicies 'security-policy/main.bicep' = [
       profile_customDomains
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: securityPolicy.name
       profileName: profile.name
       associations: securityPolicy.associations
@@ -386,11 +399,14 @@ type originGroupType = {
   @description('Required. The name of the origin group.')
   name: string
 
+  @description('Optional. Settings for Origin Authentication.')
+  authentication: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.authentication?
+
   @description('Optional. Health probe settings to the origin that is used to determine the health of the origin.')
-  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.healthProbeSettings?
+  healthProbeSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.healthProbeSettings?
 
   @description('Required. Load balancing settings for a backend pool.')
-  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-04-15'>.properties.loadBalancingSettings
+  loadBalancingSettings: resourceInput<'Microsoft.Cdn/profiles/originGroups@2025-06-01'>.properties.loadBalancingSettings
 
   @description('Optional. Whether to allow session affinity on this host.')
   sessionAffinityState: 'Enabled' | 'Disabled' | null
@@ -422,7 +438,7 @@ type afdEndpointType = {
   routes: routeType[]?
 
   @description('Optional. The tags for the AFD Endpoint.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Cdn/profiles/endpoints@2025-06-01'>.tags?
 
   @description('Optional. The scope of the auto-generated domain name label.')
   autoGeneratedDomainNameLabelScope: 'NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse' | null

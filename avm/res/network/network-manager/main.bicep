@@ -9,26 +9,25 @@ param name string
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType, roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/networkManagers@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/networkManagers@2025-05-01'>.tags?
 
 @maxLength(500)
 @sys.description('Optional. A description of the Network Manager.')
 param description string = ''
 
 @sys.description('Optional. Scope Access (Also known as features). String array containing any of "Connectivity", "SecurityAdmin", or "Routing". The connectivity feature allows you to create network topologies at scale. The security admin feature lets you create high-priority security rules, which take precedence over NSGs. The routing feature allows you to describe your desired routing behavior and orchestrate user-defined routes (UDRs) to create and maintain the desired routing behavior. If none of the features are required, then this parameter does not need to be specified, which then only enables features like "IPAM" and "Virtual Network Verifier".')
-param networkManagerScopeAccesses ('Connectivity' | 'SecurityAdmin' | 'Routing')[]?
+param networkManagerScopeAccesses resourceInput<'Microsoft.Network/networkManagers@2025-05-01'>.properties.networkManagerScopeAccesses?
 
 @sys.description('Required. Scope of Network Manager. Contains a list of management groups or a list of subscriptions. This defines the boundary of network resources that this Network Manager instance can manage. If using Management Groups, ensure that the "Microsoft.Network" resource provider is registered for those Management Groups prior to deployment. Must contain at least one management group or subscription.')
-param networkManagerScopes networkManagerScopeType
+param networkManagerScopes resourceInput<'Microsoft.Network/networkManagers@2025-05-01'>.properties.networkManagerScopes
 
 @sys.description('Conditional. Network Groups and static members to create for the network manager. Required if using "connectivityConfigurations" or "securityAdminConfigurations" parameters. A network group is global container that includes a set of virtual network resources from any region. Then, configurations are applied to target the network group, which applies the configuration to all members of the group. The two types are group memberships are static and dynamic memberships. Static membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks, and is available as a child module, while dynamic membership is defined through Azure policy. See [How Azure Policy works with Network Groups](https://learn.microsoft.com/en-us/azure/virtual-network-manager/concept-azure-policy-integration) for more details.')
 param networkGroups networkGroupType[]?
@@ -108,7 +107,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -141,6 +140,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
       description: connectivityConfiguration.?description
       appliesToGroups: connectivityConfiguration.?appliesToGroups ?? []
       connectivityTopology: connectivityConfiguration.connectivityTopology
+      connectivityCapabilities: connectivityConfiguration.?connectivityCapabilities
       hubs: connectivityConfiguration.?hubs ?? []
       deleteExistingPeering: connectivityConfiguration.?deleteExistingPeering ?? false
       isGlobal: connectivityConfiguration.?isGlobal ?? false
@@ -183,6 +183,7 @@ module networkManager_routingConfigurations 'routing-configuration/main.bicep' =
       name: routingConfiguration.name
       networkManagerName: networkManager.name
       description: routingConfiguration.?description
+      routeTableUsageMode: routingConfiguration.?routeTableUsageMode
       ruleCollections: routingConfiguration.?ruleCollections ?? []
     }
     dependsOn: networkManager_networkGroups
@@ -243,20 +244,10 @@ type networkGroupType = {
   description: string?
 
   @sys.description('Optional. The type of the group member. Subnet member type is used for routing configurations.')
-  memberType: ('Subnet' | 'VirtualNetwork')?
+  memberType: resourceInput<'Microsoft.Network/networkManagers/networkGroups@2025-05-01'>.properties.memberType?
 
   @sys.description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
   staticMembers: staticMemberType[]?
-}
-
-@export()
-@sys.description('The type of a network manager scope.')
-type networkManagerScopeType = {
-  @sys.description('Conditional.  List of fully qualified IDs of management groups to assign to the network manager to manage. Required if `subscriptions` is not provided. Fully qualified ID format: \'/providers/Microsoft.Management/managementGroups/{managementGroupId}\'.')
-  managementGroups: string[]?
-
-  @sys.description('Conditional. List of fully qualified IDs of Subscriptions to assign to the network manager to manage. Required if `managementGroups` is not provided. Fully qualified ID format: \'/subscriptions/{subscriptionId}\'.')
-  subscriptions: string[]?
 }
 
 @export()
@@ -289,7 +280,10 @@ type connectivityConfigurationType = {
   appliesToGroups: appliesToGroupType[]
 
   @sys.description('Required. The connectivity topology to apply the configuration to.')
-  connectivityTopology: ('HubAndSpoke' | 'Mesh')
+  connectivityTopology: resourceInput<'Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01'>.properties.connectivityTopology
+
+  @sys.description('Optional. Collection of additional settings to enhance specific topology behaviors of the connectivity configuration, such as address overlap, private endpoint scale, and peering enforcement.')
+  connectivityCapabilities: resourceInput<'Microsoft.Network/networkManagers/connectivityConfigurations@2025-05-01'>.properties.connectivityCapabilities?
 
   @sys.description('Optional. The hubs to apply the configuration to.')
   hubs: hubType[]?
@@ -301,7 +295,7 @@ type connectivityConfigurationType = {
   isGlobal: bool?
 }
 
-import { applyOnNetworkIntentPolicyBasedServicesType, securityAdminConfigurationRuleCollectionType } from 'security-admin-configuration/main.bicep'
+import { securityAdminConfigurationRuleCollectionType } from 'security-admin-configuration/main.bicep'
 @export()
 @sys.description('The type of a security admin configuration.')
 type securityAdminConfigurationType = {
@@ -312,7 +306,7 @@ type securityAdminConfigurationType = {
   description: string?
 
   @sys.description('Required. Apply on network intent policy based services.')
-  applyOnNetworkIntentPolicyBasedServices: applyOnNetworkIntentPolicyBasedServicesType[]
+  applyOnNetworkIntentPolicyBasedServices: resourceInput<'Microsoft.Network/networkManagers/securityAdminConfigurations@2025-05-01'>.properties.applyOnNetworkIntentPolicyBasedServices
 
   @sys.description('Optional. Rule collections to create for the security admin configuration.')
   ruleCollections: securityAdminConfigurationRuleCollectionType[]?
@@ -327,6 +321,9 @@ type routingConfigurationType = {
 
   @sys.description('Optional. A description of the routing configuration.')
   description: string?
+
+  @sys.description('Optional. Route table usage mode defines which route table will be used by the configuration. Defaults to "ManagedOnly" if not specified.')
+  routeTableUsageMode: resourceInput<'Microsoft.Network/networkManagers/routingConfigurations@2025-05-01'>.properties.routeTableUsageMode?
 
   @sys.description('Optional. Rule collections to create for the routing configuration.')
   ruleCollections: routingConfigurationRuleCollectionType[]?
