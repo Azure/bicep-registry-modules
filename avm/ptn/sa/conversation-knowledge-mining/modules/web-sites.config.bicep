@@ -70,11 +70,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource app 'Microsoft.Web/sites@2024-04-01' existing = {
+resource app 'Microsoft.Web/sites@2024-11-01' existing = {
   name: appName
 }
 
-resource config 'Microsoft.Web/sites/config@2024-04-01' = {
+resource config 'Microsoft.Web/sites/config@2024-11-01' = {
   parent: app
   #disable-next-line BCP225
   name: name
