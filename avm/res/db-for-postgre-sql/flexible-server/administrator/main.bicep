@@ -44,11 +44,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2025-08-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview' existing = {
   name: flexibleServerName
 }
 
-resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2025-06-01-preview' = {
+resource administrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2026-01-01-preview' = {
   name: objectId
   parent: flexibleServer
   properties: {
