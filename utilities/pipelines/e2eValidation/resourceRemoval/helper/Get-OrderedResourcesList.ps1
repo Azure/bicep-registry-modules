@@ -43,7 +43,10 @@ function Get-OrderedResourcesList {
     # Order resources to remove first. Going from back to front of the list to stack in the correct order
     for ($orderIndex = ($RemoveFirstSequence.Count - 1); $orderIndex -ge 0; $orderIndex--) {
         $searchItem = $RemoveFirstSequence[$orderIndex]
+        Write-Verbose ('{0} {1}' -f $orderIndex, $searchItem) -Verbose
+        if ($searchItem -like '*express*') { Write-Verbose 'Here' -Verbose }
         if ($elementsContained = $resourcesToOrder | Where-Object { $_.type -eq $searchItem }) {
+            Write-Verbose ('Found {0}' -f ($resourcesToOrder | Where-Object { $_.type -eq $searchItem })) -Verbose
             $resourcesToOrder = @() + $elementsContained + ($resourcesToOrder | Where-Object { $_.type -ne $searchItem })
         }
     }
@@ -51,6 +54,7 @@ function Get-OrderedResourcesList {
     # Order resources to remove last. Going from front to back of the list to stack in the correct order
     for ($orderIndex = 0; $orderIndex -lt $RemoveLastSequence.Count; $orderIndex++) {
         $searchItem = $RemoveLastSequence[$orderIndex]
+        Write-Verbose ('{0} {1}' -f $orderIndex, $searchItem) -Verbose
         if ($elementsContained = $resourcesToOrder | Where-Object { $_.type -eq $searchItem }) {
             $resourcesToOrder = @() + ($resourcesToOrder | Where-Object { $_.type -ne $searchItem }) + $elementsContained
         }
