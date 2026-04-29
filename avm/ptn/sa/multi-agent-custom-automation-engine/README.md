@@ -760,7 +760,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
 | `br/public:avm/res/insights/data-collection-rule:0.11.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
 | `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
