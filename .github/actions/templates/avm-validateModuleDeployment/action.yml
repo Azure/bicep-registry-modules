@@ -86,28 +86,6 @@ runs:
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
           }
 
-          # skip deployment test for certain modules that are known to cause issues in CI (e.g. due to a very long deployment time that may cause CI to time out), but without failing the whole pipeline
-          $modulePath = "${{ inputs.modulePath }}"
-           $exceptionModulePaths = @(
-            'avm/res/azure-stack-hci/cluster'
-            'avm/res/azure-stack-hci/cluster/deployment-setting'
-            'avm/res/azure-stack-hci/logical-network'
-            'avm/res/azure-stack-hci/marketplace-gallery-image'
-            'avm/res/azure-stack-hci/network-interface'
-            'avm/res/azure-stack-hci/virtual-hard-disk'
-            'avm/res/azure-stack-hci/virtual-machine-instance'
-            'avm/res/hybrid-compute/gateway'
-            'avm/res/hybrid-compute/license'
-            'avm/res/hybrid-compute/machine'
-            'avm/res/hybrid-container-service/provisioned-cluster-instance'
-            'avm/res/kubernetes/connected-cluster'
-            'avm/res/kubernetes-runtime/load-balancer'
-          )
-          if ($exceptionModulePaths.Contains($modulePath)) {
-            Write-Warning -Message "Module path '${{ inputs.modulePath }}' is currently set to be skipped for deployment validation in CI due to known issues. Please check the module's README for more details."
-            Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
-          }
-
     # [Azure login] task(s)
     # ------------------------------
     - name: "Set OIDC temporary exception"
