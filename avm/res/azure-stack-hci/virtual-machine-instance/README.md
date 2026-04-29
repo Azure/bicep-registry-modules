@@ -1,6 +1,6 @@
 # Azure Stack HCI Virtual Machine Instance `[Microsoft.AzureStackHCI/virtualMachineInstances]`
 
-This module deploys an Azure Stack HCI virtual machine.
+This module deploys an Azure Stack HCI Virtual Machine Instance.
 
 You can reference the module as follows:
 ```bicep
