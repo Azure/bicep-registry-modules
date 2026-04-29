@@ -16,10 +16,10 @@ param encryptionAtHost bool = false
 @description('Optional. Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set.')
 param securityType resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.securityProfile.securityType?
 
-@description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.')
+@description('Optional. Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
 param secureBootEnabled bool = false
 
-@description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.')
+@description('Optional. Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.')
 param vTpmEnabled bool = false
 
 @description('Conditional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.')
@@ -553,7 +553,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     securityProfile: {
       ...(encryptionAtHost ? { encryptionAtHost: encryptionAtHost } : {}) // Using shallow merge as even providing the property with `false` requires the feature to be registered
       securityType: securityType
-      uefiSettings: securityType == 'TrustedLaunch'
+      uefiSettings: securityType == 'TrustedLaunch' || securityType == 'ConfidentialVM'
         ? {
             secureBootEnabled: secureBootEnabled
             vTpmEnabled: vTpmEnabled
@@ -585,6 +585,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               }
             : null
           id: osDisk.managedDisk.?resourceId
+          securityProfile: osDisk.managedDisk.?securityProfile != null
+            ? {
+                securityEncryptionType: osDisk.managedDisk.securityProfile!.securityEncryptionType
+                diskEncryptionSet: !empty(osDisk.managedDisk.securityProfile!.?diskEncryptionSetResourceId)
+                  ? {
+                      id: osDisk.managedDisk.securityProfile!.?diskEncryptionSetResourceId
+                    }
+                  : null
+              }
+            : null
         }
       }
       dataDisks: [
@@ -1219,6 +1229,15 @@ type osDiskType = {
 
     @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
     resourceId: string?
+
+    @description('Optional. Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs.')
+    securityProfile: {
+      @description('Required. Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs.')
+      securityEncryptionType: 'DiskWithVMGuestState' | 'NonPersistedTPM' | 'VMGuestStateOnly'
+
+      @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob.')
+      diskEncryptionSetResourceId: string?
+    }?
   }
 }
 
