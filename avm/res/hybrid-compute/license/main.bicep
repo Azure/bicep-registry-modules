@@ -57,7 +57,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource license 'Microsoft.HybridCompute/licenses@2025-06-01' = {
+resource license 'Microsoft.HybridCompute/licenses@2025-01-13' = {
   name: name
   location: location
   properties: {
