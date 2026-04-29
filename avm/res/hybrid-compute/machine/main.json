@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14676171389511955942"
+      "version": "0.40.2.10011",
+      "templateHash": "4436774511606394742"
     },
     "name": "Hybrid Compute Machines",
     "description": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process."
@@ -236,7 +236,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.HybridCompute/machines@2025-06-01#properties/tags"
+          "source": "Microsoft.HybridCompute/machines@2025-01-13#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -299,7 +299,7 @@
     },
     "machine": {
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2025-01-13",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": {
@@ -397,14 +397,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('machine', '2025-06-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('machine', '2025-01-13', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('machine', '2025-06-01', 'full').location]"
+      "value": "[reference('machine', '2025-01-13', 'full').location]"
     }
   }
 }

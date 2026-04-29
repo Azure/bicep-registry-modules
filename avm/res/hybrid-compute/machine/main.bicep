@@ -64,7 +64,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.HybridCompute/machines@2025-06-01'>.tags?
+param tags resourceInput<'Microsoft.HybridCompute/machines@2025-01-13'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -148,7 +148,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2025-06-01' = {
+resource machine 'Microsoft.HybridCompute/machines@2025-01-13' = {
   name: name
   location: location
   identity: {
