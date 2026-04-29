@@ -1,10 +1,5 @@
 # SQL Managed Instances `[Microsoft.Sql/managedInstances]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a SQL Managed Instance.
 
 You can reference the module as follows:
@@ -32,6 +27,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Sql/managedInstances` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances)</li></ul> |
+| `Microsoft.Sql/managedInstances/administrators` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/administrators)</li></ul> |
+| `Microsoft.Sql/managedInstances/azureADOnlyAuthentications` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_azureadonlyauthentications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/azureADOnlyAuthentications)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies)</li></ul> |
 | `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupShortTermRetentionPolicies)</li></ul> |
@@ -48,12 +45,131 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/managed-instance:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [With vulnerability assessment](#example-3-with-vulnerability-assessment)
-- [WAF-aligned](#example-4-waf-aligned)
+- [With Azure AD-only authentication](#example-1-with-azure-ad-only-authentication)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [With vulnerability assessment](#example-4-with-vulnerability-assessment)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _With Azure AD-only authentication_
+
+This instance deploys the module with an Azure AD administrator and Azure AD-only authentication enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/aad-auth]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlmiaad'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    aadAdministrator: {
+      login: '<login>'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    authenticationMetadata: 'AzureAD'
+    azureADOnlyAuthentication: true
+    managedIdentities: {
+      systemAssigned: true
+    }
+    servicePrincipal: 'SystemAssigned'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlmiaad"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "aadAdministrator": {
+      "value": {
+        "login": "<login>",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "authenticationMetadata": {
+      "value": "AzureAD"
+    },
+    "azureADOnlyAuthentication": {
+      "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "servicePrincipal": {
+      "value": "SystemAssigned"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param name = 'sqlmiaad'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param aadAdministrator = {
+  login: '<login>'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param authenticationMetadata = 'AzureAD'
+param azureADOnlyAuthentication = true
+param managedIdentities = {
+  systemAssigned: true
+}
+param servicePrincipal = 'SystemAssigned'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -128,7 +244,7 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -146,8 +262,14 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     name: 'sqlmimax'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    aadAdministrator: {
+      login: '<login>'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    authenticationMetadata: 'AzureAD'
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {
@@ -209,6 +331,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    pricingModel: 'Regular'
     primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     proxyOverride: 'Proxy'
     publicDataEndpointEnabled: false
@@ -290,11 +413,21 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
+    "aadAdministrator": {
+      "value": {
+        "login": "<login>",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
     "administratorLogin": {
       "value": "adminUserName"
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "authenticationMetadata": {
+      "value": "AzureAD"
     },
     "collation": {
       "value": "SQL_Latin1_General_CP1_CI_AS"
@@ -380,6 +513,9 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "pricingModel": {
+      "value": "Regular"
     },
     "primaryUserAssignedIdentityResourceId": {
       "value": "<primaryUserAssignedIdentityResourceId>"
@@ -484,8 +620,14 @@ using 'br/public:avm/res/sql/managed-instance:<version>'
 param name = 'sqlmimax'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
+param aadAdministrator = {
+  login: '<login>'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param authenticationMetadata = 'AzureAD'
 param collation = 'SQL_Latin1_General_CP1_CI_AS'
 param databases = [
   {
@@ -547,6 +689,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param pricingModel = 'Regular'
 param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
@@ -611,7 +754,7 @@ param vulnerabilityAssessment = {
 </details>
 <p>
 
-### Example 3: _With vulnerability assessment_
+### Example 4: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -779,7 +922,7 @@ param vulnerabilityAssessment = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1177,6 +1320,9 @@ param vulnerabilityAssessment = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aadAdministrator`](#parameter-aadadministrator) | object | The Azure AD administrator for post-creation management. To configure Azure AD-only authentication, use the azureADOnlyAuthentication parameter. |
+| [`authenticationMetadata`](#parameter-authenticationmetadata) | string | The managed instance authentication metadata lookup mode. |
+| [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Whether Azure Active Directory-only authentication is enabled. Requires an aadAdministrator to be set. |
 | [`collation`](#parameter-collation) | string | Collation of the managed instance. |
 | [`databases`](#parameter-databases) | array | Databases to create in this server. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -1193,6 +1339,7 @@ param vulnerabilityAssessment = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
+| [`pricingModel`](#parameter-pricingmodel) | string | Pricing model of the managed instance. |
 | [`proxyOverride`](#parameter-proxyoverride) | string | Connection type used for connecting to the instance. |
 | [`publicDataEndpointEnabled`](#parameter-publicdataendpointenabled) | bool | Whether or not the public data endpoint is enabled. |
 | [`requestedBackupStorageRedundancy`](#parameter-requestedbackupstorageredundancy) | string | The storage account type used to store backups for this database. |
@@ -1203,6 +1350,7 @@ param vulnerabilityAssessment = {
 | [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
 | [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 | [`sourceManagedInstanceResourceId`](#parameter-sourcemanagedinstanceresourceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
+| [`storageIOps`](#parameter-storageiops) | int | Storage IOps. Minimum value: 300. Maximum value: 80000. Increments of 1 IOps allowed only. Maximum value depends on the selected hardware family and number of vCores. |
 | [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB. Increments of 32 GB allowed only. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timezoneId`](#parameter-timezoneid) | string | ID of the timezone. Allowed values are timezones supported by Windows. |
@@ -1309,6 +1457,69 @@ The resource ID of a user assigned identity to be used by default. Required if `
 
 - Required: No
 - Type: string
+
+### Parameter: `aadAdministrator`
+
+The Azure AD administrator for post-creation management. To configure Azure AD-only authentication, use the azureADOnlyAuthentication parameter.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`login`](#parameter-aadadministratorlogin) | string | Login name of the managed instance Azure AD administrator. |
+| [`sid`](#parameter-aadadministratorsid) | string | SID (object ID) of the managed instance Azure AD administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-aadadministratortenantid) | string | Tenant ID of the managed instance Azure AD administrator. |
+
+### Parameter: `aadAdministrator.login`
+
+Login name of the managed instance Azure AD administrator.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aadAdministrator.sid`
+
+SID (object ID) of the managed instance Azure AD administrator.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aadAdministrator.tenantId`
+
+Tenant ID of the managed instance Azure AD administrator.
+
+- Required: No
+- Type: string
+
+### Parameter: `authenticationMetadata`
+
+The managed instance authentication metadata lookup mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureAD'
+    'Paired'
+    'Windows'
+  ]
+  ```
+
+### Parameter: `azureADOnlyAuthentication`
+
+Whether Azure Active Directory-only authentication is enabled. Requires an aadAdministrator to be set.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `collation`
 
@@ -2123,6 +2334,20 @@ Minimal TLS version allowed.
   ]
   ```
 
+### Parameter: `pricingModel`
+
+Pricing model of the managed instance.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Freemium'
+    'Regular'
+  ]
+  ```
+
 ### Parameter: `proxyOverride`
 
 Connection type used for connecting to the instance.
@@ -2414,6 +2639,15 @@ The resource identifier of the source managed instance associated with create op
 
 - Required: No
 - Type: string
+
+### Parameter: `storageIOps`
+
+Storage IOps. Minimum value: 300. Maximum value: 80000. Increments of 1 IOps allowed only. Maximum value depends on the selected hardware family and number of vCores.
+
+- Required: No
+- Type: int
+- MinValue: 300
+- MaxValue: 80000
 
 ### Parameter: `storageSizeInGB`
 

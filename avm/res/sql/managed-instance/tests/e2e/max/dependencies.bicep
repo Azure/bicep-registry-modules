@@ -60,7 +60,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
   ]
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
@@ -239,7 +239,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2025-05-01' = {
   name: routeTableName
   location: location
   properties: {
@@ -347,7 +347,7 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -381,7 +381,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -399,7 +399,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2023-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
@@ -437,3 +437,6 @@ output keyVaultKeyName string = keyVault::key.name
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVault.name
+
+@description('The name of the created Managed Identity.')
+output managedIdentityName string = managedIdentity.name

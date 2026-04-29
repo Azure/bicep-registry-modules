@@ -202,6 +202,13 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      authenticationMetadata: 'AzureAD'
+      pricingModel: 'Regular'
+      aadAdministrator: {
+        login: nestedDependencies.outputs.managedIdentityName
+        sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        tenantId: subscription().tenantId
+      }
     }
   }
 ]
