@@ -19,6 +19,12 @@ param ipConfigurations ipConfigurationType[]
 @description('Optional. DNS servers array for NIC. These are only applied during NIC creation.')
 param dnsServers string[]?
 
+@description('Optional. The MAC address of the network interface.')
+param macAddress string?
+
+@description('Optional. The resource ID of the network security group to associate with the network interface.')
+param networkSecurityGroupResourceId string?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -61,7 +67,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.azurestackhci-networkinterface.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -79,7 +85,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource networkInterface 'Microsoft.AzureStackHCI/networkInterfaces@2024-01-01' = {
+resource networkInterface 'Microsoft.AzureStackHCI/networkInterfaces@2025-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -90,6 +96,8 @@ resource networkInterface 'Microsoft.AzureStackHCI/networkInterfaces@2024-01-01'
   properties: {
     ipConfigurations: ipConfigurations
     dnsSettings: (!empty(dnsServers)) ? { dnsServers: dnsServers } : null
+    macAddress: macAddress
+    networkSecurityGroup: !empty(networkSecurityGroupResourceId) ? { id: networkSecurityGroupResourceId } : null
   }
 }
 
