@@ -329,6 +329,7 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
     storageType: backupConfig.?storageType
     storageTypeState: backupConfig.?storageTypeState
     isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable
+    softDeleteRetentionPeriodInDays: backupConfig.?softDeleteRetentionPeriodInDays
   }
 }
 
@@ -563,7 +564,7 @@ type backupConfigType = {
   resourceGuardOperationRequests: object[]?
 
   @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
-  softDeleteFeatureState: ('Disabled' | 'Enabled')?
+  softDeleteFeatureState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')?
 
   @description('Optional. Storage type.')
   storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
@@ -576,6 +577,9 @@ type backupConfigType = {
 
   @description('Optional. Is soft delete feature state editable.')
   isSoftDeleteFeatureStateEditable: bool?
+
+  @description('Optional. Soft delete retention period in days.')
+  softDeleteRetentionPeriodInDays: int?
 }
 
 @export()

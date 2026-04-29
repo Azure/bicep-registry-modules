@@ -69,8 +69,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       backupConfig: {
-        enhancedSecurityState: 'Disabled'
-        softDeleteFeatureState: 'Disabled'
+        enhancedSecurityState: 'Enabled'
+        softDeleteFeatureState: 'AlwaysON'
       }
       backupPolicies: [
         {
