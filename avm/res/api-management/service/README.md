@@ -1,10 +1,5 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 You can reference the module as follows:
@@ -475,6 +470,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    hostnameConfigurations: '<hostnameConfigurations>'
     identityProviders: [
       {
         allowedTenants: [
@@ -1057,6 +1053,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "hostnameConfigurations": {
+      "value": "<hostnameConfigurations>"
     },
     "identityProviders": {
       "value": [
@@ -1653,6 +1652,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param hostnameConfigurations = '<hostnameConfigurations>'
 param identityProviders = [
   {
     allowedTenants: [
@@ -3690,7 +3690,7 @@ param virtualNetworkType = 'None'
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
 | [`enableDeveloperPortal`](#parameter-enabledeveloperportal) | bool | Enable the Developer Portal. The developer portal is not supported on the Consumption SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. |
+| [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026). |
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -5120,7 +5120,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `hostnameConfigurations`
 
-Custom hostname configuration of the API Management service.
+Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026).
 
 - Required: No
 - Type: array
