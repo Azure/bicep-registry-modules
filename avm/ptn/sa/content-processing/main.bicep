@@ -202,7 +202,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
     addressPrefixes: ['10.0.0.0/8']
     location: location
     tags: tags
-    logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
+    logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
     resourceSuffix: solutionSuffix
     enableTelemetry: enableTelemetry
   }
@@ -221,7 +221,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
       ? [
           {
             name: 'bastionDiagnostics'
-            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
             logCategoriesAndGroups: [
               {
                 categoryGroup: 'allLogs'
@@ -288,14 +288,14 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
         tags: tags
         deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-          ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
+          ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
           : null
         ipConfigurations: [
           {
             name: '${jumpboxVmName}-nic01-ipconfig01'
             subnetResourceId: virtualNetwork!.outputs.adminSubnetResourceId
             diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-              ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
+              ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
               : null
           }
         ]
@@ -330,7 +330,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
           dataCollectionRuleAssociations: [
             {
               dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
-              name: 'send-${logAnalyticsWorkspace!.outputs.name}'
+              name: 'send-${logAnalyticsWorkspace.outputs.name}'
             }
           ]
           enabled: true
@@ -380,7 +380,7 @@ resource maintenanceConfigurationRes 'Microsoft.Maintenance/maintenanceConfigura
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-var dataCollectionRulesLocation = logAnalyticsWorkspace!.outputs.location
+var dataCollectionRulesLocation = logAnalyticsWorkspace.outputs.location
 module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.8.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
@@ -463,7 +463,7 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
       destinations: {
         logAnalytics: [
           {
-            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
+            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
             name: 'la-${dataCollectionRulesResourceName}'
           }
         ]
@@ -544,7 +544,10 @@ resource privateDnsZoneVnetLinks 'Microsoft.Network/privateDnsZones/virtualNetwo
 ]
 
 // ========== Log Analytics & Application Insights ========== //
-module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enableMonitoring) {
+// Note: Always deployed (not conditional on enableMonitoring) so that the secure
+// `primarySharedKey` output can be accessed directly by the Container App Environment.
+// Bicep does not allow accessing secure outputs of conditional modules via `!`.
+module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = {
   name: take('module.log-analytics-workspace.${solutionSuffix}', 64)
   params: {
     name: 'log-${solutionSuffix}'
@@ -568,7 +571,7 @@ resource applicationInsightsRes 'Microsoft.Insights/components@2020-02-02' = if 
     DisableIpMasking: false
     Flow_Type: 'Bluefield'
     RetentionInDays: 365
-    WorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
+    WorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
   }
 }
 
@@ -736,7 +739,7 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
       location: azureAiServiceLocation
     }
     customSubDomainName: 'aif-${solutionSuffix}'
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
@@ -938,11 +941,6 @@ resource contentUnderstandingPrivateEndpointDnsGroup 'Microsoft.Network/privateE
   }
 }
 
-// Existing resource reference for Log Analytics Workspace to access listKeys() securely
-resource logAnalyticsWorkspaceRef 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (enableMonitoring) {
-  name: 'log-${solutionSuffix}'
-}
-
 // ========== Container App Environment ========== //
 module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
@@ -958,9 +956,8 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
       ? {
           destination: 'log-analytics'
           logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
-            #disable-next-line use-recent-api-versions // Using listKeys with existing resource reference for secure output
-            sharedKey: logAnalyticsWorkspaceRef!.listKeys().primarySharedKey
+            customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+            sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
           }
         }
       : null
@@ -982,9 +979,6 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
       ? virtualNetwork!.outputs.containersSubnetResourceId // Full private networking - use full VNet subnet
       : (enableRedundancy ? '${minimalContainersVnet!.id}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
   }
-  dependsOn: [
-    logAnalyticsWorkspace
-  ]
 }
 
 // //=========== Managed Identity for Container Registry ========== //
@@ -1392,7 +1386,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
     diagnosticSettings: enableMonitoring
       ? [
           {
-            workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
+            workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
             logCategoriesAndGroups: [
               {
                 categoryGroup: 'allLogs'

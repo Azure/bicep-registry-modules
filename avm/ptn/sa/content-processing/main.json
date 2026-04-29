@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "5984280119694979460"
+      "templateHash": "11669018095409656369"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -487,9 +487,9 @@
       "dependsOn": [
         "cognitiveServicePrivateEndpointRes",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').openAI)]"
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]"
       ]
     },
     "contentUnderstandingPrivateEndpointRes": {
@@ -551,16 +551,9 @@
       "dependsOn": [
         "contentUnderstandingPrivateEndpointRes",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').cognitiveServices)]"
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]"
       ]
-    },
-    "logAnalyticsWorkspaceRef": {
-      "condition": "[parameters('enableMonitoring')]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2025-02-01",
-      "name": "[format('log-{0}', variables('solutionSuffix'))]"
     },
     "containerRegistryReaderIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
@@ -15270,7 +15263,6 @@
       ]
     },
     "logAnalyticsWorkspace": {
-      "condition": "[parameters('enableMonitoring')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.log-analytics-workspace.{0}', variables('solutionSuffix')), 64)]",
@@ -29930,8 +29922,8 @@
         "avmContainerApp_API",
         "avmContainerApp_Workflow",
         "managedIdentity",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "virtualNetwork"
       ]
     },
@@ -36020,7 +36012,7 @@
               "systemAssigned": true
             }
           },
-          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listKeys('logAnalyticsWorkspaceRef', '2025-02-01').primarySharedKey))), createObject('value', null()))]",
+          "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').outputs.logAnalyticsWorkspaceId.value, 'sharedKey', listOutputsWithSecureValues('logAnalyticsWorkspace', '2025-04-01').primarySharedKey))), createObject('value', null()))]",
           "workloadProfiles": {
             "value": [
               {
