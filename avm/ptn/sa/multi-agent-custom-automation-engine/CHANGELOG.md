@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Updated AVM module version and Microsoft API versions
 - Enhanced main.bicep with improved resource configurations
+- Removed unused Key vault resource and it's related DNS resource
 
 ### Breaking Changes
 

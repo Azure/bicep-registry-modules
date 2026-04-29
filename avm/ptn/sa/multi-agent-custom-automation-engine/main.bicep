@@ -640,7 +640,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
@@ -648,7 +647,6 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink.blob.core.windows.net'
   'privatelink.search.windows.net'
-  keyVaultPrivateDNSZone
 ]
 
 // DNS Zone Index Constants
@@ -659,7 +657,6 @@ var dnsZoneIndex = {
   cosmosDb: 3
   blob: 4
   search: 5
-  keyVault: 6
 }
 
 @batchSize(5)
@@ -1570,55 +1567,6 @@ module aiSearchFoundryConnection 'modules/aifp-connections.bicep' = {
     searchServiceResourceId: searchService.id
     searchServiceLocation: searchService.location
     searchServiceName: searchService.name
-  }
-}
-
-// ========== KeyVault ========== //
-var keyVaultName = 'kv-${solutionSuffix}'
-module keyvault 'br/public:avm/res/key-vault/vault:0.13.3' = {
-  name: take('avm.res.key-vault.vault.${keyVaultName}', 64)
-  params: {
-    name: keyVaultName
-    location: location
-    tags: tags
-    sku: enableScalability ? 'premium' : 'standard'
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    networkAcls: {
-      defaultAction: 'Allow'
-    }
-    enableVaultForDeployment: true
-    enableVaultForDiskEncryption: true
-    enableVaultForTemplateDeployment: true
-    enableRbacAuthorization: true
-    enableSoftDelete: true
-    softDeleteRetentionInDays: 7
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : []
-    // WAF aligned configuration for Private Networking
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            name: 'pep-${keyVaultName}'
-            customNetworkInterfaceName: 'nic-${keyVaultName}'
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.keyVault]!.outputs.resourceId }
-              ]
-            }
-            service: 'vault'
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-          }
-        ]
-      : []
-    // WAF aligned configuration for Role-based Access Control
-    roleAssignments: [
-      {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-      }
-    ]
-    secrets: []
-    enableTelemetry: enableTelemetry
   }
 }
 
