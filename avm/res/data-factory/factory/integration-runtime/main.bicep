@@ -33,6 +33,7 @@ resource integrationRuntime 'Microsoft.DataFactory/factories/integrationRuntimes
   properties: {
     #disable-next-line BCP225 // Not a key-word
     type: type
+    ...(!empty(typeProperties) ? { typeProperties: typeProperties } : {})
     ...(type == 'Managed'
       ? {
           description: integrationRuntimeCustomDescription
@@ -40,7 +41,6 @@ resource integrationRuntime 'Microsoft.DataFactory/factories/integrationRuntimes
             referenceName: managedVirtualNetworkName
             type: 'ManagedVirtualNetworkReference'
           }
-          typeProperties: typeProperties
         }
       : {})
   }

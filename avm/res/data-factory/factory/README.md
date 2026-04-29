@@ -1357,6 +1357,7 @@ An array of objects for the configuration of an Integration Runtime.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`integrationRuntimeCustomDescription`](#parameter-integrationruntimesintegrationruntimecustomdescription) | string | Specify custom description for the integration runtime. |
+| [`linkedResourceRoleDefinitionId`](#parameter-integrationruntimeslinkedresourceroledefinitionid) | string | The role definition ID (GUID or full resource ID) to assign to the Data Factory's system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role. |
 | [`managedVirtualNetworkName`](#parameter-integrationruntimesmanagedvirtualnetworkname) | string | Specify managed vritual network name for the integration runtime to link to. |
 | [`typeProperties`](#parameter-integrationruntimestypeproperties) | object | Integration Runtime type properties. Required if type is "Managed". |
 
@@ -1384,6 +1385,13 @@ Specify the type of the integration runtime.
 ### Parameter: `integrationRuntimes.integrationRuntimeCustomDescription`
 
 Specify custom description for the integration runtime.
+
+- Required: No
+- Type: string
+
+### Parameter: `integrationRuntimes.linkedResourceRoleDefinitionId`
+
+The role definition ID (GUID or full resource ID) to assign to the Data Factory's system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.
 
 - Required: No
 - Type: string
@@ -2187,6 +2195,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
