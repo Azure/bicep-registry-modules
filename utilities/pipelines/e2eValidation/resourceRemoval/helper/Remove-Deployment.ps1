@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Invoke the removal of a deployed module
 
@@ -108,6 +108,8 @@ function Remove-Deployment {
 
         [array] $deployedTargetResources = $deployedTargetResources | Select-Object -Unique
 
+        Write-Verbose ("1: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
+
         Write-Verbose ('Total number of deployment target resources after fetching deployments [{0}]' -f $deployedTargetResources.Count) -Verbose
 
         if (-not $deployedTargetResources) {
@@ -119,11 +121,13 @@ function Remove-Deployment {
         # ========================
         $rawTargetResourceIdsToRemove = $deployedTargetResources | Sort-Object -Culture 'en-US' -Property { $_.Split('/').Count } -Descending | Select-Object -Unique
         Write-Verbose ('Total number of deployment target resources after pre-filtering (duplicates) & ordering items [{0}]' -f $rawTargetResourceIdsToRemove.Count) -Verbose
+        Write-Verbose ("2: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
 
         # Format items
         # ============
         [array] $resourcesToRemove = Get-ResourceIdsAsFormattedObjectList -ResourceIds $rawTargetResourceIdsToRemove
         Write-Verbose ('Total number of deployment target resources after formatting items [{0}]' -f $resourcesToRemove.Count) -Verbose
+        Write-Verbose ("3: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
 
         # Filter resources
         # ================
@@ -149,9 +153,11 @@ function Remove-Deployment {
             Write-Verbose 'Resources excluded from removal:' -Verbose
             $resourcesToIgnore | ForEach-Object { Write-Verbose ('- Ignore [{0}]' -f $_.resourceId) -Verbose }
         }
+        Write-Verbose ("4: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
 
         [array] $resourcesToRemove = $resourcesToRemove | Where-Object { $_.resourceId -notin $resourceIdsToIgnore -and $_.resourceId -notmatch $ignorePrefix_regex }
         Write-Verbose ('Total number of deployments after filtering all dependency resources [{0}]' -f $resourcesToRemove.Count) -Verbose
+        Write-Verbose ("5: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
 
         # Order resources
         # ===============
@@ -162,6 +168,7 @@ function Remove-Deployment {
         }
         [array] $resourcesToRemove = Get-OrderedResourcesList @orderListInputObject
         Write-Verbose ('Total number of deployments after final ordering of resources [{0}]' -f $resourcesToRemove.Count) -Verbose
+        Write-Verbose ("6: List`n{0}" -f ($deployedTargetResources | Format-List | Out-String)) -Verbose
 
         # Remove resources
         # ================
