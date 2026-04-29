@@ -421,7 +421,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.10.0' = if (enablePrivateNetworking && enableMonitoring) {
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
     name: dataCollectionRulesResourceName
@@ -549,7 +549,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
 var virtualMachineSize = 'Standard_D2s_v4'
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
@@ -714,7 +714,7 @@ var aiFoundryAiServicesReasoningModelDeployment = {
   raiPolicyName: 'Microsoft.Default'
 }
 var aiFoundryAiProjectDescription = 'AI Foundry Project'
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -943,7 +943,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionSuffix}'
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.2' = {
   name: take('avm.res.app.managed-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
@@ -987,7 +987,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.1
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionSuffix}'
-module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -1195,7 +1195,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.21.0' = {
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 // PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppMcpResourceName = 'ca-mcp-${solutionSuffix}'
-module containerAppMcp 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerAppMcp 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.${containerAppMcpResourceName}', 64)
   params: {
     name: containerAppMcpResourceName
@@ -1345,8 +1345,14 @@ module webSite 'modules/web-sites.bicep' = {
     ]
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     // WAF aligned configuration for Private Networking
-    vnetRouteAllEnabled: enablePrivateNetworking ? true : false
-    vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    // vnetRouteAllEnabled: enablePrivateNetworking ? true : false
+    // vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    outboundVnetRouting: enablePrivateNetworking
+      ? {
+          applicationTraffic: true
+          imagePullTraffic: true
+        }
+      : null
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
     publicNetworkAccess: 'Enabled' // Always enabling the public network access for Web App
     e2eEncryptionEnabled: true

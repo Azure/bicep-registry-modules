@@ -6,6 +6,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Updated AVM module version and Microsoft API versions
+- Enhanced main.bicep with improved resource configurations
+
+### Breaking Changes
+
+- None
+
+## 0.2.2
+
+### Changes
+
 - Updated MACAE v4 to latest agent-framework changes
 - UPdated the Foundry SDK V1 to Foundry SDK V2
 - Enhanced main.bicep with improved resource configurations
