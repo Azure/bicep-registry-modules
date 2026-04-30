@@ -165,17 +165,26 @@ function Remove-Deployment {
 
         # Remove resources
         # ================
+        $resourcesProcessedCount = 0
         if ($resourcesToRemove.Count -gt 0) {
             if ($PSCmdlet.ShouldProcess(('[{0}] resources' -f (($resourcesToRemove -is [array]) ? $resourcesToRemove.Count : 1)), 'Remove')) {
                 Remove-ResourceList -ResourcesToRemove $resourcesToRemove
+                $resourcesProcessedCount = $resourcesToRemove.Count
             }
         } else {
             Write-Verbose 'Found [0] resources to remove'
         }
 
-        # In case any deployment was not resolved as planned we finally want to throw an exception to make this visible in the pipeline
+        # When some deployment names could not be resolved (e.g. ARM evicted the deployment-history record),
+        # only fail the job when *no* resources were resolved & processed at all. If we did successfully clean
+        # up the resolvable deployments, an unresolvable historical name does not represent leaked Azure
+        # state and should not turn a green cleanup into a red job. Surface it as a warning instead.
         if ($resolveResult.resolveError) {
-            throw ('The following error was thrown while resolving the original deployment names: [{0}]' -f $resolveResult.resolveError)
+            if ($resourcesProcessedCount -gt 0) {
+                Write-Warning ('Some deployment names could not be resolved, but [{0}] resources from other deployments were processed successfully. Unresolvable names: [{1}]' -f $resourcesProcessedCount, $resolveResult.resolveError)
+            } else {
+                throw ('The following error was thrown while resolving the original deployment names: [{0}]' -f $resolveResult.resolveError)
+            }
         }
     }
 

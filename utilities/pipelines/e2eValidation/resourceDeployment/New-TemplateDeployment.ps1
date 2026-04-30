@@ -225,8 +225,9 @@ function New-TemplateDeploymentInner {
 
         do {
             # Generate a valid deployment name. Must match ^[-\w\._\(\)]+$
+            # Note: 'HHmmss' (lowercase 'mm' = minutes); previously used 'HHMMss' which is .NET's *month* specifier and produced misleading timestamps.
             do {
-                $deploymentName = ('{0}-t{1}-{2}' -f $deploymentNamePrefix, $retryCount, (Get-Date -Format 'yyyyMMddTHHMMssffffZ'))[0..63] -join ''
+                $deploymentName = ('{0}-t{1}-{2}' -f $deploymentNamePrefix, $retryCount, (Get-Date -Format 'yyyyMMddTHHmmssffffZ'))[0..63] -join ''
             } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
 
             Write-Verbose "Deploying with deployment name [$deploymentName]" -Verbose
@@ -316,9 +317,20 @@ function New-TemplateDeploymentInner {
                     }
                     $Stoploop = $true
                 } else {
-                    Write-Verbose "Resource deployment Failed.. ($retryCount/$RetryLimit) Retrying in 5 Seconds.. `n"
-                    Write-Verbose ($PSitem.Exception.Message | Out-String) -Verbose
-                    Start-Sleep -Seconds 5
+                    # Error-aware retry:
+                    # - 'RequestConflict' / 'provisioning state is not terminal' indicates the RP is still settling the previous PUT. These RPs (Kusto, Databricks, Cognitive Services with CMK, ...) regularly need >90s. Wait considerably longer before retrying.
+                    # - All other failures use exponential backoff (30s -> 90s -> 240s) instead of a fixed 5s, which is too short for almost any transient-ARM/RP failure.
+                    $exceptionText = ($PSitem.Exception.Message | Out-String)
+                    $isProvisioningStateConflict = $exceptionText -match 'RequestConflict' -or $exceptionText -match 'provisioning state is not terminal'
+                    if ($isProvisioningStateConflict) {
+                        $retrySeconds = 180
+                        Write-Verbose "Resource deployment failed with a non-terminal provisioning state ($retryCount/$RetryLimit). Waiting [$retrySeconds]s for the resource provider to settle before retrying.. `n" -Verbose
+                    } else {
+                        $retrySeconds = @(30, 90, 240)[[Math]::Min($retryCount - 1, 2)]
+                        Write-Verbose "Resource deployment failed ($retryCount/$RetryLimit). Retrying in [$retrySeconds] seconds (exponential backoff).. `n" -Verbose
+                    }
+                    Write-Verbose $exceptionText -Verbose
+                    Start-Sleep -Seconds $retrySeconds
                     $retryCount++
                 }
             }

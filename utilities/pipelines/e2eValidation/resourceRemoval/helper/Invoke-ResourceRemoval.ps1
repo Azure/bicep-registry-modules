@@ -91,6 +91,46 @@ function Invoke-ResourceRemoval {
             }
             break
         }
+        'Microsoft.Management/managementGroups' {
+            $managementGroupId = Split-Path $ResourceId -Leaf
+
+            # Management groups can only be deleted when empty (no child subscriptions and no child management groups).
+            # The generic Remove-AzResource path returns BadRequest 'Cannot delete non-empty management group' and the
+            # outer retry loop just hits the same error 3 times. Empty the group first, then remove it.
+            $expandedGroup = Get-AzManagementGroup -GroupName $managementGroupId -Expand -Recurse -ErrorAction 'SilentlyContinue'
+            if (-not $expandedGroup) {
+                Write-Verbose ('[/] Management group [{0}] not found (already removed). Skipping.' -f $managementGroupId) -Verbose
+                break
+            }
+
+            # 1. Move any direct child subscriptions to the AVM decom group, mirroring the Microsoft.Subscription/aliases handler.
+            $childSubs = $expandedGroup.Children | Where-Object { $_.Type -eq '/subscriptions' }
+            foreach ($childSub in $childSubs) {
+                $childSubId = $childSub.Name
+                if (-not (Get-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $childSubId -ErrorAction 'SilentlyContinue')) {
+                    Write-Verbose ('[*] Moving child subscription [{0}] from management group [{1}] to [bicep-lz-vending-automation-decom]' -f $childSubId, $managementGroupId) -Verbose
+                    if ($PSCmdlet.ShouldProcess("Subscription [$childSubId] from [$managementGroupId] to [bicep-lz-vending-automation-decom]", 'Move')) {
+                        $null = New-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $childSubId -ErrorAction 'SilentlyContinue'
+                    }
+                }
+            }
+
+            # 2. Remove any direct child management groups recursively (depth-first via the same handler).
+            $childGroups = $expandedGroup.Children | Where-Object { $_.Type -eq 'Microsoft.Management/managementGroups' }
+            foreach ($childGroup in $childGroups) {
+                $childGroupResourceId = '/providers/Microsoft.Management/managementGroups/{0}' -f $childGroup.Name
+                Write-Verbose ('[*] Recursively removing child management group [{0}]' -f $childGroup.Name) -Verbose
+                if ($PSCmdlet.ShouldProcess("Child management group [$($childGroup.Name)]", 'Remove')) {
+                    Invoke-ResourceRemoval -ResourceId $childGroupResourceId -Type 'Microsoft.Management/managementGroups'
+                }
+            }
+
+            # 3. Now remove the (hopefully empty) management group itself.
+            if ($PSCmdlet.ShouldProcess("Management group [$managementGroupId]", 'Remove')) {
+                $null = Remove-AzManagementGroup -GroupName $managementGroupId -ErrorAction 'Stop'
+            }
+            break
+        }
         'Microsoft.Compute/diskEncryptionSets' {
             # Pre-Removal
             # -----------
