@@ -26,12 +26,12 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/capabilityHosts` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/capabilityHosts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/capabilityHosts` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/capabilityHosts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/projects)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/projects/capabilityHosts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-07-01-preview/accounts/projects/connections)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/projects)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/capabilityHosts` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_capabilityhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/projects/capabilityHosts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/projects/connections)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
@@ -53,25 +53,26 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Search/searchServices` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices)</li></ul> |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Search/searchServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices)</li></ul> |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices/sharedPrivateLinkResources)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares)</li></ul> |
-| `Microsoft.Storage/storageAccounts/localUsers` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/fileServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/localUsers` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/localUsers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/managementPolicies)</li></ul> |
 | `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices/queues)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices/tables)</li></ul> |
 
 ## Usage examples
 
@@ -534,7 +535,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     ]
     aiSearchConfiguration: {
       name: '<name>'
+      partitionCount: 1
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+      replicaCount: 1
       roleAssignments: [
         {
           principalId: '<principalId>'
@@ -542,9 +545,12 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
           roleDefinitionIdOrName: 'Search Index Data Contributor'
         }
       ]
+      sku: 'basic'
     }
     baseUniqueName: '<baseUniqueName>'
     cosmosDbConfiguration: {
+      enableServerless: true
+      enableZoneRedundancy: false
       name: '<name>'
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
       roleAssignments: [
@@ -657,14 +663,17 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiSearchConfiguration": {
       "value": {
         "name": "<name>",
+        "partitionCount": 1,
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
+        "replicaCount": 1,
         "roleAssignments": [
           {
             "principalId": "<principalId>",
             "principalType": "ServicePrincipal",
             "roleDefinitionIdOrName": "Search Index Data Contributor"
           }
-        ]
+        ],
+        "sku": "basic"
       }
     },
     "baseUniqueName": {
@@ -672,6 +681,8 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "cosmosDbConfiguration": {
       "value": {
+        "enableServerless": true,
+        "enableZoneRedundancy": false,
         "name": "<name>",
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>",
         "roleAssignments": [
@@ -790,7 +801,9 @@ param aiModelDeployments = [
 ]
 param aiSearchConfiguration = {
   name: '<name>'
+  partitionCount: 1
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+  replicaCount: 1
   roleAssignments: [
     {
       principalId: '<principalId>'
@@ -798,9 +811,12 @@ param aiSearchConfiguration = {
       roleDefinitionIdOrName: 'Search Index Data Contributor'
     }
   ]
+  sku: 'basic'
 }
 param baseUniqueName = '<baseUniqueName>'
 param cosmosDbConfiguration = {
+  enableServerless: true
+  enableZoneRedundancy: false
   name: '<name>'
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
   roleAssignments: [
@@ -894,6 +910,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     cosmosDbConfiguration: {
+      enableZoneRedundancy: true
       privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
     }
     includeAssociatedResources: true
@@ -959,6 +976,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "cosmosDbConfiguration": {
       "value": {
+        "enableZoneRedundancy": true,
         "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
       }
     },
@@ -1022,6 +1040,7 @@ param aiSearchConfiguration = {
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param cosmosDbConfiguration = {
+  enableZoneRedundancy: true
   privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
 }
 param includeAssociatedResources = true
@@ -1488,8 +1507,11 @@ Custom configuration for the AI Search resource.
 | :-- | :-- | :-- |
 | [`existingResourceId`](#parameter-aisearchconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-aisearchconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
+| [`partitionCount`](#parameter-aisearchconfigurationpartitioncount) | int | The number of partitions in the AI Search service. Defaults to 1. |
 | [`privateDnsZoneResourceId`](#parameter-aisearchconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
+| [`replicaCount`](#parameter-aisearchconfigurationreplicacount) | int | The number of replicas in the AI Search service. Defaults to 3. |
 | [`roleAssignments`](#parameter-aisearchconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+| [`sku`](#parameter-aisearchconfigurationsku) | string | The SKU of the AI Search service. Defaults to 'standard'. |
 
 ### Parameter: `aiSearchConfiguration.existingResourceId`
 
@@ -1505,12 +1527,30 @@ Name to be used when creating the resource. This is ignored if an existingResour
 - Required: No
 - Type: string
 
+### Parameter: `aiSearchConfiguration.partitionCount`
+
+The number of partitions in the AI Search service. Defaults to 1.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 12
+
 ### Parameter: `aiSearchConfiguration.privateDnsZoneResourceId`
 
 The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided.
 
 - Required: No
 - Type: string
+
+### Parameter: `aiSearchConfiguration.replicaCount`
+
+The number of replicas in the AI Search service. Defaults to 3.
+
+- Required: No
+- Type: int
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `aiSearchConfiguration.roleAssignments`
 
@@ -1609,6 +1649,25 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `aiSearchConfiguration.sku`
+
+The SKU of the AI Search service. Defaults to 'standard'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'basic'
+    'free'
+    'standard'
+    'standard2'
+    'standard3'
+    'storage_optimized_l1'
+    'storage_optimized_l2'
+  ]
+  ```
+
 ### Parameter: `baseUniqueName`
 
 A unique text value for the application/environment. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and base name.
@@ -1628,10 +1687,26 @@ Custom configuration for the Cosmos DB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableServerless`](#parameter-cosmosdbconfigurationenableserverless) | bool | Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false. Note: Serverless can only be set at account creation time and cannot be changed later. This property is ignored when an existingResourceId is provided. |
+| [`enableZoneRedundancy`](#parameter-cosmosdbconfigurationenablezoneredundancy) | bool | Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided. |
 | [`existingResourceId`](#parameter-cosmosdbconfigurationexistingresourceid) | string | Resource ID of an existing resource to use instead of creating a new one. If provided, other parameters are ignored. |
 | [`name`](#parameter-cosmosdbconfigurationname) | string | Name to be used when creating the resource. This is ignored if an existingResourceId is provided. |
 | [`privateDnsZoneResourceId`](#parameter-cosmosdbconfigurationprivatednszoneresourceid) | string | The Resource ID of the Private DNS Zone that associates with the resource. This is required to establish a Private Endpoint and when 'privateEndpointSubnetResourceId' is provided. |
 | [`roleAssignments`](#parameter-cosmosdbconfigurationroleassignments) | array | Role assignments to apply to the resource when creating it. This is ignored if an existingResourceId is provided. |
+
+### Parameter: `cosmosDbConfiguration.enableServerless`
+
+Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false. Note: Serverless can only be set at account creation time and cannot be changed later. This property is ignored when an existingResourceId is provided.
+
+- Required: No
+- Type: bool
+
+### Parameter: `cosmosDbConfiguration.enableZoneRedundancy`
+
+Whether to enable zone redundancy for the Cosmos DB account. Defaults to false. This property is only used for single-region accounts and is ignored when an existingResourceId is provided.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `cosmosDbConfiguration.existingResourceId`
 
@@ -2121,10 +2196,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.14.2` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
-| `br/public:avm/res/search/search-service:0.11.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
+| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.32.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

@@ -18,6 +18,15 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Specifies the role assignments for the AI Search resource.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Optional. The SKU of the AI Search service.')
+param sku string = 'standard'
+
+@description('Optional. The number of replicas in the AI Search service.')
+param replicaCount int = 3
+
+@description('Optional. The number of partitions in the AI Search service.')
+param partitionCount int = 1
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -38,7 +47,7 @@ resource existingSearchService 'Microsoft.Search/searchServices@2025-05-01' exis
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module aiSearch 'br/public:avm/res/search/search-service:0.11.1' = if (empty(existingResourceId)) {
+module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = if (empty(existingResourceId)) {
   name: take('avm.res.search.search-service.${name}', 64)
   params: {
     name: name
@@ -57,9 +66,9 @@ module aiSearch 'br/public:avm/res/search/search-service:0.11.1' = if (empty(exi
             aadAuthFailureMode: 'http401WithBearerChallenge'
           }
         }
-    sku: 'standard'
-    partitionCount: 1
-    replicaCount: 3
+    sku: sku
+    partitionCount: partitionCount
+    replicaCount: replicaCount
     roleAssignments: roleAssignments
     privateEndpoints: privateNetworkingEnabled
       ? [

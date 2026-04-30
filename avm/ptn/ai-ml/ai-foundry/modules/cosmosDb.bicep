@@ -21,6 +21,12 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Whether to enable zone redundancy for the Cosmos DB account. Defaults to true.')
+param enableZoneRedundancy bool = true
+
+@description('Optional. Whether to enable the serverless pricing model for the Cosmos DB account. Defaults to false.')
+param enableServerless bool = false
+
 @description('Optional. Specifies the resource tags for all the resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
 
@@ -38,7 +44,7 @@ resource existingCosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' exi
 
 var privateNetworkingEnabled = !empty(privateDnsZoneResourceId) && !empty(privateEndpointSubnetResourceId)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = if (empty(existingResourceId)) {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = if (empty(existingResourceId)) {
   name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name
@@ -49,6 +55,8 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = if (em
     location: location
     minimumTlsVersion: 'Tls12'
     defaultConsistencyLevel: 'Session'
+    zoneRedundant: enableZoneRedundancy
+    capabilitiesToAdd: enableServerless ? ['EnableServerless'] : null
     networkRestrictions: {
       networkAclBypass: 'AzureServices'
       publicNetworkAccess: privateNetworkingEnabled ? 'Disabled' : 'Enabled'
