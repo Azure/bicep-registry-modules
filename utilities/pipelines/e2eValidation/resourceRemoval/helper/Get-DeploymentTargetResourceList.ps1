@@ -356,7 +356,7 @@ function Get-DeploymentTargetResourceList {
         [string] $Scope,
 
         [Parameter(Mandatory = $false)]
-        [int] $SearchRetryLimit = 40,
+        [int] $SearchRetryLimit = 10,
 
         [Parameter(Mandatory = $false)]
         [int] $SearchRetryInterval = 60
