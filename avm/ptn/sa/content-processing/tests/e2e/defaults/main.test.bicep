@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Waf-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the Content Processing Solution Accelerator'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,24 +9,23 @@ metadata description = 'This instance deploys the Content Processing Solution Ac
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
-param serviceShort string = 'scpegwaf'
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
+param serviceShort string = 'scpdmin'
 
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to set for the Virtual Machine.')
-@secure()
-param virtualMachineAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
 // ============ //
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
+
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Cosmos DB zone redundancy in eastus2
 var enforcedLocation = 'australiaeast'
 
 // General resources
@@ -47,13 +46,9 @@ module testDeployment '../../../main.bicep' = {
     solutionName: '${namePrefix}${serviceShort}'
     location: enforcedLocation
     azureAiServiceLocation: enforcedLocation
-    gptDeploymentCapacity: 10
-    enableScalability: true
-    enableTelemetry: true
-    enablePrivateNetworking: true
-    enableMonitoring: true
+    enablePrivateNetworking: false
+    enableMonitoring: false
     enableRedundancy: true
-    vmAdminUsername: 'adminuser'
-    vmAdminPassword: virtualMachineAdminPassword
+    enableScalability: true
   }
 }
