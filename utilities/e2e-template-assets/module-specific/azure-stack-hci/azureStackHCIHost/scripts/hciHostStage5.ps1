@@ -50,8 +50,16 @@ $existingSwitches = Get-VMSwitch
 
 If ($switchlessStorageConfig -eq 'switched') {
     log 'Creating Hyper-V switches for switched storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
-    If ($existingSwitches.Name -notcontains 'hciNodeCompInternal' ) { New-VMSwitch -Name hciNodeCompInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivate' ) { New-VMSwitch -Name hciNodeStoragePrivate -SwitchType Private -EnableIov $true }
 } ElseIf ($switchlessStorageConfig -eq 'switchless') {
@@ -62,8 +70,16 @@ If ($switchlessStorageConfig -eq 'switched') {
     }
 
     log 'Creating Hyper-V switches for switchless storage configuration...'
-    If ($existingSwitches.Name -notcontains 'external' ) { New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName Ethernet }
-    If ($existingSwitches.Name -notcontains 'hciNodeCompInternal' ) { New-VMSwitch -Name hciNodeCompInternal -SwitchType Internal -EnableIov $true }
+    If ($existingSwitches.Name -notcontains 'external' ) {
+    # Dynamically find the active NIC - name may vary after sysprep
+    $activeNIC = (Get-NetIPConfiguration | Where-Object {
+    $_.IPv4DefaultGateway -ne $null -and
+    $_.NetAdapter.Status -eq 'Up' -and
+    $_.InterfaceAlias -notlike 'vEthernet*'
+} | Select-Object -First 1).InterfaceAlias
+    log "Using NIC '$activeNIC' for external vSwitch..."
+    New-VMSwitch -Name external -AllowManagementOS:$true -NetAdapterName $activeNIC
+}
     If ($existingSwitches.Name -notcontains 'hciNodeMgmtInternal' ) { New-VMSwitch -Name hciNodeMgmtInternal -SwitchType Internal -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateA' ) { New-VMSwitch -Name hciNodeStoragePrivateA -SwitchType Private -EnableIov $true }
     If ($existingSwitches.Name -notcontains 'hciNodeStoragePrivateB' ) { New-VMSwitch -Name hciNodeStoragePrivateB -SwitchType Private -EnableIov $true }
@@ -74,7 +90,6 @@ If ($switchlessStorageConfig -eq 'switched') {
 log 'Adding IPs for host...'
 $existingIPs = Get-NetIPAddress
 If ($existingIPs.IPAddress -notcontains '172.20.0.1') { New-NetIPAddress -InterfaceAlias 'vEthernet (hciNodeMgmtInternal)' -IPAddress 172.20.0.1 -PrefixLength 24 }
-If ($existingIPs.IPAddress -notcontains '10.20.0.1') { New-NetIPAddress -InterfaceAlias 'vEthernet (hciNodeCompInternal)' -IPAddress 10.20.0.1 -PrefixLength 24 }
 
 # configure NAT
 log 'Restarting RemoteAccess service...'
@@ -91,12 +106,6 @@ If (!$?) {
     log $message
     Write-Error $message
 }
-netsh routing ip nat add interface name="vEthernet (hciNodeCompInternal)" mode=PRIVATE
-If (!$?) {
-    $message = "Failed to run netsh command: ''netsh routing ip nat add interface name='vEthernet (hciNodeCompInternal)' mode=PRIVATE''."
-    log $message
-    Write-Error $message
-}
 netsh routing ip nat add interface name="vEthernet (hciNodeMgmtInternal)" mode=PRIVATE
 If (!$?) {
     $message = "Failed to run netsh command: ''netsh routing ip nat add interface name='vEthernet (hciNodeMgmtInternal)' mode=PRIVATE''."
@@ -104,11 +113,38 @@ If (!$?) {
     Write-Error $message
 }
 
+# Verify and retry NAT configuration (JumpStart-inspired reliability pattern)
+log 'Verifying NAT configuration with retry...'
+$natRetryCount = 0
+$natMaxRetries = 3
+while ($natRetryCount -lt $natMaxRetries) {
+    Start-Sleep -Seconds 10
+    $natInterfaces = netsh routing ip nat show interface
+    if ($natInterfaces -match 'external' -and $natInterfaces -match 'hciNodeMgmtInternal') {
+        log "NAT configuration verified successfully (attempt $($natRetryCount + 1))"
+        break
+    }
+    $natRetryCount++
+    log "NAT verification failed (attempt $natRetryCount/$natMaxRetries). Retrying NAT setup..."
+    Restart-Service RemoteAccess -Force
+    Start-Sleep -Seconds 15
+    netsh routing ip nat uninstall
+    netsh routing ip nat install
+    netsh routing ip nat set global tcptimeoutmins=1440 udptimeoutmins=1 loglevel=ERROR
+    netsh routing ip nat add interface name="vEthernet (external)" mode=FULL
+    netsh routing ip nat add interface name="vEthernet (hciNodeMgmtInternal)" mode=PRIVATE
+}
+if ($natRetryCount -ge $natMaxRetries) {
+    log 'WARNING: NAT configuration could not be fully verified after retries. Proceeding anyway...'
+}
+
 # create DHCP scopes
 log 'Creating DHCP scopes...'
 $existingScopes = Get-DhcpServerv4Scope
-If ($existingScopes.name -notcontains 'HCIComp') { Add-DhcpServerv4Scope -StartRange 10.20.0.10 -EndRange 10.20.0.250 -Name HCIComp -State Active -SubnetMask 255.255.255.0 }
 If ($existingScopes.name -notcontains 'HCIMgmt') { Add-DhcpServerv4Scope -StartRange 172.20.0.10 -EndRange 172.20.0.250 -Name HCIMgmt -State Active -SubnetMask 255.255.255.0 }
+
+# exclude LCM IP range from DHCP to prevent conflicts during Azure Local cluster deployment
+try { Add-DhcpServerv4ExclusionRange -ScopeId 172.20.0.0 -StartRange 172.20.0.50 -EndRange 172.20.0.70 } catch { log "DHCP exclusion range already exists or failed: $_" }
 
 # test DC connectivity before attempting to authorize DHCP server in AD
 log 'Testing DC connectivity...'
@@ -119,18 +155,26 @@ While (!(Test-ADConnection) -and $count -lt 120) {
     $count++
 }
 
-# authorize DHCP servers in AD for DNS updates
 log 'Authorizing DHCP servers in AD for DNS updates...'
-try {
-    $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
-} catch {
-    log 'Failed to query authorized DHCP servers in AD. Waiting 120 seconds before retrying...'
-    Start-Sleep -Seconds 120
-    $existingAuthorizedServers = Get-DhcpServerInDC
+$dhcpRetries = 5
+$existingAuthorizedServers = $null
+for ($r = 1; $r -le $dhcpRetries; $r++) {
+    try {
+        $existingAuthorizedServers = Get-DhcpServerInDC -ErrorAction Stop
+        log "Successfully queried authorized DHCP servers (attempt $r)"
+        break
+    } catch {
+        log "Failed to query authorized DHCP servers in AD (attempt $r/$dhcpRetries): $($_.Exception.Message)"
+        if ($r -lt $dhcpRetries) {
+            log "Waiting 60 seconds before retrying..."
+            Start-Sleep -Seconds 60
+        } else {
+            throw "Failed to query DHCP servers after $dhcpRetries attempts: $($_.Exception.Message)"
+        }
+    }
 }
 
 If ($existingAuthorizedServers.IPAddress -notcontains '172.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 172.20.0.1 }
-If ($existingAuthorizedServers.IPAddress -notcontains '10.20.0.1') { Add-DhcpServerInDC -DnsName "$($env:COMPUTERNAME).hci.local" -IPAddress 10.20.0.1 }
 
 # set router and dns options for mgmt DHCP scope
 log 'Setting router and dns options for mgmt DHCP scope...'
@@ -143,13 +187,15 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     $hciNodeName = "hcinode$i"
     $hciNodePath = "C:\diskMounts\$hciNodeName"
 
-    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 32GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
+    If ($existingVMs.name -notcontains $hciNodeName) { New-VM -Name $hciNodeName -MemoryStartupBytes 48GB -BootDevice VHD -SwitchName hciNodeMgmtInternal -Path C:\diskMounts\ -VHDPath "$hciNodePath\hci_os.vhdx" -Generation 2 }
 }
 
 # configure HCI node VMs
 log 'Configuring HCI node VMs...'
+log 'Stopping VMs before changing processor settings...'
+Get-VM | Stop-VM -Force -TurnOff
 log 'Setting VM processor count to 16 and enabling virtualization extensions...'
-Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 8
+Get-VM | Set-VMProcessor -ExposeVirtualizationExtensions $true -Count 16
 
 log 'Setting VM key protector and enabling TPM...'
 Get-VM | ForEach-Object {
@@ -169,37 +215,37 @@ Get-VM | ForEach-Object {
 }
 
 
-# rename nic to mgmt
-log 'Renaming first network adapter on HCI nodes...'
-if (Get-VMNetworkAdapter -Name 'Network Adapter' -VMName * -ErrorAction SilentlyContinue) { Rename-VMNetworkAdapter -NewName mgmt -VMName * -Name 'Network Adapter' }
-Get-VM | Get-VMNetworkAdapter -Name 'mgmt' | Set-VMNetworkAdapter -DeviceNaming On
+# rename first NIC to FABRIC (matches Azure Local ManagementCompute intent)
+log 'Renaming first network adapter on HCI nodes to FABRIC...'
+if (Get-VMNetworkAdapter -Name 'Network Adapter' -VMName * -ErrorAction SilentlyContinue) { Rename-VMNetworkAdapter -NewName FABRIC -VMName * -Name 'Network Adapter' }
+Get-VM | Get-VMNetworkAdapter -Name 'FABRIC' | Set-VMNetworkAdapter -DeviceNaming On
 
-# add additional NICs to HCI node VMs
+# add additional NICs to HCI node VMs (FABRIC2 for ManagementCompute, StorageA/StorageB for Storage intent)
 log 'Adding additional NICs to HCI node VMs...'
 ForEach ($existingVM in (Get-VM)) {
     $existingNICs = Get-VMNetworkAdapter -VM $existingVM
-    If ($existingNICs.name -notcontains 'comp0') { $existingVM | Add-VMNetworkAdapter -Name comp0 -SwitchName hciNodeCompInternal -DeviceNaming On }
-    If ($existingNICs.name -notcontains 'comp1') { $existingVM | Add-VMNetworkAdapter -Name comp1 -SwitchName hciNodeCompInternal -DeviceNaming On }
+    # FABRIC2 on management switch - paired with FABRIC for ManagementCompute intent
+    If ($existingNICs.name -notcontains 'FABRIC2') { $existingVM | Add-VMNetworkAdapter -Name FABRIC2 -SwitchName hciNodeMgmtInternal -DeviceNaming On }
 
     If ($switchlessStorageConfig -eq 'switched') {
-        log "Adding NICs to VM '$($existingVM.name)' for switched storage configuration..."
-        If ($existingNICs.name -notcontains 'smb0') { $existingVM | Add-VMNetworkAdapter -Name smb0 -SwitchName hciNodeStoragePrivate -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
-        If ($existingNICs.name -notcontains 'smb1') { $existingVM | Add-VMNetworkAdapter -Name smb1 -SwitchName hciNodeStoragePrivate -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '712' -NativeVlanId 0 }
+        log "Adding storage NICs to VM '$($existingVM.name)' for switched storage configuration..."
+        If ($existingNICs.name -notcontains 'StorageA') { $existingVM | Add-VMNetworkAdapter -Name StorageA -SwitchName hciNodeStoragePrivate -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+        If ($existingNICs.name -notcontains 'StorageB') { $existingVM | Add-VMNetworkAdapter -Name StorageB -SwitchName hciNodeStoragePrivate -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '712' -NativeVlanId 0 }
     } ElseIf ($switchlessStorageConfig -eq 'switchless') {
-        log "Adding NICs to VM '$($existingVM.name)' for switchless storage configuration..."
+        log "Adding storage NICs to VM '$($existingVM.name)' for switchless storage configuration..."
 
         switch ($existingVM.Name[-1]) {
             1 {
-                If ($existingNICs.name -notcontains 'smb0') { $existingVM | Add-VMNetworkAdapter -Name smb0 -SwitchName hciNodeStoragePrivateA -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
-                If ($existingNICs.name -notcontains 'smb1') { $existingVM | Add-VMNetworkAdapter -Name smb1 -SwitchName hciNodeStoragePrivateB -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageA') { $existingVM | Add-VMNetworkAdapter -Name StorageA -SwitchName hciNodeStoragePrivateA -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageB') { $existingVM | Add-VMNetworkAdapter -Name StorageB -SwitchName hciNodeStoragePrivateB -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
             }
             2 {
-                If ($existingNICs.name -notcontains 'smb0') { $existingVM | Add-VMNetworkAdapter -Name smb0 -SwitchName hciNodeStoragePrivateA -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
-                If ($existingNICs.name -notcontains 'smb1') { $existingVM | Add-VMNetworkAdapter -Name smb1 -SwitchName hciNodeStoragePrivateC -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageA') { $existingVM | Add-VMNetworkAdapter -Name StorageA -SwitchName hciNodeStoragePrivateA -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageB') { $existingVM | Add-VMNetworkAdapter -Name StorageB -SwitchName hciNodeStoragePrivateC -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
             }
             3 {
-                If ($existingNICs.name -notcontains 'smb0') { $existingVM | Add-VMNetworkAdapter -Name smb0 -SwitchName hciNodeStoragePrivateB -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
-                If ($existingNICs.name -notcontains 'smb1') { $existingVM | Add-VMNetworkAdapter -Name smb1 -SwitchName hciNodeStoragePrivateC -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageA') { $existingVM | Add-VMNetworkAdapter -Name StorageA -SwitchName hciNodeStoragePrivateB -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
+                If ($existingNICs.name -notcontains 'StorageB') { $existingVM | Add-VMNetworkAdapter -Name StorageB -SwitchName hciNodeStoragePrivateC -DeviceNaming On -Passthru | Set-VMNetworkAdapterVlan -Trunk -AllowedVlanIdList '711' -NativeVlanId 0 }
             }
             Default {}
         }
@@ -364,9 +410,27 @@ If (Get-VM | Where-Object State -EQ 'Off') {
         Write-Error "Failed to start HCI node VMs. $_"
     }
 
-    #wait for vms to boot
-    log 'Waiting 300s for VMs to boot and apply sysprep...'
-    Start-Sleep -Seconds 300
+    #wait for vms to boot - poll heartbeat instead of fixed sleep
+    log 'Waiting for VMs to boot and apply sysprep (polling heartbeat, max 10 min)...'
+    $bootTimer = [System.Diagnostics.Stopwatch]::StartNew()
+    $allReady = $false
+    while (-not $allReady -and $bootTimer.Elapsed.TotalMinutes -lt 10) {
+        $vms = Get-VM
+        $readyVMs = $vms | Where-Object { $_.Heartbeat -eq 'OkApplicationsHealthy' -or $_.Heartbeat -eq 'OkApplicationsUnknown' }
+        if ($readyVMs.Count -eq $vms.Count) {
+            log "All $($vms.Count) VMs have heartbeat after $([math]::Round($bootTimer.Elapsed.TotalSeconds))s."
+            $allReady = $true
+        } else {
+            log "[$([math]::Round($bootTimer.Elapsed.TotalSeconds))s] $($readyVMs.Count)/$($vms.Count) VMs ready (heartbeat). Waiting 30s..."
+            Start-Sleep -Seconds 30
+        }
+    }
+    if (-not $allReady) {
+        log 'WARNING: Not all VMs reported heartbeat within 10 min. Proceeding anyway (sysprep may still be running)...'
+    }
+    # Extra buffer for sysprep FirstLogonCommands to complete after heartbeat detected
+    log 'Waiting 60s for sysprep FirstLogonCommands to complete...'
+    Start-Sleep -Seconds 60
 } Else {
     log 'HCI node VMs are already running.'
 }
@@ -380,16 +444,16 @@ For ($i = 1; $i -le $hciNodeCount; $i++) {
     If ($existingReservations.Description -notcontains $hciNodeName) {
         log "Creating DHCP reservation for HCI node '$hciNodeName' with IP '$hciNodeIP'..."
 
-        $mgmtNIC = Get-VMNetworkAdapter -VMName $hciNodeName -Name mgmt
+        $fabricNIC = Get-VMNetworkAdapter -VMName $hciNodeName -Name FABRIC
 
-        If ($mgmtNIC) {
-            $mgmtMac = $mgmtNIC.MacAddress -split '(.{2})' -ne '' -join '-'
+        If ($fabricNIC) {
+            $fabricMac = $fabricNIC.MacAddress -split '(.{2})' -ne '' -join '-'
 
-            log "Creating DHCP reservation for HCI node '$hciNodeName' with IP '$hciNodeIP' for MAC address '$mgmtMac'..."
-            Add-DhcpServerv4Reservation -ScopeId 172.20.0.0 -Name $hciNodeName -IPAddress $hciNodeIP -ClientId $mgmtMac -Description $hciNodeName
+            log "Creating DHCP reservation for HCI node '$hciNodeName' with IP '$hciNodeIP' for MAC address '$fabricMac'..."
+            Add-DhcpServerv4Reservation -ScopeId 172.20.0.0 -Name $hciNodeName -IPAddress $hciNodeIP -ClientId $fabricMac -Description $hciNodeName
         } Else {
-            log "Failed to create DHCP reservation for HCI node '$hciNodeName'. Could not find NIC named 'mgmt'."
-            Write-Error "Failed to create DHCP reservation for HCI node '$hciNodeName'. Could not find NIC named 'mgmt'."
+            log "Failed to create DHCP reservation for HCI node '$hciNodeName'. Could not find NIC named 'FABRIC'."
+            Write-Error "Failed to create DHCP reservation for HCI node '$hciNodeName'. Could not find NIC named 'FABRIC'."
             exit 1
         }
     } Else {

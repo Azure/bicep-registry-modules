@@ -1,10 +1,5 @@
 # Azure Arc Gateway `[Microsoft.HybridCompute/gateways]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Azure Arc Gateway.
 
 You can reference the module as follows:
@@ -29,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.HybridCompute/gateways` | 2024-07-31-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcompute_gateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-31-preview/gateways)</li></ul> |
+| `Microsoft.HybridCompute/gateways` | 2025-01-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcompute_gateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2025-01-13/gateways)</li></ul> |
 
 ## Usage examples
 

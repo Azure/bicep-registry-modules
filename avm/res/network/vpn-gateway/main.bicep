@@ -8,16 +8,16 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The VPN connections to create in the VPN gateway.')
-param vpnConnections vpnConnectionType[] = []
+param vpnConnections vpnConnectionType[]?
 
 @description('Optional. List of all the NAT Rules to associate with the gateway.')
-param natRules natRuleType[] = []
+param natRules natRuleType[]?
 
 @description('Required. The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gateway must be deployed into the same location.')
 param virtualHubResourceId string
 
 @description('Optional. BGP settings details. You can specify either bgpPeeringAddress (for custom IPs outside APIPA ranges) OR bgpPeeringAddresses (for APIPA ranges 169.254.21.*/169.254.22.*), but not both simultaneously.')
-param bgpSettings bgpSettingsType?
+param bgpSettings resourceInput<'Microsoft.Network/vpnGateways@2024-07-01'>.properties.bgpSettings?
 
 @description('Optional. Enable BGP routes translation for NAT on this VPN gateway.')
 param enableBgpRouteTranslationForNat bool = false
@@ -31,13 +31,9 @@ param vpnGatewayScaleUnit int = 2
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Network/vpnGateways@2024-07-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
-
-// Import types from child modules
-import { ipsecPolicyType, trafficSelectorPolicyType, vpnSiteLinkConnectionType } from 'vpn-connection/main.bicep'
-import { vpnNatRuleMappingType } from 'nat-rule/main.bicep'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -61,7 +57,7 @@ var finalBgpSettings = bgpSettings != null
 // ================//
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-vpngateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -111,7 +107,7 @@ resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
 }
 
 module vpnGateway_natRules 'nat-rule/main.bicep' = [
-  for (natRule, index) in natRules: {
+  for (natRule, index) in (natRules ?? []): {
     name: '${deployment().name}-NATRule-${index}'
     params: {
       name: natRule.name
@@ -126,7 +122,7 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
 ]
 
 module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [
-  for (connection, index) in vpnConnections: {
+  for (connection, index) in (vpnConnections ?? []): {
     name: '${deployment().name}-Connection-${index}'
     dependsOn: vpnGateway_natRules
     params: {
@@ -163,85 +159,19 @@ output resourceGroupName string = resourceGroup().name
 output location string = vpnGateway.location
 
 @description('The resource IDs of the NAT rules.')
-output natRuleResourceIds array = [for (natRule, index) in natRules: vpnGateway_natRules[index].outputs.resourceId]
+output natRuleResourceIds string[] = [
+  for (natRule, index) in (natRules ?? []): vpnGateway_natRules[index].outputs.resourceId
+]
 
 @description('The resource IDs of the VPN connections.')
-output vpnConnectionResourceIds array = [
-  for (connection, index) in vpnConnections: vpnGateway_vpnConnections[index].outputs.resourceId
+output vpnConnectionResourceIds string[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Not containing any secret but just exporting resource Ids
+  for (connection, index) in (vpnConnections ?? []): vpnGateway_vpnConnections[index].outputs.resourceId
 ]
 
 // =============== //
 //   Definitions   //
 // =============== //
-
-@export()
-@description('The type of BGP settings for VPN Gateway.')
-type bgpSettingsType = {
-  @description('Required. The BGP speaker\'s ASN (Autonomous System Number).')
-  @minValue(0)
-  @maxValue(4294967295)
-  asn: int
-
-  @description('Optional. The weight added to routes learned from this BGP speaker.')
-  @minValue(0)
-  @maxValue(100)
-  peerWeight: int?
-
-  @description('Optional. The BGP peering address and BGP identifier of this BGP speaker. Use this for custom BGP IP addresses outside the APIPA range (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddresses.')
-  bgpPeeringAddress: string?
-
-  @description('Optional. BGP peering addresses for this VPN Gateway. Limited to APIPA ranges (169.254.21.*/169.254.22.*). Cannot be used together with bgpPeeringAddress.')
-  bgpPeeringAddresses: {
-    @description('Optional. The IP configuration ID.')
-    ipconfigurationId: string?
-
-    @description('Optional. The custom BGP peering addresses (APIPA ranges only: 169.254.21.*/169.254.22.*).')
-    customBgpIpAddresses: string[]?
-  }[]?
-}
-
-@export()
-@description('The type of routing configuration for VPN connections.')
-type routingConfigurationType = {
-  @description('Optional. The associated route table for this connection.')
-  associatedRouteTable: {
-    @description('Required. The resource ID of the route table.')
-    id: string
-  }?
-
-  @description('Optional. The propagated route tables for this connection.')
-  propagatedRouteTables: {
-    @description('Optional. The list of route table resource IDs to propagate to.')
-    ids: {
-      @description('Required. The resource ID of the route table.')
-      id: string
-    }[]?
-
-    @description('Optional. The list of labels to propagate to.')
-    labels: string[]?
-  }?
-
-  @description('Optional. The virtual network routes for this connection.')
-  vnetRoutes: {
-    @description('Optional. The list of static routes.')
-    staticRoutes: {
-      @description('Optional. The name of the static route.')
-      name: string?
-
-      @description('Optional. The address prefixes for the static route.')
-      addressPrefixes: string[]?
-
-      @description('Optional. The next hop IP address for the static route.')
-      nextHopIpAddress: string?
-    }[]?
-
-    @description('Optional. Static routes configuration.')
-    staticRoutesConfig: {
-      @description('Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.')
-      vnetLocalRouteOverrideCriteria: ('Contains' | 'Equal')?
-    }?
-  }?
-}
 
 @export()
 @description('The type of VPN connection for VPN Gateway.')
@@ -264,13 +194,11 @@ type vpnConnectionType = {
   @description('Optional. Enable rate limiting.')
   enableRateLimiting: bool?
 
-  @description('Optional. Routing configuration.')
-  routingConfiguration: routingConfigurationType?
-
   @description('Optional. Routing weight.')
   routingWeight: int?
 
   @description('Optional. Shared key.')
+  @secure()
   sharedKey: string?
 
   @description('Optional. Use local Azure IP address.')
@@ -282,14 +210,17 @@ type vpnConnectionType = {
   @description('Optional. VPN connection protocol type.')
   vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')?
 
-  @description('Optional. IPSec policies.')
-  ipsecPolicies: ipsecPolicyType[]?
+  @description('Optional. The IPSec policies to be considered by this connection.')
+  ipsecPolicies: resourceInput<'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01'>.properties.ipsecPolicies?
 
-  @description('Optional. Traffic selector policies.')
-  trafficSelectorPolicies: trafficSelectorPolicyType[]?
+  @description('Optional. The traffic selector policies to be considered by this connection.')
+  trafficSelectorPolicies: resourceInput<'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01'>.properties.trafficSelectorPolicies?
 
-  @description('Optional. VPN link connections.')
-  vpnLinkConnections: vpnSiteLinkConnectionType[]?
+  @description('Optional. List of all VPN site link connections to the gateway.')
+  vpnLinkConnections: resourceInput<'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01'>.properties.vpnLinkConnections?
+
+  @description('Optional. Routing configuration indicating the associated and propagated route tables for this connection.')
+  routingConfiguration: resourceInput<'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01'>.properties.routingConfiguration?
 }
 
 @export()
@@ -299,10 +230,10 @@ type natRuleType = {
   name: string
 
   @description('Optional. External mappings.')
-  externalMappings: vpnNatRuleMappingType[]?
+  externalMappings: resourceInput<'Microsoft.Network/vpnGateways/natRules@2024-07-01'>.properties.externalMappings?
 
-  @description('Optional. Internal mappings.')
-  internalMappings: vpnNatRuleMappingType[]?
+  @description('Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.')
+  internalMappings: resourceInput<'Microsoft.Network/vpnGateways/natRules@2024-07-01'>.properties.internalMappings?
 
   @description('Optional. IP configuration ID.')
   ipConfigurationId: string?

@@ -45,7 +45,7 @@ param clientAffinityPartitioningEnabled bool = false
 @description('Optional. The resource ID of the app service environment to use for this resource.')
 param appServiceEnvironmentResourceId string?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -62,25 +62,25 @@ param virtualNetworkSubnetResourceId string?
 param scmSiteAlsoStopped bool = false
 
 @description('Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: \'1.2\', ftpsState: \'FtpsOnly\'.')
-param siteConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.siteConfig = {
+param siteConfig resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.siteConfig = {
   alwaysOn: true
   minTlsVersion: '1.2'
   ftpsState: 'FtpsOnly'
 }
 
 @description('Optional. The outbound VNET routing configuration for the site.')
-param outboundVnetRouting resourceInput<'Microsoft.Web/sites@2024-11-01'>.properties.outboundVnetRouting?
+param outboundVnetRouting resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.outboundVnetRouting?
 
 @description('Optional. The web site config.')
 param configs configType[]?
 
 @description('Optional. The Function App configuration object.')
-param functionAppConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.functionAppConfig?
+param functionAppConfig resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.functionAppConfig?
 
 @description('Optional. The extensions configuration.')
 param extensions extensionType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -92,16 +92,16 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param slots slotType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Web/sites@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.Web/sites@2025-03-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -117,15 +117,10 @@ Optional. This composes with ClientCertEnabled setting.
 - ClientCertEnabled=true and ClientCertMode=Required means ClientCert is required.
 - ClientCertEnabled=true and ClientCertMode=Optional means ClientCert is optional or accepted.
 ''')
-@allowed([
-  'Optional'
-  'OptionalInteractiveUser'
-  'Required'
-])
-param clientCertMode string = 'Optional'
+param clientCertMode resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.clientCertMode = 'Optional'
 
 @description('Optional. If specified during app creation, the app is cloned from a source app.')
-param cloningInfo resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.cloningInfo?
+param cloningInfo resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.cloningInfo?
 
 @description('Optional. Size of the function container.')
 param containerSize int?
@@ -137,20 +132,13 @@ param dailyMemoryTimeQuota int?
 param enabled bool = true
 
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-param hostNameSslStates resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.hostNameSslStates?
+param hostNameSslStates resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.hostNameSslStates?
 
 @description('Optional. Hyper-V sandbox.')
 param hyperV bool = false
 
 @description('Optional. Site redundancy mode.')
-@allowed([
-  'ActiveActive'
-  'Failover'
-  'GeoRedundant'
-  'Manual'
-  'None'
-])
-param redundancyMode string = 'None'
+param redundancyMode resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.redundancyMode = 'None'
 
 @description('Optional. The site publishing credential policy names which are associated with the sites.')
 param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
@@ -159,26 +147,40 @@ param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string?
+param publicNetworkAccess resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.publicNetworkAccess?
 
 @description('Optional. End to End Encryption Setting.')
 param e2eEncryptionEnabled bool?
 
 @description('Optional. Property to configure various DNS related settings for a site.')
-param dnsConfiguration resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.dnsConfiguration?
+param dnsConfiguration resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.dnsConfiguration?
 
 @description('Optional. Specifies the scope of uniqueness for the default hostname during resource creation.')
-@allowed([
-  'NoReuse'
-  'ResourceGroupReuse'
-  'SubscriptionReuse'
-  'TenantReuse'
-])
-param autoGeneratedDomainNameLabelScope string?
+param autoGeneratedDomainNameLabelScope resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.autoGeneratedDomainNameLabelScope?
+
+@description('Optional. Whether to enable SSH access.')
+param sshEnabled bool?
+
+@description('Optional. Dapr configuration of the app.')
+param daprConfig resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.daprConfig?
+
+@description('Optional. Specifies the IP mode of the app.')
+param ipMode resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.ipMode?
+
+@description('Optional. Function app resource requirements.')
+param resourceConfig resourceInput<'Microsoft.Web/sites@2025-03-01'>.properties.resourceConfig?
+
+@description('Optional. Workload profile name for function app to execute on.')
+param workloadProfileName string?
+
+@description('Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.')
+param hostNamesDisabled bool?
+
+@description('Optional. True if reserved (Linux); otherwise, false (Windows).')
+param reserved bool?
+
+@description('Optional. Extended location of the resource.')
+param extendedLocation resourceInput<'Microsoft.Web/sites@2025-03-01'>.extendedLocation?
 
 var enableReferencedModulesTelemetry = false
 
@@ -258,12 +260,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource app 'Microsoft.Web/sites@2024-11-01' = {
+resource app 'Microsoft.Web/sites@2025-03-01' = {
   name: name
   location: location
   kind: kind
   tags: tags
   identity: identity
+  extendedLocation: extendedLocation
   properties: {
     managedEnvironmentId: managedEnvironmentResourceId
     serverFarmId: contains(managedEnvironmentSupportedKinds, kind) && !empty(managedEnvironmentResourceId)
@@ -294,13 +297,20 @@ resource app 'Microsoft.Web/sites@2024-11-01' = {
     hyperV: hyperV
     redundancyMode: redundancyMode
     publicNetworkAccess: !empty(serverFarmResourceId)
-      ? (!empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
+      ? (!empty(publicNetworkAccess) ? publicNetworkAccess : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled'))
       : null
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
     dnsConfiguration: dnsConfiguration
     autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
     outboundVnetRouting: outboundVnetRouting
+    sshEnabled: sshEnabled
+    daprConfig: daprConfig
+    ipMode: ipMode
+    resourceConfig: resourceConfig
+    workloadProfileName: workloadProfileName
+    hostNamesDisabled: hostNamesDisabled
+    reserved: reserved
   }
 }
 
@@ -348,6 +358,8 @@ module app_slots 'slot/main.bicep' = [
       httpsOnly: slot.?httpsOnly ?? httpsOnly
       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
+      clientAffinityProxyEnabled: slot.?clientAffinityProxyEnabled ?? clientAffinityProxyEnabled
+      clientAffinityPartitioningEnabled: slot.?clientAffinityPartitioningEnabled ?? clientAffinityPartitioningEnabled
       managedIdentities: slot.?managedIdentities ?? managedIdentities
       keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
@@ -379,7 +391,16 @@ module app_slots 'slot/main.bicep' = [
       hybridConnectionRelays: slot.?hybridConnectionRelays
       dnsConfiguration: slot.?dnsConfiguration
       autoGeneratedDomainNameLabelScope: slot.?autoGeneratedDomainNameLabelScope
-      outboundVnetRouting: slot.?outboundVnetRouting
+      outboundVnetRouting: slot.?outboundVnetRouting ?? outboundVnetRouting
+      sshEnabled: slot.?sshEnabled
+      daprConfig: slot.?daprConfig
+      ipMode: slot.?ipMode
+      resourceConfig: slot.?resourceConfig
+      workloadProfileName: slot.?workloadProfileName
+      hostNamesDisabled: slot.?hostNamesDisabled
+      reserved: slot.?reserved
+      scmSiteAlsoStopped: slot.?scmSiteAlsoStopped ?? scmSiteAlsoStopped
+      e2eEncryptionEnabled: slot.?e2eEncryptionEnabled
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
@@ -419,6 +440,7 @@ resource app_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?
   scope: app
 }
 
+#disable-next-line use-recent-api-versions // This is the latest API version for this resource as of the time of development.
 resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -464,7 +486,7 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -674,6 +696,12 @@ type slotType = {
   @description('Optional. If client affinity is enabled.')
   clientAffinityEnabled: bool?
 
+  @description('Optional. To enable client affinity; false to stop sending session affinity cookies, which route client requests in the same session to the same instance.')
+  clientAffinityProxyEnabled: bool?
+
+  @description('Optional. To enable client affinity partitioning using CHIPS cookies.')
+  clientAffinityPartitioningEnabled: bool?
+
   @description('Optional. The resource ID of the app service environment to use for this resource.')
   appServiceEnvironmentResourceId: string?
 
@@ -690,16 +718,16 @@ type slotType = {
   virtualNetworkSubnetResourceId: string?
 
   @description('Optional. The site config object.')
-  siteConfig: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.siteConfig?
+  siteConfig: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.siteConfig?
 
   @description('Optional. The Function App config object.')
-  functionAppConfig: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.functionAppConfig?
+  functionAppConfig: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.functionAppConfig?
 
   @description('Optional. The web site config.')
   configs: configType[]?
 
   @description('Optional. The extensions configuration.')
-  extensions: object[]?
+  extensions: resourceInput<'Microsoft.Web/sites/extensions@2025-03-01'>.properties[]?
 
   @description('Optional. The lock settings of the service.')
   lock: lockType?
@@ -708,7 +736,7 @@ type slotType = {
   privateEndpoints: privateEndpointSingleServiceType[]?
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.tags?
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
@@ -723,10 +751,10 @@ type slotType = {
   clientCertExclusionPaths: string?
 
   @description('Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted.')
-  clientCertMode: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.clientCertMode?
+  clientCertMode: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.clientCertMode?
 
   @description('Optional. If specified during app creation, the app is cloned from a source app.')
-  cloningInfo: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.cloningInfo?
+  cloningInfo: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.cloningInfo?
 
   @description('Optional. Size of the function container.')
   containerSize: int?
@@ -741,42 +769,63 @@ type slotType = {
   enabled: bool?
 
   @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-  hostNameSslStates: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.hostNameSslStates?
+  hostNameSslStates: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.hostNameSslStates?
 
   @description('Optional. Hyper-V sandbox.')
   hyperV: bool?
 
   @description('Optional. Allow or block all public traffic.')
-  publicNetworkAccess: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.publicNetworkAccess?
+  publicNetworkAccess: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.publicNetworkAccess?
 
   @description('Optional. Site redundancy mode.')
-  redundancyMode: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.redundancyMode?
+  redundancyMode: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.redundancyMode?
 
   @description('Optional. The site publishing credential policy names which are associated with the site slot.')
   basicPublishingCredentialsPolicies: basicPublishingCredentialsPolicyType[]?
 
-  @description('Optional. To enable accessing content over virtual network.')
-  vnetContentShareEnabled: bool?
-
-  @description('Optional. To enable pulling image over Virtual Network.')
-  vnetImagePullEnabled: bool?
-
-  @description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
-  vnetRouteAllEnabled: bool?
+  @description('Optional. The outbound VNET routing configuration for the slot.')
+  outboundVnetRouting: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.outboundVnetRouting?
 
   @description('Optional. Names of hybrid connection relays to connect app with.')
   hybridConnectionRelays: hybridConnectionRelayType[]?
 
   @description('Optional. Property to configure various DNS related settings for a site.')
-  dnsConfiguration: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.dnsConfiguration?
+  dnsConfiguration: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.dnsConfiguration?
 
   @description('Optional. Specifies the scope of uniqueness for the default hostname during resource creation.')
-  autoGeneratedDomainNameLabelScope: ('NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse')?
+  autoGeneratedDomainNameLabelScope: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.autoGeneratedDomainNameLabelScope?
+
+  @description('Optional. Whether to enable SSH access.')
+  sshEnabled: bool?
+
+  @description('Optional. Dapr configuration of the app.')
+  daprConfig: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.daprConfig?
+
+  @description('Optional. Specifies the IP mode of the app.')
+  ipMode: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.ipMode?
+
+  @description('Optional. Function app resource requirements.')
+  resourceConfig: resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.resourceConfig?
+
+  @description('Optional. Workload profile name for function app to execute on.')
+  workloadProfileName: string?
+
+  @description('Optional. True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.')
+  hostNamesDisabled: bool?
+
+  @description('Optional. True if reserved (Linux); otherwise, false (Windows).')
+  reserved: bool?
+
+  @description('Optional. Stop SCM (KUDU) site when the app is stopped.')
+  scmSiteAlsoStopped: bool?
+
+  @description('Optional. End to End Encryption Setting.')
+  e2eEncryptionEnabled: bool?
 }
 
 type extensionType = {
   @description('Optional. Sets the properties.')
-  properties: resourceInput<'Microsoft.Web/sites/extensions@2024-04-01'>.properties?
+  properties: resourceInput<'Microsoft.Web/sites/extensions@2025-03-01'>.properties?
 }
 
 @export()

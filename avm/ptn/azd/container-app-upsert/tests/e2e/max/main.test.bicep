@@ -68,6 +68,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       identityType: 'UserAssigned'
       identityName: nestedDependencies.outputs.managedIdentityName
+      allowedOrigins: [
+        'https://www.bing.com'
+      ]
       containerRegistryName: nestedDependencies.outputs.containerRegistryName
       identityPrincipalId: nestedDependencies.outputs.managedIdentityPrincipalId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
@@ -108,6 +111,18 @@ module testDeployment '../../../main.bicep' = [
           }
           initialDelaySeconds: 3
           periodSeconds: 3
+        }
+      ]
+      volumes: [
+        {
+          name: 'myemptydir'
+          storageType: 'EmptyDir'
+        }
+      ]
+      volumeMounts: [
+        {
+          volumeName: 'myemptydir'
+          mountPath: '/mnt/data'
         }
       ]
       exists: true

@@ -2,6 +2,46 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.22.0
+
+### Changes
+
+- Upgraded all `Microsoft.Web/*` resource API versions to `2025-03-01`
+- Added new parameters: `daprConfig`, `ipMode`, `resourceConfig`, `workloadProfileName`, `hostNamesDisabled`, `reserved`, `extendedLocation`
+- Added `clientAffinityProxyEnabled` and `clientAffinityPartitioningEnabled` parameters
+- Added `outboundVnetRouting` parameter (replaces deprecated `vnetContentShareEnabled`, `vnetImagePullEnabled`, `vnetRouteAllEnabled`)
+- Upgraded `functionAppConfig`, `cloningInfo`, `siteConfig`, and `tags` to resource-derived types
+- Upgraded `extensions` in slot type to resource-derived type (`resourceInput<'Microsoft.Web/sites/extensions@2025-03-01'>.properties[]?`)
+- Unified all `avm-common-types` imports to `0.6.1`
+- Updated test dependency API versions to latest GA: `Microsoft.Network/virtualNetworks@2025-05-01`, `Microsoft.Storage/storageAccounts@2025-06-01`, `Microsoft.Web/serverfarms@2025-03-01`
+- Strengthened WAF-aligned test with managed identity, private endpoints, and resource lock
+- Expanded max test coverage for new parameters across web app, Linux web app, and function app scenarios
+
+### Breaking Changes
+
+- Removed deprecated slot properties `vnetContentShareEnabled`, `vnetImagePullEnabled`, `vnetRouteAllEnabled` from `slotType` (use `outboundVnetRouting` instead)
+
+## 0.21.0
+
+### Changes
+
+- Added support for `sshEnabled` parameter to enable or disable SSH access for the app
+
+### Breaking Changes
+
+- None
+
+## 0.20.0
+
+### Changes
+
+- Updated several API versions
+- Updated version of referenced private endpoint AVM res module to latest `0.11.1`
+
+### Breaking Changes
+
+- Added additional setting `ApplicationInsightsAgent_EXTENSION_VERSION` for configs of type `appsettings` that is automatically set if the parameter `applicationInsightResourceId` is provided and no custom `ApplicationInsightsAgent_EXTENSION_VERSION` is configured via the config's `properties` parameter. It automatically selects `~3` for Linux sites & `~2` for Windows. The same logic applies to slots.
+
 ## 0.19.4
 
 ### Changes

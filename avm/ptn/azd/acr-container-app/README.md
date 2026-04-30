@@ -25,8 +25,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/containerApps` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps)</li></ul> |
-| `Microsoft.App/containerApps/authConfigs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs)</li></ul> |
+| `Microsoft.App/containerApps` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2025-02-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-02-02-preview/containerApps/authConfigs)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -41,6 +41,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using probes](#example-2-using-probes)
+- [Using volumes](#example-3-using-volumes)
 
 ### Example 1: _Using only defaults_
 
@@ -58,7 +59,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
-    name: 'acamin001'
+    name: 'acracamin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -82,7 +83,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
       "value": "<containerAppsEnvironmentName>"
     },
     "name": {
-      "value": "acamin001"
+      "value": "acracamin001"
     },
     // Non-required parameters
     "location": {
@@ -104,7 +105,7 @@ using 'br/public:avm/ptn/azd/acr-container-app:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
-param name = 'acamin001'
+param name = 'acracamin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -128,7 +129,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
   params: {
     // Required parameters
     containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
-    name: 'acaprb001'
+    name: 'acracaprb001'
     // Non-required parameters
     containerProbes: [
       {
@@ -169,7 +170,7 @@ module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
       "value": "<containerAppsEnvironmentName>"
     },
     "name": {
-      "value": "acaprb001"
+      "value": "acracaprb001"
     },
     // Non-required parameters
     "containerProbes": {
@@ -210,7 +211,7 @@ using 'br/public:avm/ptn/azd/acr-container-app:<version>'
 
 // Required parameters
 param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
-param name = 'acaprb001'
+param name = 'acracaprb001'
 // Non-required parameters
 param containerProbes = [
   {
@@ -230,6 +231,116 @@ param containerProbes = [
   }
 ]
 param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using volumes_
+
+This instance deploys the module with an EmptyDir volume mount.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/volumes]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
+  params: {
+    // Required parameters
+    containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
+    name: 'acracavol001'
+    // Non-required parameters
+    location: '<location>'
+    volumeMounts: [
+      {
+        mountPath: '/mnt/data'
+        volumeName: 'myemptydir'
+      }
+    ]
+    volumes: [
+      {
+        name: 'myemptydir'
+        storageType: 'EmptyDir'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containerAppsEnvironmentName": {
+      "value": "<containerAppsEnvironmentName>"
+    },
+    "name": {
+      "value": "acracavol001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "volumeMounts": {
+      "value": [
+        {
+          "mountPath": "/mnt/data",
+          "volumeName": "myemptydir"
+        }
+      ]
+    },
+    "volumes": {
+      "value": [
+        {
+          "name": "myemptydir",
+          "storageType": "EmptyDir"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/acr-container-app:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = 'acracavol001'
+// Non-required parameters
+param location = '<location>'
+param volumeMounts = [
+  {
+    mountPath: '/mnt/data'
+    volumeName: 'myemptydir'
+  }
+]
+param volumes = [
+  {
+    name: 'myemptydir'
+    storageType: 'EmptyDir'
+  }
+]
 ```
 
 </details>
@@ -280,6 +391,8 @@ param location = '<location>'
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetPort`](#parameter-targetport) | int | The target port for the container. |
 | [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource id of the user-assigned identity. |
+| [`volumeMounts`](#parameter-volumemounts) | array | Volume mounts for the primary container. |
+| [`volumes`](#parameter-volumes) | array | The list of volumes that can be mounted by containers in the container app. |
 
 ### Parameter: `containerAppsEnvironmentName`
 
@@ -856,6 +969,134 @@ The resource id of the user-assigned identity.
 - Type: string
 - Default: `''`
 
+### Parameter: `volumeMounts`
+
+Volume mounts for the primary container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-volumemountsmountpath) | string | Path within the container at which the volume should be mounted. Must not contain ':'. |
+| [`volumeName`](#parameter-volumemountsvolumename) | string | This must match the Name of a Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subPath`](#parameter-volumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root). |
+
+### Parameter: `volumeMounts.mountPath`
+
+Path within the container at which the volume should be mounted. Must not contain ':'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeMounts.volumeName`
+
+This must match the Name of a Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeMounts.subPath`
+
+Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes`
+
+The list of volumes that can be mounted by containers in the container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumesname) | string | Volume name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountOptions`](#parameter-volumesmountoptions) | string | Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. |
+| [`secrets`](#parameter-volumessecrets) | array | List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume. |
+| [`storageName`](#parameter-volumesstoragename) | string | Name of storage resource. No need to provide for EmptyDir and Secret. |
+| [`storageType`](#parameter-volumesstoragetype) | string | Storage type for the volume. If not provided, use EmptyDir. |
+
+### Parameter: `volumes.name`
+
+Volume name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.mountOptions`
+
+Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes.secrets`
+
+List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-volumessecretspath) | string | Path to project secret to. Must be unique per volume and not conflict with other paths in the volume. |
+| [`secretRef`](#parameter-volumessecretssecretref) | string | Name of the Container App secret from which to pull the secret value. |
+
+### Parameter: `volumes.secrets.path`
+
+Path to project secret to. Must be unique per volume and not conflict with other paths in the volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.secrets.secretRef`
+
+Name of the Container App secret from which to pull the secret value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.storageName`
+
+Name of storage resource. No need to provide for EmptyDir and Secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes.storageType`
+
+Storage type for the volume. If not provided, use EmptyDir.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFile'
+    'EmptyDir'
+    'NfsAzureFile'
+    'Secret'
+  ]
+  ```
+
 ## Outputs
 
 | Output | Type | Description |
@@ -876,7 +1117,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/app/container-app:0.18.1` | Remote reference |
+| `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
 
 ## Data Collection
 

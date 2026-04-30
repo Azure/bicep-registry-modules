@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "4317369978166598876"
+      "version": "0.41.2.15936",
+      "templateHash": "5033392186259758794"
     },
     "name": "DocumentDB Database Account MongoDB Database Collections",
     "description": "This module deploys a MongoDB Database Collection."

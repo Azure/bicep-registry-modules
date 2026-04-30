@@ -21,7 +21,7 @@ param namePrefix string = '#_namePrefix_#'
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'uksouth'
+var enforcedSecondLocation = 'westus3'
 
 // ============ //
 // Dependencies //

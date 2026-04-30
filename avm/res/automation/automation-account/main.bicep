@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Basic'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -65,23 +65,23 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -94,6 +94,9 @@ param enableTelemetry bool = true
 @description('Optional. The source control configurations.')
 param sourceControlConfigurations sourceControlConfigurationType[]?
 
+@description('Optional. The Hybrid Runbook Worker Groups to be created in the automation account.')
+param hybridRunbookWorkerGroups hybridRunbookWorkerGroupType[]?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -102,11 +105,11 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) && (managedIdentities.?systemAssigned ?? false || !empty(formattedUserAssignedIdentities))
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : 'UserAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -153,7 +156,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.automation-automationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -195,6 +198,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
   name: name
   location: location
   tags: tags
+  #disable-next-line BCP036 // Despite claims from the documentation, 'None' is not an allowed value, nor is null
   identity: identity
   properties: {
     sku: {
@@ -226,7 +230,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
 
 module automationAccount_credentials 'credential/main.bicep' = [
   for (credential, index) in (credentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutomationAccount-Credential-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutomationAccount-Credential-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: credential.name
@@ -239,7 +243,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Module-${index}'
     params: {
       name: module.name
       automationAccountName: automationAccount.name
@@ -251,9 +255,9 @@ module automationAccount_modules 'module/main.bicep' = [
   }
 ]
 
-module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
+module automationAccount_powershell72modules 'powershell72-module/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
       name: pwsh72module.name
       automationAccountName: automationAccount.name
@@ -265,9 +269,9 @@ module automationAccount_powershell72modules 'powershell72-modules/main.bicep' =
   }
 ]
 
-module automationAccount_python3packages 'python3-packages/main.bicep' = [
+module automationAccount_python3packages 'python3-package/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
     params: {
       name: python3package.name
       automationAccountName: automationAccount.name
@@ -278,9 +282,9 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
   }
 ]
 
-module automationAccount_python2packages 'python2-packages/main.bicep' = [
+module automationAccount_python2packages 'python2-package/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
     params: {
       name: python2package.name
       automationAccountName: automationAccount.name
@@ -293,7 +297,7 @@ module automationAccount_python2packages 'python2-packages/main.bicep' = [
 
 module automationAccount_schedules 'schedule/main.bicep' = [
   for (schedule, index) in schedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Schedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Schedule-${index}'
     params: {
       name: schedule.name
       automationAccountName: automationAccount.name
@@ -310,7 +314,7 @@ module automationAccount_schedules 'schedule/main.bicep' = [
 
 module automationAccount_runbooks 'runbook/main.bicep' = [
   for (runbook, index) in runbooks: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Runbook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Runbook-${index}'
     params: {
       name: runbook.name
       automationAccountName: automationAccount.name
@@ -328,7 +332,7 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
 
 module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
   for (jobSchedule, index) in jobSchedules: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-JobSchedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-JobSchedule-${index}'
     params: {
       automationAccountName: automationAccount.name
       runbookName: jobSchedule.runbookName
@@ -345,7 +349,7 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
 
 module automationAccount_variables 'variable/main.bicep' = [
   for (variable, index) in variables: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: variable.name
@@ -358,7 +362,7 @@ module automationAccount_variables 'variable/main.bicep' = [
 
 module automationAccount_webhook 'webhook/main.bicep' = [
   for (webhook, index) in webhooks: {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Webhook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Webhook-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: webhook.name
@@ -372,7 +376,7 @@ module automationAccount_webhook 'webhook/main.bicep' = [
 
 module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
   for (configuration, index) in (sourceControlConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-SC-${index}'
     params: {
       automationAccountName: automationAccount.name
       branch: configuration.branch
@@ -389,7 +393,7 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
 ]
 
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
-  name: '${uniqueString(deployment().name, location)}-AutoAccount-LinkedService'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-LinkedService'
   params: {
     name: 'automation'
     logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
@@ -410,7 +414,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
@@ -430,6 +434,21 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
     )
     dependsOn: [
       automationAccount_linkedService
+    ]
+  }
+]
+
+module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep' = [
+  for (group, index) in (hybridRunbookWorkerGroups ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
+    params: {
+      automationAccountName: automationAccount.name
+      hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
+      name: group.name
+      credentialName: group.?credentialName
+    }
+    dependsOn: [
+      automationAccount_credentials
     ]
   }
 ]
@@ -454,14 +473,18 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -474,9 +497,9 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-pe-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -697,4 +720,18 @@ type sourceControlConfigurationType = {
 
   @description('Optional. The authorization token for the repo of the source control.')
   securityToken: resourceInput<'Microsoft.Automation/automationAccounts/sourceControls@2024-10-23'>.properties.securityToken?
+}
+
+import { hybridRunbookWorkerGroupWorkerType } from 'hybrid-runbook-worker-group/main.bicep'
+@export()
+@description('The type of a hybrid runbook worker group configuration.')
+type hybridRunbookWorkerGroupType = {
+  @description('Required. Name of the Hybrid Runbook Worker Group.')
+  name: string
+
+  @description('Optional. Gets or sets the name of the credential.')
+  credentialName: string?
+
+  @description('Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.')
+  hybridRunbookWorkerGroupWorkers: hybridRunbookWorkerGroupWorkerType[]?
 }

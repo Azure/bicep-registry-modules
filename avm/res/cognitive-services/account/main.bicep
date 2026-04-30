@@ -594,6 +594,14 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@secure()
+@description('The primary access key.')
+output primaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key1 : null
+
+@secure()
+@description('The secondary access key.')
+output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().key2 : null
+
 // ================ //
 // Definitions      //
 // ================ //
@@ -637,8 +645,8 @@ type deploymentType = {
     @description('Required. The format of Cognitive Services account deployment model.')
     format: string
 
-    @description('Required. The version of Cognitive Services account deployment model.')
-    version: string
+    @description('Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version.')
+    version: string?
   }
 
   @description('Optional. The resource model definition representing SKU.')

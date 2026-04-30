@@ -28,9 +28,7 @@ param zoneRedundant bool = true
 param isAutoInflateEnabled bool = false
 
 @description('Optional. Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units.')
-@minValue(0)
-@maxValue(20)
-param maximumThroughputUnits int = 1
+param maximumThroughputUnits resourceInput<'Microsoft.EventHub/namespaces@2024-01-01'>.properties.maximumThroughputUnits = 1
 
 @description('Optional. Authorization Rules for the Event Hub namespace.')
 param authorizationRules array = [
@@ -261,6 +259,7 @@ module eventHubNamespace_authorizationRules 'authorization-rule/main.bicep' = [
       namespaceName: eventHubNamespace.name
       name: authorizationRule.name
       rights: authorizationRule.?rights ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -271,6 +270,7 @@ module eventHubNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.b
     namespaceName: eventHubNamespace.name
     name: disasterRecoveryConfig!.name
     partnerNamespaceResourceId: disasterRecoveryConfig.?partnerNamespaceResourceId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -308,6 +308,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
     trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled
     ipRules: networkRuleSets.?ipRules
     virtualNetworkRules: networkRuleSets.?virtualNetworkRules
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

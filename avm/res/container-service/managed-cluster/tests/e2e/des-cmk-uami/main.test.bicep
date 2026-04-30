@@ -69,8 +69,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       aadProfile: {
-        aadProfileEnableAzureRBAC: true
-        aadProfileManaged: true
+        enableAzureRBAC: true
+        managed: true
       }
       diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
     }

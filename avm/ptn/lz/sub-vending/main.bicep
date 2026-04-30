@@ -4,7 +4,7 @@ metadata details = '''These are the input parameters for the Bicep module: [`mai
 
 This is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.
 
-> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)'''
+> For more information and examples please see the [wiki](https://aka.ms/lz-vending/techdocs/bicep)'''
 
 targetScope = 'managementGroup'
 
@@ -145,8 +145,13 @@ param virtualNetworkName string?
 ''')
 param virtualNetworkTags object = {}
 
-@description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
+@description('''Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network in CIDR notation (e.g. `["10.0.0.0/16","172.16.0.0/12"]`) OR a single IPAM pool resource ID to allocate IP addresses from. When specifying an IPAM pool resource ID, you must also set a value for the `virtualNetworkIpamPoolNumberOfIpAddresses` parameter.
+''')
 param virtualNetworkAddressSpace string[] = []
+
+@description('''Optional. The number of IP addresses to allocate from the IPAM pool. Required when `virtualNetworkAddressSpace` contains an IPAM pool resource ID. Example: `'256'` for a /24 network.
+''')
+param virtualNetworkIpamPoolNumberOfIpAddresses string?
 
 @description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
 param virtualNetworkSubnets subnetType[]?
@@ -309,7 +314,7 @@ param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString
 param deploymentScriptLocation string = deployment().location
 
 @description('''
-Optional. An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.
+Optional. An object of resource providers and resource providers features to register. If not specified, a default list of common resource providers will be registered. To disable resource provider registration entirely, provide an empty object `{}`.
 ''')
 param resourceProviders object = {
   'Microsoft.ApiManagement': []
@@ -356,8 +361,6 @@ param resourceProviders object = {
   'Microsoft.Management': []
   'Microsoft.Maps': []
   'Microsoft.MarketplaceOrdering': []
-  'Microsoft.Media': []
-  'Microsoft.MixedReality': []
   'Microsoft.Network': []
   'Microsoft.NotificationHubs': []
   'Microsoft.OperationalInsights': []
@@ -403,6 +406,33 @@ param networkSecurityGroups networkSecurityGroupType[] = []
 @sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
 param networkSecurityGroupResourceGroupName string = ''
 
+@sys.description('Optional. The name of the budget.')
+param budgetName string = ''
+
+@sys.description('Optional. The total amount of cost or usage to track with the budget.')
+param budgetAmount int = 100
+
+@sys.description('Optional. The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).')
+param budgetStartDate string = '${utcNow('yyyy')}-${utcNow('MM')}-01T00:00:00Z'
+
+@sys.description('Optional. The list of email addresses to send the budget notification to when the thresholds are exceeded.')
+param budgetContactEmails array = []
+
+@sys.description('Optional. List of action group resource IDs that will receive the alert.')
+param budgetActionGroups array = []
+
+@sys.description('Optional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided.')
+param budgetContactRoles array = (empty(budgetActionGroups) && empty(budgetContactEmails)) ? ['Owner'] : []
+
+@sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
+param budgetCategory string = 'Cost'
+
+@sys.description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+param budgetThresholdType string = 'Forecasted'
+
+@sys.description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
+param budgetThresholds array = [90]
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -421,6 +451,111 @@ var deploymentNames = {
     64
   )
 }
+
+var azureRegionShortNameDisplayNameAsKey = {
+  'australia central': 'australiacentral'
+  'australia central 2': 'australiacentral2'
+  'australia east': 'australiaeast'
+  'australia southeast': 'australiasoutheast'
+  'belgium central': 'belgiumcentral'
+  'brazil south': 'brazilsouth'
+  'brazil southeast': 'brazilsoutheast'
+  'canada central': 'canadacentral'
+  'canada east': 'canadaeast'
+  'central india': 'centralindia'
+  'central us': 'centralus'
+  'central us euap': 'centraluseuap'
+  'chile central': 'chilecentral'
+  'east asia': 'eastasia'
+  'east us': 'eastus'
+  'east us 2': 'eastus2'
+  'east us 2 euap': 'eastus2euap'
+  'france central': 'francecentral'
+  'france south': 'francesouth'
+  'germany north': 'germanynorth'
+  'germany west central': 'germanywestcentral'
+  'indonesia central': 'indonesiacentral'
+  'israel central': 'israelcentral'
+  'italy north': 'italynorth'
+  'japan east': 'japaneast'
+  'japan west': 'japanwest'
+  'korea central': 'koreacentral'
+  'korea south': 'koreasouth'
+  'malaysia south': 'malaysiasouth'
+  'malaysia west': 'malaysiawest'
+  'mexico central': 'mexicocentral'
+  'new zealand north': 'newzealandnorth'
+  'north central us': 'northcentralus'
+  'north europe': 'northeurope'
+  'norway east': 'norwayeast'
+  'norway west': 'norwaywest'
+  'poland central': 'polandcentral'
+  'qatar central': 'qatarcentral'
+  'south africa north': 'southafricanorth'
+  'south africa west': 'southafricawest'
+  'south central us': 'southcentralus'
+  'south india': 'southindia'
+  'southeast asia': 'southeastasia'
+  'spain central': 'spaincentral'
+  'sweden central': 'swedencentral'
+  'sweden south': 'swedensouth'
+  'switzerland north': 'switzerlandnorth'
+  'switzerland west': 'switzerlandwest'
+  'taiwan north': 'taiwannorth'
+  'uae central': 'uaecentral'
+  'uae north': 'uaenorth'
+  'uk south': 'uksouth'
+  'uk west': 'ukwest'
+  'usdod central': 'usdodcentral'
+  'usdod east': 'usdodeast'
+  'usgov arizona': 'usgovarizona'
+  'usgov texas': 'usgovtexas'
+  'usgov virginia': 'usgovvirginia'
+  'west central us': 'westcentralus'
+  'west europe': 'westeurope'
+  'west india': 'westindia'
+  'west us': 'westus'
+  'west us 2': 'westus2'
+  'west us 3': 'westus3'
+}
+
+var locationLowered = toLower(deployment().location)
+var locationLoweredAndSpacesRemoved = contains(locationLowered, ' ')
+  ? azureRegionShortNameDisplayNameAsKey[locationLowered]
+  : locationLowered
+
+// Normalized resource names - replaces deployment().location in default values to remove spaces and capitals
+var userAssignedIdentityResourceGroupNameNormalized = toLower(userAssignedIdentityResourceGroupName) == toLower('rsg-${deployment().location}-identities')
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-identities'
+  : replace(userAssignedIdentityResourceGroupName, ' ', '')
+
+var virtualNetworkLocationNormalized = contains(toLower(virtualNetworkLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(virtualNetworkLocation)]
+  : toLower(virtualNetworkLocation)
+
+var deploymentScriptResourceGroupNameNormalized = toLower(deploymentScriptResourceGroupName) == toLower('rsg-${deployment().location}-ds')
+  ? 'rsg-${locationLoweredAndSpacesRemoved}-ds'
+  : replace(deploymentScriptResourceGroupName, ' ', '')
+
+var deploymentScriptNameNormalized = toLower(deploymentScriptName) == toLower('ds-${deployment().location}')
+  ? 'ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptName, ' ', '')
+
+var deploymentScriptManagedIdentityNameNormalized = toLower(deploymentScriptManagedIdentityName) == toLower('id-${deployment().location}')
+  ? 'id-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptManagedIdentityName, ' ', '')
+
+var deploymentScriptVirtualNetworkNameNormalized = toLower(deploymentScriptVirtualNetworkName) == toLower('vnet-ds-${deployment().location}')
+  ? 'vnet-ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptVirtualNetworkName, ' ', '')
+
+var deploymentScriptNetworkSecurityGroupNameNormalized = toLower(deploymentScriptNetworkSecurityGroupName) == toLower('nsg-ds-${deployment().location}')
+  ? 'nsg-ds-${locationLoweredAndSpacesRemoved}'
+  : replace(deploymentScriptNetworkSecurityGroupName, ' ', '')
+
+var deploymentScriptLocationNormalized = contains(toLower(deploymentScriptLocation), ' ')
+  ? azureRegionShortNameDisplayNameAsKey[toLower(deploymentScriptLocation)]
+  : toLower(deploymentScriptLocation)
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -469,10 +604,11 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkResourceGroupName: virtualNetworkResourceGroupName
     virtualNetworkResourceGroupTags: virtualNetworkResourceGroupTags
     virtualNetworkResourceGroupLockEnabled: virtualNetworkResourceGroupLockEnabled
-    virtualNetworkLocation: virtualNetworkLocation
+    virtualNetworkLocation: virtualNetworkLocationNormalized
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkIpamPoolNumberOfIpAddresses: virtualNetworkIpamPoolNumberOfIpAddresses
     virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
@@ -488,20 +624,20 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
     pimRoleAssignments: pimRoleAssignments
-    deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
-    deploymentScriptName: deploymentScriptName
-    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
+    deploymentScriptResourceGroupName: deploymentScriptResourceGroupNameNormalized
+    deploymentScriptName: deploymentScriptNameNormalized
+    deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityNameNormalized
     resourceProviders: resourceProviders
-    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkName
-    deploymentScriptLocation: deploymentScriptLocation
-    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
+    deploymentScriptVirtualNetworkName: deploymentScriptVirtualNetworkNameNormalized
+    deploymentScriptLocation: deploymentScriptLocationNormalized
+    deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupNameNormalized
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
     virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
     virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
     virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     virtualNetworkDeployBastion: virtualNetworkDeployBastion
-    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupName
+    userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupNameNormalized
     userAssignedManagedIdentities: userAssignedManagedIdentities
     userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
     peerAllVirtualNetworks: peerAllVirtualNetworks
@@ -509,6 +645,15 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     routeTablesResourceGroupName: routeTablesResourceGroupName
     networkSecurityGroups: networkSecurityGroups
     networkSecurityGroupResourceGroupName: networkSecurityGroupResourceGroupName
+    budgetName: budgetName
+    budgetStartDate: budgetStartDate
+    budgetAmount: budgetAmount
+    budgetCategory: budgetCategory
+    budgetContactEmails: budgetContactEmails
+    budgetActionGroups: budgetActionGroups
+    budgetContactRoles: budgetContactRoles
+    budgetThresholds: budgetThresholds
+    budgetThresholdType: budgetThresholdType
     enableTelemetry: enableTelemetry
   }
 }

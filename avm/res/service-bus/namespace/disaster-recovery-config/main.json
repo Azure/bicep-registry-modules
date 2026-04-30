@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "12684500962727878582"
+      "version": "0.41.2.15936",
+      "templateHash": "12207804353823589513"
     },
     "name": "Service Bus Namespace Disaster Recovery Configs",
     "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"

@@ -11,17 +11,17 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2023-11-01'>.tags?
+param tags resourceInput<'Microsoft.ServiceNetworking/trafficControllers@2025-01-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -31,6 +31,9 @@ param frontends frontendType[]?
 @maxLength(1)
 @description('Optional. List of Application Gateway for Containers associations. At this time, the number of associations is limited to 1.')
 param associations associationType[]?
+
+@description('Optional. List of Application Gateway for Containers security policies.')
+param securityPolicies securityPolicyType[]?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -80,7 +83,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2023-11-01' = {
+resource trafficController 'Microsoft.ServiceNetworking/trafficControllers@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -170,6 +173,22 @@ module trafficController_associations 'association/main.bicep' = [
   }
 ]
 
+module trafficController_securityPolicies 'security-policy/main.bicep' = [
+  for (securityPolicy, index) in (securityPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-TrafficController-SecurityPolicy-${index}'
+    params: {
+      trafficControllerName: trafficController.name
+      name: securityPolicy.name
+      location: location
+      wafPolicyResourceId: securityPolicy.wafPolicyResourceId
+    }
+    dependsOn: [
+      trafficController_associations
+      trafficController_frontends
+    ]
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -190,8 +209,15 @@ output location string = trafficController.location
 output configurationEndpoints string[] = trafficController.properties.configurationEndpoints
 
 @description('The frontends of the Application Gateway for Containers.')
-output frontends array = [
-  for (frontend, i) in (!empty(frontends) ? array(frontends) : []): {
+output frontends {
+  @description('The name of the frontend.')
+  name: string
+  @description('The resource ID of the frontend.')
+  resourceId: string
+  @description('The FQDN of the frontend.')
+  fqdn: string
+}[] = [
+  for (frontend, i) in (frontends ?? []): {
     name: trafficController_frontends[i].outputs.name
     resourceId: trafficController_frontends[i].outputs.resourceId
     fqdn: trafficController_frontends[i].outputs.fqdn
@@ -199,11 +225,31 @@ output frontends array = [
 ]
 
 @description('The associations of the Application Gateway for Containers.')
-output associations array = [
-  for (association, i) in (!empty(associations) ? array(associations) : []): {
+output associations {
+  @description('The name of the association.')
+  name: string
+  @description('The resource ID of the association.')
+  resourceId: string
+  @description('The subnet resource ID associated with the association.')
+  subnetResourceId: string
+}[] = [
+  for (association, i) in (associations ?? []): {
     name: trafficController_associations[i].outputs.name
     resourceId: trafficController_associations[i].outputs.resourceId
     subnetResourceId: trafficController_associations[i].outputs.subnetResourceId
+  }
+]
+
+@description('The security policies of the Application Gateway for Containers.')
+output securityPolicies {
+  @description('The name of the security policy.')
+  name: string
+  @description('The resource ID of the security policy.')
+  resourceId: string
+}[] = [
+  for (securityPolicy, i) in (securityPolicies ?? []): {
+    name: trafficController_securityPolicies[i].outputs.name
+    resourceId: trafficController_securityPolicies[i].outputs.resourceId
   }
 ]
 
@@ -212,16 +258,28 @@ output associations array = [
 // ================ //
 
 @export()
+@description('Type definition for Application Gateway for Containers frontend.')
 type frontendType = {
   @description('Required. The name of the Application Gateway for Containers frontend.')
   name: string
 }
 
 @export()
+@description('Type definition for Application Gateway for Containers association.')
 type associationType = {
   @description('Required. The name of the Application Gateway for Containers association.')
   name: string
 
   @description('Required. The resource ID of the subnet to associate with the Application Gateway for Containers.')
   subnetResourceId: string
+}
+
+@export()
+@description('Type definition for Application Gateway for Containers security policy.')
+type securityPolicyType = {
+  @description('Required. The name of the Application Gateway for Containers security policy.')
+  name: string
+
+  @description('Required. The resource ID of the WAF Policy to associate with the security policy.')
+  wafPolicyResourceId: string
 }

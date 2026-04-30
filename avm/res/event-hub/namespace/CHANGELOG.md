@@ -2,6 +2,30 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Publishing child module `avm/res/event-hub/namespace/authorization-rule`
+- Publishing child module `avm/res/event-hub/namespace/disaster-recovery-config`
+- Publishing child module `avm/res/event-hub/namespace/network-rule-set`
+- Publishing child module `avm/res/event-hub/namespace/eventhub/authorization-rule`
+- Publishing child module `avm/res/event-hub/namespace/eventhub/consumergroup`
+
+### Breaking Changes
+
+- None
+
+## 0.14.1
+
+### Changes
+
+- Enhanced `maximumThroughputUnits` parameter type to use resource schema type reference
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes

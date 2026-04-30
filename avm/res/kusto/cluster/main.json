@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.38.33.27573",
-      "templateHash": "13967322527731197778"
+      "version": "0.41.2.15936",
+      "templateHash": "1598019777369498284"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -132,6 +132,7 @@
           "type": "string",
           "allowedValues": [
             "AllDatabasesAdmin",
+            "AllDatabasesMonitor",
             "AllDatabasesViewer"
           ],
           "metadata": {
@@ -1223,7 +1224,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The virtual machine scale set zones. NOTE: Availability zones can only be set when you create the scale set."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Once a zone is selected, you cannot opt-out again."
       }
     }
   },
@@ -1322,7 +1323,7 @@
         "virtualClusterGraduationProperties": "[parameters('virtualClusterGraduationProperties')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('virtualNetworkConfiguration'))), createObject('dataManagementPublicIpId', parameters('virtualNetworkConfiguration').dataManagementPublicIpResourceId, 'enginePublicIpId', parameters('virtualNetworkConfiguration').enginePublicIpResourceId, 'subnetId', parameters('virtualNetworkConfiguration').subnetResourceId), null())]"
       },
-      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+      "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -1335,7 +1336,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1373,7 +1374,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1390,7 +1391,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Kusto/clusters/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kusto/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1441,8 +1442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "1012223909934891391"
+              "version": "0.41.2.15936",
+              "templateHash": "15516949031513950325"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -1477,7 +1478,8 @@
               "type": "string",
               "allowedValues": [
                 "AllDatabasesAdmin",
-                "AllDatabasesViewer"
+                "AllDatabasesViewer",
+                "AllDatabasesMonitor"
               ],
               "metadata": {
                 "description": "Required. The Kusto Cluster role to be assigned to the principal id."
@@ -1495,7 +1497,7 @@
             {
               "type": "Microsoft.Kusto/clusters/principalAssignments",
               "apiVersion": "2024-04-13",
-              "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('principalId'))]",
+              "name": "[format('{0}/{1}', parameters('kustoClusterName'), guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId')))]",
               "properties": {
                 "principalId": "[parameters('principalId')]",
                 "principalType": "[parameters('principalType')]",
@@ -1510,14 +1512,14 @@
               "metadata": {
                 "description": "The name of the deployed Kusto Cluster Principal Assignment."
               },
-              "value": "[parameters('principalId')]"
+              "value": "[guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource id of the deployed Kusto Cluster Principal Assignment."
               },
-              "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), parameters('principalId'))]"
+              "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), guid(resourceId('Microsoft.Kusto/clusters', parameters('kustoClusterName')), parameters('principalId'), parameters('principalType'), parameters('role'), parameters('tenantId')))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1597,8 +1599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "16604612898799598358"
+              "version": "0.41.2.15936",
+              "templateHash": "18436885663402767850"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1662,7 +1664,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -1761,7 +1763,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -1800,11 +1802,21 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                 },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               },
               "nullable": true
+            },
+            "ipVersionType": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                },
+                "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+              },
+              "defaultValue": "IPv4"
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -1841,7 +1853,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               },
@@ -1851,7 +1863,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                 },
                 "description": "Optional. Custom DNS configurations."
               },
@@ -1861,7 +1873,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               },
@@ -1871,7 +1883,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               },
@@ -1911,7 +1923,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1929,7 +1941,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1950,14 +1962,15 @@
                 "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
-                }
+                },
+                "ipVersionType": "[parameters('ipVersionType')]"
               }
             },
             "privateEndpoint_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1974,7 +1987,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -2017,8 +2030,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "24141742673128945"
+                      "version": "0.41.2.15936",
+                      "templateHash": "9935179114830442414"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2077,12 +2090,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "copy": [
@@ -2157,13 +2170,13 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                   "output": true
                 },
                 "description": "The custom DNS configurations of the private endpoint."
@@ -2215,6 +2228,9 @@
           "kustoClusterName": {
             "value": "[parameters('name')]"
           },
+          "location": {
+            "value": "[parameters('location')]"
+          },
           "databaseKind": {
             "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].kind]"
           },
@@ -2230,8 +2246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "14255520298720928878"
+              "version": "0.41.2.15936",
+              "templateHash": "3575126935204689897"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database."
@@ -2455,8 +2471,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.33.27573",
-                      "templateHash": "7106563084045148449"
+                      "version": "0.41.2.15936",
+                      "templateHash": "2050858883185100947"
                     },
                     "name": "Kusto Cluster Database Principal Assignments",
                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."

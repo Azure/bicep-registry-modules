@@ -427,12 +427,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         model: {
           format: 'OpenAI'
           name: 'gpt-4o'
-          version: '2024-11-20'
         }
         name: 'gpt-4o'
         sku: {
           capacity: 10
-          name: 'Standard'
+          name: 'GlobalStandard'
         }
       }
     ]
@@ -468,13 +467,12 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "gpt-4o"
           },
           "name": "gpt-4o",
           "sku": {
             "capacity": 10,
-            "name": "Standard"
+            "name": "GlobalStandard"
           }
         }
       ]
@@ -503,12 +501,11 @@ param deployments = [
     model: {
       format: 'OpenAI'
       name: 'gpt-4o'
-      version: '2024-11-20'
     }
     name: 'gpt-4o'
     sku: {
       capacity: 10
-      name: 'Standard'
+      name: 'GlobalStandard'
     }
   }
 ]
@@ -2318,7 +2315,12 @@ Properties of Cognitive Services account deployment model.
 | :-- | :-- | :-- |
 | [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
 | [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
-| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. Required if the model does not have a default version. |
 
 ### Parameter: `deployments.model.format`
 
@@ -2336,9 +2338,9 @@ The name of Cognitive Services account deployment model.
 
 ### Parameter: `deployments.model.version`
 
-The version of Cognitive Services account deployment model.
+The version of Cognitive Services account deployment model. Required if the model does not have a default version.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `deployments.name`
@@ -3403,9 +3405,11 @@ The storage accounts for this resource.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the cognitive services account. |
+| `primaryKey` | securestring | The primary access key. |
 | `privateEndpoints` | array | The private endpoints of the congitive services account. |
 | `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
 | `resourceId` | string | The resource ID of the cognitive services account. |
+| `secondaryKey` | securestring | The secondary access key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "17945301790696727841"
+      "version": "0.41.2.15936",
+      "templateHash": "3184896756334475814"
     },
     "name": "Event Grid Domain Event Subscriptions",
     "description": "This module deploys an Event Grid Domain Event Subscription."

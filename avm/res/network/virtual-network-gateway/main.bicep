@@ -98,6 +98,9 @@ param publicIpAvailabilityZones int[] = [
 @description('Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com.')
 param domainNameLabel array = []
 
+@description('Optional. The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment.')
+param domainNameLabelScope ('NoReuse' | 'ResourceGroupReuse' | 'SubscriptionReuse' | 'TenantReuse')?
+
 @description('Required. Specifies the gateway type. E.g. VPN, ExpressRoute.')
 @allowed([
   'Vpn'
@@ -116,11 +119,6 @@ param vpnGatewayGeneration string = 'None'
 @description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
-  'VpnGw1'
-  'VpnGw2'
-  'VpnGw3'
-  'VpnGw4'
-  'VpnGw5'
   'VpnGw1AZ'
   'VpnGw2AZ'
   'VpnGw3AZ'
@@ -176,7 +174,7 @@ param natRules natRuleType[]?
 @description('Optional. EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway.')
 param enableBgpRouteTranslationForNat bool = false
 
-@description('Optional. Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided.')
+@description('Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication.')
 param clientRootCertData string = ''
 
 @description('Optional. Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.')
@@ -204,7 +202,7 @@ param tags resourceInput<'Microsoft.Network/virtualNetworkGateways@2024-07-01'>.
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
+@description('Optional. Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication.')
 param vpnClientAadConfiguration vpnClientAadConfigurationType?
 
 @description('Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities.')
@@ -401,22 +399,26 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           }
         ]
 
-var vpnClientConfiguration = !empty(clientRootCertData)
+var hasClientRootCertificate = !empty(clientRootCertData)
+var hasVpnClientAadConfiguration = !empty(vpnClientAadConfiguration)
+var vpnClientConfiguration = hasClientRootCertificate || hasVpnClientAadConfiguration
   ? {
       vpnClientAddressPool: {
         addressPrefixes: [
           vpnClientAddressPoolPrefix
         ]
       }
-      vpnClientRootCertificates: [
-        {
-          name: 'RootCert1'
-          properties: {
-            publicCertData: clientRootCertData
-          }
-        }
-      ]
-      vpnClientRevokedCertificates: !empty(clientRevokedCertThumbprint)
+      vpnClientRootCertificates: hasClientRootCertificate
+        ? [
+            {
+              name: 'RootCert1'
+              properties: {
+                publicCertData: clientRootCertData
+              }
+            }
+          ]
+        : null
+      vpnClientRevokedCertificates: hasClientRootCertificate && !empty(clientRevokedCertThumbprint)
         ? [
             {
               name: 'RevokedCert1'
@@ -426,21 +428,17 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             }
           ]
         : null
+      aadTenant: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadTenant : null
+      aadAudience: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadAudience : null
+      aadIssuer: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadIssuer : null
+      vpnAuthenticationTypes: hasVpnClientAadConfiguration
+        ? (hasClientRootCertificate && !contains(vpnClientAadConfiguration!.vpnAuthenticationTypes, 'Certificate')
+            ? concat(vpnClientAadConfiguration!.vpnAuthenticationTypes, ['Certificate'])
+            : vpnClientAadConfiguration!.vpnAuthenticationTypes)
+        : null
+      vpnClientProtocols: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.vpnClientProtocols : null
     }
-  : !empty(vpnClientAadConfiguration)
-      ? {
-          vpnClientAddressPool: {
-            addressPrefixes: [
-              vpnClientAddressPoolPrefix
-            ]
-          }
-          aadTenant: vpnClientAadConfiguration!.aadTenant
-          aadAudience: vpnClientAadConfiguration!.aadAudience
-          aadIssuer: vpnClientAadConfiguration!.aadIssuer
-          vpnAuthenticationTypes: vpnClientAadConfiguration!.vpnAuthenticationTypes
-          vpnClientProtocols: vpnClientAadConfiguration!.vpnClientProtocols
-        }
-      : null
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -471,7 +469,7 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(existingPrimaryPublicIPResourceId)) {
+resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01'existing = if (!empty(existingPrimaryPublicIPResourceId)) {
   name: last(split(existingPrimaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(existingPrimaryPublicIPResourceId, '/')[2],
@@ -479,7 +477,7 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existi
   )
 }
 
-resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingSecondaryPublicIPResourceId)) {
+resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' existing = if (!empty(clusterSettings.?existingSecondaryPublicIPResourceId)) {
   name: last(split(clusterSettings.?existingSecondaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(clusterSettings.?existingSecondaryPublicIPResourceId, '/')[2],
@@ -487,7 +485,7 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' exis
   )
 }
 
-resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingTertiaryPublicIPResourceId)) {
+resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' existing = if (!empty(clusterSettings.?existingTertiaryPublicIPResourceId)) {
   name: last(split(clusterSettings.?existingTertiaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(clusterSettings.?existingTertiaryPublicIPResourceId, '/')[2],
@@ -523,7 +521,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Public IPs
 @batchSize(1)
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = [
   for (virtualGatewayPublicIpName, index) in arrayPipNameVar: {
     name: virtualGatewayPublicIpName
     params: {
@@ -540,7 +538,8 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
         domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
           : virtualGatewayPublicIpName
-        domainNameLabelScope: 'TenantReuse'
+
+        ...(domainNameLabelScope != null ? { domainNameLabelScope: domainNameLabelScope } : {})
       }
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -549,7 +548,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.9.0' = [
 
 // VNET Gateway
 // ============
-resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = {
+resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2025-01-01' = {
   name: name
   location: location
   tags: tags
@@ -637,6 +636,7 @@ resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
   }
   scope: virtualNetworkGateway
 }
+
 
 resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

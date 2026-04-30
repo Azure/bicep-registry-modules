@@ -13,13 +13,13 @@ param location string = 'global'
 param enableTelemetry bool = true
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices@2023-04-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices@2025-09-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -41,6 +41,10 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
+  'Communication and Email Service Owner': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '09976791-48a7-449e-bb21-39d1a415f350'
+  )
 }
 
 var formattedRoleAssignments = [
@@ -59,7 +63,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.communication-emailservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -77,7 +81,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource email 'Microsoft.Communication/emailServices@2023-04-01' = {
+resource email 'Microsoft.Communication/emailServices@2025-09-01' = {
   name: name
   location: location
   tags: tags
@@ -153,8 +157,18 @@ output domainResourceIds string[] = [for (domain, index) in (domains ?? []): ema
 output domainNames string[] = [for (domain, index) in (domains ?? []): email_domains[index].outputs.name]
 
 @description('The list of verification records for each domain.')
-output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-05-01'>.properties.verificationRecords[] = [
+output domainVerificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-09-01'>.properties.verificationRecords[] = [
   for (domain, index) in (domains ?? []): email_domains[index].outputs.verificationRecords
+]
+
+@description('The list of from sender domains for each domain.')
+output domainFromSenderDomains string[] = [
+  for (domain, index) in (domains ?? []): email_domains[index].outputs.fromSenderDomain
+]
+
+@description('The list of mail from sender domains for each domain.')
+output domainMailFromSenderDomains string[] = [
+  for (domain, index) in (domains ?? []): email_domains[index].outputs.mailFromSenderDomain
 ]
 
 // =========== //
@@ -175,7 +189,7 @@ type domainType = {
   location: string?
 
   @description('Optional. Endpoint tags.')
-  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
+  tags: resourceInput<'Microsoft.Communication/emailServices/domains@2025-09-01'>.tags?
 
   @description('Optional. Describes how the Domain resource is being managed.')
   domainManagement: ('AzureManaged' | 'CustomerManaged' | 'CustomerManagedInExchangeOnline')?

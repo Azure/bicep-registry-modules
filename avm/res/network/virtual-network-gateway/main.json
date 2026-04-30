@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "9720848511307190061"
+      "version": "0.42.1.51946",
+      "templateHash": "11458957035925900340"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -771,6 +771,19 @@
         "description": "Optional. DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com."
       }
     },
+    "domainNameLabelScope": {
+      "type": "string",
+      "allowedValues": [
+        "NoReuse",
+        "ResourceGroupReuse",
+        "SubscriptionReuse",
+        "TenantReuse"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The domain name label scope for the Public IP DNS settings. This property is a preview feature and not available in all regions. If not specified, the property is omitted from the Public IP deployment."
+      }
+    },
     "gatewayType": {
       "type": "string",
       "allowedValues": [
@@ -798,11 +811,6 @@
       "defaultValue": "[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
-        "VpnGw1",
-        "VpnGw2",
-        "VpnGw3",
-        "VpnGw4",
-        "VpnGw5",
         "VpnGw1AZ",
         "VpnGw2AZ",
         "VpnGw3AZ",
@@ -913,7 +921,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided."
+        "description": "Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication."
       }
     },
     "clientRevokedCertThumbprint": {
@@ -981,7 +989,7 @@
       "$ref": "#/definitions/vpnClientAadConfigurationType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided."
+        "description": "Optional. Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication."
       }
     },
     "managedIdentity": {
@@ -1054,7 +1062,9 @@
     "arrayPipNameVar": "[if(variables('isExpressRoute'), createArray(), if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar'))), if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), createArray(), createArray(variables('tertiaryPublicIPNameVar')))), if(variables('isActiveActive'), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName'))), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), createArray(), createArray(variables('secondaryPublicIPNameVar')))), concat(if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), createArray(), createArray(parameters('primaryPublicIPName')))))))]",
     "bgpSettingsVar": "[if(variables('isActiveActive'), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))), createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'secondCustomBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig2', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))), createObject('asn', coalesce(tryGet(parameters('clusterSettings'), 'asn'), 65515), 'bgpPeeringAddresses', createArray(createObject('customBgpIpAddresses', tryGet(parameters('clusterSettings'), 'customBgpIpAddresses'), 'ipconfigurationId', format('{0}/ipConfigurations/vNetGatewayConfig1', resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')))))))]",
     "ipConfiguration": "[if(and(variables('isActiveActive'), not(empty(parameters('vpnClientAddressPoolPrefix')))), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(variables('existingTertiaryPublicIPResourceIdVar'))), variables('existingTertiaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('tertiaryPublicIPNameVar')))))), 'name', 'vNetGatewayConfig3')), if(variables('isActiveActive'), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'), createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(variables('isActiveActive'), if(not(empty(variables('existingSecondaryPublicIPResourceIdVar'))), variables('existingSecondaryPublicIPResourceIdVar'), resourceId('Microsoft.Network/publicIPAddresses', variables('secondaryPublicIPNameVar'))), if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName'))))))), 'name', 'vNetGatewayConfig2')), createArray(createObject('properties', createObject('privateIPAllocationMethod', 'Dynamic', 'subnet', createObject('id', format('{0}/subnets/GatewaySubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', if(variables('isExpressRoute'), null(), createObject('id', if(not(empty(parameters('existingPrimaryPublicIPResourceId'))), parameters('existingPrimaryPublicIPResourceId'), resourceId('Microsoft.Network/publicIPAddresses', parameters('primaryPublicIPName')))))), 'name', 'vNetGatewayConfig1'))))]",
-    "vpnClientConfiguration": "[if(not(empty(parameters('clientRootCertData'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), 'vpnClientRevokedCertificates', if(not(empty(parameters('clientRevokedCertThumbprint'))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null())), if(not(empty(parameters('vpnClientAadConfiguration'))), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'aadTenant', parameters('vpnClientAadConfiguration').aadTenant, 'aadAudience', parameters('vpnClientAadConfiguration').aadAudience, 'aadIssuer', parameters('vpnClientAadConfiguration').aadIssuer, 'vpnAuthenticationTypes', parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'vpnClientProtocols', parameters('vpnClientAadConfiguration').vpnClientProtocols), null()))]",
+    "hasClientRootCertificate": "[not(empty(parameters('clientRootCertData')))]",
+    "hasVpnClientAadConfiguration": "[not(empty(parameters('vpnClientAadConfiguration')))]",
+    "vpnClientConfiguration": "[if(or(variables('hasClientRootCertificate'), variables('hasVpnClientAadConfiguration')), createObject('vpnClientAddressPool', createObject('addressPrefixes', createArray(parameters('vpnClientAddressPoolPrefix'))), 'vpnClientRootCertificates', if(variables('hasClientRootCertificate'), createArray(createObject('name', 'RootCert1', 'properties', createObject('publicCertData', parameters('clientRootCertData')))), null()), 'vpnClientRevokedCertificates', if(and(variables('hasClientRootCertificate'), not(empty(parameters('clientRevokedCertThumbprint')))), createArray(createObject('name', 'RevokedCert1', 'properties', createObject('thumbprint', parameters('clientRevokedCertThumbprint')))), null()), 'aadTenant', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadTenant, null()), 'aadAudience', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadAudience, null()), 'aadIssuer', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').aadIssuer, null()), 'vpnAuthenticationTypes', if(variables('hasVpnClientAadConfiguration'), if(and(variables('hasClientRootCertificate'), not(contains(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, 'Certificate'))), concat(parameters('vpnClientAadConfiguration').vpnAuthenticationTypes, createArray('Certificate')), parameters('vpnClientAadConfiguration').vpnAuthenticationTypes), null()), 'vpnClientProtocols', if(variables('hasVpnClientAadConfiguration'), parameters('vpnClientAadConfiguration').vpnClientProtocols, null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -1069,7 +1079,7 @@
       "condition": "[not(empty(parameters('existingPrimaryPublicIPResourceId')))]",
       "existing": true,
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "subscriptionId": "[split(parameters('existingPrimaryPublicIPResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('existingPrimaryPublicIPResourceId'), '/')[4]]",
       "name": "[last(split(parameters('existingPrimaryPublicIPResourceId'), '/'))]"
@@ -1078,7 +1088,7 @@
       "condition": "[not(empty(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId')))]",
       "existing": true,
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "subscriptionId": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/'))]"
@@ -1087,7 +1097,7 @@
       "condition": "[not(empty(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId')))]",
       "existing": true,
       "type": "Microsoft.Network/publicIPAddresses",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "subscriptionId": "[split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('clusterSettings'), 'existingTertiaryPublicIPResourceId'), '/'))]"
@@ -1114,7 +1124,7 @@
     },
     "virtualNetworkGateway": {
       "type": "Microsoft.Network/virtualNetworkGateways",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1152,7 +1162,7 @@
       "condition": "[not(empty(parameters('maintenanceConfiguration')))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[parameters('maintenanceConfiguration').assignmentName]",
       "location": "[parameters('location')]",
       "properties": {
@@ -1166,7 +1176,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1183,7 +1193,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1224,7 +1234,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.Network/virtualNetworkGateways/{0}', parameters('name'))]",
+      "scope": "[resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1247,7 +1257,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[variables('arrayPipNameVar')[copyIndex()]]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1275,10 +1285,7 @@
           "skuName": "[if(equals(parameters('skuName'), 'Basic'), createObject('value', 'Basic'), createObject('value', 'Standard'))]",
           "availabilityZones": "[if(contains(parameters('skuName'), 'AZ'), createObject('value', parameters('publicIpAvailabilityZones')), createObject('value', createArray()))]",
           "dnsSettings": {
-            "value": {
-              "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
-              "domainNameLabelScope": "TenantReuse"
-            }
+            "value": "[shallowMerge(createArray(createObject('domainNameLabel', if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])), if(not(equals(parameters('domainNameLabelScope'), null())), createObject('domainNameLabelScope', parameters('domainNameLabelScope')), createObject())))]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -1291,8 +1298,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.177.2456",
-              "templateHash": "14921988046704902194"
+              "version": "0.39.26.7824",
+              "templateHash": "16564959277054027786"
             },
             "name": "Public IP Addresses",
             "description": "This module deploys a Public IP Address."
@@ -1509,7 +1516,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1534,12 +1541,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             },
@@ -1614,7 +1628,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                 }
               }
             }
@@ -1727,6 +1741,17 @@
                 "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
               }
             },
+            "deleteOption": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Delete",
+                "Detach"
+              ],
+              "metadata": {
+                "description": "Optional. The delete option for the public IP address."
+              }
+            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -1760,10 +1785,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/publicIPAddresses@2025-01-01#properties/tags"
+                },
                 "description": "Optional. Tags of the resource."
-              }
+              },
+              "nullable": true
             },
             "diagnosticSettings": {
               "type": "array",
@@ -1802,7 +1830,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-publicipaddress.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1820,7 +1848,7 @@
             },
             "publicIpAddress": {
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1836,7 +1864,8 @@
                 "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
                 "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
-                "ipTags": "[parameters('ipTags')]"
+                "ipTags": "[parameters('ipTags')]",
+                "deleteOption": "[parameters('deleteOption')]"
               }
             },
             "publicIpAddress_lock": {
@@ -1847,7 +1876,7 @@
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
               },
               "dependsOn": [
                 "publicIpAddress"
@@ -1951,7 +1980,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('publicIpAddress', '2024-05-01', 'full').location]"
+              "value": "[reference('publicIpAddress', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -1963,7 +1992,7 @@
         "count": "[length(coalesce(parameters('natRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}-NATRule-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2000,8 +2029,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "13603322121776909548"
+              "version": "0.42.1.51946",
+              "templateHash": "14888191346178051883"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -2097,12 +2126,12 @@
             "virtualNetworkGateway": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworkGateways",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('virtualNetworkGatewayName')]"
             },
             "natRule": {
               "type": "Microsoft.Network/virtualNetworkGateways/natRules",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
@@ -2177,7 +2206,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetworkGateway', '2024-05-01', 'full').location]"
+      "value": "[reference('virtualNetworkGateway', '2025-01-01', 'full').location]"
     },
     "asn": {
       "type": "int",

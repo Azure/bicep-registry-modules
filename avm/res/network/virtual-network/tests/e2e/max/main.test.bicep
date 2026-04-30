@@ -118,6 +118,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       flowTimeoutInMinutes: 20
+      enablePrivateEndpointVNetPolicies: 'Basic'
       subnets: [
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
@@ -125,6 +126,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          defaultOutboundAccess: false
           name: '${namePrefix}-az-subnet-x-001'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           roleAssignments: [
@@ -155,12 +157,14 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+          defaultOutboundAccess: false
           delegation: 'Microsoft.Netapp/volumes'
           name: '${namePrefix}-az-subnet-x-002'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 3)
+          defaultOutboundAccess: false
           name: '${namePrefix}-az-subnet-x-003'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           privateEndpointNetworkPolicies: 'Disabled'
@@ -168,6 +172,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 4)
+          defaultOutboundAccess: false
           name: '${namePrefix}-az-subnet-x-004'
           networkSecurityGroupResourceId: ''
           natGatewayResourceId: ''
