@@ -36,7 +36,7 @@ param location string = resourceGroup().location
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-4o-mini,150'
-      'OpenAI.GlobalStandard.text-embedding-ada-002,80'
+      'OpenAI.GlobalStandard.text-embedding-3-small,80'
     ]
   }
 })
@@ -100,9 +100,9 @@ param gptDeploymentCapacity int = 150
 @minLength(1)
 @description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
-  'text-embedding-ada-002'
+  'text-embedding-3-small'
 ])
-param embeddingModel string = 'text-embedding-ada-002'
+param embeddingModel string = 'text-embedding-3-small'
 
 @minValue(10)
 @description('Optional. Capacity of the Embedding Model deployment.')
@@ -390,7 +390,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -465,6 +465,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.search.windows.net'
+  'privatelink.azurewebsites.net'
 ]
 
 // DNS Zone Index Constants
@@ -479,6 +480,7 @@ var dnsZoneIndex = {
   cosmosDB: 7
   sqlServer: 8
   search: 9
+  webApp: 10
 }
 
 // ===================================================
@@ -671,7 +673,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
 var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
 var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
-module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
   params: {
     name: aiServicesNameCu
@@ -842,7 +844,7 @@ resource searchServiceToAiServicesRoleAssignment 'Microsoft.Authorization/roleAs
   }
 }
 
-resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = {
+resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-03-01' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiServicesAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'
@@ -1377,10 +1379,24 @@ module webSiteBackend 'modules/web-sites.bicep' = {
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            name: 'pep-${backendWebSiteResourceName}'
+            customNetworkInterfaceName: 'nic-${backendWebSiteResourceName}'
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.webApp]!.outputs.resourceId }
+              ]
+            }
+            service: 'sites'
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+          }
+        ]
+      : []
   }
 }
-
 // ========== Web App module ========== //
 // WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 //NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
@@ -1393,6 +1409,9 @@ module webSiteFrontend 'modules/web-sites.bicep' = {
     location: location
     kind: 'app,linux,container'
     serverFarmResourceId: webServerFarm.outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
       linuxFxVersion: 'DOCKER|${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
       minTlsVersion: '1.2'
@@ -1401,7 +1420,8 @@ module webSiteFrontend 'modules/web-sites.bicep' = {
       {
         name: 'appsettings'
         properties: {
-          APP_API_BASE_URL: 'https://api-${solutionSuffix}.azurewebsites.net'
+          APP_API_BASE_URL: enablePrivateNetworking ? '' : 'https://api-${solutionSuffix}.azurewebsites.net'
+          BACKEND_API_HOST: enablePrivateNetworking ? 'api-${solutionSuffix}.azurewebsites.net' : ''
         }
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }
