@@ -294,6 +294,7 @@ module testDeployment '../../../main.bicep' = [
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          logAnalyticsDestinationType: 'Dedicated'
         }
       ]
 
