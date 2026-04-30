@@ -5,7 +5,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ## 0.2.3
 
 ### Changes
-
+- Updated MACAE v4 changes
 - Updated AVM module version and Microsoft API versions
 - Enhanced main.bicep with improved resource configurations
 - Removed unused Key vault resource and it's related DNS resource
