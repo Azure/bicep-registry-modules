@@ -265,14 +265,10 @@ runs:
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-          $resolvedTemplateFilePath = $moduleTestFilePath
 
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-            $compiledTemplateFilePath = Join-Path $env:RUNNER_TEMP ('{0}.json' -f (Split-Path $moduleTestFilePath -LeafBase))
-            bicep build $moduleTestFilePath --outfile $compiledTemplateFilePath
-            $resolvedTemplateFilePath = $compiledTemplateFilePath
-            $moduleTemplateContent = Get-Content $compiledTemplateFilePath -Raw | ConvertFrom-Json -AsHashtable
+            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
             $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
           } else {
             $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
@@ -282,7 +278,7 @@ runs:
           # Invoke validation #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath           = $resolvedTemplateFilePath
+            TemplateFilePath           = $moduleTestFilePath
             DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
@@ -323,21 +319,7 @@ runs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          # Test-Az*Deployment validation APIs can reject payloads close to the 4 MB request limit.
-          # For large compiled templates, skip pre-validation and let the deployment step perform the authoritative check.
-          $skipPreValidation = $false
-          if (Test-Path $resolvedTemplateFilePath) {
-            $templateSizeBytes = (Get-Item $resolvedTemplateFilePath).Length
-            Write-Verbose ("Resolved template file size: {0} bytes" -f $templateSizeBytes) -Verbose
-            if ($templateSizeBytes -ge 3900000) {
-              $skipPreValidation = $true
-              Write-Warning ("Skipping Test-TemplateDeployment for large template [{0}] ({1} bytes) to avoid RequestContentTooLarge during validation. Deployment step will still run." -f $resolvedTemplateFilePath, $templateSizeBytes)
-            }
-          }
-
-          if (-not $skipPreValidation) {
-            Test-TemplateDeployment @functionInput -Verbose
-          }
+          Test-TemplateDeployment @functionInput -Verbose
 
           Write-Output '::endgroup::'
 
@@ -363,14 +345,10 @@ runs:
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-          $resolvedTemplateFilePath = $moduleTestFilePath
 
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
-            $compiledTemplateFilePath = Join-Path $env:RUNNER_TEMP ('{0}.json' -f (Split-Path $moduleTestFilePath -LeafBase))
-            bicep build $moduleTestFilePath --outfile $compiledTemplateFilePath
-            $resolvedTemplateFilePath = $compiledTemplateFilePath
-            $moduleTemplateContent = Get-Content $compiledTemplateFilePath -Raw | ConvertFrom-Json -AsHashtable
+            $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
             $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
           } else {
             $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
@@ -380,7 +358,7 @@ runs:
           # Invoke deployment #
           # ----------------- #
           $functionInput = @{
-            TemplateFilePath           = $resolvedTemplateFilePath
+            TemplateFilePath           = $moduleTestFilePath
             DeploymentMetadataLocation = '${{ inputs.deploymentMetadataLocation }}'
             SubscriptionId             = $subscriptionId
             ManagementGroupId          = $managementGroupId
