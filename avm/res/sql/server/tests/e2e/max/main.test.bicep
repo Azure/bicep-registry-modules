@@ -246,6 +246,10 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       restrictOutboundNetworkAccess: 'Disabled'
+      outboundFirewallRules: [
+        'www.bing.com'
+        'www.microsoft.com'
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

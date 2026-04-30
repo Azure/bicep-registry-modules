@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "15333339431228274390"
+      "version": "0.42.1.51946",
+      "templateHash": "15504014633642653310"
     },
     "name": "DBforPostgreSQL Flexible Server Administrators",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -79,7 +79,7 @@
     },
     {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-      "apiVersion": "2025-06-01-preview",
+      "apiVersion": "2026-01-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
       "properties": {
         "principalName": "[parameters('principalName')]",

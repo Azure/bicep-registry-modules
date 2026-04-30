@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "11341299858065756950"
+      "version": "0.40.2.10011",
+      "templateHash": "3040887102734423709"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1045,6 +1045,21 @@
             "description": "Optional. ASN for the Virtual Router."
           }
         },
+        "virtualRouterAutoScaleConfiguration": {
+          "type": "object",
+          "properties": {
+            "minCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The minimum number of Routing Infrastructure Units for the Virtual Hub Router."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The autoscale configuration for the Virtual Router, defining the minimum number of Routing Infrastructure Units. Each unit supports ~1000 VMs and ~1 Gbps throughput (minimum 2)."
+          }
+        },
         "virtualRouterIps": {
           "type": "array",
           "nullable": true,
@@ -1994,6 +2009,9 @@
           "virtualRouterAsn": {
             "value": "[tryGet(variables('hubConfigurations')[copyIndex()].hub, 'virtualRouterAsn')]"
           },
+          "virtualRouterAutoScaleConfiguration": {
+            "value": "[tryGet(variables('hubConfigurations')[copyIndex()].hub, 'virtualRouterAutoScaleConfiguration')]"
+          },
           "virtualRouterIps": {
             "value": "[tryGet(variables('hubConfigurations')[copyIndex()].hub, 'virtualRouterIps')]"
           }
@@ -2913,8 +2931,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.40.2.10011",
-              "templateHash": "5434142921127573154"
+              "version": "0.42.1.51946",
+              "templateHash": "5496780105458526122"
             },
             "name": "Azure Firewalls",
             "description": "This module deploys an Azure Firewall."
@@ -3342,7 +3360,7 @@
                 3
               ],
               "metadata": {
-                "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
+                "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones."
               }
             },
             "enableManagementNic": {
@@ -3456,7 +3474,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-azurefirewall.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3477,7 +3495,7 @@
               "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
-              "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+              "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
               "tags": "[parameters('tags')]",
               "extendedLocation": "[parameters('extendedLocation')]",
               "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
@@ -5045,8 +5063,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "5981686554871207613"
+              "version": "0.42.1.51946",
+              "templateHash": "15438826928112063594"
             },
             "name": "VPN Server Configuration",
             "description": "This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway."
@@ -5104,7 +5122,7 @@
                     "description": "Optional. The size of the SA data in kilobytes. Required if using IKEv2."
                   }
                 },
-                "salfetimeSeconds": {
+                "saLifeTimeSeconds": {
                   "type": "int",
                   "nullable": true,
                   "metadata": {
@@ -5219,10 +5237,13 @@
             },
             "radiusServers": {
               "type": "array",
-              "defaultValue": [],
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/vpnServerConfigurations@2025-05-01#properties/properties/properties/radiusServers"
+                },
                 "description": "Optional. The list of RADIUS servers. Required if configuring multiple RADIUS servers."
-              }
+              },
+              "defaultValue": []
             },
             "radiusServerSecret": {
               "type": "securestring",
@@ -5282,7 +5303,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/vpnServerConfigurations@2023-11-01#properties/tags"
+                  "source": "Microsoft.Network/vpnServerConfigurations@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -5307,8 +5328,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.res.network-vpnserverconfiguration.{0}.{1}', replace('0.1.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "apiVersion": "2025-04-01",
+              "name": "[take(format('46d3xbcp.res.network-vpnserverconfiguration.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5326,7 +5347,7 @@
             },
             "vpnServerConfig": {
               "type": "Microsoft.Network/vpnServerConfigurations",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -5358,15 +5379,6 @@
                     "input": {
                       "name": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].name]",
                       "publicCertData": "[coalesce(parameters('radiusServerRootCertificates'), createArray())[copyIndex('radiusServerRootCertificates')].publicCertData]"
-                    }
-                  },
-                  {
-                    "name": "radiusServers",
-                    "count": "[length(coalesce(parameters('radiusServers'), createArray()))]",
-                    "input": {
-                      "radiusServerAddress": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerAddress]",
-                      "radiusServerScore": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerScore]",
-                      "radiusServerSecret": "[coalesce(parameters('radiusServers'), createArray())[copyIndex('radiusServers')].radiusServerSecret]"
                     }
                   },
                   {
@@ -5406,6 +5418,7 @@
                   "aadTenant": "[parameters('aadTenant')]"
                 },
                 "radiusServerAddress": "[parameters('radiusServerAddress')]",
+                "radiusServers": "[parameters('radiusServers')]",
                 "radiusServerSecret": "[parameters('radiusServerSecret')]",
                 "vpnAuthenticationTypes": "[parameters('vpnAuthenticationTypes')]",
                 "vpnProtocols": "[parameters('vpnProtocols')]"
@@ -5415,7 +5428,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/vpnServerConfigurations/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/vpnServerConfigurations', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -5453,7 +5466,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('vpnServerConfig', '2023-11-01', 'full').location]"
+              "value": "[reference('vpnServerConfig', '2025-05-01', 'full').location]"
             }
           }
         }
@@ -5539,13 +5552,44 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.33.27573",
-              "templateHash": "6434625828056978718"
+              "version": "0.42.1.51946",
+              "templateHash": "6018311394278973154"
             },
             "name": "P2S VPN Gateway",
             "description": "This module deploys a Virtual Hub P2S Gateway."
           },
           "definitions": {
+            "ipamPoolPrefixAllocationType": {
+              "type": "object",
+              "properties": {
+                "numberOfIpAddresses": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The number of IP addresses to allocate."
+                  }
+                },
+                "pool": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Azure IPAM Pool resource."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The associated Azure IPAM Pool resource."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. A Type representing an IPAM Pool prefix allocation for the VPN Client Address Pool."
+              }
+            },
             "vnetRoutesStaticRoutesType": {
               "type": "object",
               "properties": {
@@ -5708,6 +5752,16 @@
                 "description": "Optional. Enable/Disable Internet Security; \"Propagate Default Route\"."
               }
             },
+            "configurationPolicyGroupAssociationResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource IDs of configuration policy groups to associate with the P2S connection configuration."
+              }
+            },
             "inboundRouteMapResourceId": {
               "type": "string",
               "nullable": true,
@@ -5746,6 +5800,16 @@
                 "description": "Optional. The address prefixes for the VPN Client Address Pool."
               }
             },
+            "ipamPoolPrefixAllocations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipamPoolPrefixAllocationType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A list of IPAM Pool prefix allocations for the VPN Client Address Pool."
+              }
+            },
             "virtualHubResourceId": {
               "type": "string",
               "metadata": {
@@ -5770,7 +5834,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/p2svpnGateways@2024-10-01#properties/tags"
+                  "source": "Microsoft.Network/p2svpnGateways@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -5799,7 +5863,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[take(format('46d3xbcp.res.network-p2svpngateway.{0}.{1}', replace('0.1.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.res.network-p2svpngateway.{0}.{1}', replace('0.1.4', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5817,7 +5881,7 @@
             },
             "p2sVpnGateway": {
               "type": "Microsoft.Network/p2svpnGateways",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -5828,6 +5892,15 @@
                   {
                     "name": "[parameters('p2SConnectionConfigurationsName')]",
                     "properties": {
+                      "copy": [
+                        {
+                          "name": "configurationPolicyGroupAssociations",
+                          "count": "[length(coalesce(parameters('configurationPolicyGroupAssociationResourceIds'), createArray()))]",
+                          "input": {
+                            "id": "[coalesce(parameters('configurationPolicyGroupAssociationResourceIds'), createArray())[copyIndex('configurationPolicyGroupAssociations')]]"
+                          }
+                        }
+                      ],
                       "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
                       "routingConfiguration": {
                         "associatedRouteTable": {
@@ -5850,7 +5923,8 @@
                         "vnetRoutes": "[parameters('vnetRoutesStaticRoutes')]"
                       },
                       "vpnClientAddressPool": {
-                        "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]"
+                        "addressPrefixes": "[parameters('vpnClientAddressPoolAddressPrefixes')]",
+                        "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]"
                       }
                     }
                   }
@@ -5868,7 +5942,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/p2svpnGateways/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/p2svpnGateways', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -5906,7 +5980,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('p2sVpnGateway', '2024-10-01', 'full').location]"
+              "value": "[reference('p2sVpnGateway', '2025-05-01', 'full').location]"
             }
           }
         }
