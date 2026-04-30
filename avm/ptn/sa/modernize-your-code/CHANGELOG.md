@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/modernize-your-code/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated all AVM module references to latest available versions
+- Updated API versions for Cognitive Services and telemetry deployment resources
+- Added Virtual Machine, Bastion Host, Data Collection Rules, and Proximity Placement Group modules for private networking
+- Added AI Foundry private endpoint as standalone module
+- Fixed Bicep linter warnings and null safety issues
+- Added new parameter `acrName` for container registry configuration
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

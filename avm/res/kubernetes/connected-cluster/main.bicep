@@ -35,6 +35,19 @@ param securityProfile securityProfileType = {
   }
 }
 
+@description('Optional. The gateway configuration for routing traffic through a gateway.')
+param gateway gatewayType?
+
+@description('Optional. The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity.')
+param privateLinkScopeResourceId string = ''
+
+@description('Optional. The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param privateLinkState string?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -89,7 +102,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // Resource definition
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-preview' = {
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2026-02-01-preview' = {
   name: name
   kind: 'ProvisionedCluster'
   location: location
@@ -106,6 +119,9 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
     oidcIssuerProfile: oidcIssuerProfile
     securityProfile: securityProfile
     azureHybridBenefit: null
+    gateway: gateway
+    privateLinkScopeResourceId: !empty(privateLinkScopeResourceId) ? privateLinkScopeResourceId : null
+    privateLinkState: privateLinkState
   }
 }
 
@@ -200,4 +216,13 @@ type securityProfileType = {
     @description('Required. Whether workload identity is enabled.')
     enabled: bool
   }
+}
+
+@export()
+@description('The type for gateway configuration.')
+type gatewayType = {
+  @description('Required. The resource ID of the Arc gateway.')
+  resourceId: string
+  @description('Optional. Whether the gateway is enabled.')
+  enabled: bool?
 }

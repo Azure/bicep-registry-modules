@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.21.2
+
+### Changes
+
+- Added suppoort for SQL Server outbound firewall rules
+
+### Breaking Changes
+
+- None
+
 ## 0.21.1
 
 ### Changes

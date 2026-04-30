@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Network/azureFirewalls` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_azurefirewalls.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/azureFirewalls)</li></ul> |
 | `Microsoft.Network/expressRouteGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_expressroutegateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/expressRouteGateways)</li></ul> |
-| `Microsoft.Network/p2svpnGateways` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/p2svpnGateways)</li></ul> |
+| `Microsoft.Network/p2svpnGateways` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_p2svpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/p2svpnGateways)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
@@ -39,7 +39,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/vpnGateways` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways)</li></ul> |
 | `Microsoft.Network/vpnGateways/natRules` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_natrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules)</li></ul> |
 | `Microsoft.Network/vpnGateways/vpnConnections` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpngateways_vpnconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections)</li></ul> |
-| `Microsoft.Network/vpnServerConfigurations` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnserverconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/vpnServerConfigurations)</li></ul> |
+| `Microsoft.Network/vpnServerConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnserverconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/vpnServerConfigurations)</li></ul> |
 
 ## Usage examples
 
@@ -284,6 +284,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         tags: {
           HubType: 'Transit'
         }
+        virtualRouterAutoScaleConfiguration: {
+          minCount: 2
+        }
       }
     ]
     virtualWanParameters: {
@@ -423,6 +426,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           },
           "tags": {
             "HubType": "Transit"
+          },
+          "virtualRouterAutoScaleConfiguration": {
+            "minCount": 2
           }
         }
       ]
@@ -566,6 +572,9 @@ param virtualHubParameters = [
     tags: {
       HubType: 'Transit'
     }
+    virtualRouterAutoScaleConfiguration: {
+      minCount: 2
+    }
   }
 ]
 param virtualWanParameters = {
@@ -663,6 +672,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         tags: {
           HubRole: 'Transit'
         }
+        virtualRouterAutoScaleConfiguration: {
+          minCount: 8
+        }
       }
     ]
     virtualWanParameters: {
@@ -732,6 +744,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           },
           "tags": {
             "HubRole": "Transit"
+          },
+          "virtualRouterAutoScaleConfiguration": {
+            "minCount": 8
           }
         }
       ]
@@ -802,6 +817,9 @@ param virtualHubParameters = [
     }
     tags: {
       HubRole: 'Transit'
+    }
+    virtualRouterAutoScaleConfiguration: {
+      minCount: 8
     }
   }
 ]
@@ -1521,6 +1539,7 @@ The parameters for the Virtual Hubs and associated networking components, requir
 | [`sku`](#parameter-virtualhubparameterssku) | string | SKU for the Virtual Hub. |
 | [`tags`](#parameter-virtualhubparameterstags) | object | Tags to be applied to the Virtual Hub. |
 | [`virtualRouterAsn`](#parameter-virtualhubparametersvirtualrouterasn) | int | ASN for the Virtual Router. |
+| [`virtualRouterAutoScaleConfiguration`](#parameter-virtualhubparametersvirtualrouterautoscaleconfiguration) | object | The autoscale configuration for the Virtual Router, defining the minimum number of Routing Infrastructure Units. Each unit supports ~1000 VMs and ~1 Gbps throughput (minimum 2). |
 | [`virtualRouterIps`](#parameter-virtualhubparametersvirtualrouterips) | array | IP addresses for the Virtual Router. |
 
 ### Parameter: `virtualHubParameters.hubAddressPrefix`
@@ -2872,6 +2891,26 @@ Tags to be applied to the Virtual Hub.
 ASN for the Virtual Router.
 
 - Required: No
+- Type: int
+
+### Parameter: `virtualHubParameters.virtualRouterAutoScaleConfiguration`
+
+The autoscale configuration for the Virtual Router, defining the minimum number of Routing Infrastructure Units. Each unit supports ~1000 VMs and ~1 Gbps throughput (minimum 2).
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCount`](#parameter-virtualhubparametersvirtualrouterautoscaleconfigurationmincount) | int | The minimum number of Routing Infrastructure Units for the Virtual Hub Router. |
+
+### Parameter: `virtualHubParameters.virtualRouterAutoScaleConfiguration.minCount`
+
+The minimum number of Routing Infrastructure Units for the Virtual Hub Router.
+
+- Required: Yes
 - Type: int
 
 ### Parameter: `virtualHubParameters.virtualRouterIps`

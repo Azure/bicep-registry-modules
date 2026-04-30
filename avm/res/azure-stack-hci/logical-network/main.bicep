@@ -89,7 +89,7 @@ var formattedRoleAssignments = [
 // ============= //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.azurestackhci-logicalnetwork.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -124,7 +124,7 @@ var routeTable = {
   }
 }
 
-resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2024-05-01-preview' = {
+resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2024-10-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -165,7 +165,7 @@ resource logicalNetwork_roleAssignments 'Microsoft.Authorization/roleAssignments
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: logicalNetwork
