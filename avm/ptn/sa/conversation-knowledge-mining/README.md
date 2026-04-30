@@ -714,7 +714,6 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 | `azureCosmosDbDatabase` | string | Contains Azure Cosmos DB database name. |
 | `azureCosmosDbEnableFeedback` | string | Contains Azure Cosmos DB feedback enablement setting. |
 | `azureEnvImageTag` | string | Contains Azure environment image tag. |
-| `azureOpenAIApiVersion` | string | Contains Azure OpenAI API version. |
 | `azureOpenAICuEndpoint` | string | Azure OpenAI Content Understanding endpoint URL. |
 | `azureOpenAIDeploymentModel` | string | Contains Azure OpenAI deployment model name. |
 | `azureOpenAIDeploymentModelCapacity` | int | Contains Azure OpenAI deployment model capacity. |

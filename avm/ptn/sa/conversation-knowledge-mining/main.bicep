@@ -564,7 +564,7 @@ var aiModelDeployments = [
       name: 'GlobalStandard'
       capacity: embeddingDeploymentCapacity
     }
-    version: '2'
+    version: '1'
     raiPolicyName: 'Microsoft.Default'
   }
 ]
@@ -1503,9 +1503,6 @@ output azureOpenAIEmbeddingModel string = embeddingModel
 
 @description('Contains Azure OpenAI embedding model capacity.')
 output azureOpenAIEmbeddingModelCapacity int = embeddingDeploymentCapacity
-
-@description('Contains Azure OpenAI API version.')
-output azureOpenAIApiVersion string = azureOpenAIApiVersion
 
 @description('Contains Content Understanding API version.')
 output azureContentUnderstandingApiVersion string = azureContentUnderstandingApiVersion
