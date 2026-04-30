@@ -32,9 +32,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Cache/redis/firewallRules` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules)</li></ul> |
 | `Microsoft.Cache/redis/linkedServers` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cache_redis_linkedservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2024-12-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-12-01-preview/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -71,8 +71,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crclst001'
     // Non-required parameters
+    availabilityZones: '<availabilityZones>'
     capacity: 3
-    location: '<location>'
     replicasPerMaster: 1
     replicasPerPrimary: 1
     shardCount: 3
@@ -98,11 +98,11 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crclst001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": "<availabilityZones>"
+    },
     "capacity": {
       "value": 3
-    },
-    "location": {
-      "value": "<location>"
     },
     "replicasPerMaster": {
       "value": 1
@@ -133,8 +133,8 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crclst001'
 // Non-required parameters
+param availabilityZones = '<availabilityZones>'
 param capacity = 3
-param location = '<location>'
 param replicasPerMaster = 1
 param replicasPerPrimary = 1
 param shardCount = 3
@@ -158,10 +158,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
   params: {
-    // Required parameters
     name: 'crmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -178,13 +175,8 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "crmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -200,10 +192,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/cache/redis:<version>'
 
-// Required parameters
 param name = 'crmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -239,7 +228,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         objectIdAlias: '<objectIdAlias>'
       }
     ]
-    location: '<location>'
     redisConfiguration: {
       'aad-enabled': 'true'
     }
@@ -281,9 +269,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "redisConfiguration": {
       "value": {
         "aad-enabled": "true"
@@ -319,7 +304,6 @@ param accessPolicyAssignments = [
     objectIdAlias: '<objectIdAlias>'
   }
 ]
-param location = '<location>'
 param redisConfiguration = {
   'aad-enabled': 'true'
 }
@@ -345,7 +329,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'kvref'
     // Non-required parameters
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       primaryAccessKeyName: 'custom-primaryAccessKey-name'
@@ -376,9 +359,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "kvref"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -407,7 +387,6 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'kvref'
 // Non-required parameters
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   primaryAccessKeyName: 'custom-primaryAccessKey-name'
@@ -439,6 +418,36 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crmax001'
     // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Read Only Policy'
+        permissions: '+@read'
+      }
+      {
+        name: 'Write Only Policy'
+        permissions: '+@write'
+      }
+      {
+        name: 'Admin Policy'
+        permissions: '+@all'
+      }
+      {
+        name: 'Custom Pattern Policy'
+        permissions: '+@read +set ~cache:*'
+      }
+    ]
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Custom Pattern Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi-crmax'
+      }
+      {
+        accessPolicyName: 'Admin Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi2-crmax'
+      }
+    ]
     availabilityZones: [
       1
       2
@@ -560,7 +569,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       resourceType: 'Redis Cache'
     }
     zonalAllocationPolicy: 'UserDefined'
-    zoneRedundant: true
   }
 }
 ```
@@ -582,6 +590,40 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crmax001"
     },
     // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Read Only Policy",
+          "permissions": "+@read"
+        },
+        {
+          "name": "Write Only Policy",
+          "permissions": "+@write"
+        },
+        {
+          "name": "Admin Policy",
+          "permissions": "+@all"
+        },
+        {
+          "name": "Custom Pattern Policy",
+          "permissions": "+@read +set ~cache:*"
+        }
+      ]
+    },
+    "accessPolicyAssignments": {
+      "value": [
+        {
+          "accessPolicyName": "Custom Pattern Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi-crmax"
+        },
+        {
+          "accessPolicyName": "Admin Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi2-crmax"
+        }
+      ]
+    },
     "availabilityZones": {
       "value": [
         1,
@@ -734,9 +776,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "zonalAllocationPolicy": {
       "value": "UserDefined"
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -755,6 +794,36 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crmax001'
 // Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Read Only Policy'
+    permissions: '+@read'
+  }
+  {
+    name: 'Write Only Policy'
+    permissions: '+@write'
+  }
+  {
+    name: 'Admin Policy'
+    permissions: '+@all'
+  }
+  {
+    name: 'Custom Pattern Policy'
+    permissions: '+@read +set ~cache:*'
+  }
+]
+param accessPolicyAssignments = [
+  {
+    accessPolicyName: 'Custom Pattern Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi-crmax'
+  }
+  {
+    accessPolicyName: 'Admin Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi2-crmax'
+  }
+]
 param availabilityZones = [
   1
   2
@@ -876,7 +945,6 @@ param tags = {
   resourceType: 'Redis Cache'
 }
 param zonalAllocationPolicy = 'UserDefined'
-param zoneRedundant = true
 ```
 
 </details>
@@ -899,6 +967,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crpgeo001'
     // Non-required parameters
+    availabilityZones: []
     capacity: 2
     enableNonSslPort: true
     geoReplicationObject: {
@@ -906,18 +975,12 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
       name: '<name>'
     }
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     minimumTlsVersion: '1.2'
     redisVersion: '6'
     replicasPerMaster: 1
     replicasPerPrimary: 1
     shardCount: 1
     skuName: 'Premium'
-    zoneRedundant: false
   }
 }
 ```
@@ -939,6 +1002,9 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crpgeo001"
     },
     // Non-required parameters
+    "availabilityZones": {
+      "value": []
+    },
     "capacity": {
       "value": 2
     },
@@ -950,15 +1016,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         "linkedRedisCacheLocation": "<linkedRedisCacheLocation>",
         "linkedRedisCacheResourceId": "<linkedRedisCacheResourceId>",
         "name": "<name>"
-      }
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
       }
     },
     "minimumTlsVersion": {
@@ -978,9 +1035,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "skuName": {
       "value": "Premium"
-    },
-    "zoneRedundant": {
-      "value": false
     }
   }
 }
@@ -999,6 +1053,7 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crpgeo001'
 // Non-required parameters
+param availabilityZones = []
 param capacity = 2
 param enableNonSslPort = true
 param geoReplicationObject = {
@@ -1006,18 +1061,12 @@ param geoReplicationObject = {
   linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
   name: '<name>'
 }
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param minimumTlsVersion = '1.2'
 param redisVersion = '6'
 param replicasPerMaster = 1
 param replicasPerPrimary = 1
 param shardCount = 1
 param skuName = 'Premium'
-param zoneRedundant = false
 ```
 
 </details>
@@ -1040,13 +1089,22 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crper001'
     // Non-required parameters
-    location: '<location>'
+    availabilityZones: []
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     redisConfiguration: {
+      'preferred-data-persistence-auth-method': 'ManagedIdentity'
       'rdb-backup-enabled': 'true'
       'rdb-backup-frequency': '60'
       'rdb-backup-max-snapshot-count': '1'
       'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+      'storage-subscription-id': '<storage-subscription-id>'
     }
+    replicasPerMaster: 1
+    replicasPerPrimary: 1
     skuName: 'Premium'
   }
 }
@@ -1069,16 +1127,31 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crper001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "availabilityZones": {
+      "value": []
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "redisConfiguration": {
       "value": {
+        "preferred-data-persistence-auth-method": "ManagedIdentity",
         "rdb-backup-enabled": "true",
         "rdb-backup-frequency": "60",
         "rdb-backup-max-snapshot-count": "1",
-        "rdb-storage-connection-string": "<rdb-storage-connection-string>"
+        "rdb-storage-connection-string": "<rdb-storage-connection-string>",
+        "storage-subscription-id": "<storage-subscription-id>"
       }
+    },
+    "replicasPerMaster": {
+      "value": 1
+    },
+    "replicasPerPrimary": {
+      "value": 1
     },
     "skuName": {
       "value": "Premium"
@@ -1100,13 +1173,22 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crper001'
 // Non-required parameters
-param location = '<location>'
+param availabilityZones = []
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param redisConfiguration = {
+  'preferred-data-persistence-auth-method': 'ManagedIdentity'
   'rdb-backup-enabled': 'true'
   'rdb-backup-frequency': '60'
   'rdb-backup-max-snapshot-count': '1'
   'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+  'storage-subscription-id': '<storage-subscription-id>'
 }
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
 param skuName = 'Premium'
 ```
 
@@ -1130,7 +1212,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crcfg001'
     // Non-required parameters
-    location: '<location>'
     redisConfiguration: {
       'maxfragmentationmemory-reserved': '50'
       'maxmemory-delta': '50'
@@ -1158,9 +1239,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       "value": "crcfg001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "redisConfiguration": {
       "value": {
         "maxfragmentationmemory-reserved": "50",
@@ -1186,7 +1264,6 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crcfg001'
 // Non-required parameters
-param location = '<location>'
 param redisConfiguration = {
   'maxfragmentationmemory-reserved': '50'
   'maxmemory-delta': '50'
@@ -1215,11 +1292,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     // Required parameters
     name: 'crwaf001'
     // Non-required parameters
-    availabilityZones: [
-      1
-      2
-      3
-    ]
+    availabilityZones: '<availabilityZones>'
     capacity: 2
     diagnosticSettings: [
       {
@@ -1235,11 +1308,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -1271,7 +1339,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       resourceType: 'Redis Cache'
     }
     zonalAllocationPolicy: 'UserDefined'
-    zoneRedundant: true
   }
 }
 ```
@@ -1294,11 +1361,7 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     // Non-required parameters
     "availabilityZones": {
-      "value": [
-        1,
-        2,
-        3
-      ]
+      "value": "<availabilityZones>"
     },
     "capacity": {
       "value": 2
@@ -1318,15 +1381,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -1378,9 +1432,6 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "zonalAllocationPolicy": {
       "value": "UserDefined"
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -1399,11 +1450,7 @@ using 'br/public:avm/res/cache/redis:<version>'
 // Required parameters
 param name = 'crwaf001'
 // Non-required parameters
-param availabilityZones = [
-  1
-  2
-  3
-]
+param availabilityZones = '<availabilityZones>'
 param capacity = 2
 param diagnosticSettings = [
   {
@@ -1419,11 +1466,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
@@ -1455,7 +1497,6 @@ param tags = {
   resourceType: 'Redis Cache'
 }
 param zonalAllocationPolicy = 'UserDefined'
-param zoneRedundant = true
 ```
 
 </details>
@@ -1475,7 +1516,7 @@ param zoneRedundant = true
 | :-- | :-- | :-- |
 | [`accessPolicies`](#parameter-accesspolicies) | array | Array of access policies to create. |
 | [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Array of access policy assignments. |
-| [`availabilityZones`](#parameter-availabilityzones) | array | If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | Replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
@@ -1501,8 +1542,7 @@ param zoneRedundant = true
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the Redis cache in. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantSettings`](#parameter-tenantsettings) | object | A dictionary of tenant settings. |
-| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | When true, replicas will be provisioned in availability zones specified in the zones parameter. |
+| [`zonalAllocationPolicy`](#parameter-zonalallocationpolicy) | string | Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when 'availabilityZones' are not empty. |
 
 ### Parameter: `name`
 
@@ -1590,7 +1630,7 @@ The name of the Access Policy Assignment.
 
 ### Parameter: `availabilityZones`
 
-If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
+Replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.
 
 - Required: No
 - Type: array
@@ -2679,7 +2719,7 @@ A dictionary of tenant settings.
 
 ### Parameter: `zonalAllocationPolicy`
 
-Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.
+Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when 'availabilityZones' are not empty.
 
 - Required: No
 - Type: string
@@ -2691,14 +2731,6 @@ Specifies how availability zones are allocated to the Redis cache. "Automatic" e
     'UserDefined'
   ]
   ```
-
-### Parameter: `zoneRedundant`
-
-When true, replicas will be provisioned in availability zones specified in the zones parameter.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ## Outputs
 
@@ -2721,7 +2753,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |

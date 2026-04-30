@@ -5,218 +5,963 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3328481461768509396"
+      "version": "0.42.1.51946",
+      "templateHash": "14500522314908357696"
     },
     "name": "Azure Security Center (Defender for Cloud)",
-    "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration."
+    "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.\n\nFor the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.\n"
   },
-  "parameters": {
-    "deviceSecurityGroupProperties": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Device Security group data."
-      }
-    },
-    "ioTSecuritySolutionProperties": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Security Solution data."
-      }
-    },
-    "virtualMachinesPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for VMs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "sqlServersPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for SqlServers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "appServicesPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for AppServices. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "storageAccountsPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for StorageAccounts. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "storageAccountsMalwareScanningSettings": {
+  "definitions": {
+    "defenderPlanType": {
       "type": "object",
       "properties": {
-        "onUploadMalwareScanningEnabled": {
+        "name": {
           "type": "string",
-          "allowedValues": [
-            "False",
-            "True"
-          ],
           "metadata": {
-            "description": "Required. Enable or disable on-upload malware scanning for storage accounts. - True or False."
+            "description": "Required. The Defender plan name (e.g., VirtualMachines, SqlServers, AppServices, StorageAccounts, Containers, KeyVaults, Arm, CloudPosture, Api, CosmosDbs, OpenSourceRelationalDatabases, SqlServerVirtualMachines)."
           }
         },
-        "capGBPerMonthPerStorageAccount": {
-          "type": "int",
+        "pricingTier": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/pricings@2024-01-01#properties/properties/properties/pricingTier"
+            },
+            "description": "Required. The pricing tier for the Defender plan."
+          }
+        },
+        "subPlan": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/pricings@2024-01-01#properties/properties/properties/subPlan"
+            },
+            "description": "Optional. The sub-plan to select when more than one is available (e.g., P1 or P2 for VirtualMachines, DefenderForStorageV2 for StorageAccounts)."
+          },
+          "nullable": true
+        },
+        "enforce": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/pricings@2024-01-01#properties/properties/properties/enforce"
+            },
+            "description": "Optional. If set to True, prevents descendants from overriding this pricing configuration. Only available for subscription-level pricing."
+          },
+          "nullable": true
+        },
+        "extensions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/pricings@2024-01-01#properties/properties/properties/extensions"
+            },
+            "description": "Optional. List of extensions offered under the plan (e.g., OnUploadMalwareScanning, SensitiveDataDiscovery, AgentlessVmScanning, ContainerSensor)."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Defender plan configuration."
+      }
+    },
+    "ioTSecuritySolutionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the IoT Security Solution."
+          }
+        },
+        "resourceGroup": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource group to deploy the IoT Security Solution into."
+          }
+        },
+        "workspace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The workspace resource ID."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The display name of the IoT Security Solution."
+          }
+        },
+        "status": {
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. If on-upload malware scanning is enabled, set a cap for the amount of GB per month per storage account that can be scanned. If not set, there will be no cap applied."
+            "description": "Optional. Status of the IoT Security Solution."
           }
         },
-        "sensitiveDataDiscoveryEnabled": {
-          "type": "string",
-          "allowedValues": [
-            "False",
-            "True"
-          ],
+        "export": {
+          "type": "array",
           "metadata": {
-            "description": "Required. Enable or disable sensitive data discovery for storage accounts. - True or False."
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties/properties/export"
+            },
+            "description": "Optional. List of additional export to workspace data options."
+          },
+          "nullable": true
+        },
+        "disabledDataSources": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties/properties/disabledDataSources"
+            },
+            "description": "Optional. Disabled data sources."
+          },
+          "nullable": true
+        },
+        "iotHubs": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties/properties/iotHubs"
+            },
+            "description": "Required. IoT Hub resource IDs."
+          }
+        },
+        "userDefinedResources": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties/properties/userDefinedResources"
+            },
+            "description": "Optional. Properties of the IoT Security Solution's user defined resources."
+          },
+          "nullable": true
+        },
+        "recommendationsConfiguration": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties/properties/recommendationsConfiguration"
+            },
+            "description": "Optional. List of the configuration status for each recommendation type."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The type for IoT Security Solution data."
+      }
+    },
+    "securityAutomationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the security automation resource."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource group to deploy the automation into."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for the automation resource. Defaults to the deployment location."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/tags"
+            },
+            "description": "Optional. Tags for the automation resource."
+          },
+          "nullable": true
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the security automation."
+          }
+        },
+        "isEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the security automation is enabled. Defaults to true."
+          }
+        },
+        "scopes": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/automations@2023-12-01-preview#properties/properties/properties/scopes"
+            },
+            "description": "Required. The scopes on which the automation logic is applied (subscription or resource group IDs)."
+          }
+        },
+        "sources": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/automations@2023-12-01-preview#properties/properties/properties/sources"
+            },
+            "description": "Required. The source event types which evaluate the automation rules."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/automations@2023-12-01-preview#properties/properties/properties/actions"
+            },
+            "description": "Required. The actions triggered when all rules evaluate to true."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "description": "Optional. If the pricing tier value for StorageAccounts is Standard. Choose the settings for malware scanning."
+        "__bicep_export!": true,
+        "description": "The type for a security automation (continuous export) configuration."
       }
     },
-    "sqlServerVirtualMachinesPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for SqlServerVirtualMachines. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "kubernetesServicePricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for KubernetesService. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "containerRegistryPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for ContainerRegistry. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "keyVaultsPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for KeyVaults. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "dnsPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for DNS. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "armPricingTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for ARM. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "openSourceRelationalDatabasesTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for OpenSourceRelationalDatabases. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "containersTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for containers. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "cosmosDbsTier": {
-      "type": "string",
-      "defaultValue": "Free",
-      "allowedValues": [
-        "Free",
-        "Standard"
-      ],
-      "metadata": {
-        "description": "Optional. The pricing tier value for CosmosDbs. Azure Security Center is provided in two pricing tiers: free and standard, with the standard tier available with a trial period. The standard tier offers advanced security capabilities, while the free tier offers basic security features. - Free or Standard."
-      }
-    },
-    "securityContactProperties": {
+    "serverVulnerabilityAssessmentsSettingType": {
       "type": "object",
-      "defaultValue": {},
+      "properties": {
+        "selectedProvider": {
+          "type": "string",
+          "allowedValues": [
+            "MdeTvm"
+          ],
+          "metadata": {
+            "description": "Required. The selected vulnerability assessments provider (e.g., MdeTvm for Microsoft Defender Vulnerability Management)."
+          }
+        }
+      },
       "metadata": {
-        "description": "Optional. Security contact data."
+        "description": "The type for server vulnerability assessments settings."
       }
     },
+    "securityStandardType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name (GUID) of the security standard."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/securityStandards@2024-08-01#properties/properties/properties/displayName"
+            },
+            "description": "Required. The display name of the security standard."
+          }
+        },
+        "description": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/securityStandards@2024-08-01#properties/properties/properties/description"
+            },
+            "description": "Optional. Description of the security standard."
+          },
+          "nullable": true
+        },
+        "assessments": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/securityStandards@2024-08-01#properties/properties/properties/assessments"
+            },
+            "description": "Optional. List of assessment keys to apply to the standard scope."
+          },
+          "nullable": true
+        },
+        "cloudProviders": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/securityStandards@2024-08-01#properties/properties/properties/cloudProviders"
+            },
+            "description": "Optional. List of cloud providers the standard supports."
+          },
+          "nullable": true
+        },
+        "policySetDefinitionId": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/securityStandards@2024-08-01#properties/properties/properties/policySetDefinitionId"
+            },
+            "description": "Optional. The policy set definition ID associated with the standard."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a custom security standard."
+      }
+    },
+    "standardAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name (GUID) of the standard assignment."
+          }
+        },
+        "assignedStandard": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/assignedStandard"
+            },
+            "description": "Required. The resource ID of the assigned standard."
+          }
+        },
+        "description": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/description"
+            },
+            "description": "Optional. Description of the assignment."
+          },
+          "nullable": true
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/displayName"
+            },
+            "description": "Optional. Display name of the assignment."
+          },
+          "nullable": true
+        },
+        "effect": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/effect"
+            },
+            "description": "Optional. The effect of the assignment (e.g., Audit, Exempt)."
+          },
+          "nullable": true
+        },
+        "excludedScopes": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/excludedScopes"
+            },
+            "description": "Optional. List of scopes excluded from the assignment."
+          },
+          "nullable": true
+        },
+        "expiresOn": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/expiresOn"
+            },
+            "description": "Optional. Expiration date of the assignment."
+          },
+          "nullable": true
+        },
+        "metadata": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/standardAssignments@2024-08-01#properties/properties/properties/metadata"
+            },
+            "description": "Optional. Additional metadata for the assignment."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a standard assignment."
+      }
+    },
+    "customRecommendationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name (GUID) of the custom recommendation."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/displayName"
+            },
+            "description": "Required. The display name of the recommendation."
+          }
+        },
+        "description": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/description"
+            },
+            "description": "Optional. Description of the recommendation."
+          },
+          "nullable": true
+        },
+        "severity": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/severity"
+            },
+            "description": "Required. The severity of the recommendation."
+          }
+        },
+        "securityIssue": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/securityIssue"
+            },
+            "description": "Optional. The security issue category."
+          },
+          "nullable": true
+        },
+        "query": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/query"
+            },
+            "description": "Required. KQL query representing the recommendation results."
+          }
+        },
+        "remediationDescription": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/remediationDescription"
+            },
+            "description": "Optional. The remediation description."
+          },
+          "nullable": true
+        },
+        "cloudProviders": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/customRecommendations@2024-08-01#properties/properties/properties/cloudProviders"
+            },
+            "description": "Optional. List of cloud providers the recommendation applies to."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a custom security recommendation."
+      }
+    },
+    "securitySettingType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "MCAS",
+            "Sentinel",
+            "WDATP",
+            "WDATP_EXCLUDE_LINUX_PUBLIC_PREVIEW",
+            "WDATP_UNIFIED_SOLUTION"
+          ],
+          "metadata": {
+            "description": "Required. The setting name (MCAS, WDATP, WDATP_EXCLUDE_LINUX_PUBLIC_PREVIEW, WDATP_UNIFIED_SOLUTION, or Sentinel)."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AlertSyncSettings",
+            "DataExportSettings"
+          ],
+          "metadata": {
+            "description": "Required. The kind of setting (DataExportSettings for MCAS/WDATP, AlertSyncSettings for Sentinel)."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether the setting is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Defender for Cloud integration setting (MCAS, WDATP, Sentinel)."
+      }
+    },
+    "assessmentMetadataType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name (GUID) of the assessment metadata."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/displayName"
+            },
+            "description": "Required. The display name of the assessment."
+          }
+        },
+        "description": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/description"
+            },
+            "description": "Optional. Description of the assessment."
+          },
+          "nullable": true
+        },
+        "severity": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/severity"
+            },
+            "description": "Required. The severity of the assessment."
+          }
+        },
+        "assessmentType": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/assessmentType"
+            },
+            "description": "Required. The assessment type (BuiltIn, CustomPolicy, CustomerManaged, VerifiedPartner)."
+          }
+        },
+        "categories": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/categories"
+            },
+            "description": "Optional. Categories the assessment belongs to."
+          },
+          "nullable": true
+        },
+        "implementationEffort": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/implementationEffort"
+            },
+            "description": "Optional. The implementation effort required."
+          },
+          "nullable": true
+        },
+        "remediationDescription": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/remediationDescription"
+            },
+            "description": "Optional. The remediation description."
+          },
+          "nullable": true
+        },
+        "threats": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/threats"
+            },
+            "description": "Optional. Threats the assessment mitigates."
+          },
+          "nullable": true
+        },
+        "userImpact": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/assessmentMetadata@2025-05-04#properties/properties/properties/userImpact"
+            },
+            "description": "Optional. The user impact of the assessment."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a custom assessment metadata definition."
+      }
+    },
+    "alertsSuppressionRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique name of the suppression rule."
+          }
+        },
+        "alertType": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/alertType"
+            },
+            "description": "Required. The alert type to suppress. Use '*' for all alert types."
+          }
+        },
+        "reason": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/reason"
+            },
+            "description": "Required. The reason for dismissing the alert."
+          }
+        },
+        "state": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/state"
+            },
+            "description": "Required. The state of the rule (Enabled, Disabled, or Expired)."
+          }
+        },
+        "comment": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/comment"
+            },
+            "description": "Optional. Comment regarding the rule."
+          },
+          "nullable": true
+        },
+        "expirationDateUtc": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/expirationDateUtc"
+            },
+            "description": "Optional. Expiration date of the rule in UTC. If not provided, the rule will not expire."
+          },
+          "nullable": true
+        },
+        "suppressionAlertsScope": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/alertsSuppressionRules@2019-01-01-preview#properties/properties/properties/suppressionAlertsScope"
+            },
+            "description": "Optional. The suppression conditions — all conditions must be true to suppress the alert."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an alert suppression rule."
+      }
+    },
+    "governanceRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique name of the governance rule."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/displayName"
+            },
+            "description": "Required. The display name of the governance rule."
+          }
+        },
+        "ruleType": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/ruleType"
+            },
+            "description": "Required. The rule type (e.g., Integrated, ServiceNow)."
+          }
+        },
+        "sourceResourceType": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/sourceResourceType"
+            },
+            "description": "Required. The source resource type (e.g., Assessments)."
+          }
+        },
+        "rulePriority": {
+          "type": "int",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/rulePriority"
+            },
+            "description": "Required. The rule priority (0-1000, lower is higher priority)."
+          }
+        },
+        "ownerSource": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/ownerSource"
+            },
+            "description": "Required. The owner source for the rule."
+          }
+        },
+        "conditionSets": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/conditionSets"
+            },
+            "description": "Required. The condition sets that determine when the rule applies."
+          }
+        },
+        "description": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/description"
+            },
+            "description": "Optional. Description of the governance rule."
+          },
+          "nullable": true
+        },
+        "isDisabled": {
+          "type": "bool",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/isDisabled"
+            },
+            "description": "Optional. Whether the rule is disabled."
+          },
+          "nullable": true
+        },
+        "isGracePeriod": {
+          "type": "bool",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/isGracePeriod"
+            },
+            "description": "Optional. Whether there is a grace period on the governance rule."
+          },
+          "nullable": true
+        },
+        "remediationTimeframe": {
+          "type": "string",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/remediationTimeframe"
+            },
+            "description": "Optional. Remediation timeframe (e.g., 7.00:00:00 for 7 days)."
+          },
+          "nullable": true
+        },
+        "includeMemberScopes": {
+          "type": "bool",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/includeMemberScopes"
+            },
+            "description": "Optional. Whether to include member scopes."
+          },
+          "nullable": true
+        },
+        "excludedScopes": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/excludedScopes"
+            },
+            "description": "Optional. Excluded scopes to filter out descendants."
+          },
+          "nullable": true
+        },
+        "governanceEmailNotification": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Security/governanceRules@2022-01-01-preview#properties/properties/properties/governanceEmailNotification"
+            },
+            "description": "Optional. Email notification settings for the governance rule."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a governance rule."
+      }
+    }
+  },
+  "parameters": {
     "location": {
       "type": "string",
       "defaultValue": "[deployment().location]",
       "metadata": {
         "description": "Optional. Location deployment metadata."
+      }
+    },
+    "defenderPlans": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/defenderPlanType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Microsoft Defender for Cloud pricing plan configurations. Each entry specifies a Defender plan name, pricing tier, and optional subPlan, enforce, and extensions settings."
+      }
+    },
+    "securityContactProperties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Security/securityContacts@2023-12-01-preview#properties/properties"
+        },
+        "description": "Optional. Security contact configuration for Microsoft Defender for Cloud notifications."
+      },
+      "nullable": true
+    },
+    "deviceSecurityGroupProperties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Security/deviceSecurityGroups@2019-08-01#properties/properties"
+        },
+        "description": "Optional. Device Security group properties."
+      },
+      "nullable": true
+    },
+    "ioTSecuritySolutionProperties": {
+      "$ref": "#/definitions/ioTSecuritySolutionType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Security Solution data for IoT."
+      }
+    },
+    "securityAutomations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityAutomationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Continuous export (security automation) configurations. Each entry creates a Microsoft.Security/automations resource that exports alerts and/or recommendations to a Log Analytics workspace, Event Hub, or Logic App."
+      }
+    },
+    "serverVulnerabilityAssessmentsSettings": {
+      "$ref": "#/definitions/serverVulnerabilityAssessmentsSettingType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Server vulnerability assessment settings. Configures the vulnerability assessment provider (e.g., Microsoft Defender Vulnerability Management)."
+      }
+    },
+    "securityStandards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityStandardType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom security standards to create. Each entry defines a standard with assessments to apply."
+      }
+    },
+    "standardAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/standardAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Standard assignments to create. Each entry assigns a security standard to a scope."
+      }
+    },
+    "customRecommendations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/customRecommendationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom security recommendations to create. Each entry defines a custom recommendation with a KQL query."
+      }
+    },
+    "securitySettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/securitySettingType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Defender for Cloud integration settings (MCAS, WDATP, Sentinel). Each entry enables or disables a specific integration."
+      }
+    },
+    "assessmentMetadataList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/assessmentMetadataType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom assessment metadata definitions. Used to define custom assessments that pair with custom recommendations."
+      }
+    },
+    "alertsSuppressionRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/alertsSuppressionRuleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Alert suppression rules to reduce alert noise. Each entry creates a suppression rule for a specific alert type."
+      }
+    },
+    "governanceRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/governanceRuleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Governance rules to drive security remediation. Each entry defines ownership, remediation timeframes, and notification settings."
       }
     },
     "enableTelemetry": {
@@ -228,67 +973,63 @@
     }
   },
   "variables": {
-    "pricings": [
+    "defaultDefenderPlans": [
       {
         "name": "VirtualMachines",
-        "pricingTier": "[parameters('virtualMachinesPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "SqlServers",
-        "pricingTier": "[parameters('sqlServersPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "AppServices",
-        "pricingTier": "[parameters('appServicesPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "StorageAccounts",
-        "pricingTier": "[parameters('storageAccountsPricingTier')]",
-        "storageAccountsMalwareScanningSettings": "[parameters('storageAccountsMalwareScanningSettings')]"
+        "pricingTier": "Free"
       },
       {
         "name": "SqlServerVirtualMachines",
-        "pricingTier": "[parameters('sqlServerVirtualMachinesPricingTier')]"
-      },
-      {
-        "name": "KubernetesService",
-        "pricingTier": "[parameters('kubernetesServicePricingTier')]"
-      },
-      {
-        "name": "ContainerRegistry",
-        "pricingTier": "[parameters('containerRegistryPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "KeyVaults",
-        "pricingTier": "[parameters('keyVaultsPricingTier')]"
-      },
-      {
-        "name": "Dns",
-        "pricingTier": "[parameters('dnsPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "Arm",
-        "pricingTier": "[parameters('armPricingTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "OpenSourceRelationalDatabases",
-        "pricingTier": "[parameters('openSourceRelationalDatabasesTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "Containers",
-        "pricingTier": "[parameters('containersTier')]"
+        "pricingTier": "Free"
       },
       {
         "name": "CosmosDbs",
-        "pricingTier": "[parameters('cosmosDbsTier')]"
+        "pricingTier": "Free"
+      },
+      {
+        "name": "CloudPosture",
+        "pricingTier": "Free"
+      },
+      {
+        "name": "Api",
+        "pricingTier": "Free"
       }
-    ]
+    ],
+    "effectiveDefenderPlans": "[coalesce(parameters('defenderPlans'), variables('defaultDefenderPlans'))]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[take(format('46d3xbcp.ptn.security-securitycenter.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
@@ -309,96 +1050,406 @@
     "pricingTiers": {
       "copy": {
         "name": "pricingTiers",
-        "count": "[length(variables('pricings'))]",
+        "count": "[length(variables('effectiveDefenderPlans'))]",
         "mode": "serial",
         "batchSize": 1
       },
       "type": "Microsoft.Security/pricings",
       "apiVersion": "2024-01-01",
-      "name": "[variables('pricings')[copyIndex()].name]",
+      "name": "[variables('effectiveDefenderPlans')[copyIndex()].name]",
       "properties": {
-        "pricingTier": "[variables('pricings')[copyIndex()].pricingTier]",
-        "subPlan": "[if(and(equals(variables('pricings')[copyIndex()].name, 'VirtualMachines'), equals(variables('pricings')[copyIndex()].pricingTier, 'Standard')), 'P2', if(and(equals(variables('pricings')[copyIndex()].name, 'StorageAccounts'), equals(variables('pricings')[copyIndex()].pricingTier, 'Standard')), 'DefenderForStorageV2', null()))]",
-        "extensions": "[if(and(and(equals(variables('pricings')[copyIndex()].name, 'StorageAccounts'), equals(variables('pricings')[copyIndex()].pricingTier, 'Standard')), not(empty(tryGet(variables('pricings')[copyIndex()], 'storageAccountsMalwareScanningSettings')))), createArray(createObject('name', 'OnUploadMalwareScanning', 'isEnabled', tryGet(parameters('storageAccountsMalwareScanningSettings'), 'onUploadMalwareScanningEnabled'), 'additionalExtensionProperties', if(not(equals(tryGet(parameters('storageAccountsMalwareScanningSettings'), 'capGBPerMonthPerStorageAccount'), null())), createObject('CapGBPerMonthPerStorageAccount', tryGet(parameters('storageAccountsMalwareScanningSettings'), 'capGBPerMonthPerStorageAccount')), null())), createObject('name', 'SensitiveDataDiscovery', 'isEnabled', tryGet(parameters('storageAccountsMalwareScanningSettings'), 'sensitiveDataDiscoveryEnabled'))), null())]"
+        "pricingTier": "[variables('effectiveDefenderPlans')[copyIndex()].pricingTier]",
+        "subPlan": "[tryGet(variables('effectiveDefenderPlans')[copyIndex()], 'subPlan')]",
+        "enforce": "[tryGet(variables('effectiveDefenderPlans')[copyIndex()], 'enforce')]",
+        "extensions": "[tryGet(variables('effectiveDefenderPlans')[copyIndex()], 'extensions')]"
       }
     },
     "deviceSecurityGroups": {
-      "condition": "[not(empty(parameters('deviceSecurityGroupProperties')))]",
+      "condition": "[not(empty(coalesce(parameters('deviceSecurityGroupProperties'), createObject())))]",
       "type": "Microsoft.Security/deviceSecurityGroups",
       "apiVersion": "2019-08-01",
       "name": "deviceSecurityGroups",
-      "properties": {
-        "thresholdRules": "[parameters('deviceSecurityGroupProperties').thresholdRules]",
-        "timeWindowRules": "[parameters('deviceSecurityGroupProperties').timeWindowRules]",
-        "allowlistRules": "[parameters('deviceSecurityGroupProperties').allowlistRules]",
-        "denylistRules": "[parameters('deviceSecurityGroupProperties').denylistRules]"
-      }
+      "properties": "[parameters('deviceSecurityGroupProperties')]"
     },
     "securityContacts": {
-      "condition": "[not(empty(parameters('securityContactProperties')))]",
+      "condition": "[not(empty(coalesce(parameters('securityContactProperties'), createObject())))]",
       "type": "Microsoft.Security/securityContacts",
       "apiVersion": "2023-12-01-preview",
       "name": "default",
+      "properties": "[parameters('securityContactProperties')]"
+    },
+    "serverVulnerabilityAssessments": {
+      "condition": "[not(equals(parameters('serverVulnerabilityAssessmentsSettings'), null()))]",
+      "type": "Microsoft.Security/serverVulnerabilityAssessmentsSettings",
+      "apiVersion": "2023-05-01",
+      "name": "azureServersSetting",
+      "kind": "AzureServersSetting",
       "properties": {
-        "emails": "[parameters('securityContactProperties').emails]",
-        "isEnabled": "[coalesce(tryGet(parameters('securityContactProperties'), 'isEnabled'), true())]",
-        "notificationsByRole": "[parameters('securityContactProperties').notificationsByRole]",
-        "notificationsSources": "[parameters('securityContactProperties').notificationsSources]"
+        "selectedProvider": "[parameters('serverVulnerabilityAssessmentsSettings').selectedProvider]"
+      }
+    },
+    "securityStandardResources": {
+      "copy": {
+        "name": "securityStandardResources",
+        "count": "[length(coalesce(parameters('securityStandards'), createArray()))]"
+      },
+      "type": "Microsoft.Security/securityStandards",
+      "apiVersion": "2024-08-01",
+      "name": "[coalesce(parameters('securityStandards'), createArray())[copyIndex()].name]",
+      "properties": {
+        "displayName": "[coalesce(parameters('securityStandards'), createArray())[copyIndex()].displayName]",
+        "description": "[tryGet(coalesce(parameters('securityStandards'), createArray())[copyIndex()], 'description')]",
+        "assessments": "[tryGet(coalesce(parameters('securityStandards'), createArray())[copyIndex()], 'assessments')]",
+        "cloudProviders": "[tryGet(coalesce(parameters('securityStandards'), createArray())[copyIndex()], 'cloudProviders')]",
+        "policySetDefinitionId": "[tryGet(coalesce(parameters('securityStandards'), createArray())[copyIndex()], 'policySetDefinitionId')]"
+      }
+    },
+    "standardAssignmentResources": {
+      "copy": {
+        "name": "standardAssignmentResources",
+        "count": "[length(coalesce(parameters('standardAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Security/standardAssignments",
+      "apiVersion": "2024-08-01",
+      "name": "[coalesce(parameters('standardAssignments'), createArray())[copyIndex()].name]",
+      "properties": {
+        "assignedStandard": "[coalesce(parameters('standardAssignments'), createArray())[copyIndex()].assignedStandard]",
+        "description": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'description')]",
+        "displayName": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'displayName')]",
+        "effect": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'effect')]",
+        "excludedScopes": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'excludedScopes')]",
+        "expiresOn": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'expiresOn')]",
+        "metadata": "[tryGet(coalesce(parameters('standardAssignments'), createArray())[copyIndex()], 'metadata')]"
+      }
+    },
+    "customRecommendationResources": {
+      "copy": {
+        "name": "customRecommendationResources",
+        "count": "[length(coalesce(parameters('customRecommendations'), createArray()))]"
+      },
+      "type": "Microsoft.Security/customRecommendations",
+      "apiVersion": "2024-08-01",
+      "name": "[coalesce(parameters('customRecommendations'), createArray())[copyIndex()].name]",
+      "properties": {
+        "displayName": "[coalesce(parameters('customRecommendations'), createArray())[copyIndex()].displayName]",
+        "description": "[tryGet(coalesce(parameters('customRecommendations'), createArray())[copyIndex()], 'description')]",
+        "severity": "[coalesce(parameters('customRecommendations'), createArray())[copyIndex()].severity]",
+        "securityIssue": "[tryGet(coalesce(parameters('customRecommendations'), createArray())[copyIndex()], 'securityIssue')]",
+        "query": "[coalesce(parameters('customRecommendations'), createArray())[copyIndex()].query]",
+        "remediationDescription": "[tryGet(coalesce(parameters('customRecommendations'), createArray())[copyIndex()], 'remediationDescription')]",
+        "cloudProviders": "[tryGet(coalesce(parameters('customRecommendations'), createArray())[copyIndex()], 'cloudProviders')]"
+      }
+    },
+    "securitySettingResources": {
+      "copy": {
+        "name": "securitySettingResources",
+        "count": "[length(coalesce(parameters('securitySettings'), createArray()))]"
+      },
+      "type": "Microsoft.Security/settings",
+      "apiVersion": "2022-05-01",
+      "name": "[coalesce(parameters('securitySettings'), createArray())[copyIndex()].name]",
+      "kind": "[coalesce(parameters('securitySettings'), createArray())[copyIndex()].kind]",
+      "properties": {
+        "enabled": "[coalesce(parameters('securitySettings'), createArray())[copyIndex()].enabled]"
+      }
+    },
+    "assessmentMetadataResources": {
+      "copy": {
+        "name": "assessmentMetadataResources",
+        "count": "[length(coalesce(parameters('assessmentMetadataList'), createArray()))]"
+      },
+      "type": "Microsoft.Security/assessmentMetadata",
+      "apiVersion": "2025-05-04",
+      "name": "[coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()].name]",
+      "properties": {
+        "displayName": "[coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()].displayName]",
+        "description": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'description')]",
+        "severity": "[coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()].severity]",
+        "assessmentType": "[coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()].assessmentType]",
+        "categories": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'categories')]",
+        "implementationEffort": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'implementationEffort')]",
+        "remediationDescription": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'remediationDescription')]",
+        "threats": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'threats')]",
+        "userImpact": "[tryGet(coalesce(parameters('assessmentMetadataList'), createArray())[copyIndex()], 'userImpact')]"
+      }
+    },
+    "alertsSuppressionRuleResources": {
+      "copy": {
+        "name": "alertsSuppressionRuleResources",
+        "count": "[length(coalesce(parameters('alertsSuppressionRules'), createArray()))]"
+      },
+      "type": "Microsoft.Security/alertsSuppressionRules",
+      "apiVersion": "2019-01-01-preview",
+      "name": "[coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()].name]",
+      "properties": {
+        "alertType": "[coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()].alertType]",
+        "reason": "[coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()].reason]",
+        "state": "[coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()].state]",
+        "comment": "[tryGet(coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()], 'comment')]",
+        "expirationDateUtc": "[tryGet(coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()], 'expirationDateUtc')]",
+        "suppressionAlertsScope": "[tryGet(coalesce(parameters('alertsSuppressionRules'), createArray())[copyIndex()], 'suppressionAlertsScope')]"
+      }
+    },
+    "governanceRuleResources": {
+      "copy": {
+        "name": "governanceRuleResources",
+        "count": "[length(coalesce(parameters('governanceRules'), createArray()))]"
+      },
+      "type": "Microsoft.Security/governanceRules",
+      "apiVersion": "2022-01-01-preview",
+      "name": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].name]",
+      "properties": {
+        "displayName": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].displayName]",
+        "ruleType": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].ruleType]",
+        "sourceResourceType": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].sourceResourceType]",
+        "rulePriority": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].rulePriority]",
+        "ownerSource": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].ownerSource]",
+        "conditionSets": "[coalesce(parameters('governanceRules'), createArray())[copyIndex()].conditionSets]",
+        "description": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'description')]",
+        "isDisabled": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'isDisabled')]",
+        "isGracePeriod": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'isGracePeriod')]",
+        "remediationTimeframe": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'remediationTimeframe')]",
+        "includeMemberScopes": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'includeMemberScopes')]",
+        "excludedScopes": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'excludedScopes')]",
+        "governanceEmailNotification": "[tryGet(coalesce(parameters('governanceRules'), createArray())[copyIndex()], 'governanceEmailNotification')]"
       }
     },
     "iotSecuritySolutions": {
-      "condition": "[not(empty(parameters('ioTSecuritySolutionProperties')))]",
+      "condition": "[not(empty(coalesce(parameters('ioTSecuritySolutionProperties'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-ASC-IotSecuritySolutions', uniqueString(deployment().name))]",
-      "resourceGroup": "[if(empty(parameters('ioTSecuritySolutionProperties')), 'dummy', parameters('ioTSecuritySolutionProperties').resourceGroup)]",
+      "resourceGroup": "[parameters('ioTSecuritySolutionProperties').resourceGroup]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[parameters('ioTSecuritySolutionProperties').name]"
+          },
           "ioTSecuritySolutionProperties": {
-            "value": "[parameters('ioTSecuritySolutionProperties')]"
+            "value": {
+              "workspace": "[parameters('ioTSecuritySolutionProperties').workspace]",
+              "displayName": "[parameters('ioTSecuritySolutionProperties').displayName]",
+              "status": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'status')]",
+              "export": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'export')]",
+              "disabledDataSources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'disabledDataSources')]",
+              "iotHubs": "[parameters('ioTSecuritySolutionProperties').iotHubs]",
+              "userDefinedResources": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'userDefinedResources')]",
+              "recommendationsConfiguration": "[tryGet(parameters('ioTSecuritySolutionProperties'), 'recommendationsConfiguration')]"
+            }
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17079556367070596295"
+              "version": "0.42.1.51946",
+              "templateHash": "12522133032823585948"
             }
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the IoT Security Solution."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for the resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for the resource."
+              }
+            },
             "ioTSecuritySolutionProperties": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
-                "description": "Optional. Security Solution data."
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Security/iotSecuritySolutions@2019-08-01#properties/properties"
+                },
+                "description": "Required. Security Solution properties."
               }
             }
           },
-          "resources": [
-            {
-              "condition": "[not(empty(parameters('ioTSecuritySolutionProperties')))]",
+          "resources": {
+            "iotSecuritySolutions": {
               "type": "Microsoft.Security/iotSecuritySolutions",
               "apiVersion": "2019-08-01",
-              "name": "iotSecuritySolutions",
-              "properties": {
-                "workspace": "[parameters('ioTSecuritySolutionProperties').workspace]",
-                "displayName": "[parameters('ioTSecuritySolutionProperties').displayName]",
-                "status": "[parameters('ioTSecuritySolutionProperties').status]",
-                "export": "[parameters('ioTSecuritySolutionProperties').export]",
-                "disabledDataSources": "[parameters('ioTSecuritySolutionProperties').disabledDataSources]",
-                "iotHubs": "[parameters('ioTSecuritySolutionProperties').iotHubs]",
-                "userDefinedResources": "[parameters('ioTSecuritySolutionProperties').userDefinedResources]",
-                "recommendationsConfiguration": "[parameters('ioTSecuritySolutionProperties').recommendationsConfiguration]"
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": "[parameters('ioTSecuritySolutionProperties')]"
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the IoT Security Solution."
+              },
+              "value": "[resourceId('Microsoft.Security/iotSecuritySolutions', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the IoT Security Solution."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      }
+    },
+    "automations": {
+      "copy": {
+        "name": "automations",
+        "count": "[length(coalesce(parameters('securityAutomations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-ASC-Automation-{1}', uniqueString(deployment().name), copyIndex())]",
+      "resourceGroup": "[coalesce(parameters('securityAutomations'), createArray())[copyIndex()].resourceGroupName]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('securityAutomations'), createArray())[copyIndex()].name]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('securityAutomations'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('securityAutomations'), createArray())[copyIndex()], 'tags')]"
+          },
+          "automationDescription": {
+            "value": "[tryGet(coalesce(parameters('securityAutomations'), createArray())[copyIndex()], 'description')]"
+          },
+          "isEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('securityAutomations'), createArray())[copyIndex()], 'isEnabled'), true())]"
+          },
+          "scopes": {
+            "value": "[coalesce(parameters('securityAutomations'), createArray())[copyIndex()].scopes]"
+          },
+          "sources": {
+            "value": "[coalesce(parameters('securityAutomations'), createArray())[copyIndex()].sources]"
+          },
+          "actions": {
+            "value": "[coalesce(parameters('securityAutomations'), createArray())[copyIndex()].actions]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.42.1.51946",
+              "templateHash": "16895363066633330588"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the security automation."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for the resource."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for the resource."
+              }
+            },
+            "automationDescription": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Description of the security automation."
+              }
+            },
+            "isEnabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Whether the security automation is enabled."
+              }
+            },
+            "scopes": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The scopes on which the automation logic is applied."
+              }
+            },
+            "sources": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The source event types which evaluate the rules."
+              }
+            },
+            "actions": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The actions triggered when rules evaluate to true."
               }
             }
-          ]
+          },
+          "resources": {
+            "securityAutomation": {
+              "type": "Microsoft.Security/automations",
+              "apiVersion": "2023-12-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "description": "[parameters('automationDescription')]",
+                "isEnabled": "[parameters('isEnabled')]",
+                "scopes": "[parameters('scopes')]",
+                "sources": "[parameters('sources')]",
+                "actions": "[parameters('actions')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the security automation."
+              },
+              "value": "[resourceId('Microsoft.Security/automations', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the security automation."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
         }
       }
     }
@@ -410,6 +1461,16 @@
         "description": "The name of the security center."
       },
       "value": "Security"
+    },
+    "configuredDefenderPlans": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of Defender plan names that were configured."
+      },
+      "copy": {
+        "count": "[length(variables('effectiveDefenderPlans'))]",
+        "input": "[variables('effectiveDefenderPlans')[copyIndex()].name]"
+      }
     }
   }
 }

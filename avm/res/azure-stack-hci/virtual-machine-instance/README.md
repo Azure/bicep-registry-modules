@@ -1,6 +1,6 @@
 # Azure Stack HCI Virtual Machine Instance `[Microsoft.AzureStackHCI/virtualMachineInstances]`
 
-This module deploys an Azure Stack HCI virtual machine.
+This module deploys an Azure Stack HCI Virtual Machine Instance.
 
 You can reference the module as follows:
 ```bicep
@@ -46,6 +46,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -65,7 +69,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     osProfile: {
       adminPassword: '<adminPassword>'
       adminUsername: 'Administrator'
-      computerName: 'ashvmiminvm'
+      computerName: '<computerName>'
       linuxConfiguration: {}
       windowsConfiguration: {
         provisionVMAgent: true
@@ -114,7 +118,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "Administrator",
-        "computerName": "ashvmiminvm",
+        "computerName": "<computerName>",
         "linuxConfiguration": {},
         "windowsConfiguration": {
           "provisionVMAgent": true,
@@ -155,7 +159,7 @@ param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
   adminUsername: 'Administrator'
-  computerName: 'ashvmiminvm'
+  computerName: '<computerName>'
   linuxConfiguration: {}
   windowsConfiguration: {
     provisionVMAgent: true
@@ -179,6 +183,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -204,7 +212,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
     osProfile: {
       adminPassword: '<adminPassword>'
       adminUsername: 'Administrator'
-      computerName: 'ashvmiwafvm'
+      computerName: '<computerName>'
       linuxConfiguration: {}
       windowsConfiguration: {
         enableAutomaticUpdates: true
@@ -263,7 +271,7 @@ module virtualMachineInstance 'br/public:avm/res/azure-stack-hci/virtual-machine
       "value": {
         "adminPassword": "<adminPassword>",
         "adminUsername": "Administrator",
-        "computerName": "ashvmiwafvm",
+        "computerName": "<computerName>",
         "linuxConfiguration": {},
         "windowsConfiguration": {
           "enableAutomaticUpdates": true,
@@ -318,7 +326,7 @@ param networkProfile = {}
 param osProfile = {
   adminPassword: '<adminPassword>'
   adminUsername: 'Administrator'
-  computerName: 'ashvmiwafvm'
+  computerName: '<computerName>'
   linuxConfiguration: {}
   windowsConfiguration: {
     enableAutomaticUpdates: true
@@ -350,7 +358,7 @@ param location = '<location>'
 | [`hardwareProfile`](#parameter-hardwareprofile) | object | Hardware profile configuration. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`networkProfile`](#parameter-networkprofile) | object | Network profile configuration. |
-| [`osProfile`](#parameter-osprofile) | object | OS profile configuration. |
+| [`osProfile`](#parameter-osprofile) | secureObject | OS profile configuration. |
 | [`storageProfile`](#parameter-storageprofile) | object | Storage profile configuration. |
 
 **Optional parameters**
@@ -399,7 +407,7 @@ Network profile configuration.
 OS profile configuration.
 
 - Required: Yes
-- Type: object
+- Type: secureObject
 
 ### Parameter: `storageProfile`
 

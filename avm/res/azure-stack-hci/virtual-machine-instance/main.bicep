@@ -1,5 +1,5 @@
 metadata name = 'Azure Stack HCI Virtual Machine Instance'
-metadata description = 'This module deploys an Azure Stack HCI virtual machine.'
+metadata description = 'This module deploys an Azure Stack HCI Virtual Machine Instance.'
 
 @description('Required. Name of the resource to create.')
 param name string
@@ -22,6 +22,7 @@ param httpProxyConfig resourceInput<'Microsoft.AzureStackHCI/virtualMachineInsta
 @description('Required. Network profile configuration.')
 param networkProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.networkProfile
 
+@secure()
 @description('Required. OS profile configuration.')
 param osProfile resourceInput<'Microsoft.AzureStackHCI/virtualMachineInstances@2025-04-01-preview'>.properties.osProfile
 

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/virtual-machine-instance/CHANGELOG.md).
 
+## 0.1.2
+
+### Changes
+
+- Added @secure() decorator to osProfile parameter to prevent adminPassword exposure in ARM deployment history
+- Updated module metadata description for consistency
+
+### Breaking Changes
+
+- None
+
 ## 0.1.1
 
 ### Changes

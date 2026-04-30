@@ -219,6 +219,7 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: cognitiveService
 }
 
+#disable-next-line use-recent-api-versions // This is the latest API version for this resource as of the time of development.
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -248,7 +249,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -322,7 +323,7 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
-module aiProject 'project.bicep' = if(!empty(projectName) || !empty(existingFoundryProjectResourceId)) {
+module aiProject 'project.bicep' = if (!empty(projectName) || !empty(existingFoundryProjectResourceId)) {
   name: take('${name}-ai-project-${projectName}-deployment', 64)
   params: {
     name: projectName
@@ -431,4 +432,3 @@ type endpointType = {
   @description('The endpoint URI.')
   endpoint: string?
 }
-

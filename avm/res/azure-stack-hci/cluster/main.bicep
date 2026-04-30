@@ -109,6 +109,9 @@ param hciResourceProviderObjectId string
 ])
 param operationType string = 'ClusterProvisioning'
 
+@description('Optional. Set to false to skip creating built-in role assignments for the HCI resource provider and Arc nodes when RBAC is pre-configured.')
+param createBuiltInRoleAssignments bool = true
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -160,7 +163,7 @@ var azureStackHCIDeviceManagementRole = subscriptionResourceId(
   '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
 )
 
-resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (createBuiltInRoleAssignments) {
   name: guid(
     subscription().subscriptionId,
     hciResourceProviderObjectId,
@@ -177,7 +180,7 @@ resource spConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorizati
 }
 
 resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
+  for hciNode in arcNodeResourceIds: if (createBuiltInRoleAssignments) {
     name: guid(
       subscription().subscriptionId,
       hciResourceProviderObjectId,
@@ -195,7 +198,7 @@ resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Auth
 ]
 
 resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
+  for hciNode in arcNodeResourceIds: if (createBuiltInRoleAssignments) {
     name: guid(
       subscription().subscriptionId,
       hciResourceProviderObjectId,
@@ -213,7 +216,7 @@ resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssi
 ]
 
 resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
+  for hciNode in arcNodeResourceIds: if (createBuiltInRoleAssignments) {
     name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
     properties: {
       roleDefinitionId: readerRoleID
@@ -232,7 +235,7 @@ var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymen
 // ============= //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.azurestackhci-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -266,7 +269,8 @@ resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
   }
 ]
 
-resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = [
+@batchSize(1) // Serialize edgeDevice creation to avoid HCI RP race condition when provisioning multiple nodes simultaneously
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2025-10-01' = [
   for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
     name: 'default'
     scope: arcMachines[index]
@@ -280,7 +284,7 @@ resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2024-02-15-preview' = 
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2025-10-01' = {
   name: name
   identity: {
     type: 'SystemAssigned'
@@ -293,7 +297,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   ]
 }
 
-module secrets './secrets.bicep' = if (useSharedKeyVault) {
+module secrets './modules/secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
   scope: resourceGroup(
     keyvaultSubscriptionId ?? subscription().subscriptionId,
@@ -322,10 +326,11 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
     hciResourceProviderObjectId: hciResourceProviderObjectId
     arcNodeResourceIds: arcNodeResourceIds
+    partnerCredentialList: deploymentSettings!.?partnerCredentialList ?? []
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'temp-${name}'
   location: location
   tags: tags
@@ -364,7 +369,8 @@ resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-0
   }
 }
 
-// Use deployment script to run the shell script
+// Use deployment script to run the full deployment inline (single-phase approach)
+// This eliminates the two-phase overhead of ACI cleanup → separate Bicep deploy
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
   location: resourceGroup().location
@@ -376,7 +382,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     }
   }
   properties: {
-    azCliVersion: '2.50.0'
+    azCliVersion: '2.67.0'
     timeout: 'PT5H'
     retentionInterval: 'P1D'
     cleanupPreference: 'OnSuccess'
@@ -419,7 +425,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
       }
       {
         name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
-        value: base64(loadTextContent('./nested/deployment-setting.bicep'))
+        value: base64(loadTextContent('./modules/deployment-setting.bicep'))
       }
       {
         name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
@@ -430,7 +436,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         value: empty(servicePrincipalId) || empty(servicePrincipalSecret) ? string(false) : string(true)
       }
     ]
-    scriptContent: loadTextContent('./deploy.sh')
+    scriptContent: loadTextContent('./src/deploy.sh')
   }
   dependsOn: [
     edgeDevices
@@ -505,14 +511,14 @@ type networkIntentType = {
     @description('Required. The networkDirect configuration for the network adapters.')
     networkDirect: ('Enabled' | 'Disabled')
 
-    @description('Required. The networkDirectTechnology configuration for the network adapters.')
-    networkDirectTechnology: ('RoCEv2' | 'iWARP')
+    @description('Optional. The networkDirectTechnology configuration for the network adapters.')
+    networkDirectTechnology: ('' | 'RoCEv2' | 'iWARP')?
   }
 
   @description('Required. Specify whether to override the qosPolicy property. Use false by default.')
   overrideQosPolicy: bool
 
-  @description('Required. The qosPolicy overrides for the network intent.')
+  @description('Optional. The qosPolicy overrides for the network intent. Required when overrideQosPolicy is true.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
     bandwidthPercentageSMB: string
@@ -522,7 +528,7 @@ type networkIntentType = {
 
     @description('Required. Recommend 3.')
     priorityValue8021ActionSMB: string
-  }
+  }?
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
   overrideVirtualSwitchConfiguration: bool
@@ -530,10 +536,10 @@ type networkIntentType = {
   @description('Required. The virtualSwitchConfiguration overrides for the network intent.')
   virtualSwitchConfigurationOverrides: {
     @description('Required. The enableIov configuration for the network intent.')
-    enableIov: ('true' | 'false')
+    enableIov: ('' | 'true' | 'false')
 
     @description('Required. The loadBalancingAlgorithm configuration for the network intent.')
-    loadBalancingAlgorithm: ('Dynamic' | 'HyperVPort' | 'IPHash')
+    loadBalancingAlgorithm: ('' | 'Dynamic' | 'HyperVPort' | 'IPHash')
   }
 
   @description('Required. The traffic types for the network intent.')
@@ -604,6 +610,15 @@ type securityConfigurationType = {
 }
 
 @export()
+type physicalNodeSettingType = {
+  @description('Required. The name of the physical node. This should match the Arc machine display name for the node.')
+  name: string
+
+  @description('Required. The IPv4 address of the physical node.')
+  ipv4Address: string
+}
+
+@export()
 type deploymentSettingsType = {
   @minLength(4)
   @maxLength(8)
@@ -612,6 +627,9 @@ type deploymentSettingsType = {
 
   @description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
   clusterNodeNames: array
+
+  @description('Optional. Physical node settings to pass through to the deployment settings resource. If not provided, the module derives node IPs from Arc edgeDevices.')
+  physicalNodesSettings: physicalNodeSettingType[]?
 
   @description('Required. The domain name of the Active Directory Domain Services. Example: "contoso.com".')
   domainFqdn: string
@@ -679,6 +697,9 @@ type deploymentSettingsType = {
   @description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')
   dnsServers: string[]
 
+  @description('Optional. If true, the infrastructure network uses DHCP. If false, static IP pools are used.')
+  useDhcp: bool?
+
   @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
   networkIntents: networkIntentType[]
 
@@ -698,6 +719,30 @@ type deploymentSettingsType = {
   @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
   clusterWitnessStorageAccountName: string
 
+  @description('Optional. Witness type for the cluster. Use `No Witness` to omit witness configuration in the RP payload.')
+  witnessType: ('Cloud' | 'No Witness')?
+
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
+
+  @description('Optional. Solution builder extension (SBE) version.')
+  sbeVersion: string?
+
+  @description('Optional. Solution builder extension (SBE) family value.')
+  sbeFamily: string?
+
+  @description('Optional. Solution builder extension (SBE) publisher name.')
+  sbePublisher: string?
+
+  @description('Optional. Solution builder extension (SBE) manifest source.')
+  sbeManifestSource: string?
+
+  @description('Optional. Solution builder extension (SBE) creation date.')
+  sbeManifestCreationDate: string?
+
+  @description('Optional. Solution builder extension (SBE) partner properties.')
+  partnerProperties: array?
+
+  @description('Optional. Solution builder extension (SBE) partner credential properties.')
+  partnerCredentialList: array?
 }

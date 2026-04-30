@@ -2,7 +2,7 @@
 param location string
 
 @description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
-param hostVMSize string = 'Standard_E32s_v5'
+param hostVMSize string = 'Standard_D16as_v7'
 
 @description('Optional. The local admin user name.')
 param localAdminUsername string = 'admin-hci'
@@ -19,9 +19,9 @@ param domainAdminPassword string
 param localAdminPassword string
 
 @secure()
-param arbDeploymentAppId string
+param arbDeploymentAppId string?
 @secure()
-param arbDeploymentServicePrincipalSecret string
+param arbDeploymentServicePrincipalSecret string?
 
 @description('Optional. The domain OU path.')
 param domainOUPath string = 'OU=HCI,DC=jumpstart,DC=local'
@@ -52,6 +52,18 @@ param virtualMachineName string
 
 @description('Required. The name of the Maintenance Configuration Assignment for the proxy server.')
 param maintenanceConfigurationAssignmentName string
+
+@description('Optional. Publisher of the marketplace image to use for the HCI host VM. Defaults to a Windows Server 2022 Datacenter Azure Edition image in southeastasia.')
+param imagePublisher string = 'MicrosoftWindowsServer'
+
+@description('Optional. Offer of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageOffer string = 'WindowsServer'
+
+@description('Optional. SKU of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageSku string = '2022-datacenter-azure-edition'
+
+@description('Optional. Version of the marketplace image to use for the HCI host VM. Used together with imagePublisher when overriding the default Shared Image Gallery image.')
+param imageVersion string = '20348.4773.260206'
 
 // =================================//
 // Deploy Host VM Infrastructure    //
@@ -144,7 +156,6 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-07-0
 resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
   name: HCIHostVirtualMachineScaleSetName
   location: location
-  zones: ['1', '2', '3']
   properties: {
     orchestrationMode: 'Flexible'
     platformFaultDomainCount: 1
@@ -178,7 +189,6 @@ param imageReferenceId string = '/SharedGalleries/b9e38f20-7c9c-4497-a25d-1a0c5e
 resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
   location: location
   name: virtualMachineName
-  zones: ['1']
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -201,9 +211,16 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
       ]
     }
     storageProfile: {
-      imageReference: {
-        sharedGalleryImageId: imageReferenceId
-      }
+      imageReference: !empty(imagePublisher)
+        ? {
+            publisher: imagePublisher
+            offer: imageOffer
+            sku: imageSku
+            version: imageVersion
+          }
+        : {
+            sharedGalleryImageId: imageReferenceId
+          }
       osDisk: {
         createOption: 'FromImage'
         managedDisk: {
@@ -323,7 +340,7 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   }
 }
 
-resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
   parent: vm
   name: 'arc1'
   location: location
@@ -354,7 +371,7 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
       {
         name: 'ServicePrincipalId'
-        value: arbDeploymentAppId
+        value: arbDeploymentAppId!
       }
       {
         name: 'SubscriptionId'
@@ -380,13 +397,13 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
       {
         name: 'ServicePrincipalSecret'
-        value: arbDeploymentServicePrincipalSecret
+        value: arbDeploymentServicePrincipalSecret!
       }
     ]
   }
 }
 
-resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
   parent: vm
   name: 'arc2'
   location: location
@@ -417,7 +434,7 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
       {
         name: 'ServicePrincipalId'
-        value: arbDeploymentAppId
+        value: arbDeploymentAppId!
       }
       {
         name: 'SubscriptionId'
@@ -443,7 +460,7 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
       {
         name: 'ServicePrincipalSecret'
-        value: arbDeploymentServicePrincipalSecret
+        value: arbDeploymentServicePrincipalSecret!
       }
     ]
   }

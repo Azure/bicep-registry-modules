@@ -1,6 +1,6 @@
 # Container Registries Tasks `[Microsoft.ContainerRegistry/registries/tasks]`
 
-This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).
+Deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).
 
 You can reference the module as follows:
 ```bicep

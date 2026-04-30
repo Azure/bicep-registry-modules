@@ -24,28 +24,33 @@ param localAdminUsername string
 @secure()
 param localAdminPassword string
 @secure()
-param arbDeploymentAppId string
+param arbDeploymentAppId string?
 @secure()
-param arbDeploymentSPObjectId string
+param arbDeploymentSPObjectId string?
 @secure()
-param arbDeploymentServicePrincipalSecret string
+param arbDeploymentServicePrincipalSecret string?
 param vnetSubnetResourceId string?
 param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
 param useSharedKeyVault bool = true
 
+@description('Optional. The HCI marketplace image version to use for guest VM deployments. Stored in Key Vault so tests can retrieve it without hardcoding.')
+param hciImageVersionName string = '20348.2461.240510'
+
 // create base64 encoded secret values to be stored in the Azure Key Vault
 var deploymentUserSecretValue = base64('${deploymentUsername}:${deploymentUserPassword}')
 var localAdminSecretValue = base64('${localAdminUsername}:${localAdminPassword}')
-var arbDeploymentServicePrincipalValue = base64('${arbDeploymentAppId}:${arbDeploymentServicePrincipalSecret}')
+var arbDeploymentServicePrincipalValue = !empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')
+  ? base64('${arbDeploymentAppId}:${arbDeploymentServicePrincipalSecret}')
+  : ''
 
 var storageAccountType = 'Standard_ZRS'
 
-module ARBDeploymentSPNSubscriptionRoleAssignmnent 'ashciARBSPRoleAssignment.bicep' = {
+module ARBDeploymentSPNSubscriptionRoleAssignmnent 'ashciARBSPRoleAssignment.bicep' = if (!empty(arbDeploymentSPObjectId ?? '')) {
   name: '${uniqueString(deployment().name, location)}-test-arbroleassignment'
   scope: subscription()
   params: {
-    arbDeploymentSPObjectId: arbDeploymentSPObjectId
+    arbDeploymentSPObjectId: arbDeploymentSPObjectId!
   }
 }
 
@@ -189,7 +194,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = if (!useSharedKeyVault && !empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
     name: 'DefaultARBApplication'
     properties: {
       contentType: 'Secret'
@@ -205,6 +210,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     properties: {
       contentType: 'Secret'
       value: base64(witnessStorageAccount.listKeys().keys[0].value)
+      attributes: {
+        enabled: true
+      }
+    }
+  }
+
+  resource keyVaultName_hciImageVersion 'secrets@2023-07-01' = {
+    name: 'hciImageVersionName'
+    properties: {
+      contentType: 'Secret'
+      value: hciImageVersionName
       attributes: {
         enabled: true
       }
@@ -230,3 +246,6 @@ resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticS
     ]
   }
 }
+
+@description('The HCI marketplace image version stored in Key Vault.')
+output imageVersionName string = hciImageVersionName

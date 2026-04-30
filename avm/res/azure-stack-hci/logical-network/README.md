@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.AzureStackHCI/logicalNetworks` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_logicalnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks)</li></ul> |
+| `Microsoft.AzureStackHCI/logicalNetworks` | 2024-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_logicalnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-10-01-preview/logicalNetworks)</li></ul> |
 
 ## Usage examples
 
@@ -43,6 +43,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -110,6 +114,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -123,16 +131,16 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     name: 'ashlnwaflogicalnetwork'
     vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
-    addressPrefix: '192.168.1.0/24'
-    defaultGateway: '192.168.1.1'
+    addressPrefix: '172.20.0.0/24'
+    defaultGateway: '172.20.0.1'
     dnsServers: [
-      '192.168.1.254'
+      '172.20.0.1'
     ]
     ipAllocationMethod: 'Static'
     ipPools: [
       {
-        end: '192.168.1.190'
-        start: '192.168.1.171'
+        end: '172.20.0.190'
+        start: '172.20.0.171'
       }
     ]
     routeName: 'default'
@@ -170,14 +178,14 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     },
     // Non-required parameters
     "addressPrefix": {
-      "value": "192.168.1.0/24"
+      "value": "172.20.0.0/24"
     },
     "defaultGateway": {
-      "value": "192.168.1.1"
+      "value": "172.20.0.1"
     },
     "dnsServers": {
       "value": [
-        "192.168.1.254"
+        "172.20.0.1"
       ]
     },
     "ipAllocationMethod": {
@@ -186,8 +194,8 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     "ipPools": {
       "value": [
         {
-          "end": "192.168.1.190",
-          "start": "192.168.1.171"
+          "end": "172.20.0.190",
+          "start": "172.20.0.171"
         }
       ]
     },
@@ -223,16 +231,16 @@ param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
 param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
-param addressPrefix = '192.168.1.0/24'
-param defaultGateway = '192.168.1.1'
+param addressPrefix = '172.20.0.0/24'
+param defaultGateway = '172.20.0.1'
 param dnsServers = [
-  '192.168.1.254'
+  '172.20.0.1'
 ]
 param ipAllocationMethod = 'Static'
 param ipPools = [
   {
-    end: '192.168.1.190'
-    start: '192.168.1.171'
+    end: '172.20.0.190'
+    start: '172.20.0.171'
   }
 ]
 param routeName = 'default'
