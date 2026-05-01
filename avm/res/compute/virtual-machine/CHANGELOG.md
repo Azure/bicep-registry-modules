@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.23.0
+
+### Changes
+
+- Fixed `uefiSettings` condition to include `ConfidentialVM` alongside `TrustedLaunch`, enabling secure boot and vTPM for Confidential VMs
+- Added `securityProfile` (with `securityEncryptionType` and `diskEncryptionSetResourceId`) to `osDiskType.managedDisk`, enabling the required OS disk encryption settings for Confidential VMs
+- Updated parameter descriptions for `secureBootEnabled` and `vTpmEnabled` to mention both `TrustedLaunch` and `ConfidentialVM`
+
+### Breaking Changes
+
+- None
+
 ## 0.22.0
 
 ### Changes

@@ -51,14 +51,15 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults for Linux](#example-2-using-only-defaults-for-linux)
 - [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
 - [WAF-aligned](#example-4-waf-aligned)
-- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Deploying Windows VM from an existing OS-Disk, with premium SSDv2 data disk and shared disk](#example-6-deploying-windows-vm-from-an-existing-os-disk-with-premium-ssdv2-data-disk-and-shared-disk)
-- [Using guest configuration for Windows](#example-7-using-guest-configuration-for-windows)
-- [Using a host pool to register the VM](#example-8-using-a-host-pool-to-register-the-vm)
-- [Using large parameter set for Windows](#example-9-using-large-parameter-set-for-windows)
-- [Deploy a VM with nVidia graphic card](#example-10-deploy-a-vm-with-nvidia-graphic-card)
-- [Adding the VM to a VMSS.](#example-11-adding-the-vm-to-a-vmss)
-- [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-12-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
+- [Deploying a Windows Confidential VM](#example-5-deploying-a-windows-confidential-vm)
+- [Using only defaults for Windows](#example-6-using-only-defaults-for-windows)
+- [Deploying Windows VM from an existing OS-Disk, with premium SSDv2 data disk and shared disk](#example-7-deploying-windows-vm-from-an-existing-os-disk-with-premium-ssdv2-data-disk-and-shared-disk)
+- [Using guest configuration for Windows](#example-8-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-9-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-10-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-11-deploy-a-vm-with-nvidia-graphic-card)
+- [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
+- [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -2299,7 +2300,194 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _Using only defaults for Windows_
+### Example 5: _Deploying a Windows Confidential VM_
+
+This instance deploys the module with securityType set to ConfidentialVM, validating uefiSettings and osDisk securityProfile.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/windows.confidentialvm]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 1
+    name: 'vmwincvm'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        securityProfile: {
+          securityEncryptionType: 'VMGuestStateOnly'
+        }
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_DC2as_v5'
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-smalldisk-g2'
+      version: 'latest'
+    }
+    secureBootEnabled: true
+    securityType: 'ConfidentialVM'
+    vTpmEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
+    "name": {
+      "value": "vmwincvm"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "securityProfile": {
+            "securityEncryptionType": "VMGuestStateOnly"
+          },
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_DC2as_v5"
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-smalldisk-g2",
+        "version": "latest"
+      }
+    },
+    "secureBootEnabled": {
+      "value": true
+    },
+    "securityType": {
+      "value": "ConfidentialVM"
+    },
+    "vTpmEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param availabilityZone = 1
+param name = 'vmwincvm'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    securityProfile: {
+      securityEncryptionType: 'VMGuestStateOnly'
+    }
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_DC2as_v5'
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-smalldisk-g2'
+  version: 'latest'
+}
+param secureBootEnabled = true
+param securityType = 'ConfidentialVM'
+param vTpmEnabled = true
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults for Windows_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -2462,7 +2650,7 @@ param imageReference = {
 </details>
 <p>
 
-### Example 6: _Deploying Windows VM from an existing OS-Disk, with premium SSDv2 data disk and shared disk_
+### Example 7: _Deploying Windows VM from an existing OS-Disk, with premium SSDv2 data disk and shared disk_
 
 This instance deploys the module with using a pre-existing OS Disk, premium SSDv2 data disk and attachment of an existing shared disk.
 
@@ -2661,7 +2849,7 @@ param securityType = '<securityType>'
 </details>
 <p>
 
-### Example 7: _Using guest configuration for Windows_
+### Example 8: _Using guest configuration for Windows_
 
 This instance deploys the module with the a guest configuration.
 
@@ -2929,7 +3117,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 8: _Using a host pool to register the VM_
+### Example 9: _Using a host pool to register the VM_
 
 This instance deploys the module and registers it in a host pool.
 
@@ -3176,7 +3364,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 9: _Using large parameter set for Windows_
+### Example 10: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -4265,7 +4453,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Deploy a VM with nVidia graphic card_
+### Example 11: _Deploy a VM with nVidia graphic card_
 
 This instance deploys the module for a VM with dedicated nVidia graphic card.
 
@@ -4449,7 +4637,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 11: _Adding the VM to a VMSS._
+### Example 12: _Adding the VM to a VMSS._
 
 This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.
 
@@ -4617,7 +4805,7 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 </details>
 <p>
 
-### Example 12: _Deploying Windows VM in a defined zone with a premium zrs data disk_
+### Example 13: _Deploying Windows VM in a defined zone with a premium zrs data disk_
 
 This instance deploys the module with a premium zrs data disk.
 
@@ -4892,14 +5080,14 @@ param imageReference = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Policy for controlling export on the disk. |
 | [`rebootSetting`](#parameter-rebootsetting) | string | Specifies the reboot setting for all AutomaticByPlatform patch installation operations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`secureBootEnabled`](#parameter-securebootenabled) | bool | Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`securityType`](#parameter-securitytype) | string | Specifies the SecurityType of the virtual machine. It has to be set to any specified value to enable UefiSettings. The default behavior is: UefiSettings will not be enabled unless this property is set. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
 | [`userData`](#parameter-userdata) | string | UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here. |
 | [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
-| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
+| [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. |
 | [`winRMListeners`](#parameter-winrmlisteners) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. |
 
 ### Parameter: `availabilityZone`
@@ -6534,6 +6722,7 @@ The managed disk parameters.
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
 | [`resourceId`](#parameter-osdiskmanageddiskresourceid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
+| [`securityProfile`](#parameter-osdiskmanageddisksecurityprofile) | object | Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs. |
 | [`storageAccountType`](#parameter-osdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
 
 ### Parameter: `osDisk.managedDisk.diskEncryptionSetResourceId`
@@ -6546,6 +6735,47 @@ Specifies the customer managed disk encryption set resource id for the managed d
 ### Parameter: `osDisk.managedDisk.resourceId`
 
 Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `osDisk.managedDisk.securityProfile`
+
+Specifies the security profile settings for the managed disk. Note: It can only be set for Confidential VMs.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`securityEncryptionType`](#parameter-osdiskmanageddisksecurityprofilesecurityencryptiontype) | string | Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-osdiskmanageddisksecurityprofilediskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob. |
+
+### Parameter: `osDisk.managedDisk.securityProfile.securityEncryptionType`
+
+Specifies the EncryptionType of the managed disk. It is set to DiskWithVMGuestState for encryption of the managed disk along with VMGuestState blob, VMGuestStateOnly for encryption of just the VMGuestState blob, and NonPersistedTPM for not persisting firmware state in the VMGuestState blob. Note: It can be set for only Confidential VMs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DiskWithVMGuestState'
+    'NonPersistedTPM'
+    'VMGuestStateOnly'
+  ]
+  ```
+
+### Parameter: `osDisk.managedDisk.securityProfile.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk that is used for Customer Managed Key encrypted ConfidentialVM OS Disk and VMGuest blob.
 
 - Required: No
 - Type: string
@@ -7999,7 +8229,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `secureBootEnabled`
 
-Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether secure boot should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool
@@ -8053,7 +8283,7 @@ Resource ID of a virtual machine scale set, where the VM should be added.
 
 ### Parameter: `vTpmEnabled`
 
-Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings.
+Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings.
 
 - Required: No
 - Type: bool

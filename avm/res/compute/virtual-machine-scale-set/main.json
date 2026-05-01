@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4451782462123040624"
+      "version": "0.42.1.51946",
+      "templateHash": "17161558436535396030"
     },
     "name": "Virtual Machine Scale Sets",
     "description": "This module deploys a Virtual Machine Scale Set."
@@ -562,21 +562,21 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch to enable UefiSettings."
+        "description": "Optional. Specifies the SecurityType of the virtual machine scale set. It is set as TrustedLaunch or ConfidentialVM to enable UefiSettings."
       }
     },
     "secureBootEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch to enable UefiSettings."
+        "description": "Optional. Specifies whether secure boot should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings."
       }
     },
     "vTpmEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings."
+        "description": "Optional. Specifies whether vTPM should be enabled on the virtual machine scale set. This parameter is part of the UefiSettings. SecurityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings."
       }
     },
     "imageReference": {
@@ -1310,7 +1310,7 @@
           "securityProfile": {
             "encryptionAtHost": "[if(parameters('encryptionAtHost'), parameters('encryptionAtHost'), null())]",
             "securityType": "[parameters('securityType')]",
-            "uefiSettings": "[if(equals(parameters('securityType'), 'TrustedLaunch'), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null())]"
+            "uefiSettings": "[if(or(equals(parameters('securityType'), 'TrustedLaunch'), equals(parameters('securityType'), 'ConfidentialVM')), createObject('secureBootEnabled', parameters('secureBootEnabled'), 'vTpmEnabled', parameters('vTpmEnabled')), null())]"
           },
           "storageProfile": {
             "imageReference": "[parameters('imageReference')]",
@@ -1484,8 +1484,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1683,8 +1683,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -1887,8 +1887,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2083,8 +2083,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2278,8 +2278,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2481,8 +2481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2689,8 +2689,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -2891,8 +2891,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13709524022871603333"
+              "version": "0.42.1.51946",
+              "templateHash": "15065276398104673884"
             },
             "name": "Virtual Machine Scale Set Extensions",
             "description": "This module deploys a Virtual Machine Scale Set Extension."
