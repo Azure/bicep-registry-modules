@@ -43,7 +43,7 @@ var filePrivateDnsZoneResourceId = privateNetworking != null
   ? privateNetworking.?filePrivateDnsZoneResourceId ?? ''
   : ''
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: take('avm.res.storage.storage-account.${name}', 64)
   #disable-next-line no-unnecessary-dependson
   params: {

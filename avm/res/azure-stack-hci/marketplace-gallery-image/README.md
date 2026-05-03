@@ -43,6 +43,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -138,6 +142,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -367,6 +375,7 @@ The hypervisor generation of the Virtual Machine.
 - Allowed:
   ```Bicep
   [
+    'NA'
     'V1'
     'V2'
   ]

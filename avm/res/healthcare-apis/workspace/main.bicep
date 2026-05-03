@@ -103,6 +103,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.healthcareapis-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -192,6 +194,7 @@ module workspace_fhirservices 'fhirservice/main.bicep' = [
       resourceVersionPolicy: fhir.?resourceVersionPolicy
       resourceVersionOverrides: fhir.?resourceVersionOverrides
       smartProxyEnabled: fhir.?smartProxyEnabled
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -213,6 +216,7 @@ module workspace_dicomservices 'dicomservice/main.bicep' = [
       corsAllowCredentials: dicom.?corsAllowCredentials
       diagnosticSettings: dicom.?diagnosticSettings
       lock: dicom.?lock ?? lock
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -233,6 +237,7 @@ module workspace_iotconnector 'iotconnector/main.bicep' = [
       managedIdentities: iotConnector.?managedIdentities
       diagnosticSettings: iotConnector.?diagnosticSettings
       lock: iotConnector.?lock ?? lock
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
