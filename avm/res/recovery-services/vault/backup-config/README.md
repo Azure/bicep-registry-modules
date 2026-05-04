@@ -48,7 +48,6 @@ Enable this setting to protect hybrid backups against accidental deletes and add
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [
@@ -88,7 +87,6 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
 - Allowed:
   ```Bicep
   [

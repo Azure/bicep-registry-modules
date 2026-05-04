@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "8492509043832163268"
+      "templateHash": "4932416131993676174"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -2616,15 +2616,11 @@
           "name": {
             "value": "[tryGet(parameters('backupConfig'), 'name')]"
           },
-          "enhancedSecurityState": {
-            "value": "[tryGet(parameters('backupConfig'), 'enhancedSecurityState')]"
-          },
+          "enhancedSecurityState": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'enhancedSecurityState')))]",
           "resourceGuardOperationRequests": {
             "value": "[tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests')]"
           },
-          "softDeleteFeatureState": {
-            "value": "[tryGet(parameters('backupConfig'), 'softDeleteFeatureState')]"
-          },
+          "softDeleteFeatureState": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'softDeleteFeatureState')))]",
           "storageModelType": {
             "value": "[tryGet(parameters('backupConfig'), 'storageModelType')]"
           },
@@ -2640,12 +2636,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "8605412673919363013"
+              "templateHash": "14229554596120287728"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2666,7 +2663,7 @@
             },
             "enhancedSecurityState": {
               "type": "string",
-              "defaultValue": "Enabled",
+              "nullable": true,
               "allowedValues": [
                 "AlwaysON",
                 "Disabled",
@@ -2685,7 +2682,7 @@
             },
             "softDeleteFeatureState": {
               "type": "string",
-              "defaultValue": "Enabled",
+              "nullable": true,
               "allowedValues": [
                 "AlwaysON",
                 "Disabled",
@@ -2740,8 +2737,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "rsv": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2025-08-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "backupConfig": {
               "type": "Microsoft.RecoveryServices/vaults/backupconfig",
               "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
@@ -2755,7 +2758,7 @@
                 "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",

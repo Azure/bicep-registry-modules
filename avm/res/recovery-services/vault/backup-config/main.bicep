@@ -13,7 +13,7 @@ param name string = 'vaultconfig'
   'Disabled'
   'Enabled'
 ])
-param enhancedSecurityState string = 'Enabled'
+param enhancedSecurityState string?
 
 @description('Optional. ResourceGuard Operation Requests.')
 param resourceGuardOperationRequests array = []
@@ -24,7 +24,7 @@ param resourceGuardOperationRequests array = []
   'Disabled'
   'Enabled'
 ])
-param softDeleteFeatureState string = 'Enabled'
+param softDeleteFeatureState string?
 
 @description('Optional. Storage type.')
 @allowed([

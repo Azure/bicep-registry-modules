@@ -330,9 +330,9 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
   params: {
     recoveryVaultName: rsv.name
     name: backupConfig.?name
-    enhancedSecurityState: backupConfig.?enhancedSecurityState
+    enhancedSecurityState: !empty(softDeleteSettings) ? null : backupConfig.?enhancedSecurityState
     resourceGuardOperationRequests: backupConfig.?resourceGuardOperationRequests
-    softDeleteFeatureState: backupConfig.?softDeleteFeatureState
+    softDeleteFeatureState: !empty(softDeleteSettings) ? null : backupConfig.?softDeleteFeatureState
     storageModelType: backupConfig.?storageModelType
     storageType: backupConfig.?storageType
     storageTypeState: backupConfig.?storageTypeState
