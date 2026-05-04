@@ -262,7 +262,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   params: {
+    // Required parameters
     name: 'rsvmin001'
+    // Non-required parameters
+    immutabilitySettingState: 'Unlocked'
   }
 }
 ```
@@ -279,8 +282,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "rsvmin001"
+    },
+    // Non-required parameters
+    "immutabilitySettingState": {
+      "value": "Unlocked"
     }
   }
 }
@@ -296,7 +304,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/recovery-services/vault:<version>'
 
+// Required parameters
 param name = 'rsvmin001'
+// Non-required parameters
+param immutabilitySettingState = 'Unlocked'
 ```
 
 </details>
@@ -2141,6 +2152,11 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       }
       state: 'Enabled'
     }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -2532,6 +2548,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         },
         "state": "Enabled"
       }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -2898,6 +2921,11 @@ param sourceScanConfiguration = {
     operationIdentityType: 'SystemAssigned'
   }
   state: 'Enabled'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
