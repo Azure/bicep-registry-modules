@@ -444,6 +444,12 @@ module testDeployment '../../../main.bicep' = [
         softDeleteRetentionPeriodInDays: 14
         softDeleteState: 'Enabled'
       }
+      sourceScanConfiguration: {
+        state: 'Enabled'
+        sourceScanIdentity: {
+          operationIdentityType: 'SystemAssigned'
+        }
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

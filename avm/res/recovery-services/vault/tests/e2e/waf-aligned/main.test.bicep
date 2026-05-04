@@ -69,8 +69,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       backupConfig: {
-        enhancedSecurityState: 'Disabled'
-        softDeleteFeatureState: 'Disabled'
+        enhancedSecurityState: 'Enabled'
+        softDeleteFeatureState: 'AlwaysOn'
       }
       backupPolicies: [
         {
@@ -410,6 +410,12 @@ module testDeployment '../../../main.bicep' = [
         enhancedSecurityState: 'Enabled'
         softDeleteRetentionPeriodInDays: 14
         softDeleteState: 'Enabled'
+      }
+      sourceScanConfiguration: {
+        state: 'Enabled'
+        sourceScanIdentity: {
+          operationIdentityType: 'SystemAssigned'
+        }
       }
     }
   }

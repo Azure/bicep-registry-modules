@@ -10,7 +10,7 @@ param name string
 @description('Required. Configuration of the Azure Recovery Service Vault Backup Policy.')
 param properties object
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 

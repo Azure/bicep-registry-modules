@@ -19,6 +19,7 @@ param resourceGuardOperationRequests array = []
 
 @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
 @allowed([
+  'AlwaysOn'
   'Disabled'
   'Enabled'
 ])
@@ -52,11 +53,11 @@ param storageTypeState string = 'Locked'
 @description('Optional. Is soft delete feature state editable.')
 param isSoftDeleteFeatureStateEditable bool = true
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2023-01-01' = {
+resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01' = {
   name: name
   parent: rsv
   properties: {
