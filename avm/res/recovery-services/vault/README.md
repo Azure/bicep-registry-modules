@@ -560,8 +560,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     name: 'rsvmax001'
     // Non-required parameters
     backupConfig: {
-      enhancedSecurityState: 'Disabled'
-      softDeleteFeatureState: 'Disabled'
+      enhancedSecurityState: 'AlwaysON'
+      softDeleteFeatureState: 'AlwaysON'
     }
     backupPolicies: [
       {
@@ -928,13 +928,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       }
     ]
     softDeleteSettings: {
-      enhancedSecurityState: 'Enabled'
+      enhancedSecurityState: 'AlwaysON'
       softDeleteRetentionPeriodInDays: 14
-      softDeleteState: 'Enabled'
+      softDeleteState: 'AlwaysON'
     }
     sourceScanConfiguration: {
       sourceScanIdentity: {
-        operationIdentityType: 'SystemAssigned'
+        operationIdentityType: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
       state: 'Enabled'
     }
@@ -966,8 +967,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     "backupConfig": {
       "value": {
-        "enhancedSecurityState": "Disabled",
-        "softDeleteFeatureState": "Disabled"
+        "enhancedSecurityState": "AlwaysON",
+        "softDeleteFeatureState": "AlwaysON"
       }
     },
     "backupPolicies": {
@@ -1360,15 +1361,16 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     },
     "softDeleteSettings": {
       "value": {
-        "enhancedSecurityState": "Enabled",
+        "enhancedSecurityState": "AlwaysON",
         "softDeleteRetentionPeriodInDays": 14,
-        "softDeleteState": "Enabled"
+        "softDeleteState": "AlwaysON"
       }
     },
     "sourceScanConfiguration": {
       "value": {
         "sourceScanIdentity": {
-          "operationIdentityType": "SystemAssigned"
+          "operationIdentityType": "UserAssigned",
+          "userAssignedIdentity": "<userAssignedIdentity>"
         },
         "state": "Enabled"
       }
@@ -1398,8 +1400,8 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 param name = 'rsvmax001'
 // Non-required parameters
 param backupConfig = {
-  enhancedSecurityState: 'Disabled'
-  softDeleteFeatureState: 'Disabled'
+  enhancedSecurityState: 'AlwaysON'
+  softDeleteFeatureState: 'AlwaysON'
 }
 param backupPolicies = [
   {
@@ -1766,13 +1768,14 @@ param roleAssignments = [
   }
 ]
 param softDeleteSettings = {
-  enhancedSecurityState: 'Enabled'
+  enhancedSecurityState: 'AlwaysON'
   softDeleteRetentionPeriodInDays: 14
-  softDeleteState: 'Enabled'
+  softDeleteState: 'AlwaysON'
 }
 param sourceScanConfiguration = {
   sourceScanIdentity: {
-    operationIdentityType: 'SystemAssigned'
+    operationIdentityType: 'UserAssigned'
+    userAssignedIdentity: '<userAssignedIdentity>'
   }
   state: 'Enabled'
 }
@@ -1804,8 +1807,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     name: 'rsvwaf001'
     // Non-required parameters
     backupConfig: {
-      enhancedSecurityState: 'Enabled'
-      softDeleteFeatureState: 'AlwaysOn'
+      enhancedSecurityState: 'AlwaysON'
+      softDeleteFeatureState: 'AlwaysON'
     }
     backupPolicies: [
       {
@@ -2142,13 +2145,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       sendToOwners: 'Send'
     }
     softDeleteSettings: {
-      enhancedSecurityState: 'Enabled'
+      enhancedSecurityState: 'AlwaysON'
       softDeleteRetentionPeriodInDays: 14
-      softDeleteState: 'Enabled'
+      softDeleteState: 'AlwaysON'
     }
     sourceScanConfiguration: {
       sourceScanIdentity: {
-        operationIdentityType: 'SystemAssigned'
+        operationIdentityType: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
       state: 'Enabled'
     }
@@ -2180,8 +2184,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     "backupConfig": {
       "value": {
-        "enhancedSecurityState": "Enabled",
-        "softDeleteFeatureState": "AlwaysOn"
+        "enhancedSecurityState": "AlwaysON",
+        "softDeleteFeatureState": "AlwaysON"
       }
     },
     "backupPolicies": {
@@ -2536,15 +2540,16 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     },
     "softDeleteSettings": {
       "value": {
-        "enhancedSecurityState": "Enabled",
+        "enhancedSecurityState": "AlwaysON",
         "softDeleteRetentionPeriodInDays": 14,
-        "softDeleteState": "Enabled"
+        "softDeleteState": "AlwaysON"
       }
     },
     "sourceScanConfiguration": {
       "value": {
         "sourceScanIdentity": {
-          "operationIdentityType": "SystemAssigned"
+          "operationIdentityType": "UserAssigned",
+          "userAssignedIdentity": "<userAssignedIdentity>"
         },
         "state": "Enabled"
       }
@@ -2574,8 +2579,8 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 param name = 'rsvwaf001'
 // Non-required parameters
 param backupConfig = {
-  enhancedSecurityState: 'Enabled'
-  softDeleteFeatureState: 'AlwaysOn'
+  enhancedSecurityState: 'AlwaysON'
+  softDeleteFeatureState: 'AlwaysON'
 }
 param backupPolicies = [
   {
@@ -2912,13 +2917,14 @@ param replicationAlertSettings = {
   sendToOwners: 'Send'
 }
 param softDeleteSettings = {
-  enhancedSecurityState: 'Enabled'
+  enhancedSecurityState: 'AlwaysON'
   softDeleteRetentionPeriodInDays: 14
-  softDeleteState: 'Enabled'
+  softDeleteState: 'AlwaysON'
 }
 param sourceScanConfiguration = {
   sourceScanIdentity: {
-    operationIdentityType: 'SystemAssigned'
+    operationIdentityType: 'UserAssigned'
+    userAssignedIdentity: '<userAssignedIdentity>'
   }
   state: 'Enabled'
 }
@@ -3004,6 +3010,7 @@ Enable this setting to protect hybrid backups against accidental deletes and add
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]
@@ -3039,7 +3046,7 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 - Allowed:
   ```Bicep
   [
-    'AlwaysOn'
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]

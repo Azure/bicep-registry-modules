@@ -52,6 +52,7 @@ Enable this setting to protect hybrid backups against accidental deletes and add
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]
@@ -91,7 +92,7 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 - Allowed:
   ```Bicep
   [
-    'AlwaysOn'
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]

@@ -9,6 +9,7 @@ param name string = 'vaultconfig'
 
 @description('Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.')
 @allowed([
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])
@@ -19,7 +20,7 @@ param resourceGuardOperationRequests array = []
 
 @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
 @allowed([
-  'AlwaysOn'
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])

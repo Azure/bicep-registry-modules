@@ -566,13 +566,13 @@ type backupConfigType = {
   name: string?
 
   @description('Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.')
-  enhancedSecurityState: ('Disabled' | 'Enabled')?
+  enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled')?
 
   @description('Optional. ResourceGuard Operation Requests.')
   resourceGuardOperationRequests: object[]?
 
   @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
-  softDeleteFeatureState: ('AlwaysOn' | 'Disabled' | 'Enabled')?
+  softDeleteFeatureState: ('AlwaysON' | 'Disabled' | 'Enabled')?
 
   @description('Optional. Storage type.')
   storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?

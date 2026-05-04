@@ -74,8 +74,8 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       backupConfig: {
-        enhancedSecurityState: 'Enabled'
-        softDeleteFeatureState: 'AlwaysOn'
+        enhancedSecurityState: 'AlwaysON'
+        softDeleteFeatureState: 'AlwaysON'
       }
       backupPolicies: [
         {
@@ -412,14 +412,15 @@ module testDeployment '../../../main.bicep' = [
         autoRotationEnabled: true
       }
       softDeleteSettings: {
-        enhancedSecurityState: 'Enabled'
+        enhancedSecurityState: 'AlwaysON'
         softDeleteRetentionPeriodInDays: 14
-        softDeleteState: 'Enabled'
+        softDeleteState: 'AlwaysON'
       }
       sourceScanConfiguration: {
         state: 'Enabled'
         sourceScanIdentity: {
-          operationIdentityType: 'SystemAssigned'
+          operationIdentityType: 'UserAssigned'
+          userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
         }
       }
     }
