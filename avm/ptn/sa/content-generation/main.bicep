@@ -190,7 +190,7 @@ var baseModelDeployments = [
 var imageModelConfig = {
   'gpt-image-1-mini': {
     name: 'gpt-image-1-mini'
-    version: '2025-04-15'
+    version: '2025-10-06'
     sku: 'GlobalStandard'
   }
   'gpt-image-1.5': {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "4540919998347398094"
+      "templateHash": "2673025966457330793"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -267,7 +267,7 @@
     "imageModelConfig": {
       "gpt-image-1-mini": {
         "name": "gpt-image-1-mini",
-        "version": "2025-04-15",
+        "version": "2025-10-06",
         "sku": "GlobalStandard"
       },
       "gpt-image-1.5": {
