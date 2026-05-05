@@ -1,6 +1,9 @@
 metadata name = 'Eventgrid Namespace Client Groups'
 metadata description = 'This module deploys an Eventgrid Namespace Client Group.'
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @sys.description('Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
 
@@ -16,6 +19,24 @@ param description string?
 // ============== //
 // Resources      //
 // ============== //
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.eventgrid-namespace-clientgroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, 'eastus'), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource namespace 'Microsoft.EventGrid/namespaces@2023-12-15-preview' existing = {
   name: namespaceName

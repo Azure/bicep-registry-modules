@@ -206,6 +206,7 @@ module topics_eventSubscriptions 'event-subscription/main.bicep' = [
       filter: eventSubscription.?filter
       labels: eventSubscription.?labels
       retryPolicy: eventSubscription.?retryPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
