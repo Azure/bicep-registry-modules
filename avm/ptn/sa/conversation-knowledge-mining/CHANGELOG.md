@@ -14,6 +14,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added `privatelink.azurewebsites.net` private DNS zone for web app private endpoints.
 - Added conditional `APP_API_BASE_URL` and `BACKEND_API_HOST` app settings for private networking.
 - Added private endpoint support for backend web app in WAF-aligned (private networking) scenario.
+- Changed SQL Database SKU to provisioned `GP_Gen5` when `enableRedundancy` is `true` (zone redundancy not supported on serverless `GP_S_Gen5`); serverless SKU is retained when redundancy is disabled.
 
 ### Breaking Changes
 
