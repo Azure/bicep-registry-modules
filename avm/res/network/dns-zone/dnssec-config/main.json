@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "7182596514441476272"
+      "version": "0.43.1.21952",
+      "templateHash": "2286668424536125929"
     },
     "name": "Public DNS Zone DNSSEC Config",
     "description": "This module deploys a Public DNS Zone DNSSEC configuration."
