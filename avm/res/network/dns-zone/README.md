@@ -30,6 +30,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/dnsZones/AAAA` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_aaaa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/AAAA)</li></ul> |
 | `Microsoft.Network/dnsZones/CAA` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_caa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CAA)</li></ul> |
 | `Microsoft.Network/dnsZones/CNAME` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_cname.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CNAME)</li></ul> |
+| `Microsoft.Network/dnsZones/dnssecConfigs` | 2023-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_dnssecconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-07-01-preview/dnsZones/dnssecConfigs)</li></ul> |
 | `Microsoft.Network/dnsZones/MX` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_mx.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/MX)</li></ul> |
 | `Microsoft.Network/dnsZones/NS` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_ns.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/NS)</li></ul> |
 | `Microsoft.Network/dnsZones/PTR` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_ptr.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/PTR)</li></ul> |
@@ -46,8 +47,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/dns-zone:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Deploying with DNSSEC enabled](#example-2-deploying-with-dnssec-enabled)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -103,7 +105,72 @@ param name = 'ndzmin001.com'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Deploying with DNSSEC enabled_
+
+This instance deploys the module with DNSSEC configuration enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/dnssec]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ndzdnssec001.com'
+    // Non-required parameters
+    dnssecConfig: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ndzdnssec001.com"
+    },
+    // Non-required parameters
+    "dnssecConfig": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-zone:<version>'
+
+// Required parameters
+param name = 'ndzdnssec001.com'
+// Non-required parameters
+param dnssecConfig = true
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1109,7 +1176,7 @@ param txt = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1202,6 +1269,7 @@ param tags = {
 | [`aaaa`](#parameter-aaaa) | array | Array of AAAA records. |
 | [`caa`](#parameter-caa) | array | Array of CAA records. |
 | [`cname`](#parameter-cname) | array | Array of CNAME records. |
+| [`dnssecConfig`](#parameter-dnssecconfig) | bool | Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location of the dnsZone. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1880,6 +1948,13 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+
+### Parameter: `dnssecConfig`
+
+Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).
+
+- Required: No
+- Type: bool
 
 ### Parameter: `enableTelemetry`
 

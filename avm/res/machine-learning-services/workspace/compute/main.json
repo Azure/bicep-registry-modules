@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18142994982969865013"
+      "version": "0.42.1.51946",
+      "templateHash": "4586931783931386373"
     },
     "name": "Machine Learning Services Workspaces Computes",
     "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."

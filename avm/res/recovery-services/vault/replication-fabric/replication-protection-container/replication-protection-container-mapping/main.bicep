@@ -45,19 +45,19 @@ var mappingName = !empty(name)
   ? name
   : '${sourceProtectionContainerName}-${split(calcTargetProtectionContainerResourceId!, '/')[10]}'
 
-resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2024-10-01' existing = {
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 
-  resource replicationFabric 'replicationFabrics@2022-10-01' existing = {
+  resource replicationFabric 'replicationFabrics@2025-08-01' existing = {
     name: replicationFabricName
 
-    resource replicationContainer 'replicationProtectionContainers@2022-10-01' existing = {
+    resource replicationContainer 'replicationProtectionContainers@2025-08-01' existing = {
       name: sourceProtectionContainerName
     }
   }
 }
 
-resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings@2022-10-01' = {
+resource replicationContainer 'Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings@2025-08-01' = {
   name: mappingName
   parent: recoveryServicesVault::replicationFabric::replicationContainer
   properties: {

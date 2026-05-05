@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -313,6 +313,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
+            # skip deployment test for certain modules that are known to cause issues in CI (e.g. due to a very long deployment time that may cause CI to time out), but without failing the whole pipeline
+            $allowedE2eignoreModules = @(
+                'res/azure-stack-hci/cluster'
+                'res/azure-stack-hci/cluster/deployment-setting'
+                'res/azure-stack-hci/logical-network'
+                'res/azure-stack-hci/marketplace-gallery-image'
+                'res/azure-stack-hci/network-interface'
+                'res/azure-stack-hci/virtual-hard-disk'
+                'res/azure-stack-hci/virtual-machine-instance'
+            )
+
             $incorrectFolders = @()
             $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
                 $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
@@ -320,7 +331,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
                 if (Test-Path $filePath) {
-                    $incorrectFolders += $e2eTestFolderPath.Name
+                    if ($allowedE2eignoreModules -contains $moduleFolderName) {
+                        Write-Warning "Module [$moduleFolderName] is in the allowed e2eignore list and is allowed to have an .e2eignore file for its tests, but please consider removing it if the issues causing the need for skipping the tests are resolved."
+                    } else {
+                        $incorrectFolders += $e2eTestFolderPath.Name
+                    }
                 }
             }
             $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))

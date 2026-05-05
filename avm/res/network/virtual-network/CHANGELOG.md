@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.8.1
+
+### Changes
+
+- Publishing child module `avm/res/network/virtual-network/virtual-network-peering`
+
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes

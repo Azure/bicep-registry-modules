@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2369688279769028131"
+      "version": "0.40.2.10011",
+      "templateHash": "13988392934556514324"
     },
     "name": "Arc Machine Extensions",
     "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource."
@@ -94,12 +94,12 @@
     "machine": {
       "existing": true,
       "type": "Microsoft.HybridCompute/machines",
-      "apiVersion": "2024-07-10",
+      "apiVersion": "2025-01-13",
       "name": "[parameters('arcMachineName')]"
     },
     "extension": {
       "type": "Microsoft.HybridCompute/machines/extensions",
-      "apiVersion": "2024-07-10",
+      "apiVersion": "2025-01-13",
       "name": "[format('{0}/{1}', parameters('arcMachineName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -142,7 +142,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('extension', '2024-07-10', 'full').location]"
+      "value": "[reference('extension', '2025-01-13', 'full').location]"
     }
   }
 }

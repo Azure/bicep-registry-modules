@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "10470890886683317319"
+      "templateHash": "8956288048631771620"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -1159,7 +1159,8 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
@@ -1297,6 +1298,9 @@
           "containerAppName": {
             "value": "[parameters('name')]"
           },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "encryptionSettings": {
             "value": "[tryGet(parameters('authConfig'), 'encryptionSettings')]"
           },
@@ -1324,7 +1328,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "12173377941230147433"
+              "templateHash": "5091965340897189324"
             },
             "name": "Container App Auth Configs",
             "description": "This module deploys Container App Auth Configs."
@@ -1395,9 +1399,36 @@
                 "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.app-containerapp-authconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "containerApp": {
               "existing": true,
               "type": "Microsoft.App/containerApps",

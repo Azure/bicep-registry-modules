@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "15662315628313743409"
+      "templateHash": "17601607299353599710"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -315,13 +315,6 @@
     "containerInstanceName": "[format('aci-{0}', variables('solutionSuffix'))]"
   },
   "resources": {
-    "existingResourceGroup": {
-      "existing": true,
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2024-07-01",
-      "subscriptionId": "[subscription().subscriptionId]",
-      "name": "[resourceGroup().name]"
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -347,11 +340,8 @@
       "apiVersion": "2025-04-01",
       "name": "default",
       "properties": {
-        "tags": "[union(coalesce(reference('existingResourceGroup', '2024-07-01', 'full').tags, createObject()), parameters('tags'), createObject('TemplateName', 'ContentGen', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy')))]"
-      },
-      "dependsOn": [
-        "existingResourceGroup"
-      ]
+        "tags": "[shallowMerge(createArray(resourceGroup().tags, parameters('tags'), createObject('TemplateName', 'ContentGen', 'Type', if(parameters('enablePrivateNetworking'), 'WAF', 'Non-WAF'), 'CreatedBy', parameters('createdBy'))))]"
+      }
     },
     "aiSearchFoundryConnection": {
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
@@ -13981,8 +13971,8 @@
       },
       "dependsOn": [
         "aiFoundryAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "virtualNetwork"
       ]
     },

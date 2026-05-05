@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "12443617614471369211"
+      "templateHash": "15452000279358180556"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2133,6 +2133,16 @@
         "description": "Optional. SQL logical server connection policy."
       }
     },
+    "outboundFirewallRules": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The outbound firewall rules for the server."
+      }
+    },
     "vulnerabilityAssessmentsObj": {
       "$ref": "#/definitions/vulnerabilityAssessmentType",
       "nullable": true,
@@ -2218,7 +2228,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.sql-server.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -2302,6 +2312,19 @@
       "properties": {
         "connectionType": "[parameters('connectionPolicy')]"
       },
+      "dependsOn": [
+        "server"
+      ]
+    },
+    "server_outbound_firewall_rules": {
+      "copy": {
+        "name": "server_outbound_firewall_rules",
+        "count": "[length(coalesce(parameters('outboundFirewallRules'), createArray()))]"
+      },
+      "condition": "[not(equals(parameters('outboundFirewallRules'), null()))]",
+      "type": "Microsoft.Sql/servers/outboundFirewallRules",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('outboundFirewallRules'), createArray())[copyIndex()])]",
       "dependsOn": [
         "server"
       ]
@@ -4189,8 +4212,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "16604612898799598358"
+              "version": "0.41.2.15936",
+              "templateHash": "18436885663402767850"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -4254,7 +4277,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -4353,7 +4376,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -4392,11 +4415,21 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                 },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               },
               "nullable": true
+            },
+            "ipVersionType": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                },
+                "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+              },
+              "defaultValue": "IPv4"
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -4433,7 +4466,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               },
@@ -4443,7 +4476,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                 },
                 "description": "Optional. Custom DNS configurations."
               },
@@ -4453,7 +4486,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               },
@@ -4463,7 +4496,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               },
@@ -4503,7 +4536,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4521,7 +4554,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -4542,14 +4575,15 @@
                 "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
-                }
+                },
+                "ipVersionType": "[parameters('ipVersionType')]"
               }
             },
             "privateEndpoint_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -4566,7 +4600,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -4609,8 +4643,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "24141742673128945"
+                      "version": "0.41.2.15936",
+                      "templateHash": "9935179114830442414"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -4669,12 +4703,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "copy": [
@@ -4749,13 +4783,13 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                   "output": true
                 },
                 "description": "The custom DNS configurations of the private endpoint."

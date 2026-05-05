@@ -25,7 +25,7 @@ param multiVmSyncStatus string = 'Enable'
 @description('Optional. The duration in minutes until which the recovery points need to be stored.')
 param recoveryPointHistory int = 1440
 
-resource replicationPolicy 'Microsoft.RecoveryServices/vaults/replicationPolicies@2023-06-01' = {
+resource replicationPolicy 'Microsoft.RecoveryServices/vaults/replicationPolicies@2025-08-01' = {
   name: '${recoveryVaultName}/${name}'
   properties: {
     providerSpecificInput: {

@@ -227,14 +227,6 @@ var aiFoundryAiServicesModelDeployment = concat(baseModelDeployments, imageModel
 
 var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
 
-// Reference existing resource group to access current tags
-resource existingResourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' existing = {
-  scope: subscription()
-  name: resourceGroup().name
-}
-
-var existingTags = existingResourceGroup.tags ?? {}
-
 // ============== //
 // Resources      //
 // ============== //
@@ -262,11 +254,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
   properties: {
-    tags: union(existingTags, tags, {
+    tags: {
+      ...resourceGroup().tags
+      ...tags
       TemplateName: 'ContentGen'
       Type: enablePrivateNetworking ? 'WAF' : 'Non-WAF'
       CreatedBy: createdBy
-    })
+    }
   }
 }
 
