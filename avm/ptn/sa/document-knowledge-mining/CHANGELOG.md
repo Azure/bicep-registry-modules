@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/document-knowledge-mining/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Updated AVM module versions (safe patch and single-minor bumps):
+  - `network/private-dns-zone`: 0.8.0 → 0.8.1
+  - `network/bastion-host`: 0.8.0 → 0.8.2
+  - `compute/virtual-machine`: 0.21.0 → 0.22.0
+  - `managed-identity/user-assigned-identity`: 0.4.2 → 0.5.0
+  - `document-db/database-account`: 0.18.0 → 0.19.0
+  - `app-configuration/configuration-store`: 0.9.2 → 0.9.3
+  - `search/search-service`: 0.11.1 → 0.12.0
+  - `cognitive-services/account`: 0.14.0 → 0.14.2
+  - `network/network-security-group`: 0.5.2 → 0.5.3
+  - `container-registry/registry`: 0.9.3 → 0.12.1
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

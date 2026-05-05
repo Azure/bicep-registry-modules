@@ -16,14 +16,14 @@ param publicNetworkAccess string = 'Enabled'
 @description('Zone redundancy setting for the Azure Container Registry')
 param zoneRedundancy string = 'Disabled'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Tags to be applied to the Container Registry')
 param tags object = {}
 
-module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
+module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: acrName
   params: {
     name: acrName
