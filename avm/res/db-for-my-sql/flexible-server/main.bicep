@@ -415,6 +415,7 @@ module flexibleServer_databases 'database/main.bicep' = [
       flexibleServerName: flexibleServer.name
       collation: database.?collation ?? ''
       charset: database.?charset ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -427,6 +428,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
       flexibleServerName: flexibleServer.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -440,6 +442,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
       tenantId: administrator.?tenantId ?? tenant().tenantId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -452,6 +455,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
       flexibleServerName: flexibleServer.name
       source: configuration.?source
       value: configuration.?value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -461,6 +465,7 @@ module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.
   params: {
     flexibleServerName: flexibleServer.name
     advancedThreatProtection: advancedThreatProtection
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

@@ -170,6 +170,7 @@ module domain_topics 'topic/main.bicep' = [
     params: {
       domainName: domain.name
       name: topic
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -190,6 +191,7 @@ module domain_eventSubscriptions 'event-subscription/main.bicep' = [
       filter: eventSubscription.?filter
       labels: eventSubscription.?labels
       retryPolicy: eventSubscription.?retryPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

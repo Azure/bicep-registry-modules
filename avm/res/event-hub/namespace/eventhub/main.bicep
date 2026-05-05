@@ -121,6 +121,8 @@ var captureIdentity = !empty(captureDescription.?destination.?identity)
     }
   : null
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -204,6 +206,7 @@ module eventHub_consumergroups 'consumergroup/main.bicep' = [
       eventHubName: eventHub.name
       name: consumerGroup.name
       userMetadata: consumerGroup.?userMetadata
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -216,6 +219,7 @@ module eventHub_authorizationRules 'authorization-rule/main.bicep' = [
       eventHubName: eventHub.name
       name: authorizationRule.name
       rights: authorizationRule.?rights
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

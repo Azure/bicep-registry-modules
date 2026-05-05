@@ -36,6 +36,9 @@ param srv srvType[]?
 @description('Optional. Array of TXT records.')
 param txt txtType[]?
 
+@description('Optional. Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).')
+param dnssecConfig bool?
+
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
 
@@ -272,6 +275,13 @@ module dnsZone_TXT 'txt/main.bicep' = [
     }
   }
 ]
+
+module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (dnssecConfig == true) {
+  name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
+  params: {
+    dnsZoneName: dnsZone.name
+  }
+}
 
 resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'

@@ -41,7 +41,7 @@ var batchContainerName = 'cmsabatch'
 var fileContainerName = 'cmsafile'
 var logContainerName = 'cmsalog'
 
-module cosmosAccount 'br/public:avm/res/document-db/database-account:0.18.0' = {
+module cosmosAccount 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name

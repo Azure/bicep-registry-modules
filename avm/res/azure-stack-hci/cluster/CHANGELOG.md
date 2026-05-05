@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/cluster/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Inlined cluster deployment settings into ACI deployment script for improved performance
+- Removed separate `clusterDeploymentSettings` Bicep module in favor of single-phase ACI deployment
+- Changed ACI cleanup preference to `OnSuccess` with 1-day retention interval
+
+### Breaking Changes
+
+- None (external module interface unchanged; all parameters and outputs remain the same)
+
 ## 0.3.0
 
 ### Changes

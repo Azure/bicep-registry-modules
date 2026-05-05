@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "9304115645395595236"
+      "version": "0.42.1.51946",
+      "templateHash": "4932416131993676174"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -191,6 +191,7 @@
         "enhancedSecurityState": {
           "type": "string",
           "allowedValues": [
+            "AlwaysON",
             "Disabled",
             "Enabled"
           ],
@@ -212,6 +213,7 @@
         "softDeleteFeatureState": {
           "type": "string",
           "allowedValues": [
+            "AlwaysON",
             "Disabled",
             "Enabled"
           ],
@@ -585,6 +587,52 @@
             "description": "Required. The storage redundancy setting of a vault."
           }
         }
+      }
+    },
+    "sourceScanConfigurationType": {
+      "type": "object",
+      "properties": {
+        "sourceScanIdentity": {
+          "type": "object",
+          "properties": {
+            "operationIdentityType": {
+              "type": "string",
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned"
+              ],
+              "metadata": {
+                "description": "Required. Identity type that should be used for an operation."
+              }
+            },
+            "userAssignedIdentity": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. User assigned identity to be used for an operation if operationIdentityType is UserAssigned."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identity details to be used for the source scan operation."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
+          "metadata": {
+            "description": "Required. The source scan state."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for source scan configuration."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1341,7 +1389,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.RecoveryServices/vaults@2024-04-01#properties/tags"
+          "source": "Microsoft.RecoveryServices/vaults@2025-08-01#properties/tags"
         },
         "description": "Optional. Tags of the Recovery Service Vault resource."
       },
@@ -1406,6 +1454,23 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The restore settings of the vault."
+      }
+    },
+    "sourceScanConfiguration": {
+      "$ref": "#/definitions/sourceScanConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The source scan configuration of the vault security settings."
+      }
+    },
+    "resourceGuardOperationRequests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. ResourceGuard operation requests on which LAC check will be performed."
       }
     },
     "customerManagedKey": {
@@ -1473,7 +1538,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[format('46d3xbcp.res.recoveryservices-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1492,7 +1557,7 @@
     },
     "rsv": {
       "type": "Microsoft.RecoveryServices/vaults",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2025-08-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1505,11 +1570,13 @@
         "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
         "securitySettings": {
           "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
-          "softDeleteSettings": "[parameters('softDeleteSettings')]"
+          "softDeleteSettings": "[parameters('softDeleteSettings')]",
+          "sourceScanConfiguration": "[parameters('sourceScanConfiguration')]"
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancySettings": "[if(not(empty(parameters('redundancySettings'))), createObject('standardTierStorageRedundancy', parameters('redundancySettings').standardTierStorageRedundancy, 'crossRegionRestore', coalesce(tryGet(parameters('redundancySettings'), 'crossRegionRestore'), 'Disabled')), null())]",
         "restoreSettings": "[parameters('restoreSettings')]",
+        "resourceGuardOperationRequests": "[parameters('resourceGuardOperationRequests')]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion)), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUri, format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault::cMKKey').keyUriWithVersion, fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))), null())]"
       },
       "dependsOn": [
@@ -1627,8 +1694,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9008819346665651591"
+              "version": "0.42.1.51946",
+              "templateHash": "14545818213015288497"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -1749,12 +1816,12 @@
             "recoveryServicesVault": {
               "existing": true,
               "type": "Microsoft.RecoveryServices/vaults",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[parameters('recoveryVaultName')]"
             },
             "replicationFabric": {
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
                 "customDetails": {
@@ -1797,8 +1864,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3560349737134583500"
+                      "version": "0.42.1.51946",
+                      "templateHash": "16290686236168812123"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -1890,18 +1957,18 @@
                     "recoveryServicesVault::replicationFabric": {
                       "existing": true,
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-                      "apiVersion": "2022-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
                     },
                     "recoveryServicesVault": {
                       "existing": true,
                       "type": "Microsoft.RecoveryServices/vaults",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[parameters('recoveryVaultName')]"
                     },
                     "replicationContainer": {
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
-                      "apiVersion": "2022-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]",
                       "properties": {
                         "providerSpecificInput": [
@@ -1960,8 +2027,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "6599364122780578852"
+                              "version": "0.42.1.51946",
+                              "templateHash": "13991009632404091244"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2037,24 +2104,24 @@
                             "recoveryServicesVault::replicationFabric::replicationContainer": {
                               "existing": true,
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
-                              "apiVersion": "2022-10-01",
+                              "apiVersion": "2025-08-01",
                               "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'))]"
                             },
                             "recoveryServicesVault::replicationFabric": {
                               "existing": true,
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-                              "apiVersion": "2022-10-01",
+                              "apiVersion": "2025-08-01",
                               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
                             },
                             "recoveryServicesVault": {
                               "existing": true,
                               "type": "Microsoft.RecoveryServices/vaults",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-08-01",
                               "name": "[parameters('recoveryVaultName')]"
                             },
                             "replicationContainer": {
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
-                              "apiVersion": "2022-10-01",
+                              "apiVersion": "2025-08-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
                               "properties": {
                                 "targetProtectionContainerId": "[variables('calcTargetProtectionContainerResourceId')]",
@@ -2194,8 +2261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "15922403872390850198"
+              "version": "0.42.1.51946",
+              "templateHash": "2143929961375337997"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2249,7 +2316,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/replicationPolicies",
-              "apiVersion": "2023-06-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
                 "providerSpecificInput": {
@@ -2333,8 +2400,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8976175518627379021"
+              "version": "0.42.1.51946",
+              "templateHash": "16945042157616503588"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -2399,7 +2466,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -2469,8 +2536,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3200361074249898357"
+              "version": "0.42.1.51946",
+              "templateHash": "14208621054860787294"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -2498,7 +2565,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -2549,15 +2616,11 @@
           "name": {
             "value": "[tryGet(parameters('backupConfig'), 'name')]"
           },
-          "enhancedSecurityState": {
-            "value": "[tryGet(parameters('backupConfig'), 'enhancedSecurityState')]"
-          },
+          "enhancedSecurityState": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'enhancedSecurityState')))]",
           "resourceGuardOperationRequests": {
             "value": "[tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests')]"
           },
-          "softDeleteFeatureState": {
-            "value": "[tryGet(parameters('backupConfig'), 'softDeleteFeatureState')]"
-          },
+          "softDeleteFeatureState": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'softDeleteFeatureState')))]",
           "storageModelType": {
             "value": "[tryGet(parameters('backupConfig'), 'storageModelType')]"
           },
@@ -2573,12 +2636,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17898171528613598801"
+              "version": "0.42.1.51946",
+              "templateHash": "14229554596120287728"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2599,8 +2663,9 @@
             },
             "enhancedSecurityState": {
               "type": "string",
-              "defaultValue": "Enabled",
+              "nullable": true,
               "allowedValues": [
+                "AlwaysON",
                 "Disabled",
                 "Enabled"
               ],
@@ -2617,8 +2682,9 @@
             },
             "softDeleteFeatureState": {
               "type": "string",
-              "defaultValue": "Enabled",
+              "nullable": true,
               "allowedValues": [
+                "AlwaysON",
                 "Disabled",
                 "Enabled"
               ],
@@ -2671,10 +2737,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "rsv": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2025-08-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "backupConfig": {
               "type": "Microsoft.RecoveryServices/vaults/backupconfig",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
                 "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
@@ -2686,7 +2758,7 @@
                 "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -2750,8 +2822,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6579617173941959097"
+              "version": "0.42.1.51946",
+              "templateHash": "11609688547769832947"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -2803,12 +2875,12 @@
             "recoveryVault": {
               "existing": true,
               "type": "Microsoft.RecoveryServices/vaults",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2025-08-01",
               "name": "[parameters('recoveryVaultName')]"
             },
             "replicationAlertSettings": {
               "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
                 "customEmailAddresses": "[parameters('customEmailAddresses')]",
@@ -2908,8 +2980,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.38.5.1644",
-              "templateHash": "16604612898799598358"
+              "version": "0.41.2.15936",
+              "templateHash": "18436885663402767850"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2973,7 +3045,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -3072,7 +3144,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -3111,11 +3183,21 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                 },
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               },
               "nullable": true
+            },
+            "ipVersionType": {
+              "type": "string",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                },
+                "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+              },
+              "defaultValue": "IPv4"
             },
             "privateDnsZoneGroup": {
               "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -3152,7 +3234,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               },
@@ -3162,7 +3244,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                 },
                 "description": "Optional. Custom DNS configurations."
               },
@@ -3172,7 +3254,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               },
@@ -3182,7 +3264,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                 },
                 "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               },
@@ -3222,7 +3304,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3240,7 +3322,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3261,14 +3343,15 @@
                 "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                 "subnet": {
                   "id": "[parameters('subnetResourceId')]"
-                }
+                },
+                "ipVersionType": "[parameters('ipVersionType')]"
               }
             },
             "privateEndpoint_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -3285,7 +3368,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -3328,8 +3411,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "24141742673128945"
+                      "version": "0.41.2.15936",
+                      "templateHash": "9935179114830442414"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -3388,12 +3471,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "copy": [
@@ -3468,13 +3551,13 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                  "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                   "output": true
                 },
                 "description": "The custom DNS configurations of the private endpoint."
@@ -3535,14 +3618,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('rsv', '2024-04-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('rsv', '2025-08-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('rsv', '2024-04-01', 'full').location]"
+      "value": "[reference('rsv', '2025-08-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
