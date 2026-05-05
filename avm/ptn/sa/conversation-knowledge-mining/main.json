@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "2047873873879507939"
+      "version": "0.43.1.21952",
+      "templateHash": "14497208951628623767"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4429,8 +4429,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14177708794744469319"
+              "version": "0.43.1.21952",
+              "templateHash": "8475341636923159199"
             }
           },
           "definitions": {
@@ -23093,8 +23093,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "13311891711265081790"
+              "version": "0.43.1.21952",
+              "templateHash": "9453750555589615070"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -24252,8 +24252,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "4300406271049619339"
+                      "version": "0.43.1.21952",
+                      "templateHash": "12171782914065230331"
                     }
                   },
                   "definitions": {
@@ -25923,8 +25923,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "15215538920385263648"
+                              "version": "0.43.1.21952",
+                              "templateHash": "3266938468003555348"
                             }
                           },
                           "definitions": {
@@ -26153,8 +26153,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "4300406271049619339"
+                      "version": "0.43.1.21952",
+                      "templateHash": "12171782914065230331"
                     }
                   },
                   "definitions": {
@@ -27824,8 +27824,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "15215538920385263648"
+                              "version": "0.43.1.21952",
+                              "templateHash": "3266938468003555348"
                             }
                           },
                           "definitions": {
@@ -28071,9 +28071,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "backendUserAssignedIdentity",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
@@ -30598,9 +30598,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40942,10 +40942,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -46975,13 +46975,8 @@
                 "licenseType": "LicenseIncluded",
                 "maxSizeBytes": 34359738368,
                 "name": "[variables('sqlDbModuleName')]",
-                "minCapacity": "1",
-                "sku": {
-                  "name": "GP_S_Gen5",
-                  "tier": "GeneralPurpose",
-                  "family": "Gen5",
-                  "capacity": 2
-                },
+                "minCapacity": "[if(parameters('enableRedundancy'), null(), '1')]",
+                "sku": "[if(parameters('enableRedundancy'), createObject('name', 'GP_Gen5', 'tier', 'GeneralPurpose', 'family', 'Gen5', 'capacity', 2), createObject('name', 'GP_S_Gen5', 'tier', 'GeneralPurpose', 'family', 'Gen5', 'capacity', 2))]",
                 "zoneRedundant": "[parameters('enableRedundancy')]",
                 "maintenanceConfigurationId": "[if(variables('shouldConfigureMaintenance'), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', variables('defaultMaintenanceConfigName')), null())]"
               }
@@ -54984,8 +54979,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17569193927921428579"
+              "version": "0.43.1.21952",
+              "templateHash": "13498098236225419903"
             }
           },
           "definitions": {
@@ -56007,8 +56002,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "16493651611122310009"
+                      "version": "0.43.1.21952",
+                      "templateHash": "7202268095676731580"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -56955,8 +56950,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17569193927921428579"
+              "version": "0.43.1.21952",
+              "templateHash": "13498098236225419903"
             }
           },
           "definitions": {
@@ -57978,8 +57973,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "16493651611122310009"
+                      "version": "0.43.1.21952",
+                      "templateHash": "7202268095676731580"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."

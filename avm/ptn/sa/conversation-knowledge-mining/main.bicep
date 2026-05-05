@@ -1136,14 +1136,20 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: sqlDbModuleName
-        minCapacity: '1'
-        sku: {
-          name: 'GP_S_Gen5'
-          tier: 'GeneralPurpose'
-          family: 'Gen5'
-          capacity: 2
-        }
-        // Note: Zone redundancy is not supported for serverless SKUs (GP_S_Gen5)
+        minCapacity: enableRedundancy ? null : '1'
+        sku: enableRedundancy
+          ? {
+              name: 'GP_Gen5'
+              tier: 'GeneralPurpose'
+              family: 'Gen5'
+              capacity: 2
+            }
+          : {
+              name: 'GP_S_Gen5'
+              tier: 'GeneralPurpose'
+              family: 'Gen5'
+              capacity: 2
+            }
         zoneRedundant: enableRedundancy
         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
       }
