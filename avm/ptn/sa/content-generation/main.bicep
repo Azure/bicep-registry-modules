@@ -118,7 +118,7 @@ param enablePrivateNetworking bool = true
 param acrName string = 'contentgencontainerreg'
 
 @description('Optional. Image Tag.')
-param imageTag string = 'latest_2026-03-02_109'
+param imageTag string = 'latest_2026-04-28_257'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -232,7 +232,7 @@ var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-contentgeneration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -375,7 +375,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -525,7 +525,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = {
 }
 
 // ========== AI Search Connection to AI Services ========== //
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-09-01' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-01-15-preview' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'
