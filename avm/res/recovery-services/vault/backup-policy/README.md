@@ -12,7 +12,7 @@ This module deploys a Recovery Services Vault Backup Policy.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.RecoveryServices/vaults/backupPolicies` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupPolicies` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupPolicies)</li></ul> |
 
 ## Parameters
 
