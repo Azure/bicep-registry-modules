@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "13241235292975303003"
+      "templateHash": "79211916859701285"
     },
     "name": "Arc Machine Extensions",
     "description": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource."
@@ -107,7 +107,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.hybridcompute-machine-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
