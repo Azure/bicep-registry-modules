@@ -393,7 +393,7 @@ param solutionName = '<solutionName>'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. |
 | [`imageModelCapacity`](#parameter-imagemodelcapacity) | int | Image model deployment capacity (RPM). |
-| [`imageModelChoice`](#parameter-imagemodelchoice) | string | Image model to deploy: gpt-image-1, gpt-image-1.5, or none to skip. |
+| [`imageModelChoice`](#parameter-imagemodelchoice) | string | Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip. |
 | [`imageTag`](#parameter-imagetag) | string | Image Tag. |
 | [`location`](#parameter-location) | string | Azure region for all services. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation. |
@@ -563,15 +563,15 @@ Image model deployment capacity (RPM).
 
 ### Parameter: `imageModelChoice`
 
-Image model to deploy: gpt-image-1, gpt-image-1.5, or none to skip.
+Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip.
 
 - Required: No
 - Type: string
-- Default: `'gpt-image-1'`
+- Default: `'gpt-image-1-mini'`
 - Allowed:
   ```Bicep
   [
-    'gpt-image-1'
+    'gpt-image-1-mini'
     'gpt-image-1.5'
     'none'
   ]

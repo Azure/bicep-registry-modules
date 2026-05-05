@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "15514604907737277028"
+      "templateHash": "4540919998347398094"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -67,7 +67,7 @@
           "type": "location",
           "usageName": [
             "OpenAI.GlobalStandard.gpt-5.1,150",
-            "OpenAI.GlobalStandard.gpt-image-1,1"
+            "OpenAI.GlobalStandard.gpt-image-1-mini,1"
           ]
         },
         "description": "Required. Location for AI deployments."
@@ -102,14 +102,14 @@
     },
     "imageModelChoice": {
       "type": "string",
-      "defaultValue": "gpt-image-1",
+      "defaultValue": "gpt-image-1-mini",
       "allowedValues": [
-        "gpt-image-1",
+        "gpt-image-1-mini",
         "gpt-image-1.5",
         "none"
       ],
       "metadata": {
-        "description": "Optional. Image model to deploy: gpt-image-1, gpt-image-1.5, or none to skip."
+        "description": "Optional. Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip."
       }
     },
     "azureOpenaiAPIVersion": {
@@ -265,8 +265,8 @@
       }
     ],
     "imageModelConfig": {
-      "gpt-image-1": {
-        "name": "gpt-image-1",
+      "gpt-image-1-mini": {
+        "name": "gpt-image-1-mini",
         "version": "2025-04-15",
         "sku": "GlobalStandard"
       },
