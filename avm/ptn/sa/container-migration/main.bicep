@@ -355,6 +355,38 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (en
 }
 
 // ========== Virtual Network ========== //
+// Minimal VNet used only when enableRedundancy is true but private networking is off.
+// Container Apps environments require a VNet-injected configuration to be zone-redundant
+// (Azure constraint), so we provision just enough subnet to satisfy that requirement.
+// Using a raw ARM resource instead of the AVM module to keep the compiled template under
+// the 4MB ARM API limit.
+resource minimalContainersVnet 'Microsoft.Network/virtualNetworks@2024-05-01' = if (enableRedundancy && !enablePrivateNetworking) {
+  name: 'vnet-${solutionSuffix}'
+  location: location
+  tags: allTags
+  properties: {
+    addressSpace: {
+      addressPrefixes: ['10.0.0.0/16']
+    }
+    subnets: [
+      {
+        name: 'containers'
+        properties: {
+          addressPrefix: '10.0.2.0/24'
+          delegations: [
+            {
+              name: 'Microsoft.App.environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
+
 module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetworking) {
   name: take('module.virtual-network.${solutionSuffix}', 64)
   params: {
@@ -1121,7 +1153,9 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     platformReservedCidr: enablePrivateNetworking ? '172.17.17.0/24' : null
     platformReservedDnsIP: enablePrivateNetworking ? '172.17.17.17' : null
     zoneRedundant: enableRedundancy
-    infrastructureSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.containersSubnetResourceId : null
+    infrastructureSubnetResourceId: enablePrivateNetworking
+      ? virtualNetwork!.outputs.containersSubnetResourceId // Full private networking - use full VNet subnet
+      : (enableRedundancy ? '${minimalContainersVnet!.id}/subnets/containers' : null) // Minimal VNet subnet for zone redundancy only
   }
   dependsOn: [
     #disable-next-line no-unnecessary-dependson
