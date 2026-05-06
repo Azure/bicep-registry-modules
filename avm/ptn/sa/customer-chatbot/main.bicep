@@ -437,15 +437,6 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
-            eventLogName: 'Security'
-            eventTypes: [
-              {
-                eventType: 'Audit Success'
-              }
-              {
-                eventType: 'Audit Failure'
-              }
-            ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -584,15 +575,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
   'privatelink.services.ai.azure.com'
   'privatelink.documents.azure.com'
-  'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.search.windows.net'
-  keyVaultPrivateDNSZone
 ]
 
 // DNS Zone Index Constants
@@ -601,9 +589,7 @@ var dnsZoneIndex = {
   openAI: 1
   aiServices: 2
   cosmosDb: 3
-  blob: 4
-  search: 5
-  keyVault: 6
+  search: 4
 }
 
 // ===================================================
@@ -797,6 +783,7 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
   name: take('avm.res.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
+    location: location
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
@@ -1045,6 +1032,9 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           USE_AI_PROJECT_CLIENT: 'True'
           DISPLAY_CHART_DEFAULT: 'False'
           APPLICATIONINSIGHTS_CONNECTION_STRING: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+          AZURE_BASIC_LOGGING_LEVEL: 'INFO'
+          AZURE_PACKAGE_LOGGING_LEVEL: 'WARNING'
+          AZURE_LOGGING_PACKAGES: ''
           DUMMY_TEST: 'True'
           SOLUTION_NAME: solutionSuffix
           APP_ENV: 'Prod'
@@ -1056,10 +1046,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           AZURE_SEARCH_PRODUCT_INDEX: 'products'
           COSMOS_DB_DATABASE_NAME: cosmosDbDatabaseName
           COSMOS_DB_ENDPOINT: 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
-          USE_FOUNDRY_AGENTS: 'True'
           AZURE_OPENAI_DEPLOYMENT_NAME: gptModelName
-          RATE_LIMIT_REQUESTS: '100'
-          RATE_LIMIT_WINDOW: '60'
           // Agent IDs will be set by post-deployment script
           FOUNDRY_CHAT_AGENT: ''
           FOUNDRY_PRODUCT_AGENT: ''
