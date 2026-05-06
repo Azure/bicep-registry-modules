@@ -148,7 +148,7 @@ var allTags = union(
   tags
 )
 var existingTags = resourceGroup().tags ?? {}
-@description('Optional. Tag, Created by user name')
+@description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
@@ -659,6 +659,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
     name: aiFoundryAiServicesResourceName
     location: azureAiServiceLocation
     tags: tags
+    enableTelemetry: enableTelemetry
     sku: 'S0'
     kind: 'AIServices'
     disableLocalAuth: true
@@ -738,6 +739,7 @@ module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12
     customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     privateLinkServiceConnections: [
       {
         name: 'pep-${aiFoundryAiServicesResourceName}-connection'
@@ -784,6 +786,7 @@ module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
   params: {
     name: searchServiceName
     location: location
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
