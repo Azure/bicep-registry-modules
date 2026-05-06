@@ -659,7 +659,10 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.18.0' = {
             customNetworkInterfaceName: 'nic-${cosmosDbResourceName}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId }
+                {
+                  name: 'cosmos-dns-zone-group-sql'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId
+                }
               ]
             }
             service: 'Sql'
