@@ -29,7 +29,7 @@ param vmAdminPassword string = newGuid()
 var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location // Zone-redundant SQL requires a region that supports it
-var enforcedSecondaryLocation = 'eastus2'
+var enforcedSecondaryLocation = 'westeurope'
 
 // General resources
 // =================
