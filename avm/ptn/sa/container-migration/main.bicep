@@ -569,7 +569,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+      defaultAction: (enablePrivateNetworking || enableRedundancy) ? 'Deny' : 'Allow'
     }
     allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
@@ -1120,7 +1120,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     publicNetworkAccess: 'Enabled'
     platformReservedCidr: enablePrivateNetworking ? '172.17.17.0/24' : null
     platformReservedDnsIP: enablePrivateNetworking ? '172.17.17.17' : null
-    zoneRedundant: enablePrivateNetworking
+    zoneRedundant: enableRedundancy
     infrastructureSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.containersSubnetResourceId : null
   }
   dependsOn: [
