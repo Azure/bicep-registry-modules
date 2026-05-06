@@ -26,7 +26,7 @@ param virtualMachineAdminPassword string = newGuid()
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'swedencentral'
 
 // General resources
 // =================
