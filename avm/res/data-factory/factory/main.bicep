@@ -93,8 +93,6 @@ param tags resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.tags?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -140,6 +138,9 @@ var formattedRoleAssignments = [
 ]
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+var enableReferencedModulesTelemetry = false
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
@@ -242,6 +243,7 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
   name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
   params: {
     dataFactoryName: dataFactory.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: managedVirtualNetwork!.name
     managedPrivateEndpoints: managedVirtualNetwork!.?managedPrivateEndpoints
   }
@@ -252,6 +254,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
     params: {
       dataFactoryName: dataFactory.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: integrationRuntime.name
       type: integrationRuntime.type
       integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription
@@ -269,6 +272,7 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
     params: {
       dataFactoryName: dataFactory.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: linkedService.name
       type: linkedService.type
       typeProperties: linkedService.?typeProperties

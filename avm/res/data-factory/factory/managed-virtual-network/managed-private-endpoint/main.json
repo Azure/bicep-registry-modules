@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "4423572122815909652"
+      "templateHash": "2874950919005636816"
     },
     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -50,6 +50,13 @@
       "metadata": {
         "description": "Required. The ARM resource ID of the resource to which the managed private endpoint is created."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
@@ -58,6 +65,26 @@
       "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
       "apiVersion": "2018-06-01",
       "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('managedVirtualNetworkName'))]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.datafactory-factory-managedvnetmgdpe.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "datafactory": {
       "existing": true,
