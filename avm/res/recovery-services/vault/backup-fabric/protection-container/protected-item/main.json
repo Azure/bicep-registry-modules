@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "8976175518627379021"
+      "version": "0.42.1.51946",
+      "templateHash": "16945042157616503588"
     },
     "name": "Recovery Service Vaults Protection Container Protected Item",
     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -70,7 +70,7 @@
   "resources": [
     {
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-08-01",
       "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
