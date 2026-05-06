@@ -29,15 +29,18 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Web/certificates` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/certificates)</li></ul> |
 | `Microsoft.Web/sites` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites)</li></ul> |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/basicPublishingCredentialsPolicies)</li></ul> |
 | `Microsoft.Web/sites/config` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/config)</li></ul> |
 | `Microsoft.Web/sites/extensions` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/extensions)</li></ul> |
+| `Microsoft.Web/sites/hostNameBindings` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_hostnamebindings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/hostNameBindings)</li></ul> |
 | `Microsoft.Web/sites/hybridConnectionNamespaces/relays` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/hybridConnectionNamespaces/relays)</li></ul> |
 | `Microsoft.Web/sites/slots` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots)</li></ul> |
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_basicpublishingcredentialspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/basicPublishingCredentialsPolicies)</li></ul> |
 | `Microsoft.Web/sites/slots/config` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/slots/config)</li></ul> |
 | `Microsoft.Web/sites/slots/extensions` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/extensions)</li></ul> |
+| `Microsoft.Web/sites/slots/hostNameBindings` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hostnamebindings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-11-01/sites/slots/hostNameBindings)</li></ul> |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_slots_hybridconnectionnamespaces_relays.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays)</li></ul> |
 
 ## Usage examples
@@ -3852,6 +3855,7 @@ param siteConfig = {
 | [`extendedLocation`](#parameter-extendedlocation) | object | Extended location of the resource. |
 | [`extensions`](#parameter-extensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-functionappconfig) | object | The Function App configuration object. |
+| [`hostNameBindings`](#parameter-hostnamebindings) | array | Host Name Bindings for the site. |
 | [`hostNamesDisabled`](#parameter-hostnamesdisabled) | bool | True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process. |
 | [`hostNameSslStates`](#parameter-hostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-httpsonly) | bool | Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests. |
@@ -8652,6 +8656,209 @@ The Function App configuration object.
 - Required: No
 - Type: object
 
+### Parameter: `hostNameBindings`
+
+Host Name Bindings for the site.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hostnamebindingsname) | string | Hostname in the hostname binding. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureResourceName`](#parameter-hostnamebindingsazureresourcename) | string | Azure resource name. |
+| [`azureResourceType`](#parameter-hostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`certificate`](#parameter-hostnamebindingscertificate) | object | Certificate creation properties. If specified, a certificate will be created and used for this hostname binding. |
+| [`customHostNameDnsRecordType`](#parameter-hostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
+| [`domainId`](#parameter-hostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
+| [`hostNameType`](#parameter-hostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
+| [`kind`](#parameter-hostnamebindingskind) | string | Kind of resource. |
+| [`siteName`](#parameter-hostnamebindingssitename) | string | App Service app name. |
+| [`sslState`](#parameter-hostnamebindingssslstate) | string | SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled. |
+| [`thumbprint`](#parameter-hostnamebindingsthumbprint) | string | SSL certificate thumbprint. |
+
+### Parameter: `hostNameBindings.name`
+
+Hostname in the hostname binding.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hostNameBindings.azureResourceName`
+
+Azure resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.azureResourceType`
+
+Azure resource type. Possible values are Website and TrafficManager.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TrafficManager'
+    'Website'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.certificate`
+
+Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`canonicalName`](#parameter-hostnamebindingscertificatecanonicalname) | string | CNAME of the certificate to be issued via free certificate. |
+| [`domainValidationMethod`](#parameter-hostnamebindingscertificatedomainvalidationmethod) | string | Method of domain validation for free certificate. |
+| [`hostNames`](#parameter-hostnamebindingscertificatehostnames) | array | Certificate host names. By default, will use the hostname from the binding. |
+| [`keyVaultId`](#parameter-hostnamebindingscertificatekeyvaultid) | string | Key Vault resource ID. |
+| [`keyVaultSecretName`](#parameter-hostnamebindingscertificatekeyvaultsecretname) | string | Key Vault secret name. |
+| [`password`](#parameter-hostnamebindingscertificatepassword) | securestring | Certificate password. |
+| [`pfxBlob`](#parameter-hostnamebindingscertificatepfxblob) | securestring | Certificate data in PFX format. |
+| [`serverFarmResourceId`](#parameter-hostnamebindingscertificateserverfarmresourceid) | string | Server farm resource ID. |
+
+### Parameter: `hostNameBindings.certificate.canonicalName`
+
+CNAME of the certificate to be issued via free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.domainValidationMethod`
+
+Method of domain validation for free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.hostNames`
+
+Certificate host names. By default, will use the hostname from the binding.
+
+- Required: No
+- Type: array
+
+### Parameter: `hostNameBindings.certificate.keyVaultId`
+
+Key Vault resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.keyVaultSecretName`
+
+Key Vault secret name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.certificate.password`
+
+Certificate password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `hostNameBindings.certificate.pfxBlob`
+
+Certificate data in PFX format.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `hostNameBindings.certificate.serverFarmResourceId`
+
+Server farm resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.customHostNameDnsRecordType`
+
+Custom DNS record type. Possible values are CName and A.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'A'
+    'CName'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.domainId`
+
+Fully qualified ARM domain resource URI.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.hostNameType`
+
+Hostname type. Possible values are Verified and Managed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'Verified'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.kind`
+
+Kind of resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.siteName`
+
+App Service app name.
+
+- Required: No
+- Type: string
+
+### Parameter: `hostNameBindings.sslState`
+
+SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'IpBasedEnabled'
+    'SniEnabled'
+  ]
+  ```
+
+### Parameter: `hostNameBindings.thumbprint`
+
+SSL certificate thumbprint.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hostNamesDisabled`
 
 True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.
@@ -9427,6 +9634,7 @@ Configuration for deployment slots for an app.
 | [`enabled`](#parameter-slotsenabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`extensions`](#parameter-slotsextensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-slotsfunctionappconfig) | object | The Function App config object. |
+| [`hostNameBindings`](#parameter-slotshostnamebindings) | array | Host Name Bindings for the slot. |
 | [`hostNamesDisabled`](#parameter-slotshostnamesdisabled) | bool | True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process. |
 | [`hostNameSslStates`](#parameter-slotshostnamesslstates) | array | Hostname SSL states are used to manage the SSL bindings for app's hostnames. |
 | [`httpsOnly`](#parameter-slotshttpsonly) | bool | Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests. |
@@ -14169,6 +14377,209 @@ The Function App config object.
 - Required: No
 - Type: object
 
+### Parameter: `slots.hostNameBindings`
+
+Host Name Bindings for the slot.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-slotshostnamebindingsname) | string | Hostname in the hostname binding. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureResourceName`](#parameter-slotshostnamebindingsazureresourcename) | string | Azure resource name. |
+| [`azureResourceType`](#parameter-slotshostnamebindingsazureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
+| [`certificate`](#parameter-slotshostnamebindingscertificate) | object | Certificate creation properties. If specified, a certificate will be created and used for this hostname binding. |
+| [`customHostNameDnsRecordType`](#parameter-slotshostnamebindingscustomhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
+| [`domainId`](#parameter-slotshostnamebindingsdomainid) | string | Fully qualified ARM domain resource URI. |
+| [`hostNameType`](#parameter-slotshostnamebindingshostnametype) | string | Hostname type. Possible values are Verified and Managed. |
+| [`kind`](#parameter-slotshostnamebindingskind) | string | Kind of resource. |
+| [`siteName`](#parameter-slotshostnamebindingssitename) | string | App Service app name. |
+| [`sslState`](#parameter-slotshostnamebindingssslstate) | string | SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled. |
+| [`thumbprint`](#parameter-slotshostnamebindingsthumbprint) | string | SSL certificate thumbprint. |
+
+### Parameter: `slots.hostNameBindings.name`
+
+Hostname in the hostname binding.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `slots.hostNameBindings.azureResourceName`
+
+Azure resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.azureResourceType`
+
+Azure resource type. Possible values are Website and TrafficManager.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'TrafficManager'
+    'Website'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.certificate`
+
+Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`canonicalName`](#parameter-slotshostnamebindingscertificatecanonicalname) | string | CNAME of the certificate to be issued via free certificate. |
+| [`domainValidationMethod`](#parameter-slotshostnamebindingscertificatedomainvalidationmethod) | string | Method of domain validation for free certificate. |
+| [`hostNames`](#parameter-slotshostnamebindingscertificatehostnames) | array | Certificate host names. By default, will use the hostname from the binding. |
+| [`keyVaultId`](#parameter-slotshostnamebindingscertificatekeyvaultid) | string | Key Vault resource ID. |
+| [`keyVaultSecretName`](#parameter-slotshostnamebindingscertificatekeyvaultsecretname) | string | Key Vault secret name. |
+| [`password`](#parameter-slotshostnamebindingscertificatepassword) | securestring | Certificate password. |
+| [`pfxBlob`](#parameter-slotshostnamebindingscertificatepfxblob) | securestring | Certificate data in PFX format. |
+| [`serverFarmResourceId`](#parameter-slotshostnamebindingscertificateserverfarmresourceid) | string | Server farm resource ID. |
+
+### Parameter: `slots.hostNameBindings.certificate.canonicalName`
+
+CNAME of the certificate to be issued via free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.domainValidationMethod`
+
+Method of domain validation for free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.hostNames`
+
+Certificate host names. By default, will use the hostname from the binding.
+
+- Required: No
+- Type: array
+
+### Parameter: `slots.hostNameBindings.certificate.keyVaultId`
+
+Key Vault resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.keyVaultSecretName`
+
+Key Vault secret name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.certificate.password`
+
+Certificate password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `slots.hostNameBindings.certificate.pfxBlob`
+
+Certificate data in PFX format.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `slots.hostNameBindings.certificate.serverFarmResourceId`
+
+Server farm resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.customHostNameDnsRecordType`
+
+Custom DNS record type. Possible values are CName and A.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'A'
+    'CName'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.domainId`
+
+Fully qualified ARM domain resource URI.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.hostNameType`
+
+Hostname type. Possible values are Verified and Managed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Managed'
+    'Verified'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.kind`
+
+Kind of resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.siteName`
+
+App Service app name.
+
+- Required: No
+- Type: string
+
+### Parameter: `slots.hostNameBindings.sslState`
+
+SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'IpBasedEnabled'
+    'SniEnabled'
+  ]
+  ```
+
+### Parameter: `slots.hostNameBindings.thumbprint`
+
+SSL certificate thumbprint.
+
+- Required: No
+- Type: string
+
 ### Parameter: `slots.hostNamesDisabled`
 
 True to disable the public hostnames of the app; otherwise, false. If true, the app is only accessible via API management process.
@@ -14986,6 +15397,7 @@ Workload profile name for function app to execute on.
 | :-- | :-- | :-- |
 | `customDomainVerificationId` | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | `defaultHostname` | string | Default hostname of the app. |
+| `hostNameBindings` | array | The host name bindings of the site. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the site. |
 | `outboundIpAddresses` | string | The outbound IP addresses of the app. |

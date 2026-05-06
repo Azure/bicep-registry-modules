@@ -2,6 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+<<<<<<< HEAD
 ## 0.22.0
 
 ### Changes
@@ -26,11 +27,20 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for `sshEnabled` parameter to enable or disable SSH access for the app
+=======
+# 0.20.0
+
+### Changes
+
+- Added support for [hostname bindings](https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain) with optional [certificate creation](https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate) (fixes [#5191](https://github.com/Azure/bicep-registry-modules/issues/5191))
+- Added support for slot hostname bindings with optional certificate creation
+>>>>>>> 1682bab28a9260effd5305fd723542d20333b6fb
 
 ### Breaking Changes
 
 - None
 
+<<<<<<< HEAD
 ## 0.20.0
 
 ### Changes
@@ -86,6 +96,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - None
 
 ## 0.19.0
+=======
+# 0.19.0
+>>>>>>> 1682bab28a9260effd5305fd723542d20333b6fb
 
 ### Changes
 

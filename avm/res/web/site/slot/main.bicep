@@ -139,6 +139,10 @@ param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
+import { hostNameBindingType } from '../host-name-binding-type.bicep'
+@description('Optional. Host Name Bindings for the slot.')
+param hostNameBindings hostNameBindingType[]?
+
 @description('Optional. Property to configure various DNS related settings for a site.')
 param dnsConfiguration resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.dnsConfiguration?
 
@@ -334,6 +338,27 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
+module slot_hostNameBindings 'host-name-binding/main.bicep' = [
+  for (hostNameBinding, index) in (hostNameBindings ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-HostNameBinding-${index}'
+    params: {
+      name: hostNameBinding.name
+      appName: app.name
+      slotName: slot.name
+      kind: hostNameBinding.?kind
+      azureResourceName: hostNameBinding.?azureResourceName
+      azureResourceType: hostNameBinding.?azureResourceType
+      customHostNameDnsRecordType: hostNameBinding.?customHostNameDnsRecordType
+      domainId: hostNameBinding.?domainId
+      hostNameType: hostNameBinding.?hostNameType
+      siteName: hostNameBinding.?siteName
+      sslState: hostNameBinding.?sslState
+      thumbprint: hostNameBinding.?thumbprint
+      certificate: hostNameBinding.?certificate
+    }
+  }
+]
+
 module slot_config 'config/main.bicep' = [
   for (config, index) in (configs ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-Config-${index}'
@@ -500,6 +525,14 @@ output privateEndpoints privateEndpointOutputType[] = [
     groupId: slot_privateEndpoints[index].outputs.?groupId!
     customDnsConfigs: slot_privateEndpoints[index].outputs.customDnsConfigs
     networkInterfaceResourceIds: slot_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+@description('The host name bindings of the slot.')
+output hostNameBindings array = [
+  for (hostNameBinding, index) in (hostNameBindings ?? []): {
+    name: slot_hostNameBindings[index].outputs.name
+    resourceId: slot_hostNameBindings[index].outputs.resourceId
   }
 ]
 
