@@ -1,25 +1,30 @@
-/****************************************************************************************************************************/
-// Networking - NSGs, VNET and Subnets. Each subnet has its own NSG
-/****************************************************************************************************************************/
+// ========================================================================== //
+// Virtual Network with NSG-protected subnets for Container Migration pattern  //
+// Subnets:                                                                    //
+//   - containers       (delegated to Microsoft.App/environments)              //
+//   - backend          (private endpoints)                                    //
+//   - AzureBastionSubnet                                                      //
+//   - jumpbox                                                                 //
+// ========================================================================== //
+
 @description('Required. Name of the virtual network.')
 param name string
 
-@description('Optional. Azure region to deploy resources.')
+@description('Optional. Azure region in which to deploy the virtual network and its subnets. Defaults to the resource group location.')
 param location string = resourceGroup().location
 
-@description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
+@description('Required. An array of one or more IP address prefixes for the virtual network.')
 param addressPrefixes array
 
-@description('Optional. An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG).')
+@description('Optional. The subnet definitions for the virtual network. Each subnet may have its own NSG.')
 param subnets subnetType[] = [
   {
     name: 'containers'
-    addressPrefixes: ['10.0.2.0/24'] // /24 (10.0.2.0 - 10.0.2.255), 256 addresses
+    addressPrefixes: ['10.0.2.0/24']
     delegation: 'Microsoft.App/environments'
     networkSecurityGroup: {
       name: 'nsg-containers'
       securityRules: [
-        //Inbound Rules
         {
           name: 'AllowHttpsInbound'
           properties: {
@@ -59,7 +64,6 @@ param subnets subnetType[] = [
             destinationAddressPrefix: '*'
           }
         }
-        //Outbound Rules
         {
           name: 'AllowOutboundToAzureServices'
           properties: {
@@ -91,7 +95,7 @@ param subnets subnetType[] = [
   }
   {
     name: 'backend'
-    addressPrefixes: ['10.0.0.0/24'] // /24 (10.0.0.0 - 10.0.0.255), 256 addresses
+    addressPrefixes: ['10.0.0.0/24']
     privateEndpointNetworkPolicies: 'Disabled'
     privateLinkServiceNetworkPolicies: 'Disabled'
     networkSecurityGroup: {
@@ -114,8 +118,8 @@ param subnets subnetType[] = [
     }
   }
   {
-    name: 'AzureBastionSubnet' // Required name for Azure Bastion
-    addressPrefixes: ['10.0.1.32/27']
+    name: 'AzureBastionSubnet'
+    addressPrefixes: ['10.0.10.0/26']
     networkSecurityGroup: {
       name: 'nsg-bastion'
       securityRules: [
@@ -175,22 +179,22 @@ param subnets subnetType[] = [
     }
   }
   {
-    name: 'admin'
-    addressPrefixes: ['10.0.1.0/27']
+    name: 'jumpbox'
+    addressPrefixes: ['10.0.12.0/23']
     networkSecurityGroup: {
-      name: 'nsg-admin'
+      name: 'nsg-jumpbox'
       securityRules: [
         {
-          name: 'Deny-hop-outbound'
+          name: 'AllowRdpFromBastion'
           properties: {
-            access: 'Deny'
-            direction: 'Outbound'
-            priority: 200
-            protocol: '*'
+            access: 'Allow'
+            direction: 'Inbound'
+            priority: 100
+            protocol: 'Tcp'
             sourcePortRange: '*'
-            destinationPortRanges: ['3389', '22']
-            sourceAddressPrefix: 'VirtualNetwork'
-            destinationAddressPrefix: '*'
+            destinationPortRange: '3389'
+            sourceAddressPrefixes: ['10.0.10.0/26']
+            destinationAddressPrefixes: ['10.0.12.0/23']
           }
         }
       ]
@@ -198,58 +202,19 @@ param subnets subnetType[] = [
   }
 ]
 
-@description('Optional. Tags to be applied to the resources.')
+@description('Optional. Tags to apply to the resources.')
 param tags object = {}
 
-@description('Required. The resource ID of the Log Analytics Workspace to send diagnostic logs to.')
+@description('Required. The resource ID of the Log Analytics Workspace to send diagnostic logs to. Pass an empty string to disable diagnostics.')
 param logAnalyticsWorkspaceId string
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for the AVM resource modules deployed by this submodule.')
 param enableTelemetry bool = true
 
-@description('Required. Suffix for resource naming.')
+@description('Required. Suffix appended to NSG resource names to keep them unique within the resource group.')
 param resourceSuffix string
 
-// VM Size Notes:
-// 1 B-series VMs (like Standard_B2ms) do not support accelerated networking.
-// 2 Pick a VM size that does support accelerated networking (the usual jump-box candidates):
-//     Standard_DS2_v2 (2 vCPU, 7 GiB RAM, Premium SSD) // The most broadly available (it’s a legacy SKU supported in virtually every region).
-//     Standard_D2s_v3 (2 vCPU, 8 GiB RAM, Premium SSD) //  next most common
-//     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD)  // Newest, so fewer regions availabl
-
-// Subnet Classless Inter-Doman Routing (CIDR)  Sizing Reference Table (Best Practices)
-// | CIDR      | # of Addresses | # of /24s | Notes                                 |
-// |-----------|---------------|-----------|----------------------------------------|
-// | /24       | 256           | 1         | Smallest recommended for Azure subnets |
-// | /23       | 512           | 2         | Good for 1-2 workloads per subnet      |
-// | /22       | 1024          | 4         | Good for 2-4 workloads per subnet      |
-// | /21       | 2048          | 8         |                                        |
-// | /20       | 4096          | 16        | Used for default VNet in this solution |
-// | /19       | 8192          | 32        |                                        |
-// | /18       | 16384         | 64        |                                        |
-// | /17       | 32768         | 128       |                                        |
-// | /16       | 65536         | 256       |                                        |
-// | /15       | 131072        | 512       |                                        |
-// | /14       | 262144        | 1024      |                                        |
-// | /13       | 524288        | 2048      |                                        |
-// | /12       | 1048576       | 4096      |                                        |
-// | /11       | 2097152       | 8192      |                                        |
-// | /10       | 4194304       | 16384     |                                        |
-// | /9        | 8388608       | 32768     |                                        |
-// | /8        | 16777216      | 65536     |                                        |
-//
-// Best Practice Notes:
-// - Use /24 as the minimum subnet size for Azure (smaller subnets are not supported for most services).
-// - Plan for future growth: allocate larger address spaces (e.g., /20 or /21 for VNets) to allow for new subnets.
-// - Avoid overlapping address spaces with on-premises or other VNets.
-// - Use contiguous, non-overlapping ranges for subnets.
-// - Document subnet usage and purpose in code comments.
-// - For AVM modules, ensure only one delegation per subnet and leave delegations empty if not required.
-
-// 1. Create NSGs for subnets
-// using AVM Network Security Group module
-// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
-
+// 1. Create per-subnet NSGs (one batch at a time).
 @batchSize(1)
 module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
@@ -264,10 +229,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
   }
 ]
 
-// 2. Create VNet and subnets, with subnets associated with corresponding NSGs
-// using AVM Virtual Network module
-// https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
-
+// 2. Create the VNet and attach NSGs to subnets.
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
@@ -284,33 +246,38 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.1' = {
         delegation: subnet.?delegation
       }
     ]
-    diagnosticSettings: [
-      {
-        name: 'vnetDiagnostics'
-        workspaceResourceId: logAnalyticsWorkspaceId
-        logCategoriesAndGroups: [
+    diagnosticSettings: !empty(logAnalyticsWorkspaceId)
+      ? [
           {
-            categoryGroup: 'allLogs'
-            enabled: true
+            name: 'vnetDiagnostics'
+            workspaceResourceId: logAnalyticsWorkspaceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+                enabled: true
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+                enabled: true
+              }
+            ]
           }
         ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-            enabled: true
-          }
-        ]
-      }
-    ]
+      : null
     tags: tags
     enableTelemetry: enableTelemetry
   }
 }
 
+@description('Name of the deployed virtual network.')
 output name string = virtualNetwork.outputs.name
+
+@description('Resource ID of the deployed virtual network.')
 output resourceId string = virtualNetwork.outputs.resourceId
 
-// combined output array that holds subnet details along with NSG information
+@description('Combined output array containing subnet details and the associated NSG (if any).')
 output subnets subnetOutputType[] = [
   for (subnet, i) in subnets: {
     name: subnet.name
@@ -320,22 +287,28 @@ output subnets subnetOutputType[] = [
   }
 ]
 
-// Dynamic outputs for individual subnets for backward compatibility
+@description('Resource ID of the containers subnet (delegated to Microsoft.App/environments).')
 output containersSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'containers')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'containers')]
   : ''
+
+@description('Resource ID of the backend subnet (private endpoints).')
 output backendSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'backend')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'backend')]
   : ''
+
+@description('Resource ID of the Azure Bastion subnet.')
 output bastionSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')
   ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')]
   : ''
-output adminSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'admin')
-  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'admin')]
+
+@description('Resource ID of the jumpbox subnet.')
+output jumpboxSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'jumpbox')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'jumpbox')]
   : ''
 
 @export()
-@description('Custom type definition for subnet resource information as output')
+@description('Custom type definition for subnet resource information as output.')
 type subnetOutputType = {
   @description('The name of the subnet.')
   name: string
@@ -351,21 +324,21 @@ type subnetOutputType = {
 }
 
 @export()
-@description('Custom type definition for subnet configuration')
+@description('Custom type definition for subnet configuration.')
 type subnetType = {
-  @description('Required. The Name of the subnet resource.')
+  @description('Required. The name of the subnet resource.')
   name: string
 
-  @description('Required. Prefixes for the subnet.') // Required to ensure at least one prefix is provided
+  @description('Required. Address prefixes for the subnet.')
   addressPrefixes: string[]
 
   @description('Optional. The delegation to enable on the subnet.')
   delegation: string?
 
-  @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
+  @description('Optional. Enable or disable applying network policies on private endpoints in the subnet.')
   privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
 
-  @description('Optional. Enable or disable apply network policies on private link service in the subnet.')
+  @description('Optional. Enable or disable applying network policies on private link services in the subnet.')
   privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
 
   @description('Optional. Network Security Group configuration for the subnet.')
@@ -385,7 +358,7 @@ type subnetType = {
 }
 
 @export()
-@description('Custom type definition for network security group configuration')
+@description('Custom type definition for network security group configuration.')
 type networkSecurityGroupType = {
   @description('Required. The name of the network security group.')
   name: string

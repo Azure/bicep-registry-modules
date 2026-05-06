@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Waf-aligned configuration with default parameter values'
-metadata description = 'This instance deploys the Container Migration Solution Accelerator'
+metadata description = 'This instance deploys the Container Migration Solution Accelerator with WAF-aligned options enabled (private networking, monitoring, redundancy and scalability).'
 
 // ========== //
 // Parameters //
@@ -14,19 +14,20 @@ param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cms-${serviceShort}-r
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. Remove.')
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'scmwaf'
 
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password to set for the Virtual Machine.')
+@description('Optional. The password to set for the jumpbox virtual machine.')
 @secure()
 param virtualMachineAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
 // ============ //
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges in AVM Azure testing subscription
 var enforcedLocation = 'australiaeast'
 
 // General resources
@@ -47,8 +48,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
-      aiServiceLocation: enforcedLocation
-      gptDeploymentCapacity: 10
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
+      aiModelCapacity: 10
+      aiEmbeddingModelCapacity: 10
       enableScalability: true
       enableTelemetry: true
       enablePrivateNetworking: true

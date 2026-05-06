@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the Container Migration Solution Accelerator using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
+metadata description = 'This instance deploys the Container Migration Solution Accelerator using only the required parameters. Optional parameters take their default values, which are designed for Sandbox environments.'
 
 // ========== //
 // Parameters //
@@ -20,7 +20,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges in AVM Azure testing subscription
 var enforcedLocation = 'australiaeast'
 
 // General resources
@@ -41,8 +41,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
-      aiServiceLocation: enforcedLocation
-      gptDeploymentCapacity: 10
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
+      aiModelCapacity: 10
+      aiEmbeddingModelCapacity: 10
       enablePrivateNetworking: false
       enableMonitoring: false
       enableRedundancy: false
