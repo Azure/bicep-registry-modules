@@ -709,18 +709,15 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
 | `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.13.2` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.14.1` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.6.1` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
+| `br/public:avm/res/insights/data-collection-rule:0.8.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |

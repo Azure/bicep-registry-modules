@@ -2,16 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/content-processing/CHANGELOG.md).
 
-## 0.2.1
+## 0.3.0
 
 ### Changes
 
+- Released as v2 of the Content Processing Solution Accelerator.
+- Made the Log Analytics workspace conditional on `enableMonitoring` (mirroring `applicationInsightsRes`); previously deployed unconditionally.
+- Bumped `avm/res/app/managed-environment` from `0.11.3` to `0.13.2` and switched `appLogsConfiguration` to `logAnalyticsWorkspaceResourceId`, removing the secure `sharedKey` workaround.
 - Removed existing Log Analytics and existing AI Foundry project ID paths from module inputs and nested modules.
 - Fixed module and test template validation issues (parameter descriptions/defaults, telemetry pass-through, output naming, and test parameter alignment).
 
 ### Breaking Changes
 
-- None
+- `enableMonitoring = false` now skips Log Analytics deployment entirely; consumers relying on the workspace being created without monitoring must enable monitoring explicitly.
 
 ## 0.2.0
 
