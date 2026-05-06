@@ -64,7 +64,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.HybridCompute/machines@2024-07-10'>.tags?
+param tags resourceInput<'Microsoft.HybridCompute/machines@2025-01-13'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -130,7 +130,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.hybridcompute-machine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -148,7 +148,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource machine 'Microsoft.HybridCompute/machines@2024-07-10' = {
+resource machine 'Microsoft.HybridCompute/machines@2025-01-13' = {
   name: name
   location: location
   identity: {
@@ -168,7 +168,7 @@ resource machine 'Microsoft.HybridCompute/machines@2024-07-10' = {
   }
 }
 
-resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
+resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2024-04-05' = if (!empty(guestConfiguration)) {
   name: 'gca-${name}'
   scope: machine
   dependsOn: []

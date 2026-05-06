@@ -216,6 +216,7 @@ module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
       allowVirtualNetworkAccess: peering.?allowVirtualNetworkAccess
       doNotVerifyRemoteGateways: peering.?doNotVerifyRemoteGateways
       useRemoteGateways: peering.?useRemoteGateways
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -242,6 +243,7 @@ module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
       allowVirtualNetworkAccess: peering.?remotePeeringAllowVirtualNetworkAccess
       doNotVerifyRemoteGateways: peering.?remotePeeringDoNotVerifyRemoteGateways
       useRemoteGateways: peering.?remotePeeringUseRemoteGateways
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

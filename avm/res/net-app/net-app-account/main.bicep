@@ -144,6 +144,8 @@ var formattedRoleAssignments = [
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
+var enableReferencedModulesTelemetry = false
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
@@ -248,6 +250,7 @@ module netAppAccount_backupPolicies 'backup-policy/main.bicep' = [
       weeklyBackupsToKeep: backupPolicy.?weeklyBackupsToKeep
       enabled: backupPolicy.?enabled
       location: backupPolicy.?location ?? location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -264,6 +267,7 @@ module netAppAccount_snapshotPolicies 'snapshot-policy/main.bicep' = [
       hourlySchedule: snapshotPolicy.?hourlySchedule
       monthlySchedule: snapshotPolicy.?monthlySchedule
       weeklySchedule: snapshotPolicy.?weeklySchedule
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -274,6 +278,7 @@ module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVa
     netAppAccountName: netAppAccount.name
     name: backupVault.?name
     location: backupVault.?location ?? location
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -292,6 +297,7 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
       roleAssignments: capacityPool.?roleAssignments ?? []
       encryptionType: capacityPool.?encryptionType ?? 'Single'
       tags: capacityPool.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       netAppAccount_backupPolicies
@@ -308,6 +314,7 @@ module netAppAccount_backupVaultBackups 'backup-vault/main.bicep' = if (!empty(b
     name: backupVault.?name
     backups: backupVault.?backups
     location: backupVault.?location ?? location
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     netAppAccount_capacityPools

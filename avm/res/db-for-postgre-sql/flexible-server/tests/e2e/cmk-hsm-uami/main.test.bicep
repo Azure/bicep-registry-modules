@@ -28,7 +28,7 @@ param deploymentMSIResourceId string = ''
 @secure()
 param managedHSMResourceId string = ''
 
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'brazilsouth'
 
 // ============ //
 // Dependencies //

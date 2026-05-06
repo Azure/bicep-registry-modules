@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
 
+## 0.19.2
+
+### Changes
+
+- Publishing child module `avm/res/cdn/profile/afd-endpoint`.
+- Publishing child module `avm/res/cdn/profile/endpoint`.
+- Publishing child module `avm/res/cdn/profile/endpoint/origin`.
+- Publishing child module `avm/res/cdn/profile/rule-set/rule`.
+- Publishing child module `avm/res/cdn/profile/secret`.
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes

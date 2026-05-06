@@ -87,6 +87,12 @@ param controlPlane controlPlaneType = {
 @description('Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster.')
 param cloudProviderProfile cloudProviderProfileType
 
+@description('Optional. Security profile for the provisioned cluster instance (FIPS, custom CA certificates).')
+param hciSecurityProfile hciSecurityProfileType?
+
+@description('Optional. Authorized IP ranges for cluster VM access profile.')
+param authorizedIPRanges string?
+
 @description('Optional. Tags for the cluster resource.')
 param connectClustersTags object = {}
 
@@ -167,7 +173,7 @@ resource existingCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-prev
   name: name
 }
 
-resource provisionedCluster 'Microsoft.HybridContainerService/provisionedClusterInstances@2024-01-01' = {
+resource provisionedCluster 'Microsoft.HybridContainerService/provisionedClusterInstances@2026-04-01-preview' = {
   scope: existingCluster
   name: 'default'
   dependsOn: [
@@ -180,7 +186,9 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
   properties: {
     agentPoolProfiles: agentPoolProfiles
     cloudProviderProfile: cloudProviderProfile
-    clusterVMAccessProfile: {}
+    clusterVMAccessProfile: {
+      authorizedIPRanges: authorizedIPRanges
+    }
     controlPlane: controlPlane
     kubernetesVersion: kubernetesVersion ?? ''
     licenseProfile: licenseProfile
@@ -194,6 +202,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
       }
     }
     networkProfile: networkProfile
+    securityProfile: hciSecurityProfile
     storageProfile: storageProfile
   }
 }
@@ -243,6 +252,8 @@ type agentPoolProfileType = {
   osType: string
   @description('Required. The VM size for the nodes.')
   vmSize: string
+  @description('Optional. The number of GPUs per node in the pool.')
+  gpuCountPerNode: int?
 }
 
 @export()
@@ -319,4 +330,16 @@ type storageProfileType = {
     @description('Required. Whether the SMB CSI driver is enabled.')
     enabled: bool
   }
+}
+
+@export()
+@description('The type for HCI provisioned cluster security profile configuration.')
+type hciSecurityProfileType = {
+  @description('Optional. Custom CA trust certificates for the cluster.')
+  customCATrustCertificates: array?
+  @description('Optional. FIPS image configuration.')
+  fipsImage: {
+    @description('Required. Whether FIPS-compliant images are enabled.')
+    enabled: bool
+  }?
 }
