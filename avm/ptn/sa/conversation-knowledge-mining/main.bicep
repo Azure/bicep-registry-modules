@@ -413,7 +413,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
         storageAccountType: 'Premium_LRS'
       }
     }
-    availabilityZone: -1
+    availabilityZone: enableRedundancy ? 1 : -1
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // WAF aligned configuration - Enable automatic patching with platform management
     patchMode: 'AutomaticByPlatform'
@@ -1130,7 +1130,7 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
     connectionPolicy: 'Redirect'
     databases: [
       {
-        availabilityZone: -1
+        availabilityZone: enableRedundancy ? 1 : -1
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
         licenseType: 'LicenseIncluded'
