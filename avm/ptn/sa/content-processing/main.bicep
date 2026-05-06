@@ -2,7 +2,14 @@
 targetScope = 'resourceGroup'
 
 metadata name = 'Content Processing Solution Accelerator'
-metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
+metadata description = '''This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+'''
 
 // ========== Parameters ========== //
 @minLength(3)
@@ -202,7 +209,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
     addressPrefixes: ['10.0.0.0/8']
     location: location
     tags: tags
-    logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
+    logAnalyticsWorkspaceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
     resourceSuffix: solutionSuffix
     enableTelemetry: enableTelemetry
   }
@@ -221,7 +228,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
       ? [
           {
             name: 'bastionDiagnostics'
-            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
             logCategoriesAndGroups: [
               {
                 categoryGroup: 'allLogs'
@@ -288,14 +295,14 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
         tags: tags
         deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-          ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+          ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
           : null
         ipConfigurations: [
           {
             name: '${jumpboxVmName}-nic01-ipconfig01'
             subnetResourceId: virtualNetwork!.outputs.adminSubnetResourceId
             diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
-              ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+              ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }]
               : null
           }
         ]
@@ -330,7 +337,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
           dataCollectionRuleAssociations: [
             {
               dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
-              name: 'send-${logAnalyticsWorkspace.outputs.name}'
+              name: 'send-${logAnalyticsWorkspace!.outputs.name}'
             }
           ]
           enabled: true
@@ -380,7 +387,9 @@ resource maintenanceConfigurationRes 'Microsoft.Maintenance/maintenanceConfigura
 }
 
 var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
-var dataCollectionRulesLocation = logAnalyticsWorkspace.outputs.location
+// LAW deploys in the same `location` as the parent, so use `location` directly
+// to avoid referencing a conditional module output at variable scope.
+var dataCollectionRulesLocation = location
 module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.8.0' = if (enablePrivateNetworking && enableMonitoring) {
   name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
   params: {
@@ -463,7 +472,7 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
       destinations: {
         logAnalytics: [
           {
-            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
             name: 'la-${dataCollectionRulesResourceName}'
           }
         ]
@@ -544,10 +553,8 @@ resource privateDnsZoneVnetLinks 'Microsoft.Network/privateDnsZones/virtualNetwo
 ]
 
 // ========== Log Analytics & Application Insights ========== //
-// Note: Always deployed (not conditional on enableMonitoring) so that the secure
-// `primarySharedKey` output can be accessed directly by the Container App Environment.
-// Bicep does not allow accessing secure outputs of conditional modules via `!`.
-module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = {
+// Deployed only when monitoring is enabled (mirrors `applicationInsightsRes`).
+module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = if (enableMonitoring) {
   name: take('module.log-analytics-workspace.${solutionSuffix}', 64)
   params: {
     name: 'log-${solutionSuffix}'
@@ -571,7 +578,7 @@ resource applicationInsightsRes 'Microsoft.Insights/components@2020-02-02' = if 
     DisableIpMasking: false
     Flow_Type: 'Bluefield'
     RetentionInDays: 365
-    WorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
+    WorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
   }
 }
 
@@ -739,7 +746,7 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
       location: azureAiServiceLocation
     }
     customSubDomainName: 'aif-${solutionSuffix}'
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     roleAssignments: [
       {
         principalId: managedIdentity.properties.principalId
@@ -942,7 +949,7 @@ resource contentUnderstandingPrivateEndpointDnsGroup 'Microsoft.Network/privateE
 }
 
 // ========== Container App Environment ========== //
-module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
+module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.13.2' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   params: {
     name: 'cae-${solutionSuffix}'
@@ -955,10 +962,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
-            sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
-          }
+          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
         }
       : null
     workloadProfiles: [
@@ -1386,7 +1390,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
     diagnosticSettings: enableMonitoring
       ? [
           {
-            workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
+            workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
             logCategoriesAndGroups: [
               {
                 categoryGroup: 'allLogs'
