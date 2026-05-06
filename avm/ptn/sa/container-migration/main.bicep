@@ -25,8 +25,8 @@ param solutionUniqueText string = substring(uniqueString(subscription().id, reso
 
 @minLength(3)
 @metadata({ azd: { type: 'location' } })
-@description('Required. Azure region for container apps, storage and other services. Choose a region close to your users.')
-param location string
+@description('Optional. Azure region for container apps, storage and other services. Choose a region close to your users. Defaults to the resource group location.')
+param location string = resourceGroup().location
 
 @minLength(1)
 @allowed([
@@ -1306,22 +1306,22 @@ module containerAppProcessor 'br/public:avm/res/app/container-app:0.19.0' = {
 output resourceGroupName string = resourceGroup().name
 
 @description('The name of the frontend (web) container app.')
-output CONTAINER_WEB_APP_NAME string = containerAppFrontend.outputs.name
+output containerWebAppName string = containerAppFrontend.outputs.name
 
 @description('The FQDN of the frontend (web) container app.')
-output CONTAINER_WEB_APP_FQDN string = containerAppFrontend.outputs.fqdn
+output containerWebAppFqdn string = containerAppFrontend.outputs.fqdn
 
 @description('The name of the backend (API) container app.')
-output CONTAINER_API_APP_NAME string = containerAppBackend.outputs.name
+output containerApiAppName string = containerAppBackend.outputs.name
 
 @description('The FQDN of the backend (API) container app.')
-output CONTAINER_API_APP_FQDN string = containerAppBackend.outputs.fqdn
+output containerApiAppFqdn string = containerAppBackend.outputs.fqdn
 
 @description('The Azure subscription ID.')
-output AZURE_SUBSCRIPTION_ID string = subscription().subscriptionId
+output azureSubscriptionId string = subscription().subscriptionId
 
 @description('The Azure resource group name.')
-output AZURE_RESOURCE_GROUP string = resourceGroup().name
+output azureResourceGroup string = resourceGroup().name
 
 @description('Preview of the CreatedBy tag value derived from the deployer.')
 output previewCreatedByTag string = deployerIdentityName

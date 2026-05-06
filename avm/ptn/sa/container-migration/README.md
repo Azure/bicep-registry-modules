@@ -148,7 +148,6 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     solutionName: 'scmmin'
     // Non-required parameters
     aiEmbeddingModelCapacity: 10
@@ -158,6 +157,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     enableRedundancy: false
     enableScalability: false
     enableTelemetry: true
+    location: '<location>'
   }
 }
 ```
@@ -177,9 +177,6 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     // Required parameters
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
-    },
-    "location": {
-      "value": "<location>"
     },
     "solutionName": {
       "value": "scmmin"
@@ -205,6 +202,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     },
     "enableTelemetry": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -222,7 +222,6 @@ using 'br/public:avm/ptn/sa/container-migration:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 param solutionName = 'scmmin'
 // Non-required parameters
 param aiEmbeddingModelCapacity = 10
@@ -232,6 +231,7 @@ param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
+param location = '<location>'
 ```
 
 </details>
@@ -253,7 +253,6 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     solutionName: 'scmwaf'
     // Non-required parameters
     aiEmbeddingModelCapacity: 10
@@ -263,6 +262,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    location: '<location>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -284,9 +284,6 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     // Required parameters
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
-    },
-    "location": {
-      "value": "<location>"
     },
     "solutionName": {
       "value": "scmwaf"
@@ -313,6 +310,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     "enableTelemetry": {
       "value": true
     },
+    "location": {
+      "value": "<location>"
+    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -335,7 +335,6 @@ using 'br/public:avm/ptn/sa/container-migration:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 param solutionName = 'scmwaf'
 // Non-required parameters
 param aiEmbeddingModelCapacity = 10
@@ -345,6 +344,7 @@ param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
@@ -359,7 +359,6 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Azure region for AI services (OpenAI/AI Foundry). Must be a region that supports the gpt-5.1 model deployment. |
-| [`location`](#parameter-location) | string | Azure region for container apps, storage and other services. Choose a region close to your users. |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 
 **Optional parameters**
@@ -385,6 +384,7 @@ param vmAdminUsername = 'adminuser'
 | [`existingFoundryProjectResourceId`](#parameter-existingfoundryprojectresourceid) | string | Resource ID of an existing AI Foundry project. When provided, the pattern reuses the parent Cognitive Services account instead of creating a new one. |
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Resource ID of an existing Log Analytics workspace to reuse. When empty, a new workspace is created if monitoring or private networking is enabled. |
 | [`imageTag`](#parameter-imagetag) | string | The image tag to use for container images. Defaults to "latest_v2". |
+| [`location`](#parameter-location) | string | Azure region for container apps, storage and other services. Choose a region close to your users. Defaults to the resource group location. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text/token for the solution. Used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name and solution name. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to a custom value when enablePrivateNetworking is true. |
@@ -413,13 +413,6 @@ Azure region for AI services (OpenAI/AI Foundry). Must be a region that supports
     'westus3'
   ]
   ```
-
-### Parameter: `location`
-
-Azure region for container apps, storage and other services. Choose a region close to your users.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `solutionName`
 
@@ -596,6 +589,14 @@ The image tag to use for container images. Defaults to "latest_v2".
 - Type: string
 - Default: `'latest_v2'`
 
+### Parameter: `location`
+
+Azure region for container apps, storage and other services. Choose a region close to your users. Defaults to the resource group location.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `solutionUniqueText`
 
 A unique text/token for the solution. Used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name and solution name.
@@ -637,13 +638,13 @@ Size of the Jumpbox Virtual Machine when created. Set to a custom value when ena
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `AZURE_RESOURCE_GROUP` | string | The Azure resource group name. |
-| `AZURE_SUBSCRIPTION_ID` | string | The Azure subscription ID. |
-| `CONTAINER_API_APP_FQDN` | string | The FQDN of the backend (API) container app. |
-| `CONTAINER_API_APP_NAME` | string | The name of the backend (API) container app. |
-| `CONTAINER_WEB_APP_FQDN` | string | The FQDN of the frontend (web) container app. |
-| `CONTAINER_WEB_APP_NAME` | string | The name of the frontend (web) container app. |
+| `azureResourceGroup` | string | The Azure resource group name. |
+| `azureSubscriptionId` | string | The Azure subscription ID. |
+| `containerApiAppFqdn` | string | The FQDN of the backend (API) container app. |
+| `containerApiAppName` | string | The name of the backend (API) container app. |
 | `containerAppsEnvironmentResourceId` | string | The resource ID of the deployed Container Apps environment. |
+| `containerWebAppFqdn` | string | The FQDN of the frontend (web) container app. |
+| `containerWebAppName` | string | The name of the frontend (web) container app. |
 | `cosmosDbResourceId` | string | The resource ID of the deployed Cosmos DB account. |
 | `name` | string | The name of the user-assigned managed identity for the workload. |
 | `previewCreatedByTag` | string | Preview of the CreatedBy tag value derived from the deployer. |
