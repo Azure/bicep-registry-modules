@@ -399,6 +399,29 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
   }
 }
 
+// ========== Jumpbox Maintenance Configuration (waf-aligned) ========== //
+resource jumpboxMaintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = if (enablePrivateNetworking) {
+  name: take('mc-jumpbox-${solutionSuffix}', 64)
+  location: location
+  tags: allTags
+  properties: {
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2025-01-01 00:00'
+      duration: '03:55'
+      timeZone: 'UTC'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: ['Critical', 'Security']
+      }
+    }
+  }
+}
+
 // ========== Jumpbox Virtual Machine ========== //
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
 module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
@@ -411,6 +434,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: allTags
     availabilityZone: 1
+    maintenanceConfigurationResourceId: jumpboxMaintenanceConfig!.id
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -583,7 +607,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
       : []
     blobServices: {
       corsRules: []
-      deleteRetentionPolicyEnabled: false
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
       containers: [
         {
           name: processBlobContainerName
@@ -1012,6 +1039,14 @@ module appConfiguration 'br/public:avm/res/app-configuration/configuration-store
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
     publicNetworkAccess: 'Enabled'
+    replicaLocations: enableRedundancy && replicaLocation != null
+      ? [
+          {
+            name: 'replica1'
+            replicaLocation: replicaLocation!
+          }
+        ]
+      : []
   }
 }
 
@@ -1027,6 +1062,14 @@ module appConfigurationUpdate 'br/public:avm/res/app-configuration/configuration
     tags: allTags
     disableLocalAuth: true
     publicNetworkAccess: 'Enabled'
+    replicaLocations: enableRedundancy && replicaLocation != null
+      ? [
+          {
+            name: 'replica1'
+            replicaLocation: replicaLocation!
+          }
+        ]
+      : []
     privateEndpoints: [
       {
         name: 'pep-appconfig-${solutionSuffix}'
@@ -1136,7 +1179,7 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
     ingressExternal: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 1
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
       rules: enableScalability
         ? [
             {
@@ -1208,7 +1251,7 @@ module containerAppFrontend 'br/public:avm/res/app/container-app:0.19.0' = {
     ingressExternal: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 1
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
       rules: enableScalability
         ? [
             {
@@ -1292,7 +1335,7 @@ module containerAppProcessor 'br/public:avm/res/app/container-app:0.19.0' = {
     ingressAllowInsecure: true
     scaleSettings: {
       maxReplicas: enableScalability ? 3 : 1
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
     }
     tags: allTags
     enableTelemetry: enableTelemetry

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "8997863721361050067"
+      "templateHash": "3161496448469586044"
     },
     "name": "Container Migration Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Container Migration Solution Accelerator](https://github.com/microsoft/Container-Migration-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Container-Migration-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -377,6 +377,33 @@
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2023-09-01",
       "name": "[variables('logAnalyticsWorkspaceResourceName')]"
+    },
+    "jumpboxMaintenanceConfig": {
+      "condition": "[parameters('enablePrivateNetworking')]",
+      "type": "Microsoft.Maintenance/maintenanceConfigurations",
+      "apiVersion": "2023-04-01",
+      "name": "[take(format('mc-jumpbox-{0}', variables('solutionSuffix')), 64)]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('allTags')]",
+      "properties": {
+        "maintenanceScope": "InGuestPatch",
+        "maintenanceWindow": {
+          "startDateTime": "2025-01-01 00:00",
+          "duration": "03:55",
+          "timeZone": "UTC",
+          "recurEvery": "1Day"
+        },
+        "visibility": "Custom",
+        "installPatches": {
+          "rebootSetting": "IfRequired",
+          "windowsParameters": {
+            "classificationsToInclude": [
+              "Critical",
+              "Security"
+            ]
+          }
+        }
+      }
     },
     "cosmosDbAccount": {
       "existing": true,
@@ -9410,6 +9437,9 @@
           "availabilityZone": {
             "value": 1
           },
+          "maintenanceConfigurationResourceId": {
+            "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', take(format('mc-jumpbox-{0}', variables('solutionSuffix')), 64))]"
+          },
           "imageReference": {
             "value": {
               "offer": "WindowsServer",
@@ -18238,6 +18268,7 @@
         }
       },
       "dependsOn": [
+        "jumpboxMaintenanceConfig",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -21696,7 +21727,10 @@
           "blobServices": {
             "value": {
               "corsRules": [],
-              "deleteRetentionPolicyEnabled": false,
+              "deleteRetentionPolicyEnabled": true,
+              "deleteRetentionPolicyDays": 7,
+              "containerDeleteRetentionPolicyEnabled": true,
+              "containerDeleteRetentionPolicyDays": 7,
               "containers": [
                 {
                   "name": "[variables('processBlobContainerName')]",
@@ -39576,7 +39610,8 @@
           },
           "publicNetworkAccess": {
             "value": "Enabled"
-          }
+          },
+          "replicaLocations": "[if(and(parameters('enableRedundancy'), not(equals(variables('replicaLocation'), null()))), createObject('value', createArray(createObject('name', 'replica1', 'replicaLocation', variables('replicaLocation')))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -41808,6 +41843,7 @@
           "publicNetworkAccess": {
             "value": "Enabled"
           },
+          "replicaLocations": "[if(and(parameters('enableRedundancy'), not(equals(variables('replicaLocation'), null()))), createObject('value', createArray(createObject('name', 'replica1', 'replicaLocation', variables('replicaLocation')))), createObject('value', createArray()))]",
           "privateEndpoints": {
             "value": [
               {
@@ -45000,7 +45036,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
-              "minReplicas": 1,
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]",
               "rules": "[if(parameters('enableScalability'), createArray(createObject('name', 'http-scaler', 'http', createObject('metadata', createObject('concurrentRequests', 100)))), createArray())]"
             }
           },
@@ -46621,7 +46657,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
-              "minReplicas": 1,
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]",
               "rules": "[if(parameters('enableScalability'), createArray(createObject('name', 'http-scaler', 'http', createObject('metadata', createObject('concurrentRequests', 100)))), createArray())]"
             }
           },
@@ -48204,7 +48240,7 @@
           "scaleSettings": {
             "value": {
               "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
-              "minReplicas": 1
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]"
             }
           },
           "tags": {
