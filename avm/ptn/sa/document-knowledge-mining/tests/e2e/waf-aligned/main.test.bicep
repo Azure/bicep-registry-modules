@@ -22,6 +22,10 @@ param serviceShort string = 'sdkmwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param vmAdminPassword string = newGuid()
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -45,6 +49,10 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       aiDeploymentsLocation: resourceLocation
+      enableRedundancy: true
+      enablePrivateNetworking: true
+      vmAdminUsername: 'JumpboxAdminUser'
+      vmAdminPassword: 'JumpboxAdminP@ssw0rd1234!'
     }
   }
 ]

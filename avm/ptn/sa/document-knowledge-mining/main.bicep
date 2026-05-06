@@ -480,9 +480,18 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
-    acrSku: 'Standard'
+    acrSku: enableRedundancy ? 'Premium' : 'Standard'
     publicNetworkAccess: 'Enabled'
-    zoneRedundancy: 'Disabled'
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+    replications: enableRedundancy
+      ? [
+          {
+            name: replace(cosmosReplicaLocation, ' ', '')
+            location: cosmosReplicaLocation
+            zoneRedundancy: 'Enabled'
+          }
+        ]
+      : null
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId!
@@ -559,7 +568,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
           {
             locationName: solutionLocation
             failoverPriority: 0
-            isZoneRedundant: enableRedundancy
+            isZoneRedundant: true
           }
         ]
   }
@@ -764,7 +773,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
       bypass: 'AzureServices'
       defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
     }
-    allowBlobPublicAccess: enablePrivateNetworking ? false : true
+    allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
 
     privateEndpoints: enablePrivateNetworking

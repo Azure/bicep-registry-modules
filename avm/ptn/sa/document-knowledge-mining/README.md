@@ -433,7 +433,11 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
     // Non-required parameters
+    enablePrivateNetworking: true
+    enableRedundancy: true
     location: '<location>'
+    vmAdminPassword: 'JumpboxAdminP@ssw0rd1234!'
+    vmAdminUsername: 'JumpboxAdminUser'
   }
 }
 ```
@@ -455,8 +459,20 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": "<aiDeploymentsLocation>"
     },
     // Non-required parameters
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "vmAdminPassword": {
+      "value": "JumpboxAdminP@ssw0rd1234!"
+    },
+    "vmAdminUsername": {
+      "value": "JumpboxAdminUser"
     }
   }
 }
@@ -475,7 +491,11 @@ using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 // Required parameters
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'
 // Non-required parameters
+param enablePrivateNetworking = true
+param enableRedundancy = true
 param location = '<location>'
+param vmAdminPassword = 'JumpboxAdminP@ssw0rd1234!'
+param vmAdminUsername = 'JumpboxAdminUser'
 ```
 
 </details>

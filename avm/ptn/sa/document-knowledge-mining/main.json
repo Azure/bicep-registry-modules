@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "13262401384459972923"
+      "templateHash": "9201917419543263363"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -21624,15 +21624,12 @@
           "location": {
             "value": "[variables('solutionLocation')]"
           },
-          "acrSku": {
-            "value": "Standard"
-          },
+          "acrSku": "[if(parameters('enableRedundancy'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
           "publicNetworkAccess": {
             "value": "Enabled"
           },
-          "zoneRedundancy": {
-            "value": "Disabled"
-          },
+          "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
+          "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', replace(parameters('cosmosReplicaLocation'), ' ', ''), 'location', parameters('cosmosReplicaLocation'), 'zoneRedundancy', 'Enabled'))), createObject('value', null()))]",
           "roleAssignments": {
             "value": [
               {
@@ -21654,11 +21651,62 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.1.21952",
-              "templateHash": "14790901868781104550"
+              "templateHash": "10783952807691576907"
             },
             "name": "Container Registry Module"
           },
           "definitions": {
+            "replicationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the replication."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Location for all resources."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.ContainerRegistry/registries/replications@2025-03-01-preview#properties/tags"
+                    },
+                    "description": "Optional. Tags of the resource."
+                  }
+                },
+                "regionEndpointEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+                  }
+                },
+                "zoneRedundancy": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.ContainerRegistry/registries@2025-03-01-preview#properties/properties/properties/zoneRedundancy"
+                    },
+                    "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for a replication.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-registry/registry:0.12.1"
+                }
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -21785,6 +21833,16 @@
               "metadata": {
                 "description": "Tags to be applied to the Container Registry"
               }
+            },
+            "replications": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/replicationType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. All replications to create."
+              }
             }
           },
           "resources": {
@@ -21815,6 +21873,9 @@
                   },
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
+                  },
+                  "replications": {
+                    "value": "[parameters('replications')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -25709,7 +25770,7 @@
               "EnableMongo"
             ]
           },
-          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', variables('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosReplicaLocation')))), createObject('value', createArray(createObject('locationName', variables('solutionLocation'), 'failoverPriority', 0, 'isZoneRedundant', parameters('enableRedundancy')))))]"
+          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', variables('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosReplicaLocation')))), createObject('value', createArray(createObject('locationName', variables('solutionLocation'), 'failoverPriority', 0, 'isZoneRedundant', true()))))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -36390,7 +36451,9 @@
               "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
             }
           },
-          "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', false()), createObject('value', true()))]",
+          "allowBlobPublicAccess": {
+            "value": false
+          },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'service', 'queue'))), createObject('value', createArray()))]",
           "blobServices": {

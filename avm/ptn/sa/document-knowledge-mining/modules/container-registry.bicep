@@ -23,6 +23,10 @@ param roleAssignments roleAssignmentType[]?
 @description('Tags to be applied to the Container Registry')
 param tags object = {}
 
+import { replicationType } from 'br/public:avm/res/container-registry/registry:0.12.1'
+@description('Optional. All replications to create.')
+param replications replicationType[]?
+
 module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: acrName
   params: {
@@ -32,6 +36,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     publicNetworkAccess: publicNetworkAccess
     zoneRedundancy: zoneRedundancy
     roleAssignments: roleAssignments
+    replications: replications
     tags: tags
   }
 }
