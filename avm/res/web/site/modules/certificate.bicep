@@ -70,3 +70,49 @@ output thumbprint string = certificate.properties.thumbprint
 
 @description('The location the resource was deployed into.')
 output location string = certificate.location
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('The type of a certificate.')
+type certificateType = {
+  @description('Required. Certificate name.')
+  name: string
+
+  @description('Optional. Resource location.')
+  location: string?
+
+  @description('Optional. Certificate host names.')
+  hostNames: string[]?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Web/certificates@2024-11-01'>.tags?
+
+  @description('Optional. Kind of resource.')
+  kind: string?
+
+  @description('Optional. Key Vault resource ID.')
+  keyVaultResourceId: string?
+
+  @description('Optional. Key Vault secret name.')
+  keyVaultSecretName: string?
+
+  @description('Optional. Server farm resource ID.')
+  serverFarmResourceId: string?
+
+  @description('Optional. CNAME of the certificate to be issued via free certificate.')
+  canonicalName: string?
+
+  @description('Optional. Certificate password.')
+  @secure()
+  password: string?
+
+  @description('Optional. Certificate data in PFX format.')
+  @secure()
+  pfxBlob: string?
+
+  @description('Optional. Method of domain validation for free certificate.')
+  domainValidationMethod: string?
+}

@@ -606,6 +606,7 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+import { hostNameBindingsOutputType } from 'slot/main.bicep'
 @description('The slots of the site.')
 output slots {
   @description('The name of the slot.')
@@ -621,7 +622,7 @@ output slots {
   privateEndpoints: privateEndpointOutputType[]
 
   @description('The host name bindings of the slot.')
-  hostNameBindings: array
+  hostNameBindings: hostNameBindingsOutputType[]
 }[] = [
   #disable-next-line outputs-should-not-contain-secrets // false-positive. The key is not returned
   for (slot, index) in (slots ?? []): {
@@ -634,10 +635,14 @@ output slots {
 ]
 
 @description('The host name bindings of the site.')
-output hostNameBindings array = [
+output hostNameBindings hostNameBindingsOutputType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only exporting subset of information
   for (hostNameBinding, index) in (hostNameBindings ?? []): {
     name: app_hostNameBindings[index].outputs.name
     resourceId: app_hostNameBindings[index].outputs.resourceId
+    resourceGroupName: app_hostNameBindings[index].outputs.resourceGroupName
+    certificateThumbprint: app_hostNameBindings[index].outputs.?certificateThumbprint
+    certificateResourceId: app_hostNameBindings[index].outputs.?certificateResourceId
   }
 ]
 

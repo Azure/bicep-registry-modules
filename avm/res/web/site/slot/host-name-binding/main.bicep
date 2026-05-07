@@ -54,79 +54,66 @@ param sslState string?
 @description('Optional. SSL certificate thumbprint.')
 param thumbprint string = ''
 
+import { certificateType } from '../../modules/certificate.bicep'
 @description('Optional. Certificate object with properties for certificate creation. The expected structure matches the certificateType defined in host-name-binding-type.bicep.')
-param certificate object = {}
+param certificate certificateType?
 
 @description('Optional. Resource location.')
 param location string = resourceGroup().location
 
-var certificateName = 'cert-${replace(name, '.', '-')}'
-var shouldCreateCertificate = !empty(certificate)
+resource app 'Microsoft.Web/sites@2024-11-01' existing = {
+  name: appName
 
-// Create certificate if certificate object is provided and add hostname binding
-module withCertificateScenario 'with-certificate.bicep' = if (shouldCreateCertificate) {
-  name: 'SlotHostNameBindingWithCert-${name}'
+  resource slot 'slots@2024-11-01' existing = {
+    name: slotName
+  }
+}
+
+// Create certificate using the certificate module
+module sslCertificate '../../modules/certificate.bicep' = if (!empty(certificate)) {
+  name: '${uniqueString(deployment().name, location)}-Cert'
   params: {
-    appName: appName
-    slotName: slotName
-    name: name
-    kind: kind
+    name: certificate.?name ?? 'cert-${replace(name, '.', '-')}'
     location: location
-    certificateName: certificateName
-    certificate: certificate
-    azureResourceName: azureResourceName
-    azureResourceType: azureResourceType
-    customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainResourceId: domainResourceId
-    hostNameType: hostNameType
-    siteName: siteName
-    sslState: sslState ?? 'SniEnabled'
-  }
-}
-
-// Just add hostname binding with existing thumbprint if provided
-module withoutCertificateScenario 'without-certificate.bicep' = if (!shouldCreateCertificate) {
-  name: 'SlotHostNameBindingWithoutCert-${name}'
-  params: {
-    appName: appName
-    slotName: slotName
-    name: name
     kind: kind
-    azureResourceName: azureResourceName
-    azureResourceType: azureResourceType
-    customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainResourceId: domainResourceId
-    hostNameType: hostNameType
-    siteName: siteName
-    sslState: !empty(thumbprint) ? (sslState ?? 'SniEnabled') : sslState
-    thumbprint: thumbprint
+    hostNames: certificate.?hostNames ?? [name]
+    password: certificate.?password
+    pfxBlob: certificate.?pfxBlob
+    serverFarmResourceId: certificate.?serverFarmResourceId
+    keyVaultResourceId: certificate.?keyVaultResourceId
+    keyVaultSecretName: certificate.?keyVaultSecretName
+    canonicalName: certificate.?canonicalName
+    domainValidationMethod: certificate.?domainValidationMethod
   }
 }
 
-// Define output variables
-var bindingResourceId = shouldCreateCertificate
-  ? withCertificateScenario.?outputs.?resourceId ?? ''
-  : withoutCertificateScenario.?outputs.?resourceId ?? ''
-
-var bindingCertificateThumbprint = shouldCreateCertificate
-  ? withCertificateScenario.?outputs.?certificateThumbprint ?? ''
-  : ''
-
-var bindingCertificateResourceId = shouldCreateCertificate
-  ? withCertificateScenario.?outputs.?certificateResourceId ?? ''
-  : ''
+resource hostNameBinding 'Microsoft.Web/sites/slots/hostNameBindings@2024-11-01' = {
+  parent: app::slot
+  name: name
+  kind: kind
+  properties: {
+    azureResourceName: azureResourceName
+    azureResourceType: azureResourceType
+    customHostNameDnsRecordType: customHostNameDnsRecordType
+    domainId: domainResourceId
+    hostNameType: hostNameType
+    siteName: siteName
+    sslState: sslState ?? ((!empty(thumbprint) || !empty(certificate)) ? 'SniEnabled' : null)
+    thumbprint: thumbprint ?? sslCertificate.?outputs.?thumbprint
+  }
+}
 
 @description('The name of the host name binding.')
 output name string = name
 
 @description('The resource ID of the host name binding.')
-output resourceId string = bindingResourceId
+output resourceId string = hostNameBinding.id
 
 @description('The name of the resource group the resource was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The thumbprint of the certificate if one was created.')
-output certificateThumbprint string = bindingCertificateThumbprint
+@description('The thumbprint of the certificate.')
+output certificateThumbprint string? = sslCertificate.?outputs.?thumbprint
 
-@description('The resource ID of the certificate if one was created.')
-output certificateResourceId string = bindingCertificateResourceId
+@description('The resource ID of the certificate.')
+output certificateResourceId string? = sslCertificate.?outputs.?resourceId

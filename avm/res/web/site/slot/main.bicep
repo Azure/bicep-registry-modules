@@ -528,16 +528,38 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 @description('The host name bindings of the slot.')
-output hostNameBindings array = [
-  for (hostNameBinding, index) in (hostNameBindings ?? []): {
+output hostNameBindings hostNameBindingsOutputType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only exporting subset of information
+  for (binding, index) in (hostNameBindings ?? []): {
     name: slot_hostNameBindings[index].outputs.name
     resourceId: slot_hostNameBindings[index].outputs.resourceId
+    resourceGroupName: slot_hostNameBindings[index].outputs.resourceGroupName
+    certificateThumbprint: slot_hostNameBindings[index].outputs.?certificateThumbprint
+    certificateResourceId: slot_hostNameBindings[index].outputs.?certificateResourceId
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+@export()
+type hostNameBindingsOutputType = {
+  @description('The name of the host name binding.')
+  name: string
+
+  @description('The resource ID of the host name binding.')
+  resourceId: string
+
+  @description('The name of the resource group the resource was deployed into.')
+  resourceGroupName: string
+
+  @description('The thumbprint of the certificate.')
+  certificateThumbprint: string?
+
+  @description('The resource ID of the certificate.')
+  certificateResourceId: string?
+}
+
 @export()
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
