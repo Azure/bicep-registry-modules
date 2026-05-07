@@ -500,8 +500,6 @@ var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagate
   ? virtualNetworkVwanPropagatedLabels
   : ['default']
 
-var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
-
 var nsgArrayFormatted = !empty(additionalVirtualNetworks)
   ? flatten(map(
       additionalVirtualNetworks,
@@ -1597,7 +1595,16 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
           )[0]
         ]
       : null
-    arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
+    environmentVariables: [
+      {
+        name: 'RESOURCE_PROVIDERS'
+        value: string(resourceProviders)
+      }
+      {
+        name: 'SUBSCRIPTION_ID'
+        value: subscriptionId
+      }
+    ]
     scriptContent: loadTextContent('../scripts/Register-SubscriptionResourceProviderList.ps1')
   }
 }
