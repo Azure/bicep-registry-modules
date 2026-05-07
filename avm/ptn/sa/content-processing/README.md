@@ -620,7 +620,7 @@ The image tag for the container images.
 
 - Required: No
 - Type: string
-- Default: `'latest_v2'`
+- Default: `'latest_v2_2026-04-28_883'`
 
 ### Parameter: `location`
 
