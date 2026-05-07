@@ -388,6 +388,26 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   }
 }
 
+// Jumpbox Proximity Placement Group (precludes Availability Set; enables zone placement)
+var jumpboxPpgName = take('ppg-jumpbox-${solutionSuffix}', 80)
+module jumpboxPPG 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.proximity-placement-group.${jumpboxPpgName}', 64)
+  params: {
+    name: jumpboxPpgName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    availabilityZone: enableRedundancy ? 1 : -1
+    intent: enableRedundancy
+      ? {
+          vmSizes: [
+            vmSize ?? 'Standard_DS2_v2'
+          ]
+        }
+      : null
+  }
+}
+
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
 module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
@@ -414,6 +434,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
       }
     }
     availabilityZone: enableRedundancy ? 1 : -1
+    proximityPlacementGroupResourceId: jumpboxPPG!.outputs.resourceId
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // WAF aligned configuration - Enable automatic patching with platform management
     patchMode: 'AutomaticByPlatform'
@@ -1130,7 +1151,8 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
     connectionPolicy: 'Redirect'
     databases: [
       {
-        availabilityZone: enableRedundancy ? 1 : -1
+        // GP_Gen5 SKU does not support a specific zone; rely on zoneRedundant for ZR.
+        availabilityZone: -1
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
         licenseType: 'LicenseIncluded'
