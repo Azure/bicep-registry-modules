@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "14497208951628623767"
+      "version": "0.41.2.15936",
+      "templateHash": "16153638301860059233"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -313,6 +313,7 @@
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
     "bastionHostName": "[format('bas-{0}', variables('solutionSuffix'))]",
+    "jumpboxPpgName": "[take(format('ppg-jumpbox-{0}', variables('solutionSuffix')), 80)]",
     "jumpboxVmName": "[take(format('vm-jumpbox-{0}', variables('solutionSuffix')), 15)]",
     "privateDnsZones": [
       "privatelink.cognitiveservices.azure.com",
@@ -4429,8 +4430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "8475341636923159199"
+              "version": "0.41.2.15936",
+              "templateHash": "11638504389028957007"
             }
           },
           "definitions": {
@@ -9469,6 +9470,371 @@
         }
       }
     },
+    "jumpboxPPG": {
+      "condition": "[parameters('enablePrivateNetworking')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('avm.res.compute.proximity-placement-group.{0}', variables('jumpboxPpgName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('jumpboxPpgName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "availabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 1), createObject('value', -1))]",
+          "intent": "[if(parameters('enableRedundancy'), createObject('value', createObject('vmSizes', createArray(coalesce(parameters('vmSize'), 'Standard_DS2_v2')))), createObject('value', null()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.37.4.10188",
+              "templateHash": "14590939924256334253"
+            },
+            "name": "Proximity Placement Groups",
+            "description": "This module deploys a Proximity Placement Group."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the proximity placement group that is being created."
+              }
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Standard",
+                "Ultra"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the type of the proximity placement group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Resource location."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/tags"
+                },
+                "description": "Optional. Tags of the proximity placement group resource."
+              },
+              "nullable": true
+            },
+            "availabilityZone": {
+              "type": "int",
+              "allowedValues": [
+                -1,
+                1,
+                2,
+                3
+              ],
+              "metadata": {
+                "description": "Required. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
+              }
+            },
+            "colocationStatus": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/properties/properties/colocationStatus"
+                },
+                "description": "Optional. Describes colocation status of the Proximity Placement Group."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "intent": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Compute/proximityPlacementGroups@2024-11-01#properties/properties/properties/intent"
+                },
+                "description": "Optional. Specifies the user intent of the proximity placement group."
+              },
+              "nullable": true
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.compute-proximityplacementgroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "proximityPlacementGroup": {
+              "type": "Microsoft.Compute/proximityPlacementGroups",
+              "apiVersion": "2022-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
+              "properties": {
+                "proximityPlacementGroupType": "[parameters('type')]",
+                "colocationStatus": "[parameters('colocationStatus')]",
+                "intent": "[parameters('intent')]"
+              }
+            },
+            "proximityPlacementGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Compute/proximityPlacementGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+              },
+              "dependsOn": [
+                "proximityPlacementGroup"
+              ]
+            },
+            "proximityPlacementGroup_roleAssignments": {
+              "copy": {
+                "name": "proximityPlacementGroup_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/proximityPlacementGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/proximityPlacementGroups', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "proximityPlacementGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the proximity placement group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resourceId the proximity placement group."
+              },
+              "value": "[resourceId('Microsoft.Compute/proximityPlacementGroups', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the proximity placement group was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('proximityPlacementGroup', '2022-08-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
     "jumpboxVM": {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
@@ -9517,8 +9883,9 @@
               }
             }
           },
-          "availabilityZone": {
-            "value": -1
+          "availabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 1), createObject('value', -1))]",
+          "proximityPlacementGroupResourceId": {
+            "value": "[reference('jumpboxPPG').outputs.resourceId.value]"
           },
           "encryptionAtHost": {
             "value": false
@@ -18561,6 +18928,7 @@
         }
       },
       "dependsOn": [
+        "jumpboxPPG",
         "logAnalyticsWorkspace",
         "maintenanceConfiguration",
         "virtualNetwork"
@@ -23093,8 +23461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "9453750555589615070"
+              "version": "0.41.2.15936",
+              "templateHash": "14492726983635402930"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -24252,8 +24620,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "12171782914065230331"
+                      "version": "0.41.2.15936",
+                      "templateHash": "4986538481437399996"
                     }
                   },
                   "definitions": {
@@ -25923,8 +26291,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.1.21952",
-                              "templateHash": "3266938468003555348"
+                              "version": "0.41.2.15936",
+                              "templateHash": "1192069203319820067"
                             }
                           },
                           "definitions": {
@@ -26153,8 +26521,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "12171782914065230331"
+                      "version": "0.41.2.15936",
+                      "templateHash": "4986538481437399996"
                     }
                   },
                   "definitions": {
@@ -27824,8 +28192,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.1.21952",
-                              "templateHash": "3266938468003555348"
+                              "version": "0.41.2.15936",
+                              "templateHash": "1192069203319820067"
                             }
                           },
                           "definitions": {
@@ -28072,8 +28440,8 @@
       },
       "dependsOn": [
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "backendUserAssignedIdentity",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
@@ -30598,9 +30966,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
         "virtualNetwork"
@@ -40942,10 +41310,10 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -54979,8 +55347,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "13498098236225419903"
+              "version": "0.41.2.15936",
+              "templateHash": "17080732328393592681"
             }
           },
           "definitions": {
@@ -56002,8 +56370,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "7202268095676731580"
+                      "version": "0.41.2.15936",
+                      "templateHash": "6841094131002876927"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -56950,8 +57318,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "13498098236225419903"
+              "version": "0.41.2.15936",
+              "templateHash": "17080732328393592681"
             }
           },
           "definitions": {
@@ -57973,8 +58341,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "7202268095676731580"
+                      "version": "0.41.2.15936",
+                      "templateHash": "6841094131002876927"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
