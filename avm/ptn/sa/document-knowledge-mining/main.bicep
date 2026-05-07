@@ -483,6 +483,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
     acrSku: enableRedundancy ? 'Premium' : 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+    networkRuleSetDefaultAction: enableRedundancy ? 'Deny' : 'Allow'
     replications: enableRedundancy
       ? [
           {
@@ -1032,6 +1033,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.
     }
     securityProfile: {
       defender: {
+        logAnalyticsWorkspaceResourceId: enablePrivateNetworking ? logAnalyticsWorkspaceResourceId : null
         securityMonitoring: {
           enabled: enablePrivateNetworking
         }
