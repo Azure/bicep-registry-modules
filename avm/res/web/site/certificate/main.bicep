@@ -8,16 +8,16 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Certificate host names.')
-param hostNames array = []
+param hostNames string[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Web/certificates@2024-11-01'>.tags?
 
 @description('Optional. Kind of resource.')
 param kind string?
 
 @description('Optional. Key Vault resource ID.')
-param keyVaultId string?
+param keyVaultResourceId string?
 
 @description('Optional. Key Vault secret name.')
 param keyVaultSecretName string?
@@ -45,14 +45,14 @@ resource certificate 'Microsoft.Web/certificates@2024-11-01' = {
   kind: kind
   tags: tags
   properties: {
-    hostNames: !empty(hostNames) ? hostNames : null
-    password: !empty(password) ? password : null
-    pfxBlob: !empty(pfxBlob) ? pfxBlob : null
-    serverFarmId: !empty(serverFarmResourceId) ? serverFarmResourceId : null
-    keyVaultId: !empty(keyVaultId) ? keyVaultId : null
-    keyVaultSecretName: !empty(keyVaultSecretName) ? keyVaultSecretName : null
-    canonicalName: !empty(canonicalName) ? canonicalName : null
-    domainValidationMethod: !empty(domainValidationMethod) ? domainValidationMethod : null
+    hostNames: hostNames
+    password: password
+    pfxBlob: pfxBlob
+    serverFarmId: serverFarmResourceId
+    keyVaultId: keyVaultResourceId
+    keyVaultSecretName: keyVaultSecretName
+    canonicalName: canonicalName
+    domainValidationMethod: domainValidationMethod
   }
 }
 

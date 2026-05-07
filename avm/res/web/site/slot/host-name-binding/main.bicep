@@ -31,7 +31,7 @@ param azureResourceType string?
 param customHostNameDnsRecordType string?
 
 @description('Optional. Fully qualified ARM domain resource URI.')
-param domainId string?
+param domainResourceId string?
 
 @description('Optional. Hostname type. Possible values are Verified and Managed.')
 @allowed([
@@ -77,7 +77,7 @@ module withCertificateScenario 'with-certificate.bicep' = if (shouldCreateCertif
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainResourceId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: sslState ?? 'SniEnabled'
@@ -95,7 +95,7 @@ module withoutCertificateScenario 'without-certificate.bicep' = if (!shouldCreat
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainResourceId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: !empty(thumbprint) ? (sslState ?? 'SniEnabled') : sslState

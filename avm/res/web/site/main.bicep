@@ -245,7 +245,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-site.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -443,7 +443,7 @@ module app_hostNameBindings 'host-name-binding/main.bicep' = [
       azureResourceName: hostNameBinding.azureResourceName
       azureResourceType: hostNameBinding.azureResourceType
       customHostNameDnsRecordType: hostNameBinding.customHostNameDnsRecordType
-      domainId: hostNameBinding.domainId
+      domainResourceId: hostNameBinding.domainResourceId
       hostNameType: hostNameBinding.hostNameType
       siteName: hostNameBinding.siteName
       sslState: hostNameBinding.sslState
@@ -516,7 +516,7 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -681,7 +681,7 @@ import {
   webConfigType
 } from 'slot/main.bicep'
 
-import { hostNameBindingType } from 'host-name-binding-type.bicep'
+import { hostNameBindingType } from 'slot/main.bicep'
 
 @export()
 @description('The type of a site configuration.')

@@ -28,7 +28,7 @@ param azureResourceType string?
 param customHostNameDnsRecordType string?
 
 @description('Optional. Fully qualified ARM domain resource URI.')
-param domainId string?
+param domainResourceId string?
 
 @description('Optional. Hostname type. Possible values are Verified and Managed.')
 @allowed([
@@ -49,7 +49,7 @@ param siteName string?
 param sslState string?
 
 @description('Optional. SSL certificate thumbprint.')
-param thumbprint string = ''
+param thumbprint string?
 
 resource app 'Microsoft.Web/sites@2024-11-01' existing = {
   name: appName
@@ -67,11 +67,11 @@ resource hostNameBinding 'Microsoft.Web/sites/slots/hostNameBindings@2024-11-01'
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: sslState
-    thumbprint: !empty(thumbprint) ? thumbprint : null
+    thumbprint: thumbprint
   }
 }
 

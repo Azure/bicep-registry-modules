@@ -25,7 +25,7 @@ param azureResourceType string?
 param customHostNameDnsRecordType string?
 
 @description('Optional. Fully qualified ARM domain resource URI.')
-param domainId string?
+param domainResourceId string?
 
 @description('Optional. Hostname type. Possible values are Verified and Managed.')
 @allowed([
@@ -48,7 +48,7 @@ param sslState string = 'SniEnabled'
 @description('Optional. Certificate object with properties for certificate creation. The expected structure matches the certificateType defined in host-name-binding-type.bicep.')
 param certificate object = {}
 
-@description('Certificate name')
+@description('Required. Certificate name')
 param certificateName string
 
 @description('Optional. Resource location.')
@@ -59,19 +59,19 @@ resource app 'Microsoft.Web/sites@2024-11-01' existing = {
 }
 
 // Create certificate using the certificate module
-module sslCertificate '../certificate/main.bicep' = {
+module sslCertificate '../../certificate/main.bicep' = {
   name: 'certificate-${certificateName}'
   params: {
     name: certificateName
     location: location
     kind: kind
     hostNames: certificate.hostNames ?? [name]
-    password: certificate.password ?? ''
-    pfxBlob: certificate.pfxBlob ?? ''
-    serverFarmResourceId: certificate.serverFarmResourceId ?? ''
-    keyVaultId: certificate.keyVaultId ?? ''
-    keyVaultSecretName: certificate.keyVaultSecretName ?? ''
-    canonicalName: certificate.canonicalName ?? ''
+    password: certificate.password
+    pfxBlob: certificate.pfxBlob
+    serverFarmResourceId: certificate.serverFarmResourceId
+    keyVaultResourceId: certificate.keyVaultResourceId
+    keyVaultSecretName: certificate.keyVaultSecretName
+    canonicalName: certificate.canonicalName
     domainValidationMethod: !empty(certificate.domainValidationMethod) ? certificate.domainValidationMethod : null
   }
 }
@@ -84,7 +84,7 @@ resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2024-11-01' = {
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: sslState

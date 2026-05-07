@@ -28,7 +28,7 @@ param azureResourceType string?
 param customHostNameDnsRecordType string?
 
 @description('Optional. Fully qualified ARM domain resource URI.')
-param domainId string?
+param domainResourceId string?
 
 @description('Optional. Hostname type. Possible values are Verified and Managed.')
 @allowed([
@@ -61,7 +61,7 @@ var certificateName = 'cert-${replace(name, '.', '-')}'
 var shouldCreateCertificate = !empty(certificate)
 
 // Create certificate if certificate object is provided and add hostname binding
-module withCertificateScenario 'with-certificate.bicep' = if (shouldCreateCertificate) {
+module withCertificateScenario 'modules/with-certificate.bicep' = if (shouldCreateCertificate) {
   name: 'HostNameBindingWithCert-${name}'
   params: {
     appName: appName
@@ -73,7 +73,7 @@ module withCertificateScenario 'with-certificate.bicep' = if (shouldCreateCertif
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainResourceId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: sslState ?? 'SniEnabled'
@@ -90,7 +90,7 @@ module withoutCertificateScenario 'without-certificate.bicep' = if (!shouldCreat
     azureResourceName: azureResourceName
     azureResourceType: azureResourceType
     customHostNameDnsRecordType: customHostNameDnsRecordType
-    domainId: domainId
+    domainResourceId: domainResourceId
     hostNameType: hostNameType
     siteName: siteName
     sslState: !empty(thumbprint) ? (sslState ?? 'SniEnabled') : sslState

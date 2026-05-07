@@ -139,7 +139,6 @@ param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
-import { hostNameBindingType } from '../host-name-binding-type.bicep'
 @description('Optional. Host Name Bindings for the slot.')
 param hostNameBindings hostNameBindingType[]?
 
@@ -239,7 +238,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-siteslot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -349,7 +348,7 @@ module slot_hostNameBindings 'host-name-binding/main.bicep' = [
       azureResourceName: hostNameBinding.?azureResourceName
       azureResourceType: hostNameBinding.?azureResourceType
       customHostNameDnsRecordType: hostNameBinding.?customHostNameDnsRecordType
-      domainId: hostNameBinding.?domainId
+      domainResourceId: hostNameBinding.?domainResourceId
       hostNameType: hostNameBinding.?hostNameType
       siteName: hostNameBinding.?siteName
       sslState: hostNameBinding.?sslState
@@ -447,7 +446,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -1931,4 +1930,71 @@ type hybridConnectionRelayType = {
 
   @description('Optional. Name of the authorization rule send key to use.')
   sendKeyName: string?
+}
+
+@export()
+@description('The type of a host name binding.')
+type hostNameBindingType = {
+  @description('Required. Hostname in the hostname binding.')
+  name: string
+
+  @description('Optional. Kind of resource.')
+  kind: string?
+
+  @description('Optional. Azure resource name.')
+  azureResourceName: string?
+
+  @description('Optional. Azure resource type. Possible values are Website and TrafficManager.')
+  azureResourceType: ('Website' | 'TrafficManager')?
+
+  @description('Optional. Custom DNS record type. Possible values are CName and A.')
+  customHostNameDnsRecordType: ('CName' | 'A')?
+
+  @description('Optional. Fully qualified ARM domain resource URI.')
+  domainResourceId: string?
+
+  @description('Optional. Hostname type. Possible values are Verified and Managed.')
+  hostNameType: ('Verified' | 'Managed')?
+
+  @description('Optional. App Service app name.')
+  siteName: string?
+
+  @description('Optional. SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.')
+  sslState: ('Disabled' | 'SniEnabled' | 'IpBasedEnabled')?
+
+  @description('Optional. SSL certificate thumbprint.')
+  thumbprint: string?
+
+  @description('Optional. Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.')
+  certificate: certificateType?
+}
+
+@export()
+@description('The type of certificate properties for hostname binding.')
+type certificateType = {
+  @description('Optional. Certificate host names. By default, will use the hostname from the binding.')
+  hostNames: string[]?
+
+  @description('Optional. Key Vault resource ID.')
+  keyVaultResourceId: string?
+
+  @description('Optional. Key Vault secret name.')
+  keyVaultSecretName: string?
+
+  @description('Optional. Server farm resource ID.')
+  serverFarmResourceId: string?
+
+  @description('Optional. CNAME of the certificate to be issued via free certificate.')
+  canonicalName: string?
+
+  @description('Optional. Certificate password.')
+  @secure()
+  password: string?
+
+  @description('Optional. Certificate data in PFX format.')
+  @secure()
+  pfxBlob: string?
+
+  @description('Optional. Method of domain validation for free certificate.')
+  domainValidationMethod: string?
 }
