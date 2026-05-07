@@ -46,7 +46,7 @@ param siteName string?
 param sslState string?
 
 @description('Optional. SSL certificate thumbprint.')
-param thumbprint string = ''
+param thumbprint string?
 
 resource app 'Microsoft.Web/sites@2024-11-01' existing = {
   name: appName
@@ -64,7 +64,7 @@ resource hostNameBinding 'Microsoft.Web/sites/hostNameBindings@2024-11-01' = {
     hostNameType: hostNameType
     siteName: siteName
     sslState: sslState
-    thumbprint: !empty(thumbprint) ? thumbprint : null
+    thumbprint: thumbprint
   }
 }
 
