@@ -12,9 +12,6 @@ metadata description = 'This instance deploys the module in alignment with the b
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-sa.dkm-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
 param serviceShort string = 'sdkmwaf'
@@ -30,11 +27,17 @@ param vmAdminPassword string = newGuid()
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
+var enforcedLocation = 'australiaeast'
+
+#disable-next-line no-hardcoded-location
+var enforcedCosmosReplicaLocation = 'canadacentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -45,12 +48,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
-      aiDeploymentsLocation: resourceLocation
+      location: enforcedLocation
+      aiDeploymentsLocation: enforcedLocation
+      cosmosReplicaLocation: enforcedCosmosReplicaLocation
       enableRedundancy: true
       enablePrivateNetworking: true
+      enableMonitoring: true
       vmAdminUsername: 'JumpboxAdminUser'
       vmAdminPassword: vmAdminPassword
     }

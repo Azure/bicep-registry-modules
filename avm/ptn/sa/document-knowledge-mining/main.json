@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "9201917419543263363"
+      "version": "0.43.8.12551",
+      "templateHash": "479059241978279036"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -6952,8 +6952,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "9102931238165881802"
+              "version": "0.43.8.12551",
+              "templateHash": "5695186973979003724"
             }
           },
           "definitions": {
@@ -21629,6 +21629,7 @@
             "value": "Enabled"
           },
           "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
+          "networkRuleSetDefaultAction": "[if(parameters('enableRedundancy'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
           "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', replace(parameters('cosmosReplicaLocation'), ' ', ''), 'location', parameters('cosmosReplicaLocation'), 'zoneRedundancy', 'Enabled'))), createObject('value', null()))]",
           "roleAssignments": {
             "value": [
@@ -21650,8 +21651,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "10783952807691576907"
+              "version": "0.43.8.12551",
+              "templateHash": "9712237770873297657"
             },
             "name": "Container Registry Module"
           },
@@ -21817,6 +21818,28 @@
                 "description": "Zone redundancy setting for the Azure Container Registry"
               }
             },
+            "networkRuleSetDefaultAction": {
+              "type": "string",
+              "defaultValue": "Allow",
+              "allowedValues": [
+                "Allow",
+                "Deny"
+              ],
+              "metadata": {
+                "description": "Optional. The default action of allow or deny when no other rules match. Note, requires the 'acrSku' to be 'Premium'."
+              }
+            },
+            "exportPolicyStatus": {
+              "type": "string",
+              "defaultValue": "enabled",
+              "allowedValues": [
+                "enabled",
+                "disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The value that indicates whether the export policy is enabled or not. Premium SKU only. Must be 'enabled' when 'publicNetworkAccess' is 'Enabled'."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -21870,6 +21893,12 @@
                   },
                   "zoneRedundancy": {
                     "value": "[parameters('zoneRedundancy')]"
+                  },
+                  "networkRuleSetDefaultAction": {
+                    "value": "[parameters('networkRuleSetDefaultAction')]"
+                  },
+                  "exportPolicyStatus": {
+                    "value": "[parameters('exportPolicyStatus')]"
                   },
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
@@ -51801,6 +51830,7 @@
           "securityProfile": {
             "value": {
               "defender": {
+                "logAnalyticsWorkspaceResourceId": "[if(parameters('enablePrivateNetworking'), reference('logAnalyticsWorkspace').outputs.resourceId.value, null())]",
                 "securityMonitoring": {
                   "enabled": "[parameters('enablePrivateNetworking')]"
                 }

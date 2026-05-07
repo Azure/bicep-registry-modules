@@ -23,6 +23,13 @@ param zoneRedundancy string = 'Disabled'
 ])
 param networkRuleSetDefaultAction string = 'Allow'
 
+@description('Optional. The value that indicates whether the export policy is enabled or not. Premium SKU only. Must be \'enabled\' when \'publicNetworkAccess\' is \'Enabled\'.')
+@allowed([
+  'enabled'
+  'disabled'
+])
+param exportPolicyStatus string = 'enabled'
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -43,6 +50,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     publicNetworkAccess: publicNetworkAccess
     zoneRedundancy: zoneRedundancy
     networkRuleSetDefaultAction: networkRuleSetDefaultAction
+    exportPolicyStatus: exportPolicyStatus
     roleAssignments: roleAssignments
     replications: replications
     tags: tags

@@ -433,10 +433,12 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
     // Required parameters
     aiDeploymentsLocation: '<aiDeploymentsLocation>'
     // Non-required parameters
+    cosmosReplicaLocation: '<cosmosReplicaLocation>'
+    enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     location: '<location>'
-    vmAdminPassword: 'JumpboxAdminP@ssw0rd1234!'
+    vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'JumpboxAdminUser'
   }
 }
@@ -459,6 +461,12 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": "<aiDeploymentsLocation>"
     },
     // Non-required parameters
+    "cosmosReplicaLocation": {
+      "value": "<cosmosReplicaLocation>"
+    },
+    "enableMonitoring": {
+      "value": true
+    },
     "enablePrivateNetworking": {
       "value": true
     },
@@ -469,7 +477,7 @@ module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<
       "value": "<location>"
     },
     "vmAdminPassword": {
-      "value": "JumpboxAdminP@ssw0rd1234!"
+      "value": "<vmAdminPassword>"
     },
     "vmAdminUsername": {
       "value": "JumpboxAdminUser"
@@ -491,10 +499,12 @@ using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
 // Required parameters
 param aiDeploymentsLocation = '<aiDeploymentsLocation>'
 // Non-required parameters
+param cosmosReplicaLocation = '<cosmosReplicaLocation>'
+param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param location = '<location>'
-param vmAdminPassword = 'JumpboxAdminP@ssw0rd1234!'
+param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'JumpboxAdminUser'
 ```
 
