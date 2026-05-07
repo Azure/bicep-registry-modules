@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'cert'
           siteName: nestedDependencies.outputs.appServiceName
+          sslState: 'IpBasedEnabled'
           hostNameType: 'Verified'
           certificate: {
             name: 'cert-${namePrefix}-${serviceShort}'
