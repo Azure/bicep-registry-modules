@@ -747,6 +747,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cognitive-services/account:0.14.2` | Remote reference |
+| `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.22.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |

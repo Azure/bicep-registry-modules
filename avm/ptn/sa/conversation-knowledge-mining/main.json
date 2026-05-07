@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "16153638301860059233"
+      "version": "0.40.2.10011",
+      "templateHash": "17700125572548154185"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/blob/main/documents/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4430,8 +4430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11638504389028957007"
+              "version": "0.40.2.10011",
+              "templateHash": "3902865767799360510"
             }
           },
           "definitions": {
@@ -23461,8 +23461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14492726983635402930"
+              "version": "0.40.2.10011",
+              "templateHash": "13800028932602446442"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -24620,8 +24620,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4986538481437399996"
+                      "version": "0.40.2.10011",
+                      "templateHash": "4120812133673787886"
                     }
                   },
                   "definitions": {
@@ -26291,8 +26291,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "1192069203319820067"
+                              "version": "0.40.2.10011",
+                              "templateHash": "99921779716628137"
                             }
                           },
                           "definitions": {
@@ -26521,8 +26521,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4986538481437399996"
+                      "version": "0.40.2.10011",
+                      "templateHash": "4120812133673787886"
                     }
                   },
                   "definitions": {
@@ -28192,8 +28192,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "1192069203319820067"
+                              "version": "0.40.2.10011",
+                              "templateHash": "99921779716628137"
                             }
                           },
                           "definitions": {
@@ -30966,8 +30966,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "logAnalyticsWorkspace",
         "userAssignedIdentity",
@@ -41310,8 +41310,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageDfs)]",
         "userAssignedIdentity",
@@ -55347,8 +55347,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17080732328393592681"
+              "version": "0.40.2.10011",
+              "templateHash": "13273960101775721820"
             }
           },
           "definitions": {
@@ -56370,8 +56370,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "6841094131002876927"
+                      "version": "0.40.2.10011",
+                      "templateHash": "12825668457555463262"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -57318,8 +57318,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17080732328393592681"
+              "version": "0.40.2.10011",
+              "templateHash": "13273960101775721820"
             }
           },
           "definitions": {
@@ -58341,8 +58341,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "6841094131002876927"
+                      "version": "0.40.2.10011",
+                      "templateHash": "12825668457555463262"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
