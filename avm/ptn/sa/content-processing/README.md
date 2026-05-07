@@ -151,7 +151,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    cosmosDbReplicaLocation: 'australiasoutheast'
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: true
@@ -180,7 +180,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
-      "value": "australiasoutheast"
+      "value": "canadacentral"
     },
     "enableMonitoring": {
       "value": false
@@ -217,7 +217,7 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-param cosmosDbReplicaLocation = 'australiasoutheast'
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = true
@@ -346,7 +346,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    cosmosDbReplicaLocation: 'australiasoutheast'
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -379,7 +379,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
-      "value": "australiasoutheast"
+      "value": "canadacentral"
     },
     "enableMonitoring": {
       "value": true
@@ -428,7 +428,7 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-param cosmosDbReplicaLocation = 'australiasoutheast'
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true

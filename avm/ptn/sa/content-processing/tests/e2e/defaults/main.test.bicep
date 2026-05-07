@@ -50,6 +50,6 @@ module testDeployment '../../../main.bicep' = {
     enableMonitoring: false
     enableRedundancy: true
     enableScalability: true
-    cosmosDbReplicaLocation: 'australiasoutheast'
+    cosmosDbReplicaLocation: 'canadacentral'
   }
 }
