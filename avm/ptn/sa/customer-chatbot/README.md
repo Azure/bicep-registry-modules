@@ -351,7 +351,6 @@ Location for all AI service resources. Must be a region that supports all deploy
 - Allowed:
   ```Bicep
   [
-    'centralus'
     'eastus2'
     'francecentral'
     'swedencentral'
@@ -505,7 +504,7 @@ The image tag to use for container images. Defaults to "latest_v2".
 
 - Required: No
 - Type: string
-- Default: `'latest_v2'`
+- Default: `'latest_v2_2026-05-04_449'`
 
 ### Parameter: `location`
 

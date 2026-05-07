@@ -26,7 +26,7 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 param location string = resourceGroup().location
 
 // Restricting deployment to regions that support all deployed models: gpt-4o-mini, text-embedding-3-small, and gpt-realtime-mini (GlobalStandard)
-@allowed(['centralus', 'eastus2', 'francecentral', 'swedencentral'])
+@allowed(['eastus2', 'francecentral', 'swedencentral'])
 @metadata({
   azd: {
     type: 'location'
@@ -108,7 +108,7 @@ param vmSize string = 'Standard_D2s_v5'
 param containerRegistryHost string = 'ccbcontainerreg.azurecr.io'
 
 @description('Optional. The image tag to use for container images. Defaults to "latest_v2".')
-param imageTag string = 'latest_v2'
+param imageTag string = 'latest_v2_2026-05-04_449'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -492,8 +492,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
     vmSize: vmSize
-    adminUsername: virtualMachineAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: virtualMachineAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    adminUsername: !empty(virtualMachineAdminUsername) ? virtualMachineAdminUsername : 'JumpboxAdminUser'
+    adminPassword: !empty(virtualMachineAdminPassword) ? virtualMachineAdminPassword : 'JumpboxAdminP@ssw0rd1234!'
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
