@@ -442,6 +442,12 @@ param vmAdminUsername = 'adminuser'
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for the Azure AI Services deployment. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -487,6 +493,13 @@ Location for the Azure AI Services deployment.
     'uksouth'
   ]
   ```
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.
+
+- Required: No
+- Type: string
 
 ### Parameter: `containerRegistryEndpoint`
 

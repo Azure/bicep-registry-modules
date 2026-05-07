@@ -52,6 +52,9 @@ param contentUnderstandingLocation string = 'WestUS'
 })
 param azureAiServiceLocation string
 
+@description('Conditional. Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.')
+param cosmosDbReplicaLocation string?
+
 @description('Optional. Type of GPT deployment to use: Standard | GlobalStandard.')
 @minLength(1)
 @allowed([
@@ -1333,7 +1336,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
     tags: tags
     enableTelemetry: enableTelemetry
     databaseAccountOfferType: 'Standard'
-    enableAutomaticFailover: false
+    enableAutomaticFailover: enableRedundancy
     serverVersion: '7.0'
     capabilitiesToAdd: [
       'EnableMongo'
@@ -1343,6 +1346,28 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
     zoneRedundant: enableRedundancy
+    // WAF aligned configuration for Redundancy: explicit failover locations using a caller-supplied
+    // replica region (instead of a hardcoded region pair map, which fails in pipeline test regions).
+    failoverLocations: enableRedundancy
+      ? [
+          {
+            failoverPriority: 0
+            isZoneRedundant: true
+            locationName: location
+          }
+          {
+            failoverPriority: 1
+            isZoneRedundant: true
+            locationName: cosmosDbReplicaLocation
+          }
+        ]
+      : [
+          {
+            locationName: location
+            failoverPriority: 0
+            isZoneRedundant: false
+          }
+        ]
 
     // WAF related parameters
     networkRestrictions: {
