@@ -453,7 +453,7 @@ module app_hostNameBindings 'host-name-binding/main.bicep' = [
         ? union(hostNameBinding.certificate, {
             serverFarmResourceId: hostNameBinding.certificate.?serverFarmResourceId ?? serverFarmResourceId
           })
-        : {}
+        : null
       location: location
     }
   }

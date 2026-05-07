@@ -54,10 +54,22 @@ module testDeployment '../../../main.bicep' = [
       kind: 'app,linux'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       hostNameBindings: [
+        // // Without cert
+        // {
+        //   name: 'nocert'
+        //   siteName: nestedDependencies.outputs.appServiceName
+        //   hostNameType: 'Verified'
+        // }
+        // With cert
         {
-          name: 'mybinding'
+          name: 'cert'
           siteName: nestedDependencies.outputs.appServiceName
           hostNameType: 'Verified'
+          certificate: {
+            name: 'cert-${namePrefix}-${serviceShort}'
+            hostNames: [nestedDependencies.outputs.appServiceHostName]
+            canonicalName: nestedDependencies.outputs.appServiceHostName
+          }
         }
       ]
     }

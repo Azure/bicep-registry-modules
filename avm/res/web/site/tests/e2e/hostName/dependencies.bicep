@@ -35,3 +35,6 @@ output serverFarmResourceId string = serverFarm.id
 
 @description('The name of the created app service.')
 output appServiceName string = appService.outputs.name
+
+@description('The host name of the created app service.')
+output appServiceHostName string = appService.outputs.defaultHostname
