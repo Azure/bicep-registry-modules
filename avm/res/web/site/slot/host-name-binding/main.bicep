@@ -52,7 +52,7 @@ param siteName string?
 param sslState string?
 
 @description('Optional. SSL certificate thumbprint.')
-param thumbprint string = ''
+param thumbprint string?
 
 import { certificateType } from '../../modules/certificate.bicep'
 @description('Optional. Certificate object with properties for certificate creation. The expected structure matches the certificateType defined in host-name-binding-type.bicep.')
