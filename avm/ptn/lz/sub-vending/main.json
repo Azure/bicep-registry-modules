@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "4761354270148376795"
+      "version": "0.43.8.12551",
+      "templateHash": "6816275832593939515"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -2064,8 +2064,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "7003069742178895011"
+              "version": "0.43.8.12551",
+              "templateHash": "3156836617254171318"
             }
           },
           "parameters": {
@@ -2350,8 +2350,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "173641244984180657"
+              "version": "0.43.8.12551",
+              "templateHash": "1150956185109129714"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -4241,7 +4241,7 @@
                 "input": "[map(filter(coalesce(tryGet(parameters('userAssignedManagedIdentities')[copyIndex('umiRoleAssignmentsResourceGroups')], 'roleAssignments'), createArray()), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/'))), lambda('assignment', union(lambdaVariables('assignment'), createObject('identityIndex', copyIndex('umiRoleAssignmentsResourceGroups')))))]"
               }
             ],
-            "$fxv#0": "Param(\n    [string]$subscriptionId,\n    [string]$resourceProviders\n)\n\n$ErrorActionPreference = 'SilentlyContinue'\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n    foreach ($provider in $providers.keys) {\n        try {\n            # Registering resource providers\n            $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\n            # Check if the providered is registered\n            if ($providerStatus -eq 'NotRegistered') {\n                Write-Output \"`n Registering the '$provider' provider\"\n                if (Register-AzResourceProvider -ProviderNamespace $provider) {\n                    Write-Output \"`n The registration for provider'$provider' has started successfully\"\n                } else {\n                    Write-Output \"`n The '$provider' provider has not been registered successfully\"\n                    $failedProviders += \",$provider\"\n                }\n            } elseif ($providerStatus -eq 'Registering') {\n                Write-Output \"`n The '$provider' provider is in registering state\"\n                $failedProviders += \",$provider\"\n            } elseif ( $null -eq $providerStatus) {\n                Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n                $failedProviders += \",$provider\"\n            }\n\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            } else {\n                $output = 'No failures'\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        } catch {\n            Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n            $failedProviders += \",$provider\"\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        }\n        # Registering resource providers features\n        $features = $providers[$provider]\n        if ($features.length -gt 0) {\n            foreach ($feature in $features) {\n                try {\n                    # Define variables\n                    $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n                    # Check if the feature is registered\n                    if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n                        Write-Output \"`n Registering the '$feature' feature\"\n                        if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n                            Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n                        } else {\n                            Write-Output \"`n The '$feature' feature has not been registered successfully\"\n                            $failedFeatures += \",$feature\"\n                        }\n                    } elseif ($null -eq $featureStatus) {\n                        Write-Output \"`n The '$feature' feature doesn't exist.\"\n                        $failedFeatures += \",$feature\"\n                    }\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    } else {\n                        $output = 'No failures'\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                } catch {\n                    Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n                    $failedFeatures += \",$feature\"\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                }\n            }\n        } else {\n            $output = 'No failures'\n            $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n    }\n} else {\n    Write-Output \"`n No providers or features to register\"\n}\n",
+            "$fxv#0": "$ErrorActionPreference = 'SilentlyContinue'\n\n$subscriptionId    = $env:SUBSCRIPTION_ID\n$resourceProviders = $env:RESOURCE_PROVIDERS\n\n# Selecting the right subscription\nSelect-AzSubscription -SubscriptionId $subscriptionId\n\n# Defining variables\n$providers = $resourceProviders | ConvertFrom-Json -AsHashtable\n$failedProviders = ''\n$failedFeatures = ''\n$DeploymentScriptOutputs = @{}\n\n##############################################\n## Registering resource providers and features\n##############################################\n\nif ($providers.Count -gt 0) {\n    foreach ($provider in $providers.keys) {\n        try {\n            # Registering resource providers\n            $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState\n            # Check if the providered is registered\n            if ($providerStatus -eq 'NotRegistered') {\n                Write-Output \"`n Registering the '$provider' provider\"\n                if (Register-AzResourceProvider -ProviderNamespace $provider) {\n                    Write-Output \"`n The registration for provider'$provider' has started successfully\"\n                } else {\n                    Write-Output \"`n The '$provider' provider has not been registered successfully\"\n                    $failedProviders += \",$provider\"\n                }\n            } elseif ($providerStatus -eq 'Registering') {\n                Write-Output \"`n The '$provider' provider is in registering state\"\n                $failedProviders += \",$provider\"\n            } elseif ( $null -eq $providerStatus) {\n                Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n                $failedProviders += \",$provider\"\n            }\n\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            } else {\n                $output = 'No failures'\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        } catch {\n            Write-Output \"`n There was a problem registering the '$provider' provider. Please make sure this provider namespace is valid\"\n            $failedProviders += \",$provider\"\n            if ($failedProviders.length -gt 0) {\n                $output = $failedProviders.substring(1)\n            }\n            $DeploymentScriptOutputs['failedProvidersRegistrations'] = $output\n        }\n        # Registering resource providers features\n        $features = $providers[$provider]\n        if ($features.length -gt 0) {\n            foreach ($feature in $features) {\n                try {\n                    # Define variables\n                    $featureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).RegistrationState\n                    # Check if the feature is registered\n                    if ($featureStatus -eq 'NotRegistered' -or $featureStatus -eq 'Unregistered') {\n                        Write-Output \"`n Registering the '$feature' feature\"\n                        if (Register-AzProviderFeature -FeatureName $feature -ProviderNamespace $provider) {\n                            Write-Output \"`n The The registration for feature '$feature' has started successfully\"\n                        } else {\n                            Write-Output \"`n The '$feature' feature has not been registered successfully\"\n                            $failedFeatures += \",$feature\"\n                        }\n                    } elseif ($null -eq $featureStatus) {\n                        Write-Output \"`n The '$feature' feature doesn't exist.\"\n                        $failedFeatures += \",$feature\"\n                    }\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    } else {\n                        $output = 'No failures'\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                } catch {\n                    Write-Output \"`n There was a problem registering the '$feature' feature. Please make sure this feature name is valid\"\n                    $failedFeatures += \",$feature\"\n                    if ($failedFeatures.length -gt 0) {\n                        $output = $failedFeatures.substring(1)\n                    }\n                    $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n                }\n            }\n        } else {\n            $output = 'No failures'\n            $DeploymentScriptOutputs['failedFeaturesRegistrations'] = $output\n        }\n    }\n} else {\n    Write-Output \"`n No providers or features to register\"\n}\n",
             "deploymentNames": {
               "moveSubscriptionToManagementGroupDelay": "[take(format('lz-vend-move-sub-delay-{0}', uniqueString(parameters('subscriptionId'), parameters('subscriptionManagementGroupId'), deployment().name)), 64)]",
               "moveSubscriptionToManagementGroup": "[take(format('lz-vend-move-sub-{0}', uniqueString(parameters('subscriptionId'), parameters('subscriptionManagementGroupId'), deployment().name)), 64)]",
@@ -4303,7 +4303,6 @@
             },
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virtualWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
-            "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
             "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), format('nsg-{0}-{1}-{2}', lambdaVariables('subnet').name, lambdaVariables('vnet').name, substring(guid(coalesce(lambdaVariables('vnet').name, 'vnet'), lambdaVariables('vnet').resourceGroupName, lambdaVariables('subnet').name), 0, 4))), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]",
             "allVirtualNetworks": "[if(and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), concat(createArray(createObject('name', parameters('virtualNetworkName'), 'resourceGroupName', parameters('virtualNetworkResourceGroupName'), 'location', parameters('virtualNetworkLocation'), 'addressPrefixes', parameters('virtualNetworkAddressSpace'))), parameters('additionalVirtualNetworks')), parameters('additionalVirtualNetworks'))]",
             "peeringCombinations": "[if(and(not(empty(variables('allVirtualNetworks'))), parameters('peerAllVirtualNetworks')), flatten(map(variables('allVirtualNetworks'), lambda('sourceVnet', 'sourceIndex', map(filter(variables('allVirtualNetworks'), lambda('targetVnet', 'targetIndex', not(equals(lambdaVariables('sourceIndex'), lambdaVariables('targetIndex'))))), lambda('targetVnet', 'targetIndex', createObject('sourceName', lambdaVariables('sourceVnet').name, 'targetName', lambdaVariables('targetVnet').name, 'sourceResourceGroupName', lambdaVariables('sourceVnet').resourceGroupName, 'targetResourceGroupName', lambdaVariables('targetVnet').resourceGroupName, 'sourceIndex', lambdaVariables('sourceIndex'), 'targetIndex', indexOf(variables('allVirtualNetworks'), lambdaVariables('targetVnet')), 'peeringName', format('peer-{0}-to-{1}', lambdaVariables('sourceVnet').name, lambdaVariables('targetVnet').name))))))), createArray())]"
@@ -4356,8 +4355,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "10131036508055360053"
+                      "version": "0.43.8.12551",
+                      "templateHash": "11908411787107102074"
                     }
                   },
                   "parameters": {
@@ -4418,8 +4417,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "10469144725250373341"
+                      "version": "0.43.8.12551",
+                      "templateHash": "5041385920218992983"
                     }
                   },
                   "parameters": {
@@ -4478,8 +4477,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "5790941992248028610"
+                              "version": "0.43.8.12551",
+                              "templateHash": "16556199063680294105"
                             }
                           },
                           "parameters": {
@@ -4534,8 +4533,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.42.1.51946",
-                                      "templateHash": "10812006155409291218"
+                                      "version": "0.43.8.12551",
+                                      "templateHash": "18433020544555280585"
                                     }
                                   },
                                   "parameters": {
@@ -4612,8 +4611,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "12116003917243379477"
+                              "version": "0.43.8.12551",
+                              "templateHash": "1576530828953379132"
                             }
                           },
                           "parameters": {
@@ -4667,8 +4666,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.42.1.51946",
-                                      "templateHash": "6913411399545871762"
+                                      "version": "0.43.8.12551",
+                                      "templateHash": "9724651597400104433"
                                     }
                                   },
                                   "parameters": {
@@ -6085,8 +6084,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "10469144725250373341"
+                      "version": "0.43.8.12551",
+                      "templateHash": "5041385920218992983"
                     }
                   },
                   "parameters": {
@@ -6145,8 +6144,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "5790941992248028610"
+                              "version": "0.43.8.12551",
+                              "templateHash": "16556199063680294105"
                             }
                           },
                           "parameters": {
@@ -6201,8 +6200,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.42.1.51946",
-                                      "templateHash": "10812006155409291218"
+                                      "version": "0.43.8.12551",
+                                      "templateHash": "18433020544555280585"
                                     }
                                   },
                                   "parameters": {
@@ -6279,8 +6278,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "12116003917243379477"
+                              "version": "0.43.8.12551",
+                              "templateHash": "1576530828953379132"
                             }
                           },
                           "parameters": {
@@ -6334,8 +6333,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.42.1.51946",
-                                      "templateHash": "6913411399545871762"
+                                      "version": "0.43.8.12551",
+                                      "templateHash": "9724651597400104433"
                                     }
                                   },
                                   "parameters": {
@@ -11303,8 +11302,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "2723850764358529346"
+                      "version": "0.43.8.12551",
+                      "templateHash": "15994646526145029534"
                     }
                   },
                   "parameters": {
@@ -37677,8 +37676,17 @@
                   "managedIdentities": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createObject('userAssignedResourceIds', createArray(coalesce(tryGet(if(not(empty(parameters('resourceProviders'))), reference('createManagedIdentityForDeploymentScript'), null()), 'outputs', 'resourceId', 'value'), '')))), createObject('value', null()))]",
                   "storageAccountResourceId": "[if(not(empty(parameters('resourceProviders'))), createObject('value', tryGet(if(not(empty(parameters('resourceProviders'))), reference('createDsStorageAccount'), null()), 'outputs', 'resourceId', 'value')), createObject('value', null()))]",
                   "subnetResourceIds": "[if(not(empty(parameters('resourceProviders'))), createObject('value', createArray(filter(coalesce(tryGet(if(not(empty(parameters('resourceProviders'))), reference('createDsVnet'), null()), 'outputs', 'subnetResourceIds', 'value'), createArray()), lambda('subnetResourceId', contains(lambdaVariables('subnetResourceId'), 'ds-subnet')))[0])), createObject('value', null()))]",
-                  "arguments": {
-                    "value": "[format('-resourceProviders ''{0}'' -resourceProvidersFeatures -subscriptionId {1}', variables('resourceProvidersFormatted'), parameters('subscriptionId'))]"
+                  "environmentVariables": {
+                    "value": [
+                      {
+                        "name": "RESOURCE_PROVIDERS",
+                        "value": "[string(parameters('resourceProviders'))]"
+                      },
+                      {
+                        "name": "SUBSCRIPTION_ID",
+                        "value": "[parameters('subscriptionId')]"
+                      }
+                    ]
                   },
                   "scriptContent": {
                     "value": "[variables('$fxv#0')]"
@@ -46047,8 +46055,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "2723850764358529346"
+                      "version": "0.43.8.12551",
+                      "templateHash": "15994646526145029534"
                     }
                   },
                   "parameters": {
@@ -46162,8 +46170,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "5501650025767986137"
+                      "version": "0.43.8.12551",
+                      "templateHash": "1392157177586549687"
                     }
                   },
                   "parameters": {
@@ -46232,8 +46240,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "5501650025767986137"
+                      "version": "0.43.8.12551",
+                      "templateHash": "1392157177586549687"
                     }
                   },
                   "parameters": {

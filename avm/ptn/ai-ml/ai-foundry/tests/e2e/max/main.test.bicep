@@ -115,6 +115,8 @@ module testDeployment '../../../main.bicep' = [
       cosmosDbConfiguration: {
         name: 'cosmoscustom${workloadName}'
         privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
+        enableZoneRedundancy: false
+        enableServerless: true
         roleAssignments: [
           {
             principalId: dependencies.outputs.managedIdentityPrincipalId
@@ -125,6 +127,9 @@ module testDeployment '../../../main.bicep' = [
       }
       aiSearchConfiguration: {
         name: 'srchcustom${workloadName}'
+        sku: 'basic'
+        replicaCount: 1
+        partitionCount: 1
         privateDnsZoneResourceId: dependencies.outputs.searchDnsZoneResourceId
         roleAssignments: [
           {

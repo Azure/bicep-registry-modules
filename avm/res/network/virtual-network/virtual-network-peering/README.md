@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Parameters
 
@@ -45,6 +45,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`allowGatewayTransit`](#parameter-allowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
 | [`allowVirtualNetworkAccess`](#parameter-allowvirtualnetworkaccess) | bool | Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true. |
 | [`doNotVerifyRemoteGateways`](#parameter-donotverifyremotegateways) | bool | If we need to verify the provisioning state of the remote gateway. Default is true. |
+| [`enableOnlyIPv6Peering`](#parameter-enableonlyipv6peering) | bool | Whether only Ipv6 address space is peered for subnet peering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName. |
 | [`useRemoteGateways`](#parameter-useremotegateways) | bool | If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false. |
@@ -94,6 +95,14 @@ If we need to verify the provisioning state of the remote gateway. Default is tr
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enableOnlyIPv6Peering`
+
+Whether only Ipv6 address space is peered for subnet peering.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
