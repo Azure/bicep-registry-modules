@@ -6,9 +6,9 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "7343087256382158324"
+      "templateHash": "12360123916197577177"
     },
-    "name": "SQL Managed Instance Administrators",
+    "name": "SQL Managed Instance Administrator",
     "description": "This module deploys a SQL Managed Instance Administrator."
   },
   "parameters": {

@@ -1,4 +1,4 @@
-# SQL Managed Instance Administrators `[Microsoft.Sql/managedInstances/administrators]`
+# SQL Managed Instance Administrator `[Microsoft.Sql/managedInstances/administrators]`
 
 This module deploys a SQL Managed Instance Administrator.
 

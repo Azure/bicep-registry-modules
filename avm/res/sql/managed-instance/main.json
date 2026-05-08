@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "1387498234579900301"
+      "templateHash": "16344711295785454328"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -918,7 +918,7 @@
       "type": "int",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/properties/properties/vCores"
+          "source": "Microsoft.Sql/managedInstances@2024-05-01-preview#properties/properties/properties/vCores"
         },
         "description": "Optional. The number of vCores."
       },
@@ -1063,7 +1063,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/managedInstances@2024-05-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1246,7 +1246,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.sql-managedinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -2821,9 +2821,9 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "3014798112632790642"
+              "templateHash": "12360123916197577177"
             },
-            "name": "SQL Managed Instance Administrators",
+            "name": "SQL Managed Instance Administrator",
             "description": "This module deploys a SQL Managed Instance Administrator."
           },
           "parameters": {
@@ -2857,12 +2857,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "administrator": {
               "type": "Microsoft.Sql/managedInstances/administrators",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'ActiveDirectory')]",
               "properties": {
                 "administratorType": "ActiveDirectory",
