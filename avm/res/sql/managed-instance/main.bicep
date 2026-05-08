@@ -452,7 +452,7 @@ module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = i
   ]
 }
 
-module managedInstance_administrator 'administrators/main.bicep' = if (!empty(aadAdministrator)) {
+module managedInstance_administrator 'administrator/main.bicep' = if (!empty(aadAdministrator)) {
   name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
   params: {
     managedInstanceName: managedInstance.name
