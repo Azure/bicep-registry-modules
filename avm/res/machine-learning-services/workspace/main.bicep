@@ -323,6 +323,7 @@ module workspace_computes 'compute/main.bicep' = [
       resourceId: compute.?resourceId
       computeType: compute.computeType
       properties: compute.?properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_privateEndpoints
@@ -344,6 +345,7 @@ module workspace_connections 'connection/main.bicep' = [
       target: connection.target
       value: connection.?value
       connectionProperties: connection.connectionProperties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -355,6 +357,7 @@ module workspace_datastores 'datastore/main.bicep' = [
       machineLearningWorkspaceName: workspace.name
       name: datastore.name
       properties: datastore.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

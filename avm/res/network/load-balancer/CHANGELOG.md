@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/load-balancer/CHANGELOG.md).
 
+## 0.7.1
+
+### Changes
+
+- Publishing child module `avm/res/network/load-balancer/backend-address-pool`
+- Publishing child module `avm/res/network/load-balancer/inbound-nat-rule`
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes
