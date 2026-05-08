@@ -341,7 +341,7 @@ module slot_hostNameBindings 'host-name-binding/main.bicep' = [
   for (hostNameBinding, index) in (hostNameBindings ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-HostNameBinding-${index}'
     params: {
-      name: hostNameBinding.name ?? slot.properties.defaultHostName
+      name: hostNameBinding.?name ?? slot.properties.defaultHostName
       appName: app.name
       slotName: slot.name
       kind: hostNameBinding.?kind
