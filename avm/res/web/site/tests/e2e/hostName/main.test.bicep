@@ -57,10 +57,10 @@ module testDeployment '../../../main.bicep' = [
       hostNameBindings: [
         // With cert
         {
-          name: 'cert'
+          name: nestedDependencies.outputs.appServiceHostName
           siteName: nestedDependencies.outputs.appServiceName
           sslState: 'IpBasedEnabled'
-          hostNameType: 'Verified'
+          // hostNameType: 'Verified'
           certificate: {
             name: 'cert-${namePrefix}-${serviceShort}'
             hostNames: [nestedDependencies.outputs.appServiceHostName]
@@ -74,9 +74,9 @@ module testDeployment '../../../main.bicep' = [
           hostNameBindings: [
             // Without cert
             {
-              name: 'nocert'
+              name: nestedDependencies.outputs.appServiceHostName
               siteName: nestedDependencies.outputs.appServiceName
-              hostNameType: 'Verified'
+              // hostNameType: 'Verified'
             }
           ]
         }
