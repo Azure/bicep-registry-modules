@@ -17,6 +17,7 @@ resource serverFarm 'Microsoft.Web/serverfarms@2025-03-01' = {
     family: 'S'
     capacity: 1
   }
+  kind: 'linux'
   properties: {}
 }
 
