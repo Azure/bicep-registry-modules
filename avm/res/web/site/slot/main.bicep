@@ -341,7 +341,7 @@ module slot_hostNameBindings 'host-name-binding/main.bicep' = [
   for (hostNameBinding, index) in (hostNameBindings ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-HostNameBinding-${index}'
     params: {
-      name: hostNameBinding.name
+      name: hostNameBinding.name ?? slot.properties.defaultHostName
       appName: app.name
       slotName: slot.name
       kind: hostNameBinding.?kind
@@ -1959,8 +1959,8 @@ import { certificateType } from '../modules/certificate.bicep'
 @export()
 @description('The type of a host name binding.')
 type hostNameBindingType = {
-  @description('Required. Hostname in the hostname binding.')
-  name: string
+  @description('Optional. Hostname in the hostname binding. Defaults to the host name of the app/slot if not specified.')
+  name: string?
 
   @description('Optional. Kind of resource.')
   kind: string?

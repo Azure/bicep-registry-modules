@@ -437,7 +437,7 @@ module app_hostNameBindings 'host-name-binding/main.bicep' = [
   for (hostNameBinding, index) in (hostNameBindings ?? []): {
     name: '${uniqueString(deployment().name, location)}-HostNameBinding-${index}'
     params: {
-      name: hostNameBinding.name
+      name: hostNameBinding.?name ?? app.properties.defaultHostName
       appName: app.name
       kind: hostNameBinding.?kind
       azureResourceName: hostNameBinding.?azureResourceName
