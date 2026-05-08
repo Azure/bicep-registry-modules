@@ -2,6 +2,12 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.1
+
+### Other
+
+- Published child modules for independent consumption via the Bicep Public Registry.
+
 ## 0.19.0
 
 ### Changes
