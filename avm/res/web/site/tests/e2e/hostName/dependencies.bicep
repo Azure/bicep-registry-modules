@@ -15,7 +15,9 @@ resource serverFarm 'Microsoft.Web/serverfarms@2025-03-01' = {
     tier: 'Premium0V3'
   }
   kind: 'linux'
-  properties: {}
+  properties: {
+    reserved: true
+  }
 }
 
 // module appService 'br/public:avm/res/web/site:0.22.0' = {
