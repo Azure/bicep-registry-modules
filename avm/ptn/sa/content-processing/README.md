@@ -156,6 +156,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     enablePrivateNetworking: false
     enableRedundancy: true
     enableScalability: true
+    gptDeploymentCapacity: 10
     location: '<location>'
     solutionName: 'scpdmin'
   }
@@ -194,6 +195,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     "enableScalability": {
       "value": true
     },
+    "gptDeploymentCapacity": {
+      "value": 10
+    },
     "location": {
       "value": "<location>"
     },
@@ -222,6 +226,7 @@ param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = true
 param enableScalability = true
+param gptDeploymentCapacity = 10
 param location = '<location>'
 param solutionName = 'scpdmin'
 ```
@@ -643,7 +648,7 @@ The image tag for the container images.
 
 - Required: No
 - Type: string
-- Default: `'latest_v2_2026-04-28_883'`
+- Default: `'latest_v2_2026-05-08_909'`
 
 ### Parameter: `location`
 
