@@ -28,8 +28,11 @@ param doNotVerifyRemoteGateways bool = true
 @description('Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false.')
 param useRemoteGateways bool = false
 
+@description('Optional. Whether only Ipv6 address space is peered for subnet peering.')
+param enableOnlyIPv6Peering bool = false
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-virtualnetwork-peering.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -47,15 +50,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-11-01' existing = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' existing = {
   name: localVnetName
 }
 
-resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-01-01' = {
+resource virtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2025-05-01' = {
   name: name
   parent: virtualNetwork
   properties: {
     allowForwardedTraffic: allowForwardedTraffic
+    enableOnlyIPv6Peering: enableOnlyIPv6Peering
     allowGatewayTransit: allowGatewayTransit
     allowVirtualNetworkAccess: allowVirtualNetworkAccess
     doNotVerifyRemoteGateways: doNotVerifyRemoteGateways

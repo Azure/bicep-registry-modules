@@ -10,6 +10,30 @@ param name string
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
 param managedPrivateEndpoints managedPrivateEndpointType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.datafactory-factory-managedvnet.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: dataFactoryName
 }
@@ -25,6 +49,7 @@ module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/ma
     name: '${deployment().name}-managedPrivateEndpoint-${index}'
     params: {
       dataFactoryName: dataFactoryName
+      enableTelemetry: enableReferencedModulesTelemetry
       managedVirtualNetworkName: managedVirtualNetwork.name
       name: managedPrivateEndpoint.name
       fqdns: managedPrivateEndpoint.fqdns
