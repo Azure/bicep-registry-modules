@@ -1,9 +1,8 @@
-Param(
-    [string]$subscriptionId,
-    [string]$resourceProviders
-)
-
 $ErrorActionPreference = 'SilentlyContinue'
+
+$subscriptionId    = $env:SUBSCRIPTION_ID
+$resourceProviders = $env:RESOURCE_PROVIDERS
+
 # Selecting the right subscription
 Select-AzSubscription -SubscriptionId $subscriptionId
 

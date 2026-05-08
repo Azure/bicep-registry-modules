@@ -36,7 +36,7 @@ param location string = resourceGroup().location
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-4o-mini,150'
-      'OpenAI.GlobalStandard.text-embedding-ada-002,80'
+      'OpenAI.GlobalStandard.text-embedding-3-small,80'
     ]
   }
 })
@@ -100,9 +100,9 @@ param gptDeploymentCapacity int = 150
 @minLength(1)
 @description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
-  'text-embedding-ada-002'
+  'text-embedding-3-small'
 ])
-param embeddingModel string = 'text-embedding-ada-002'
+param embeddingModel string = 'text-embedding-3-small'
 
 @minValue(10)
 @description('Optional. Capacity of the Embedding Model deployment.')
@@ -115,7 +115,7 @@ param backendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
 param backendContainerImageName string = 'km-api'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_afv2_2026-03-10_1326'
+param backendContainerImageTag string = 'latest_afv2_2026-04-27_1539'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
@@ -124,7 +124,7 @@ param frontendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'km-app'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_afv2_2026-03-10_1326'
+param frontendContainerImageTag string = 'latest_afv2_2026-04-27_1539'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -388,9 +388,29 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   }
 }
 
+// Jumpbox Proximity Placement Group (precludes Availability Set; enables zone placement)
+var jumpboxPpgName = take('ppg-jumpbox-${solutionSuffix}', 80)
+module jumpboxPPG 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.proximity-placement-group.${jumpboxPpgName}', 64)
+  params: {
+    name: jumpboxPpgName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    availabilityZone: enableRedundancy ? 1 : -1
+    intent: enableRedundancy
+      ? {
+          vmSizes: [
+            vmSize ?? 'Standard_DS2_v2'
+          ]
+        }
+      : null
+  }
+}
+
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -413,7 +433,8 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enable
         storageAccountType: 'Premium_LRS'
       }
     }
-    availabilityZone: -1
+    availabilityZone: enableRedundancy ? 1 : -1
+    proximityPlacementGroupResourceId: jumpboxPPG!.outputs.resourceId
     encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
     // WAF aligned configuration - Enable automatic patching with platform management
     patchMode: 'AutomaticByPlatform'
@@ -465,6 +486,7 @@ var privateDnsZones = [
   'privatelink.documents.azure.com'
   'privatelink${environment().suffixes.sqlServerHostname}'
   'privatelink.search.windows.net'
+  'privatelink.azurewebsites.net'
 ]
 
 // DNS Zone Index Constants
@@ -479,6 +501,7 @@ var dnsZoneIndex = {
   cosmosDB: 7
   sqlServer: 8
   search: 9
+  webApp: 10
 }
 
 // ===================================================
@@ -562,7 +585,7 @@ var aiModelDeployments = [
       name: 'GlobalStandard'
       capacity: embeddingDeploymentCapacity
     }
-    version: '2'
+    version: '1'
     raiPolicyName: 'Microsoft.Default'
   }
 ]
@@ -671,7 +694,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
 var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
 var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
-module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
   params: {
     name: aiServicesNameCu
@@ -842,7 +865,7 @@ resource searchServiceToAiServicesRoleAssignment 'Microsoft.Authorization/roleAs
   }
 }
 
-resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-10-01-preview' = {
+resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-03-01' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiServicesAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'
@@ -1128,20 +1151,27 @@ module sqlDBModule 'br/public:avm/res/sql/server:0.21.1' = {
     connectionPolicy: 'Redirect'
     databases: [
       {
+        // GP_Gen5 SKU does not support a specific zone; rely on zoneRedundant for ZR.
         availabilityZone: -1
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
         licenseType: 'LicenseIncluded'
         maxSizeBytes: 34359738368
         name: sqlDbModuleName
-        minCapacity: '1'
-        sku: {
-          name: 'GP_S_Gen5'
-          tier: 'GeneralPurpose'
-          family: 'Gen5'
-          capacity: 2
-        }
-        // Note: Zone redundancy is not supported for serverless SKUs (GP_S_Gen5)
+        minCapacity: enableRedundancy ? null : '1'
+        sku: enableRedundancy
+          ? {
+              name: 'GP_Gen5'
+              tier: 'GeneralPurpose'
+              family: 'Gen5'
+              capacity: 2
+            }
+          : {
+              name: 'GP_S_Gen5'
+              tier: 'GeneralPurpose'
+              family: 'Gen5'
+              capacity: 2
+            }
         zoneRedundant: enableRedundancy
         maintenanceConfigurationId: shouldConfigureMaintenance ? maintenanceWindow.id : null
       }
@@ -1377,10 +1407,24 @@ module webSiteBackend 'modules/web-sites.bicep' = {
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            name: 'pep-${backendWebSiteResourceName}'
+            customNetworkInterfaceName: 'nic-${backendWebSiteResourceName}'
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.webApp]!.outputs.resourceId }
+              ]
+            }
+            service: 'sites'
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+          }
+        ]
+      : []
   }
 }
-
 // ========== Web App module ========== //
 // WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 //NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
@@ -1393,6 +1437,9 @@ module webSiteFrontend 'modules/web-sites.bicep' = {
     location: location
     kind: 'app,linux,container'
     serverFarmResourceId: webServerFarm.outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
       linuxFxVersion: 'DOCKER|${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
       minTlsVersion: '1.2'
@@ -1401,7 +1448,8 @@ module webSiteFrontend 'modules/web-sites.bicep' = {
       {
         name: 'appsettings'
         properties: {
-          APP_API_BASE_URL: 'https://api-${solutionSuffix}.azurewebsites.net'
+          APP_API_BASE_URL: enablePrivateNetworking ? '' : 'https://api-${solutionSuffix}.azurewebsites.net'
+          BACKEND_API_HOST: enablePrivateNetworking ? 'api-${solutionSuffix}.azurewebsites.net' : ''
         }
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }
@@ -1483,9 +1531,6 @@ output azureOpenAIEmbeddingModel string = embeddingModel
 
 @description('Contains Azure OpenAI embedding model capacity.')
 output azureOpenAIEmbeddingModelCapacity int = embeddingDeploymentCapacity
-
-@description('Contains Azure OpenAI API version.')
-output azureOpenAIApiVersion string = azureOpenAIApiVersion
 
 @description('Contains Content Understanding API version.')
 output azureContentUnderstandingApiVersion string = azureContentUnderstandingApiVersion

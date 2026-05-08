@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-grid/namespace/CHANGELOG.md).
 
+## 0.7.4
+
+### Changes
+
+- Publishing child modules: `ca-certificate`, `client`, `client-group`, `permission-binding`, `topic`, `topic/event-subscription`, `topic-space`
+
+### Breaking Changes
+
+- None
+
 ## 0.7.3
 
 ### Changes

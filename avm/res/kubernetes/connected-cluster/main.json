@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "5491532612873693846"
+      "templateHash": "14983314496062140543"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
@@ -157,6 +157,28 @@
         "description": "The type for security profile configuration."
       }
     },
+    "gatewayType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Arc gateway."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the gateway is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for gateway configuration."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -297,6 +319,31 @@
         "description": "Optional. Security profile for the connected cluster."
       }
     },
+    "gateway": {
+      "$ref": "#/definitions/gatewayType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The gateway configuration for routing traffic through a gateway."
+      }
+    },
+    "privateLinkScopeResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity."
+      }
+    },
+    "privateLinkState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -347,7 +394,7 @@
     },
     "connectedCluster": {
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2024-07-15-preview",
+      "apiVersion": "2026-02-01-preview",
       "name": "[parameters('name')]",
       "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
@@ -363,7 +410,10 @@
         "infrastructure": null,
         "oidcIssuerProfile": "[parameters('oidcIssuerProfile')]",
         "securityProfile": "[parameters('securityProfile')]",
-        "azureHybridBenefit": null
+        "azureHybridBenefit": null,
+        "gateway": "[parameters('gateway')]",
+        "privateLinkScopeResourceId": "[if(not(empty(parameters('privateLinkScopeResourceId'))), parameters('privateLinkScopeResourceId'), null())]",
+        "privateLinkState": "[parameters('privateLinkState')]"
       }
     },
     "connectedCluster_roleAssignments": {
@@ -416,7 +466,7 @@
       "metadata": {
         "description": "The location of the connected cluster."
       },
-      "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+      "value": "[reference('connectedCluster', '2026-02-01-preview', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -424,7 +474,7 @@
       "metadata": {
         "description": "The principalId of the connected cluster identity."
       },
-      "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').identity.principalId]"
+      "value": "[reference('connectedCluster', '2026-02-01-preview', 'full').identity.principalId]"
     }
   }
 }

@@ -1,4 +1,4 @@
-# Public DNS Zone SRV record `[Microsoft.network/dnszone/srv]`
+# Public DNS Zone SRV record `[Microsoft.Network/dnsZones/SRV]`
 
 This module deploys a Public DNS Zone SRV record.
 

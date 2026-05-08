@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/event-hub/namespace/eventhub/CHANGELOG.md).
 
+## 0.2.2
+
+### Changes
+
+- Publishing child module `avm/res/event-hub/namespace/eventhub/authorization-rule`
+- Publishing child module `avm/res/event-hub/namespace/eventhub/consumergroup`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.1
 
 ### Changes

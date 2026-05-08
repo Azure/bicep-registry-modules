@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/search/search-service/CHANGELOG.md).
 
+## 0.12.1
+
+### Changes
+
+- Fixed: `authOptions` is now automatically ignored (set to null) when `disableLocalAuth` is `true`, preventing deployment failures caused by the API contract violation.
+- Fixed: Secrets export (`secretsExportConfiguration`) is now silently skipped when `disableLocalAuth` is `true`, as admin keys cannot be retrieved when local authentication is disabled.
+- Fixed: `primaryKey` and `secondaryKey` outputs now return an empty string when `disableLocalAuth` is `true`, preventing `listAdminKeys()` call failures in that configuration.
+- Updated parameter descriptions for `authOptions` and `disableLocalAuth` to clarify the normalization behavior and local auth requirements for secrets/key export.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes
