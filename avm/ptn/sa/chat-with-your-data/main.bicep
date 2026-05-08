@@ -419,7 +419,7 @@ var replicaLocation = replicaRegionPairs[location]
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-chatwithyourdata.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -1056,7 +1056,7 @@ module speechService 'modules/core/ai/cognitiveservices.bicep' = {
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
 }
 
-resource search 'Microsoft.Search/searchServices@2024-06-01-preview' = if (databaseType == 'CosmosDB') {
+resource search 'Microsoft.Search/searchServices@2026-03-01-preview' = if (databaseType == 'CosmosDB') {
   name: azureAISearchName
   location: location
   sku: {
@@ -1508,7 +1508,7 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
     tags: allTags
     kind: 'FormRecognizer'
 
-    enablePrivateNetworking: enablePrivateNetworking
+    enablePrivateNetworking: false // Temporary: enabling public access to resolve 403 private endpoint errors
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
@@ -1559,7 +1559,7 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
     tags: allTags
     kind: 'ContentSafety'
 
-    enablePrivateNetworking: enablePrivateNetworking
+    enablePrivateNetworking: false // Temporary: enabling public access to resolve 403 private endpoint errors
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
