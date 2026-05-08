@@ -1,6 +1,6 @@
-# Web/Function Apps Host Name Bindings `[Microsoft.Web/sites/hostNameBindings]`
+# Web/Function Apps Slot Host Name Bindings `[Microsoft.Web/sites/hostNameBindings]`
 
-This module deploys a Site Host Name Binding.
+This module deploys a Site Slot Host Name Binding.
 
 ## Navigation
 
@@ -37,7 +37,7 @@ This module deploys a Site Host Name Binding.
 | [`azureResourceType`](#parameter-azureresourcetype) | string | Azure resource type. Possible values are Website and TrafficManager. |
 | [`certificate`](#parameter-certificate) | object | Certificate object with properties for certificate creation. The expected structure matches the certificateType defined in host-name-binding-type.bicep. |
 | [`customHostNameDnsRecordType`](#parameter-customhostnamednsrecordtype) | string | Custom DNS record type. Possible values are CName and A. |
-| [`domainId`](#parameter-domainid) | string | Fully qualified ARM domain resource URI. |
+| [`domainResourceId`](#parameter-domainresourceid) | string | Fully qualified ARM domain resource URI. |
 | [`hostNameType`](#parameter-hostnametype) | string | Hostname type. Possible values are Verified and Managed. |
 | [`kind`](#parameter-kind) | string | Kind of resource. |
 | [`location`](#parameter-location) | string | Resource location. |
@@ -86,7 +86,112 @@ Certificate object with properties for certificate creation. The expected struct
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-certificatename) | string | Certificate name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`canonicalName`](#parameter-certificatecanonicalname) | string | CNAME of the certificate to be issued via free certificate. |
+| [`domainValidationMethod`](#parameter-certificatedomainvalidationmethod) | string | Method of domain validation for free certificate. |
+| [`hostNames`](#parameter-certificatehostnames) | array | Certificate host names. |
+| [`keyVaultResourceId`](#parameter-certificatekeyvaultresourceid) | string | Key Vault resource ID. |
+| [`keyVaultSecretName`](#parameter-certificatekeyvaultsecretname) | string | Key Vault secret name. |
+| [`kind`](#parameter-certificatekind) | string | Kind of resource. |
+| [`location`](#parameter-certificatelocation) | string | Resource location. |
+| [`password`](#parameter-certificatepassword) | securestring | Certificate password. |
+| [`pfxBlob`](#parameter-certificatepfxblob) | securestring | Certificate data in PFX format. |
+| [`serverFarmResourceId`](#parameter-certificateserverfarmresourceid) | string | Server farm resource ID. |
+| [`tags`](#parameter-certificatetags) | object | Tags of the resource. |
+
+### Parameter: `certificate.name`
+
+Certificate name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificate.canonicalName`
+
+CNAME of the certificate to be issued via free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.domainValidationMethod`
+
+Method of domain validation for free certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.hostNames`
+
+Certificate host names.
+
+- Required: No
+- Type: array
+
+### Parameter: `certificate.keyVaultResourceId`
+
+Key Vault resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.keyVaultSecretName`
+
+Key Vault secret name.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.kind`
+
+Kind of resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.location`
+
+Resource location.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.password`
+
+Certificate password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `certificate.pfxBlob`
+
+Certificate data in PFX format.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `certificate.serverFarmResourceId`
+
+Server farm resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `customHostNameDnsRecordType`
 
@@ -102,7 +207,7 @@ Custom DNS record type. Possible values are CName and A.
   ]
   ```
 
-### Parameter: `domainId`
+### Parameter: `domainResourceId`
 
 Fully qualified ARM domain resource URI.
 
@@ -166,14 +271,13 @@ SSL certificate thumbprint.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `certificateResourceId` | string | The resource ID of the certificate if one was created. |
-| `certificateThumbprint` | string | The thumbprint of the certificate if one was created. |
+| `certificateResourceId` | string | The resource ID of the certificate. |
+| `certificateThumbprint` | string | The thumbprint of the certificate. |
 | `name` | string | The name of the host name binding. |
 | `resourceGroupName` | string | The name of the resource group the resource was deployed into. |
 | `resourceId` | string | The resource ID of the host name binding. |
