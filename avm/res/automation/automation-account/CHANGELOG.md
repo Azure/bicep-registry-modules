@@ -4,22 +4,25 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ## 0.19.1
 
-### Other
+### Changes
 
-- Published child modules for independent consumption via the Bicep Public Registry.
-  - `avm/res/automation/automation-account/credential`
-  - `avm/res/automation/automation-account/hybrid-runbook-worker-group`
-  - `avm/res/automation/automation-account/hybrid-runbook-worker-group/hybrid-runbook-worker`
-  - `avm/res/automation/automation-account/job-schedule`
-  - `avm/res/automation/automation-account/module`
-  - `avm/res/automation/automation-account/powershell72-module`
-  - `avm/res/automation/automation-account/python2-package`
-  - `avm/res/automation/automation-account/python3-package`
-  - `avm/res/automation/automation-account/runbook`
-  - `avm/res/automation/automation-account/schedule`
-  - `avm/res/automation/automation-account/source-control`
-  - `avm/res/automation/automation-account/variable`
-  - `avm/res/automation/automation-account/webhook`
+- Publishing child module `avm/res/automation/automation-account/credential`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group/hybrid-runbook-worker`
+- Publishing child module `avm/res/automation/automation-account/job-schedule`
+- Publishing child module `avm/res/automation/automation-account/module`
+- Publishing child module `avm/res/automation/automation-account/powershell72-module`
+- Publishing child module `avm/res/automation/automation-account/python2-package`
+- Publishing child module `avm/res/automation/automation-account/python3-package`
+- Publishing child module `avm/res/automation/automation-account/runbook`
+- Publishing child module `avm/res/automation/automation-account/schedule`
+- Publishing child module `avm/res/automation/automation-account/source-control`
+- Publishing child module `avm/res/automation/automation-account/variable`
+- Publishing child module `avm/res/automation/automation-account/webhook`
+
+### Breaking Changes
+
+- None
 
 ## 0.19.0
 

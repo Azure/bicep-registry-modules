@@ -1,7 +1,13 @@
 # Changelog
 
+The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/job-schedule/CHANGELOG.md).
+
 ## 0.1.0
 
-### Other
+### Changes
 
-- File initially created for publishing as a child module.
+- Initial version
+
+### Breaking Changes
+
+- None
