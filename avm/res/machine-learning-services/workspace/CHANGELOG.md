@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/machine-learning-services/workspace/CHANGELOG.md).
 
+## 0.13.2
+
+### Changes
+
+- Publishing child module `avm/res/machine-learning-services/workspace/compute`
+- Publishing child module `avm/res/machine-learning-services/workspace/connection`
+- Publishing child module `avm/res/machine-learning-services/workspace/datastore`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes

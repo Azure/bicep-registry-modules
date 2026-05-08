@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -15,10 +15,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     isHnsEnabled: true
   }
 
-  resource blobService 'blobServices@2022-09-01' = {
+  resource blobService 'blobServices@2025-08-01' = {
     name: 'default'
 
-    resource container 'containers@2022-09-01' = {
+    resource container 'containers@2025-08-01' = {
       name: 'synapsews'
     }
   }

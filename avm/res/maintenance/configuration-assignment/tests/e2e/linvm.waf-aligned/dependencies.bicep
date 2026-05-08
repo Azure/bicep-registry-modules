@@ -4,6 +4,9 @@ param location string = resourceGroup().location
 @description('Required. The name of the Maintenance Configuration to create.')
 param maintenanceConfigurationName string
 
+@description('Generated. Do not provide a value. Time used as a basis for e.g. the maintenance window start date.')
+param baseTime string = utcNow('u')
+
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
@@ -66,8 +69,8 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
     }
     maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
-      startDateTime: '2025-01-09 00:00'
-      expirationDateTime: '2026-01-08 00:00'
+      startDateTime: '${dateTimeAdd(baseTime, 'PT0S', 'yyyy-MM-dd')} 00:00'
+      expirationDateTime: '${dateTimeAdd(baseTime, 'P1M', 'yyyy-MM-dd')} 00:00'
       duration: '03:00'
       timeZone: 'UTC'
       recurEvery: 'Week'

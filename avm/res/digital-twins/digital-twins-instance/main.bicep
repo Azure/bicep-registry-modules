@@ -134,6 +134,7 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
       digitalTwinInstanceName: digitalTwinsInstance.name
       name: endpoint.?name ?? '${endpoint.properties.endpointType}Endpoint'
       properties: endpoint.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

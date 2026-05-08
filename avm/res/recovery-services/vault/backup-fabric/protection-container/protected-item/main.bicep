@@ -34,15 +34,15 @@ param policyName string
 @description('Required. Resource ID of the resource to back up.')
 param sourceResourceId string
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 
-  resource backupPolicy 'backupPolicies@2024-10-01' existing = {
+  resource backupPolicy 'backupPolicies@2025-08-01' existing = {
     name: policyName
   }
 }
 
-resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2024-10-01' = {
+resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2025-08-01' = {
   name: '${recoveryVaultName}/Azure/${protectionContainerName}/${name}'
   location: location
   properties: {

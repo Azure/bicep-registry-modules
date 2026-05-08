@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "735215568717308534"
+      "version": "0.43.1.21952",
+      "templateHash": "3037054147075883897"
     },
     "name": "Automation Account Hybrid Runbook Worker Groups",
     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
@@ -56,9 +56,39 @@
       "metadata": {
         "description": "Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "automationAccount": {
       "existing": true,
       "type": "Microsoft.Automation/automationAccounts",
@@ -98,6 +128,9 @@
           },
           "vmResourceId": {
             "value": "[coalesce(parameters('hybridRunbookWorkerGroupWorkers'), createArray())[copyIndex()].vmResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -106,8 +139,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11272763779591037591"
+              "version": "0.43.1.21952",
+              "templateHash": "12156807073167829303"
             },
             "name": "Automation Account Hybrid Runbook Worker Group Workers",
             "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
@@ -136,9 +169,36 @@
               "metadata": {
                 "description": "Required. Azure Resource Manager Id for a virtual machine."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers",
               "apiVersion": "2024-10-23",
