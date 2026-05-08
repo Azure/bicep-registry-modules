@@ -946,31 +946,15 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.2
       systemAssigned: true
     }
 
-    // Networking aligned to WAF
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    // Networking - public access always enabled for Document Intelligence
+    // Private endpoint is intentionally not configured because Kernel Memory's
+    // ingestion pipeline calls the Document Intelligence endpoint and fails with
+    // "Traffic is not from an approved private endpoint." in WAF deployments.
+    publicNetworkAccess: 'Enabled'
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+      defaultAction: 'Allow'
     }
-
-    // Private Endpoint for Form Recognizer
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            name: 'pep-docintel-${solutionSuffix}'
-            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-            service: 'account'
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'docintel-dns-zone-group'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-              ]
-            }
-          }
-        ]
-      : []
 
     // Role Assignments
     roleAssignments: [

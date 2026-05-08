@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "479059241978279036"
+      "templateHash": "2695137869330801770"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -49267,14 +49267,15 @@
               "systemAssigned": true
             }
           },
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "publicNetworkAccess": {
+            "value": "Enabled"
+          },
           "networkAcls": {
             "value": {
               "bypass": "AzureServices",
-              "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
+              "defaultAction": "Allow"
             }
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-docintel-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'service', 'account', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'docintel-dns-zone-group', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
@@ -51738,9 +51739,7 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "userAssignedIdentity"
       ]
     },
     "managedCluster": {
