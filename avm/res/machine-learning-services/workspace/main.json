@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "1259674580152730202"
+      "templateHash": "5226180612859441598"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -2415,7 +2415,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.1.21952",
-              "templateHash": "4336313622188230838"
+              "templateHash": "14641735167640008838"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2588,7 +2588,13 @@
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -2705,7 +2711,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.1.21952",
-              "templateHash": "5307728555718804531"
+              "templateHash": "444780993417665314"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3476,7 +3482,13 @@
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -3550,7 +3562,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.1.21952",
-              "templateHash": "15439133677752857681"
+              "templateHash": "1502043934721953240"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."
@@ -3596,7 +3608,13 @@
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
