@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
+      restore: true
       apis: [
         {
           displayName: 'Echo API'
