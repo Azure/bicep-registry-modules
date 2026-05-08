@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.13.3
+
+### Changes
+
+- Publishing child module `avm/res/app/managed-environment/certificate`
+- Publishing child module `avm/res/app/managed-environment/storage`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.2
 
 ### Changes
