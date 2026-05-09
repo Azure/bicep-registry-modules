@@ -2086,7 +2086,7 @@ function Initialize-ReadMe {
             '  params: { (...) }',
             '}',
             '```',
-            $HasUsageExamples ? 'For examples, please refer to the [Usage Examples](#usage-examples) section.' : 'For examples, please refer to the main module''s _Usage Examples_ section.'
+            ($HasUsageExamples ? 'For examples, please refer to the [Usage Examples](#usage-examples) section.' : 'For examples, please refer to the main module''s _Usage Examples_ section.')
         )
     }
 
