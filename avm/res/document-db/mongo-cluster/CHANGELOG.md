@@ -6,19 +6,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Add documentation for the new `publicNetworkAccess` parameter, describing its usage and allowed values in the README.
+- Add `publicNetworkAccess` parameter to enable or disable public network access.
 - Updated API & module references to latest
 - Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
-
-### Breaking Changes
-
-- None
-
-## 0.4.2
-
-### Changes
-
-- Add `publicNetworkAccess` parameter to enable or disable public network access.
 
 ### Breaking Changes
 
