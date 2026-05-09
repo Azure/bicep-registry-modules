@@ -7,35 +7,43 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags resourceInput<'Microsoft.Network/privateLinkServices@2024-10-01'>.tags?
+param tags resourceInput<'Microsoft.Network/privateLinkServices@2025-05-01'>.tags?
 
+@minLength(1)
 @description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
-param ipConfigurations array
+param ipConfigurations ipConfigurationType[]
 
-@description('Required. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.')
-param loadBalancerFrontendIpConfigurations array
+@minLength(1)
+@description('Required. An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.')
+param loadBalancerFrontendIpConfigurations loadBalancerFrontendIpConfigurationType[]
 
 @description('Optional. The extended location of the load balancer.')
-param extendedLocation object = {}
+param extendedLocation extendedLocationType?
 
 @description('Optional. The auto-approval list of the private link service.')
-param autoApproval object = {}
+param autoApproval autoApprovalType?
 
 @description('Optional. Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header.')
 param enableProxyProtocol bool = false
 
 @description('Optional. The list of Fqdn.')
-param fqdns array = []
+param fqdns string[]?
 
 @description('Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.')
-param visibility object = {}
+param visibility visibilityType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The access mode of the private link service. Defaults to "Default" when not specified.')
+param accessMode ('Default' | 'Restricted')?
+
+@description('Optional. The destination IP address of the private link service.')
+param destinationIPAddress string?
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -76,7 +84,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privatelinkservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -94,17 +102,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2024-05-01' = {
+resource privateLinkService 'Microsoft.Network/privateLinkServices@2025-05-01' = {
   name: name
   location: location
   tags: tags
-  extendedLocation: !empty(extendedLocation) ? extendedLocation : null
+  extendedLocation: extendedLocation
   properties: {
+    accessMode: accessMode
     autoApproval: autoApproval
+    destinationIPAddress: destinationIPAddress
     enableProxyProtocol: enableProxyProtocol
     fqdns: fqdns
-    ipConfigurations: ipConfigurations
-    loadBalancerFrontendIpConfigurations: loadBalancerFrontendIpConfigurations
+    ipConfigurations: [
+      for ipConfig in ipConfigurations: {
+        name: ipConfig.name
+        properties: {
+          primary: ipConfig.?primary
+          privateIPAddressVersion: ipConfig.?privateIPAddressVersion
+          privateIPAllocationMethod: ipConfig.?privateIPAllocationMethod
+          privateIPAddress: ipConfig.?privateIPAddress
+          subnet: {
+            id: ipConfig.subnetResourceId
+          }
+        }
+      }
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      for lbConfig in loadBalancerFrontendIpConfigurations: {
+        id: lbConfig.resourceId
+      }
+    ]
     visibility: visibility
   }
 }
@@ -151,3 +178,60 @@ output name string = privateLinkService.name
 
 @description('The location the resource was deployed into.')
 output location string = privateLinkService.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of a private link service IP configuration.')
+type ipConfigurationType = {
+  @description('Required. The name of the private link service IP configuration.')
+  name: string
+
+  @description('Optional. Whether the IP configuration is primary or not.')
+  primary: bool?
+
+  @description('Optional. Whether the specific IP configuration is IPv4 or IPv6. Default is IPv4.')
+  privateIPAddressVersion: ('IPv4' | 'IPv6')?
+
+  @description('Optional. The private IP address allocation method.')
+  privateIPAllocationMethod: ('Dynamic' | 'Static')?
+
+  @description('Optional. The private IP address of the IP configuration.')
+  privateIPAddress: string?
+
+  @description('Required. The resource ID of the subnet to attach the IP configuration to.')
+  subnetResourceId: string
+}
+
+@export()
+@description('The type of a load balancer frontend IP configuration reference for the private link service.')
+type loadBalancerFrontendIpConfigurationType = {
+  @description('Required. The resource ID of the load balancer frontend IP configuration.')
+  resourceId: string
+}
+
+@export()
+@description('The type of the extended location of the load balancer.')
+type extendedLocationType = {
+  @description('Required. The name of the extended location.')
+  name: string
+
+  @description('Required. The type of the extended location.')
+  type: 'EdgeZone'
+}
+
+@export()
+@description('The type of the auto-approval settings of the private link service.')
+type autoApprovalType = {
+  @description('Optional. The list of subscriptions allowed to auto-approve.')
+  subscriptions: string[]?
+}
+
+@export()
+@description('The type of the visibility settings of the private link service.')
+type visibilityType = {
+  @description('Optional. The list of subscriptions the service is visible to.')
+  subscriptions: string[]?
+}

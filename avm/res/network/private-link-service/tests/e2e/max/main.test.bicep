@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -61,25 +61,26 @@ module testDeployment '../../../main.bicep' = [
       ipConfigurations: [
         {
           name: '${serviceShort}01'
-          properties: {
-            primary: true
-            privateIPAllocationMethod: 'Dynamic'
-            subnet: {
-              id: nestedDependencies.outputs.subnetResourceId
-            }
-          }
+          primary: true
+          privateIPAllocationMethod: 'Dynamic'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
       loadBalancerFrontendIpConfigurations: [
         {
-          id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
+          resourceId: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
         }
       ]
+      accessMode: 'Default'
       autoApproval: {
         subscriptions: [
           '*'
         ]
       }
+      // 'destinationIPAddress' is intentionally omitted: it puts the PLS into "Direct Connect" mode, which is mutually
+      // exclusive with 'loadBalancerFrontendIpConfigurations' and additionally requires the preview feature
+      // 'Microsoft.Network/AllowPrivateLinkServiceUDR' to be registered on the subscription. The parameter is still
+      // exposed by the module and documented in the README.
       visibility: {
         subscriptions: [
           subscription().subscriptionId
