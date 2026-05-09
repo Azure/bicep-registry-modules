@@ -236,6 +236,7 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
       redisCacheName: redis.name
       name: policy.name
       permissions: policy.permissions
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -251,6 +252,7 @@ module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       redis_accessPolicies // Ensure policies exist before assigning them
@@ -377,6 +379,7 @@ module redis_firewallRules 'firewall-rule/main.bicep' = [
       redisCacheName: redis.name
       startIP: firewallRule.startIP
       endIP: firewallRule.endIP
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -388,6 +391,7 @@ module redis_geoReplication 'linked-server/main.bicep' = if (!empty(geoReplicati
     name: geoReplicationObject!.?name
     linkedRedisCacheResourceId: geoReplicationObject!.linkedRedisCacheResourceId
     linkedRedisCacheLocation: geoReplicationObject!.?linkedRedisCacheLocation
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: redis_privateEndpoints
 }

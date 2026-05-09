@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis/CHANGELOG.md).
 
+## 0.17.2
+
+### Changes
+
+- Publishing child module `avm/res/cache/redis/access-policy`
+- Publishing child module `avm/res/cache/redis/access-policy-assignment`
+- Publishing child module `avm/res/cache/redis/firewall-rule`
+- Publishing child module `avm/res/cache/redis/linked-server`
+
+### Breaking Changes
+
+- None
+
 ## 0.17.1
 
 ### Changes

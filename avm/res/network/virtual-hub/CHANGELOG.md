@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-hub/CHANGELOG.md).
 
+## 0.4.4
+
+### Changes
+
+- Publishing child module `avm/res/network/virtual-hub/hub-route-table`
+- Publishing child module `avm/res/network/virtual-hub/hub-virtual-network-connection`
+- Publishing child module `avm/res/network/virtual-hub/routing-intent`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.3
 
 ### Changes
