@@ -18,11 +18,11 @@ param targetRoles rolePropertiesType[] = [
   }
 ]
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' existing = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-09-01' existing = {
   name: mongoClusterName
 }
 
-resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-04-01-preview' = {
+resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-09-01' = {
   name: targetIdentity.principalId
   parent: mongoCluster
   location: location
