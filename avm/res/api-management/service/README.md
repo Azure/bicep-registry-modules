@@ -2277,6 +2277,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     publicNetworkAccess: 'Enabled'
+    restore: true
     roleAssignments: [
       {
         name: '6432d807-dc34-488e-8b15-9c560f79b111'
@@ -2569,6 +2570,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "publicNetworkAccess": {
       "value": "Enabled"
     },
+    "restore": {
+      "value": true
+    },
     "roleAssignments": {
       "value": [
         {
@@ -2835,6 +2839,7 @@ param products = [
   }
 ]
 param publicNetworkAccess = 'Enabled'
+param restore = true
 param roleAssignments = [
   {
     name: '6432d807-dc34-488e-8b15-9c560f79b111'
