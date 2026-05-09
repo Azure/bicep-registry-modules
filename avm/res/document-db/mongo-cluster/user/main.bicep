@@ -10,11 +10,11 @@ param location string = resourceGroup().location
 @description('Required. The principal/identity to create as a user on the cluster.')
 param targetIdentity targetPrincipalPropertiesType
 
-@description('Optional. The roles to assign to the user per database. Defaults to the "dbOwner" role on the "admin" database.')
+@description('Optional. The roles to assign to the user per database. Defaults to the "root" role on the "admin" database.')
 param targetRoles rolePropertiesType[] = [
   {
     database: 'admin'
-    role: 'dbOwner'
+    role: 'root'
   }
 ]
 
@@ -68,5 +68,5 @@ type rolePropertiesType = {
   database: 'admin'
 
   @description('Required. The role to assign to the user.')
-  role: 'dbOwner'
+  role: 'root'
 }

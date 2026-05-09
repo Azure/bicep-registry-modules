@@ -66,7 +66,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'ddmcdefmin001'
     nodeCount: 1
-    sku: 'M10'
+    sku: 'M30'
     storage: 32
   }
 }
@@ -98,7 +98,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": 1
     },
     "sku": {
-      "value": "M10"
+      "value": "M30"
     },
     "storage": {
       "value": 32
@@ -122,7 +122,7 @@ param administratorLogin = 'Admin001'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param name = 'ddmcdefmin001'
 param nodeCount = 1
-param sku = 'M10'
+param sku = 'M30'
 param storage = 32
 ```
 
@@ -704,7 +704,7 @@ param tags = {
 | [`enableMicrosoftEntraAuth`](#parameter-enablemicrosoftentraauth) | bool | The type of the secrets export configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`entraAuthIdentities`](#parameter-entraauthidentities) | array | The Microsoft Entra ID authentication identity assignments to be created for the cluster. |
-| [`highAvailabilityMode`](#parameter-highavailabilitymode) | string | Whether high availability is enabled on the node group. |
+| [`highAvailabilityMode`](#parameter-highavailabilitymode) | string | Whether high availability is enabled on the node group. Requires a cluster tier of at least M30. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
@@ -967,7 +967,7 @@ The type of principal to be used for the identity provider. Defaults to "Service
 
 ### Parameter: `highAvailabilityMode`
 
-Whether high availability is enabled on the node group.
+Whether high availability is enabled on the node group. Requires a cluster tier of at least M30.
 
 - Required: No
 - Type: string

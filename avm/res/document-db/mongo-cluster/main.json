@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.1.21952",
-      "templateHash": "13678934197479362119"
+      "templateHash": "10004757968446333684"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -737,7 +737,7 @@
         "ZoneRedundantPreferred"
       ],
       "metadata": {
-        "description": "Optional. Whether high availability is enabled on the node group."
+        "description": "Optional. Whether high availability is enabled on the node group. Requires a cluster tier of at least M30."
       }
     },
     "lock": {
@@ -1093,7 +1093,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.1.21952",
-              "templateHash": "5710200146512046171"
+              "templateHash": "17622698538854927541"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
             "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
@@ -1139,7 +1139,7 @@
                 "role": {
                   "type": "string",
                   "allowedValues": [
-                    "dbOwner"
+                    "root"
                   ],
                   "metadata": {
                     "description": "Required. The role to assign to the user."
@@ -1180,11 +1180,11 @@
               "defaultValue": [
                 {
                   "database": "admin",
-                  "role": "dbOwner"
+                  "role": "root"
                 }
               ],
               "metadata": {
-                "description": "Optional. The roles to assign to the user per database. Defaults to the \"dbOwner\" role on the \"admin\" database."
+                "description": "Optional. The roles to assign to the user per database. Defaults to the \"root\" role on the \"admin\" database."
               }
             }
           },

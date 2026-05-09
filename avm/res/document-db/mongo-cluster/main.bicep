@@ -31,7 +31,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Whether high availability is enabled on the node group.')
+@description('Optional. Whether high availability is enabled on the node group. Requires a cluster tier of at least M30.')
 @allowed([
   'Disabled'
   'SameZone'
