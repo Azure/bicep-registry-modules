@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "16344711295785454328"
+      "templateHash": "17180179747478514987"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -918,7 +918,7 @@
       "type": "int",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2024-05-01-preview#properties/properties/properties/vCores"
+          "source": "Microsoft.Sql/managedInstances@2025-02-01-preview#properties/properties/properties/vCores"
         },
         "description": "Optional. The number of vCores."
       },
@@ -1063,7 +1063,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2024-05-01-preview#properties/tags"
+          "source": "Microsoft.Sql/managedInstances@2025-02-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1265,7 +1265,7 @@
     },
     "managedInstance": {
       "type": "Microsoft.Sql/managedInstances",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1406,7 +1406,7 @@
             "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "location": {
-            "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'location'), reference('managedInstance', '2024-05-01-preview', 'full').location)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'location'), reference('managedInstance', '2025-02-01-preview', 'full').location)]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -1450,7 +1450,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "1891268890897275904"
+              "templateHash": "3543948848759008080"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1812,12 +1812,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "database": {
               "type": "Microsoft.Sql/managedInstances/databases",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1911,7 +1911,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.42.1.51946",
-                      "templateHash": "14134768044338355216"
+                      "templateHash": "17995292483700840653"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -1947,7 +1947,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
-                      "apiVersion": "2024-05-01-preview",
+                      "apiVersion": "2025-02-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
                       "properties": {
                         "retentionDays": "[parameters('retentionDays')]"
@@ -2023,7 +2023,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.42.1.51946",
-                      "templateHash": "1084309053249872240"
+                      "templateHash": "16179752500387966309"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -2091,7 +2091,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2024-05-01-preview",
+                      "apiVersion": "2025-02-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
                       "properties": {
                         "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
@@ -2160,7 +2160,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('database', '2024-05-01-preview', 'full').location]"
+              "value": "[reference('database', '2025-02-01-preview', 'full').location]"
             }
           }
         }
@@ -2213,7 +2213,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "16986963806130691763"
+              "templateHash": "12111734248333958452"
             },
             "name": "SQL Managed Instance Security Alert Policies",
             "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -2302,12 +2302,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "securityAlertPolicy": {
               "type": "Microsoft.Sql/managedInstances/securityAlertPolicies",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "properties": {
                 "disabledAlerts": "[parameters('disabledAlerts')]",
@@ -2390,7 +2390,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "16738465855864010543"
+              "templateHash": "11197382489965358171"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -2443,7 +2443,7 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "storageAccount": {
@@ -2456,7 +2456,7 @@
             },
             "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/managedInstances/vulnerabilityAssessments",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
@@ -2480,7 +2480,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('managedInstance', '2025-02-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -2592,7 +2592,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "2684417438400567456"
+              "templateHash": "13884311181824660127"
             },
             "name": "SQL Managed Instance Keys",
             "description": "This module deploys a SQL Managed Instance Key."
@@ -2637,12 +2637,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "key": {
               "type": "Microsoft.Sql/managedInstances/keys",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -2710,7 +2710,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "8323178335533044259"
+              "templateHash": "10769909800657783102"
             },
             "name": "SQL Managed Instance Encryption Protector",
             "description": "This module deploys a SQL Managed Instance Encryption Protector."
@@ -2750,7 +2750,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/encryptionProtector",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'current')]",
               "properties": {
                 "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
@@ -2926,7 +2926,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "263407849205659867"
+              "templateHash": "6322891508108867376"
             },
             "name": "SQL Managed Instance Azure AD Only Authentications",
             "description": "This module deploys a SQL Managed Instance Azure AD Only Authentication setting."
@@ -2948,7 +2948,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/azureADOnlyAuthentications",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'Default')]",
               "properties": {
                 "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]"
@@ -3014,14 +3014,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedInstance', '2024-05-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedInstance', '2025-02-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedInstance', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('managedInstance', '2025-02-01-preview', 'full').location]"
     }
   }
 }

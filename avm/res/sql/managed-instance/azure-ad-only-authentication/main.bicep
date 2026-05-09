@@ -7,11 +7,11 @@ param managedInstanceName string
 @description('Required. Whether Azure Active Directory-only authentication is enabled.')
 param azureADOnlyAuthentication bool
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource aadOnlyAuth 'Microsoft.Sql/managedInstances/azureADOnlyAuthentications@2024-05-01-preview' = {
+resource aadOnlyAuth 'Microsoft.Sql/managedInstances/azureADOnlyAuthentications@2025-02-01-preview' = {
   name: 'Default'
   parent: managedInstance
   properties: {

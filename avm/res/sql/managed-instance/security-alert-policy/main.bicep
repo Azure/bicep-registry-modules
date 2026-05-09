@@ -40,11 +40,11 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing 
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource securityAlertPolicy 'Microsoft.Sql/managedInstances/securityAlertPolicies@2024-05-01-preview' = {
+resource securityAlertPolicy 'Microsoft.Sql/managedInstances/securityAlertPolicies@2025-02-01-preview' = {
   name: name
   parent: managedInstance
   properties: {

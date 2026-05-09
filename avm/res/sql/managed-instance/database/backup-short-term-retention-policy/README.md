@@ -12,7 +12,7 @@ This module deploys a SQL Managed Instance Database Backup Short-Term Retention 
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupShortTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | 2025-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_managedinstances_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-02-01-preview/managedInstances/databases/backupShortTermRetentionPolicies)</li></ul> |
 
 ## Parameters
 
