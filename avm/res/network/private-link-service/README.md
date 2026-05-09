@@ -580,12 +580,12 @@ param visibility = {
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-accessmode) | string | The access mode of the private link service. Defaults to "Default" when not specified. |
 | [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
-| [`destinationIPAddress`](#parameter-destinationipaddress) | string | The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both. |
+| [`destinationIPAddress`](#parameter-destinationipaddress) | string | Privately routable destination IP for Private Link Service Direct Connect mode, used when consumers need direct IP routing instead of load-balancer forwarding (e.g. databases, legacy applications, on-premises endpoints). Mutually exclusive with `loadBalancerFrontendIpConfigurations`. |
 | [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
 | [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
-| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both. |
+| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -714,7 +714,7 @@ The list of subscriptions allowed to auto-approve.
 
 ### Parameter: `destinationIPAddress`
 
-The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both.
+Privately routable destination IP for Private Link Service Direct Connect mode, used when consumers need direct IP routing instead of load-balancer forwarding (e.g. databases, legacy applications, on-premises endpoints). Mutually exclusive with `loadBalancerFrontendIpConfigurations`.
 
 - Required: No
 - Type: string
@@ -778,7 +778,7 @@ The list of Fqdn.
 
 ### Parameter: `loadBalancerFrontendIpConfigurations`
 
-An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both.
+References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.
 
 - Required: No
 - Type: array

@@ -18,7 +18,7 @@ param tags resourceInput<'Microsoft.Network/privateLinkServices@2025-05-01'>.tag
 @description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
 param ipConfigurations ipConfigurationType[]
 
-@description('Optional. An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both.')
+@description('Optional. References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.')
 param loadBalancerFrontendIpConfigurations loadBalancerFrontendIpConfigurationType[]?
 
 @description('Optional. The extended location of the load balancer.')
@@ -39,7 +39,7 @@ param visibility visibilityType?
 @description('Optional. The access mode of the private link service. Defaults to "Default" when not specified.')
 param accessMode ('Default' | 'Restricted')?
 
-@description('Optional. The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both.')
+@description('Optional. Privately routable destination IP for Private Link Service Direct Connect mode, used when consumers need direct IP routing instead of load-balancer forwarding (e.g. databases, legacy applications, on-premises endpoints). Mutually exclusive with `loadBalancerFrontendIpConfigurations`.')
 param destinationIPAddress string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -126,8 +126,8 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2025-05-01' =
         }
       }
     ]
-    loadBalancerFrontendIpConfigurations: !empty(loadBalancerFrontendIpConfigurations ?? [])
-      ? map(loadBalancerFrontendIpConfigurations ?? [], lbConfig => {
+    loadBalancerFrontendIpConfigurations: !empty(loadBalancerFrontendIpConfigurations)
+      ? map(loadBalancerFrontendIpConfigurations!, lbConfig => {
           id: lbConfig.resourceId
         })
       : null
