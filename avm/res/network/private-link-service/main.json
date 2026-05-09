@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "9813585994191460514"
+      "templateHash": "14832186312676088867"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
@@ -305,9 +305,9 @@
       "items": {
         "$ref": "#/definitions/loadBalancerFrontendIpConfigurationType"
       },
-      "minLength": 1,
+      "nullable": true,
       "metadata": {
-        "description": "Required. An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service."
+        "description": "Optional. An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both."
       }
     },
     "extendedLocation": {
@@ -363,7 +363,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The destination IP address of the private link service."
+        "description": "Optional. The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both."
       }
     },
     "roleAssignments": {
@@ -447,13 +447,6 @@
                 }
               }
             }
-          },
-          {
-            "name": "loadBalancerFrontendIpConfigurations",
-            "count": "[length(parameters('loadBalancerFrontendIpConfigurations'))]",
-            "input": {
-              "id": "[parameters('loadBalancerFrontendIpConfigurations')[copyIndex('loadBalancerFrontendIpConfigurations')].resourceId]"
-            }
           }
         ],
         "accessMode": "[parameters('accessMode')]",
@@ -461,6 +454,7 @@
         "destinationIPAddress": "[parameters('destinationIPAddress')]",
         "enableProxyProtocol": "[parameters('enableProxyProtocol')]",
         "fqdns": "[parameters('fqdns')]",
+        "loadBalancerFrontendIpConfigurations": "[if(not(empty(coalesce(parameters('loadBalancerFrontendIpConfigurations'), createArray()))), map(coalesce(parameters('loadBalancerFrontendIpConfigurations'), createArray()), lambda('lbConfig', createObject('id', lambdaVariables('lbConfig').resourceId))), null())]",
         "visibility": "[parameters('visibility')]"
       }
     },

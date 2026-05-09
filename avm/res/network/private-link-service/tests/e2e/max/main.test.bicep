@@ -77,10 +77,6 @@ module testDeployment '../../../main.bicep' = [
           '*'
         ]
       }
-      // 'destinationIPAddress' is intentionally omitted: it puts the PLS into "Direct Connect" mode, which is mutually
-      // exclusive with 'loadBalancerFrontendIpConfigurations' and additionally requires the preview feature
-      // 'Microsoft.Network/AllowPrivateLinkServiceUDR' to be registered on the subscription. The parameter is still
-      // exposed by the module and documented in the README.
       visibility: {
         subscriptions: [
           subscription().subscriptionId

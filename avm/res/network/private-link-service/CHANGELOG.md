@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Updated telemetry deployment API version to `2025-04-01`
 - Added `accessMode` parameter (`'Default' | 'Restricted'`)
 - Added `destinationIPAddress` parameter
+- Made `loadBalancerFrontendIpConfigurations` optional to enable PLS Direct Connect mode (which uses `destinationIPAddress` instead). Mutually exclusive with `destinationIPAddress`.
 - Introduced strong user-defined types: `ipConfigurationType`, `loadBalancerFrontendIpConfigurationType`, `extendedLocationType`, `autoApprovalType`, `visibilityType` (all `@export()`-ed)
 - Replaced untyped `array` / `object` parameters with the new typed shapes
 

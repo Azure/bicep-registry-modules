@@ -60,12 +60,13 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    name: 'nplsmin001'
+    // Non-required parameters
     loadBalancerFrontendIpConfigurations: [
       {
         resourceId: '<resourceId>'
       }
     ]
-    name: 'nplsmin001'
   }
 }
 ```
@@ -91,15 +92,16 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         }
       ]
     },
+    "name": {
+      "value": "nplsmin001"
+    },
+    // Non-required parameters
     "loadBalancerFrontendIpConfigurations": {
       "value": [
         {
           "resourceId": "<resourceId>"
         }
       ]
-    },
-    "name": {
-      "value": "nplsmin001"
     }
   }
 }
@@ -122,12 +124,13 @@ param ipConfigurations = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param name = 'nplsmin001'
+// Non-required parameters
 param loadBalancerFrontendIpConfigurations = [
   {
     resourceId: '<resourceId>'
   }
 ]
-param name = 'nplsmin001'
 ```
 
 </details>
@@ -156,11 +159,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        resourceId: '<resourceId>'
-      }
-    ]
     name: 'nplsmax001'
     // Non-required parameters
     accessMode: 'Default'
@@ -169,11 +167,15 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         '*'
       ]
     }
-    destinationIPAddress: '10.0.0.10'
     enableProxyProtocol: true
     fqdns: [
       'nplsmax.plsfqdn01.azure.privatelinkservice'
       'nplsmax.plsfqdn02.azure.privatelinkservice'
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      {
+        resourceId: '<resourceId>'
+      }
     ]
     location: '<location>'
     lock: {
@@ -236,13 +238,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         }
       ]
     },
-    "loadBalancerFrontendIpConfigurations": {
-      "value": [
-        {
-          "resourceId": "<resourceId>"
-        }
-      ]
-    },
     "name": {
       "value": "nplsmax001"
     },
@@ -257,9 +252,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         ]
       }
     },
-    "destinationIPAddress": {
-      "value": "10.0.0.10"
-    },
     "enableProxyProtocol": {
       "value": true
     },
@@ -267,6 +259,13 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       "value": [
         "nplsmax.plsfqdn01.azure.privatelinkservice",
         "nplsmax.plsfqdn02.azure.privatelinkservice"
+      ]
+    },
+    "loadBalancerFrontendIpConfigurations": {
+      "value": [
+        {
+          "resourceId": "<resourceId>"
+        }
       ]
     },
     "location": {
@@ -336,11 +335,6 @@ param ipConfigurations = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
-param loadBalancerFrontendIpConfigurations = [
-  {
-    resourceId: '<resourceId>'
-  }
-]
 param name = 'nplsmax001'
 // Non-required parameters
 param accessMode = 'Default'
@@ -349,11 +343,15 @@ param autoApproval = {
     '*'
   ]
 }
-param destinationIPAddress = '10.0.0.10'
 param enableProxyProtocol = true
 param fqdns = [
   'nplsmax.plsfqdn01.azure.privatelinkservice'
   'nplsmax.plsfqdn02.azure.privatelinkservice'
+]
+param loadBalancerFrontendIpConfigurations = [
+  {
+    resourceId: '<resourceId>'
+  }
 ]
 param location = '<location>'
 param lock = {
@@ -417,11 +415,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        resourceId: '<resourceId>'
-      }
-    ]
     name: 'nplswaf001'
     // Non-required parameters
     autoApproval: {
@@ -433,6 +426,11 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     fqdns: [
       'nplswaf.plsfqdn01.azure.privatelinkservice'
       'nplswaf.plsfqdn02.azure.privatelinkservice'
+    ]
+    loadBalancerFrontendIpConfigurations: [
+      {
+        resourceId: '<resourceId>'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -471,13 +469,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         }
       ]
     },
-    "loadBalancerFrontendIpConfigurations": {
-      "value": [
-        {
-          "resourceId": "<resourceId>"
-        }
-      ]
-    },
     "name": {
       "value": "nplswaf001"
     },
@@ -496,6 +487,13 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       "value": [
         "nplswaf.plsfqdn01.azure.privatelinkservice",
         "nplswaf.plsfqdn02.azure.privatelinkservice"
+      ]
+    },
+    "loadBalancerFrontendIpConfigurations": {
+      "value": [
+        {
+          "resourceId": "<resourceId>"
+        }
       ]
     },
     "tags": {
@@ -535,11 +533,6 @@ param ipConfigurations = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
-param loadBalancerFrontendIpConfigurations = [
-  {
-    resourceId: '<resourceId>'
-  }
-]
 param name = 'nplswaf001'
 // Non-required parameters
 param autoApproval = {
@@ -551,6 +544,11 @@ param enableProxyProtocol = true
 param fqdns = [
   'nplswaf.plsfqdn01.azure.privatelinkservice'
   'nplswaf.plsfqdn02.azure.privatelinkservice'
+]
+param loadBalancerFrontendIpConfigurations = [
+  {
+    resourceId: '<resourceId>'
+  }
 ]
 param tags = {
   Environment: 'Non-Prod'
@@ -574,7 +572,6 @@ param visibility = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | An array of private link service IP configurations. At least one IP configuration is required on the private link service. |
-| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service. |
 | [`name`](#parameter-name) | string | The name of the private link service to create. |
 
 **Optional parameters**
@@ -583,11 +580,12 @@ param visibility = {
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-accessmode) | string | The access mode of the private link service. Defaults to "Default" when not specified. |
 | [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
-| [`destinationIPAddress`](#parameter-destinationipaddress) | string | The destination IP address of the private link service. |
+| [`destinationIPAddress`](#parameter-destinationipaddress) | string | The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both. |
 | [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
 | [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
+| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -673,26 +671,6 @@ The private IP address allocation method.
   ]
   ```
 
-### Parameter: `loadBalancerFrontendIpConfigurations`
-
-An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`resourceId`](#parameter-loadbalancerfrontendipconfigurationsresourceid) | string | The resource ID of the load balancer frontend IP configuration. |
-
-### Parameter: `loadBalancerFrontendIpConfigurations.resourceId`
-
-The resource ID of the load balancer frontend IP configuration.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `name`
 
 The name of the private link service to create.
@@ -736,7 +714,7 @@ The list of subscriptions allowed to auto-approve.
 
 ### Parameter: `destinationIPAddress`
 
-The destination IP address of the private link service.
+The destination IP address of the private link service. Mutually exclusive with `loadBalancerFrontendIpConfigurations`: provide either `destinationIPAddress` for a Direct Connect PLS, or `loadBalancerFrontendIpConfigurations` for a Load Balancer-backed PLS, not both.
 
 - Required: No
 - Type: string
@@ -797,6 +775,26 @@ The list of Fqdn.
 
 - Required: No
 - Type: array
+
+### Parameter: `loadBalancerFrontendIpConfigurations`
+
+An array of references to the load balancer frontend IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. Mutually exclusive with `destinationIPAddress` (PLS Direct Connect mode): provide either this parameter for a Load Balancer-backed PLS, or `destinationIPAddress` for a Direct Connect PLS, not both.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-loadbalancerfrontendipconfigurationsresourceid) | string | The resource ID of the load balancer frontend IP configuration. |
+
+### Parameter: `loadBalancerFrontendIpConfigurations.resourceId`
+
+The resource ID of the load balancer frontend IP configuration.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
