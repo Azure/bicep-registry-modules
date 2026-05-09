@@ -68,8 +68,6 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     nodeCount: 1
     sku: 'M10'
     storage: 32
-    // Non-required parameters
-    highAvailabilityMode: 'Disabled'
   }
 }
 ```
@@ -104,10 +102,6 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     "storage": {
       "value": 32
-    },
-    // Non-required parameters
-    "highAvailabilityMode": {
-      "value": "Disabled"
     }
   }
 }
@@ -130,8 +124,6 @@ param name = 'ddmcdefmin001'
 param nodeCount = 1
 param sku = 'M10'
 param storage = 32
-// Non-required parameters
-param highAvailabilityMode = 'Disabled'
 ```
 
 </details>
