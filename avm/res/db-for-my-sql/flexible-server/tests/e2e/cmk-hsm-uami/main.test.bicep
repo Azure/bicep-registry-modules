@@ -32,7 +32,8 @@ param managedHSMResourceId string = ''
 @secure()
 param password string = newGuid()
 
-var enforcedLocation = 'uksouth'
+@description('Optional. The location to deploy resources to.')
+param enforcedLocation string = 'uksouth'
 
 // ============ //
 // Dependencies //

@@ -21,9 +21,8 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+@description('Optional. The location to deploy resources to.')
+param enforcedLocation string = 'northeurope'
 
 // ============ //
 // Dependencies //
