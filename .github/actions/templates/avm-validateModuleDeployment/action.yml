@@ -142,149 +142,6 @@ runs:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
-    # [List available SKUs] task(s)
-    # ---------------------------
-    # - name: "List available SKUs per region"
-    #   if: env.skip_deployment_ci == 'false'
-    #   uses: azure/powershell@v2
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       Write-Output '::group::List available SKUs per region'
-
-    #       $mainJsonPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}' 'main.json'
-    #       $content = Get-Content $mainJsonPath -Raw
-    #       $typeMatches = [regex]::Matches($content, '"type":\s*"(Microsoft\.[^"]+)"')
-    #       $allTypes = $typeMatches | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
-
-    #       $excludePrefixes = @('Microsoft.Resources/', 'Microsoft.Authorization/', 'Microsoft.Insights/', 'Microsoft.ManagedIdentity/')
-    #       $filtered = $allTypes | Where-Object {
-    #         $t = $_
-    #         -not ($excludePrefixes | Where-Object { $t.StartsWith($_) }) -and $t -notlike '*privateEndpoints*'
-    #       }
-
-    #       $primaryType = ($filtered | Select-Object -First 1) -replace '@.+$'
-    #       $parts = $primaryType -split '/'
-    #       $provider = $parts[0]
-    #       $resourceType = $parts[1]
-
-    #       if ([string]::IsNullOrEmpty($provider)) {
-    #         Write-Warning 'Could not detect resource provider from module. Skipping SKU listing.'
-    #       } else {
-    #         $sub = (Get-AzContext).Subscription
-    #         Write-Output "===================================="
-    #         Write-Output "Subscription: $($sub.Name) ($($sub.Id))"
-    #         Write-Output "Provider: $provider"
-    #         Write-Output "Resource Type: $provider/$resourceType"
-    #         Write-Output "===================================="
-
-    #         $regions = (Get-AzResourceProvider -ProviderNamespace $provider |
-    #           Where-Object { $_.ResourceTypes.ResourceTypeName -eq $resourceType } |
-    #           Select-Object -ExpandProperty ResourceTypes |
-    #           Where-Object { $_.ResourceTypeName -eq $resourceType }).Locations
-
-    #         Write-Output "Total available regions: $($regions.Count)"
-    #         Write-Output ""
-
-    #         $subId = $sub.Id
-    #         $regionSummary = @()  # Collects: Region, Editions, SKU count
-
-    #         foreach ($region in $regions) {
-    #           $location = ($region -replace '\s','').ToLower()
-
-    #           $rawData = $null
-    #           $apiVersions = @('2023-12-30', '2023-06-30', '2021-12-01-preview')
-    #           foreach ($api in $apiVersions) {
-    #             try {
-    #               $uri = "https://management.azure.com/subscriptions/$subId/providers/$provider/locations/$location/capabilities?api-version=$api"
-    #               $response = Invoke-AzRestMethod -Uri $uri -Method GET -ErrorAction SilentlyContinue
-    #               if ($response.StatusCode -eq 200) {
-    #                 $rawData = $response.Content | ConvertFrom-Json
-    #                 break
-    #               }
-    #             } catch { continue }
-    #           }
-
-    #           if (-not $rawData) { continue }
-
-    #           # Collect editions from response
-    #           $editions = @()
-    #           if ($rawData.value -and $rawData.value.Count -gt 0) {
-    #             foreach ($item in $rawData.value) {
-    #               if ($item.supportedFlexibleServerEditions) {
-    #                 $editions += $item.supportedFlexibleServerEditions
-    #               } elseif ($item.supportedServerVersions) {
-    #                 $editions += $item
-    #               }
-    #             }
-    #             if ($editions.Count -eq 0) { $editions = $rawData.value }
-    #           }
-    #           if ($rawData.supportedFlexibleServerEditions -and $rawData.supportedFlexibleServerEditions.Count -gt 0) {
-    #             $editions = $rawData.supportedFlexibleServerEditions
-    #           }
-
-    #           if ($editions.Count -eq 0) { continue }
-
-    #           # Extract all SKU names for this region
-    #           $skuNames = @()
-    #           $editionNames = @()
-    #           foreach ($edition in $editions) {
-    #             $edName = if ($edition.name) { $edition.name } else { 'N/A' }
-    #             $editionNames += $edName
-    #             $versions = if ($edition.supportedServerVersions) { $edition.supportedServerVersions }
-    #                         elseif ($edition.supportedEditions) { $edition.supportedEditions }
-    #                         else { $null }
-    #             if ($versions) {
-    #               foreach ($ver in $versions) {
-    #                 $skuList = if ($ver.supportedSkus) { $ver.supportedSkus } else { $null }
-    #                 if ($skuList) {
-    #                   foreach ($sku in $skuList) { $skuNames += $sku.name }
-    #                 }
-    #               }
-    #             }
-    #           }
-
-    #           $uniqueSkus = $skuNames | Sort-Object -Unique
-    #           $uniqueEditions = $editionNames | Sort-Object -Unique
-
-    #           $regionSummary += [PSCustomObject]@{
-    #             Region   = $region
-    #             Location = $location
-    #             Editions = ($uniqueEditions -join ', ')
-    #             SKUCount = $uniqueSkus.Count
-    #             SKUs     = ($uniqueSkus -join ', ')
-    #           }
-    #         }
-
-    #         if ($regionSummary.Count -gt 0) {
-    #           # Summary table: Region | Editions | SKU count
-    #           Write-Output "=== SUMMARY: Regions with available SKUs ==="
-    #           Write-Output ("{0,-30} {1,-50} {2,8}" -f 'Region', 'Editions', 'SKUs')
-    #           Write-Output ("{0,-30} {1,-50} {2,8}" -f '------', '--------', '----')
-    #           foreach ($r in ($regionSummary | Sort-Object Region)) {
-    #             Write-Output ("{0,-30} {1,-50} {2,8}" -f $r.Region, $r.Editions, $r.SKUCount)
-    #           }
-    #           Write-Output ""
-
-    #           # Detailed: list all SKU names per region (compact)
-    #           Write-Output "=== DETAILED: SKUs per region ==="
-    #           foreach ($r in ($regionSummary | Sort-Object Region)) {
-    #             Write-Output ""
-    #             Write-Output "--- $($r.Region) ($($r.Location)) ---"
-    #             Write-Output "  $($r.SKUs)"
-    #           }
-    #         } else {
-    #           Write-Warning "============================================================"
-    #           Write-Warning "No SKUs available in any region for $provider/$resourceType"
-    #           Write-Warning "on subscription: $($sub.Name) ($($sub.Id))"
-    #           Write-Warning "You may need to request a quota increase via Azure Portal"
-    #           Write-Warning "> Subscriptions > Usage + Quotas."
-    #           Write-Warning "============================================================"
-    #         }
-    #       }
-
-    #       Write-Output '::endgroup::'
-
     # [Set Deployment Location] task(s)
     # ---------------------------
     - name: "Get Resource Location"
@@ -317,11 +174,6 @@ runs:
           }
 
           Write-Verbose ('{0}-{1}' -f 'resourceLocation', $resourceLocation) -Verbose
-          Write-Output ''
-          Write-Output '=============================================='
-          Write-Output "DEPLOYMENT LOCATION: $resourceLocation"
-          Write-Output '=============================================='
-          Write-Output ''
           Write-Output ('{0}={1}' -f 'resourceLocation', $resourceLocation) >> $env:GITHUB_OUTPUT
 
           Write-Output '::endgroup::'
@@ -546,20 +398,6 @@ runs:
 
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          # Print debug deployment info
-          Write-Output ''
-          Write-Output '=============================================='
-          Write-Output "DEPLOYING: $($functionInput.TemplateFilePath | Split-Path -Leaf)"
-          Write-Output "LOCATION (metadata): $($functionInput.DeploymentMetadataLocation)"
-          if ($functionInput.AdditionalParameters.resourceLocation) {
-            Write-Output "LOCATION (resourceLocation param): $($functionInput.AdditionalParameters.resourceLocation)"
-          } else {
-            Write-Output "LOCATION (resourceLocation param): NOT SET - template uses internal location"
-          }
-          Write-Output "SUBSCRIPTION: $($functionInput.SubscriptionId)"
-          Write-Output '=============================================='
-          Write-Output ''
 
           # Invoke deployment
           $res = New-TemplateDeployment @functionInput -Verbose
