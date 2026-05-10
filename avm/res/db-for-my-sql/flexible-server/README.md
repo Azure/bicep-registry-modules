@@ -282,6 +282,10 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily skipped to reduce CI time and resource usage during debugging.
+```
 
 <details>
 
@@ -733,6 +737,10 @@ This instance deploys the module with connectivity mode "Private Access".
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/private]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily skipped to reduce CI time and resource usage during debugging.
+```
 
 <details>
 
@@ -968,6 +976,10 @@ This instance deploys the module with connectivity mode "Public Access" and a pr
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/public-with-pe]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Temporarily skipped to reduce CI time and resource usage during debugging.
+```
 
 <details>
 

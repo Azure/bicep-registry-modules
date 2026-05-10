@@ -24,7 +24,7 @@ param password string = newGuid()
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The location to deploy resources to.')
-param enforcedLocation string = 'uksouth'
+param resourceLocation string = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -34,7 +34,7 @@ param enforcedLocation string = 'uksouth'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 // ============== //
@@ -45,7 +45,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       availabilityZone: 1
