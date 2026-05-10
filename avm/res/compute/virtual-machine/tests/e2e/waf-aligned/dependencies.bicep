@@ -43,6 +43,9 @@ param waitDeploymentScriptName string
 @description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
 param logAnalyticsWorkspaceResourceId string
 
+@description('Required. The name of the Disk Encryption Set to create.')
+param diskEncryptionSetName string
+
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
 
@@ -279,9 +282,22 @@ resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignmen
   }
 }
 
-// Wait for backup management service KV role assignment to propagate before VM backup registration
+resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Wait for backup management service KV & key vault key reader role assignment to propagate before VM backup registration and encryption
 resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  dependsOn: [backupServiceKeyVaultPermissions]
+  dependsOn: [backupServiceKeyVaultPermissions, msiKVReadRoleAssignment]
   name: waitDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -296,19 +312,6 @@ resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@202
     azPowerShellVersion: '11.0'
     cleanupPreference: 'Always'
     scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
-  }
-}
-
-resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '12338af0-0e69-4776-bea7-57ae8d297424'
-    ) // Key Vault Crypto User
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -458,6 +461,27 @@ resource dcr 'Microsoft.Insights/dataCollectionRules@2024-03-11' = {
   }
 }
 
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
+  dependsOn: [waitForBackupRolePropagation]
+  name: diskEncryptionSetName
+  location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    activeKey: {
+      sourceVault: {
+        id: keyVault.id
+      }
+      keyUrl: keyVault::key.properties.keyUriWithVersion
+    }
+    encryptionType: 'EncryptionAtRestWithCustomerKey'
+  }
+}
+
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -508,3 +532,6 @@ output proximityPlacementGroupResourceId string = proximityPlacementGroup.id
 
 @description('The resource ID of the created data collection rule.')
 output dataCollectionRuleResourceId string = dcr.id
+
+@description('The resource ID of the created Disk Encryption Set.')
+output diskEncryptionSetResourceId string = diskEncryptionSet.id

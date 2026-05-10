@@ -58,6 +58,7 @@ module nestedDependencies 'dependencies.bicep' = {
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
+    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
   }
 }
 
@@ -189,6 +190,7 @@ module testDeployment '../../../main.bicep' = [
           diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
+            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
         }
         {
