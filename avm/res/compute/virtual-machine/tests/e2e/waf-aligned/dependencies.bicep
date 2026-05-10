@@ -279,6 +279,39 @@ resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignmen
   }
 }
 
+// Wait for backup management service KV role assignment to propagate before VM backup registration
+resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  dependsOn: [backupServiceKeyVaultPermissions]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
+  }
+}
+
+resource msiKVReadRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-KeyVault-Key-Read-RoleAssignment')
+  scope: keyVault::key
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '12338af0-0e69-4776-bea7-57ae8d297424'
+    ) // Key Vault Crypto User
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
@@ -296,26 +329,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
     resource container 'containers@2025-01-01' = {
       name: 'scripts'
     }
-  }
-}
-
-// Wait for backup management service KV & key vault key reader role assignment to propagate before VM backup registration and encryption
-resource waitForBackupRolePropagation 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  dependsOn: [backupServiceKeyVaultPermissions]
-  name: waitDeploymentScriptName
-  location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    retentionInterval: 'PT1H'
-    azPowerShellVersion: '11.0'
-    cleanupPreference: 'Always'
-    scriptContent: 'write-output "Sleeping for 15 seconds to allow role propagation"; start-sleep -Seconds 15'
   }
 }
 
