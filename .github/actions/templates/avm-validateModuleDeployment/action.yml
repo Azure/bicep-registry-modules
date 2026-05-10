@@ -547,6 +547,20 @@ runs:
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
+          # Print debug deployment info
+          Write-Output ''
+          Write-Output '=============================================='
+          Write-Output "DEPLOYING: $($functionInput.TemplateFilePath | Split-Path -Leaf)"
+          Write-Output "LOCATION (metadata): $($functionInput.DeploymentMetadataLocation)"
+          if ($functionInput.AdditionalParameters.resourceLocation) {
+            Write-Output "LOCATION (resourceLocation param): $($functionInput.AdditionalParameters.resourceLocation)"
+          } else {
+            Write-Output "LOCATION (resourceLocation param): NOT SET - template uses internal location"
+          }
+          Write-Output "SUBSCRIPTION: $($functionInput.SubscriptionId)"
+          Write-Output '=============================================='
+          Write-Output ''
+
           # Invoke deployment
           $res = New-TemplateDeployment @functionInput -Verbose
 

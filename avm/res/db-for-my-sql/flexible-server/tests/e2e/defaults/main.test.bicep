@@ -21,7 +21,7 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-var enforcedLocation = 'southcentralus'
+var enforcedLocation = 'swedencentral'
 
 // ============ //
 // Dependencies //
