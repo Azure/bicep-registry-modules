@@ -24,8 +24,9 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The location to deploy resources to.')
-param enforcedLocation string = 'uksouth'
+// Pipeline is selecting random regions which don't have constraints when creating MySQL Flexible Servers
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'southeastasia'
 
 // ============ //
 // Dependencies //
