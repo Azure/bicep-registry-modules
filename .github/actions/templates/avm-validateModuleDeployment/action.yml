@@ -186,44 +186,81 @@ runs:
             Write-Output "Available regions: $($regions.Count)"
 
             $hasAnySkus = $false
+            $debugDone = $false
+            $subId = $sub.Id
+
             foreach ($region in $regions) {
               $location = ($region -replace '\s','').ToLower()
-              $subId = $sub.Id
 
-              # Try multiple API versions for capabilities
-              $capabilities = $null
               $apiVersions = @('2023-12-30', '2023-06-30', '2021-12-01-preview')
+              $rawData = $null
               foreach ($api in $apiVersions) {
                 try {
                   $uri = "https://management.azure.com/subscriptions/$subId/providers/$provider/locations/$location/capabilities?api-version=$api"
                   $response = Invoke-AzRestMethod -Uri $uri -Method GET -ErrorAction SilentlyContinue
                   if ($response.StatusCode -eq 200) {
-                    $parsed = $response.Content | ConvertFrom-Json
-                    # Handle both response shapes: .value[] and .supportedFlexibleServerEditions[]
-                    $editions = if ($parsed.value) { $parsed.value } elseif ($parsed.supportedFlexibleServerEditions) { $parsed.supportedFlexibleServerEditions } else { $null }
-                    if ($editions -and $editions.Count -gt 0) {
-                      $capabilities = $editions
-                      break
-                    }
+                    $rawData = $response.Content | ConvertFrom-Json
+                    break
                   }
                 } catch { continue }
               }
 
-              if ($capabilities) {
-                $hasAnySkus = $true
+              if (-not $rawData) { continue }
+
+              # Debug: show raw structure for first region with data
+              if (-not $debugDone) {
+                $debugDone = $true
                 Write-Output ""
-                Write-Output "--- Region: $region ($location) ---"
-                foreach ($edition in $capabilities) {
-                  $edName = if ($edition.name) { $edition.name } else { 'N/A' }
-                  $versions = if ($edition.supportedServerVersions) { $edition.supportedServerVersions } elseif ($edition.supportedEditions) { $edition.supportedEditions } else { @() }
+                Write-Output "=== DEBUG: Raw API response structure for $region ==="
+                Write-Output ($rawData | ConvertTo-Json -Depth 3 -Compress | ForEach-Object { $_.Substring(0, [Math]::Min(2000, $_.Length)) })
+                Write-Output "=== END DEBUG ==="
+              }
+
+              # Collect all editions from any possible response shape
+              $editions = @()
+              if ($rawData.value -and $rawData.value.Count -gt 0) {
+                # Check if value items ARE editions (have supportedServerVersions)
+                # or if they CONTAIN editions (have supportedFlexibleServerEditions)
+                foreach ($item in $rawData.value) {
+                  if ($item.supportedFlexibleServerEditions) {
+                    $editions += $item.supportedFlexibleServerEditions
+                  } elseif ($item.supportedServerVersions) {
+                    $editions += $item
+                  }
+                }
+                # If neither matched, treat value items as editions
+                if ($editions.Count -eq 0) { $editions = $rawData.value }
+              }
+              if ($rawData.supportedFlexibleServerEditions -and $rawData.supportedFlexibleServerEditions.Count -gt 0) {
+                $editions = $rawData.supportedFlexibleServerEditions
+              }
+
+              if ($editions.Count -eq 0) { continue }
+
+              $regionSkus = @()
+              foreach ($edition in $editions) {
+                $edName = if ($edition.name) { $edition.name } else { 'N/A' }
+                $versions = if ($edition.supportedServerVersions) { $edition.supportedServerVersions }
+                            elseif ($edition.supportedEditions) { $edition.supportedEditions }
+                            else { $null }
+                if ($versions) {
                   foreach ($ver in $versions) {
                     $verName = if ($ver.name) { $ver.name } else { 'N/A' }
-                    $skus = if ($ver.supportedSkus) { $ver.supportedSkus } else { @() }
-                    foreach ($sku in $skus) {
-                      Write-Output "  Edition: $edName | Version: $verName | SKU: $($sku.name) | vCores: $($sku.supportedVcores)"
+                    $skuList = if ($ver.supportedSkus) { $ver.supportedSkus } else { $null }
+                    if ($skuList) {
+                      foreach ($sku in $skuList) {
+                        $regionSkus += "  Edition: $edName | Version: $verName | SKU: $($sku.name) | vCores: $($sku.supportedVcores)"
+                      }
                     }
                   }
                 }
+              }
+
+              if ($regionSkus.Count -gt 0) {
+                $hasAnySkus = $true
+                Write-Output ""
+                Write-Output "--- Region: $region ($location) ---"
+                $regionSkus | ForEach-Object { Write-Output $_ }
               }
             }
 
