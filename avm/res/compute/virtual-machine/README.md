@@ -1526,7 +1526,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         deleteOption: 'Delete'
         diskSizeGB: 128
         managedDisk: {
-          diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
           storageAccountType: 'Premium_LRS'
         }
       }
@@ -1829,7 +1828,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "deleteOption": "Delete",
           "diskSizeGB": 128,
           "managedDisk": {
-            "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
             "storageAccountType": "Premium_LRS"
           }
         },
@@ -2138,7 +2136,6 @@ param dataDisks = [
     deleteOption: 'Delete'
     diskSizeGB: 128
     managedDisk: {
-      diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
       storageAccountType: 'Premium_LRS'
     }
   }
@@ -2495,6 +2492,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       managedDisk: {
+        diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
         resourceId: '<resourceId>'
       }
     }
@@ -2509,6 +2507,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         diskMBpsReadWrite: 125
         diskSizeGB: 1024
         managedDisk: {
+          diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
           storageAccountType: 'PremiumV2_LRS'
         }
       }
@@ -2562,6 +2561,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "managedDisk": {
+          "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
           "resourceId": "<resourceId>"
         }
       }
@@ -2582,6 +2582,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "diskMBpsReadWrite": 125,
           "diskSizeGB": 1024,
           "managedDisk": {
+            "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
             "storageAccountType": "PremiumV2_LRS"
           }
         },
@@ -2631,6 +2632,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   managedDisk: {
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     resourceId: '<resourceId>'
   }
 }
@@ -2645,6 +2647,7 @@ param dataDisks = [
     diskMBpsReadWrite: 125
     diskSizeGB: 1024
     managedDisk: {
+      diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
       storageAccountType: 'PremiumV2_LRS'
     }
   }

@@ -51,8 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    keyVaultName: 'dep${namePrefix}kv${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
@@ -62,7 +61,6 @@ module nestedDependencies 'dependencies.bicep' = {
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForBackupRolePropagation'
-    diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'
   }
 }
 
@@ -194,7 +192,6 @@ module testDeployment '../../../main.bicep' = [
           diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
-            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
         }
         {
