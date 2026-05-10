@@ -149,27 +149,35 @@ runs:
       shell: bash
       run: |
         echo "::group::List available SKUs per region"
-        # Extract the resource provider from the module path (e.g., "db-for-my-sql" -> "Microsoft.DBforMySQL")
-        MODULE_PATH="${{ inputs.modulePath }}"
 
-        # Detect provider namespace from the template file
-        PROVIDER=$(az deployment sub validate --help > /dev/null 2>&1; \
-          grep -oP 'Microsoft\.\w+' "${{ inputs.templateFilePath }}" 2>/dev/null | head -1 || echo "")
+        # Detect provider namespace from the module's main.json (not the test file)
+        MODULE_MAIN_JSON="${{ inputs.modulePath }}/main.json"
+        PROVIDER=$(grep -oP '"Microsoft\.[^"/]+' "$MODULE_MAIN_JSON" 2>/dev/null \
+          | sed 's/^"//' | grep -v 'Microsoft.Resources' | sort -u | head -1 || echo "")
 
         if [ -z "$PROVIDER" ]; then
-          echo "Could not detect resource provider from template. Skipping SKU listing."
+          echo "Could not detect resource provider from module. Skipping SKU listing."
         else
+          SUBSCRIPTION=$(az account show --query "name" -o tsv 2>/dev/null || echo "unknown")
           echo "===================================="
+          echo "Subscription: $SUBSCRIPTION"
           echo "Provider: $PROVIDER"
           echo "===================================="
+
+          # Get the primary resource type and its available regions
           RESOURCE_TYPE=$(az provider show --namespace "$PROVIDER" \
-            --query "resourceTypes[0].resourceType" -o tsv 2>/dev/null || echo "")
-          REGIONS=$(az provider show --namespace "$PROVIDER" \
-            --query "resourceTypes[0].locations[]" -o tsv 2>/dev/null || echo "")
-          SUBSCRIPTION=$(az account show --query "name" -o tsv 2>/dev/null || echo "unknown")
-          echo "Subscription: $SUBSCRIPTION"
+            --query "resourceTypes[?contains(resourceType, 'flexibleServers') || contains(resourceType, 'servers')].resourceType | [0]" \
+            -o tsv 2>/dev/null || echo "")
+          if [ -z "$RESOURCE_TYPE" ]; then
+            RESOURCE_TYPE=$(az provider show --namespace "$PROVIDER" \
+              --query "resourceTypes[0].resourceType" -o tsv 2>/dev/null || echo "")
+          fi
           echo "Resource Type: $PROVIDER/$RESOURCE_TYPE"
           echo ""
+
+          REGIONS=$(az provider show --namespace "$PROVIDER" \
+            --query "resourceTypes[?resourceType=='$RESOURCE_TYPE'].locations[]" -o tsv 2>/dev/null || echo "")
+
           for region in $REGIONS; do
             locationName=$(echo "$region" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
             echo "--- Region: $region ($locationName) ---"
