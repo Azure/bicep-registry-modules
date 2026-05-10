@@ -109,6 +109,9 @@ param restrictOutboundNetworkAccess string?
 ])
 param connectionPolicy string = 'Default'
 
+@description('Optional. The outbound firewall rules for the server.')
+param outboundFirewallRules string[]?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -216,7 +219,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empt
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -384,7 +387,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -610,6 +613,13 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023
     connectionType: connectionPolicy
   }
 }
+
+resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2023-08-01' = [
+  for domain in (outboundFirewallRules ?? []): if (outboundFirewallRules != null) {
+    parent: server
+    name: domain
+  }
+]
 
 @description('The name of the deployed SQL server.')
 output name string = server.name

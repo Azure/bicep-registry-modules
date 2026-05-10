@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "9008819346665651591"
+      "version": "0.42.1.51946",
+      "templateHash": "14545818213015288497"
     },
     "name": "Recovery Services Vault Replication Fabrics",
     "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -127,12 +127,12 @@
     "recoveryServicesVault": {
       "existing": true,
       "type": "Microsoft.RecoveryServices/vaults",
-      "apiVersion": "2024-10-01",
+      "apiVersion": "2025-08-01",
       "name": "[parameters('recoveryVaultName')]"
     },
     "replicationFabric": {
       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2025-08-01",
       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": {
         "customDetails": {
@@ -175,8 +175,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3560349737134583500"
+              "version": "0.42.1.51946",
+              "templateHash": "16290686236168812123"
             },
             "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
             "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -268,18 +268,18 @@
             "recoveryServicesVault::replicationFabric": {
               "existing": true,
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
             },
             "recoveryServicesVault": {
               "existing": true,
               "type": "Microsoft.RecoveryServices/vaults",
-              "apiVersion": "2024-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[parameters('recoveryVaultName')]"
             },
             "replicationContainer": {
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]",
               "properties": {
                 "providerSpecificInput": [
@@ -338,8 +338,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "6599364122780578852"
+                      "version": "0.42.1.51946",
+                      "templateHash": "13991009632404091244"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                     "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -415,24 +415,24 @@
                     "recoveryServicesVault::replicationFabric::replicationContainer": {
                       "existing": true,
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
-                      "apiVersion": "2022-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'))]"
                     },
                     "recoveryServicesVault::replicationFabric": {
                       "existing": true,
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
-                      "apiVersion": "2022-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
                     },
                     "recoveryServicesVault": {
                       "existing": true,
                       "type": "Microsoft.RecoveryServices/vaults",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[parameters('recoveryVaultName')]"
                     },
                     "replicationContainer": {
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
-                      "apiVersion": "2022-10-01",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
                       "properties": {
                         "targetProtectionContainerId": "[variables('calcTargetProtectionContainerResourceId')]",

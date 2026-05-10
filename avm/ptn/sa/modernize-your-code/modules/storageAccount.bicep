@@ -26,7 +26,7 @@ param logAnalyticsWorkspaceResourceId string?
 @description('Optional. Values to establish private networking for the Storage Account.')
 param privateNetworking storageAccountPrivateNetworkingType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -43,7 +43,7 @@ var filePrivateDnsZoneResourceId = privateNetworking != null
   ? privateNetworking.?filePrivateDnsZoneResourceId ?? ''
   : ''
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: take('avm.res.storage.storage-account.${name}', 64)
   #disable-next-line no-unnecessary-dependson
   params: {

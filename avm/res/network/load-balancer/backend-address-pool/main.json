@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10026098853580494380"
+      "version": "0.42.1.51946",
+      "templateHash": "11311343920159398392"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -74,9 +74,36 @@
       "metadata": {
         "description": "Optional. How backend pool members are managed. NIC = via NIC IP configs, BackendAddress = via backend addresses, None = empty pool."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.network-loadbalancer-beaddresspool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     {
       "condition": "[not(equals(parameters('backendMembershipMode'), 'NIC'))]",
       "type": "Microsoft.Network/loadBalancers/backendAddressPools",

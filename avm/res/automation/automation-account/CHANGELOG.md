@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.1
+
+### Changes
+
+- Publishing child module `avm/res/automation/automation-account/credential`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group/hybrid-runbook-worker`
+- Publishing child module `avm/res/automation/automation-account/job-schedule`
+- Publishing child module `avm/res/automation/automation-account/module`
+- Publishing child module `avm/res/automation/automation-account/powershell72-module`
+- Publishing child module `avm/res/automation/automation-account/python2-package`
+- Publishing child module `avm/res/automation/automation-account/python3-package`
+- Publishing child module `avm/res/automation/automation-account/runbook`
+- Publishing child module `avm/res/automation/automation-account/schedule`
+- Publishing child module `avm/res/automation/automation-account/source-control`
+- Publishing child module `avm/res/automation/automation-account/variable`
+- Publishing child module `avm/res/automation/automation-account/webhook`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes

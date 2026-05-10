@@ -37,13 +37,10 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-@description('Required. The object ID of a user that will be granted necessary permissions for the environment.')
-param userObjectId string = ''
-
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -69,12 +66,11 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
-    domainAdminPassword: arbLocalAdminAndDeploymentUserPass
     location: enforcedLocation
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.8' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {

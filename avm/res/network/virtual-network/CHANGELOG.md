@@ -2,6 +2,29 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Added support for `subnet.ipAllocations` & `subnet.serviceGateway`
+- Added support for `peering.enableOnlyIPv6Peering`
+- Added diverse types
+- Updated references of `avm-common-types` to `0.7.0`
+
+### Breaking Changes
+
+- None
+
+## 0.8.1
+
+### Changes
+
+- Publishing child module `avm/res/network/virtual-network/virtual-network-peering`
+
+### Breaking Changes
+
+- None
+
 ## 0.8.0
 
 ### Changes
