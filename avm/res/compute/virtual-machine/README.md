@@ -2508,7 +2508,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         diskSizeGB: 1024
         managedDisk: {
           diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
-          storageAccountType: 'PremiumV2_LRS'
+          storageAccountType: 'Premium_LRS'
         }
       }
       {
@@ -2583,7 +2583,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "diskSizeGB": 1024,
           "managedDisk": {
             "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
-            "storageAccountType": "PremiumV2_LRS"
+            "storageAccountType": "Premium_LRS"
           }
         },
         {
@@ -2648,7 +2648,7 @@ param dataDisks = [
     diskSizeGB: 1024
     managedDisk: {
       diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
-      storageAccountType: 'PremiumV2_LRS'
+      storageAccountType: 'Premium_LRS'
     }
   }
   {
