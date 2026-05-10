@@ -146,48 +146,98 @@ runs:
     # ---------------------------
     - name: "List available SKUs per region"
       if: env.skip_deployment_ci == 'false'
-      shell: bash
-      run: |
-        echo "::group::List available SKUs per region"
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          Write-Output '::group::List available SKUs per region'
 
-        # Detect provider namespace from the module's main.json (not the test file)
-        MODULE_MAIN_JSON="${{ inputs.modulePath }}/main.json"
-        PROVIDER=$(grep -oP '"Microsoft\.[^"/]+' "$MODULE_MAIN_JSON" 2>/dev/null \
-          | sed 's/^"//' | grep -v 'Microsoft.Resources' | sort -u | head -1 || echo "")
+          $mainJsonPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}' 'main.json'
+          $content = Get-Content $mainJsonPath -Raw
+          $typeMatches = [regex]::Matches($content, '"type":\s*"(Microsoft\.[^"]+)"')
+          $allTypes = $typeMatches | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique
 
-        if [ -z "$PROVIDER" ]; then
-          echo "Could not detect resource provider from module. Skipping SKU listing."
-        else
-          SUBSCRIPTION=$(az account show --query "name" -o tsv 2>/dev/null || echo "unknown")
-          echo "===================================="
-          echo "Subscription: $SUBSCRIPTION"
-          echo "Provider: $PROVIDER"
-          echo "===================================="
+          $excludePrefixes = @('Microsoft.Resources/', 'Microsoft.Authorization/', 'Microsoft.Insights/', 'Microsoft.ManagedIdentity/')
+          $filtered = $allTypes | Where-Object {
+            $t = $_
+            -not ($excludePrefixes | Where-Object { $t.StartsWith($_) }) -and $t -notlike '*privateEndpoints*'
+          }
 
-          # Get the primary resource type and its available regions
-          RESOURCE_TYPE=$(az provider show --namespace "$PROVIDER" \
-            --query "resourceTypes[?contains(resourceType, 'flexibleServers') || contains(resourceType, 'servers')].resourceType | [0]" \
-            -o tsv 2>/dev/null || echo "")
-          if [ -z "$RESOURCE_TYPE" ]; then
-            RESOURCE_TYPE=$(az provider show --namespace "$PROVIDER" \
-              --query "resourceTypes[0].resourceType" -o tsv 2>/dev/null || echo "")
-          fi
-          echo "Resource Type: $PROVIDER/$RESOURCE_TYPE"
-          echo ""
+          $primaryType = ($filtered | Select-Object -First 1) -replace '@.+$'
+          $parts = $primaryType -split '/'
+          $provider = $parts[0]
+          $resourceType = $parts[1]
 
-          REGIONS=$(az provider show --namespace "$PROVIDER" \
-            --query "resourceTypes[?resourceType=='$RESOURCE_TYPE'].locations[]" -o tsv 2>/dev/null || echo "")
+          if ([string]::IsNullOrEmpty($provider)) {
+            Write-Warning 'Could not detect resource provider from module. Skipping SKU listing.'
+          } else {
+            $sub = (Get-AzContext).Subscription
+            Write-Output "===================================="
+            Write-Output "Subscription: $($sub.Name) ($($sub.Id))"
+            Write-Output "Provider: $provider"
+            Write-Output "Resource Type: $provider/$resourceType"
+            Write-Output "===================================="
 
-          for region in $REGIONS; do
-            locationName=$(echo "$region" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
-            echo "--- Region: $region ($locationName) ---"
-            az rest --method get \
-              --url "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/providers/$PROVIDER/locations/$locationName/capabilities?api-version=2021-12-01-preview" \
-              --query "supportedFlexibleServerEditions[].{Edition:name, Skus:supportedServerVersions[].supportedSkus[].name}" \
-              -o table 2>/dev/null || echo "  (No SKU data or unsupported API)"
-          done
-        fi
-        echo "::endgroup::"
+            $regions = (Get-AzResourceProvider -ProviderNamespace $provider |
+              Where-Object { $_.ResourceTypes.ResourceTypeName -eq $resourceType } |
+              Select-Object -ExpandProperty ResourceTypes |
+              Where-Object { $_.ResourceTypeName -eq $resourceType }).Locations
+
+            Write-Output "Available regions: $($regions.Count)"
+
+            $hasAnySkus = $false
+            foreach ($region in $regions) {
+              $location = ($region -replace '\s','').ToLower()
+              $subId = $sub.Id
+
+              # Try multiple API versions for capabilities
+              $capabilities = $null
+              $apiVersions = @('2023-12-30', '2023-06-30', '2021-12-01-preview')
+              foreach ($api in $apiVersions) {
+                try {
+                  $uri = "https://management.azure.com/subscriptions/$subId/providers/$provider/locations/$location/capabilities?api-version=$api"
+                  $response = Invoke-AzRestMethod -Uri $uri -Method GET -ErrorAction SilentlyContinue
+                  if ($response.StatusCode -eq 200) {
+                    $parsed = $response.Content | ConvertFrom-Json
+                    # Handle both response shapes: .value[] and .supportedFlexibleServerEditions[]
+                    $editions = if ($parsed.value) { $parsed.value } elseif ($parsed.supportedFlexibleServerEditions) { $parsed.supportedFlexibleServerEditions } else { $null }
+                    if ($editions -and $editions.Count -gt 0) {
+                      $capabilities = $editions
+                      break
+                    }
+                  }
+                } catch { continue }
+              }
+
+              if ($capabilities) {
+                $hasAnySkus = $true
+                Write-Output ""
+                Write-Output "--- Region: $region ($location) ---"
+                foreach ($edition in $capabilities) {
+                  $edName = if ($edition.name) { $edition.name } else { 'N/A' }
+                  $versions = if ($edition.supportedServerVersions) { $edition.supportedServerVersions } elseif ($edition.supportedEditions) { $edition.supportedEditions } else { @() }
+                  foreach ($ver in $versions) {
+                    $verName = if ($ver.name) { $ver.name } else { 'N/A' }
+                    $skus = if ($ver.supportedSkus) { $ver.supportedSkus } else { @() }
+                    foreach ($sku in $skus) {
+                      Write-Output "  Edition: $edName | Version: $verName | SKU: $($sku.name) | vCores: $($sku.supportedVcores)"
+                    }
+                  }
+                }
+              }
+            }
+
+            if (-not $hasAnySkus) {
+              Write-Warning "============================================================"
+              Write-Warning "No SKUs available in any region for $provider/$resourceType"
+              Write-Warning "on subscription: $($sub.Name) ($($sub.Id))"
+              Write-Warning "You may need to request a quota increase via Azure Portal"
+              Write-Warning "> Subscriptions > Usage + Quotas."
+              Write-Warning "============================================================"
+            }
+          }
+
+          Write-Output '::endgroup::'
 
     # [Set Deployment Location] task(s)
     # ---------------------------
