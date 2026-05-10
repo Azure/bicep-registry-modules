@@ -50,46 +50,11 @@ jobs:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
     if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
-    permissions:
-      id-token: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: "Azure Login"
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
-          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
-          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
-      - name: "List MySQL Flexible Server SKUs per region"
-        shell: bash
-        run: |
-          echo "===================================="
-          echo "Fetching available regions for Microsoft.DBforMySQL/flexibleServers..."
-          echo "===================================="
-          regions=$(az provider show --namespace Microsoft.DBforMySQL \
-            --query "resourceTypes[?resourceType=='flexibleServers'].locations[]" -o tsv)
-          for region in $regions; do
-            locationName=$(echo "$region" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
-            echo ""
-            echo "====== Region: $region ($locationName) ======"
-            skus=$(az mysql flexible-server list-skus -l "$locationName" -o json 2>/dev/null || echo "[]")
-            if [ "$skus" = "[]" ]; then
-              echo "  No SKUs available"
-            else
-              echo "$skus" | jq -r '
-                .[] |
-                .supportedFlexibleServerEditions[]? |
-                .name as $edition |
-                .supportedServerVersions[]? |
-                .name as $version |
-                .supportedSkus[]? |
-                "  Edition: \($edition) | Version: \($version) | SKU: \(.name) | vCores: \(.supportedVcores)"
-              ' 2>/dev/null || echo "  Could not parse SKU data"
-            fi
-          done
       - name: "Set input parameters to output variables"
         id: get-workflow-param
         uses: ./.github/actions/templates/avm-getWorkflowInput

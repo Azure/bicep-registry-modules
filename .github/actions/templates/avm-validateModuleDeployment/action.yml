@@ -142,6 +142,45 @@ runs:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
+    # [List available SKUs] task(s)
+    # ---------------------------
+    - name: "List available SKUs per region"
+      if: env.skip_deployment_ci == 'false'
+      shell: bash
+      run: |
+        echo "::group::List available SKUs per region"
+        # Extract the resource provider from the module path (e.g., "db-for-my-sql" -> "Microsoft.DBforMySQL")
+        MODULE_PATH="${{ inputs.modulePath }}"
+
+        # Detect provider namespace from the template file
+        PROVIDER=$(az deployment sub validate --help > /dev/null 2>&1; \
+          grep -oP 'Microsoft\.\w+' "${{ inputs.templateFilePath }}" 2>/dev/null | head -1 || echo "")
+
+        if [ -z "$PROVIDER" ]; then
+          echo "Could not detect resource provider from template. Skipping SKU listing."
+        else
+          echo "===================================="
+          echo "Provider: $PROVIDER"
+          echo "===================================="
+          RESOURCE_TYPE=$(az provider show --namespace "$PROVIDER" \
+            --query "resourceTypes[0].resourceType" -o tsv 2>/dev/null || echo "")
+          REGIONS=$(az provider show --namespace "$PROVIDER" \
+            --query "resourceTypes[0].locations[]" -o tsv 2>/dev/null || echo "")
+          SUBSCRIPTION=$(az account show --query "name" -o tsv 2>/dev/null || echo "unknown")
+          echo "Subscription: $SUBSCRIPTION"
+          echo "Resource Type: $PROVIDER/$RESOURCE_TYPE"
+          echo ""
+          for region in $REGIONS; do
+            locationName=$(echo "$region" | tr '[:upper:]' '[:lower:]' | tr -d ' ')
+            echo "--- Region: $region ($locationName) ---"
+            az rest --method get \
+              --url "https://management.azure.com/subscriptions/$(az account show --query id -o tsv)/providers/$PROVIDER/locations/$locationName/capabilities?api-version=2021-12-01-preview" \
+              --query "supportedFlexibleServerEditions[].{Edition:name, Skus:supportedServerVersions[].supportedSkus[].name}" \
+              -o table 2>/dev/null || echo "  (No SKU data or unsupported API)"
+          done
+        fi
+        echo "::endgroup::"
+
     # [Set Deployment Location] task(s)
     # ---------------------------
     - name: "Get Resource Location"
