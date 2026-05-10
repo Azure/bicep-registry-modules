@@ -29,9 +29,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param backupManagementServiceEnterpriseApplicationObjectId string = ''
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = utcNow('u')
-
 // ============ //
 // Dependencies //
 // ============ //
