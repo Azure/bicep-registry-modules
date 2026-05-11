@@ -1,6 +1,9 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Cluster Agent Pools'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param managedClusterName string
 
@@ -163,6 +166,25 @@ param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/a
 
 @description('Optional. Virtual Machines resource status.')
 param virtualMachinesProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.virtualMachinesProfile?
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.consvc-mgdcluster-agentpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' existing = {
   name: managedClusterName

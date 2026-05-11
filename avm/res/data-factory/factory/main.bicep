@@ -99,6 +99,18 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
+// For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, the Data Factory's system assigned identity is required to perform the role assignment on the linked resource.
+// https://learn.microsoft.com/en-us/azure/data-factory/create-shared-self-hosted-integration-runtime-powershell#known-limitations-of-self-hosted-ir-sharing
+var sharedSelfHostedIntegrationRuntimes = filter(
+  integrationRuntimes ?? [],
+  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
+)
+
+// Validate that a system-assigned managed identity is enabled when one or more shared Self-Hosted Integration Runtimes with RBAC authorization are configured, since the Data Factory's system-assigned identity is required to perform the role assignment on the linked resource.
+var sharedSHIRRequiresSystemAssignedIdentity = !empty(sharedSelfHostedIntegrationRuntimes) && !(managedIdentities.?systemAssigned ?? false)
+  ? fail('When one or more Self-Hosted Integration Runtimes are configured with a linked resource using RBAC authorization (shared SHIR), a system-assigned managed identity must be enabled on the Data Factory by setting \'managedIdentities.systemAssigned\' to true.')
+  : null
+
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
@@ -249,6 +261,24 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
   }
 }
 
+// The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
+module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: {
+    name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    scope: resourceGroup(
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[4]
+    )
+    params: {
+      principalId: dataFactory.?identity.?principalId ?? sharedSHIRRequiresSystemAssignedIdentity
+      roleDefinitionId: sharedSelfHostedIntegrationRuntime.?linkedResourceRoleDefinitionId ?? roleDefinitions('Contributor').id // Defaults to Contributor role for shared SHIR
+      principalType: 'ServicePrincipal'
+      resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
   for (integrationRuntime, index) in (integrationRuntimes ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
@@ -263,6 +293,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
+      dataFactory_roleAssignmentsSharedSHIR
     ]
   }
 ]
@@ -454,6 +485,9 @@ type integrationRuntimesType = {
 
   @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
   typeProperties: object?
+
+  @description('Optional. The role definition ID (GUID or full resource ID) to assign to the Data Factory\'s system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.')
+  linkedResourceRoleDefinitionId: string?
 }
 
 @export()
