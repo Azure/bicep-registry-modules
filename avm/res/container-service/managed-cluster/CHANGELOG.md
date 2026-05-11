@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.13.1
+
+### Changes
+
+- Publishing child module `avm/res/container-service/managed-cluster/agent-pool`
+- Publishing child module `avm/res/container-service/managed-cluster/maintenance-configuration`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes
