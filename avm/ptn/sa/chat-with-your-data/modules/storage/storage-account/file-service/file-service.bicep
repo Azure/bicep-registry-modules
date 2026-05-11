@@ -9,10 +9,10 @@ param storageAccountName string
 param name string = 'default'
 
 @description('Optional. Protocol settings for file service.')
-param protocolSettings resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.protocolSettings = {}
+param protocolSettings resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2025-08-01'>.properties.protocolSettings = {}
 
 @description('Optional. The service properties for soft delete.')
-param shareDeleteRetentionPolicy resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.shareDeleteRetentionPolicy = {
+param shareDeleteRetentionPolicy resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2025-08-01'>.properties.shareDeleteRetentionPolicy = {
   enabled: true
   days: 7
 }
@@ -24,11 +24,11 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2025-08-01' = {
   name: name
   parent: storageAccount
   properties: {

@@ -68,9 +68,14 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
       backupConfig: {
-        enhancedSecurityState: 'Disabled'
-        softDeleteFeatureState: 'Disabled'
+        enhancedSecurityState: 'AlwaysON'
+        softDeleteFeatureState: 'AlwaysON'
       }
       backupPolicies: [
         {
@@ -407,9 +412,16 @@ module testDeployment '../../../main.bicep' = [
         autoRotationEnabled: true
       }
       softDeleteSettings: {
-        enhancedSecurityState: 'Enabled'
+        enhancedSecurityState: 'AlwaysON'
         softDeleteRetentionPeriodInDays: 14
-        softDeleteState: 'Enabled'
+        softDeleteState: 'AlwaysON'
+      }
+      sourceScanConfiguration: {
+        state: 'Enabled'
+        sourceScanIdentity: {
+          operationIdentityType: 'UserAssigned'
+          userAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
+        }
       }
     }
   }

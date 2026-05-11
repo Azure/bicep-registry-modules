@@ -26,17 +26,17 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.RecoveryServices/vaults` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupconfig` | 2023-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupconfig)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupPolicies` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-10-01/vaults/backupPolicies)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationalertsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationAlertSettings)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/replicationFabrics` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics_replicationprotectioncontainers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics/replicationProtectionContainers)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics_replicationprotectioncontainers_replicationprotectioncontainermappings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2022-10-01/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/replicationPolicies` | 2023-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-06-01/vaults/replicationPolicies)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.RecoveryServices/vaults` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupconfig` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupconfig)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupPolicies` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupPolicies)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationalertsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationAlertSettings)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/replicationFabrics` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationFabrics)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics_replicationprotectioncontainers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationFabrics/replicationProtectionContainers)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationfabrics_replicationprotectioncontainers_replicationprotectioncontainermappings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/replicationPolicies` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationPolicies)</li></ul> |
 
 ## Usage examples
 
@@ -262,7 +262,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   params: {
+    // Required parameters
     name: 'rsvmin001'
+    // Non-required parameters
+    immutabilitySettingState: 'Unlocked'
   }
 }
 ```
@@ -279,8 +282,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "rsvmin001"
+    },
+    // Non-required parameters
+    "immutabilitySettingState": {
+      "value": "Unlocked"
     }
   }
 }
@@ -296,7 +304,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/recovery-services/vault:<version>'
 
+// Required parameters
 param name = 'rsvmin001'
+// Non-required parameters
+param immutabilitySettingState = 'Unlocked'
 ```
 
 </details>
@@ -549,8 +560,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     name: 'rsvmax001'
     // Non-required parameters
     backupConfig: {
-      enhancedSecurityState: 'Disabled'
-      softDeleteFeatureState: 'Disabled'
+      enhancedSecurityState: 'AlwaysON'
+      softDeleteFeatureState: 'AlwaysON'
     }
     backupPolicies: [
       {
@@ -917,9 +928,16 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       }
     ]
     softDeleteSettings: {
-      enhancedSecurityState: 'Enabled'
+      enhancedSecurityState: 'AlwaysON'
       softDeleteRetentionPeriodInDays: 14
-      softDeleteState: 'Enabled'
+      softDeleteState: 'AlwaysON'
+    }
+    sourceScanConfiguration: {
+      sourceScanIdentity: {
+        operationIdentityType: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+      state: 'Enabled'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -949,8 +967,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     "backupConfig": {
       "value": {
-        "enhancedSecurityState": "Disabled",
-        "softDeleteFeatureState": "Disabled"
+        "enhancedSecurityState": "AlwaysON",
+        "softDeleteFeatureState": "AlwaysON"
       }
     },
     "backupPolicies": {
@@ -1343,9 +1361,18 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     },
     "softDeleteSettings": {
       "value": {
-        "enhancedSecurityState": "Enabled",
+        "enhancedSecurityState": "AlwaysON",
         "softDeleteRetentionPeriodInDays": 14,
-        "softDeleteState": "Enabled"
+        "softDeleteState": "AlwaysON"
+      }
+    },
+    "sourceScanConfiguration": {
+      "value": {
+        "sourceScanIdentity": {
+          "operationIdentityType": "UserAssigned",
+          "userAssignedIdentity": "<userAssignedIdentity>"
+        },
+        "state": "Enabled"
       }
     },
     "tags": {
@@ -1373,8 +1400,8 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 param name = 'rsvmax001'
 // Non-required parameters
 param backupConfig = {
-  enhancedSecurityState: 'Disabled'
-  softDeleteFeatureState: 'Disabled'
+  enhancedSecurityState: 'AlwaysON'
+  softDeleteFeatureState: 'AlwaysON'
 }
 param backupPolicies = [
   {
@@ -1741,9 +1768,16 @@ param roleAssignments = [
   }
 ]
 param softDeleteSettings = {
-  enhancedSecurityState: 'Enabled'
+  enhancedSecurityState: 'AlwaysON'
   softDeleteRetentionPeriodInDays: 14
-  softDeleteState: 'Enabled'
+  softDeleteState: 'AlwaysON'
+}
+param sourceScanConfiguration = {
+  sourceScanIdentity: {
+    operationIdentityType: 'UserAssigned'
+    userAssignedIdentity: '<userAssignedIdentity>'
+  }
+  state: 'Enabled'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -1773,8 +1807,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     name: 'rsvwaf001'
     // Non-required parameters
     backupConfig: {
-      enhancedSecurityState: 'Disabled'
-      softDeleteFeatureState: 'Disabled'
+      enhancedSecurityState: 'AlwaysON'
+      softDeleteFeatureState: 'AlwaysON'
     }
     backupPolicies: [
       {
@@ -2111,9 +2145,21 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       sendToOwners: 'Send'
     }
     softDeleteSettings: {
-      enhancedSecurityState: 'Enabled'
+      enhancedSecurityState: 'AlwaysON'
       softDeleteRetentionPeriodInDays: 14
-      softDeleteState: 'Enabled'
+      softDeleteState: 'AlwaysON'
+    }
+    sourceScanConfiguration: {
+      sourceScanIdentity: {
+        operationIdentityType: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+      state: 'Enabled'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
   }
 }
@@ -2138,8 +2184,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     "backupConfig": {
       "value": {
-        "enhancedSecurityState": "Disabled",
-        "softDeleteFeatureState": "Disabled"
+        "enhancedSecurityState": "AlwaysON",
+        "softDeleteFeatureState": "AlwaysON"
       }
     },
     "backupPolicies": {
@@ -2494,9 +2540,25 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     },
     "softDeleteSettings": {
       "value": {
-        "enhancedSecurityState": "Enabled",
+        "enhancedSecurityState": "AlwaysON",
         "softDeleteRetentionPeriodInDays": 14,
-        "softDeleteState": "Enabled"
+        "softDeleteState": "AlwaysON"
+      }
+    },
+    "sourceScanConfiguration": {
+      "value": {
+        "sourceScanIdentity": {
+          "operationIdentityType": "UserAssigned",
+          "userAssignedIdentity": "<userAssignedIdentity>"
+        },
+        "state": "Enabled"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
       }
     }
   }
@@ -2517,8 +2579,8 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 param name = 'rsvwaf001'
 // Non-required parameters
 param backupConfig = {
-  enhancedSecurityState: 'Disabled'
-  softDeleteFeatureState: 'Disabled'
+  enhancedSecurityState: 'AlwaysON'
+  softDeleteFeatureState: 'AlwaysON'
 }
 param backupPolicies = [
   {
@@ -2855,9 +2917,21 @@ param replicationAlertSettings = {
   sendToOwners: 'Send'
 }
 param softDeleteSettings = {
-  enhancedSecurityState: 'Enabled'
+  enhancedSecurityState: 'AlwaysON'
   softDeleteRetentionPeriodInDays: 14
-  softDeleteState: 'Enabled'
+  softDeleteState: 'AlwaysON'
+}
+param sourceScanConfiguration = {
+  sourceScanIdentity: {
+    operationIdentityType: 'UserAssigned'
+    userAssignedIdentity: '<userAssignedIdentity>'
+  }
+  state: 'Enabled'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -2893,9 +2967,11 @@ param softDeleteSettings = {
 | [`replicationAlertSettings`](#parameter-replicationalertsettings) | object | Replication alert settings. |
 | [`replicationFabrics`](#parameter-replicationfabrics) | array | List of all replication fabrics. |
 | [`replicationPolicies`](#parameter-replicationpolicies) | array | List of all replication policies. |
+| [`resourceGuardOperationRequests`](#parameter-resourceguardoperationrequests) | array | ResourceGuard operation requests on which LAC check will be performed. |
 | [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`softDeleteSettings`](#parameter-softdeletesettings) | object | The soft delete related settings. |
+| [`sourceScanConfiguration`](#parameter-sourcescanconfiguration) | object | The source scan configuration of the vault security settings. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
 
 ### Parameter: `name`
@@ -2934,6 +3010,7 @@ Enable this setting to protect hybrid backups against accidental deletes and add
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]
@@ -2969,6 +3046,7 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
 - Allowed:
   ```Bicep
   [
+    'AlwaysON'
     'Disabled'
     'Enabled'
   ]
@@ -4319,6 +4397,13 @@ The duration in minutes until which the recovery points need to be stored.
 - Required: No
 - Type: int
 
+### Parameter: `resourceGuardOperationRequests`
+
+ResourceGuard operation requests on which LAC check will be performed.
+
+- Required: No
+- Type: array
+
 ### Parameter: `restoreSettings`
 
 The restore settings of the vault.
@@ -4515,6 +4600,80 @@ The soft delete state.
   ]
   ```
 
+### Parameter: `sourceScanConfiguration`
+
+The source scan configuration of the vault security settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`state`](#parameter-sourcescanconfigurationstate) | string | The source scan state. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sourceScanIdentity`](#parameter-sourcescanconfigurationsourcescanidentity) | object | Identity details to be used for the source scan operation. |
+
+### Parameter: `sourceScanConfiguration.state`
+
+The source scan state.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'Invalid'
+  ]
+  ```
+
+### Parameter: `sourceScanConfiguration.sourceScanIdentity`
+
+Identity details to be used for the source scan operation.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`operationIdentityType`](#parameter-sourcescanconfigurationsourcescanidentityoperationidentitytype) | string | Identity type that should be used for an operation. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-sourcescanconfigurationsourcescanidentityuserassignedidentity) | string | User assigned identity to be used for an operation if operationIdentityType is UserAssigned. |
+
+### Parameter: `sourceScanConfiguration.sourceScanIdentity.operationIdentityType`
+
+Identity type that should be used for an operation.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
+
+### Parameter: `sourceScanConfiguration.sourceScanIdentity.userAssignedIdentity`
+
+User assigned identity to be used for an operation if operationIdentityType is UserAssigned.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the Recovery Service Vault resource.
@@ -4539,7 +4698,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

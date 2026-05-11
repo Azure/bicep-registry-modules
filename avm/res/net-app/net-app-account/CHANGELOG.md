@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/CHANGELOG.md).
 
+## 0.12.1
+
+### Changes
+
+- Publishing child modules: `backup-policy`, `backup-vault`, `backup-vault/backup`, `capacity-pool`, `capacity-pool/volume`, `snapshot-policy`
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes

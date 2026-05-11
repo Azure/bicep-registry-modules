@@ -262,6 +262,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
       containers: storageInsightsConfig.?containers
       tables: storageInsightsConfig.?tables
       storageAccountResourceId: storageInsightsConfig.storageAccountResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -274,6 +275,7 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
       name: linkedService.name
       resourceId: linkedService.?resourceId
       writeAccessResourceId: linkedService.?writeAccessResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -285,6 +287,7 @@ module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
       storageAccountIds: linkedStorageAccount.storageAccountIds
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -303,6 +306,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
       functionParameters: savedSearch.?functionParameters
       tags: savedSearch.?tags
       version: savedSearch.?version
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       logAnalyticsWorkspace_linkedStorageAccounts
@@ -319,6 +323,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
       destination: dataExport.?destination
       enable: dataExport.?enable
       tableNames: dataExport.?tableNames
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -342,6 +347,7 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
       syslogSeverities: dataSource.?syslogSeverities
       performanceCounters: dataSource.?performanceCounters
       tags: dataSource.?tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -359,6 +365,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
       restoredLogs: table.?restoredLogs
       searchResults: table.?searchResults
       roleAssignments: table.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
