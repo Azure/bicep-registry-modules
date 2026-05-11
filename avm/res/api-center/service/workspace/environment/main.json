@@ -1,0 +1,134 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "3183586568368156957"
+    },
+    "name": "API Center Service Workspace Environments",
+    "description": "This module deploys an API Center Service Workspace Environment."
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the environment."
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The title of the environment."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "development",
+        "testing",
+        "staging",
+        "production"
+      ],
+      "metadata": {
+        "description": "Required. The kind of environment."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the environment."
+      }
+    },
+    "customProperties": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The custom metadata properties for the environment."
+      }
+    },
+    "server": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Server information of the environment."
+      }
+    },
+    "onboarding": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Onboarding information for the environment."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "environment": {
+      "type": "Microsoft.ApiCenter/services/workspaces/environments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "kind": "[parameters('kind')]",
+        "description": "[parameters('description')]",
+        "customProperties": "[parameters('customProperties')]",
+        "server": "[parameters('server')]",
+        "onboarding": "[parameters('onboarding')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the environment."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the environment."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/environments', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the environment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

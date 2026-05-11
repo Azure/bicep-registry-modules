@@ -1,0 +1,155 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "17354807100696112228"
+    },
+    "name": "API Center Service Workspace API Deployments",
+    "description": "This module deploys an API Center Service Workspace API Deployment."
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the deployment."
+      }
+    },
+    "title": {
+      "type": "string",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Optional. The title of the deployment."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 500,
+      "metadata": {
+        "description": "Optional. The description of the deployment."
+      }
+    },
+    "environmentId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The API center-scoped environment resource ID."
+      }
+    },
+    "definitionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The API center-scoped definition resource ID."
+      }
+    },
+    "state": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "active",
+        "inactive"
+      ],
+      "metadata": {
+        "description": "Optional. The state of the API deployment."
+      }
+    },
+    "customProperties": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The custom metadata properties for the deployment."
+      }
+    },
+    "server": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The server information of the deployment."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace::api": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces/apis",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'))]"
+    },
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "apiDeployment": {
+      "type": "Microsoft.ApiCenter/services/workspaces/apis/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "description": "[parameters('description')]",
+        "environmentId": "[parameters('environmentId')]",
+        "definitionId": "[parameters('definitionId')]",
+        "state": "[parameters('state')]",
+        "customProperties": "[parameters('customProperties')]",
+        "server": "[parameters('server')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API deployment."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API deployment."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/deployments', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the API deployment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

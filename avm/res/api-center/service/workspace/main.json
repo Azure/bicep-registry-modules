@@ -1,0 +1,1706 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "2803546800176326781"
+    },
+    "name": "API Center Service Workspaces",
+    "description": "This module deploys an API Center Service Workspace."
+  },
+  "definitions": {
+    "environmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 90,
+          "metadata": {
+            "description": "Required. The name of the environment."
+          }
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "metadata": {
+            "description": "Required. The title of the environment."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "development",
+            "production",
+            "staging",
+            "testing"
+          ],
+          "metadata": {
+            "description": "Required. The kind of environment."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the environment."
+          }
+        },
+        "customProperties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom metadata properties for the environment."
+          }
+        },
+        "server": {
+          "type": "object",
+          "properties": {
+            "managementPortalUri": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The management portal URIs."
+              }
+            },
+            "type": {
+              "type": "string",
+              "allowedValues": [
+                "AWS API Gateway",
+                "Apigee API Management",
+                "Azure API Management",
+                "Azure compute service",
+                "Kong API Gateway",
+                "Kubernetes",
+                "MuleSoft API Management"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The type of server."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Server information of the environment."
+          }
+        },
+        "onboarding": {
+          "type": "object",
+          "properties": {
+            "developerPortalUri": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The developer portal URIs."
+              }
+            },
+            "instructions": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Onboarding instructions."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Onboarding information for the environment."
+          }
+        }
+      }
+    },
+    "apiType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 90,
+          "metadata": {
+            "description": "Required. The name of the API."
+          }
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "metadata": {
+            "description": "Required. The title of the API."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "graphql",
+            "grpc",
+            "rest",
+            "soap",
+            "webhook",
+            "websocket"
+          ],
+          "metadata": {
+            "description": "Required. The kind of API."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 1000,
+          "metadata": {
+            "description": "Optional. The description of the API."
+          }
+        },
+        "summary": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 200,
+          "metadata": {
+            "description": "Optional. Short description of the API."
+          }
+        },
+        "customProperties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom metadata properties for the API."
+          }
+        },
+        "externalDocumentation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "maxLength": 200,
+                "metadata": {
+                  "description": "Required. The URL of the documentation."
+                }
+              },
+              "title": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 50,
+                "metadata": {
+                  "description": "Optional. The title of the documentation."
+                }
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 500,
+                "metadata": {
+                  "description": "Optional. The description of the documentation."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The external documentation for the API."
+          }
+        },
+        "contacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 100,
+                "metadata": {
+                  "description": "Optional. The name of the contact."
+                }
+              },
+              "email": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 100,
+                "metadata": {
+                  "description": "Optional. The email of the contact."
+                }
+              },
+              "url": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 200,
+                "metadata": {
+                  "description": "Optional. The URL of the contact."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The contacts for the API."
+          }
+        },
+        "license": {
+          "type": "object",
+          "properties": {
+            "identifier": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Optional. SPDX license identifier."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 100,
+              "metadata": {
+                "description": "Optional. The name of the license."
+              }
+            },
+            "url": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 200,
+              "metadata": {
+                "description": "Optional. The URL of the license."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The license information for the API."
+          }
+        },
+        "termsOfService": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "maxLength": 200,
+              "metadata": {
+                "description": "Required. The URL of the terms of service."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The terms of service for the API."
+          }
+        },
+        "versions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 90,
+                "metadata": {
+                  "description": "Required. The name of the version."
+                }
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 50,
+                "metadata": {
+                  "description": "Required. The title of the version."
+                }
+              },
+              "lifecycleStage": {
+                "type": "string",
+                "allowedValues": [
+                  "deprecated",
+                  "design",
+                  "development",
+                  "preview",
+                  "production",
+                  "retired",
+                  "testing"
+                ],
+                "metadata": {
+                  "description": "Required. The lifecycle stage of the version."
+                }
+              },
+              "definitions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 90,
+                      "metadata": {
+                        "description": "Required. The name of the definition."
+                      }
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 50,
+                      "metadata": {
+                        "description": "Required. The title of the definition."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The description of the definition."
+                      }
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The definitions to create for the version."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The versions to create for the API."
+          }
+        },
+        "deployments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 90,
+                "metadata": {
+                  "description": "Required. The name of the deployment."
+                }
+              },
+              "title": {
+                "type": "string",
+                "nullable": true,
+                "minLength": 1,
+                "maxLength": 50,
+                "metadata": {
+                  "description": "Optional. The title of the deployment."
+                }
+              },
+              "description": {
+                "type": "string",
+                "nullable": true,
+                "maxLength": 500,
+                "metadata": {
+                  "description": "Optional. The description of the deployment."
+                }
+              },
+              "environmentId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The environment ID of the deployment."
+                }
+              },
+              "definitionId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The definition ID of the deployment."
+                }
+              },
+              "state": {
+                "type": "string",
+                "allowedValues": [
+                  "active",
+                  "inactive"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The state of the deployment."
+                }
+              },
+              "customProperties": {
+                "type": "object",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The custom metadata properties for the deployment."
+                }
+              },
+              "server": {
+                "type": "object",
+                "properties": {
+                  "runtimeUri": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The runtime URIs."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The server information of the deployment."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The deployments to create for the API."
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the workspace."
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The title of the workspace."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the workspace."
+      }
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/environmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The environments to create in the workspace."
+      }
+    },
+    "apis": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/apiType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The APIs to create in the workspace."
+      }
+    }
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "workspace": {
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "description": "[parameters('description')]"
+      }
+    },
+    "workspace_environments": {
+      "copy": {
+        "name": "workspace_environments",
+        "count": "[length(coalesce(parameters('environments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Workspace-Environment-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serviceName": {
+            "value": "[parameters('serviceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('environments'), createArray())[copyIndex()].name]"
+          },
+          "title": {
+            "value": "[coalesce(parameters('environments'), createArray())[copyIndex()].title]"
+          },
+          "kind": {
+            "value": "[coalesce(parameters('environments'), createArray())[copyIndex()].kind]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('environments'), createArray())[copyIndex()], 'description')]"
+          },
+          "customProperties": {
+            "value": "[tryGet(coalesce(parameters('environments'), createArray())[copyIndex()], 'customProperties')]"
+          },
+          "server": {
+            "value": "[tryGet(coalesce(parameters('environments'), createArray())[copyIndex()], 'server')]"
+          },
+          "onboarding": {
+            "value": "[tryGet(coalesce(parameters('environments'), createArray())[copyIndex()], 'onboarding')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "3183586568368156957"
+            },
+            "name": "API Center Service Workspace Environments",
+            "description": "This module deploys an API Center Service Workspace Environment."
+          },
+          "parameters": {
+            "serviceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 90,
+              "metadata": {
+                "description": "Required. The name of the environment."
+              }
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Required. The title of the environment."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "allowedValues": [
+                "development",
+                "testing",
+                "staging",
+                "production"
+              ],
+              "metadata": {
+                "description": "Required. The kind of environment."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The description of the environment."
+              }
+            },
+            "customProperties": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The custom metadata properties for the environment."
+              }
+            },
+            "server": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Server information of the environment."
+              }
+            },
+            "onboarding": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Onboarding information for the environment."
+              }
+            }
+          },
+          "resources": {
+            "service::workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiCenter/services/workspaces",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+            },
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiCenter/services",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('serviceName')]"
+            },
+            "environment": {
+              "type": "Microsoft.ApiCenter/services/workspaces/environments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+              "properties": {
+                "title": "[parameters('title')]",
+                "kind": "[parameters('kind')]",
+                "description": "[parameters('description')]",
+                "customProperties": "[parameters('customProperties')]",
+                "server": "[parameters('server')]",
+                "onboarding": "[parameters('onboarding')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the environment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the environment."
+              },
+              "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/environments', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the environment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
+    },
+    "workspace_apis": {
+      "copy": {
+        "name": "workspace_apis",
+        "count": "[length(coalesce(parameters('apis'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Workspace-Api-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serviceName": {
+            "value": "[parameters('serviceName')]"
+          },
+          "workspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('apis'), createArray())[copyIndex()].name]"
+          },
+          "title": {
+            "value": "[coalesce(parameters('apis'), createArray())[copyIndex()].title]"
+          },
+          "kind": {
+            "value": "[coalesce(parameters('apis'), createArray())[copyIndex()].kind]"
+          },
+          "description": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'description')]"
+          },
+          "summary": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'summary')]"
+          },
+          "customProperties": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'customProperties')]"
+          },
+          "externalDocumentation": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'externalDocumentation')]"
+          },
+          "contacts": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'contacts')]"
+          },
+          "license": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'license')]"
+          },
+          "termsOfService": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'termsOfService')]"
+          },
+          "versions": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'versions')]"
+          },
+          "deployments": {
+            "value": "[tryGet(coalesce(parameters('apis'), createArray())[copyIndex()], 'deployments')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "7471144215575073864"
+            },
+            "name": "API Center Service Workspace APIs",
+            "description": "This module deploys an API Center Service Workspace API."
+          },
+          "definitions": {
+            "versionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 90,
+                  "metadata": {
+                    "description": "Required. The name of the version."
+                  }
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50,
+                  "metadata": {
+                    "description": "Required. The title of the version."
+                  }
+                },
+                "lifecycleStage": {
+                  "type": "string",
+                  "allowedValues": [
+                    "deprecated",
+                    "design",
+                    "development",
+                    "preview",
+                    "production",
+                    "retired",
+                    "testing"
+                  ],
+                  "metadata": {
+                    "description": "Required. The lifecycle stage of the version."
+                  }
+                },
+                "definitions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 90,
+                        "metadata": {
+                          "description": "Required. The name of the definition."
+                        }
+                      },
+                      "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 50,
+                        "metadata": {
+                          "description": "Required. The title of the definition."
+                        }
+                      },
+                      "description": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The description of the definition."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The definitions to create for the version."
+                  }
+                }
+              }
+            },
+            "deploymentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 90,
+                  "metadata": {
+                    "description": "Required. The name of the deployment."
+                  }
+                },
+                "title": {
+                  "type": "string",
+                  "nullable": true,
+                  "minLength": 1,
+                  "maxLength": 50,
+                  "metadata": {
+                    "description": "Optional. The title of the deployment."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "maxLength": 500,
+                  "metadata": {
+                    "description": "Optional. The description of the deployment."
+                  }
+                },
+                "environmentId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The environment ID of the deployment."
+                  }
+                },
+                "definitionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The definition ID of the deployment."
+                  }
+                },
+                "state": {
+                  "type": "string",
+                  "allowedValues": [
+                    "active",
+                    "inactive"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The state of the deployment."
+                  }
+                },
+                "customProperties": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The custom metadata properties for the deployment."
+                  }
+                },
+                "server": {
+                  "type": "object",
+                  "properties": {
+                    "runtimeUri": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The runtime URIs."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The server information of the deployment."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "serviceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "workspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 90,
+              "metadata": {
+                "description": "Required. The name of the API."
+              }
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Required. The title of the API."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "allowedValues": [
+                "rest",
+                "graphql",
+                "grpc",
+                "soap",
+                "webhook",
+                "websocket"
+              ],
+              "metadata": {
+                "description": "Required. The kind of API."
+              }
+            },
+            "description": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 1000,
+              "metadata": {
+                "description": "Optional. The description of the API."
+              }
+            },
+            "summary": {
+              "type": "string",
+              "nullable": true,
+              "maxLength": 200,
+              "metadata": {
+                "description": "Optional. Short description of the API."
+              }
+            },
+            "customProperties": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The custom metadata properties for the API."
+              }
+            },
+            "externalDocumentation": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The external documentation for the API."
+              }
+            },
+            "contacts": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The contacts for the API."
+              }
+            },
+            "license": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The license information for the API."
+              }
+            },
+            "termsOfService": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The terms of service for the API."
+              }
+            },
+            "versions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/versionType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The versions to create for the API."
+              }
+            },
+            "deployments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/deploymentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The deployments to create for the API."
+              }
+            }
+          },
+          "resources": {
+            "service::workspace": {
+              "existing": true,
+              "type": "Microsoft.ApiCenter/services/workspaces",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+            },
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiCenter/services",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('serviceName')]"
+            },
+            "api": {
+              "type": "Microsoft.ApiCenter/services/workspaces/apis",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+              "properties": {
+                "title": "[parameters('title')]",
+                "kind": "[parameters('kind')]",
+                "description": "[parameters('description')]",
+                "summary": "[parameters('summary')]",
+                "customProperties": "[parameters('customProperties')]",
+                "externalDocumentation": "[parameters('externalDocumentation')]",
+                "contacts": "[parameters('contacts')]",
+                "license": "[parameters('license')]",
+                "termsOfService": "[parameters('termsOfService')]"
+              }
+            },
+            "api_versions": {
+              "copy": {
+                "name": "api_versions",
+                "count": "[length(coalesce(parameters('versions'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Api-Version-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "serviceName": {
+                    "value": "[parameters('serviceName')]"
+                  },
+                  "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                  },
+                  "apiName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('versions'), createArray())[copyIndex()].name]"
+                  },
+                  "title": {
+                    "value": "[coalesce(parameters('versions'), createArray())[copyIndex()].title]"
+                  },
+                  "lifecycleStage": {
+                    "value": "[coalesce(parameters('versions'), createArray())[copyIndex()].lifecycleStage]"
+                  },
+                  "definitions": {
+                    "value": "[tryGet(coalesce(parameters('versions'), createArray())[copyIndex()], 'definitions')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.43.8.12551",
+                      "templateHash": "14863620571280892087"
+                    },
+                    "name": "API Center Service Workspace API Versions",
+                    "description": "This module deploys an API Center Service Workspace API Version."
+                  },
+                  "definitions": {
+                    "definitionType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "minLength": 3,
+                          "maxLength": 90,
+                          "metadata": {
+                            "description": "Required. The name of the definition."
+                          }
+                        },
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 50,
+                          "metadata": {
+                            "description": "Required. The title of the definition."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the definition."
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "serviceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "workspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "apiName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 90,
+                      "metadata": {
+                        "description": "Required. The name of the API version."
+                      }
+                    },
+                    "title": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 50,
+                      "metadata": {
+                        "description": "Required. The title of the API version."
+                      }
+                    },
+                    "lifecycleStage": {
+                      "type": "string",
+                      "allowedValues": [
+                        "design",
+                        "development",
+                        "testing",
+                        "preview",
+                        "production",
+                        "deprecated",
+                        "retired"
+                      ],
+                      "metadata": {
+                        "description": "Required. The lifecycle stage of the API version."
+                      }
+                    },
+                    "definitions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/definitionType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The definitions to create for the API version."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "service::workspace::api": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services/workspaces/apis",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'))]"
+                    },
+                    "service::workspace": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services/workspaces",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+                    },
+                    "service": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services",
+                      "apiVersion": "2024-03-01",
+                      "name": "[parameters('serviceName')]"
+                    },
+                    "version": {
+                      "type": "Microsoft.ApiCenter/services/workspaces/apis/versions",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
+                      "properties": {
+                        "title": "[parameters('title')]",
+                        "lifecycleStage": "[parameters('lifecycleStage')]"
+                      }
+                    },
+                    "version_definitions": {
+                      "copy": {
+                        "name": "version_definitions",
+                        "count": "[length(coalesce(parameters('definitions'), createArray()))]"
+                      },
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('{0}-Version-Definition-{1}', uniqueString(deployment().name), copyIndex())]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "serviceName": {
+                            "value": "[parameters('serviceName')]"
+                          },
+                          "workspaceName": {
+                            "value": "[parameters('workspaceName')]"
+                          },
+                          "apiName": {
+                            "value": "[parameters('apiName')]"
+                          },
+                          "versionName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "name": {
+                            "value": "[coalesce(parameters('definitions'), createArray())[copyIndex()].name]"
+                          },
+                          "title": {
+                            "value": "[coalesce(parameters('definitions'), createArray())[copyIndex()].title]"
+                          },
+                          "description": {
+                            "value": "[tryGet(coalesce(parameters('definitions'), createArray())[copyIndex()], 'description')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.43.8.12551",
+                              "templateHash": "3710889989242840994"
+                            },
+                            "name": "API Center Service Workspace API Version Definitions",
+                            "description": "This module deploys an API Center Service Workspace API Version Definition."
+                          },
+                          "parameters": {
+                            "serviceName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "workspaceName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "apiName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "versionName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent API version. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 3,
+                              "maxLength": 90,
+                              "metadata": {
+                                "description": "Required. The name of the API definition."
+                              }
+                            },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1,
+                              "maxLength": 50,
+                              "metadata": {
+                                "description": "Required. The title of the API definition."
+                              }
+                            },
+                            "description": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The description of the API definition."
+                              }
+                            }
+                          },
+                          "resources": {
+                            "service::workspace::api::version": {
+                              "existing": true,
+                              "type": "Microsoft.ApiCenter/services/workspaces/apis/versions",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('{0}/{1}/{2}/{3}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'))]"
+                            },
+                            "service::workspace::api": {
+                              "existing": true,
+                              "type": "Microsoft.ApiCenter/services/workspaces/apis",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'))]"
+                            },
+                            "service::workspace": {
+                              "existing": true,
+                              "type": "Microsoft.ApiCenter/services/workspaces",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+                            },
+                            "service": {
+                              "existing": true,
+                              "type": "Microsoft.ApiCenter/services",
+                              "apiVersion": "2024-03-01",
+                              "name": "[parameters('serviceName')]"
+                            },
+                            "definition": {
+                              "type": "Microsoft.ApiCenter/services/workspaces/apis/versions/definitions",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('{0}/{1}/{2}/{3}/{4}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'), parameters('name'))]",
+                              "properties": {
+                                "title": "[parameters('title')]",
+                                "description": "[parameters('description')]"
+                              }
+                            }
+                          },
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the API definition."
+                              },
+                              "value": "[parameters('name')]"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the API definition."
+                              },
+                              "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/versions/definitions', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'), parameters('name'))]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the resource group the API definition was created in."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "version"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the API version."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the API version."
+                      },
+                      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/versions', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the API version was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "api"
+              ]
+            },
+            "api_deployments": {
+              "copy": {
+                "name": "api_deployments",
+                "count": "[length(coalesce(parameters('deployments'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-Api-Deployment-{1}', uniqueString(deployment().name), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "serviceName": {
+                    "value": "[parameters('serviceName')]"
+                  },
+                  "workspaceName": {
+                    "value": "[parameters('workspaceName')]"
+                  },
+                  "apiName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].name]"
+                  },
+                  "title": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'title')]"
+                  },
+                  "description": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'description')]"
+                  },
+                  "environmentId": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'environmentId')]"
+                  },
+                  "definitionId": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'definitionId')]"
+                  },
+                  "state": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'state')]"
+                  },
+                  "customProperties": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'customProperties')]"
+                  },
+                  "server": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'server')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.43.8.12551",
+                      "templateHash": "17354807100696112228"
+                    },
+                    "name": "API Center Service Workspace API Deployments",
+                    "description": "This module deploys an API Center Service Workspace API Deployment."
+                  },
+                  "parameters": {
+                    "serviceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "workspaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "apiName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 3,
+                      "maxLength": 90,
+                      "metadata": {
+                        "description": "Required. The name of the deployment."
+                      }
+                    },
+                    "title": {
+                      "type": "string",
+                      "nullable": true,
+                      "minLength": 1,
+                      "maxLength": 50,
+                      "metadata": {
+                        "description": "Optional. The title of the deployment."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true,
+                      "maxLength": 500,
+                      "metadata": {
+                        "description": "Optional. The description of the deployment."
+                      }
+                    },
+                    "environmentId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The API center-scoped environment resource ID."
+                      }
+                    },
+                    "definitionId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The API center-scoped definition resource ID."
+                      }
+                    },
+                    "state": {
+                      "type": "string",
+                      "nullable": true,
+                      "allowedValues": [
+                        "active",
+                        "inactive"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The state of the API deployment."
+                      }
+                    },
+                    "customProperties": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The custom metadata properties for the deployment."
+                      }
+                    },
+                    "server": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The server information of the deployment."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "service::workspace::api": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services/workspaces/apis",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'))]"
+                    },
+                    "service::workspace": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services/workspaces",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+                    },
+                    "service": {
+                      "existing": true,
+                      "type": "Microsoft.ApiCenter/services",
+                      "apiVersion": "2024-03-01",
+                      "name": "[parameters('serviceName')]"
+                    },
+                    "apiDeployment": {
+                      "type": "Microsoft.ApiCenter/services/workspaces/apis/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]",
+                      "properties": {
+                        "title": "[parameters('title')]",
+                        "description": "[parameters('description')]",
+                        "environmentId": "[parameters('environmentId')]",
+                        "definitionId": "[parameters('definitionId')]",
+                        "state": "[parameters('state')]",
+                        "customProperties": "[parameters('customProperties')]",
+                        "server": "[parameters('server')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the API deployment."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the API deployment."
+                      },
+                      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/deployments', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the API deployment was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "api"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API."
+              },
+              "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the API was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the workspace."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the workspace."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces', parameters('serviceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the workspace was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
