@@ -237,6 +237,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
       password: credential.password
       userName: credential.userName
       description: credential.?description
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -251,6 +252,7 @@ module automationAccount_modules 'module/main.bicep' = [
       uri: module.uri
       location: location
       tags: module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -265,6 +267,7 @@ module automationAccount_powershell72modules 'powershell72-module/main.bicep' = 
       uri: pwsh72module.uri
       location: pwsh72module.?location
       tags: pwsh72module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -278,6 +281,7 @@ module automationAccount_python3packages 'python3-package/main.bicep' = [
       version: python3package.version
       uri: python3package.uri
       tags: python3package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -291,6 +295,7 @@ module automationAccount_python2packages 'python2-package/main.bicep' = [
       version: python2package.version
       uri: python2package.uri
       tags: python2package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -308,6 +313,7 @@ module automationAccount_schedules 'schedule/main.bicep' = [
       interval: schedule.?interval
       startTime: schedule.?startTime
       timeZone: schedule.?timeZone
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -326,6 +332,7 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
       scriptStorageAccountResourceId: runbook.?scriptStorageAccountResourceId
       location: location
       tags: runbook.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -339,6 +346,7 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
       scheduleName: jobSchedule.scheduleName
       parameters: jobSchedule.?parameters
       runOn: jobSchedule.?runOn
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_schedules
@@ -356,6 +364,7 @@ module automationAccount_variables 'variable/main.bicep' = [
       description: variable.?description
       value: variable.value
       isEncrypted: variable.?isEncrypted
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -370,6 +379,7 @@ module automationAccount_webhook 'webhook/main.bicep' = [
       runOn: webhook.?runOn
       expiryTime: webhook.?expiryTime
       parameters: webhook.?parameters
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -388,6 +398,7 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
       securityToken: configuration.?securityToken
       autoSync: configuration.?autoSync
       publishRunbook: configuration.?publishRunbook
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -446,6 +457,7 @@ module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep'
       hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
       name: group.name
       credentialName: group.?credentialName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_credentials

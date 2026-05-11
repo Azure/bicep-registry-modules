@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "14305920749104785188"
+      "templateHash": "13748911556401361881"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -159,10 +159,10 @@
     },
     "imageVersion": {
       "type": "string",
-      "defaultValue": "latest_2026-04-13_905",
+      "defaultValue": "latest_2026-04-27_934",
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Set the Image tag. Defaults to latest_2026-04-13_905."
+        "description": "Optional. Set the Image tag. Defaults to latest_2026-04-27_934."
       }
     },
     "acrName": {
@@ -5086,7 +5086,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "2081051896706655504"
+              "templateHash": "15498390557342347049"
             }
           },
           "definitions": {
@@ -6201,8 +6201,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "11272001757446231867"
+                      "version": "0.42.1.51946",
+                      "templateHash": "14370126050175308430"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -6904,7 +6904,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.8.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.8.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -7093,8 +7093,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "13992200806189615656"
+                              "version": "0.42.1.51946",
+                              "templateHash": "17113728662177315319"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet."
@@ -7511,6 +7511,9 @@
                           },
                           "useRemoteGateways": {
                             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'useRemoteGateways')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -7519,8 +7522,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "6939030350004475953"
+                              "version": "0.42.1.51946",
+                              "templateHash": "17951311301958631828"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -7537,6 +7540,13 @@
                               "type": "string",
                               "metadata": {
                                 "description": "Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
                               }
                             },
                             "remoteVirtualNetworkResourceId": {
@@ -7582,6 +7592,26 @@
                             }
                           },
                           "resources": [
+                            {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             {
                               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
                               "apiVersion": "2024-01-01",
@@ -7668,6 +7698,9 @@
                           },
                           "useRemoteGateways": {
                             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringUseRemoteGateways')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -7676,8 +7709,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "6939030350004475953"
+                              "version": "0.42.1.51946",
+                              "templateHash": "17951311301958631828"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -7694,6 +7727,13 @@
                               "type": "string",
                               "metadata": {
                                 "description": "Conditional. The name of the parent Virtual Network to add the peering to. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
                               }
                             },
                             "remoteVirtualNetworkResourceId": {
@@ -7739,6 +7779,26 @@
                             }
                           },
                           "resources": [
+                            {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2024-03-01",
+                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
+                            },
                             {
                               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
                               "apiVersion": "2024-01-01",
@@ -26172,7 +26232,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "6040324311643335595"
+              "templateHash": "17284042434205772039"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -26499,7 +26559,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26541,7 +26601,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26582,7 +26642,7 @@
               },
               "metadata": {
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26611,7 +26671,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26677,7 +26737,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26799,7 +26859,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26824,12 +26884,19 @@
                   "metadata": {
                     "description": "Optional. Specify the type of lock."
                   }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
                 }
               },
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26857,7 +26924,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -26985,6 +27052,9 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                    },
                     "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                   }
                 },
@@ -26999,7 +27069,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -27074,7 +27144,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -27090,7 +27160,7 @@
               "metadata": {
                 "description": "A map of the exported secrets",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -27513,7 +27583,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.42.1.51946",
-                      "templateHash": "11392468936119277465"
+                      "templateHash": "6367625466078325388"
                     }
                   },
                   "definitions": {
@@ -27754,7 +27824,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -27796,7 +27866,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -27837,7 +27907,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -27866,7 +27936,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28017,7 +28087,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28042,12 +28112,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28175,6 +28252,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                           }
                         },
@@ -28189,7 +28269,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28264,7 +28344,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28280,7 +28360,7 @@
                       "metadata": {
                         "description": "A map of the exported secrets",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -29242,7 +29322,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.42.1.51946",
-                              "templateHash": "2422737205646151487"
+                              "templateHash": "11773384662737941789"
                             }
                           },
                           "definitions": {
@@ -29271,7 +29351,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                                 }
                               }
                             },
@@ -29294,7 +29374,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                                 }
                               }
                             }
@@ -29614,7 +29694,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.42.1.51946",
-                      "templateHash": "11392468936119277465"
+                      "templateHash": "6367625466078325388"
                     }
                   },
                   "definitions": {
@@ -29855,7 +29935,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -29897,7 +29977,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -29938,7 +30018,7 @@
                       },
                       "metadata": {
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -29967,7 +30047,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -30118,7 +30198,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -30143,12 +30223,19 @@
                           "metadata": {
                             "description": "Optional. Specify the type of lock."
                           }
+                        },
+                        "notes": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the notes of the lock."
+                          }
                         }
                       },
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -30276,6 +30363,9 @@
                           "type": "object",
                           "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/privateEndpoints@2024-07-01#properties/tags"
+                            },
                             "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
                           }
                         },
@@ -30290,7 +30380,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -30365,7 +30455,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -30381,7 +30471,7 @@
                       "metadata": {
                         "description": "A map of the exported secrets",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -31343,7 +31433,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.42.1.51946",
-                              "templateHash": "2422737205646151487"
+                              "templateHash": "11773384662737941789"
                             }
                           },
                           "definitions": {
@@ -31372,7 +31462,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                                 }
                               }
                             },
@@ -31395,7 +31485,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                                 }
                               }
                             }
@@ -32477,7 +32567,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "14990698114636954133"
+              "templateHash": "3598447245043879538"
             }
           },
           "definitions": {
@@ -32587,7 +32677,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -40936,7 +41026,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "15355322017409205910"
+              "templateHash": "18406833646069425594"
             }
           },
           "definitions": {
@@ -41116,7 +41206,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -44799,7 +44889,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "9728017733390585973"
+              "templateHash": "3976576118702390272"
             }
           },
           "definitions": {
@@ -44904,7 +44994,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             }
@@ -51112,8 +51202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "16720885128976229647"
+              "version": "0.42.1.51946",
+              "templateHash": "11924518395502120940"
             },
             "name": "App ManagedEnvironments",
             "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -51302,7 +51392,7 @@
               "metadata": {
                 "description": "The type for the certificate's key vault properties.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "certificates/main.bicep"
+                  "sourceTemplate": "certificate/main.bicep"
                 }
               }
             },
@@ -51719,7 +51809,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-11-01",
-              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.13.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -51863,8 +51953,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12148192527952992187"
+                      "version": "0.42.1.51946",
+                      "templateHash": "945327737463253676"
                     },
                     "name": "App ManagedEnvironments Certificates",
                     "description": "This module deploys a App Managed Environment Certificate."
@@ -51994,8 +52084,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3685452564310390968"
+                      "version": "0.42.1.51946",
+                      "templateHash": "574133184207535827"
                     },
                     "name": "App ManagedEnvironments Certificates",
                     "description": "This module deploys a App Managed Environment Certificate."
@@ -52272,8 +52362,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7628771569639120208"
+              "version": "0.42.1.51946",
+              "templateHash": "12626366001403616495"
             },
             "name": "Container Apps",
             "description": "This module deploys a Container App."
@@ -52753,7 +52843,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/encryptionSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/encryptionSettings"
                     },
                     "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                   },
@@ -52763,7 +52853,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/globalValidation"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/globalValidation"
                     },
                     "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                   },
@@ -52773,7 +52863,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/httpSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/httpSettings"
                     },
                     "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                   },
@@ -52783,7 +52873,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/identityProviders"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/identityProviders"
                     },
                     "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                   },
@@ -52793,7 +52883,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/login"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/login"
                     },
                     "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                   },
@@ -52803,7 +52893,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/platform"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/platform"
                     },
                     "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                   },
@@ -53132,7 +53222,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/service"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/service"
                 },
                 "description": "Optional. Dev ContainerApp service type."
               },
@@ -53168,16 +53258,6 @@
               "metadata": {
                 "description": "Optional. Target Port in containers for traffic from ingress."
               }
-            },
-            "targetPortHttpScheme": {
-              "type": "string",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/targetPortHttpScheme"
-                },
-                "description": "Optional. Whether an http app listens on http or https."
-              },
-              "nullable": true
             },
             "scaleSettings": {
               "$ref": "#/definitions/scaleType",
@@ -53227,7 +53307,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/tags"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -53237,7 +53317,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/registries"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/registries"
                 },
                 "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
               },
@@ -53271,7 +53351,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
                 },
                 "description": "Optional. Custom domain bindings for Container App hostnames."
               },
@@ -53288,45 +53368,27 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
                 },
                 "description": "Optional. Rules to restrict incoming IP address."
               },
               "nullable": true
             },
-            "trafficLabel": {
-              "type": "string",
-              "defaultValue": "label-1",
+            "traffic": {
+              "type": "array",
               "metadata": {
-                "description": "Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes."
-              }
-            },
-            "trafficLatestRevision": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Indicates that the traffic weight belongs to a latest stable revision."
-              }
-            },
-            "trafficRevisionName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of a revision."
-              }
-            },
-            "trafficWeight": {
-              "type": "int",
-              "defaultValue": 100,
-              "metadata": {
-                "description": "Optional. Traffic weight assigned to a revision."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/traffic"
+                },
+                "description": "Optional. Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns."
+              },
+              "nullable": true
             },
             "dapr": {
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/dapr"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/dapr"
                 },
                 "description": "Optional. Dapr configuration for the Container App."
               },
@@ -53336,7 +53398,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-07-01#properties/properties/properties/configuration/properties/identitySettings"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/identitySettings"
                 },
                 "description": "Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used."
               },
@@ -53353,7 +53415,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/runtime"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/runtime"
                 },
                 "description": "Optional. Runtime configuration for the Container App."
               },
@@ -53363,7 +53425,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/containers"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/containers"
                 },
                 "description": "Required. List of container definitions for the Container App."
               }
@@ -53379,7 +53441,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/initContainers"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/initContainers"
                 },
                 "description": "Optional. List of specialized containers that run before app containers."
               },
@@ -53406,7 +53468,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/volumes"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/volumes"
                 },
                 "description": "Optional. List of volume definitions for the Container App."
               },
@@ -53454,14 +53516,15 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.21.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.22.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -53479,7 +53542,7 @@
             },
             "containerApp": {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('name')]",
               "tags": "[parameters('tags')]",
               "kind": "[parameters('kind')]",
@@ -53501,7 +53564,7 @@
                   "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
                   "dapr": "[parameters('dapr')]",
                   "identitySettings": "[parameters('identitySettings')]",
-                  "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', parameters('customDomains'), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', parameters('ipSecurityRestrictions'), 'targetPort', parameters('ingressTargetPort'), 'targetPortHttpScheme', parameters('targetPortHttpScheme'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
+                  "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', parameters('customDomains'), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', parameters('ipSecurityRestrictions'), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('traffic'), null()), 'transport', parameters('ingressTransport')))]",
                   "service": "[if(parameters('includeAddOns'), parameters('service'), null())]",
                   "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
                   "registries": "[parameters('registries')]",
@@ -53592,6 +53655,9 @@
                   "containerAppName": {
                     "value": "[parameters('name')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "encryptionSettings": {
                     "value": "[tryGet(parameters('authConfig'), 'encryptionSettings')]"
                   },
@@ -53618,8 +53684,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "6701687065881133945"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4649255393182983719"
                     },
                     "name": "Container App Auth Configs",
                     "description": "This module deploys Container App Auth Configs."
@@ -53635,7 +53701,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/encryptionSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/encryptionSettings"
                         },
                         "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                       },
@@ -53645,7 +53711,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/globalValidation"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/globalValidation"
                         },
                         "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                       },
@@ -53655,7 +53721,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/httpSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/httpSettings"
                         },
                         "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                       },
@@ -53665,7 +53731,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/identityProviders"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/identityProviders"
                         },
                         "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                       },
@@ -53675,7 +53741,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/login"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/login"
                         },
                         "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                       },
@@ -53685,23 +53751,50 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/platform"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/platform"
                         },
                         "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.app-containerapp-authconfig.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "containerApp": {
                       "existing": true,
                       "type": "Microsoft.App/containerApps",
-                      "apiVersion": "2025-10-02-preview",
+                      "apiVersion": "2026-01-01",
                       "name": "[parameters('containerAppName')]"
                     },
                     "containerAppAuthConfigs": {
                       "type": "Microsoft.App/containerApps/authConfigs",
-                      "apiVersion": "2025-10-02-preview",
+                      "apiVersion": "2026-01-01",
                       "name": "[format('{0}/{1}', parameters('containerAppName'), 'current')]",
                       "properties": {
                         "encryptionSettings": "[parameters('encryptionSettings')]",
@@ -53778,14 +53871,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('containerApp', '2025-10-02-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('containerApp', '2026-01-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('containerApp', '2025-10-02-preview', 'full').location]"
+              "value": "[reference('containerApp', '2026-01-01', 'full').location]"
             }
           }
         }
@@ -53874,8 +53967,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7628771569639120208"
+              "version": "0.42.1.51946",
+              "templateHash": "12626366001403616495"
             },
             "name": "Container Apps",
             "description": "This module deploys a Container App."
@@ -54355,7 +54448,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/encryptionSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/encryptionSettings"
                     },
                     "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                   },
@@ -54365,7 +54458,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/globalValidation"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/globalValidation"
                     },
                     "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                   },
@@ -54375,7 +54468,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/httpSettings"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/httpSettings"
                     },
                     "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                   },
@@ -54385,7 +54478,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/identityProviders"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/identityProviders"
                     },
                     "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                   },
@@ -54395,7 +54488,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/login"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/login"
                     },
                     "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                   },
@@ -54405,7 +54498,7 @@
                   "type": "object",
                   "metadata": {
                     "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/platform"
+                      "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/platform"
                     },
                     "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                   },
@@ -54734,7 +54827,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/service"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/service"
                 },
                 "description": "Optional. Dev ContainerApp service type."
               },
@@ -54770,16 +54863,6 @@
               "metadata": {
                 "description": "Optional. Target Port in containers for traffic from ingress."
               }
-            },
-            "targetPortHttpScheme": {
-              "type": "string",
-              "metadata": {
-                "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/targetPortHttpScheme"
-                },
-                "description": "Optional. Whether an http app listens on http or https."
-              },
-              "nullable": true
             },
             "scaleSettings": {
               "$ref": "#/definitions/scaleType",
@@ -54829,7 +54912,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/tags"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -54839,7 +54922,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/registries"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/registries"
                 },
                 "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
               },
@@ -54873,7 +54956,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
                 },
                 "description": "Optional. Custom domain bindings for Container App hostnames."
               },
@@ -54890,45 +54973,27 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
                 },
                 "description": "Optional. Rules to restrict incoming IP address."
               },
               "nullable": true
             },
-            "trafficLabel": {
-              "type": "string",
-              "defaultValue": "label-1",
+            "traffic": {
+              "type": "array",
               "metadata": {
-                "description": "Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes."
-              }
-            },
-            "trafficLatestRevision": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Indicates that the traffic weight belongs to a latest stable revision."
-              }
-            },
-            "trafficRevisionName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Name of a revision."
-              }
-            },
-            "trafficWeight": {
-              "type": "int",
-              "defaultValue": 100,
-              "metadata": {
-                "description": "Optional. Traffic weight assigned to a revision."
-              }
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/ingress/properties/traffic"
+                },
+                "description": "Optional. Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns."
+              },
+              "nullable": true
             },
             "dapr": {
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/dapr"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/dapr"
                 },
                 "description": "Optional. Dapr configuration for the Container App."
               },
@@ -54938,7 +55003,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-07-01#properties/properties/properties/configuration/properties/identitySettings"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/identitySettings"
                 },
                 "description": "Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used."
               },
@@ -54955,7 +55020,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/configuration/properties/runtime"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/runtime"
                 },
                 "description": "Optional. Runtime configuration for the Container App."
               },
@@ -54965,7 +55030,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/containers"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/containers"
                 },
                 "description": "Required. List of container definitions for the Container App."
               }
@@ -54981,7 +55046,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/initContainers"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/initContainers"
                 },
                 "description": "Optional. List of specialized containers that run before app containers."
               },
@@ -55008,7 +55073,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/containerApps@2025-10-02-preview#properties/properties/properties/template/properties/volumes"
+                  "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/template/properties/volumes"
                 },
                 "description": "Optional. List of volume definitions for the Container App."
               },
@@ -55056,14 +55121,15 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.21.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.app-containerapp.{0}.{1}', replace('0.22.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -55081,7 +55147,7 @@
             },
             "containerApp": {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('name')]",
               "tags": "[parameters('tags')]",
               "kind": "[parameters('kind')]",
@@ -55103,7 +55169,7 @@
                   "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
                   "dapr": "[parameters('dapr')]",
                   "identitySettings": "[parameters('identitySettings')]",
-                  "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', parameters('customDomains'), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', parameters('ipSecurityRestrictions'), 'targetPort', parameters('ingressTargetPort'), 'targetPortHttpScheme', parameters('targetPortHttpScheme'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
+                  "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', parameters('customDomains'), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', parameters('ipSecurityRestrictions'), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('traffic'), null()), 'transport', parameters('ingressTransport')))]",
                   "service": "[if(parameters('includeAddOns'), parameters('service'), null())]",
                   "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
                   "registries": "[parameters('registries')]",
@@ -55194,6 +55260,9 @@
                   "containerAppName": {
                     "value": "[parameters('name')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "encryptionSettings": {
                     "value": "[tryGet(parameters('authConfig'), 'encryptionSettings')]"
                   },
@@ -55220,8 +55289,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "6701687065881133945"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4649255393182983719"
                     },
                     "name": "Container App Auth Configs",
                     "description": "This module deploys Container App Auth Configs."
@@ -55237,7 +55306,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/encryptionSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/encryptionSettings"
                         },
                         "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
                       },
@@ -55247,7 +55316,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/globalValidation"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/globalValidation"
                         },
                         "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
                       },
@@ -55257,7 +55326,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/httpSettings"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/httpSettings"
                         },
                         "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
                       },
@@ -55267,7 +55336,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/identityProviders"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/identityProviders"
                         },
                         "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
                       },
@@ -55277,7 +55346,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/login"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/login"
                         },
                         "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
                       },
@@ -55287,23 +55356,50 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.App/containerApps/authConfigs@2025-10-02-preview#properties/properties/properties/platform"
+                          "source": "Microsoft.App/containerApps/authConfigs@2026-01-01#properties/properties/properties/platform"
                         },
                         "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.app-containerapp-authconfig.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "containerApp": {
                       "existing": true,
                       "type": "Microsoft.App/containerApps",
-                      "apiVersion": "2025-10-02-preview",
+                      "apiVersion": "2026-01-01",
                       "name": "[parameters('containerAppName')]"
                     },
                     "containerAppAuthConfigs": {
                       "type": "Microsoft.App/containerApps/authConfigs",
-                      "apiVersion": "2025-10-02-preview",
+                      "apiVersion": "2026-01-01",
                       "name": "[format('{0}/{1}', parameters('containerAppName'), 'current')]",
                       "properties": {
                         "encryptionSettings": "[parameters('encryptionSettings')]",
@@ -55380,14 +55476,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('containerApp', '2025-10-02-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('containerApp', '2026-01-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('containerApp', '2025-10-02-preview', 'full').location]"
+              "value": "[reference('containerApp', '2026-01-01', 'full').location]"
             }
           }
         }

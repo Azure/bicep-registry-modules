@@ -144,6 +144,8 @@ var formattedRoleAssignments = [
 // Resources      //
 // ============== //
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.logic-integrationaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -225,6 +227,7 @@ module integrationAccount_partners 'partner/main.bicep' = [
       b2b: partner.?b2b
       metadata: partner.?metadata
       tags: partner.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -243,6 +246,7 @@ module integrationAccount_schemas 'schema/main.bicep' = [
       schemaType: schema.?schemaType
       targetNamespace: schema.?targetNamespace
       tags: schema.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -260,6 +264,7 @@ module integrationAccount_maps 'map/main.bicep' = [
       metadata: map.?metadata
       parametersSchema: map.?parametersSchema
       tags: map.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -276,6 +281,7 @@ module integrationAccount_assemblies 'assembly/main.bicep' = [
       contentType: assembly.?contentType
       metadata: assembly.?metadata
       tags: assembly.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -291,6 +297,7 @@ module integrationAccount_certificates 'certificate/main.bicep' = [
       metadata: certificate.?metadata
       publicCertificate: certificate.?publicCertificate
       tags: certificate.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -310,6 +317,7 @@ module integrationAccount_agreements 'agreement/main.bicep' = [
       content: agreement.content
       metadata: agreement.?metadata
       tags: agreement.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       integrationAccount_partners

@@ -64,7 +64,7 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 var builtInRoleNames = {
