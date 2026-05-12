@@ -69,7 +69,7 @@ param lock lockType?
 @description('Optional. A server Root certificate is required of ldapOverTLS is enabled.')
 param serverRootCACertificate string = ''
 
-@description('Optional. The Active Directory site the service will limit Domain Controller discovery to.')
+@description('Optional. The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to.')
 param activeDirectorySite string = ''
 
 @description('Optional. Tags for all resources.')

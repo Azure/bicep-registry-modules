@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "4355380969394344292"
+      "templateHash": "6572652601834220994"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1275,7 +1275,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Active Directory site the service will limit Domain Controller discovery to."
+        "description": "Optional. The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to."
       }
     },
     "tags": {
