@@ -208,9 +208,6 @@ resource app 'Microsoft.Web/sites@2025-03-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    // vnetContentShareEnabled: vnetContentShareEnabled
-    // vnetImagePullEnabled: vnetImagePullEnabled
-    // vnetRouteAllEnabled: vnetRouteAllEnabled
     outboundVnetRouting: outboundVnetRouting
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
