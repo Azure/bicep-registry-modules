@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "17914839355089714479"
+      "templateHash": "2953186265598388374"
     },
     "name": "API Center Services",
     "description": "This module deploys an API Center Service."
@@ -877,6 +877,17 @@
         "description": "Optional. The lock settings for the service resource."
       }
     },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Free",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -967,7 +978,10 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "identity": "[variables('identity')]"
+      "identity": "[variables('identity')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      }
     },
     "service_roleAssignments": {
       "copy": {

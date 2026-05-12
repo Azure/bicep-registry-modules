@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      sku: 'Free'
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

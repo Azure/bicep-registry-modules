@@ -363,6 +363,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    sku: 'Free'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -639,6 +640,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
       ]
     },
+    "sku": {
+      "value": "Free"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -897,6 +901,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param sku = 'Free'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1111,6 +1116,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`metadataSchemas`](#parameter-metadataschemas) | array | The metadata schemas to create within the API Center service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create scoped to the service. |
+| [`sku`](#parameter-sku) | string | The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -2040,6 +2046,21 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `sku`
+
+The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Free'
+    'Standard'
   ]
   ```
 

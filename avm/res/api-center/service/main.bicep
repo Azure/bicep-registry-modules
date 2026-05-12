@@ -19,6 +19,10 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings for the service resource.')
 param lock lockType?
 
+@allowed(['Free', 'Standard'])
+@description('Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments.')
+param sku string = 'Standard'
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create scoped to the service.')
 param roleAssignments roleAssignmentType[]?
@@ -101,6 +105,10 @@ resource service 'Microsoft.ApiCenter/services@2024-03-01' = {
   location: location
   tags: tags
   identity: identity
+  #disable-next-line BCP187 // SKU Not published in type schema but required by the RP
+  sku: {
+    name: sku
+  }
 }
 
 module service_metadataSchemas 'metadata-schema/main.bicep' = [
