@@ -31,6 +31,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: resourceLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -50,6 +58,18 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
+      roleAssignments: [
+        {
+          roleDefinitionIdOrName: 'Azure API Center Data Reader'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+        {
+          roleDefinitionIdOrName: 'Azure API Center Service Reader'
+          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalType: 'ServicePrincipal'
+        }
+      ]
       metadataSchemas: [
         {
           name: 'apiLifecycleStage'

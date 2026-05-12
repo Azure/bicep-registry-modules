@@ -125,6 +125,9 @@ module testDeployment '../../../main.bicep' = [
           title: 'Production APIM'
           kind: 'production'
           description: 'Production Azure API Management environment.'
+          customProperties: {
+            apiCostCenter: 'IT-1234'
+          }
           server: {
             type: 'Azure API Management'
             managementPortalUri: [
@@ -155,6 +158,10 @@ module testDeployment '../../../main.bicep' = [
           kind: 'rest'
           description: 'A sample REST API for managing pets.'
           summary: 'Petstore management API.'
+          customProperties: {
+            apiCostCenter: 'IT-1234'
+            apiTeamOwner: 'Platform Engineering'
+          }
           externalDocumentation: [
             {
               url: 'https://docs.contoso.com/petstore'
@@ -226,6 +233,9 @@ module testDeployment '../../../main.bicep' = [
           kind: 'rest'
           description: 'A REST API for managing customer orders.'
           summary: 'Order management API.'
+          customProperties: {
+            apiTeamOwner: 'Commerce Team'
+          }
           contacts: [
             {
               name: 'Commerce Team'
@@ -239,6 +249,37 @@ module testDeployment '../../../main.bicep' = [
               lifecycleStage: 'production'
             }
           ]
+        }
+        {
+          name: 'graphql-api'
+          title: 'GraphQL API'
+          kind: 'graphql'
+          description: 'A sample GraphQL API for querying data.'
+          summary: 'GraphQL data query API.'
+        }
+        {
+          name: 'legacy-soap-api'
+          title: 'Legacy SOAP API'
+          kind: 'soap'
+          description: 'A legacy SOAP-based API for backward compatibility.'
+        }
+        {
+          name: 'webhook-notifications'
+          title: 'Webhook Notifications'
+          kind: 'webhook'
+          description: 'A webhook API for event-driven notifications.'
+        }
+        {
+          name: 'grpc-service'
+          title: 'gRPC Service'
+          kind: 'grpc'
+          description: 'A gRPC API for high-performance inter-service communication.'
+        }
+        {
+          name: 'realtime-ws-api'
+          title: 'Real-Time WebSocket API'
+          kind: 'websocket'
+          description: 'A WebSocket API for real-time bidirectional communication.'
         }
       ]
       apiSources: [

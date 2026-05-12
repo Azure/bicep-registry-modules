@@ -138,6 +138,10 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             url: 'https://contoso.com/teams/api'
           }
         ]
+        customProperties: {
+          apiCostCenter: 'IT-1234'
+          apiTeamOwner: 'Platform Engineering'
+        }
         deployments: [
           {
             description: 'Production deployment of the Petstore API.'
@@ -208,6 +212,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             name: 'Commerce Team'
           }
         ]
+        customProperties: {
+          apiTeamOwner: 'Commerce Team'
+        }
         description: 'A REST API for managing customer orders.'
         kind: 'rest'
         name: 'order-api'
@@ -220,6 +227,37 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             title: 'v1.0.0'
           }
         ]
+      }
+      {
+        description: 'A sample GraphQL API for querying data.'
+        kind: 'graphql'
+        name: 'graphql-api'
+        summary: 'GraphQL data query API.'
+        title: 'GraphQL API'
+      }
+      {
+        description: 'A legacy SOAP-based API for backward compatibility.'
+        kind: 'soap'
+        name: 'legacy-soap-api'
+        title: 'Legacy SOAP API'
+      }
+      {
+        description: 'A webhook API for event-driven notifications.'
+        kind: 'webhook'
+        name: 'webhook-notifications'
+        title: 'Webhook Notifications'
+      }
+      {
+        description: 'A gRPC API for high-performance inter-service communication.'
+        kind: 'grpc'
+        name: 'grpc-service'
+        title: 'gRPC Service'
+      }
+      {
+        description: 'A WebSocket API for real-time bidirectional communication.'
+        kind: 'websocket'
+        name: 'realtime-ws-api'
+        title: 'Real-Time WebSocket API'
       }
     ]
     apiSources: [
@@ -235,6 +273,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     ]
     environments: [
       {
+        customProperties: {
+          apiCostCenter: 'IT-1234'
+        }
         description: 'Production Azure API Management environment.'
         kind: 'production'
         name: 'production-apim'
@@ -287,16 +328,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         ]
         name: 'apiCostCenter'
         schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
-      }
-      {
-        assignedTo: [
-          {
-            entity: 'api'
-            required: true
-          }
-        ]
-        name: 'apiLifecycleStage'
-        schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
       }
       {
         assignedTo: [
@@ -368,6 +399,10 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "url": "https://contoso.com/teams/api"
             }
           ],
+          "customProperties": {
+            "apiCostCenter": "IT-1234",
+            "apiTeamOwner": "Platform Engineering"
+          },
           "deployments": [
             {
               "description": "Production deployment of the Petstore API.",
@@ -438,6 +473,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "name": "Commerce Team"
             }
           ],
+          "customProperties": {
+            "apiTeamOwner": "Commerce Team"
+          },
           "description": "A REST API for managing customer orders.",
           "kind": "rest",
           "name": "order-api",
@@ -450,6 +488,37 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "title": "v1.0.0"
             }
           ]
+        },
+        {
+          "description": "A sample GraphQL API for querying data.",
+          "kind": "graphql",
+          "name": "graphql-api",
+          "summary": "GraphQL data query API.",
+          "title": "GraphQL API"
+        },
+        {
+          "description": "A legacy SOAP-based API for backward compatibility.",
+          "kind": "soap",
+          "name": "legacy-soap-api",
+          "title": "Legacy SOAP API"
+        },
+        {
+          "description": "A webhook API for event-driven notifications.",
+          "kind": "webhook",
+          "name": "webhook-notifications",
+          "title": "Webhook Notifications"
+        },
+        {
+          "description": "A gRPC API for high-performance inter-service communication.",
+          "kind": "grpc",
+          "name": "grpc-service",
+          "title": "gRPC Service"
+        },
+        {
+          "description": "A WebSocket API for real-time bidirectional communication.",
+          "kind": "websocket",
+          "name": "realtime-ws-api",
+          "title": "Real-Time WebSocket API"
         }
       ]
     },
@@ -469,6 +538,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     "environments": {
       "value": [
         {
+          "customProperties": {
+            "apiCostCenter": "IT-1234"
+          },
           "description": "Production Azure API Management environment.",
           "kind": "production",
           "name": "production-apim",
@@ -529,16 +601,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           ],
           "name": "apiCostCenter",
           "schema": "{\"type\":\"string\",\"title\":\"Cost Center\",\"pattern\":\"^[A-Z]{2}-[0-9]{4}$\"}"
-        },
-        {
-          "assignedTo": [
-            {
-              "entity": "api",
-              "required": true
-            }
-          ],
-          "name": "apiLifecycleStage",
-          "schema": "{\"type\":\"string\",\"title\":\"API Lifecycle Stage\",\"enum\":[\"design\",\"development\",\"testing\",\"preview\",\"production\",\"deprecated\",\"retired\"]}"
         },
         {
           "assignedTo": [
@@ -610,6 +672,10 @@ param apis = [
         url: 'https://contoso.com/teams/api'
       }
     ]
+    customProperties: {
+      apiCostCenter: 'IT-1234'
+      apiTeamOwner: 'Platform Engineering'
+    }
     deployments: [
       {
         description: 'Production deployment of the Petstore API.'
@@ -680,6 +746,9 @@ param apis = [
         name: 'Commerce Team'
       }
     ]
+    customProperties: {
+      apiTeamOwner: 'Commerce Team'
+    }
     description: 'A REST API for managing customer orders.'
     kind: 'rest'
     name: 'order-api'
@@ -692,6 +761,37 @@ param apis = [
         title: 'v1.0.0'
       }
     ]
+  }
+  {
+    description: 'A sample GraphQL API for querying data.'
+    kind: 'graphql'
+    name: 'graphql-api'
+    summary: 'GraphQL data query API.'
+    title: 'GraphQL API'
+  }
+  {
+    description: 'A legacy SOAP-based API for backward compatibility.'
+    kind: 'soap'
+    name: 'legacy-soap-api'
+    title: 'Legacy SOAP API'
+  }
+  {
+    description: 'A webhook API for event-driven notifications.'
+    kind: 'webhook'
+    name: 'webhook-notifications'
+    title: 'Webhook Notifications'
+  }
+  {
+    description: 'A gRPC API for high-performance inter-service communication.'
+    kind: 'grpc'
+    name: 'grpc-service'
+    title: 'gRPC Service'
+  }
+  {
+    description: 'A WebSocket API for real-time bidirectional communication.'
+    kind: 'websocket'
+    name: 'realtime-ws-api'
+    title: 'Real-Time WebSocket API'
   }
 ]
 param apiSources = [
@@ -707,6 +807,9 @@ param apiSources = [
 ]
 param environments = [
   {
+    customProperties: {
+      apiCostCenter: 'IT-1234'
+    }
     description: 'Production Azure API Management environment.'
     kind: 'production'
     name: 'production-apim'
@@ -759,16 +862,6 @@ param metadataSchemas = [
     ]
     name: 'apiCostCenter'
     schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
-  }
-  {
-    assignedTo: [
-      {
-        entity: 'api'
-        required: true
-      }
-    ]
-    name: 'apiLifecycleStage'
-    schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
   }
   {
     assignedTo: [
@@ -851,6 +944,18 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
       }
     ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Azure API Center Data Reader'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Azure API Center Service Reader'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -905,6 +1010,20 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
       ]
     },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Azure API Center Data Reader"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Azure API Center Service Reader"
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -947,6 +1066,18 @@ param metadataSchemas = [
     ]
     name: 'apiLifecycleStage'
     schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Azure API Center Data Reader'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Azure API Center Service Reader'
   }
 ]
 param tags = {
