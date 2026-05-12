@@ -41,7 +41,7 @@ resource workspace 'Microsoft.ApiCenter/services/workspaces@2024-03-01' = {
 
 module workspace_environments 'environment/main.bicep' = [
   for (environment, index) in (environments ?? []): {
-    name: '${uniqueString(deployment().name)}-Workspace-Environment-${index}'
+    name: '${uniqueString(workspace.id)}-Workspace-Environment-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspace.name
@@ -58,7 +58,7 @@ module workspace_environments 'environment/main.bicep' = [
 
 module workspace_apis 'api/main.bicep' = [
   for (api, index) in (apis ?? []): {
-    name: '${uniqueString(deployment().name)}-Workspace-Api-${index}'
+    name: '${uniqueString(workspace.id)}-Workspace-Api-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspace.name
@@ -80,7 +80,7 @@ module workspace_apis 'api/main.bicep' = [
 
 module workspace_apiSources 'api-source/main.bicep' = [
   for (apiSource, index) in (apiSources ?? []): {
-    name: '${uniqueString(deployment().name)}-Workspace-ApiSource-${index}'
+    name: '${uniqueString(workspace.id)}-Workspace-ApiSource-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspace.name

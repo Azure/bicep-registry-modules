@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "2645085863241384465"
+      "templateHash": "8170402566886142124"
     },
     "name": "API Center Service Workspaces",
     "description": "This module deploys an API Center Service Workspace."
@@ -708,7 +708,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Workspace-Environment-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-Workspace-Environment-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces', parameters('serviceName'), parameters('name'))), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -950,7 +950,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Workspace-Api-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-Workspace-Api-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces', parameters('serviceName'), parameters('name'))), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1008,7 +1008,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "6516573705738540221"
+              "templateHash": "10380285254240556080"
             },
             "name": "API Center Service Workspace APIs",
             "description": "This module deploys an API Center Service Workspace API."
@@ -1448,7 +1448,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Api-Version-{1}', uniqueString(deployment().name), copyIndex())]",
+              "name": "[format('{0}-Api-Version-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces/apis', parameters('serviceName'), parameters('workspaceName'), parameters('name'))), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1485,7 +1485,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "14863620571280892087"
+                      "templateHash": "7712247646685698149"
                     },
                     "name": "API Center Service Workspace API Versions",
                     "description": "This module deploys an API Center Service Workspace API Version."
@@ -1616,7 +1616,7 @@
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('{0}-Version-Definition-{1}', uniqueString(deployment().name), copyIndex())]",
+                      "name": "[format('{0}-Version-Definition-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces/apis/versions', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('name'))), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -1808,7 +1808,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('{0}-Api-Deployment-{1}', uniqueString(deployment().name), copyIndex())]",
+              "name": "[format('{0}-Api-Deployment-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces/apis', parameters('serviceName'), parameters('workspaceName'), parameters('name'))), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2066,7 +2066,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-Workspace-ApiSource-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-Workspace-ApiSource-{1}', uniqueString(resourceId('Microsoft.ApiCenter/services/workspaces', parameters('serviceName'), parameters('name'))), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

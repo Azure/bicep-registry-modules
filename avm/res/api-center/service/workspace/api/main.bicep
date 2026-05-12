@@ -83,7 +83,7 @@ resource api 'Microsoft.ApiCenter/services/workspaces/apis@2024-03-01' = {
 
 module api_versions 'version/main.bicep' = [
   for (version, index) in (versions ?? []): {
-    name: '${uniqueString(deployment().name)}-Api-Version-${index}'
+    name: '${uniqueString(api.id)}-Api-Version-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspaceName
@@ -98,7 +98,7 @@ module api_versions 'version/main.bicep' = [
 
 module api_deployments 'deployment/main.bicep' = [
   for (apiDeployment, index) in (deployments ?? []): {
-    name: '${uniqueString(deployment().name)}-Api-Deployment-${index}'
+    name: '${uniqueString(api.id)}-Api-Deployment-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspaceName

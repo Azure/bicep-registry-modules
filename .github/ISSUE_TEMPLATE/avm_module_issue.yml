@@ -92,6 +92,7 @@ body:
         - "avm/res/aad/domain-service"
         - "avm/res/alerts-management/action-rule"
         - "avm/res/analysis-services/server"
+        - "avm/res/api-center/service"
         - "avm/res/api-management/service"
         - "avm/res/app-configuration/configuration-store"
         - "avm/res/app/container-app"

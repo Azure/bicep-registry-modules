@@ -105,7 +105,7 @@ resource service 'Microsoft.ApiCenter/services@2024-03-01' = {
 
 module service_metadataSchemas 'metadata-schema/main.bicep' = [
   for (metadataSchema, index) in (metadataSchemas ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ApiCenter-MetadataSchema-${index}'
+    name: '${uniqueString(service.id, location)}-ApiCenter-MetadataSchema-${index}'
     params: {
       serviceName: service.name
       name: metadataSchema.name
@@ -116,7 +116,7 @@ module service_metadataSchemas 'metadata-schema/main.bicep' = [
 ]
 
 module service_defaultWorkspace 'workspace/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-ApiCenter-Workspace-Default'
+  name: '${uniqueString(service.id, location)}-ApiCenter-Workspace-Default'
   params: {
     serviceName: service.name
     name: 'default'

@@ -62,7 +62,7 @@ resource version 'Microsoft.ApiCenter/services/workspaces/apis/versions@2024-03-
 
 module version_definitions 'definition/main.bicep' = [
   for (definition, index) in (definitions ?? []): {
-    name: '${uniqueString(deployment().name)}-Version-Definition-${index}'
+    name: '${uniqueString(version.id)}-Version-Definition-${index}'
     params: {
       serviceName: serviceName
       workspaceName: workspaceName
