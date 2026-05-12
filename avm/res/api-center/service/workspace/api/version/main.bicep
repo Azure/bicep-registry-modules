@@ -75,10 +75,6 @@ module version_definitions 'definition/main.bicep' = [
   }
 ]
 
-// =========== //
-//   Outputs   //
-// =========== //
-
 @sys.description('The name of the API version.')
 output name string = version.name
 
@@ -87,10 +83,6 @@ output resourceId string = version.id
 
 @sys.description('The name of the resource group the API version was created in.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
 
 type definitionType = {
   @sys.description('Required. The name of the definition.')

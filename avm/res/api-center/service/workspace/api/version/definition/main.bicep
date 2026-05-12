@@ -56,3 +56,6 @@ output name string = definition.name
 
 @sys.description('The resource ID of the API definition.')
 output resourceId string = definition.id
+
+@sys.description('The name of the resource group the API definition was created in.')
+output resourceGroupName string = resourceGroup().name

@@ -27,6 +27,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+import { metadataSchemaType } from 'metadata-schema/main.bicep'
 @description('Optional. The metadata schemas to create within the API Center service.')
 param metadataSchemas metadataSchemaType[]?
 
@@ -102,11 +103,12 @@ resource service 'Microsoft.ApiCenter/services@2024-03-01' = {
   identity: identity
 }
 
-resource service_metadataSchemas 'Microsoft.ApiCenter/services/metadataSchemas@2024-03-01' = [
+module service_metadataSchemas 'metadata-schema/main.bicep' = [
   for (metadataSchema, index) in (metadataSchemas ?? []): {
-    name: metadataSchema.name
-    parent: service
-    properties: {
+    name: '${uniqueString(deployment().name, location)}-ApiCenter-MetadataSchema-${index}'
+    params: {
+      serviceName: service.name
+      name: metadataSchema.name
       schema: metadataSchema.schema
       assignedTo: metadataSchema.?assignedTo
     }
@@ -177,28 +179,11 @@ output name string = service.name
 @description('The resource ID of the API Center service.')
 output resourceId string = service.id
 
+@description('The name of the resource group the API Center service was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 
-@export()
-type metadataSchemaType = {
-  @description('Required. The name of the metadata schema.')
-  @minLength(3)
-  @maxLength(90)
-  name: string
-
-  @description('Required. The JSON schema defining the metadata type.')
-  schema: string
-
-  @description('Optional. The entities the metadata schema is assigned to.')
-  assignedTo: {
-    @description('Optional. The entity the metadata schema is assigned to.')
-    entity: ('api' | 'deployment' | 'environment')?
-
-    @description('Optional. Whether the metadata is required for the entity.')
-    required: bool?
-
-    @description('Optional. Whether the assignment is deprecated.')
-    deprecated: bool?
-  }[]?
-}
+@description('The location the resource was deployed into.')
+output location string = service.location

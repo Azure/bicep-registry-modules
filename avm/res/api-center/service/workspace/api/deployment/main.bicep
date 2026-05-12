@@ -43,10 +43,6 @@ param customProperties object?
 @sys.description('Optional. The server information of the deployment.')
 param server deploymentServerType?
 
-// =============== //
-//   Deployments   //
-// =============== //
-
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
 
@@ -73,10 +69,6 @@ resource apiDeployment 'Microsoft.ApiCenter/services/workspaces/apis/deployments
   }
 }
 
-// =========== //
-//   Outputs   //
-// =========== //
-
 @sys.description('The name of the API deployment.')
 output name string = apiDeployment.name
 
@@ -85,10 +77,6 @@ output resourceId string = apiDeployment.id
 
 @sys.description('The name of the resource group the API deployment was created in.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
 
 @export()
 type deploymentServerType = {

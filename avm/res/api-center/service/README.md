@@ -16,6 +16,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -134,12 +135,44 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           {
             email: 'api-team@contoso.com'
             name: 'API Team'
+            url: 'https://contoso.com/teams/api'
+          }
+        ]
+        deployments: [
+          {
+            description: 'Production deployment of the Petstore API.'
+            name: 'petstore-prod-deployment'
+            server: {
+              runtimeUri: [
+                'https://petstore.contoso.com/api'
+              ]
+            }
+            state: 'active'
+            title: 'Petstore Production'
           }
         ]
         description: 'A sample REST API for managing pets.'
+        externalDocumentation: [
+          {
+            description: 'Full reference documentation for the Petstore API.'
+            title: 'API Documentation'
+            url: 'https://docs.contoso.com/petstore'
+          }
+          {
+            title: 'Getting Started Guide'
+            url: 'https://docs.contoso.com/petstore/getting-started'
+          }
+        ]
         kind: 'rest'
+        license: {
+          name: 'MIT License'
+          url: 'https://opensource.org/licenses/MIT'
+        }
         name: 'petstore-api'
         summary: 'Petstore management API.'
+        termsOfService: {
+          url: 'https://contoso.com/terms-of-service'
+        }
         title: 'Petstore API'
         versions: [
           {
@@ -154,7 +187,50 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             name: 'v1-0-0'
             title: 'v1.0.0'
           }
+          {
+            definitions: [
+              {
+                description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
+                name: 'openapi-spec-v2'
+                title: 'OpenAPI Specification v2'
+              }
+            ]
+            lifecycleStage: 'preview'
+            name: 'v2-0-0-preview'
+            title: 'v2.0.0-preview'
+          }
         ]
+      }
+      {
+        contacts: [
+          {
+            email: 'commerce@contoso.com'
+            name: 'Commerce Team'
+          }
+        ]
+        description: 'A REST API for managing customer orders.'
+        kind: 'rest'
+        name: 'order-api'
+        summary: 'Order management API.'
+        title: 'Order API'
+        versions: [
+          {
+            lifecycleStage: 'production'
+            name: 'v1-0-0'
+            title: 'v1.0.0'
+          }
+        ]
+      }
+    ]
+    apiSources: [
+      {
+        azureApiManagementSource: {
+          msiResourceId: '<msiResourceId>'
+          resourceId: '<resourceId>'
+        }
+        importSpecification: 'always'
+        name: 'apim-import-source'
+        targetLifecycleStage: 'production'
       }
     ]
     environments: [
@@ -162,7 +238,16 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         description: 'Production Azure API Management environment.'
         kind: 'production'
         name: 'production-apim'
+        onboarding: {
+          developerPortalUri: [
+            'https://developer.contoso.com'
+          ]
+          instructions: 'Sign up at the developer portal to get started with our APIs.'
+        }
         server: {
+          managementPortalUri: [
+            'https://portal.azure.com'
+          ]
           type: 'Azure API Management'
         }
         title: 'Production APIM'
@@ -195,6 +280,20 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             entity: 'api'
             required: true
           }
+          {
+            entity: 'environment'
+            required: false
+          }
+        ]
+        name: 'apiCostCenter'
+        schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
+      }
+      {
+        assignedTo: [
+          {
+            entity: 'api'
+            required: true
+          }
         ]
         name: 'apiLifecycleStage'
         schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
@@ -206,12 +305,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             required: false
           }
           {
-            entity: 'environment'
+            entity: 'deployment'
             required: false
           }
         ]
-        name: 'apiCostCenter'
-        schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
+        name: 'apiTeamOwner'
+        schema: '{\'type\':\'string\',\'title\':\'Team Owner\',\'minLength\':1,\'maxLength\':100}'
       }
     ]
     roleAssignments: [
@@ -265,13 +364,45 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           "contacts": [
             {
               "email": "api-team@contoso.com",
-              "name": "API Team"
+              "name": "API Team",
+              "url": "https://contoso.com/teams/api"
+            }
+          ],
+          "deployments": [
+            {
+              "description": "Production deployment of the Petstore API.",
+              "name": "petstore-prod-deployment",
+              "server": {
+                "runtimeUri": [
+                  "https://petstore.contoso.com/api"
+                ]
+              },
+              "state": "active",
+              "title": "Petstore Production"
             }
           ],
           "description": "A sample REST API for managing pets.",
+          "externalDocumentation": [
+            {
+              "description": "Full reference documentation for the Petstore API.",
+              "title": "API Documentation",
+              "url": "https://docs.contoso.com/petstore"
+            },
+            {
+              "title": "Getting Started Guide",
+              "url": "https://docs.contoso.com/petstore/getting-started"
+            }
+          ],
           "kind": "rest",
+          "license": {
+            "name": "MIT License",
+            "url": "https://opensource.org/licenses/MIT"
+          },
           "name": "petstore-api",
           "summary": "Petstore management API.",
+          "termsOfService": {
+            "url": "https://contoso.com/terms-of-service"
+          },
           "title": "Petstore API",
           "versions": [
             {
@@ -285,8 +416,53 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "lifecycleStage": "production",
               "name": "v1-0-0",
               "title": "v1.0.0"
+            },
+            {
+              "definitions": [
+                {
+                  "description": "The OpenAPI 3.1 specification for the Petstore API v2.",
+                  "name": "openapi-spec-v2",
+                  "title": "OpenAPI Specification v2"
+                }
+              ],
+              "lifecycleStage": "preview",
+              "name": "v2-0-0-preview",
+              "title": "v2.0.0-preview"
             }
           ]
+        },
+        {
+          "contacts": [
+            {
+              "email": "commerce@contoso.com",
+              "name": "Commerce Team"
+            }
+          ],
+          "description": "A REST API for managing customer orders.",
+          "kind": "rest",
+          "name": "order-api",
+          "summary": "Order management API.",
+          "title": "Order API",
+          "versions": [
+            {
+              "lifecycleStage": "production",
+              "name": "v1-0-0",
+              "title": "v1.0.0"
+            }
+          ]
+        }
+      ]
+    },
+    "apiSources": {
+      "value": [
+        {
+          "azureApiManagementSource": {
+            "msiResourceId": "<msiResourceId>",
+            "resourceId": "<resourceId>"
+          },
+          "importSpecification": "always",
+          "name": "apim-import-source",
+          "targetLifecycleStage": "production"
         }
       ]
     },
@@ -296,7 +472,16 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           "description": "Production Azure API Management environment.",
           "kind": "production",
           "name": "production-apim",
+          "onboarding": {
+            "developerPortalUri": [
+              "https://developer.contoso.com"
+            ],
+            "instructions": "Sign up at the developer portal to get started with our APIs."
+          },
           "server": {
+            "managementPortalUri": [
+              "https://portal.azure.com"
+            ],
             "type": "Azure API Management"
           },
           "title": "Production APIM"
@@ -336,6 +521,20 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             {
               "entity": "api",
               "required": true
+            },
+            {
+              "entity": "environment",
+              "required": false
+            }
+          ],
+          "name": "apiCostCenter",
+          "schema": "{\"type\":\"string\",\"title\":\"Cost Center\",\"pattern\":\"^[A-Z]{2}-[0-9]{4}$\"}"
+        },
+        {
+          "assignedTo": [
+            {
+              "entity": "api",
+              "required": true
             }
           ],
           "name": "apiLifecycleStage",
@@ -348,12 +547,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "required": false
             },
             {
-              "entity": "environment",
+              "entity": "deployment",
               "required": false
             }
           ],
-          "name": "apiCostCenter",
-          "schema": "{\"type\":\"string\",\"title\":\"Cost Center\",\"pattern\":\"^[A-Z]{2}-[0-9]{4}$\"}"
+          "name": "apiTeamOwner",
+          "schema": "{\"type\":\"string\",\"title\":\"Team Owner\",\"minLength\":1,\"maxLength\":100}"
         }
       ]
     },
@@ -408,12 +607,44 @@ param apis = [
       {
         email: 'api-team@contoso.com'
         name: 'API Team'
+        url: 'https://contoso.com/teams/api'
+      }
+    ]
+    deployments: [
+      {
+        description: 'Production deployment of the Petstore API.'
+        name: 'petstore-prod-deployment'
+        server: {
+          runtimeUri: [
+            'https://petstore.contoso.com/api'
+          ]
+        }
+        state: 'active'
+        title: 'Petstore Production'
       }
     ]
     description: 'A sample REST API for managing pets.'
+    externalDocumentation: [
+      {
+        description: 'Full reference documentation for the Petstore API.'
+        title: 'API Documentation'
+        url: 'https://docs.contoso.com/petstore'
+      }
+      {
+        title: 'Getting Started Guide'
+        url: 'https://docs.contoso.com/petstore/getting-started'
+      }
+    ]
     kind: 'rest'
+    license: {
+      name: 'MIT License'
+      url: 'https://opensource.org/licenses/MIT'
+    }
     name: 'petstore-api'
     summary: 'Petstore management API.'
+    termsOfService: {
+      url: 'https://contoso.com/terms-of-service'
+    }
     title: 'Petstore API'
     versions: [
       {
@@ -428,7 +659,50 @@ param apis = [
         name: 'v1-0-0'
         title: 'v1.0.0'
       }
+      {
+        definitions: [
+          {
+            description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
+            name: 'openapi-spec-v2'
+            title: 'OpenAPI Specification v2'
+          }
+        ]
+        lifecycleStage: 'preview'
+        name: 'v2-0-0-preview'
+        title: 'v2.0.0-preview'
+      }
     ]
+  }
+  {
+    contacts: [
+      {
+        email: 'commerce@contoso.com'
+        name: 'Commerce Team'
+      }
+    ]
+    description: 'A REST API for managing customer orders.'
+    kind: 'rest'
+    name: 'order-api'
+    summary: 'Order management API.'
+    title: 'Order API'
+    versions: [
+      {
+        lifecycleStage: 'production'
+        name: 'v1-0-0'
+        title: 'v1.0.0'
+      }
+    ]
+  }
+]
+param apiSources = [
+  {
+    azureApiManagementSource: {
+      msiResourceId: '<msiResourceId>'
+      resourceId: '<resourceId>'
+    }
+    importSpecification: 'always'
+    name: 'apim-import-source'
+    targetLifecycleStage: 'production'
   }
 ]
 param environments = [
@@ -436,7 +710,16 @@ param environments = [
     description: 'Production Azure API Management environment.'
     kind: 'production'
     name: 'production-apim'
+    onboarding: {
+      developerPortalUri: [
+        'https://developer.contoso.com'
+      ]
+      instructions: 'Sign up at the developer portal to get started with our APIs.'
+    }
     server: {
+      managementPortalUri: [
+        'https://portal.azure.com'
+      ]
       type: 'Azure API Management'
     }
     title: 'Production APIM'
@@ -469,6 +752,20 @@ param metadataSchemas = [
         entity: 'api'
         required: true
       }
+      {
+        entity: 'environment'
+        required: false
+      }
+    ]
+    name: 'apiCostCenter'
+    schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
+  }
+  {
+    assignedTo: [
+      {
+        entity: 'api'
+        required: true
+      }
     ]
     name: 'apiLifecycleStage'
     schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
@@ -480,12 +777,12 @@ param metadataSchemas = [
         required: false
       }
       {
-        entity: 'environment'
+        entity: 'deployment'
         required: false
       }
     ]
-    name: 'apiCostCenter'
-    schema: '{\'type\':\'string\',\'title\':\'Cost Center\',\'pattern\':\'^[A-Z]{2}-[0-9]{4}$\'}'
+    name: 'apiTeamOwner'
+    schema: '{\'type\':\'string\',\'title\':\'Team Owner\',\'minLength\':1,\'maxLength\':100}'
   }
 ]
 param roleAssignments = [
@@ -1626,9 +1923,19 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the API Center service. |
+| `resourceGroupName` | string | The name of the resource group the API Center service was deployed into. |
 | `resourceId` | string | The resource ID of the API Center service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

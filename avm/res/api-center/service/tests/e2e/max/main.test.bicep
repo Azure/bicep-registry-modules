@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    apiManagementServiceName: 'dep-${namePrefix}-apim-${serviceShort}'
   }
 }
 
@@ -98,6 +99,20 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
         }
+        {
+          name: 'apiTeamOwner'
+          schema: '{"type":"string","title":"Team Owner","minLength":1,"maxLength":100}'
+          assignedTo: [
+            {
+              entity: 'api'
+              required: false
+            }
+            {
+              entity: 'deployment'
+              required: false
+            }
+          ]
+        }
       ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -112,6 +127,15 @@ module testDeployment '../../../main.bicep' = [
           description: 'Production Azure API Management environment.'
           server: {
             type: 'Azure API Management'
+            managementPortalUri: [
+              'https://portal.azure.com'
+            ]
+          }
+          onboarding: {
+            developerPortalUri: [
+              'https://developer.contoso.com'
+            ]
+            instructions: 'Sign up at the developer portal to get started with our APIs.'
           }
         }
         {
@@ -131,12 +155,31 @@ module testDeployment '../../../main.bicep' = [
           kind: 'rest'
           description: 'A sample REST API for managing pets.'
           summary: 'Petstore management API.'
+          externalDocumentation: [
+            {
+              url: 'https://docs.contoso.com/petstore'
+              title: 'API Documentation'
+              description: 'Full reference documentation for the Petstore API.'
+            }
+            {
+              url: 'https://docs.contoso.com/petstore/getting-started'
+              title: 'Getting Started Guide'
+            }
+          ]
           contacts: [
             {
               name: 'API Team'
               email: 'api-team@contoso.com'
+              url: 'https://contoso.com/teams/api'
             }
           ]
+          license: {
+            name: 'MIT License'
+            url: 'https://opensource.org/licenses/MIT'
+          }
+          termsOfService: {
+            url: 'https://contoso.com/terms-of-service'
+          }
           versions: [
             {
               name: 'v1-0-0'
@@ -150,7 +193,63 @@ module testDeployment '../../../main.bicep' = [
                 }
               ]
             }
+            {
+              name: 'v2-0-0-preview'
+              title: 'v2.0.0-preview'
+              lifecycleStage: 'preview'
+              definitions: [
+                {
+                  name: 'openapi-spec-v2'
+                  title: 'OpenAPI Specification v2'
+                  description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
+                }
+              ]
+            }
           ]
+          deployments: [
+            {
+              name: 'petstore-prod-deployment'
+              title: 'Petstore Production'
+              description: 'Production deployment of the Petstore API.'
+              state: 'active'
+              server: {
+                runtimeUri: [
+                  'https://petstore.contoso.com/api'
+                ]
+              }
+            }
+          ]
+        }
+        {
+          name: 'order-api'
+          title: 'Order API'
+          kind: 'rest'
+          description: 'A REST API for managing customer orders.'
+          summary: 'Order management API.'
+          contacts: [
+            {
+              name: 'Commerce Team'
+              email: 'commerce@contoso.com'
+            }
+          ]
+          versions: [
+            {
+              name: 'v1-0-0'
+              title: 'v1.0.0'
+              lifecycleStage: 'production'
+            }
+          ]
+        }
+      ]
+      apiSources: [
+        {
+          name: 'apim-import-source'
+          importSpecification: 'always'
+          targetLifecycleStage: 'production'
+          azureApiManagementSource: {
+            resourceId: nestedDependencies.outputs.apiManagementServiceResourceId
+            msiResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          }
         }
       ]
     }

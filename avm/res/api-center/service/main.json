@@ -6,73 +6,49 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "1142205904838337487"
+      "templateHash": "2715396583286186074"
     },
     "name": "API Center Services",
     "description": "This module deploys an API Center Service."
   },
   "definitions": {
-    "metadataSchemaType": {
+    "_1.metadataSchemaAssignedToType": {
       "type": "object",
       "properties": {
-        "name": {
+        "entity": {
           "type": "string",
-          "minLength": 3,
-          "maxLength": 90,
-          "metadata": {
-            "description": "Required. The name of the metadata schema."
-          }
-        },
-        "schema": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The JSON schema defining the metadata type."
-          }
-        },
-        "assignedTo": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "entity": {
-                "type": "string",
-                "allowedValues": [
-                  "api",
-                  "deployment",
-                  "environment"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The entity the metadata schema is assigned to."
-                }
-              },
-              "required": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Whether the metadata is required for the entity."
-                }
-              },
-              "deprecated": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Whether the assignment is deprecated."
-                }
-              }
-            }
-          },
+          "allowedValues": [
+            "api",
+            "deployment",
+            "environment"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The entities the metadata schema is assigned to."
+            "description": "Optional. The entity the metadata schema is assigned to."
+          }
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the metadata is required for the entity."
+          }
+        },
+        "deprecated": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the assignment is deprecated."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_imported_from!": {
+          "sourceTemplate": "metadata-schema/main.bicep"
+        }
       }
     },
-    "_1.azureApiManagementSourceType": {
+    "_2.azureApiManagementSourceType": {
       "type": "object",
       "properties": {
         "resourceId": {
@@ -95,7 +71,7 @@
         }
       }
     },
-    "_2.deploymentServerType": {
+    "_3.deploymentServerType": {
       "type": "object",
       "properties": {
         "runtimeUri": {
@@ -115,7 +91,7 @@
         }
       }
     },
-    "_3.contactType": {
+    "_4.contactType": {
       "type": "object",
       "properties": {
         "name": {
@@ -149,7 +125,7 @@
         }
       }
     },
-    "_3.deploymentType": {
+    "_4.deploymentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -210,7 +186,7 @@
           }
         },
         "server": {
-          "$ref": "#/definitions/_2.deploymentServerType",
+          "$ref": "#/definitions/_3.deploymentServerType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The server information of the deployment."
@@ -223,7 +199,7 @@
         }
       }
     },
-    "_3.externalDocumentationType": {
+    "_4.externalDocumentationType": {
       "type": "object",
       "properties": {
         "url": {
@@ -256,7 +232,7 @@
         }
       }
     },
-    "_3.licenseType": {
+    "_4.licenseType": {
       "type": "object",
       "properties": {
         "identifier": {
@@ -290,7 +266,7 @@
         }
       }
     },
-    "_3.termsOfServiceType": {
+    "_4.termsOfServiceType": {
       "type": "object",
       "properties": {
         "url": {
@@ -307,7 +283,7 @@
         }
       }
     },
-    "_3.versionType": {
+    "_4.versionType": {
       "type": "object",
       "properties": {
         "name": {
@@ -383,7 +359,7 @@
         }
       }
     },
-    "_4.environmentOnboardingType": {
+    "_5.environmentOnboardingType": {
       "type": "object",
       "properties": {
         "developerPortalUri": {
@@ -410,7 +386,7 @@
         }
       }
     },
-    "_4.environmentServerType": {
+    "_5.environmentServerType": {
       "type": "object",
       "properties": {
         "managementPortalUri": {
@@ -493,7 +469,7 @@
           }
         },
         "azureApiManagementSource": {
-          "$ref": "#/definitions/_1.azureApiManagementSourceType",
+          "$ref": "#/definitions/_2.azureApiManagementSourceType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Configuration for importing APIs from Azure API Management."
@@ -565,7 +541,7 @@
         "externalDocumentation": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.externalDocumentationType"
+            "$ref": "#/definitions/_4.externalDocumentationType"
           },
           "nullable": true,
           "metadata": {
@@ -575,7 +551,7 @@
         "contacts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.contactType"
+            "$ref": "#/definitions/_4.contactType"
           },
           "nullable": true,
           "metadata": {
@@ -583,14 +559,14 @@
           }
         },
         "license": {
-          "$ref": "#/definitions/_3.licenseType",
+          "$ref": "#/definitions/_4.licenseType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The license information for the API."
           }
         },
         "termsOfService": {
-          "$ref": "#/definitions/_3.termsOfServiceType",
+          "$ref": "#/definitions/_4.termsOfServiceType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The terms of service for the API."
@@ -599,7 +575,7 @@
         "versions": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.versionType"
+            "$ref": "#/definitions/_4.versionType"
           },
           "nullable": true,
           "metadata": {
@@ -609,7 +585,7 @@
         "deployments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.deploymentType"
+            "$ref": "#/definitions/_4.deploymentType"
           },
           "nullable": true,
           "metadata": {
@@ -669,14 +645,14 @@
           }
         },
         "server": {
-          "$ref": "#/definitions/_4.environmentServerType",
+          "$ref": "#/definitions/_5.environmentServerType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Server information of the environment."
           }
         },
         "onboarding": {
-          "$ref": "#/definitions/_4.environmentOnboardingType",
+          "$ref": "#/definitions/_5.environmentOnboardingType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Onboarding information for the environment."
@@ -751,6 +727,40 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "metadataSchemaType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 90,
+          "metadata": {
+            "description": "Required. The name of the metadata schema."
+          }
+        },
+        "schema": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The JSON schema defining the metadata type."
+          }
+        },
+        "assignedTo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.metadataSchemaAssignedToType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The entities the metadata schema is assigned to."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "metadata-schema/main.bicep"
         }
       }
     },
@@ -959,22 +969,6 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]"
     },
-    "service_metadataSchemas": {
-      "copy": {
-        "name": "service_metadataSchemas",
-        "count": "[length(coalesce(parameters('metadataSchemas'), createArray()))]"
-      },
-      "type": "Microsoft.ApiCenter/services/metadataSchemas",
-      "apiVersion": "2024-03-01",
-      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('metadataSchemas'), createArray())[copyIndex()].name)]",
-      "properties": {
-        "schema": "[coalesce(parameters('metadataSchemas'), createArray())[copyIndex()].schema]",
-        "assignedTo": "[tryGet(coalesce(parameters('metadataSchemas'), createArray())[copyIndex()], 'assignedTo')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
-    },
     "service_roleAssignments": {
       "copy": {
         "name": "service_roleAssignments",
@@ -1031,6 +1025,192 @@
         }
       }
     },
+    "service_metadataSchemas": {
+      "copy": {
+        "name": "service_metadataSchemas",
+        "count": "[length(coalesce(parameters('metadataSchemas'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-ApiCenter-MetadataSchema-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serviceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('metadataSchemas'), createArray())[copyIndex()].name]"
+          },
+          "schema": {
+            "value": "[coalesce(parameters('metadataSchemas'), createArray())[copyIndex()].schema]"
+          },
+          "assignedTo": {
+            "value": "[tryGet(coalesce(parameters('metadataSchemas'), createArray())[copyIndex()], 'assignedTo')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "18080993589897227447"
+            },
+            "name": "API Center Service Metadata Schemas",
+            "description": "This module deploys an API Center Service Metadata Schema."
+          },
+          "definitions": {
+            "metadataSchemaAssignedToType": {
+              "type": "object",
+              "properties": {
+                "entity": {
+                  "type": "string",
+                  "allowedValues": [
+                    "api",
+                    "deployment",
+                    "environment"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The entity the metadata schema is assigned to."
+                  }
+                },
+                "required": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the metadata is required for the entity."
+                  }
+                },
+                "deprecated": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the assignment is deprecated."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "metadataSchemaType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 90,
+                  "metadata": {
+                    "description": "Required. The name of the metadata schema."
+                  }
+                },
+                "schema": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The JSON schema defining the metadata type."
+                  }
+                },
+                "assignedTo": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/metadataSchemaAssignedToType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The entities the metadata schema is assigned to."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            }
+          },
+          "parameters": {
+            "serviceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 90,
+              "metadata": {
+                "description": "Required. The name of the metadata schema."
+              }
+            },
+            "schema": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The JSON schema defining the metadata type."
+              }
+            },
+            "assignedTo": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/metadataSchemaAssignedToType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The entities the metadata schema is assigned to."
+              }
+            }
+          },
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiCenter/services",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('serviceName')]"
+            },
+            "metadataSchema": {
+              "type": "Microsoft.ApiCenter/services/metadataSchemas",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}/{1}', parameters('serviceName'), parameters('name'))]",
+              "properties": {
+                "schema": "[parameters('schema')]",
+                "assignedTo": "[parameters('assignedTo')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the metadata schema."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the metadata schema."
+              },
+              "value": "[resourceId('Microsoft.ApiCenter/services/metadataSchemas', parameters('serviceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the metadata schema was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
     "service_defaultWorkspace": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1068,7 +1248,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "5651967391967829947"
+              "templateHash": "2645085863241384465"
             },
             "name": "API Center Service Workspaces",
             "description": "This module deploys an API Center Service Workspace."
@@ -2070,7 +2250,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "14620420012515745542"
+                      "templateHash": "6516573705738540221"
                     },
                     "name": "API Center Service Workspace APIs",
                     "description": "This module deploys an API Center Service Workspace API."
@@ -2547,7 +2727,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.43.8.12551",
-                              "templateHash": "17074575436060055683"
+                              "templateHash": "14863620571280892087"
                             },
                             "name": "API Center Service Workspace API Versions",
                             "description": "This module deploys an API Center Service Workspace API Version."
@@ -2715,7 +2895,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.43.8.12551",
-                                      "templateHash": "11057425276846295795"
+                                      "templateHash": "3710889989242840994"
                                     },
                                     "name": "API Center Service Workspace API Version Definitions",
                                     "description": "This module deploys an API Center Service Workspace API Version Definition."
@@ -2818,6 +2998,13 @@
                                         "description": "The resource ID of the API definition."
                                       },
                                       "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apis/versions/definitions', parameters('serviceName'), parameters('workspaceName'), parameters('apiName'), parameters('versionName'), parameters('name'))]"
+                                    },
+                                    "resourceGroupName": {
+                                      "type": "string",
+                                      "metadata": {
+                                        "description": "The name of the resource group the API definition was created in."
+                                      },
+                                      "value": "[resourceGroup().name]"
                                     }
                                   }
                                 }
@@ -3350,6 +3537,13 @@
       },
       "value": "[resourceId('Microsoft.ApiCenter/services', parameters('name'))]"
     },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the API Center service was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "systemAssignedMIPrincipalId": {
       "type": "string",
       "nullable": true,
@@ -3357,6 +3551,13 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[tryGet(tryGet(reference('service', '2024-03-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('service', '2024-03-01', 'full').location]"
     }
   }
 }

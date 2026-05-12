@@ -57,10 +57,6 @@ param versions versionType[]?
 @sys.description('Optional. The deployments to create for the API.')
 param deployments deploymentType[]?
 
-// =============== //
-//   Deployments   //
-// =============== //
-
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
 
@@ -119,10 +115,6 @@ module api_deployments 'deployment/main.bicep' = [
   }
 ]
 
-// =========== //
-//   Outputs   //
-// =========== //
-
 @sys.description('The name of the API.')
 output name string = api.name
 
@@ -131,10 +123,6 @@ output resourceId string = api.id
 
 @sys.description('The name of the resource group the API was created in.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
 
 @export()
 type externalDocumentationType = {
