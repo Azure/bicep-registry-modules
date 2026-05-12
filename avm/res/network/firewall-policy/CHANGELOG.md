@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/firewall-policy/CHANGELOG.md).
 
+## 0.3.5
+
+### Changes
+
+- Publishing child module `avm/res/network/firewall-policy/rule-collection-group`
+
+### Breaking Changes
+
+- None
+
 ## 0.3.4
 
 ### Changes

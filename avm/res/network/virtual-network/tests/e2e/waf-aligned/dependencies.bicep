@@ -13,22 +13,22 @@ param networkSecurityGroupName string
 @description('Required. The name of the Bastion Network Security Group to create.')
 param networkSecurityGroupBastionName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2025-05-01' = {
   name: routeTableName
   location: location
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
   name: networkSecurityGroupName
   location: location
 }
 
-resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
   name: networkSecurityGroupBastionName
   location: location
   properties: {
