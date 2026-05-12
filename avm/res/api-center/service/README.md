@@ -1609,6 +1609,7 @@ The API sources to create within the default workspace for importing APIs from e
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
+| [`enableDefaultRoleAssignment`](#parameter-apisourcesenabledefaultroleassignment) | bool | Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true. |
 | [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
 | [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
 | [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
@@ -1652,6 +1653,13 @@ The resource ID of the managed identity that has access to the API Management in
 
 - Required: No
 - Type: string
+
+### Parameter: `apiSources.enableDefaultRoleAssignment`
+
+Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `apiSources.importSpecification`
 

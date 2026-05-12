@@ -13,6 +13,7 @@ This module deploys an API Center Service Workspace API Source for importing API
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.ApiCenter/services/workspaces/apiSources` | 2024-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apisources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-06-01-preview/services/workspaces/apiSources)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Parameters
 
@@ -20,6 +21,7 @@ This module deploys an API Center Service Workspace API Source for importing API
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureApiManagementSource`](#parameter-azureapimanagementsource) | object | Configuration for importing APIs from an Azure API Management instance. |
 | [`name`](#parameter-name) | string | The name of the API source. |
 
 **Conditional parameters**
@@ -33,37 +35,16 @@ This module deploys an API Center Service Workspace API Source for importing API
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureApiManagementSource`](#parameter-azureapimanagementsource) | object | Configuration for importing APIs from an Azure API Management instance. |
+| [`enableDefaultRoleAssignment`](#parameter-enabledefaultroleassignment) | bool | Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true. |
 | [`importSpecification`](#parameter-importspecification) | string | Indicates if the specification should be imported along with metadata. |
 | [`targetEnvironmentId`](#parameter-targetenvironmentid) | string | The target environment resource ID within API Center. |
 | [`targetLifecycleStage`](#parameter-targetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
-
-### Parameter: `name`
-
-The name of the API source.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `serviceName`
-
-The name of the parent API Center service. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaceName`
-
-The name of the parent workspace. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `azureApiManagementSource`
 
 Configuration for importing APIs from an Azure API Management instance.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
@@ -91,6 +72,35 @@ The resource ID of the managed identity that has access to the API Management in
 
 - Required: No
 - Type: string
+
+### Parameter: `name`
+
+The name of the API source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceName`
+
+The name of the parent API Center service. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceName`
+
+The name of the parent workspace. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `enableDefaultRoleAssignment`
+
+Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `importSpecification`
 

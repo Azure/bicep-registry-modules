@@ -88,20 +88,6 @@ resource orderApiGetOperation 'Microsoft.ApiManagement/service/apis/operations@2
   }
 }
 
-// Assign API Management Service Reader role to the UAMI so API Center can read APIs
-resource apimRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(apiManagementService.id, managedIdentity.id, 'API Management Service Reader')
-  scope: apiManagementService
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '71522526-b88f-4d52-b57f-d31fc3546d0d'
-    )
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 

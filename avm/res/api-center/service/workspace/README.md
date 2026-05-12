@@ -19,6 +19,7 @@ This module deploys an API Center Service Workspace.
 | `Microsoft.ApiCenter/services/workspaces/apis/versions/definitions` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apis_versions_definitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/apis/versions/definitions)</li></ul> |
 | `Microsoft.ApiCenter/services/workspaces/apiSources` | 2024-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apisources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-06-01-preview/services/workspaces/apiSources)</li></ul> |
 | `Microsoft.ApiCenter/services/workspaces/environments` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_environments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/environments)</li></ul> |
+| `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 
 ## Parameters
 
@@ -489,6 +490,7 @@ The API sources to create in the workspace for importing APIs from external sour
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
+| [`enableDefaultRoleAssignment`](#parameter-apisourcesenabledefaultroleassignment) | bool | Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true. |
 | [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
 | [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
 | [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
@@ -532,6 +534,13 @@ The resource ID of the managed identity that has access to the API Management in
 
 - Required: No
 - Type: string
+
+### Parameter: `apiSources.enableDefaultRoleAssignment`
+
+Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `apiSources.importSpecification`
 
