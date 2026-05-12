@@ -1339,6 +1339,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
+| [`activeDirectorySite`](#parameter-activedirectorysite) | string | The Active Directory site the service will limit Domain Controller discovery to. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
 | [`allowLocalNfsUsersWithLdap`](#parameter-allowlocalnfsuserswithldap) | bool | If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
@@ -1360,7 +1361,6 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverRootCACertificate`](#parameter-serverrootcacertificate) | string | A server Root certificate is required of ldapOverTLS is enabled. |
-| [`activeDirectorySite`](#parameter-activedirectorysite) | string | The Active Directory site the service will limit Domain Controller discovery to. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
 | [`snapshotPolicies`](#parameter-snapshotpolicies) | array | The snapshot policies to create. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
@@ -1375,6 +1375,14 @@ The name of the NetApp account.
 ### Parameter: `adName`
 
 Name of the active directory host as part of Kerberos Realm used for Kerberos authentication.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `activeDirectorySite`
+
+The Active Directory site the service will limit Domain Controller discovery to.
 
 - Required: No
 - Type: string
@@ -2719,14 +2727,6 @@ The principal type of the assigned principal ID.
 ### Parameter: `serverRootCACertificate`
 
 A server Root certificate is required of ldapOverTLS is enabled.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `activeDirectorySite`
-
-The Active Directory site the service will limit Domain Controller discovery to.
 
 - Required: No
 - Type: string
