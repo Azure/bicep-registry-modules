@@ -18,13 +18,7 @@ param name string
 param title string
 
 @sys.description('Required. The kind of environment.')
-@allowed([
-  'development'
-  'testing'
-  'staging'
-  'production'
-])
-param kind string
+param kind ('development' | 'testing' | 'staging' | 'production')
 
 @sys.description('Optional. The description of the environment.')
 param description string?

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "18377674342213705766"
+      "templateHash": "7568816096346190068"
     },
     "name": "API Center Service Workspace Environments",
     "description": "This module deploys an API Center Service Workspace Environment."
@@ -96,9 +96,9 @@
       "type": "string",
       "allowedValues": [
         "development",
-        "testing",
+        "production",
         "staging",
-        "production"
+        "testing"
       ],
       "metadata": {
         "description": "Required. The kind of environment."

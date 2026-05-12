@@ -13,27 +13,13 @@ param workspaceName string
 param name string
 
 @sys.description('Optional. Indicates if the specification should be imported along with metadata.')
-@allowed([
-  'never'
-  'ondemand'
-  'always'
-])
-param importSpecification string?
+param importSpecification ('never' | 'ondemand' | 'always')?
 
 @sys.description('Optional. The target environment name. If not provided a new environment will be created.')
 param targetEnvironment string?
 
 @sys.description('Optional. The target lifecycle stage for imported APIs.')
-@allowed([
-  'design'
-  'development'
-  'testing'
-  'preview'
-  'production'
-  'deprecated'
-  'retired'
-])
-param targetLifecycleStage string?
+param targetLifecycleStage ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')?
 
 @sys.description('Required. Configuration for importing APIs from an Azure API Management instance.')
 param azureApiManagementSource azureApiManagementSourceType

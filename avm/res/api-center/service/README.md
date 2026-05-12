@@ -1008,7 +1008,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apicavmwaf001'
+    name: 'apicavmwafa001'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -1065,7 +1065,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apicavmwaf001"
+      "value": "apicavmwafa001"
     },
     // Non-required parameters
     "location": {
@@ -1132,7 +1132,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'apicavmwaf001'
+param name = 'apicavmwafa001'
 // Non-required parameters
 param location = '<location>'
 param lock = {

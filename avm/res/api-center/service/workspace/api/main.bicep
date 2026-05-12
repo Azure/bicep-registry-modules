@@ -18,15 +18,7 @@ param name string
 param title string
 
 @sys.description('Required. The kind of API.')
-@allowed([
-  'rest'
-  'graphql'
-  'grpc'
-  'soap'
-  'webhook'
-  'websocket'
-])
-param kind string
+param kind ('rest' | 'graphql' | 'grpc' | 'soap' | 'webhook' | 'websocket')
 
 @sys.description('Optional. The description of the API.')
 @maxLength(1000)

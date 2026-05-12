@@ -34,11 +34,7 @@ param version string
 param definition string
 
 @sys.description('Optional. The state of the API deployment.')
-@allowed([
-  'active'
-  'inactive'
-])
-param state string?
+param state ('active' | 'inactive')?
 
 @sys.description('Optional. The custom metadata defined for API catalog entities.')
 param customProperties object?

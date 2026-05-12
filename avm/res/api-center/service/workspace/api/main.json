@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "12144714841515196207"
+      "templateHash": "8146695431770622585"
     },
     "name": "API Center Service Workspace APIs",
     "description": "This module deploys an API Center Service Workspace API."
@@ -325,9 +325,9 @@
     "kind": {
       "type": "string",
       "allowedValues": [
-        "rest",
         "graphql",
         "grpc",
+        "rest",
         "soap",
         "webhook",
         "websocket"
@@ -487,7 +487,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "7712247646685698149"
+              "templateHash": "6828602755365429711"
             },
             "name": "API Center Service Workspace API Versions",
             "description": "This module deploys an API Center Service Workspace API Version."
@@ -560,13 +560,13 @@
             "lifecycleStage": {
               "type": "string",
               "allowedValues": [
+                "deprecated",
                 "design",
                 "development",
-                "testing",
                 "preview",
                 "production",
-                "deprecated",
-                "retired"
+                "retired",
+                "testing"
               ],
               "metadata": {
                 "description": "Required. The lifecycle stage of the API version."
@@ -951,11 +951,11 @@
             },
             "state": {
               "type": "string",
-              "nullable": true,
               "allowedValues": [
                 "active",
                 "inactive"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The state of the API deployment."
               }

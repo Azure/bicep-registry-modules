@@ -95,11 +95,11 @@
     },
     "state": {
       "type": "string",
-      "nullable": true,
       "allowedValues": [
         "active",
         "inactive"
       ],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The state of the API deployment."
       }

@@ -19,9 +19,8 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings for the service resource.')
 param lock lockType?
 
-@allowed(['Free', 'Standard'])
 @description('Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. Defaults to Standard.')
-param sku string = 'Standard'
+param sku ('Free' | 'Standard') = 'Standard'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create scoped to the service.')

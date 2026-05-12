@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "8061954255000568357"
+      "templateHash": "10692998070425916305"
     },
     "name": "API Center Service Workspace API Sources",
     "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -57,12 +57,12 @@
     },
     "importSpecification": {
       "type": "string",
-      "nullable": true,
       "allowedValues": [
+        "always",
         "never",
-        "ondemand",
-        "always"
+        "ondemand"
       ],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Indicates if the specification should be imported along with metadata."
       }
@@ -76,16 +76,16 @@
     },
     "targetLifecycleStage": {
       "type": "string",
-      "nullable": true,
       "allowedValues": [
+        "deprecated",
         "design",
         "development",
-        "testing",
         "preview",
         "production",
-        "deprecated",
-        "retired"
+        "retired",
+        "testing"
       ],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The target lifecycle stage for imported APIs."
       }

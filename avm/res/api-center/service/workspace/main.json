@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "526257694065286513"
+      "templateHash": "3216344974751572316"
     },
     "name": "API Center Service Workspaces",
     "description": "This module deploys an API Center Service Workspace."
@@ -745,7 +745,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "18377674342213705766"
+              "templateHash": "7568816096346190068"
             },
             "name": "API Center Service Workspace Environments",
             "description": "This module deploys an API Center Service Workspace Environment."
@@ -835,9 +835,9 @@
               "type": "string",
               "allowedValues": [
                 "development",
-                "testing",
+                "production",
                 "staging",
-                "production"
+                "testing"
               ],
               "metadata": {
                 "description": "Required. The kind of environment."
@@ -993,7 +993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "12144714841515196207"
+              "templateHash": "8146695431770622585"
             },
             "name": "API Center Service Workspace APIs",
             "description": "This module deploys an API Center Service Workspace API."
@@ -1312,9 +1312,9 @@
             "kind": {
               "type": "string",
               "allowedValues": [
-                "rest",
                 "graphql",
                 "grpc",
+                "rest",
                 "soap",
                 "webhook",
                 "websocket"
@@ -1474,7 +1474,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "7712247646685698149"
+                      "templateHash": "6828602755365429711"
                     },
                     "name": "API Center Service Workspace API Versions",
                     "description": "This module deploys an API Center Service Workspace API Version."
@@ -1547,13 +1547,13 @@
                     "lifecycleStage": {
                       "type": "string",
                       "allowedValues": [
+                        "deprecated",
                         "design",
                         "development",
-                        "testing",
                         "preview",
                         "production",
-                        "deprecated",
-                        "retired"
+                        "retired",
+                        "testing"
                       ],
                       "metadata": {
                         "description": "Required. The lifecycle stage of the API version."
@@ -1938,11 +1938,11 @@
                     },
                     "state": {
                       "type": "string",
-                      "nullable": true,
                       "allowedValues": [
                         "active",
                         "inactive"
                       ],
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. The state of the API deployment."
                       }
@@ -2101,7 +2101,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "8061954255000568357"
+              "templateHash": "10692998070425916305"
             },
             "name": "API Center Service Workspace API Sources",
             "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -2152,12 +2152,12 @@
             },
             "importSpecification": {
               "type": "string",
-              "nullable": true,
               "allowedValues": [
+                "always",
                 "never",
-                "ondemand",
-                "always"
+                "ondemand"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Indicates if the specification should be imported along with metadata."
               }
@@ -2171,16 +2171,16 @@
             },
             "targetLifecycleStage": {
               "type": "string",
-              "nullable": true,
               "allowedValues": [
+                "deprecated",
                 "design",
                 "development",
-                "testing",
                 "preview",
                 "production",
-                "deprecated",
-                "retired"
+                "retired",
+                "testing"
               ],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The target lifecycle stage for imported APIs."
               }

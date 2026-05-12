@@ -21,16 +21,7 @@ param name string
 param title string
 
 @sys.description('Required. The lifecycle stage of the API version.')
-@allowed([
-  'design'
-  'development'
-  'testing'
-  'preview'
-  'production'
-  'deprecated'
-  'retired'
-])
-param lifecycleStage string
+param lifecycleStage ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')
 
 @sys.description('Optional. The definitions to create for the API version.')
 param definitions definitionType[]?
