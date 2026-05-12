@@ -62,7 +62,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apicavmmin001'
+    name: 'aacavmmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -83,7 +83,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apicavmmin001"
+      "value": "aacavmmin001"
     },
     // Non-required parameters
     "location": {
@@ -104,7 +104,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'apicavmmin001'
+param name = 'aacavmmin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -127,7 +127,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apicavmmax001'
+    name: 'aacavmmax001'
     // Non-required parameters
     apis: [
       {
@@ -414,7 +414,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apicavmmax001"
+      "value": "aacavmmax001"
     },
     // Non-required parameters
     "apis": {
@@ -719,7 +719,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'apicavmmax001'
+param name = 'aacavmmax001'
 // Non-required parameters
 param apis = [
   {
@@ -1008,7 +1008,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'apicavmwafa001'
+    name: 'aacavmwaf001'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -1065,7 +1065,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "apicavmwafa001"
+      "value": "aacavmwaf001"
     },
     // Non-required parameters
     "location": {
@@ -1132,7 +1132,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'apicavmwafa001'
+param name = 'aacavmwaf001'
 // Non-required parameters
 param location = '<location>'
 param lock = {
