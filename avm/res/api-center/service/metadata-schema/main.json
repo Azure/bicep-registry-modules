@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "18080993589897227447"
+      "templateHash": "10767660738388525669"
     },
     "name": "API Center Service Metadata Schemas",
     "description": "This module deploys an API Center Service Metadata Schema."
@@ -38,7 +38,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Whether the assignment is deprecated."
+            "description": "Optional. Whether the metadata property is deprecated."
           }
         }
       },
@@ -124,7 +124,7 @@
       "name": "[format('{0}/{1}', parameters('serviceName'), parameters('name'))]",
       "properties": {
         "schema": "[parameters('schema')]",
-        "assignedTo": "[parameters('assignedTo')]"
+        "assignedTo": "[if(not(equals(parameters('assignedTo'), null())), parameters('assignedTo'), createArray())]"
       }
     }
   },

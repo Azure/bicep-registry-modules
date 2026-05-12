@@ -204,6 +204,6 @@ type apiSourceType = {
   @sys.description('Optional. The target lifecycle stage for imported APIs.')
   targetLifecycleStage: ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')?
 
-  @sys.description('Optional. Configuration for importing APIs from Azure API Management.')
-  azureApiManagementSource: azureApiManagementSourceType?
+  @sys.description('Required. Configuration for importing APIs from Azure API Management.')
+  azureApiManagementSource: azureApiManagementSourceType
 }

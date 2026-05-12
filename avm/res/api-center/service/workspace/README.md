@@ -176,23 +176,45 @@ The deployments for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`definition`](#parameter-apisdeploymentsdefinition) | string | The deployed definition name. |
+| [`environment`](#parameter-apisdeploymentsenvironment) | string | The target environment name of the deployment. |
 | [`name`](#parameter-apisdeploymentsname) | string | The name of the deployment. |
+| [`version`](#parameter-apisdeploymentsversion) | string | The deployed version name. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customProperties`](#parameter-apisdeploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
-| [`definitionId`](#parameter-apisdeploymentsdefinitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-apisdeploymentsdescription) | string | The description of the deployment. |
-| [`environmentId`](#parameter-apisdeploymentsenvironmentid) | string | The API center-scoped environment resource ID. |
 | [`server`](#parameter-apisdeploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-apisdeploymentsstate) | string | The state of the deployment. |
 | [`title`](#parameter-apisdeploymentstitle) | string | The title of the deployment. |
 
+### Parameter: `apis.deployments.definition`
+
+The deployed definition name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.deployments.environment`
+
+The target environment name of the deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `apis.deployments.name`
 
 The name of the deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.deployments.version`
+
+The deployed version name.
 
 - Required: Yes
 - Type: string
@@ -204,23 +226,9 @@ The custom metadata defined for API catalog entities.
 - Required: No
 - Type: object
 
-### Parameter: `apis.deployments.definitionId`
-
-The API center-scoped definition resource ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `apis.deployments.description`
 
 The description of the deployment.
-
-- Required: No
-- Type: string
-
-### Parameter: `apis.deployments.environmentId`
-
-The API center-scoped environment resource ID.
 
 - Required: No
 - Type: string
@@ -483,29 +491,22 @@ The API sources to create in the workspace for importing APIs from external sour
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
 | [`name`](#parameter-apisourcesname) | string | The name of the API source. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
 | [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
-| [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
+| [`targetEnvironment`](#parameter-apisourcestargetenvironment) | string | The target environment name. If not provided a new environment will be created. |
 | [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
-
-### Parameter: `apiSources.name`
-
-The name of the API source.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apiSources.azureApiManagementSource`
 
 Configuration for importing APIs from Azure API Management.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
@@ -534,6 +535,13 @@ The resource ID of the managed identity that has access to the API Management in
 - Required: No
 - Type: string
 
+### Parameter: `apiSources.name`
+
+The name of the API source.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `apiSources.importSpecification`
 
 Indicates if the specification should be imported along with metadata.
@@ -549,9 +557,9 @@ Indicates if the specification should be imported along with metadata.
   ]
   ```
 
-### Parameter: `apiSources.targetEnvironmentId`
+### Parameter: `apiSources.targetEnvironment`
 
-The target environment resource ID within API Center.
+The target environment name. If not provided a new environment will be created.
 
 - Required: No
 - Type: string

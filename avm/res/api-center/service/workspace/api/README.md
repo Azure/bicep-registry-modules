@@ -148,23 +148,45 @@ The deployments to create for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`definition`](#parameter-deploymentsdefinition) | string | The deployed definition name. |
+| [`environment`](#parameter-deploymentsenvironment) | string | The target environment name of the deployment. |
 | [`name`](#parameter-deploymentsname) | string | The name of the deployment. |
+| [`version`](#parameter-deploymentsversion) | string | The deployed version name. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customProperties`](#parameter-deploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
-| [`definitionId`](#parameter-deploymentsdefinitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-deploymentsdescription) | string | The description of the deployment. |
-| [`environmentId`](#parameter-deploymentsenvironmentid) | string | The API center-scoped environment resource ID. |
 | [`server`](#parameter-deploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-deploymentsstate) | string | The state of the deployment. |
 | [`title`](#parameter-deploymentstitle) | string | The title of the deployment. |
 
+### Parameter: `deployments.definition`
+
+The deployed definition name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.environment`
+
+The target environment name of the deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `deployments.name`
 
 The name of the deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.version`
+
+The deployed version name.
 
 - Required: Yes
 - Type: string
@@ -176,23 +198,9 @@ The custom metadata defined for API catalog entities.
 - Required: No
 - Type: object
 
-### Parameter: `deployments.definitionId`
-
-The API center-scoped definition resource ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `deployments.description`
 
 The description of the deployment.
-
-- Required: No
-- Type: string
-
-### Parameter: `deployments.environmentId`
-
-The API center-scoped environment resource ID.
 
 - Required: No
 - Type: string

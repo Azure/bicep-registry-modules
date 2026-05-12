@@ -216,6 +216,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           deployments: [
             {
+              name: 'petstore-staging-deployment'
+              title: 'Petstore Staging'
+              environment: 'staging-apim'
+              version: 'v1-0-0'
+              definition: 'openapi-spec'
+            }
+            {
               name: 'petstore-prod-deployment'
               title: 'Petstore Production'
               description: 'Production deployment of the Petstore API.'

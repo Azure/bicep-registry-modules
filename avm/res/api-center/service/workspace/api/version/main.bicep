@@ -35,10 +35,6 @@ param lifecycleStage string
 @sys.description('Optional. The definitions to create for the API version.')
 param definitions definitionType[]?
 
-// =============== //
-//   Deployments   //
-// =============== //
-
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
 

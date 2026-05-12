@@ -106,9 +106,9 @@ module api_deployments 'deployment/main.bicep' = [
       name: apiDeployment.name
       title: apiDeployment.?title
       description: apiDeployment.?description
-      environment: apiDeployment.?environment
-      version: apiDeployment.?version
-      definition: apiDeployment.?definition
+      environment: apiDeployment.environment
+      version: apiDeployment.version
+      definition: apiDeployment.definition
       state: apiDeployment.?state
       customProperties: apiDeployment.?customProperties
       server: apiDeployment.?server
@@ -198,14 +198,14 @@ type deploymentType = {
   @maxLength(500)
   description: string?
 
-  @sys.description('Optional. The target environment name of the deployment.')
-  environment: string?
+  @sys.description('Required. The target environment name of the deployment.')
+  environment: string
 
-  @sys.description('Optional. The deployed version name.')
-  version: string?
+  @sys.description('Required. The deployed version name.')
+  version: string
 
-  @sys.description('Optional. The deployed definition name.')
-  definition: string?
+  @sys.description('Required. The deployed definition name.')
+  definition: string
 
   @sys.description('Optional. The state of the deployment.')
   state: ('active' | 'inactive')?

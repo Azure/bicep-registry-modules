@@ -20,7 +20,10 @@ This module deploys an API Center Service Workspace API Deployment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`definition`](#parameter-definition) | string | The deployed definition name. |
+| [`environment`](#parameter-environment) | string | The target environment name of the deployment. |
 | [`name`](#parameter-name) | string | The name of the deployment. |
+| [`version`](#parameter-version) | string | The deployed version name. |
 
 **Conditional parameters**
 
@@ -35,16 +38,35 @@ This module deploys an API Center Service Workspace API Deployment.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
-| [`definitionId`](#parameter-definitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-description) | string | The description of the deployment. |
-| [`environmentId`](#parameter-environmentid) | string | The API center-scoped environment resource ID. |
 | [`server`](#parameter-server) | object | The server information of the deployment. |
 | [`state`](#parameter-state) | string | The state of the API deployment. |
 | [`title`](#parameter-title) | string | The title of the deployment. |
 
+### Parameter: `definition`
+
+The deployed definition name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `environment`
+
+The target environment name of the deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `name`
 
 The name of the deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `version`
+
+The deployed version name.
 
 - Required: Yes
 - Type: string
@@ -77,23 +99,9 @@ The custom metadata defined for API catalog entities.
 - Required: No
 - Type: object
 
-### Parameter: `definitionId`
-
-The API center-scoped definition resource ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `description`
 
 The description of the deployment.
-
-- Required: No
-- Type: string
-
-### Parameter: `environmentId`
-
-The API center-scoped environment resource ID.
 
 - Required: No
 - Type: string

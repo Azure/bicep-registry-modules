@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "8090603996998261773"
+      "templateHash": "12144714841515196207"
     },
     "name": "API Center Service Workspace APIs",
     "description": "This module deploys an API Center Service Workspace API."
@@ -150,18 +150,22 @@
             "description": "Optional. The description of the deployment."
           }
         },
-        "environmentId": {
+        "environment": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The API center-scoped environment resource ID."
+            "description": "Required. The target environment name of the deployment."
           }
         },
-        "definitionId": {
+        "version": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The API center-scoped definition resource ID."
+            "description": "Required. The deployed version name."
+          }
+        },
+        "definition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The deployed definition name."
           }
         },
         "state": {
@@ -831,11 +835,14 @@
           "description": {
             "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'description')]"
           },
-          "environmentId": {
-            "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'environmentId')]"
+          "environment": {
+            "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].environment]"
           },
-          "definitionId": {
-            "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'definitionId')]"
+          "version": {
+            "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].version]"
+          },
+          "definition": {
+            "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].definition]"
           },
           "state": {
             "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'state')]"
@@ -855,7 +862,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "10230305764403580088"
+              "templateHash": "7550830873522986883"
             },
             "name": "API Center Service Workspace API Deployments",
             "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -924,18 +931,22 @@
                 "description": "Optional. The description of the deployment."
               }
             },
-            "environmentId": {
+            "environment": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. The API center-scoped environment resource ID."
+                "description": "Required. The target environment name of the deployment."
               }
             },
-            "definitionId": {
+            "version": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. The API center-scoped definition resource ID."
+                "description": "Required. The deployed version name."
+              }
+            },
+            "definition": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The deployed definition name."
               }
             },
             "state": {
@@ -990,11 +1001,11 @@
               "properties": {
                 "title": "[parameters('title')]",
                 "description": "[parameters('description')]",
-                "environmentId": "[parameters('environmentId')]",
-                "definitionId": "[parameters('definitionId')]",
+                "environmentId": "[format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('environment'))]",
+                "definitionId": "[format('/workspaces/{0}/apis/{1}/versions/{2}/definitions/{3}', parameters('workspaceName'), parameters('apiName'), parameters('version'), parameters('definition'))]",
                 "state": "[parameters('state')]",
                 "customProperties": "[parameters('customProperties')]",
-                "server": "[parameters('server')]"
+                "server": "[if(or(equals(parameters('server'), null()), equals(tryGet(parameters('server'), 'runtimeUri'), null())), createObject('runtimeUri', createArray()), parameters('server'))]"
               }
             }
           },

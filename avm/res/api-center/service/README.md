@@ -139,22 +139,30 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           }
         ]
         customProperties: {
-          apiCostCenter: 'IT-1234'
+          apiCostCenter: 'CC-1234'
           apiTeamOwner: 'Platform Engineering'
         }
         deployments: [
           {
-            definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
+            definition: 'openapi-spec'
+            environment: 'staging-apim'
+            name: 'petstore-staging-deployment'
+            title: 'Petstore Staging'
+            version: 'v1-0-0'
+          }
+          {
+            definition: 'openapi-spec'
             description: 'Production deployment of the Petstore API.'
-            environmentId: '/workspaces/default/environments/production-apim'
+            environment: 'production-apim'
             name: 'petstore-prod-deployment'
             server: {
               runtimeUri: [
-                'https://petstore.contoso.com/api'
+                'https://contoso.com/petstore/api'
               ]
             }
             state: 'active'
             title: 'Petstore Production'
+            version: 'v1-0-0'
           }
         ]
         description: 'A sample REST API for managing pets.'
@@ -162,11 +170,11 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           {
             description: 'Full reference documentation for the Petstore API.'
             title: 'API Documentation'
-            url: 'https://docs.contoso.com/petstore'
+            url: 'https://contoso.com/petstore'
           }
           {
             title: 'Getting Started Guide'
-            url: 'https://docs.contoso.com/petstore/getting-started'
+            url: 'https://contoso.com/petstore/getting-started'
           }
         ]
         kind: 'rest'
@@ -196,9 +204,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           {
             definitions: [
               {
-                description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
-                name: 'openapi-spec-v2'
-                title: 'OpenAPI Specification v2'
+                description: 'The OpenAPI 3.0 specification for the Petstore API v2.'
+                name: 'openapi-spec'
+                title: 'OpenAPI Specification'
               }
             ]
             lifecycleStage: 'preview'
@@ -215,7 +223,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           }
         ]
         customProperties: {
-          apiCostCenter: 'CM-7001'
+          apiCostCenter: 'CC-7001'
           apiTeamOwner: 'Commerce Team'
         }
         description: 'A REST API for managing customer orders.'
@@ -233,9 +241,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       }
       {
         customProperties: {
-          apiCostCenter: 'GQ-2001'
+          apiCostCenter: 'CC-2001'
         }
-        description: 'A sample GraphQL API for querying data.'
+        description: 'A  GraphQL API'
         kind: 'graphql'
         name: 'graphql-api'
         summary: 'GraphQL data query API.'
@@ -243,36 +251,36 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       }
       {
         customProperties: {
-          apiCostCenter: 'SP-3001'
+          apiCostCenter: 'CC-3001'
         }
-        description: 'A legacy SOAP-based API for backward compatibility.'
+        description: 'A SOAP-based API'
         kind: 'soap'
-        name: 'legacy-soap-api'
-        title: 'Legacy SOAP API'
+        name: 'soap-api'
+        title: 'SOAP API'
       }
       {
         customProperties: {
-          apiCostCenter: 'WH-4001'
+          apiCostCenter: 'CC-4001'
         }
-        description: 'A webhook API for event-driven notifications.'
+        description: 'A webhook API'
         kind: 'webhook'
         name: 'webhook-notifications'
         title: 'Webhook Notifications'
       }
       {
         customProperties: {
-          apiCostCenter: 'GR-5001'
+          apiCostCenter: 'CC-5001'
         }
-        description: 'A gRPC API for high-performance inter-service communication.'
+        description: 'A gRPC API'
         kind: 'grpc'
         name: 'grpc-service'
         title: 'gRPC Service'
       }
       {
         customProperties: {
-          apiCostCenter: 'WS-6001'
+          apiCostCenter: 'CC-6001'
         }
-        description: 'A WebSocket API for real-time bidirectional communication.'
+        description: 'A WebSocket API'
         kind: 'websocket'
         name: 'realtime-ws-api'
         title: 'Real-Time WebSocket API'
@@ -286,6 +294,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
         importSpecification: 'always'
         name: 'apim-import-source'
+        targetEnvironment: 'production-apim'
         targetLifecycleStage: 'production'
       }
     ]
@@ -299,7 +308,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         name: 'production-apim'
         onboarding: {
           developerPortalUri: [
-            'https://developer.contoso.com'
+            'https://contoso.com/develop'
           ]
           instructions: 'Sign up at the developer portal to get started with our APIs.'
         }
@@ -419,22 +428,30 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             }
           ],
           "customProperties": {
-            "apiCostCenter": "IT-1234",
+            "apiCostCenter": "CC-1234",
             "apiTeamOwner": "Platform Engineering"
           },
           "deployments": [
             {
-              "definitionId": "/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec",
+              "definition": "openapi-spec",
+              "environment": "staging-apim",
+              "name": "petstore-staging-deployment",
+              "title": "Petstore Staging",
+              "version": "v1-0-0"
+            },
+            {
+              "definition": "openapi-spec",
               "description": "Production deployment of the Petstore API.",
-              "environmentId": "/workspaces/default/environments/production-apim",
+              "environment": "production-apim",
               "name": "petstore-prod-deployment",
               "server": {
                 "runtimeUri": [
-                  "https://petstore.contoso.com/api"
+                  "https://contoso.com/petstore/api"
                 ]
               },
               "state": "active",
-              "title": "Petstore Production"
+              "title": "Petstore Production",
+              "version": "v1-0-0"
             }
           ],
           "description": "A sample REST API for managing pets.",
@@ -442,11 +459,11 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             {
               "description": "Full reference documentation for the Petstore API.",
               "title": "API Documentation",
-              "url": "https://docs.contoso.com/petstore"
+              "url": "https://contoso.com/petstore"
             },
             {
               "title": "Getting Started Guide",
-              "url": "https://docs.contoso.com/petstore/getting-started"
+              "url": "https://contoso.com/petstore/getting-started"
             }
           ],
           "kind": "rest",
@@ -476,9 +493,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             {
               "definitions": [
                 {
-                  "description": "The OpenAPI 3.1 specification for the Petstore API v2.",
-                  "name": "openapi-spec-v2",
-                  "title": "OpenAPI Specification v2"
+                  "description": "The OpenAPI 3.0 specification for the Petstore API v2.",
+                  "name": "openapi-spec",
+                  "title": "OpenAPI Specification"
                 }
               ],
               "lifecycleStage": "preview",
@@ -495,7 +512,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             }
           ],
           "customProperties": {
-            "apiCostCenter": "CM-7001",
+            "apiCostCenter": "CC-7001",
             "apiTeamOwner": "Commerce Team"
           },
           "description": "A REST API for managing customer orders.",
@@ -513,9 +530,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         },
         {
           "customProperties": {
-            "apiCostCenter": "GQ-2001"
+            "apiCostCenter": "CC-2001"
           },
-          "description": "A sample GraphQL API for querying data.",
+          "description": "A  GraphQL API",
           "kind": "graphql",
           "name": "graphql-api",
           "summary": "GraphQL data query API.",
@@ -523,36 +540,36 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         },
         {
           "customProperties": {
-            "apiCostCenter": "SP-3001"
+            "apiCostCenter": "CC-3001"
           },
-          "description": "A legacy SOAP-based API for backward compatibility.",
+          "description": "A SOAP-based API",
           "kind": "soap",
-          "name": "legacy-soap-api",
-          "title": "Legacy SOAP API"
+          "name": "soap-api",
+          "title": "SOAP API"
         },
         {
           "customProperties": {
-            "apiCostCenter": "WH-4001"
+            "apiCostCenter": "CC-4001"
           },
-          "description": "A webhook API for event-driven notifications.",
+          "description": "A webhook API",
           "kind": "webhook",
           "name": "webhook-notifications",
           "title": "Webhook Notifications"
         },
         {
           "customProperties": {
-            "apiCostCenter": "GR-5001"
+            "apiCostCenter": "CC-5001"
           },
-          "description": "A gRPC API for high-performance inter-service communication.",
+          "description": "A gRPC API",
           "kind": "grpc",
           "name": "grpc-service",
           "title": "gRPC Service"
         },
         {
           "customProperties": {
-            "apiCostCenter": "WS-6001"
+            "apiCostCenter": "CC-6001"
           },
-          "description": "A WebSocket API for real-time bidirectional communication.",
+          "description": "A WebSocket API",
           "kind": "websocket",
           "name": "realtime-ws-api",
           "title": "Real-Time WebSocket API"
@@ -568,6 +585,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           },
           "importSpecification": "always",
           "name": "apim-import-source",
+          "targetEnvironment": "production-apim",
           "targetLifecycleStage": "production"
         }
       ]
@@ -583,7 +601,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           "name": "production-apim",
           "onboarding": {
             "developerPortalUri": [
-              "https://developer.contoso.com"
+              "https://contoso.com/develop"
             ],
             "instructions": "Sign up at the developer portal to get started with our APIs."
           },
@@ -713,22 +731,30 @@ param apis = [
       }
     ]
     customProperties: {
-      apiCostCenter: 'IT-1234'
+      apiCostCenter: 'CC-1234'
       apiTeamOwner: 'Platform Engineering'
     }
     deployments: [
       {
-        definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
+        definition: 'openapi-spec'
+        environment: 'staging-apim'
+        name: 'petstore-staging-deployment'
+        title: 'Petstore Staging'
+        version: 'v1-0-0'
+      }
+      {
+        definition: 'openapi-spec'
         description: 'Production deployment of the Petstore API.'
-        environmentId: '/workspaces/default/environments/production-apim'
+        environment: 'production-apim'
         name: 'petstore-prod-deployment'
         server: {
           runtimeUri: [
-            'https://petstore.contoso.com/api'
+            'https://contoso.com/petstore/api'
           ]
         }
         state: 'active'
         title: 'Petstore Production'
+        version: 'v1-0-0'
       }
     ]
     description: 'A sample REST API for managing pets.'
@@ -736,11 +762,11 @@ param apis = [
       {
         description: 'Full reference documentation for the Petstore API.'
         title: 'API Documentation'
-        url: 'https://docs.contoso.com/petstore'
+        url: 'https://contoso.com/petstore'
       }
       {
         title: 'Getting Started Guide'
-        url: 'https://docs.contoso.com/petstore/getting-started'
+        url: 'https://contoso.com/petstore/getting-started'
       }
     ]
     kind: 'rest'
@@ -770,9 +796,9 @@ param apis = [
       {
         definitions: [
           {
-            description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
-            name: 'openapi-spec-v2'
-            title: 'OpenAPI Specification v2'
+            description: 'The OpenAPI 3.0 specification for the Petstore API v2.'
+            name: 'openapi-spec'
+            title: 'OpenAPI Specification'
           }
         ]
         lifecycleStage: 'preview'
@@ -789,7 +815,7 @@ param apis = [
       }
     ]
     customProperties: {
-      apiCostCenter: 'CM-7001'
+      apiCostCenter: 'CC-7001'
       apiTeamOwner: 'Commerce Team'
     }
     description: 'A REST API for managing customer orders.'
@@ -807,9 +833,9 @@ param apis = [
   }
   {
     customProperties: {
-      apiCostCenter: 'GQ-2001'
+      apiCostCenter: 'CC-2001'
     }
-    description: 'A sample GraphQL API for querying data.'
+    description: 'A  GraphQL API'
     kind: 'graphql'
     name: 'graphql-api'
     summary: 'GraphQL data query API.'
@@ -817,36 +843,36 @@ param apis = [
   }
   {
     customProperties: {
-      apiCostCenter: 'SP-3001'
+      apiCostCenter: 'CC-3001'
     }
-    description: 'A legacy SOAP-based API for backward compatibility.'
+    description: 'A SOAP-based API'
     kind: 'soap'
-    name: 'legacy-soap-api'
-    title: 'Legacy SOAP API'
+    name: 'soap-api'
+    title: 'SOAP API'
   }
   {
     customProperties: {
-      apiCostCenter: 'WH-4001'
+      apiCostCenter: 'CC-4001'
     }
-    description: 'A webhook API for event-driven notifications.'
+    description: 'A webhook API'
     kind: 'webhook'
     name: 'webhook-notifications'
     title: 'Webhook Notifications'
   }
   {
     customProperties: {
-      apiCostCenter: 'GR-5001'
+      apiCostCenter: 'CC-5001'
     }
-    description: 'A gRPC API for high-performance inter-service communication.'
+    description: 'A gRPC API'
     kind: 'grpc'
     name: 'grpc-service'
     title: 'gRPC Service'
   }
   {
     customProperties: {
-      apiCostCenter: 'WS-6001'
+      apiCostCenter: 'CC-6001'
     }
-    description: 'A WebSocket API for real-time bidirectional communication.'
+    description: 'A WebSocket API'
     kind: 'websocket'
     name: 'realtime-ws-api'
     title: 'Real-Time WebSocket API'
@@ -860,6 +886,7 @@ param apiSources = [
     }
     importSpecification: 'always'
     name: 'apim-import-source'
+    targetEnvironment: 'production-apim'
     targetLifecycleStage: 'production'
   }
 ]
@@ -873,7 +900,7 @@ param environments = [
     name: 'production-apim'
     onboarding: {
       developerPortalUri: [
-        'https://developer.contoso.com'
+        'https://contoso.com/develop'
       ]
       instructions: 'Sign up at the developer portal to get started with our APIs.'
     }
@@ -1170,7 +1197,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`metadataSchemas`](#parameter-metadataschemas) | array | The metadata schemas to create within the API Center service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create scoped to the service. |
-| [`sku`](#parameter-sku) | string | The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. |
+| [`sku`](#parameter-sku) | string | The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. Defaults to Standard. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -1295,23 +1322,45 @@ The deployments for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`definition`](#parameter-apisdeploymentsdefinition) | string | The deployed definition name. |
+| [`environment`](#parameter-apisdeploymentsenvironment) | string | The target environment name of the deployment. |
 | [`name`](#parameter-apisdeploymentsname) | string | The name of the deployment. |
+| [`version`](#parameter-apisdeploymentsversion) | string | The deployed version name. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customProperties`](#parameter-apisdeploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
-| [`definitionId`](#parameter-apisdeploymentsdefinitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-apisdeploymentsdescription) | string | The description of the deployment. |
-| [`environmentId`](#parameter-apisdeploymentsenvironmentid) | string | The API center-scoped environment resource ID. |
 | [`server`](#parameter-apisdeploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-apisdeploymentsstate) | string | The state of the deployment. |
 | [`title`](#parameter-apisdeploymentstitle) | string | The title of the deployment. |
 
+### Parameter: `apis.deployments.definition`
+
+The deployed definition name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.deployments.environment`
+
+The target environment name of the deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `apis.deployments.name`
 
 The name of the deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.deployments.version`
+
+The deployed version name.
 
 - Required: Yes
 - Type: string
@@ -1323,23 +1372,9 @@ The custom metadata defined for API catalog entities.
 - Required: No
 - Type: object
 
-### Parameter: `apis.deployments.definitionId`
-
-The API center-scoped definition resource ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `apis.deployments.description`
 
 The description of the deployment.
-
-- Required: No
-- Type: string
-
-### Parameter: `apis.deployments.environmentId`
-
-The API center-scoped environment resource ID.
 
 - Required: No
 - Type: string
@@ -1602,29 +1637,22 @@ The API sources to create within the default workspace for importing APIs from e
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
 | [`name`](#parameter-apisourcesname) | string | The name of the API source. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
 | [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
-| [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
+| [`targetEnvironment`](#parameter-apisourcestargetenvironment) | string | The target environment name. If not provided a new environment will be created. |
 | [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
-
-### Parameter: `apiSources.name`
-
-The name of the API source.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apiSources.azureApiManagementSource`
 
 Configuration for importing APIs from Azure API Management.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
@@ -1653,6 +1681,13 @@ The resource ID of the managed identity that has access to the API Management in
 - Required: No
 - Type: string
 
+### Parameter: `apiSources.name`
+
+The name of the API source.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `apiSources.importSpecification`
 
 Indicates if the specification should be imported along with metadata.
@@ -1668,9 +1703,9 @@ Indicates if the specification should be imported along with metadata.
   ]
   ```
 
-### Parameter: `apiSources.targetEnvironmentId`
+### Parameter: `apiSources.targetEnvironment`
 
-The target environment resource ID within API Center.
+The target environment name. If not provided a new environment will be created.
 
 - Required: No
 - Type: string
@@ -1951,13 +1986,13 @@ The entities the metadata schema is assigned to.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deprecated`](#parameter-metadataschemasassignedtodeprecated) | bool | Whether the assignment is deprecated. |
+| [`deprecated`](#parameter-metadataschemasassignedtodeprecated) | bool | Whether the metadata property is deprecated. |
 | [`entity`](#parameter-metadataschemasassignedtoentity) | string | The entity the metadata schema is assigned to. |
 | [`required`](#parameter-metadataschemasassignedtorequired) | bool | Whether the metadata is required for the entity. |
 
 ### Parameter: `metadataSchemas.assignedTo.deprecated`
 
-Whether the assignment is deprecated.
+Whether the metadata property is deprecated.
 
 - Required: No
 - Type: bool
@@ -2093,7 +2128,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `sku`
 
-The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments.
+The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. Defaults to Standard.
 
 - Required: No
 - Type: string

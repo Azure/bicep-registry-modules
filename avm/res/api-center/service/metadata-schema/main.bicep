@@ -24,7 +24,7 @@ resource metadataSchema 'Microsoft.ApiCenter/services/metadataSchemas@2024-03-01
   parent: service
   properties: {
     schema: schema
-    assignedTo: assignedTo
+    assignedTo: assignedTo != null ? assignedTo : []
   }
 }
 
@@ -45,7 +45,7 @@ type metadataSchemaAssignedToType = {
   @sys.description('Optional. Whether the metadata is required for the entity.')
   required: bool?
 
-  @sys.description('Optional. Whether the assignment is deprecated.')
+  @sys.description('Optional. Whether the metadata property is deprecated.')
   deprecated: bool?
 }
 

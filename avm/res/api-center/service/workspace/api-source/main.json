@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "11372909277800735520"
+      "templateHash": "8061954255000568357"
     },
     "name": "API Center Service Workspace API Sources",
     "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -67,11 +67,11 @@
         "description": "Optional. Indicates if the specification should be imported along with metadata."
       }
     },
-    "targetEnvironmentId": {
+    "targetEnvironment": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The target environment resource ID within API Center."
+        "description": "Optional. The target environment name. If not provided a new environment will be created."
       }
     },
     "targetLifecycleStage": {
@@ -120,7 +120,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "importSpecification": "[parameters('importSpecification')]",
-        "targetEnvironmentId": "[parameters('targetEnvironmentId')]",
+        "targetEnvironmentId": "[if(not(empty(parameters('targetEnvironment'))), format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('targetEnvironment')), null())]",
         "targetLifecycleStage": "[parameters('targetLifecycleStage')]",
         "azureApiManagementSource": "[parameters('azureApiManagementSource')]"
       },

@@ -67,13 +67,13 @@ The entities the metadata schema is assigned to.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deprecated`](#parameter-assignedtodeprecated) | bool | Whether the assignment is deprecated. |
+| [`deprecated`](#parameter-assignedtodeprecated) | bool | Whether the metadata property is deprecated. |
 | [`entity`](#parameter-assignedtoentity) | string | The entity the metadata schema is assigned to. |
 | [`required`](#parameter-assignedtorequired) | bool | Whether the metadata is required for the entity. |
 
 ### Parameter: `assignedTo.deprecated`
 
-Whether the assignment is deprecated.
+Whether the metadata property is deprecated.
 
 - Required: No
 - Type: bool

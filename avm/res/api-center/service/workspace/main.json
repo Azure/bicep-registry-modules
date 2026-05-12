@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "17474828890569050307"
+      "templateHash": "526257694065286513"
     },
     "name": "API Center Service Workspaces",
     "description": "This module deploys an API Center Service Workspace."
@@ -214,11 +214,11 @@
             "description": "Optional. Indicates if the specification should be imported along with metadata."
           }
         },
-        "targetEnvironmentId": {
+        "targetEnvironment": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The target environment resource ID within API Center."
+            "description": "Optional. The target environment name. If not provided a new environment will be created."
           }
         },
         "targetLifecycleStage": {
@@ -239,9 +239,8 @@
         },
         "azureApiManagementSource": {
           "$ref": "#/definitions/azureApiManagementSourceType",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Configuration for importing APIs from Azure API Management."
+            "description": "Required. Configuration for importing APIs from Azure API Management."
           }
         }
       },
@@ -354,18 +353,22 @@
             "description": "Optional. The description of the deployment."
           }
         },
-        "environmentId": {
+        "environment": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The API center-scoped environment resource ID."
+            "description": "Required. The target environment name of the deployment."
           }
         },
-        "definitionId": {
+        "version": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The API center-scoped definition resource ID."
+            "description": "Required. The deployed version name."
+          }
+        },
+        "definition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The deployed definition name."
           }
         },
         "state": {
@@ -990,7 +993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "8090603996998261773"
+              "templateHash": "12144714841515196207"
             },
             "name": "API Center Service Workspace APIs",
             "description": "This module deploys an API Center Service Workspace API."
@@ -1134,18 +1137,22 @@
                     "description": "Optional. The description of the deployment."
                   }
                 },
-                "environmentId": {
+                "environment": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The API center-scoped environment resource ID."
+                    "description": "Required. The target environment name of the deployment."
                   }
                 },
-                "definitionId": {
+                "version": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The API center-scoped definition resource ID."
+                    "description": "Required. The deployed version name."
+                  }
+                },
+                "definition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The deployed definition name."
                   }
                 },
                 "state": {
@@ -1815,11 +1822,14 @@
                   "description": {
                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'description')]"
                   },
-                  "environmentId": {
-                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'environmentId')]"
+                  "environment": {
+                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].environment]"
                   },
-                  "definitionId": {
-                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'definitionId')]"
+                  "version": {
+                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].version]"
+                  },
+                  "definition": {
+                    "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].definition]"
                   },
                   "state": {
                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'state')]"
@@ -1839,7 +1849,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "10230305764403580088"
+                      "templateHash": "7550830873522986883"
                     },
                     "name": "API Center Service Workspace API Deployments",
                     "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -1908,18 +1918,22 @@
                         "description": "Optional. The description of the deployment."
                       }
                     },
-                    "environmentId": {
+                    "environment": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
-                        "description": "Optional. The API center-scoped environment resource ID."
+                        "description": "Required. The target environment name of the deployment."
                       }
                     },
-                    "definitionId": {
+                    "version": {
                       "type": "string",
-                      "nullable": true,
                       "metadata": {
-                        "description": "Optional. The API center-scoped definition resource ID."
+                        "description": "Required. The deployed version name."
+                      }
+                    },
+                    "definition": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The deployed definition name."
                       }
                     },
                     "state": {
@@ -1974,11 +1988,11 @@
                       "properties": {
                         "title": "[parameters('title')]",
                         "description": "[parameters('description')]",
-                        "environmentId": "[parameters('environmentId')]",
-                        "definitionId": "[parameters('definitionId')]",
+                        "environmentId": "[format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('environment'))]",
+                        "definitionId": "[format('/workspaces/{0}/apis/{1}/versions/{2}/definitions/{3}', parameters('workspaceName'), parameters('apiName'), parameters('version'), parameters('definition'))]",
                         "state": "[parameters('state')]",
                         "customProperties": "[parameters('customProperties')]",
-                        "server": "[parameters('server')]"
+                        "server": "[if(or(equals(parameters('server'), null()), equals(tryGet(parameters('server'), 'runtimeUri'), null())), createObject('runtimeUri', createArray()), parameters('server'))]"
                       }
                     }
                   },
@@ -2069,8 +2083,8 @@
           "importSpecification": {
             "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'importSpecification')]"
           },
-          "targetEnvironmentId": {
-            "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetEnvironmentId')]"
+          "targetEnvironment": {
+            "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetEnvironment')]"
           },
           "targetLifecycleStage": {
             "value": "[tryGet(coalesce(parameters('apiSources'), createArray())[copyIndex()], 'targetLifecycleStage')]"
@@ -2087,7 +2101,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "11372909277800735520"
+              "templateHash": "8061954255000568357"
             },
             "name": "API Center Service Workspace API Sources",
             "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -2148,11 +2162,11 @@
                 "description": "Optional. Indicates if the specification should be imported along with metadata."
               }
             },
-            "targetEnvironmentId": {
+            "targetEnvironment": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The target environment resource ID within API Center."
+                "description": "Optional. The target environment name. If not provided a new environment will be created."
               }
             },
             "targetLifecycleStage": {
@@ -2201,7 +2215,7 @@
               "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "importSpecification": "[parameters('importSpecification')]",
-                "targetEnvironmentId": "[parameters('targetEnvironmentId')]",
+                "targetEnvironmentId": "[if(not(empty(parameters('targetEnvironment'))), format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('targetEnvironment')), null())]",
                 "targetLifecycleStage": "[parameters('targetLifecycleStage')]",
                 "azureApiManagementSource": "[parameters('azureApiManagementSource')]"
               },
@@ -2299,7 +2313,8 @@
         }
       },
       "dependsOn": [
-        "workspace"
+        "workspace",
+        "workspace_environments"
       ]
     }
   },

@@ -36,7 +36,7 @@ This module deploys an API Center Service Workspace API Source for importing API
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`importSpecification`](#parameter-importspecification) | string | Indicates if the specification should be imported along with metadata. |
-| [`targetEnvironmentId`](#parameter-targetenvironmentid) | string | The target environment resource ID within API Center. |
+| [`targetEnvironment`](#parameter-targetenvironment) | string | The target environment name. If not provided a new environment will be created. |
 | [`targetLifecycleStage`](#parameter-targetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
 
 ### Parameter: `azureApiManagementSource`
@@ -108,9 +108,9 @@ Indicates if the specification should be imported along with metadata.
   ]
   ```
 
-### Parameter: `targetEnvironmentId`
+### Parameter: `targetEnvironment`
 
-The target environment resource ID within API Center.
+The target environment name. If not provided a new environment will be created.
 
 - Required: No
 - Type: string

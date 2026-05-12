@@ -20,7 +20,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 param lock lockType?
 
 @allowed(['Free', 'Standard'])
-@description('Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments.')
+@description('Optional. The SKU to deploy, Use Free for evaluation purposes and Standard for long-lived and production deployments. Defaults to Standard.')
 param sku string = 'Standard'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
