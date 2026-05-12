@@ -34,7 +34,7 @@ This module deploys an API Center Service Workspace API Deployment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata properties for the deployment. |
+| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
 | [`definitionId`](#parameter-definitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-description) | string | The description of the deployment. |
 | [`environmentId`](#parameter-environmentid) | string | The API center-scoped environment resource ID. |
@@ -72,7 +72,7 @@ The name of the parent workspace. Required if the template is used in a standalo
 
 ### Parameter: `customProperties`
 
-The custom metadata properties for the deployment.
+The custom metadata defined for API catalog entities.
 
 - Required: No
 - Type: object
@@ -104,6 +104,19 @@ The server information of the deployment.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`runtimeUri`](#parameter-serverruntimeuri) | array | The base runtime URIs for this deployment. |
+
+### Parameter: `server.runtimeUri`
+
+The base runtime URIs for this deployment.
+
+- Required: No
+- Type: array
 
 ### Parameter: `state`
 

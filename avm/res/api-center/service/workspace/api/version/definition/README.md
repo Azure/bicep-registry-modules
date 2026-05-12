@@ -92,5 +92,4 @@ The description of the API definition.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the API definition. |
-| `resourceGroupName` | string | The name of the resource group the API definition was created in. |
 | `resourceId` | string | The resource ID of the API definition. |

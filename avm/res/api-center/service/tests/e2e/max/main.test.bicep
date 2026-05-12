@@ -85,22 +85,12 @@ module testDeployment '../../../main.bicep' = [
       ]
       metadataSchemas: [
         {
-          name: 'apiLifecycleStage'
-          schema: '{"type":"string","title":"API Lifecycle Stage","enum":["design","development","testing","preview","production","deprecated","retired"]}'
-          assignedTo: [
-            {
-              entity: 'api'
-              required: true
-            }
-          ]
-        }
-        {
           name: 'apiCostCenter'
           schema: '{"type":"string","title":"Cost Center","pattern":"^[A-Z]{2}-[0-9]{4}$"}'
           assignedTo: [
             {
               entity: 'api'
-              required: false
+              required: true
             }
             {
               entity: 'environment'
@@ -114,56 +104,49 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      workspaces: [
+      environments: [
         {
-          name: 'default'
-          title: 'Default Workspace'
-          description: 'The default workspace for API governance.'
-          environments: [
+          name: 'production-apim'
+          title: 'Production APIM'
+          kind: 'production'
+          description: 'Production Azure API Management environment.'
+          server: {
+            type: 'Azure API Management'
+          }
+        }
+        {
+          name: 'staging-apim'
+          title: 'Staging APIM'
+          kind: 'staging'
+          description: 'Staging Azure API Management environment.'
+          server: {
+            type: 'Azure API Management'
+          }
+        }
+      ]
+      apis: [
+        {
+          name: 'petstore-api'
+          title: 'Petstore API'
+          kind: 'rest'
+          description: 'A sample REST API for managing pets.'
+          summary: 'Petstore management API.'
+          contacts: [
             {
-              name: 'production-apim'
-              title: 'Production APIM'
-              kind: 'production'
-              description: 'Production Azure API Management environment.'
-              server: {
-                type: 'Azure API Management'
-              }
-            }
-            {
-              name: 'staging-apim'
-              title: 'Staging APIM'
-              kind: 'staging'
-              description: 'Staging Azure API Management environment.'
-              server: {
-                type: 'Azure API Management'
-              }
+              name: 'API Team'
+              email: 'api-team@contoso.com'
             }
           ]
-          apis: [
+          versions: [
             {
-              name: 'petstore-api'
-              title: 'Petstore API'
-              kind: 'rest'
-              description: 'A sample REST API for managing pets.'
-              summary: 'Petstore management API.'
-              contacts: [
+              name: 'v1-0-0'
+              title: 'v1.0.0'
+              lifecycleStage: 'production'
+              definitions: [
                 {
-                  name: 'API Team'
-                  email: 'api-team@contoso.com'
-                }
-              ]
-              versions: [
-                {
-                  name: 'v1-0-0'
-                  title: 'v1.0.0'
-                  lifecycleStage: 'production'
-                  definitions: [
-                    {
-                      name: 'openapi-spec'
-                      title: 'OpenAPI Specification'
-                      description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
-                    }
-                  ]
+                  name: 'openapi-spec'
+                  title: 'OpenAPI Specification'
+                  description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
                 }
               ]
             }

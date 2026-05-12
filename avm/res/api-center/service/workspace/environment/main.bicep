@@ -29,14 +29,18 @@ param kind string
 @sys.description('Optional. The description of the environment.')
 param description string?
 
-@sys.description('Optional. The custom metadata properties for the environment.')
+@sys.description('Optional. The custom metadata defined for API catalog entities.')
 param customProperties object?
 
 @sys.description('Optional. Server information of the environment.')
-param server object?
+param server environmentServerType?
 
 @sys.description('Optional. Onboarding information for the environment.')
-param onboarding object?
+param onboarding environmentOnboardingType?
+
+// =============== //
+//   Deployments   //
+// =============== //
 
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
@@ -59,8 +63,44 @@ resource environment 'Microsoft.ApiCenter/services/workspaces/environments@2024-
   }
 }
 
+// =========== //
+//   Outputs   //
+// =========== //
+
 @sys.description('The name of the environment.')
 output name string = environment.name
 
 @sys.description('The resource ID of the environment.')
 output resourceId string = environment.id
+
+@sys.description('The name of the resource group the environment was created in.')
+output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type environmentServerType = {
+  @sys.description('Optional. The management portal URIs.')
+  managementPortalUri: string[]?
+
+  @sys.description('Optional. The type of server that represents the environment.')
+  type: (
+    | 'Azure API Management'
+    | 'Azure compute service'
+    | 'Apigee API Management'
+    | 'AWS API Gateway'
+    | 'Kong API Gateway'
+    | 'Kubernetes'
+    | 'MuleSoft API Management')?
+}
+
+@export()
+type environmentOnboardingType = {
+  @sys.description('Optional. The developer portal URIs.')
+  developerPortalUri: string[]?
+
+  @sys.description('Optional. Onboarding instructions.')
+  instructions: string?
+}

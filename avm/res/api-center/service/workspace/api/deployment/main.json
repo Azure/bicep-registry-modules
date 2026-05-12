@@ -6,10 +6,30 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "17354807100696112228"
+      "templateHash": "10230305764403580088"
     },
     "name": "API Center Service Workspace API Deployments",
     "description": "This module deploys an API Center Service Workspace API Deployment."
+  },
+  "definitions": {
+    "deploymentServerType": {
+      "type": "object",
+      "properties": {
+        "runtimeUri": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The base runtime URIs for this deployment."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
   },
   "parameters": {
     "serviceName": {
@@ -84,11 +104,11 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The custom metadata properties for the deployment."
+        "description": "Optional. The custom metadata defined for API catalog entities."
       }
     },
     "server": {
-      "type": "object",
+      "$ref": "#/definitions/deploymentServerType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The server information of the deployment."

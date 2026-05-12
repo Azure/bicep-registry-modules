@@ -30,27 +30,29 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. The metadata schemas to create within the API Center service.')
 param metadataSchemas metadataSchemaType[]?
 
-@description('Optional. The environments to create within the default workspace of the API Center service.')
 import { environmentType } from 'workspace/main.bicep'
+@description('Optional. The environments to create within the default workspace of the API Center service.')
 param environments environmentType[]?
 
-@description('Optional. The APIs to create within the default workspace of the API Center service.')
 import { apiType } from 'workspace/main.bicep'
+@description('Optional. The APIs to create within the default workspace of the API Center service.')
 param apis apiType[]?
+
+import { apiSourceType } from 'workspace/main.bicep'
+@description('Optional. The API sources to create within the default workspace for importing APIs from external sources.')
+param apiSources apiSourceType[]?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 )
-var identity = !empty(managedIdentities)
-  ? {
-      type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
-    }
-  : null
+var identity = {
+  type: (managedIdentities.?systemAssigned ?? true)
+    ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+    : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+}
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -119,6 +121,7 @@ module service_defaultWorkspace 'workspace/main.bicep' = {
     title: 'Default workspace'
     environments: environments
     apis: apis
+    apiSources: apiSources
   }
 }
 

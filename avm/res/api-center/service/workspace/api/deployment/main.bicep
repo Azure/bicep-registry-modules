@@ -37,11 +37,15 @@ param definitionId string?
 ])
 param state string?
 
-@sys.description('Optional. The custom metadata properties for the deployment.')
+@sys.description('Optional. The custom metadata defined for API catalog entities.')
 param customProperties object?
 
 @sys.description('Optional. The server information of the deployment.')
-param server object?
+param server deploymentServerType?
+
+// =============== //
+//   Deployments   //
+// =============== //
 
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
@@ -69,8 +73,25 @@ resource apiDeployment 'Microsoft.ApiCenter/services/workspaces/apis/deployments
   }
 }
 
+// =========== //
+//   Outputs   //
+// =========== //
+
 @sys.description('The name of the API deployment.')
 output name string = apiDeployment.name
 
 @sys.description('The resource ID of the API deployment.')
 output resourceId string = apiDeployment.id
+
+@sys.description('The name of the resource group the API deployment was created in.')
+output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type deploymentServerType = {
+  @sys.description('Optional. The base runtime URIs for this deployment.')
+  runtimeUri: string[]?
+}

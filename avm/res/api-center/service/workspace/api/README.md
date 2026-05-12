@@ -39,7 +39,7 @@ This module deploys an API Center Service Workspace API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contacts`](#parameter-contacts) | array | The contacts for the API. |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata properties for the API. |
+| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
 | [`deployments`](#parameter-deployments) | array | The deployments to create for the API. |
 | [`description`](#parameter-description) | string | The description of the API. |
 | [`externalDocumentation`](#parameter-externaldocumentation) | array | The external documentation for the API. |
@@ -101,9 +101,38 @@ The contacts for the API.
 - Required: No
 - Type: array
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`email`](#parameter-contactsemail) | string | The email of the contact. |
+| [`name`](#parameter-contactsname) | string | The name of the contact. |
+| [`url`](#parameter-contactsurl) | string | The URL of the contact. |
+
+### Parameter: `contacts.email`
+
+The email of the contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `contacts.name`
+
+The name of the contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `contacts.url`
+
+The URL of the contact.
+
+- Required: No
+- Type: string
+
 ### Parameter: `customProperties`
 
-The custom metadata properties for the API.
+The custom metadata defined for API catalog entities.
 
 - Required: No
 - Type: object
@@ -125,10 +154,10 @@ The deployments to create for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-deploymentscustomproperties) | object | The custom metadata properties for the deployment. |
-| [`definitionId`](#parameter-deploymentsdefinitionid) | string | The definition ID of the deployment. |
+| [`customProperties`](#parameter-deploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`definitionId`](#parameter-deploymentsdefinitionid) | string | The API center-scoped definition resource ID. |
 | [`description`](#parameter-deploymentsdescription) | string | The description of the deployment. |
-| [`environmentId`](#parameter-deploymentsenvironmentid) | string | The environment ID of the deployment. |
+| [`environmentId`](#parameter-deploymentsenvironmentid) | string | The API center-scoped environment resource ID. |
 | [`server`](#parameter-deploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-deploymentsstate) | string | The state of the deployment. |
 | [`title`](#parameter-deploymentstitle) | string | The title of the deployment. |
@@ -142,14 +171,14 @@ The name of the deployment.
 
 ### Parameter: `deployments.customProperties`
 
-The custom metadata properties for the deployment.
+The custom metadata defined for API catalog entities.
 
 - Required: No
 - Type: object
 
 ### Parameter: `deployments.definitionId`
 
-The definition ID of the deployment.
+The API center-scoped definition resource ID.
 
 - Required: No
 - Type: string
@@ -163,7 +192,7 @@ The description of the deployment.
 
 ### Parameter: `deployments.environmentId`
 
-The environment ID of the deployment.
+The API center-scoped environment resource ID.
 
 - Required: No
 - Type: string
@@ -179,11 +208,11 @@ The server information of the deployment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`runtimeUri`](#parameter-deploymentsserverruntimeuri) | array | The runtime URIs. |
+| [`runtimeUri`](#parameter-deploymentsserverruntimeuri) | array | The base runtime URIs for this deployment. |
 
 ### Parameter: `deployments.server.runtimeUri`
 
-The runtime URIs.
+The base runtime URIs for this deployment.
 
 - Required: No
 - Type: array
@@ -223,12 +252,75 @@ The external documentation for the API.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-externaldocumentationurl) | string | The URL pointing to the documentation. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-externaldocumentationdescription) | string | The description of the documentation. |
+| [`title`](#parameter-externaldocumentationtitle) | string | The title of the documentation. |
+
+### Parameter: `externalDocumentation.url`
+
+The URL pointing to the documentation.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `externalDocumentation.description`
+
+The description of the documentation.
+
+- Required: No
+- Type: string
+
+### Parameter: `externalDocumentation.title`
+
+The title of the documentation.
+
+- Required: No
+- Type: string
+
 ### Parameter: `license`
 
 The license information for the API.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identifier`](#parameter-licenseidentifier) | string | SPDX license identifier. Mutually exclusive with url. |
+| [`name`](#parameter-licensename) | string | The name of the license. |
+| [`url`](#parameter-licenseurl) | string | URL pointing to the license details. Mutually exclusive with identifier. |
+
+### Parameter: `license.identifier`
+
+SPDX license identifier. Mutually exclusive with url.
+
+- Required: No
+- Type: string
+
+### Parameter: `license.name`
+
+The name of the license.
+
+- Required: No
+- Type: string
+
+### Parameter: `license.url`
+
+URL pointing to the license details. Mutually exclusive with identifier.
+
+- Required: No
+- Type: string
 
 ### Parameter: `summary`
 
@@ -243,6 +335,19 @@ The terms of service for the API.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-termsofserviceurl) | string | URL pointing to the terms of service. |
+
+### Parameter: `termsOfService.url`
+
+URL pointing to the terms of service.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `versions`
 

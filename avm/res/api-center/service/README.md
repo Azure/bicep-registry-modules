@@ -29,6 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ApiCenter/services/workspaces/apis/deployments` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apis_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/apis/deployments)</li></ul> |
 | `Microsoft.ApiCenter/services/workspaces/apis/versions` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apis_versions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/apis/versions)</li></ul> |
 | `Microsoft.ApiCenter/services/workspaces/apis/versions/definitions` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apis_versions_definitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/apis/versions/definitions)</li></ul> |
+| `Microsoft.ApiCenter/services/workspaces/apiSources` | 2024-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_apisources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-06-01-preview/services/workspaces/apiSources)</li></ul> |
 | `Microsoft.ApiCenter/services/workspaces/environments` | 2024-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.apicenter_services_workspaces_environments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiCenter/2024-03-01/services/workspaces/environments)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
@@ -127,6 +128,55 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     // Required parameters
     name: 'acsmax001'
     // Non-required parameters
+    apis: [
+      {
+        contacts: [
+          {
+            email: 'api-team@contoso.com'
+            name: 'API Team'
+          }
+        ]
+        description: 'A sample REST API for managing pets.'
+        kind: 'rest'
+        name: 'petstore-api'
+        summary: 'Petstore management API.'
+        title: 'Petstore API'
+        versions: [
+          {
+            definitions: [
+              {
+                description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
+                name: 'openapi-spec'
+                title: 'OpenAPI Specification'
+              }
+            ]
+            lifecycleStage: 'production'
+            name: 'v1-0-0'
+            title: 'v1.0.0'
+          }
+        ]
+      }
+    ]
+    environments: [
+      {
+        description: 'Production Azure API Management environment.'
+        kind: 'production'
+        name: 'production-apim'
+        server: {
+          type: 'Azure API Management'
+        }
+        title: 'Production APIM'
+      }
+      {
+        description: 'Staging Azure API Management environment.'
+        kind: 'staging'
+        name: 'staging-apim'
+        server: {
+          type: 'Azure API Management'
+        }
+        title: 'Staging APIM'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -188,62 +238,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    workspaces: [
-      {
-        apis: [
-          {
-            contacts: [
-              {
-                email: 'api-team@contoso.com'
-                name: 'API Team'
-              }
-            ]
-            description: 'A sample REST API for managing pets.'
-            kind: 'rest'
-            name: 'petstore-api'
-            summary: 'Petstore management API.'
-            title: 'Petstore API'
-            versions: [
-              {
-                definitions: [
-                  {
-                    description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
-                    name: 'openapi-spec'
-                    title: 'OpenAPI Specification'
-                  }
-                ]
-                lifecycleStage: 'production'
-                name: 'v1-0-0'
-                title: 'v1.0.0'
-              }
-            ]
-          }
-        ]
-        description: 'The default workspace for API governance.'
-        environments: [
-          {
-            description: 'Production Azure API Management environment.'
-            kind: 'production'
-            name: 'production-apim'
-            server: {
-              type: 'Azure API Management'
-            }
-            title: 'Production APIM'
-          }
-          {
-            description: 'Staging Azure API Management environment.'
-            kind: 'staging'
-            name: 'staging-apim'
-            server: {
-              type: 'Azure API Management'
-            }
-            title: 'Staging APIM'
-          }
-        ]
-        name: 'default'
-        title: 'Default Workspace'
-      }
-    ]
   }
 }
 ```
@@ -265,6 +259,59 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       "value": "acsmax001"
     },
     // Non-required parameters
+    "apis": {
+      "value": [
+        {
+          "contacts": [
+            {
+              "email": "api-team@contoso.com",
+              "name": "API Team"
+            }
+          ],
+          "description": "A sample REST API for managing pets.",
+          "kind": "rest",
+          "name": "petstore-api",
+          "summary": "Petstore management API.",
+          "title": "Petstore API",
+          "versions": [
+            {
+              "definitions": [
+                {
+                  "description": "The OpenAPI 3.0 specification for the Petstore API v1.",
+                  "name": "openapi-spec",
+                  "title": "OpenAPI Specification"
+                }
+              ],
+              "lifecycleStage": "production",
+              "name": "v1-0-0",
+              "title": "v1.0.0"
+            }
+          ]
+        }
+      ]
+    },
+    "environments": {
+      "value": [
+        {
+          "description": "Production Azure API Management environment.",
+          "kind": "production",
+          "name": "production-apim",
+          "server": {
+            "type": "Azure API Management"
+          },
+          "title": "Production APIM"
+        },
+        {
+          "description": "Staging Azure API Management environment.",
+          "kind": "staging",
+          "name": "staging-apim",
+          "server": {
+            "type": "Azure API Management"
+          },
+          "title": "Staging APIM"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -337,64 +384,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "workspaces": {
-      "value": [
-        {
-          "apis": [
-            {
-              "contacts": [
-                {
-                  "email": "api-team@contoso.com",
-                  "name": "API Team"
-                }
-              ],
-              "description": "A sample REST API for managing pets.",
-              "kind": "rest",
-              "name": "petstore-api",
-              "summary": "Petstore management API.",
-              "title": "Petstore API",
-              "versions": [
-                {
-                  "definitions": [
-                    {
-                      "description": "The OpenAPI 3.0 specification for the Petstore API v1.",
-                      "name": "openapi-spec",
-                      "title": "OpenAPI Specification"
-                    }
-                  ],
-                  "lifecycleStage": "production",
-                  "name": "v1-0-0",
-                  "title": "v1.0.0"
-                }
-              ]
-            }
-          ],
-          "description": "The default workspace for API governance.",
-          "environments": [
-            {
-              "description": "Production Azure API Management environment.",
-              "kind": "production",
-              "name": "production-apim",
-              "server": {
-                "type": "Azure API Management"
-              },
-              "title": "Production APIM"
-            },
-            {
-              "description": "Staging Azure API Management environment.",
-              "kind": "staging",
-              "name": "staging-apim",
-              "server": {
-                "type": "Azure API Management"
-              },
-              "title": "Staging APIM"
-            }
-          ],
-          "name": "default",
-          "title": "Default Workspace"
-        }
-      ]
     }
   }
 }
@@ -413,6 +402,55 @@ using 'br/public:avm/res/api-center/service:<version>'
 // Required parameters
 param name = 'acsmax001'
 // Non-required parameters
+param apis = [
+  {
+    contacts: [
+      {
+        email: 'api-team@contoso.com'
+        name: 'API Team'
+      }
+    ]
+    description: 'A sample REST API for managing pets.'
+    kind: 'rest'
+    name: 'petstore-api'
+    summary: 'Petstore management API.'
+    title: 'Petstore API'
+    versions: [
+      {
+        definitions: [
+          {
+            description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
+            name: 'openapi-spec'
+            title: 'OpenAPI Specification'
+          }
+        ]
+        lifecycleStage: 'production'
+        name: 'v1-0-0'
+        title: 'v1.0.0'
+      }
+    ]
+  }
+]
+param environments = [
+  {
+    description: 'Production Azure API Management environment.'
+    kind: 'production'
+    name: 'production-apim'
+    server: {
+      type: 'Azure API Management'
+    }
+    title: 'Production APIM'
+  }
+  {
+    description: 'Staging Azure API Management environment.'
+    kind: 'staging'
+    name: 'staging-apim'
+    server: {
+      type: 'Azure API Management'
+    }
+    title: 'Staging APIM'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -474,62 +512,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param workspaces = [
-  {
-    apis: [
-      {
-        contacts: [
-          {
-            email: 'api-team@contoso.com'
-            name: 'API Team'
-          }
-        ]
-        description: 'A sample REST API for managing pets.'
-        kind: 'rest'
-        name: 'petstore-api'
-        summary: 'Petstore management API.'
-        title: 'Petstore API'
-        versions: [
-          {
-            definitions: [
-              {
-                description: 'The OpenAPI 3.0 specification for the Petstore API v1.'
-                name: 'openapi-spec'
-                title: 'OpenAPI Specification'
-              }
-            ]
-            lifecycleStage: 'production'
-            name: 'v1-0-0'
-            title: 'v1.0.0'
-          }
-        ]
-      }
-    ]
-    description: 'The default workspace for API governance.'
-    environments: [
-      {
-        description: 'Production Azure API Management environment.'
-        kind: 'production'
-        name: 'production-apim'
-        server: {
-          type: 'Azure API Management'
-        }
-        title: 'Production APIM'
-      }
-      {
-        description: 'Staging Azure API Management environment.'
-        kind: 'staging'
-        name: 'staging-apim'
-        server: {
-          type: 'Azure API Management'
-        }
-        title: 'Staging APIM'
-      }
-    ]
-    name: 'default'
-    title: 'Default Workspace'
-  }
-]
 ```
 
 </details>
@@ -692,14 +674,16 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`apis`](#parameter-apis) | array | The APIs to create within the default workspace of the API Center service. |
+| [`apiSources`](#parameter-apisources) | array | The API sources to create within the default workspace for importing APIs from external sources. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`environments`](#parameter-environments) | array | The environments to create within the default workspace of the API Center service. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`lock`](#parameter-lock) | object | The lock settings for all Resources in the solution. |
+| [`lock`](#parameter-lock) | object | The lock settings for the service resource. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`metadataSchemas`](#parameter-metadataschemas) | array | The metadata schemas to create as part of the API Center service. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`metadataSchemas`](#parameter-metadataschemas) | array | The metadata schemas to create within the API Center service. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create scoped to the service. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`workspaces`](#parameter-workspaces) | array | The workspaces to create as part of the API Center service. |
 
 ### Parameter: `name`
 
@@ -708,6 +692,520 @@ The name of the API Center service.
 - Required: Yes
 - Type: string
 
+### Parameter: `apis`
+
+The APIs to create within the default workspace of the API Center service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-apiskind) | string | The kind of API. |
+| [`name`](#parameter-apisname) | string | The name of the API. |
+| [`title`](#parameter-apistitle) | string | The title of the API. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contacts`](#parameter-apiscontacts) | array | The contacts for the API. |
+| [`customProperties`](#parameter-apiscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`deployments`](#parameter-apisdeployments) | array | The deployments for the API. |
+| [`description`](#parameter-apisdescription) | string | The description of the API. |
+| [`externalDocumentation`](#parameter-apisexternaldocumentation) | array | External documentation for the API. |
+| [`license`](#parameter-apislicense) | object | The license information for the API. |
+| [`summary`](#parameter-apissummary) | string | Short description of the API. |
+| [`termsOfService`](#parameter-apistermsofservice) | object | The terms of service for the API. |
+| [`versions`](#parameter-apisversions) | array | The versions for the API. |
+
+### Parameter: `apis.kind`
+
+The kind of API.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql'
+    'grpc'
+    'rest'
+    'soap'
+    'webhook'
+    'websocket'
+  ]
+  ```
+
+### Parameter: `apis.name`
+
+The name of the API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.title`
+
+The title of the API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.contacts`
+
+The contacts for the API.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`email`](#parameter-apiscontactsemail) | string | The email of the contact. |
+| [`name`](#parameter-apiscontactsname) | string | The name of the contact. |
+| [`url`](#parameter-apiscontactsurl) | string | The URL of the contact. |
+
+### Parameter: `apis.contacts.email`
+
+The email of the contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.contacts.name`
+
+The name of the contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.contacts.url`
+
+The URL of the contact.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.customProperties`
+
+The custom metadata defined for API catalog entities.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.deployments`
+
+The deployments for the API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-apisdeploymentsname) | string | The name of the deployment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customProperties`](#parameter-apisdeploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`definitionId`](#parameter-apisdeploymentsdefinitionid) | string | The API center-scoped definition resource ID. |
+| [`description`](#parameter-apisdeploymentsdescription) | string | The description of the deployment. |
+| [`environmentId`](#parameter-apisdeploymentsenvironmentid) | string | The API center-scoped environment resource ID. |
+| [`server`](#parameter-apisdeploymentsserver) | object | The server information of the deployment. |
+| [`state`](#parameter-apisdeploymentsstate) | string | The state of the deployment. |
+| [`title`](#parameter-apisdeploymentstitle) | string | The title of the deployment. |
+
+### Parameter: `apis.deployments.name`
+
+The name of the deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.deployments.customProperties`
+
+The custom metadata defined for API catalog entities.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.deployments.definitionId`
+
+The API center-scoped definition resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.deployments.description`
+
+The description of the deployment.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.deployments.environmentId`
+
+The API center-scoped environment resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.deployments.server`
+
+The server information of the deployment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`runtimeUri`](#parameter-apisdeploymentsserverruntimeuri) | array | The base runtime URIs for this deployment. |
+
+### Parameter: `apis.deployments.server.runtimeUri`
+
+The base runtime URIs for this deployment.
+
+- Required: No
+- Type: array
+
+### Parameter: `apis.deployments.state`
+
+The state of the deployment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'active'
+    'inactive'
+  ]
+  ```
+
+### Parameter: `apis.deployments.title`
+
+The title of the deployment.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.description`
+
+The description of the API.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.externalDocumentation`
+
+External documentation for the API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-apisexternaldocumentationurl) | string | The URL pointing to the documentation. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-apisexternaldocumentationdescription) | string | The description of the documentation. |
+| [`title`](#parameter-apisexternaldocumentationtitle) | string | The title of the documentation. |
+
+### Parameter: `apis.externalDocumentation.url`
+
+The URL pointing to the documentation.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.externalDocumentation.description`
+
+The description of the documentation.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.externalDocumentation.title`
+
+The title of the documentation.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.license`
+
+The license information for the API.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identifier`](#parameter-apislicenseidentifier) | string | SPDX license identifier. Mutually exclusive with url. |
+| [`name`](#parameter-apislicensename) | string | The name of the license. |
+| [`url`](#parameter-apislicenseurl) | string | URL pointing to the license details. Mutually exclusive with identifier. |
+
+### Parameter: `apis.license.identifier`
+
+SPDX license identifier. Mutually exclusive with url.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.license.name`
+
+The name of the license.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.license.url`
+
+URL pointing to the license details. Mutually exclusive with identifier.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.summary`
+
+Short description of the API.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.termsOfService`
+
+The terms of service for the API.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`url`](#parameter-apistermsofserviceurl) | string | URL pointing to the terms of service. |
+
+### Parameter: `apis.termsOfService.url`
+
+URL pointing to the terms of service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.versions`
+
+The versions for the API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`lifecycleStage`](#parameter-apisversionslifecyclestage) | string | The lifecycle stage of the version. |
+| [`name`](#parameter-apisversionsname) | string | The name of the version. |
+| [`title`](#parameter-apisversionstitle) | string | The title of the version. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definitions`](#parameter-apisversionsdefinitions) | array | The definitions to create for the version. |
+
+### Parameter: `apis.versions.lifecycleStage`
+
+The lifecycle stage of the version.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'deprecated'
+    'design'
+    'development'
+    'preview'
+    'production'
+    'retired'
+    'testing'
+  ]
+  ```
+
+### Parameter: `apis.versions.name`
+
+The name of the version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.versions.title`
+
+The title of the version.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.versions.definitions`
+
+The definitions to create for the version.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-apisversionsdefinitionsname) | string | The name of the definition. |
+| [`title`](#parameter-apisversionsdefinitionstitle) | string | The title of the definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-apisversionsdefinitionsdescription) | string | The description of the definition. |
+
+### Parameter: `apis.versions.definitions.name`
+
+The name of the definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.versions.definitions.title`
+
+The title of the definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.versions.definitions.description`
+
+The description of the definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `apiSources`
+
+The API sources to create within the default workspace for importing APIs from external sources.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-apisourcesname) | string | The name of the API source. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
+| [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
+| [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
+| [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
+
+### Parameter: `apiSources.name`
+
+The name of the API source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiSources.azureApiManagementSource`
+
+Configuration for importing APIs from Azure API Management.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-apisourcesazureapimanagementsourceresourceid) | string | The resource ID of the Azure API Management instance. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`msiResourceId`](#parameter-apisourcesazureapimanagementsourcemsiresourceid) | string | The resource ID of the managed identity that has access to the API Management instance. |
+
+### Parameter: `apiSources.azureApiManagementSource.resourceId`
+
+The resource ID of the Azure API Management instance.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiSources.azureApiManagementSource.msiResourceId`
+
+The resource ID of the managed identity that has access to the API Management instance.
+
+- Required: No
+- Type: string
+
+### Parameter: `apiSources.importSpecification`
+
+Indicates if the specification should be imported along with metadata.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'always'
+    'never'
+    'ondemand'
+  ]
+  ```
+
+### Parameter: `apiSources.targetEnvironmentId`
+
+The target environment resource ID within API Center.
+
+- Required: No
+- Type: string
+
+### Parameter: `apiSources.targetLifecycleStage`
+
+The target lifecycle stage for imported APIs.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'deprecated'
+    'design'
+    'development'
+    'preview'
+    'production'
+    'retired'
+    'testing'
+  ]
+  ```
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -715,6 +1213,142 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `environments`
+
+The environments to create within the default workspace of the API Center service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-environmentskind) | string | The kind of environment. |
+| [`name`](#parameter-environmentsname) | string | The name of the environment. |
+| [`title`](#parameter-environmentstitle) | string | The title of the environment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customProperties`](#parameter-environmentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`description`](#parameter-environmentsdescription) | string | The description of the environment. |
+| [`onboarding`](#parameter-environmentsonboarding) | object | Onboarding information for the environment. |
+| [`server`](#parameter-environmentsserver) | object | Server information of the environment. |
+
+### Parameter: `environments.kind`
+
+The kind of environment.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'development'
+    'production'
+    'staging'
+    'testing'
+  ]
+  ```
+
+### Parameter: `environments.name`
+
+The name of the environment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `environments.title`
+
+The title of the environment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `environments.customProperties`
+
+The custom metadata defined for API catalog entities.
+
+- Required: No
+- Type: object
+
+### Parameter: `environments.description`
+
+The description of the environment.
+
+- Required: No
+- Type: string
+
+### Parameter: `environments.onboarding`
+
+Onboarding information for the environment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`developerPortalUri`](#parameter-environmentsonboardingdeveloperportaluri) | array | The developer portal URIs. |
+| [`instructions`](#parameter-environmentsonboardinginstructions) | string | Onboarding instructions. |
+
+### Parameter: `environments.onboarding.developerPortalUri`
+
+The developer portal URIs.
+
+- Required: No
+- Type: array
+
+### Parameter: `environments.onboarding.instructions`
+
+Onboarding instructions.
+
+- Required: No
+- Type: string
+
+### Parameter: `environments.server`
+
+Server information of the environment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managementPortalUri`](#parameter-environmentsservermanagementportaluri) | array | The management portal URIs. |
+| [`type`](#parameter-environmentsservertype) | string | The type of server that represents the environment. |
+
+### Parameter: `environments.server.managementPortalUri`
+
+The management portal URIs.
+
+- Required: No
+- Type: array
+
+### Parameter: `environments.server.type`
+
+The type of server that represents the environment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Apigee API Management'
+    'AWS API Gateway'
+    'Azure API Management'
+    'Azure compute service'
+    'Kong API Gateway'
+    'Kubernetes'
+    'MuleSoft API Management'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -726,7 +1360,7 @@ Location for all Resources.
 
 ### Parameter: `lock`
 
-The lock settings for all Resources in the solution.
+The lock settings for the service resource.
 
 - Required: No
 - Type: object
@@ -798,7 +1432,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `metadataSchemas`
 
-The metadata schemas to create as part of the API Center service.
+The metadata schemas to create within the API Center service.
 
 - Required: No
 - Type: array
@@ -876,7 +1510,7 @@ Whether the metadata is required for the entity.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignments to create.
+Array of role assignments to create scoped to the service.
 
 - Required: No
 - Type: array
@@ -988,494 +1622,11 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `workspaces`
-
-The workspaces to create as part of the API Center service.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-workspacesname) | string | The name of the workspace. |
-| [`title`](#parameter-workspacestitle) | string | The title of the workspace. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`apis`](#parameter-workspacesapis) | array | The APIs to create in the workspace. |
-| [`description`](#parameter-workspacesdescription) | string | The description of the workspace. |
-| [`environments`](#parameter-workspacesenvironments) | array | The environments to create in the workspace. |
-
-### Parameter: `workspaces.name`
-
-The name of the workspace.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.title`
-
-The title of the workspace.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis`
-
-The APIs to create in the workspace.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-workspacesapiskind) | string | The kind of API. |
-| [`name`](#parameter-workspacesapisname) | string | The name of the API. |
-| [`title`](#parameter-workspacesapistitle) | string | The title of the API. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`contacts`](#parameter-workspacesapiscontacts) | array | The contacts for the API. |
-| [`customProperties`](#parameter-workspacesapiscustomproperties) | object | The custom metadata properties. |
-| [`deployments`](#parameter-workspacesapisdeployments) | array | The deployments for the API. |
-| [`description`](#parameter-workspacesapisdescription) | string | The description of the API. |
-| [`externalDocumentation`](#parameter-workspacesapisexternaldocumentation) | array | External documentation for the API. |
-| [`license`](#parameter-workspacesapislicense) | object | The license information. |
-| [`summary`](#parameter-workspacesapissummary) | string | Short description of the API. |
-| [`termsOfService`](#parameter-workspacesapistermsofservice) | object | The terms of service. |
-| [`versions`](#parameter-workspacesapisversions) | array | The versions for the API. |
-
-### Parameter: `workspaces.apis.kind`
-
-The kind of API.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'graphql'
-    'grpc'
-    'rest'
-    'soap'
-    'webhook'
-    'websocket'
-  ]
-  ```
-
-### Parameter: `workspaces.apis.name`
-
-The name of the API.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.title`
-
-The title of the API.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.contacts`
-
-The contacts for the API.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`email`](#parameter-workspacesapiscontactsemail) | string | The email. |
-| [`name`](#parameter-workspacesapiscontactsname) | string | The name. |
-| [`url`](#parameter-workspacesapiscontactsurl) | string | The URL. |
-
-### Parameter: `workspaces.apis.contacts.email`
-
-The email.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.contacts.name`
-
-The name.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.contacts.url`
-
-The URL.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.customProperties`
-
-The custom metadata properties.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.apis.deployments`
-
-The deployments for the API.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-workspacesapisdeploymentsname) | string | The name. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customProperties`](#parameter-workspacesapisdeploymentscustomproperties) | object | Custom properties. |
-| [`definitionId`](#parameter-workspacesapisdeploymentsdefinitionid) | string | The definition ID. |
-| [`description`](#parameter-workspacesapisdeploymentsdescription) | string | The description. |
-| [`environmentId`](#parameter-workspacesapisdeploymentsenvironmentid) | string | The environment ID. |
-| [`server`](#parameter-workspacesapisdeploymentsserver) | object | Server information. |
-| [`state`](#parameter-workspacesapisdeploymentsstate) | string | The state. |
-| [`title`](#parameter-workspacesapisdeploymentstitle) | string | The title. |
-
-### Parameter: `workspaces.apis.deployments.name`
-
-The name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.deployments.customProperties`
-
-Custom properties.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.apis.deployments.definitionId`
-
-The definition ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.deployments.description`
-
-The description.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.deployments.environmentId`
-
-The environment ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.deployments.server`
-
-Server information.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.apis.deployments.state`
-
-The state.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'active'
-    'inactive'
-  ]
-  ```
-
-### Parameter: `workspaces.apis.deployments.title`
-
-The title.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.description`
-
-The description of the API.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.externalDocumentation`
-
-External documentation for the API.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`url`](#parameter-workspacesapisexternaldocumentationurl) | string | The URL of the documentation. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-workspacesapisexternaldocumentationdescription) | string | The description. |
-| [`title`](#parameter-workspacesapisexternaldocumentationtitle) | string | The title. |
-
-### Parameter: `workspaces.apis.externalDocumentation.url`
-
-The URL of the documentation.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.externalDocumentation.description`
-
-The description.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.externalDocumentation.title`
-
-The title.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.license`
-
-The license information.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.apis.summary`
-
-Short description of the API.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.apis.termsOfService`
-
-The terms of service.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.apis.versions`
-
-The versions for the API.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`lifecycleStage`](#parameter-workspacesapisversionslifecyclestage) | string | The lifecycle stage. |
-| [`name`](#parameter-workspacesapisversionsname) | string | The name of the version. |
-| [`title`](#parameter-workspacesapisversionstitle) | string | The title. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`definitions`](#parameter-workspacesapisversionsdefinitions) | array | Definitions for the version. |
-
-### Parameter: `workspaces.apis.versions.lifecycleStage`
-
-The lifecycle stage.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'deprecated'
-    'design'
-    'development'
-    'preview'
-    'production'
-    'retired'
-    'testing'
-  ]
-  ```
-
-### Parameter: `workspaces.apis.versions.name`
-
-The name of the version.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.versions.title`
-
-The title.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.versions.definitions`
-
-Definitions for the version.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-workspacesapisversionsdefinitionsname) | string | The name. |
-| [`title`](#parameter-workspacesapisversionsdefinitionstitle) | string | The title. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-workspacesapisversionsdefinitionsdescription) | string | The description. |
-
-### Parameter: `workspaces.apis.versions.definitions.name`
-
-The name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.versions.definitions.title`
-
-The title.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.apis.versions.definitions.description`
-
-The description.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.description`
-
-The description of the workspace.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.environments`
-
-The environments to create in the workspace.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-workspacesenvironmentskind) | string | The kind of environment. |
-| [`name`](#parameter-workspacesenvironmentsname) | string | The name of the environment. |
-| [`title`](#parameter-workspacesenvironmentstitle) | string | The title of the environment. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customProperties`](#parameter-workspacesenvironmentscustomproperties) | object | The custom metadata properties. |
-| [`description`](#parameter-workspacesenvironmentsdescription) | string | The description of the environment. |
-| [`onboarding`](#parameter-workspacesenvironmentsonboarding) | object | Onboarding information for the environment. |
-| [`server`](#parameter-workspacesenvironmentsserver) | object | Server information of the environment. |
-
-### Parameter: `workspaces.environments.kind`
-
-The kind of environment.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'development'
-    'production'
-    'staging'
-    'testing'
-  ]
-  ```
-
-### Parameter: `workspaces.environments.name`
-
-The name of the environment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.environments.title`
-
-The title of the environment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `workspaces.environments.customProperties`
-
-The custom metadata properties.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.environments.description`
-
-The description of the environment.
-
-- Required: No
-- Type: string
-
-### Parameter: `workspaces.environments.onboarding`
-
-Onboarding information for the environment.
-
-- Required: No
-- Type: object
-
-### Parameter: `workspaces.environments.server`
-
-Server information of the environment.
-
-- Required: No
-- Type: object
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the API Center service. |
-| `resourceGroupName` | string | The name of the resource group the API Center service was created in. |
 | `resourceId` | string | The resource ID of the API Center service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 

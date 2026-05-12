@@ -1,0 +1,149 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "3986395646239543507"
+    },
+    "name": "API Center Service Workspace API Sources",
+    "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
+  },
+  "definitions": {
+    "azureApiManagementSourceType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Azure API Management instance."
+          }
+        },
+        "msiResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the API source."
+      }
+    },
+    "importSpecification": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "never",
+        "ondemand",
+        "always"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates if the specification should be imported along with metadata."
+      }
+    },
+    "targetEnvironmentId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The target environment resource ID within API Center."
+      }
+    },
+    "targetLifecycleStage": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "design",
+        "development",
+        "testing",
+        "preview",
+        "production",
+        "deprecated",
+        "retired"
+      ],
+      "metadata": {
+        "description": "Optional. The target lifecycle stage for imported APIs."
+      }
+    },
+    "azureApiManagementSource": {
+      "$ref": "#/definitions/azureApiManagementSourceType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configuration for importing APIs from an Azure API Management instance."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[parameters('serviceName')]"
+    },
+    "apiSource": {
+      "type": "Microsoft.ApiCenter/services/workspaces/apiSources",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "importSpecification": "[parameters('importSpecification')]",
+        "targetEnvironmentId": "[parameters('targetEnvironmentId')]",
+        "targetLifecycleStage": "[parameters('targetLifecycleStage')]",
+        "azureApiManagementSource": "[parameters('azureApiManagementSource')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API source."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API source."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apiSources', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the API source was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

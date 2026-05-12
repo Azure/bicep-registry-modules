@@ -23,6 +23,9 @@ param environments environmentType[]?
 @sys.description('Optional. The APIs to create in the workspace.')
 param apis apiType[]?
 
+@sys.description('Optional. The API sources to create in the workspace for importing APIs from external sources.')
+param apiSources apiSourceType[]?
+
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
 }
@@ -75,11 +78,32 @@ module workspace_apis 'api/main.bicep' = [
   }
 ]
 
+module workspace_apiSources 'api-source/main.bicep' = [
+  for (apiSource, index) in (apiSources ?? []): {
+    name: '${uniqueString(deployment().name)}-Workspace-ApiSource-${index}'
+    params: {
+      serviceName: serviceName
+      workspaceName: workspace.name
+      name: apiSource.name
+      importSpecification: apiSource.?importSpecification
+      targetEnvironmentId: apiSource.?targetEnvironmentId
+      targetLifecycleStage: apiSource.?targetLifecycleStage
+      azureApiManagementSource: apiSource.?azureApiManagementSource
+    }
+  }
+]
+
 @sys.description('The name of the workspace.')
 output name string = workspace.name
 
 @sys.description('The resource ID of the workspace.')
 output resourceId string = workspace.id
+
+@sys.description('The name of the resource group the workspace was created in.')
+output resourceGroupName string = resourceGroup().name
+
+import { environmentServerType } from 'environment/main.bicep'
+import { environmentOnboardingType } from 'environment/main.bicep'
 
 @export()
 type environmentType = {
@@ -99,34 +123,17 @@ type environmentType = {
   @sys.description('Optional. The description of the environment.')
   description: string?
 
-  @sys.description('Optional. The custom metadata properties for the environment.')
+  @sys.description('Optional. The custom metadata defined for API catalog entities.')
   customProperties: object?
 
   @sys.description('Optional. Server information of the environment.')
-  server: {
-    @sys.description('Optional. The management portal URIs.')
-    managementPortalUri: string[]?
-
-    @sys.description('Optional. The type of server.')
-    type: (
-      | 'Azure API Management'
-      | 'Azure compute service'
-      | 'Apigee API Management'
-      | 'AWS API Gateway'
-      | 'Kong API Gateway'
-      | 'Kubernetes'
-      | 'MuleSoft API Management')?
-  }?
+  server: environmentServerType?
 
   @sys.description('Optional. Onboarding information for the environment.')
-  onboarding: {
-    @sys.description('Optional. The developer portal URIs.')
-    developerPortalUri: string[]?
-
-    @sys.description('Optional. Onboarding instructions.')
-    instructions: string?
-  }?
+  onboarding: environmentOnboardingType?
 }
+
+import { externalDocumentationType, contactType, licenseType, termsOfServiceType, versionType, deploymentType } from 'api/main.bicep'
 
 @export()
 type apiType = {
@@ -151,125 +158,46 @@ type apiType = {
   @maxLength(200)
   summary: string?
 
-  @sys.description('Optional. The custom metadata properties for the API.')
+  @sys.description('Optional. The custom metadata defined for API catalog entities.')
   customProperties: object?
 
-  @sys.description('Optional. The external documentation for the API.')
-  externalDocumentation: {
-    @sys.description('Required. The URL of the documentation.')
-    @maxLength(200)
-    url: string
-
-    @sys.description('Optional. The title of the documentation.')
-    @maxLength(50)
-    title: string?
-
-    @sys.description('Optional. The description of the documentation.')
-    @maxLength(500)
-    description: string?
-  }[]?
+  @sys.description('Optional. External documentation for the API.')
+  externalDocumentation: externalDocumentationType[]?
 
   @sys.description('Optional. The contacts for the API.')
-  contacts: {
-    @sys.description('Optional. The name of the contact.')
-    @maxLength(100)
-    name: string?
-
-    @sys.description('Optional. The email of the contact.')
-    @maxLength(100)
-    email: string?
-
-    @sys.description('Optional. The URL of the contact.')
-    @maxLength(200)
-    url: string?
-  }[]?
+  contacts: contactType[]?
 
   @sys.description('Optional. The license information for the API.')
-  license: {
-    @sys.description('Optional. SPDX license identifier.')
-    @maxLength(50)
-    identifier: string?
-
-    @sys.description('Optional. The name of the license.')
-    @maxLength(100)
-    name: string?
-
-    @sys.description('Optional. The URL of the license.')
-    @maxLength(200)
-    url: string?
-  }?
+  license: licenseType?
 
   @sys.description('Optional. The terms of service for the API.')
-  termsOfService: {
-    @sys.description('Required. The URL of the terms of service.')
-    @maxLength(200)
-    url: string
-  }?
+  termsOfService: termsOfServiceType?
 
-  @sys.description('Optional. The versions to create for the API.')
-  versions: {
-    @sys.description('Required. The name of the version.')
-    @minLength(3)
-    @maxLength(90)
-    name: string
+  @sys.description('Optional. The versions for the API.')
+  versions: versionType[]?
 
-    @sys.description('Required. The title of the version.')
-    @minLength(1)
-    @maxLength(50)
-    title: string
+  @sys.description('Optional. The deployments for the API.')
+  deployments: deploymentType[]?
+}
 
-    @sys.description('Required. The lifecycle stage of the version.')
-    lifecycleStage: ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')
+import { azureApiManagementSourceType } from 'api-source/main.bicep'
 
-    @sys.description('Optional. The definitions to create for the version.')
-    definitions: {
-      @sys.description('Required. The name of the definition.')
-      @minLength(3)
-      @maxLength(90)
-      name: string
+@export()
+type apiSourceType = {
+  @sys.description('Required. The name of the API source.')
+  @minLength(3)
+  @maxLength(90)
+  name: string
 
-      @sys.description('Required. The title of the definition.')
-      @minLength(1)
-      @maxLength(50)
-      title: string
+  @sys.description('Optional. Indicates if the specification should be imported along with metadata.')
+  importSpecification: ('never' | 'ondemand' | 'always')?
 
-      @sys.description('Optional. The description of the definition.')
-      description: string?
-    }[]?
-  }[]?
+  @sys.description('Optional. The target environment resource ID within API Center.')
+  targetEnvironmentId: string?
 
-  @sys.description('Optional. The deployments to create for the API.')
-  deployments: {
-    @sys.description('Required. The name of the deployment.')
-    @minLength(3)
-    @maxLength(90)
-    name: string
+  @sys.description('Optional. The target lifecycle stage for imported APIs.')
+  targetLifecycleStage: ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')?
 
-    @sys.description('Optional. The title of the deployment.')
-    @minLength(1)
-    @maxLength(50)
-    title: string?
-
-    @sys.description('Optional. The description of the deployment.')
-    @maxLength(500)
-    description: string?
-
-    @sys.description('Optional. The environment ID of the deployment.')
-    environmentId: string?
-
-    @sys.description('Optional. The definition ID of the deployment.')
-    definitionId: string?
-
-    @sys.description('Optional. The state of the deployment.')
-    state: ('active' | 'inactive')?
-
-    @sys.description('Optional. The custom metadata properties for the deployment.')
-    customProperties: object?
-
-    @sys.description('Optional. The server information of the deployment.')
-    server: {
-      @sys.description('Optional. The runtime URIs.')
-      runtimeUri: string[]?
-    }?
-  }[]?
+  @sys.description('Optional. Configuration for importing APIs from Azure API Management.')
+  azureApiManagementSource: azureApiManagementSourceType?
 }

@@ -35,7 +35,7 @@ This module deploys an API Center Service Workspace Environment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata properties for the environment. |
+| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-description) | string | The description of the environment. |
 | [`onboarding`](#parameter-onboarding) | object | Onboarding information for the environment. |
 | [`server`](#parameter-server) | object | Server information of the environment. |
@@ -86,7 +86,7 @@ The name of the parent workspace. Required if the template is used in a standalo
 
 ### Parameter: `customProperties`
 
-The custom metadata properties for the environment.
+The custom metadata defined for API catalog entities.
 
 - Required: No
 - Type: object
@@ -105,12 +105,66 @@ Onboarding information for the environment.
 - Required: No
 - Type: object
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`developerPortalUri`](#parameter-onboardingdeveloperportaluri) | array | The developer portal URIs. |
+| [`instructions`](#parameter-onboardinginstructions) | string | Onboarding instructions. |
+
+### Parameter: `onboarding.developerPortalUri`
+
+The developer portal URIs.
+
+- Required: No
+- Type: array
+
+### Parameter: `onboarding.instructions`
+
+Onboarding instructions.
+
+- Required: No
+- Type: string
+
 ### Parameter: `server`
 
 Server information of the environment.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managementPortalUri`](#parameter-servermanagementportaluri) | array | The management portal URIs. |
+| [`type`](#parameter-servertype) | string | The type of server that represents the environment. |
+
+### Parameter: `server.managementPortalUri`
+
+The management portal URIs.
+
+- Required: No
+- Type: array
+
+### Parameter: `server.type`
+
+The type of server that represents the environment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Apigee API Management'
+    'AWS API Gateway'
+    'Azure API Management'
+    'Azure compute service'
+    'Kong API Gateway'
+    'Kubernetes'
+    'MuleSoft API Management'
+  ]
+  ```
 
 ## Outputs
 

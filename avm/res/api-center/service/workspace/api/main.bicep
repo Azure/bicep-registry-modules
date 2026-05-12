@@ -36,26 +36,30 @@ param description string?
 @maxLength(200)
 param summary string?
 
-@sys.description('Optional. The custom metadata properties for the API.')
+@sys.description('Optional. The custom metadata defined for API catalog entities.')
 param customProperties object?
 
 @sys.description('Optional. The external documentation for the API.')
-param externalDocumentation array?
+param externalDocumentation externalDocumentationType[]?
 
 @sys.description('Optional. The contacts for the API.')
-param contacts array?
+param contacts contactType[]?
 
 @sys.description('Optional. The license information for the API.')
-param license object?
+param license licenseType?
 
 @sys.description('Optional. The terms of service for the API.')
-param termsOfService object?
+param termsOfService termsOfServiceType?
 
 @sys.description('Optional. The versions to create for the API.')
 param versions versionType[]?
 
 @sys.description('Optional. The deployments to create for the API.')
 param deployments deploymentType[]?
+
+// =============== //
+//   Deployments   //
+// =============== //
 
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
@@ -115,12 +119,110 @@ module api_deployments 'deployment/main.bicep' = [
   }
 ]
 
+// =========== //
+//   Outputs   //
+// =========== //
+
 @sys.description('The name of the API.')
 output name string = api.name
 
 @sys.description('The resource ID of the API.')
 output resourceId string = api.id
 
+@sys.description('The name of the resource group the API was created in.')
+output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type externalDocumentationType = {
+  @sys.description('Required. The URL pointing to the documentation.')
+  @maxLength(200)
+  url: string
+
+  @sys.description('Optional. The title of the documentation.')
+  @maxLength(50)
+  title: string?
+
+  @sys.description('Optional. The description of the documentation.')
+  @maxLength(500)
+  description: string?
+}
+
+@export()
+type contactType = {
+  @sys.description('Optional. The name of the contact.')
+  @maxLength(100)
+  name: string?
+
+  @sys.description('Optional. The email of the contact.')
+  @maxLength(100)
+  email: string?
+
+  @sys.description('Optional. The URL of the contact.')
+  @maxLength(200)
+  url: string?
+}
+
+@export()
+type licenseType = {
+  @sys.description('Optional. SPDX license identifier. Mutually exclusive with url.')
+  @maxLength(50)
+  identifier: string?
+
+  @sys.description('Optional. The name of the license.')
+  @maxLength(100)
+  name: string?
+
+  @sys.description('Optional. URL pointing to the license details. Mutually exclusive with identifier.')
+  @maxLength(200)
+  url: string?
+}
+
+@export()
+type termsOfServiceType = {
+  @sys.description('Required. URL pointing to the terms of service.')
+  @maxLength(200)
+  url: string
+}
+
+import { deploymentServerType } from 'deployment/main.bicep'
+
+@export()
+type deploymentType = {
+  @sys.description('Required. The name of the deployment.')
+  @minLength(3)
+  @maxLength(90)
+  name: string
+
+  @sys.description('Optional. The title of the deployment.')
+  @minLength(1)
+  @maxLength(50)
+  title: string?
+
+  @sys.description('Optional. The description of the deployment.')
+  @maxLength(500)
+  description: string?
+
+  @sys.description('Optional. The API center-scoped environment resource ID.')
+  environmentId: string?
+
+  @sys.description('Optional. The API center-scoped definition resource ID.')
+  definitionId: string?
+
+  @sys.description('Optional. The state of the deployment.')
+  state: ('active' | 'inactive')?
+
+  @sys.description('Optional. The custom metadata defined for API catalog entities.')
+  customProperties: object?
+
+  @sys.description('Optional. The server information of the deployment.')
+  server: deploymentServerType?
+}
+
+@export()
 type versionType = {
   @sys.description('Required. The name of the version.')
   @minLength(3)
@@ -150,38 +252,4 @@ type versionType = {
     @sys.description('Optional. The description of the definition.')
     description: string?
   }[]?
-}
-
-type deploymentType = {
-  @sys.description('Required. The name of the deployment.')
-  @minLength(3)
-  @maxLength(90)
-  name: string
-
-  @sys.description('Optional. The title of the deployment.')
-  @minLength(1)
-  @maxLength(50)
-  title: string?
-
-  @sys.description('Optional. The description of the deployment.')
-  @maxLength(500)
-  description: string?
-
-  @sys.description('Optional. The environment ID of the deployment.')
-  environmentId: string?
-
-  @sys.description('Optional. The definition ID of the deployment.')
-  definitionId: string?
-
-  @sys.description('Optional. The state of the deployment.')
-  state: ('active' | 'inactive')?
-
-  @sys.description('Optional. The custom metadata properties for the deployment.')
-  customProperties: object?
-
-  @sys.description('Optional. The server information of the deployment.')
-  server: {
-    @sys.description('Optional. The runtime URIs.')
-    runtimeUri: string[]?
-  }?
 }
