@@ -107,6 +107,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' = {
   name: name
   location: location
@@ -178,6 +180,7 @@ module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFi
     azureFirewallResourceId: azureFirewallResourceId!
     internetToFirewall: routingIntent.?internetToFirewall
     privateToFirewall: routingIntent.?privateToFirewall
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -190,6 +193,7 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [
       name: routeTable.name
       labels: routeTable.?labels
       routes: routeTable.?routes
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -203,6 +207,7 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
       enableInternetSecurity: virtualNetworkConnection.?enableInternetSecurity
       remoteVirtualNetworkResourceId: virtualNetworkConnection.remoteVirtualNetworkResourceId
       routingConfiguration: virtualNetworkConnection.?routingConfiguration
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       virtualHub_routeTables
