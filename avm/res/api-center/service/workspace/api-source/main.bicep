@@ -20,8 +20,8 @@ param name string
 ])
 param importSpecification string?
 
-@sys.description('Optional. The target environment resource ID within API Center.')
-param targetEnvironmentId string?
+@sys.description('Optional. The target environment name. If not provided a new environment will be created.')
+param targetEnvironment string?
 
 @sys.description('Optional. The target lifecycle stage for imported APIs.')
 @allowed([
@@ -64,7 +64,9 @@ resource apiSource 'Microsoft.ApiCenter/services/workspaces/apiSources@2024-06-0
   parent: service::workspace
   properties: {
     importSpecification: importSpecification
-    targetEnvironmentId: targetEnvironmentId
+    targetEnvironmentId: !empty(targetEnvironment)
+      ? '/workspaces/${workspaceName}/environments/${targetEnvironment}'
+      : null
     targetLifecycleStage: targetLifecycleStage
     azureApiManagementSource: azureApiManagementSource
   }

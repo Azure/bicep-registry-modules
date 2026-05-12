@@ -160,7 +160,7 @@ module testDeployment '../../../main.bicep' = [
           description: 'A sample REST API for managing pets.'
           summary: 'Petstore management API.'
           customProperties: {
-            apiCostCenter: 'IT-1234'
+            apiCostCenter: 'CC-1234'
             apiTeamOwner: 'Platform Engineering'
           }
           externalDocumentation: [
@@ -207,9 +207,9 @@ module testDeployment '../../../main.bicep' = [
               lifecycleStage: 'preview'
               definitions: [
                 {
-                  name: 'openapi-spec-v2'
-                  title: 'OpenAPI Specification v2'
-                  description: 'The OpenAPI 3.1 specification for the Petstore API v2.'
+                  name: 'openapi-spec'
+                  title: 'OpenAPI Specification'
+                  description: 'The OpenAPI 3.0 specification for the Petstore API v2.'
                 }
               ]
             }
@@ -219,8 +219,9 @@ module testDeployment '../../../main.bicep' = [
               name: 'petstore-prod-deployment'
               title: 'Petstore Production'
               description: 'Production deployment of the Petstore API.'
-              environmentId: '/workspaces/default/environments/production-apim'
-              definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
+              environment: 'production-apim'
+              version: 'v1-0-0'
+              definition: 'openapi-spec'
               state: 'active'
               server: {
                 runtimeUri: [
@@ -237,7 +238,7 @@ module testDeployment '../../../main.bicep' = [
           description: 'A REST API for managing customer orders.'
           summary: 'Order management API.'
           customProperties: {
-            apiCostCenter: 'CM-7001'
+            apiCostCenter: 'CC-7001'
             apiTeamOwner: 'Commerce Team'
           }
           contacts: [
@@ -258,46 +259,46 @@ module testDeployment '../../../main.bicep' = [
           name: 'graphql-api'
           title: 'GraphQL API'
           kind: 'graphql'
-          description: 'A sample GraphQL API for querying data.'
+          description: 'A  GraphQL API'
           summary: 'GraphQL data query API.'
           customProperties: {
-            apiCostCenter: 'GQ-2001'
+            apiCostCenter: 'CC-2001'
           }
         }
         {
-          name: 'legacy-soap-api'
-          title: 'Legacy SOAP API'
+          name: 'soap-api'
+          title: 'SOAP API'
           kind: 'soap'
-          description: 'A legacy SOAP-based API for backward compatibility.'
+          description: 'A SOAP-based API'
           customProperties: {
-            apiCostCenter: 'SP-3001'
+            apiCostCenter: 'CC-3001'
           }
         }
         {
           name: 'webhook-notifications'
           title: 'Webhook Notifications'
           kind: 'webhook'
-          description: 'A webhook API for event-driven notifications.'
+          description: 'A webhook API'
           customProperties: {
-            apiCostCenter: 'WH-4001'
+            apiCostCenter: 'CC-4001'
           }
         }
         {
           name: 'grpc-service'
           title: 'gRPC Service'
           kind: 'grpc'
-          description: 'A gRPC API for high-performance inter-service communication.'
+          description: 'A gRPC API'
           customProperties: {
-            apiCostCenter: 'GR-5001'
+            apiCostCenter: 'CC-5001'
           }
         }
         {
           name: 'realtime-ws-api'
           title: 'Real-Time WebSocket API'
           kind: 'websocket'
-          description: 'A WebSocket API for real-time bidirectional communication.'
+          description: 'A WebSocket API'
           customProperties: {
-            apiCostCenter: 'WS-6001'
+            apiCostCenter: 'CC-6001'
           }
         }
       ]
@@ -306,6 +307,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'apim-import-source'
           importSpecification: 'always'
           targetLifecycleStage: 'production'
+          targetEnvironment: 'production-apim'
           azureApiManagementSource: {
             resourceId: nestedDependencies.outputs.apiManagementServiceResourceId
             msiResourceId: nestedDependencies.outputs.managedIdentityResourceId

@@ -89,10 +89,13 @@ module workspace_apiSources 'api-source/main.bicep' = [
       workspaceName: workspace.name
       name: apiSource.name
       importSpecification: apiSource.?importSpecification
-      targetEnvironmentId: apiSource.?targetEnvironmentId
+      targetEnvironment: apiSource.?targetEnvironment
       targetLifecycleStage: apiSource.?targetLifecycleStage
       azureApiManagementSource: apiSource.?azureApiManagementSource
     }
+    dependsOn: [
+      workspace_environments
+    ]
   }
 ]
 
@@ -195,8 +198,8 @@ type apiSourceType = {
   @sys.description('Optional. Indicates if the specification should be imported along with metadata.')
   importSpecification: ('never' | 'ondemand' | 'always')?
 
-  @sys.description('Optional. The target environment resource ID within API Center.')
-  targetEnvironmentId: string?
+  @sys.description('Optional. The target environment name. If not provided a new environment will be created.')
+  targetEnvironment: string?
 
   @sys.description('Optional. The target lifecycle stage for imported APIs.')
   targetLifecycleStage: ('design' | 'development' | 'testing' | 'preview' | 'production' | 'deprecated' | 'retired')?

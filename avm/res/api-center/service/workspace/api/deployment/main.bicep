@@ -24,11 +24,14 @@ param title string?
 @maxLength(500)
 param description string?
 
-@sys.description('Optional. The API center-scoped environment resource ID.')
-param environmentId string?
+@sys.description('Optional. The target environment name of the deployment.')
+param environment string?
 
-@sys.description('Optional. The API center-scoped definition resource ID.')
-param definitionId string?
+@sys.description('Optional. The deployed version name.')
+param version string?
+
+@sys.description('Optional. The deployed definition name.')
+param definition string?
 
 @sys.description('Optional. The state of the API deployment.')
 @allowed([
@@ -61,8 +64,10 @@ resource apiDeployment 'Microsoft.ApiCenter/services/workspaces/apis/deployments
   properties: {
     title: title
     description: description
-    environmentId: environmentId
-    definitionId: definitionId
+    environmentId: !empty(environment) ? '/workspaces/${workspaceName}/environments/${environment}' : null
+    definitionId: !empty(version) && !empty(definition)
+      ? '/workspaces/${workspaceName}/apis/${apiName}/versions/${version}/definitions/${definition}'
+      : null
     state: state
     customProperties: customProperties
     server: server
