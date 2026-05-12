@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14552567551581470218"
+      "version": "0.43.8.12551",
+      "templateHash": "4272533649695438762"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -235,7 +235,7 @@
     },
     "replicaLocation": "[variables('replicaRegionPairs')[parameters('location')]]",
     "allTags": "[union(createObject('azd-env-name', parameters('solutionName')), parameters('tags'))]",
-    "existingTags": "[coalesce(resourceGroup().tags, createObject())]",
+    "existingTags": "[coalesce(tryGet(resourceGroup(), 'tags'), createObject())]",
     "deployerPrincipalType": "[if(contains(deployer(), 'userPrincipalName'), 'User', 'ServicePrincipal')]",
     "deployerInfo": "[deployer()]",
     "deployingUserPrincipalId": "[variables('deployerInfo').objectId]",
@@ -4350,8 +4350,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10444526988865781292"
+              "version": "0.43.8.12551",
+              "templateHash": "1767721139439743724"
             }
           },
           "definitions": {
@@ -28966,8 +28966,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "4683535914052138520"
+              "version": "0.43.8.12551",
+              "templateHash": "6561810148499145188"
             }
           },
           "parameters": {
@@ -29099,8 +29099,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "2863054153194448335"
+              "version": "0.43.8.12551",
+              "templateHash": "8887348312484096180"
             }
           },
           "parameters": {
@@ -35967,8 +35967,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15301861534500827954"
+              "version": "0.43.8.12551",
+              "templateHash": "10594970180405086813"
             }
           },
           "definitions": {
@@ -36980,8 +36980,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "15360881540090743310"
+                      "version": "0.43.8.12551",
+                      "templateHash": "13126986590799641834"
                     }
                   },
                   "parameters": {
@@ -37890,8 +37890,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5902418659592953628"
+              "version": "0.43.8.12551",
+              "templateHash": "12559137791630251890"
             }
           },
           "parameters": {
@@ -37997,8 +37997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5902418659592953628"
+              "version": "0.43.8.12551",
+              "templateHash": "12559137791630251890"
             }
           },
           "parameters": {
@@ -38139,8 +38139,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15301861534500827954"
+              "version": "0.43.8.12551",
+              "templateHash": "10594970180405086813"
             }
           },
           "definitions": {
@@ -39152,8 +39152,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "15360881540090743310"
+                      "version": "0.43.8.12551",
+                      "templateHash": "13126986590799641834"
                     }
                   },
                   "parameters": {
