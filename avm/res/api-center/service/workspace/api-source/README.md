@@ -35,7 +35,6 @@ This module deploys an API Center Service Workspace API Source for importing API
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultRoleAssignment`](#parameter-enabledefaultroleassignment) | bool | Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true. |
 | [`importSpecification`](#parameter-importspecification) | string | Indicates if the specification should be imported along with metadata. |
 | [`targetEnvironmentId`](#parameter-targetenvironmentid) | string | The target environment resource ID within API Center. |
 | [`targetLifecycleStage`](#parameter-targetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
@@ -57,7 +56,7 @@ Configuration for importing APIs from an Azure API Management instance.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`msiResourceId`](#parameter-azureapimanagementsourcemsiresourceid) | string | The resource ID of the managed identity that has access to the API Management instance. |
+| [`msiResourceId`](#parameter-azureapimanagementsourcemsiresourceid) | string | The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role. |
 
 ### Parameter: `azureApiManagementSource.resourceId`
 
@@ -68,7 +67,7 @@ The resource ID of the Azure API Management instance.
 
 ### Parameter: `azureApiManagementSource.msiResourceId`
 
-The resource ID of the managed identity that has access to the API Management instance.
+The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role.
 
 - Required: No
 - Type: string
@@ -93,14 +92,6 @@ The name of the parent workspace. Required if the template is used in a standalo
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultRoleAssignment`
-
-Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `importSpecification`
 

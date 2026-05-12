@@ -68,24 +68,13 @@ output resourceId string = environment.id
 @sys.description('The name of the resource group the environment was created in.')
 output resourceGroupName string = resourceGroup().name
 
-// =============== //
-//   Definitions   //
-// =============== //
-
 @export()
 type environmentServerType = {
   @sys.description('Optional. The management portal URIs.')
   managementPortalUri: string[]?
 
   @sys.description('Optional. The type of server that represents the environment.')
-  type: (
-    | 'Azure API Management'
-    | 'Azure compute service'
-    | 'Apigee API Management'
-    | 'AWS API Gateway'
-    | 'Kong API Gateway'
-    | 'Kubernetes'
-    | 'MuleSoft API Management')?
+  type: string?
 }
 
 @export()

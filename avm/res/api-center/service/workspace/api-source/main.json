@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "8501693241772296127"
+      "templateHash": "11372909277800735520"
     },
     "name": "API Center Service Workspace API Sources",
     "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -25,7 +25,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance."
+            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role."
           }
         }
       },
@@ -95,18 +95,10 @@
       "metadata": {
         "description": "Required. Configuration for importing APIs from an Azure API Management instance."
       }
-    },
-    "enableDefaultRoleAssignment": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true."
-      }
     }
   },
   "variables": {
-    "useManagedIdentity": "[not(empty(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), '')))]",
-    "msiResourceIdSegments": "[split(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/placeholder', subscription().subscriptionId, resourceGroup().name)), '/')]",
+    "useSystemAssignedIdentity": "[empty(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), ''))]",
     "apimResourceIdSegments": "[split(parameters('azureApiManagementSource').resourceId, '/')]"
   },
   "resources": {
@@ -121,15 +113,6 @@
       "type": "Microsoft.ApiCenter/services",
       "apiVersion": "2024-06-01-preview",
       "name": "[parameters('serviceName')]"
-    },
-    "managedIdentity": {
-      "condition": "[variables('useManagedIdentity')]",
-      "existing": true,
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2024-11-30",
-      "subscriptionId": "[variables('msiResourceIdSegments')[2]]",
-      "resourceGroup": "[variables('msiResourceIdSegments')[4]]",
-      "name": "[variables('msiResourceIdSegments')[8]]"
     },
     "apiSource": {
       "type": "Microsoft.ApiCenter/services/workspaces/apiSources",
@@ -146,7 +129,7 @@
       ]
     },
     "apimRoleAssignment": {
-      "condition": "[parameters('enableDefaultRoleAssignment')]",
+      "condition": "[variables('useSystemAssignedIdentity')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[format('{0}-ApiSource-ApimRbac', uniqueString(deployment().name))]",
@@ -161,7 +144,9 @@
           "apimServiceName": {
             "value": "[last(variables('apimResourceIdSegments'))]"
           },
-          "principalId": "[if(variables('useManagedIdentity'), createObject('value', reference('managedIdentity').principalId), createObject('value', coalesce(tryGet(tryGet(reference('service', '2024-06-01-preview', 'full'), 'identity'), 'principalId'), '')))]"
+          "principalId": {
+            "value": "[tryGet(tryGet(reference('service', '2024-06-01-preview', 'full'), 'identity'), 'principalId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -170,7 +155,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "13386089810313622890"
+              "templateHash": "17538220331800953571"
             }
           },
           "parameters": {
@@ -187,17 +172,14 @@
               }
             }
           },
-          "variables": {
-            "apiManagementServiceReaderRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]"
-          },
           "resources": [
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]",
-              "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')), parameters('principalId'), variables('apiManagementServiceReaderRoleDefinitionId'))]",
+              "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')), parameters('principalId'), resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d'))]",
               "properties": {
-                "roleDefinitionId": "[variables('apiManagementServiceReaderRoleDefinitionId')]",
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]",
                 "principalId": "[parameters('principalId')]",
                 "principalType": "ServicePrincipal"
               }
@@ -206,7 +188,6 @@
         }
       },
       "dependsOn": [
-        "managedIdentity",
         "service"
       ]
     }

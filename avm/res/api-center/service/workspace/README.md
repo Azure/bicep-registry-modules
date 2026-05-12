@@ -490,7 +490,6 @@ The API sources to create in the workspace for importing APIs from external sour
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureApiManagementSource`](#parameter-apisourcesazureapimanagementsource) | object | Configuration for importing APIs from Azure API Management. |
-| [`enableDefaultRoleAssignment`](#parameter-apisourcesenabledefaultroleassignment) | bool | Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true. |
 | [`importSpecification`](#parameter-apisourcesimportspecification) | string | Indicates if the specification should be imported along with metadata. |
 | [`targetEnvironmentId`](#parameter-apisourcestargetenvironmentid) | string | The target environment resource ID within API Center. |
 | [`targetLifecycleStage`](#parameter-apisourcestargetlifecyclestage) | string | The target lifecycle stage for imported APIs. |
@@ -519,7 +518,7 @@ Configuration for importing APIs from Azure API Management.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`msiResourceId`](#parameter-apisourcesazureapimanagementsourcemsiresourceid) | string | The resource ID of the managed identity that has access to the API Management instance. |
+| [`msiResourceId`](#parameter-apisourcesazureapimanagementsourcemsiresourceid) | string | The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role. |
 
 ### Parameter: `apiSources.azureApiManagementSource.resourceId`
 
@@ -530,17 +529,10 @@ The resource ID of the Azure API Management instance.
 
 ### Parameter: `apiSources.azureApiManagementSource.msiResourceId`
 
-The resource ID of the managed identity that has access to the API Management instance.
+The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role.
 
 - Required: No
 - Type: string
-
-### Parameter: `apiSources.enableDefaultRoleAssignment`
-
-Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `apiSources.importSpecification`
 
@@ -713,18 +705,6 @@ The type of server that represents the environment.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Apigee API Management'
-    'AWS API Gateway'
-    'Azure API Management'
-    'Azure compute service'
-    'Kong API Gateway'
-    'Kubernetes'
-    'MuleSoft API Management'
-  ]
-  ```
 
 ## Outputs
 

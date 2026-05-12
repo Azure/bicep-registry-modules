@@ -153,18 +153,6 @@ The type of server that represents the environment.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Apigee API Management'
-    'AWS API Gateway'
-    'Azure API Management'
-    'Azure compute service'
-    'Kong API Gateway'
-    'Kubernetes'
-    'MuleSoft API Management'
-  ]
-  ```
 
 ## Outputs
 

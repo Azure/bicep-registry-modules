@@ -92,7 +92,6 @@ module workspace_apiSources 'api-source/main.bicep' = [
       targetEnvironmentId: apiSource.?targetEnvironmentId
       targetLifecycleStage: apiSource.?targetLifecycleStage
       azureApiManagementSource: apiSource.?azureApiManagementSource
-      createRoleAssignment: apiSource.?createRoleAssignment ?? true
     }
   }
 ]
@@ -204,7 +203,4 @@ type apiSourceType = {
 
   @sys.description('Optional. Configuration for importing APIs from Azure API Management.')
   azureApiManagementSource: azureApiManagementSourceType?
-
-  @sys.description('Optional. Whether to deploy the API Management Service Reader role assignment on the target API Management instance. Defaults to true.')
-  createRoleAssignment: bool?
 }

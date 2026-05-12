@@ -12,6 +12,21 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
+resource apiManagementServiceReaderRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '71522526-b88f-4d52-b57f-d31fc3546d0d' // Api Management Service Reader
+  scope: resourceGroup()
+}
+
+resource apiManagementServiceReaderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(apiManagementService.id, managedIdentity.id, apiManagementServiceReaderRole.id)
+  scope: apiManagementService
+  properties: {
+    roleDefinitionId: apiManagementServiceReaderRole.id
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource apiManagementService 'Microsoft.ApiManagement/service@2024-06-01-preview' = {
   name: apiManagementServiceName
   location: location
