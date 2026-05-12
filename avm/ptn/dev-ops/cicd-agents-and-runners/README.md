@@ -241,7 +241,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     computeTypes: [
       'azure-container-instance'
     ]
-    namingPrefix: '<namingPrefix>'
+    namingPrefix: 'devminaci'
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
@@ -280,7 +280,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       ]
     },
     "namingPrefix": {
-      "value": "<namingPrefix>"
+      "value": "devminaci"
     },
     "networkingConfiguration": {
       "value": {
@@ -325,7 +325,7 @@ using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
 param computeTypes = [
   'azure-container-instance'
 ]
-param namingPrefix = '<namingPrefix>'
+param namingPrefix = 'devminaci'
 param networkingConfiguration = {
   addressSpace: '10.0.0.0/16'
   networkType: 'createNew'
@@ -364,7 +364,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     computeTypes: [
       'azure-container-app'
     ]
-    namingPrefix: '<namingPrefix>'
+    namingPrefix: 'ghminaca'
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'
       networkType: 'createNew'
@@ -409,7 +409,7 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       ]
     },
     "namingPrefix": {
-      "value": "<namingPrefix>"
+      "value": "ghminaca"
     },
     "networkingConfiguration": {
       "value": {
@@ -460,7 +460,7 @@ using 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>'
 param computeTypes = [
   'azure-container-app'
 ]
-param namingPrefix = '<namingPrefix>'
+param namingPrefix = 'ghminaca'
 param networkingConfiguration = {
   addressSpace: '10.0.0.0/16'
   networkType: 'createNew'
