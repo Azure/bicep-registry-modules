@@ -62,7 +62,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'acsmin001'
+    name: 'apicavmmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -83,7 +83,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "acsmin001"
+      "value": "apicavmmin001"
     },
     // Non-required parameters
     "location": {
@@ -104,7 +104,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'acsmin001'
+param name = 'apicavmmin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -127,7 +127,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'acsmax001'
+    name: 'apicavmmax001'
     // Non-required parameters
     apis: [
       {
@@ -387,7 +387,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "acsmax001"
+      "value": "apicavmmax001"
     },
     // Non-required parameters
     "apis": {
@@ -665,7 +665,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'acsmax001'
+param name = 'apicavmmax001'
 // Non-required parameters
 param apis = [
   {
@@ -927,7 +927,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module service 'br/public:avm/res/api-center/service:<version>' = {
   params: {
     // Required parameters
-    name: 'acswaf001'
+    name: 'apicavmwaf001'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -946,7 +946,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           }
         ]
         name: 'apiLifecycleStage'
-        schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
+        schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'minLength\':1,\'maxLength\':50}'
       }
     ]
     roleAssignments: [
@@ -984,7 +984,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "acswaf001"
+      "value": "apicavmwaf001"
     },
     // Non-required parameters
     "location": {
@@ -1011,7 +1011,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             }
           ],
           "name": "apiLifecycleStage",
-          "schema": "{\"type\":\"string\",\"title\":\"API Lifecycle Stage\",\"enum\":[\"design\",\"development\",\"testing\",\"preview\",\"production\",\"deprecated\",\"retired\"]}"
+          "schema": "{\"type\":\"string\",\"title\":\"API Lifecycle Stage\",\"minLength\":1,\"maxLength\":50}"
         }
       ]
     },
@@ -1051,7 +1051,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
 using 'br/public:avm/res/api-center/service:<version>'
 
 // Required parameters
-param name = 'acswaf001'
+param name = 'apicavmwaf001'
 // Non-required parameters
 param location = '<location>'
 param lock = {
@@ -1070,7 +1070,7 @@ param metadataSchemas = [
       }
     ]
     name: 'apiLifecycleStage'
-    schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'enum\':[\'design\',\'development\',\'testing\',\'preview\',\'production\',\'deprecated\',\'retired\']}'
+    schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'minLength\':1,\'maxLength\':50}'
   }
 ]
 param roleAssignments = [

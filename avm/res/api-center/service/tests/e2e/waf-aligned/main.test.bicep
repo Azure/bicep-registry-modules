@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-apicenter.services-${service
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'acswaf'
+param serviceShort string = 'apicavmwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -73,7 +73,7 @@ module testDeployment '../../../main.bicep' = [
       metadataSchemas: [
         {
           name: 'apiLifecycleStage'
-          schema: '{"type":"string","title":"API Lifecycle Stage","enum":["design","development","testing","preview","production","deprecated","retired"]}'
+          schema: '{"type":"string","title":"API Lifecycle Stage","minLength":1,"maxLength":50}'
           assignedTo: [
             {
               entity: 'api'
