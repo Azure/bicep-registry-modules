@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "1478394152294243655"
+      "templateHash": "4355380969394344292"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1271,7 +1271,7 @@
         "description": "Optional. A server Root certificate is required of ldapOverTLS is enabled."
       }
     },
-    "site": {
+    "activeDirectorySite": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -1344,7 +1344,7 @@
         "ldapOverTLS": "[if(not(empty(parameters('domainName'))), parameters('ldapOverTLS'), false())]",
         "ldapSigning": "[if(not(empty(parameters('domainName'))), parameters('ldapSigning'), false())]",
         "serverRootCACertificate": "[if(not(empty(parameters('domainName'))), parameters('serverRootCACertificate'), null())]",
-        "site": "[if(not(empty(parameters('domainName'))), parameters('site'), null())]",
+        "site": "[if(and(not(empty(parameters('domainName'))), not(empty(parameters('activeDirectorySite')))), parameters('activeDirectorySite'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
         "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]",
         "allowLocalNfsUsersWithLdap": "[if(not(empty(parameters('domainName'))), parameters('allowLocalNfsUsersWithLdap'), false())]"

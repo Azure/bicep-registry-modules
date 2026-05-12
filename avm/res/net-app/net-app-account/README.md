@@ -1360,7 +1360,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverRootCACertificate`](#parameter-serverrootcacertificate) | string | A server Root certificate is required of ldapOverTLS is enabled. |
-| [`site`](#parameter-site) | string | The Active Directory site the service will limit Domain Controller discovery to. |
+| [`activeDirectorySite`](#parameter-activedirectorysite) | string | The Active Directory site the service will limit Domain Controller discovery to. |
 | [`smbServerNamePrefix`](#parameter-smbservernameprefix) | string | Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes. |
 | [`snapshotPolicies`](#parameter-snapshotpolicies) | array | The snapshot policies to create. |
 | [`tags`](#parameter-tags) | object | Tags for all resources. |
@@ -2724,7 +2724,7 @@ A server Root certificate is required of ldapOverTLS is enabled.
 - Type: string
 - Default: `''`
 
-### Parameter: `site`
+### Parameter: `activeDirectorySite`
 
 The Active Directory site the service will limit Domain Controller discovery to.
 
