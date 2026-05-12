@@ -137,7 +137,7 @@ module testDeployment '../../../main.bicep' = [
           }
           onboarding: {
             developerPortalUri: [
-              'https://developer.contoso.com'
+              'https://contoso.com/develop'
             ]
             instructions: 'Sign up at the developer portal to get started with our APIs.'
           }
@@ -165,12 +165,12 @@ module testDeployment '../../../main.bicep' = [
           }
           externalDocumentation: [
             {
-              url: 'https://docs.contoso.com/petstore'
+              url: 'https://contoso.com/petstore'
               title: 'API Documentation'
               description: 'Full reference documentation for the Petstore API.'
             }
             {
-              url: 'https://docs.contoso.com/petstore/getting-started'
+              url: 'https://contoso.com/petstore/getting-started'
               title: 'Getting Started Guide'
             }
           ]
@@ -225,7 +225,7 @@ module testDeployment '../../../main.bicep' = [
               state: 'active'
               server: {
                 runtimeUri: [
-                  'https://petstore.contoso.com/api'
+                  'https://contoso.com/petstore/api'
                 ]
               }
             }
