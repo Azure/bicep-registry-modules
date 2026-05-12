@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "10380285254240556080"
+      "templateHash": "8090603996998261773"
     },
     "name": "API Center Service Workspace APIs",
     "description": "This module deploys an API Center Service Workspace API."
@@ -1024,7 +1024,8 @@
         }
       },
       "dependsOn": [
-        "api"
+        "api",
+        "api_versions"
       ]
     }
   },

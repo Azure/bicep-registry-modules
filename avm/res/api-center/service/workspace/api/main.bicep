@@ -112,6 +112,9 @@ module api_deployments 'deployment/main.bicep' = [
       customProperties: apiDeployment.?customProperties
       server: apiDeployment.?server
     }
+    dependsOn: [
+      api_versions
+    ]
   }
 ]
 

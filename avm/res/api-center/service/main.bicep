@@ -133,6 +133,9 @@ module service_defaultWorkspace 'workspace/main.bicep' = {
     apis: apis
     apiSources: apiSources
   }
+  dependsOn: [
+    service_metadataSchemas
+  ]
 }
 
 resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

@@ -38,10 +38,6 @@ param server environmentServerType?
 @sys.description('Optional. Onboarding information for the environment.')
 param onboarding environmentOnboardingType?
 
-// =============== //
-//   Deployments   //
-// =============== //
-
 resource service 'Microsoft.ApiCenter/services@2024-03-01' existing = {
   name: serviceName
 
@@ -62,10 +58,6 @@ resource environment 'Microsoft.ApiCenter/services/workspaces/environments@2024-
     onboarding: onboarding
   }
 }
-
-// =========== //
-//   Outputs   //
-// =========== //
 
 @sys.description('The name of the environment.')
 output name string = environment.name

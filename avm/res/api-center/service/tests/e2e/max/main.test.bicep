@@ -219,6 +219,8 @@ module testDeployment '../../../main.bicep' = [
               name: 'petstore-prod-deployment'
               title: 'Petstore Production'
               description: 'Production deployment of the Petstore API.'
+              environmentId: '/workspaces/default/environments/production-apim'
+              definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
               state: 'active'
               server: {
                 runtimeUri: [
@@ -235,6 +237,7 @@ module testDeployment '../../../main.bicep' = [
           description: 'A REST API for managing customer orders.'
           summary: 'Order management API.'
           customProperties: {
+            apiCostCenter: 'CM-7001'
             apiTeamOwner: 'Commerce Team'
           }
           contacts: [
@@ -257,30 +260,45 @@ module testDeployment '../../../main.bicep' = [
           kind: 'graphql'
           description: 'A sample GraphQL API for querying data.'
           summary: 'GraphQL data query API.'
+          customProperties: {
+            apiCostCenter: 'GQ-2001'
+          }
         }
         {
           name: 'legacy-soap-api'
           title: 'Legacy SOAP API'
           kind: 'soap'
           description: 'A legacy SOAP-based API for backward compatibility.'
+          customProperties: {
+            apiCostCenter: 'SP-3001'
+          }
         }
         {
           name: 'webhook-notifications'
           title: 'Webhook Notifications'
           kind: 'webhook'
           description: 'A webhook API for event-driven notifications.'
+          customProperties: {
+            apiCostCenter: 'WH-4001'
+          }
         }
         {
           name: 'grpc-service'
           title: 'gRPC Service'
           kind: 'grpc'
           description: 'A gRPC API for high-performance inter-service communication.'
+          customProperties: {
+            apiCostCenter: 'GR-5001'
+          }
         }
         {
           name: 'realtime-ws-api'
           title: 'Real-Time WebSocket API'
           kind: 'websocket'
           description: 'A WebSocket API for real-time bidirectional communication.'
+          customProperties: {
+            apiCostCenter: 'WS-6001'
+          }
         }
       ]
       apiSources: [

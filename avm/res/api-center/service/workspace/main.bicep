@@ -75,6 +75,9 @@ module workspace_apis 'api/main.bicep' = [
       versions: api.?versions
       deployments: api.?deployments
     }
+    dependsOn: [
+      workspace_environments
+    ]
   }
 ]
 

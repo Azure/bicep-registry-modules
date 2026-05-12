@@ -144,7 +144,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
         deployments: [
           {
+            definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
             description: 'Production deployment of the Petstore API.'
+            environmentId: '/workspaces/default/environments/production-apim'
             name: 'petstore-prod-deployment'
             server: {
               runtimeUri: [
@@ -213,6 +215,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           }
         ]
         customProperties: {
+          apiCostCenter: 'CM-7001'
           apiTeamOwner: 'Commerce Team'
         }
         description: 'A REST API for managing customer orders.'
@@ -229,6 +232,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         ]
       }
       {
+        customProperties: {
+          apiCostCenter: 'GQ-2001'
+        }
         description: 'A sample GraphQL API for querying data.'
         kind: 'graphql'
         name: 'graphql-api'
@@ -236,24 +242,36 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         title: 'GraphQL API'
       }
       {
+        customProperties: {
+          apiCostCenter: 'SP-3001'
+        }
         description: 'A legacy SOAP-based API for backward compatibility.'
         kind: 'soap'
         name: 'legacy-soap-api'
         title: 'Legacy SOAP API'
       }
       {
+        customProperties: {
+          apiCostCenter: 'WH-4001'
+        }
         description: 'A webhook API for event-driven notifications.'
         kind: 'webhook'
         name: 'webhook-notifications'
         title: 'Webhook Notifications'
       }
       {
+        customProperties: {
+          apiCostCenter: 'GR-5001'
+        }
         description: 'A gRPC API for high-performance inter-service communication.'
         kind: 'grpc'
         name: 'grpc-service'
         title: 'gRPC Service'
       }
       {
+        customProperties: {
+          apiCostCenter: 'WS-6001'
+        }
         description: 'A WebSocket API for real-time bidirectional communication.'
         kind: 'websocket'
         name: 'realtime-ws-api'
@@ -406,7 +424,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           },
           "deployments": [
             {
+              "definitionId": "/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec",
               "description": "Production deployment of the Petstore API.",
+              "environmentId": "/workspaces/default/environments/production-apim",
               "name": "petstore-prod-deployment",
               "server": {
                 "runtimeUri": [
@@ -475,6 +495,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             }
           ],
           "customProperties": {
+            "apiCostCenter": "CM-7001",
             "apiTeamOwner": "Commerce Team"
           },
           "description": "A REST API for managing customer orders.",
@@ -491,6 +512,9 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           ]
         },
         {
+          "customProperties": {
+            "apiCostCenter": "GQ-2001"
+          },
           "description": "A sample GraphQL API for querying data.",
           "kind": "graphql",
           "name": "graphql-api",
@@ -498,24 +522,36 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           "title": "GraphQL API"
         },
         {
+          "customProperties": {
+            "apiCostCenter": "SP-3001"
+          },
           "description": "A legacy SOAP-based API for backward compatibility.",
           "kind": "soap",
           "name": "legacy-soap-api",
           "title": "Legacy SOAP API"
         },
         {
+          "customProperties": {
+            "apiCostCenter": "WH-4001"
+          },
           "description": "A webhook API for event-driven notifications.",
           "kind": "webhook",
           "name": "webhook-notifications",
           "title": "Webhook Notifications"
         },
         {
+          "customProperties": {
+            "apiCostCenter": "GR-5001"
+          },
           "description": "A gRPC API for high-performance inter-service communication.",
           "kind": "grpc",
           "name": "grpc-service",
           "title": "gRPC Service"
         },
         {
+          "customProperties": {
+            "apiCostCenter": "WS-6001"
+          },
           "description": "A WebSocket API for real-time bidirectional communication.",
           "kind": "websocket",
           "name": "realtime-ws-api",
@@ -682,7 +718,9 @@ param apis = [
     }
     deployments: [
       {
+        definitionId: '/workspaces/default/apis/petstore-api/versions/v1-0-0/definitions/openapi-spec'
         description: 'Production deployment of the Petstore API.'
+        environmentId: '/workspaces/default/environments/production-apim'
         name: 'petstore-prod-deployment'
         server: {
           runtimeUri: [
@@ -751,6 +789,7 @@ param apis = [
       }
     ]
     customProperties: {
+      apiCostCenter: 'CM-7001'
       apiTeamOwner: 'Commerce Team'
     }
     description: 'A REST API for managing customer orders.'
@@ -767,6 +806,9 @@ param apis = [
     ]
   }
   {
+    customProperties: {
+      apiCostCenter: 'GQ-2001'
+    }
     description: 'A sample GraphQL API for querying data.'
     kind: 'graphql'
     name: 'graphql-api'
@@ -774,24 +816,36 @@ param apis = [
     title: 'GraphQL API'
   }
   {
+    customProperties: {
+      apiCostCenter: 'SP-3001'
+    }
     description: 'A legacy SOAP-based API for backward compatibility.'
     kind: 'soap'
     name: 'legacy-soap-api'
     title: 'Legacy SOAP API'
   }
   {
+    customProperties: {
+      apiCostCenter: 'WH-4001'
+    }
     description: 'A webhook API for event-driven notifications.'
     kind: 'webhook'
     name: 'webhook-notifications'
     title: 'Webhook Notifications'
   }
   {
+    customProperties: {
+      apiCostCenter: 'GR-5001'
+    }
     description: 'A gRPC API for high-performance inter-service communication.'
     kind: 'grpc'
     name: 'grpc-service'
     title: 'gRPC Service'
   }
   {
+    customProperties: {
+      apiCostCenter: 'WS-6001'
+    }
     description: 'A WebSocket API for real-time bidirectional communication.'
     kind: 'websocket'
     name: 'realtime-ws-api'
