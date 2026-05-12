@@ -35,8 +35,8 @@ param targetEnvironmentId string?
 ])
 param targetLifecycleStage string?
 
-@sys.description('Optional. Configuration for importing APIs from an Azure API Management instance.')
-param azureApiManagementSource azureApiManagementSourceType?
+@sys.description('Required. Configuration for importing APIs from an Azure API Management instance.')
+param azureApiManagementSource azureApiManagementSourceType
 
 resource service 'Microsoft.ApiCenter/services@2024-06-01-preview' existing = {
   name: serviceName
