@@ -40,7 +40,7 @@ jobs:
           # 'ClientAssertionCredential authentication failed' when calling New-AzStorageContext.
           # Run before 'azure/login' so the OIDC client-assertion exchange itself uses the newest Azure.Identity.
           Write-Verbose 'Installing latest version of [Az]...' -Verbose
-          Install-Module -Name Az -Force -AllowClobber -Scope CurrentUser
+          Install-Module -Name Az -Force -AllowClobber
 
       - name: Log in to Azure
         uses: azure/login@v3
