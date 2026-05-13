@@ -61,7 +61,7 @@ module testDeployment '../../../main.bicep' = [
       }
       lock: {
         kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+        name: 'ApiCenterDeleteLock'
       }
       roleAssignments: [
         {
@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = [
           kind: 'production'
           description: 'Production Azure API Management environment.'
           customProperties: {
-            apiCostCenter: 'IT-1234'
+            apiCostCenter: 'CC-1001'
           }
           server: {
             type: 'Azure API Management'
@@ -139,7 +139,7 @@ module testDeployment '../../../main.bicep' = [
             developerPortalUri: [
               'https://contoso.com/develop'
             ]
-            instructions: 'Sign up at the developer portal to get started with our APIs.'
+            instructions: 'Sign up using the developer portal to get started with our APIs.'
           }
         }
         {
@@ -160,12 +160,12 @@ module testDeployment '../../../main.bicep' = [
           description: 'A sample REST API for managing pets.'
           summary: 'Petstore management API.'
           customProperties: {
-            apiCostCenter: 'CC-1234'
+            apiCostCenter: 'CC-2001'
             apiTeamOwner: 'Platform Engineering'
           }
           externalDocumentation: [
             {
-              url: 'https://contoso.com/petstore'
+              url: 'https://contoso.com/docs/petstore'
               title: 'API Documentation'
               description: 'Full reference documentation for the Petstore API.'
             }
@@ -183,12 +183,18 @@ module testDeployment '../../../main.bicep' = [
           ]
           license: {
             name: 'MIT License'
+            identifier: 'mit'
             url: 'https://opensource.org/licenses/MIT'
           }
           termsOfService: {
             url: 'https://contoso.com/terms-of-service'
           }
           versions: [
+            {
+              name: 'v0-9-0'
+              title: 'v0.9.0'
+              lifecycleStage: 'retired'
+            }
             {
               name: 'v1-0-0'
               title: 'v1.0.0'
@@ -219,7 +225,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'petstore-staging-deployment'
               title: 'Petstore Staging'
               environment: 'staging-apim'
-              version: 'v1-0-0'
+              version: 'v2-0-0-preview'
               definition: 'openapi-spec'
             }
             {
@@ -230,6 +236,9 @@ module testDeployment '../../../main.bicep' = [
               version: 'v1-0-0'
               definition: 'openapi-spec'
               state: 'active'
+              customProperties: {
+                apiCostCenter: 'CC-2001'
+              }
               server: {
                 runtimeUri: [
                   'https://contoso.com/petstore/api'
@@ -239,35 +248,10 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          name: 'order-api'
-          title: 'Order API'
-          kind: 'rest'
-          description: 'A REST API for managing customer orders.'
-          summary: 'Order management API.'
-          customProperties: {
-            apiCostCenter: 'CC-7001'
-            apiTeamOwner: 'Commerce Team'
-          }
-          contacts: [
-            {
-              name: 'Commerce Team'
-              email: 'commerce@contoso.com'
-            }
-          ]
-          versions: [
-            {
-              name: 'v1-0-0'
-              title: 'v1.0.0'
-              lifecycleStage: 'production'
-            }
-          ]
-        }
-        {
           name: 'graphql-api'
           title: 'GraphQL API'
           kind: 'graphql'
-          description: 'A  GraphQL API'
-          summary: 'GraphQL data query API.'
+          description: 'A GraphQL API'
           customProperties: {
             apiCostCenter: 'CC-2001'
           }
@@ -291,8 +275,8 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'grpc-service'
-          title: 'gRPC Service'
+          name: 'grpc-api'
+          title: 'gRPC API'
           kind: 'grpc'
           description: 'A gRPC API'
           customProperties: {
@@ -300,8 +284,8 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'realtime-ws-api'
-          title: 'Real-Time WebSocket API'
+          name: 'ws-api'
+          title: 'WebSocket API'
           kind: 'websocket'
           description: 'A WebSocket API'
           customProperties: {
