@@ -32,6 +32,16 @@ jobs:
         uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
           workflowPath: "${{ env.workflowPath}}"
+      - name: Install Azure Powershell Modules
+        shell: pwsh
+        run: |
+          # Force-update the Az PowerShell module to the latest version available on the gallery.
+          # The runner-preinstalled Az version can lag behind and has been observed to fail with
+          # 'ClientAssertionCredential authentication failed' when calling New-AzStorageContext.
+          # Run before 'azure/login' so the OIDC client-assertion exchange itself uses the newest Azure.Identity.
+          Write-Verbose 'Installing latest version of [Az]...' -Verbose
+          Install-Module -Name Az -Force -AllowClobber
+
       - name: Log in to Azure
         uses: azure/login@v3
         with:
@@ -39,13 +49,6 @@ jobs:
           tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-
-      - name: Install Azure Powershell Modules
-        shell: pwsh
-        run: |
-          if(-not (Get-Module 'Az.Storage' -ListAvailable)) {
-            Install-Module -Name 'Az.Storage' -Force
-          }
 
       - name: Generate moduleIndex.json
         shell: pwsh

@@ -29,7 +29,7 @@ resource app 'Microsoft.Web/sites@2025-03-01' existing = {
     name: slotName
   }
 }
-resource msdeploy 'Microsoft.Web/sites/slots/extensions@2024-04-01' = {
+resource msdeploy 'Microsoft.Web/sites/slots/extensions@2025-03-01' = {
   name: name
   kind: kind
   parent: app::slot
