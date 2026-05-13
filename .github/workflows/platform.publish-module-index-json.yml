@@ -43,8 +43,17 @@ jobs:
       - name: Install Azure Powershell Modules
         shell: pwsh
         run: |
-          if(-not (Get-Module 'Az.Storage' -ListAvailable)) {
-            Install-Module -Name 'Az.Storage' -Force
+          # Force-update the Az PowerShell modules used by the next steps to the latest version available on the gallery.
+          # The runner-preinstalled Az version can lag behind and has been observed to fail with
+          # 'ClientAssertionCredential authentication failed' when calling New-AzStorageContext.
+          foreach ($moduleName in @('Az.Accounts', 'Az.Storage')) {
+            Write-Verbose ('Installing latest version of [{0}]...' -f $moduleName) -Verbose
+            Install-Module -Name $moduleName -Force -AllowClobber -Scope CurrentUser
+            # Remove any already-loaded (older) version from the current session and import the newest installed version
+            Get-Module -Name $moduleName | Remove-Module -Force -ErrorAction SilentlyContinue
+            $latest = Get-Module -Name $moduleName -ListAvailable | Sort-Object Version -Descending | Select-Object -First 1
+            Import-Module $latest.Path -Force
+            Write-Verbose ('Imported [{0}] version [{1}]' -f $moduleName, $latest.Version) -Verbose
           }
 
       - name: Generate moduleIndex.json
