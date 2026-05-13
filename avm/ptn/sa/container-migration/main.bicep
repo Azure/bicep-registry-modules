@@ -432,6 +432,9 @@ resource jumpboxMaintenanceConfig 'Microsoft.Maintenance/maintenanceConfiguratio
   location: location
   tags: allTags
   properties: {
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
     maintenanceScope: 'InGuestPatch'
     maintenanceWindow: {
       startDateTime: '2025-01-01 00:00'
