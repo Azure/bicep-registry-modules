@@ -63,6 +63,9 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
         'hidden-title': 'This is visible in the resource name'
       }
+      functionAppTags: {
+        'azd-service-name': 'api'
+      }
     }
   }
 ]

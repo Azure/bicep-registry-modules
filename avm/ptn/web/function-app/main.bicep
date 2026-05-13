@@ -16,6 +16,9 @@ param location string = resourceGroup().location
 @description('Optional. Resource tags to apply to all created resources.')
 param tags object?
 
+@description('Optional. Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag.')
+param functionAppTags object?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -279,7 +282,7 @@ module functionApp 'br/public:avm/res/web/site:0.23.0' = {
   params: {
     name: functionAppName
     location: location
-    tags: tags
+    tags: union(tags ?? {}, functionAppTags ?? {})
     enableTelemetry: enableTelemetry
     kind: functionAppKind
     serverFarmResourceId: appServicePlan.outputs.resourceId
