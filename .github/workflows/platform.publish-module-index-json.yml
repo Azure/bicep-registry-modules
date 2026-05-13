@@ -63,6 +63,9 @@ jobs:
             moduleIndexJsonFilePath                      = 'moduleIndex.json'
             prefixForLastModuleIndexJsonFile             = 'last-'
             prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-'
+            TenantId                                     = '${{ secrets.PUBLISH_TENANT_ID }}'
+            ClientId                                     = '${{ secrets.PUBLISH_CLIENT_ID }}'
+            SubscriptionId                               = '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}'
             ErrorAction                                  = 'Continue'
           }
 
@@ -101,8 +104,13 @@ jobs:
           Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
 
           # Wrap the storage calls so a stale ClientAssertionCredential triggers an OIDC refresh + retry
-          # rather than failing the whole pipeline run.
-          Invoke-AzStorageOperationWithOidcRetry -ScriptBlock {
+          # rather than failing the whole pipeline run. Pass the OIDC IDs explicitly (instead of
+          # relying on AZURE_* env vars set by azure/login) so the helper has no implicit env coupling.
+          Invoke-AzStorageOperationWithOidcRetry `
+              -TenantId       '${{ secrets.PUBLISH_TENANT_ID }}' `
+              -ClientId       '${{ secrets.PUBLISH_CLIENT_ID }}' `
+              -SubscriptionId '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}' `
+              -ScriptBlock {
               $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount -ErrorAction Stop
 
               $functionInput = @{
