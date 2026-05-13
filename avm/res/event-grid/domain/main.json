@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4200553937570923653"
+      "version": "0.42.1.51946",
+      "templateHash": "4813800330100216018"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain."
@@ -999,6 +999,9 @@
           },
           "name": {
             "value": "[coalesce(parameters('topics'), createArray())[copyIndex()]]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1007,8 +1010,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9352027666016897077"
+              "version": "0.42.1.51946",
+              "templateHash": "12382830950372650106"
             },
             "name": "Event Grid Domain Topics",
             "description": "This module deploys an Event Grid Domain Topic."
@@ -1025,9 +1028,36 @@
               "metadata": {
                 "description": "Conditional. The name of the parent Event Grid Domain. Required if the template is used in a standalone deployment."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.eventgrid-domain-topic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.EventGrid/domains/topics",
               "apiVersion": "2022-06-15",
@@ -1109,6 +1139,9 @@
           },
           "retryPolicy": {
             "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'retryPolicy')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1118,8 +1151,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3184896756334475814"
+              "version": "0.42.1.51946",
+              "templateHash": "5572943960655521559"
             },
             "name": "Event Grid Domain Event Subscriptions",
             "description": "This module deploys an Event Grid Domain Event Subscription."
@@ -1204,9 +1237,36 @@
               "metadata": {
                 "description": "Optional. The retry policy for events. See RetryPolicy objects for full shape."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.eventgrid-domain-eventsubscription.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "domain": {
               "existing": true,
               "type": "Microsoft.EventGrid/domains",

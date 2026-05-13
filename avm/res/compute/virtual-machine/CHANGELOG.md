@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.1
+
+### Changes
+
+- Publishing child module `avm/res/compute/virtual-machine/extension`.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.0
 
 ### Changes

@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/slot/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added support for [hostname bindings](https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain) with optional [certificate creation](https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate) (fixes [#5191](https://github.com/Azure/bicep-registry-modules/issues/5191)) for slots via parameter `hostNameBindings`
+- Updated diverse API versions & module references
+- Added output `hostNameBindings`
+- Added diverse exported types (e.g., `hostNameBindingType`, `hostNameBindingsOutputType`)
+
+### Breaking Changes
+
+- None
+
 ## 0.3.1
 
 ### Changes

@@ -226,7 +226,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.1' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
     name: name

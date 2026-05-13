@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "18164299966266307814"
+      "templateHash": "13052726848098685116"
     },
     "name": "Virtual Network Peerings",
     "description": "This module deploys a Virtual Network Peering."
@@ -71,13 +71,20 @@
       "metadata": {
         "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
       }
+    },
+    "enableOnlyIPv6Peering": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether only Ipv6 address space is peered for subnet peering."
+      }
     }
   },
   "resources": [
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -96,10 +103,11 @@
     },
     {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
       "properties": {
         "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
+        "enableOnlyIPv6Peering": "[parameters('enableOnlyIPv6Peering')]",
         "allowGatewayTransit": "[parameters('allowGatewayTransit')]",
         "allowVirtualNetworkAccess": "[parameters('allowVirtualNetworkAccess')]",
         "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
