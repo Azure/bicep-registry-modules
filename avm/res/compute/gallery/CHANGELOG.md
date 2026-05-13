@@ -9,7 +9,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Publishing child module `avm/res/compute/gallery/application`.
 - Publishing child module `avm/res/compute/gallery/image`.
 - Updated resource provider for telemetry.
-- Updated resource provider for gallery.
 - Updated AVM common types.
 
 ### Breaking Changes

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "1474771999147124793"
+      "templateHash": "516755543194152219"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -641,7 +641,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Compute/galleries@2025-03-03#properties/tags"
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/tags"
         },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags for all resources."
@@ -652,7 +652,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Compute/galleries@2025-03-03#properties/properties/properties/sharingProfile"
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/sharingProfile"
         },
         "description": "Optional. Profile for gallery sharing to subscription or tenant."
       },
@@ -662,7 +662,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Compute/galleries@2025-03-03#properties/properties/properties/softDeletePolicy"
+          "source": "Microsoft.Compute/galleries@2024-03-03#properties/properties/properties/softDeletePolicy"
         },
         "description": "Optional. Soft deletion policy of the gallery."
       },
@@ -710,7 +710,7 @@
     },
     "gallery": {
       "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2025-03-03",
+      "apiVersion": "2024-03-03",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -818,7 +818,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "2761015022115941182"
+              "templateHash": "18288456295295708619"
             },
             "name": "Compute Galleries Applications",
             "description": "This module deploys an Azure Compute Gallery Application."
@@ -1059,7 +1059,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/galleries/applications@2025-03-03#properties/tags"
+                  "source": "Microsoft.Compute/galleries/applications@2024-03-03#properties/tags"
                 },
                 "description": "Optional. Tags for all resources."
               },
@@ -1124,12 +1124,12 @@
             "gallery": {
               "existing": true,
               "type": "Microsoft.Compute/galleries",
-              "apiVersion": "2025-03-03",
+              "apiVersion": "2024-03-03",
               "name": "[parameters('galleryName')]"
             },
             "application": {
               "type": "Microsoft.Compute/galleries/applications",
-              "apiVersion": "2025-03-03",
+              "apiVersion": "2024-03-03",
               "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1193,7 +1193,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('application', '2025-03-03', 'full').location]"
+              "value": "[reference('application', '2024-03-03', 'full').location]"
             }
           }
         }
@@ -1302,7 +1302,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "9718626533300107630"
+              "templateHash": "12239908004175500937"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -1682,7 +1682,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/galleries/images@2025-03-03#properties/tags"
+                  "source": "Microsoft.Compute/galleries/images@2024-03-03#properties/tags"
                 },
                 "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                 "description": "Optional. Tags for all the image."
@@ -1738,12 +1738,12 @@
             "gallery": {
               "existing": true,
               "type": "Microsoft.Compute/galleries",
-              "apiVersion": "2025-03-03",
+              "apiVersion": "2024-03-03",
               "name": "[parameters('galleryName')]"
             },
             "image": {
               "type": "Microsoft.Compute/galleries/images",
-              "apiVersion": "2025-03-03",
+              "apiVersion": "2024-03-03",
               "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1799,7 +1799,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('image', '2025-03-03', 'full').location]"
+              "value": "[reference('image', '2024-03-03', 'full').location]"
             }
           }
         }
@@ -1836,7 +1836,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('gallery', '2025-03-03', 'full').location]"
+      "value": "[reference('gallery', '2024-03-03', 'full').location]"
     },
     "imageResourceIds": {
       "type": "array",

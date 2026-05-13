@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Compute/galleries/applications` | 2025-03-03 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_galleries_applications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-03-03/galleries/applications)</li></ul> |
+| `Microsoft.Compute/galleries/applications` | 2024-03-03 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_galleries_applications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications)</li></ul> |
 
 ## Parameters
 

@@ -41,13 +41,13 @@ param roleAssignments roleAssignmentType[]?
   }
   '''
 })
-param tags resourceInput<'Microsoft.Compute/galleries@2025-03-03'>.tags?
+param tags resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.tags?
 
 @sys.description('Optional. Profile for gallery sharing to subscription or tenant.')
-param sharingProfile resourceInput<'Microsoft.Compute/galleries@2025-03-03'>.properties.sharingProfile?
+param sharingProfile resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.properties.sharingProfile?
 
 @sys.description('Optional. Soft deletion policy of the gallery.')
-param softDeletePolicy resourceInput<'Microsoft.Compute/galleries@2025-03-03'>.properties.softDeletePolicy?
+param softDeletePolicy resourceInput<'Microsoft.Compute/galleries@2024-03-03'>.properties.softDeletePolicy?
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -103,7 +103,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2025-03-03' = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
   name: name
   location: location
   tags: tags

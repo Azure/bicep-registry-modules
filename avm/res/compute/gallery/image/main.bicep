@@ -89,7 +89,7 @@ param roleAssignments roleAssignmentType[]?
 }
 '''
 })
-param tags resourceInput<'Microsoft.Compute/galleries/images@2025-03-03'>.tags?
+param tags resourceInput<'Microsoft.Compute/galleries/images@2024-03-03'>.tags?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -142,11 +142,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2025-03-03' existing = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: galleryName
 }
 
-resource image 'Microsoft.Compute/galleries/images@2025-03-03' = {
+resource image 'Microsoft.Compute/galleries/images@2024-03-03' = {
   name: name
   parent: gallery
   location: location
