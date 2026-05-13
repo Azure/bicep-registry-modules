@@ -6,10 +6,171 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "16700136780921833588"
+      "templateHash": "10472644069235919912"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, and an Application Insights component (with an optional Log Analytics workspace). When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, a Virtual Network and Private Endpoints for the Function App, Storage Account and Key Vault, configures VNet integration, system-assigned managed identity and HTTPS-only / TLS 1.2 enforcement."
+  },
+  "definitions": {
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "notes": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the notes of the lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+        }
+      }
+    }
   },
   "parameters": {
     "functionAppName": {
@@ -216,6 +377,23 @@
       "metadata": {
         "description": "Optional. The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps."
       }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings for all resources deployed by this module."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the Function App."
+      }
     }
   },
   "variables": {
@@ -241,7 +419,7 @@
     "runtimeVersionSiteConfig": "[if(not(empty(parameters('runtimeVersion'))), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'node'), createObject('nodeVersion', format('~{0}', parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'java'), createObject('javaVersion', parameters('runtimeVersion')), if(equals(parameters('functionWorkerRuntime'), 'powershell'), createObject('powerShellVersion', format('~{0}', parameters('runtimeVersion'))), createObject('netFrameworkVersion', format('v{0}', parameters('runtimeVersion'))))))), createObject())]",
     "createLogAnalyticsWorkspace": "[and(and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName'))), parameters('enableWafAlignment'))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
-    "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), if(parameters('enableWafAlignment'), createObject('WEBSITE_VNET_ROUTE_ALL', '1'), createObject()), parameters('appSettingsKeyValuePairs'))]"
+    "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), parameters('appSettingsKeyValuePairs'))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -271,6 +449,60 @@
       "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
+    "storageAccountRef": {
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2025-01-01",
+      "name": "[parameters('storageAccountName')]",
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "storageBlobDataOwnerRoleAssignment": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "functionApp",
+        "storageAccount"
+      ]
+    },
+    "storageQueueDataContributorRoleAssignment": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
+        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "functionApp",
+        "storageAccount"
+      ]
+    },
+    "storageTableDataContributorRoleAssignment": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
+        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "functionApp",
+        "storageAccount"
+      ]
+    },
     "logAnalyticsWorkspace": {
       "condition": "[variables('createLogAnalyticsWorkspace')]",
       "type": "Microsoft.Resources/deployments",
@@ -293,6 +525,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
           }
         },
         "template": {
@@ -3606,6 +3841,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
           "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', parameters('logAnalyticsWorkspaceResourceId')), if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), if(not(empty(parameters('logAnalyticsWorkspaceName'))), createObject('value', resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))), createObject('value', ''))))]"
         },
         "template": {
@@ -4353,6 +4591,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
           },
           "skuName": "[if(parameters('enableWafAlignment'), createObject('value', 'Standard_GRS'), createObject('value', 'Standard_LRS'))]",
           "kind": {
@@ -12498,6 +12739,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
           "skuName": {
             "value": "[parameters('appServicePlanSkuName')]"
           },
@@ -12509,7 +12753,7 @@
             "value": "[variables('isLinux')]"
           },
           "zoneRedundant": {
-            "value": "[and(parameters('enableWafAlignment'), or(startsWith(parameters('appServicePlanSkuName'), 'P'), startsWith(parameters('appServicePlanSkuName'), 'EP')))]"
+            "value": "[and(parameters('enableWafAlignment'), or(or(startsWith(parameters('appServicePlanSkuName'), 'P'), startsWith(parameters('appServicePlanSkuName'), 'EP')), equals(parameters('appServicePlanSkuName'), 'FC1')))]"
           }
         },
         "template": {
@@ -13217,6 +13461,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
           },
           "enableRbacAuthorization": {
             "value": true
@@ -16653,6 +16900,12 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
+          "lock": {
+            "value": "[parameters('lock')]"
+          },
+          "diagnosticSettings": {
+            "value": "[parameters('diagnosticSettings')]"
+          },
           "kind": {
             "value": "[parameters('functionAppKind')]"
           },
@@ -16673,7 +16926,7 @@
             "value": "[parameters('autoGeneratedDomainNameLabelScope')]"
           },
           "siteConfig": {
-            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', 'FtpsOnly', 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)))), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
+            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
           "privateEndpoints": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', null()))]"
         },
@@ -31348,13 +31601,6 @@
         "description": "The name of the Application Insights component."
       },
       "value": "[reference('applicationInsights').outputs.name.value]"
-    },
-    "applicationInsightsConnectionString": {
-      "type": "string",
-      "metadata": {
-        "description": "The connection string of the Application Insights component."
-      },
-      "value": "[reference('applicationInsights').outputs.connectionString.value]"
     },
     "keyVaultResourceId": {
       "type": "string",

@@ -1,0 +1,98 @@
+targetScope = 'subscription'
+
+metadata name = 'Using all parameters'
+metadata description = 'This instance deploys the module with all parameters set to exercise the full feature surface.'
+
+// ========== //
+// Parameters //
+// ========== //
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+param resourceGroupName string = 'dep-${namePrefix}-web.function-app-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'wfamax'
+
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+// General resources
+// =================
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: resourceLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    location: resourceLocation
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+  }
+}
+
+// ============== //
+// Test Execution //
+// ============== //
+
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      functionAppName: '${namePrefix}${serviceShort}001'
+      location: resourceLocation
+      enableTelemetry: true
+      enableWafAlignment: true
+      appServicePlanName: '${namePrefix}${serviceShort}-asp'
+      appServicePlanSkuName: 'EP1'
+      appServicePlanSkuCapacity: 2
+      functionAppKind: 'functionapp,linux'
+      functionWorkerRuntime: 'node'
+      runtimeVersion: '20'
+      functionAppSubnetResourceId: nestedDependencies.outputs.functionAppSubnetResourceId
+      privateEndpointSubnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      appSettingsKeyValuePairs: {
+        MY_CUSTOM_SETTING: 'custom-value'
+      }
+      corsAllowedOrigins: [
+        'https://portal.azure.com'
+      ]
+      corsSupportCredentials: true
+      tags: {
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+        'hidden-title': 'This is visible in the resource name'
+      }
+      functionAppTags: {
+        'azd-service-name': 'api'
+      }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
