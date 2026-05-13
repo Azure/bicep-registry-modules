@@ -23,6 +23,15 @@ The prefix to add to the current generated moduleIndex.json file. Default is 'ge
 .PARAMETER doNotMergeWithLastModuleIndexJsonFileVersion
 If specified, the last version of the moduleIndex.json file that is downloaded from the storage account will not be merged with the current generated moduleIndex.json file.
 
+.PARAMETER TenantId
+Optional. Microsoft Entra tenant ID used to refresh the GitHub OIDC login if the storage call fails with an auth-shaped error. Defaults to $env:AZURE_TENANT_ID (set by azure/login).
+
+.PARAMETER ClientId
+Optional. Microsoft Entra application (client) ID used to refresh the GitHub OIDC login on auth failure. Defaults to $env:AZURE_CLIENT_ID (set by azure/login).
+
+.PARAMETER SubscriptionId
+Optional. Azure subscription ID set as default after re-authentication. Defaults to $env:AZURE_SUBSCRIPTION_ID (set by azure/login).
+
 .DESCRIPTION
 Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
 
@@ -67,7 +76,16 @@ function Invoke-AvmJsonModuleIndexGeneration {
         [string] $prefixForCurrentGeneratedModuleIndexJsonFile = 'generated-',
 
         [Parameter(Mandatory = $false)]
-        [switch] $doNotMergeWithLastModuleIndexJsonFileVersion
+        [switch] $doNotMergeWithLastModuleIndexJsonFileVersion,
+
+        [Parameter(Mandatory = $false)]
+        [string] $TenantId = $env:AZURE_TENANT_ID,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ClientId = $env:AZURE_CLIENT_ID,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SubscriptionId = $env:AZURE_SUBSCRIPTION_ID
     )
 
     ## Generate the new moduleIndex.json file based off the modules in the repository
@@ -196,7 +214,7 @@ function Invoke-AvmJsonModuleIndexGeneration {
             # that, causing -UseConnectedAccount to fail with
             # 'ClientAssertionCredential authentication failed'. The retry helper
             # mints a fresh JWT and re-runs Connect-AzAccount on auth failures.
-            Invoke-AzStorageOperationWithOidcRetry -ScriptBlock {
+            Invoke-AzStorageOperationWithOidcRetry -TenantId $TenantId -ClientId $ClientId -SubscriptionId $SubscriptionId -ScriptBlock {
                 $storageContext = New-AzStorageContext -StorageAccountName $storageAccountName -UseConnectedAccount -ErrorAction Stop
                 Get-AzStorageBlobContent -Blob        $storageBlobName `
                                          -Container   $storageAccountContainer `
