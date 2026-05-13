@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ApiCenter/services@2024-03-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings for the service resource.')

@@ -39,7 +39,7 @@ This module deploys an API Center Service Workspace API.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contacts`](#parameter-contacts) | array | The contacts for the API. |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-customproperties) |  | The custom metadata defined for API catalog entities. |
 | [`deployments`](#parameter-deployments) | array | The deployments to create for the API. |
 | [`description`](#parameter-description) | string | The description of the API. |
 | [`externalDocumentation`](#parameter-externaldocumentation) | array | The external documentation for the API. |
@@ -135,7 +135,7 @@ The URL of the contact.
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `deployments`
 
@@ -157,7 +157,7 @@ The deployments to create for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-deploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-deploymentscustomproperties) |  | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-deploymentsdescription) | string | The description of the deployment. |
 | [`server`](#parameter-deploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-deploymentsstate) | string | The state of the deployment. |
@@ -196,7 +196,7 @@ The deployed version name.
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `deployments.description`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "8146695431770622585"
+      "templateHash": "5523416152894020194"
     },
     "name": "API Center Service Workspace APIs",
     "description": "This module deploys an API Center Service Workspace API."
@@ -180,11 +180,13 @@
           }
         },
         "customProperties": {
-          "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+            },
             "description": "Optional. The custom metadata defined for API catalog entities."
-          }
+          },
+          "nullable": true
         },
         "server": {
           "$ref": "#/definitions/deploymentServerType",
@@ -353,11 +355,13 @@
       }
     },
     "customProperties": {
-      "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiCenter/services/workspaces/apis@2024-03-01#properties/properties/properties/customProperties"
+        },
         "description": "Optional. The custom metadata defined for API catalog entities."
-      }
+      },
+      "nullable": true
     },
     "externalDocumentation": {
       "type": "array",
@@ -862,7 +866,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "7550830873522986883"
+              "templateHash": "6960390122367995473"
             },
             "name": "API Center Service Workspace API Deployments",
             "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -961,11 +965,13 @@
               }
             },
             "customProperties": {
-              "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01#properties/properties/properties/customProperties"
+                },
                 "description": "Optional. The custom metadata defined for API catalog entities."
-              }
+              },
+              "nullable": true
             },
             "server": {
               "$ref": "#/definitions/deploymentServerType",

@@ -29,7 +29,7 @@ param description string?
 param summary string?
 
 @sys.description('Optional. The custom metadata defined for API catalog entities.')
-param customProperties object?
+param customProperties resourceInput<'Microsoft.ApiCenter/services/workspaces/apis@2024-03-01'>.properties.customProperties?
 
 @sys.description('Optional. The external documentation for the API.')
 param externalDocumentation externalDocumentationType[]?
@@ -203,7 +203,7 @@ type deploymentType = {
   state: ('active' | 'inactive')?
 
   @sys.description('Optional. The custom metadata defined for API catalog entities.')
-  customProperties: object?
+  customProperties: resourceInput<'Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01'>.properties.customProperties?
 
   @sys.description('Optional. The server information of the deployment.')
   server: deploymentServerType?

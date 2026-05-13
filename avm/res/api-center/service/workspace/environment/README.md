@@ -35,7 +35,7 @@ This module deploys an API Center Service Workspace Environment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-customproperties) |  | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-description) | string | The description of the environment. |
 | [`onboarding`](#parameter-onboarding) | object | Onboarding information for the environment. |
 | [`server`](#parameter-server) | object | Server information of the environment. |
@@ -89,7 +89,7 @@ The name of the parent workspace. Required if the template is used in a standalo
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `description`
 

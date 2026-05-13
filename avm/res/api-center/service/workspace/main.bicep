@@ -130,7 +130,7 @@ type environmentType = {
   description: string?
 
   @sys.description('Optional. The custom metadata defined for API catalog entities.')
-  customProperties: object?
+  customProperties: resourceInput<'Microsoft.ApiCenter/services/workspaces/environments@2024-03-01'>.properties.customProperties?
 
   @sys.description('Optional. Server information of the environment.')
   server: environmentServerType?
@@ -165,7 +165,7 @@ type apiType = {
   summary: string?
 
   @sys.description('Optional. The custom metadata defined for API catalog entities.')
-  customProperties: object?
+  customProperties: resourceInput<'Microsoft.ApiCenter/services/workspaces/apis@2024-03-01'>.properties.customProperties?
 
   @sys.description('Optional. External documentation for the API.')
   externalDocumentation: externalDocumentationType[]?

@@ -37,7 +37,7 @@ param definition string
 param state ('active' | 'inactive')?
 
 @sys.description('Optional. The custom metadata defined for API catalog entities.')
-param customProperties object?
+param customProperties resourceInput<'Microsoft.ApiCenter/services/workspaces/apis/deployments@2024-03-01'>.properties.customProperties?
 
 @sys.description('Optional. The server information of the deployment.')
 param server deploymentServerType?

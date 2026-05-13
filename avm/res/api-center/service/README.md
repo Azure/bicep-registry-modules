@@ -1143,7 +1143,7 @@ The APIs to create within the default workspace of the API Center service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contacts`](#parameter-apiscontacts) | array | The contacts for the API. |
-| [`customProperties`](#parameter-apiscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-apiscustomproperties) |  | The custom metadata defined for API catalog entities. |
 | [`deployments`](#parameter-apisdeployments) | array | The deployments for the API. |
 | [`description`](#parameter-apisdescription) | string | The description of the API. |
 | [`externalDocumentation`](#parameter-apisexternaldocumentation) | array | External documentation for the API. |
@@ -1225,7 +1225,7 @@ The URL of the contact.
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `apis.deployments`
 
@@ -1247,7 +1247,7 @@ The deployments for the API.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-apisdeploymentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-apisdeploymentscustomproperties) |  | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-apisdeploymentsdescription) | string | The description of the deployment. |
 | [`server`](#parameter-apisdeploymentsserver) | object | The server information of the deployment. |
 | [`state`](#parameter-apisdeploymentsstate) | string | The state of the deployment. |
@@ -1286,7 +1286,7 @@ The deployed version name.
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `apis.deployments.description`
 
@@ -1672,7 +1672,7 @@ The environments to create within the default workspace of the API Center servic
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-environmentscustomproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-environmentscustomproperties) |  | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-environmentsdescription) | string | The description of the environment. |
 | [`onboarding`](#parameter-environmentsonboarding) | object | Onboarding information for the environment. |
 | [`server`](#parameter-environmentsserver) | object | Server information of the environment. |
@@ -1712,7 +1712,7 @@ The title of the environment.
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `environments.description`
 

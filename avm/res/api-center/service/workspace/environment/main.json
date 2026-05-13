@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "7568816096346190068"
+      "templateHash": "12213803849239914091"
     },
     "name": "API Center Service Workspace Environments",
     "description": "This module deploys an API Center Service Workspace Environment."
@@ -112,11 +112,13 @@
       }
     },
     "customProperties": {
-      "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01#properties/properties/properties/customProperties"
+        },
         "description": "Optional. The custom metadata defined for API catalog entities."
-      }
+      },
+      "nullable": true
     },
     "server": {
       "$ref": "#/definitions/environmentServerType",

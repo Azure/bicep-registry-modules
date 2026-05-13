@@ -37,7 +37,7 @@ This module deploys an API Center Service Workspace API Deployment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customProperties`](#parameter-customproperties) | object | The custom metadata defined for API catalog entities. |
+| [`customProperties`](#parameter-customproperties) |  | The custom metadata defined for API catalog entities. |
 | [`description`](#parameter-description) | string | The description of the deployment. |
 | [`server`](#parameter-server) | object | The server information of the deployment. |
 | [`state`](#parameter-state) | string | The state of the API deployment. |
@@ -97,7 +97,7 @@ The name of the parent workspace. Required if the template is used in a standalo
 The custom metadata defined for API catalog entities.
 
 - Required: No
-- Type: object
+- Type: 
 
 ### Parameter: `description`
 

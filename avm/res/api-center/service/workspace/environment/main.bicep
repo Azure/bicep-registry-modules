@@ -24,7 +24,7 @@ param kind ('development' | 'testing' | 'staging' | 'production')
 param description string?
 
 @sys.description('Optional. The custom metadata defined for API catalog entities.')
-param customProperties object?
+param customProperties resourceInput<'Microsoft.ApiCenter/services/workspaces/environments@2024-03-01'>.properties.customProperties?
 
 @sys.description('Optional. Server information of the environment.')
 param server environmentServerType?
