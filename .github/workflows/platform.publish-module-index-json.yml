@@ -89,6 +89,9 @@ jobs:
       - name: Upload to blob storage
         shell: pwsh
         run: |
+          # Load the OIDC-aware retry wrapper (transitively dot-sources Connect-AzAccountWithGitHubOidc).
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Invoke-AzStorageOperationWithOidcRetry.ps1')
+
           $storageAccountInfo = @{
               storageAccountName      = 'biceplivedatasaprod'
               storageAccountContainer = 'bicep-cdn-live-data-container'
@@ -97,16 +100,21 @@ jobs:
           }
           Write-Verbose ('Uploading [moduleIndex.json] to blob storage account [{0}] in container [{1}] as blob [{2}]' -f $storageAccountInfo.storageAccountName, $storageAccountInfo.storageAccountContainer, $storageAccountInfo.storageBlobName) -Verbose
 
-          $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount
+          # Wrap the storage calls so a stale ClientAssertionCredential triggers an OIDC refresh + retry
+          # rather than failing the whole pipeline run.
+          Invoke-AzStorageOperationWithOidcRetry -ScriptBlock {
+              $storageContext = New-AzStorageContext -StorageAccountName $storageAccountInfo.storageAccountName -UseConnectedAccount -ErrorAction Stop
 
-          $functionInput = @{
-              Context    = $storageContext
-              Container  = $storageAccountInfo.storageAccountContainer
-              Blob       = $storageAccountInfo.storageBlobName
-              File       = 'moduleIndex.json'
-              Properties = $storageAccountInfo.storageBlobContentType
+              $functionInput = @{
+                  Context     = $storageContext
+                  Container   = $storageAccountInfo.storageAccountContainer
+                  Blob        = $storageAccountInfo.storageBlobName
+                  File        = 'moduleIndex.json'
+                  Properties  = $storageAccountInfo.storageBlobContentType
+                  ErrorAction = 'Stop'
+              }
+              Set-AzStorageBlobContent @functionInput -Force
           }
-          Set-AzStorageBlobContent @functionInput -Force
 
           Write-Verbose ('Upload of [{0}] complete.' -f $storageAccountInfo.storageBlobName) -Verbose
 
