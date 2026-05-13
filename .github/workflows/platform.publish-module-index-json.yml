@@ -35,14 +35,12 @@ jobs:
       - name: Install Azure Powershell Modules
         shell: pwsh
         run: |
-          # Force-update the Az PowerShell modules used by the next steps to the latest version available on the gallery.
+          # Force-update the Az PowerShell module to the latest version available on the gallery.
           # The runner-preinstalled Az version can lag behind and has been observed to fail with
           # 'ClientAssertionCredential authentication failed' when calling New-AzStorageContext.
           # Run before 'azure/login' so the OIDC client-assertion exchange itself uses the newest Azure.Identity.
-          foreach ($moduleName in @('Az.Accounts', 'Az.Storage')) {
-            Write-Verbose ('Installing latest version of [{0}]...' -f $moduleName) -Verbose
-            Install-Module -Name $moduleName -Force -AllowClobber -Scope CurrentUser
-          }
+          Write-Verbose 'Installing latest version of [Az]...' -Verbose
+          Install-Module -Name Az -Force -AllowClobber -Scope CurrentUser
 
       - name: Log in to Azure
         uses: azure/login@v3
