@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "17811297928978120568"
+      "templateHash": "10945776483133803601"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.",
@@ -294,10 +294,12 @@
       "defaultValue": "functionapp,linux",
       "allowedValues": [
         "functionapp",
-        "functionapp,linux"
+        "functionapp,linux",
+        "functionapp,linux,container",
+        "functionapp,workflowapp"
       ],
       "metadata": {
-        "description": "Optional. The kind of Function App to deploy."
+        "description": "Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,linux,container` runs a custom Linux container image; `functionapp,workflowapp` is for Logic Apps Standard."
       }
     },
     "appServicePlanSkuName": {
@@ -387,7 +389,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array."
+        "description": "Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list."
       }
     },
     "corsAllowedOrigins": {
@@ -431,7 +433,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps."
+        "description": "Optional. The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime."
       }
     },
     "lock": {
@@ -491,6 +493,15 @@
       "powershell": "POWERSHELL",
       "python": "PYTHON"
     },
+    "defaultLinuxRuntimeVersionMap": {
+      "dotnet": "8.0",
+      "dotnet-isolated": "8.0",
+      "java": "17",
+      "node": "20",
+      "powershell": "7.4",
+      "python": "3.11"
+    },
+    "effectiveLinuxRuntimeVersion": "[if(not(empty(parameters('runtimeVersion'))), parameters('runtimeVersion'), variables('defaultLinuxRuntimeVersionMap')[parameters('functionWorkerRuntime')])]",
     "windowsRuntimeVersionConfigMap": {
       "dotnet": {
         "netFrameworkVersion": "[format('v{0}', parameters('runtimeVersion'))]"
@@ -509,11 +520,29 @@
       },
       "python": {}
     },
-    "runtimeVersionSiteConfig": "[if(not(empty(parameters('runtimeVersion'))), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')]), createObject())]",
+    "runtimeVersionSiteConfig": "[if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], variables('effectiveLinuxRuntimeVersion'))), if(not(empty(parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')], createObject()))]",
     "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
     "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
-    "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), coalesce(parameters('appSettingsKeyValuePairs'), createObject()))]",
+    "dnsZoneIds": "[coalesce(parameters('privateDnsZoneResourceIds'), createObject())]",
+    "userAssignedIdentityResourceIdParts": "[split(parameters('userAssignedIdentityResourceId'), '/')]",
+    "existingUserAssignedIdentitySubscriptionId": "[if(variables('createUserAssignedIdentity'), subscription().subscriptionId, variables('userAssignedIdentityResourceIdParts')[2])]",
+    "existingUserAssignedIdentityResourceGroupName": "[if(variables('createUserAssignedIdentity'), resourceGroup().name, variables('userAssignedIdentityResourceIdParts')[4])]",
+    "existingUserAssignedIdentityName": "[if(variables('createUserAssignedIdentity'), '', last(variables('userAssignedIdentityResourceIdParts')))]",
+    "reservedAppSettingKeys": [
+      "AzureWebJobsStorage",
+      "AzureWebJobsStorage__accountName",
+      "AzureWebJobsStorage__clientId",
+      "AzureWebJobsStorage__credential",
+      "APPLICATIONINSIGHTS_CONNECTION_STRING",
+      "FUNCTIONS_EXTENSION_VERSION",
+      "FUNCTIONS_WORKER_RUNTIME",
+      "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+      "WEBSITE_CONTENTSHARE",
+      "WEBSITE_CONTENTOVERVNET"
+    ],
+    "sanitizedUserAppSettings": "[reduce(items(coalesce(parameters('appSettingsKeyValuePairs'), createObject())), createObject(), lambda('cur', 'next', if(contains(variables('reservedAppSettingKeys'), lambdaVariables('next').key), lambdaVariables('cur'), union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').key), lambdaVariables('next').value)))))]",
+    "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), variables('sanitizedUserAppSettings'))]",
     "contentOverVnetAppSettings": "[if(and(parameters('enableWafAlignment'), variables('requiresContentShare')), createArray(createObject('name', 'WEBSITE_CONTENTOVERVNET', 'value', '1')), createArray())]"
   },
   "resources": {
@@ -549,9 +578,9 @@
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "subscriptionId": "[split(parameters('userAssignedIdentityResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('userAssignedIdentityResourceId'), '/')[4]]",
-      "name": "[last(split(parameters('userAssignedIdentityResourceId'), '/'))]"
+      "subscriptionId": "[variables('existingUserAssignedIdentitySubscriptionId')]",
+      "resourceGroup": "[variables('existingUserAssignedIdentityResourceGroupName')]",
+      "name": "[variables('existingUserAssignedIdentityName')]"
     },
     "userAssignedIdentity": {
       "condition": "[variables('createUserAssignedIdentity')]",
@@ -5194,6 +5223,9 @@
           "minimumTlsVersion": {
             "value": "TLS1_2"
           },
+          "allowSharedKeyAccess": {
+            "value": "[variables('requiresContentShare')]"
+          },
           "publicNetworkAccess": "[if(parameters('enableWafAlignment'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkAcls": "[if(parameters('enableWafAlignment'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Allow')))]",
           "roleAssignments": {
@@ -5215,7 +5247,7 @@
               }
             ]
           },
-          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}-blob', parameters('storageAccountName')), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'blob'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').blob))), null())), createObject('name', format('pe-{0}-file', parameters('storageAccountName')), 'service', 'file', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'file'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').file))), null())), createObject('name', format('pe-{0}-queue', parameters('storageAccountName')), 'service', 'queue', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'queue'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').queue))), null())), createObject('name', format('pe-{0}-table', parameters('storageAccountName')), 'service', 'table', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'table'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').table))), null())))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}-blob', parameters('storageAccountName')), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'blob'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'blob')))), null())), createObject('name', format('pe-{0}-file', parameters('storageAccountName')), 'service', 'file', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'file'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'file')))), null())), createObject('name', format('pe-{0}-queue', parameters('storageAccountName')), 'service', 'queue', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'queue'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'queue')))), null())), createObject('name', format('pe-{0}-table', parameters('storageAccountName')), 'service', 'table', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'table'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'table')))), null())))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -14105,7 +14137,7 @@
           "siteConfig": {
             "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), if(variables('requiresContentShare'), createArray(createObject('name', 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', 'value', listOutputsWithSecureValues('storageAccount', '2025-04-01').primaryConnectionString), createObject('name', 'WEBSITE_CONTENTSHARE', 'value', toLower(parameters('functionAppName')))), createArray()), variables('contentOverVnetAppSettings'))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
-          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'sites'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').sites))), null())))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'sites'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'sites')))), null())))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

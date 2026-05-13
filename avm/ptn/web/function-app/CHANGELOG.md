@@ -14,8 +14,14 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - `zoneRedundant` on the App Service Plan is gated to only the SKUs that actually support it (`P{1-3}v3`, `P{1-5}mv3`, `EP{1-3}`) and requires `appServicePlanSkuCapacity >= 2`.
 - For Consumption (Y1) and Elastic Premium (EP) plans, the module sets `WEBSITE_CONTENTAZUREFILECONNECTIONSTRING` and `WEBSITE_CONTENTSHARE` so the runtime can resolve the file share that those plan families require.
 - When `enableWafAlignment` is `true` and the plan needs a content share, `WEBSITE_CONTENTOVERVNET=1` is also set so file-share traffic flows over the integrated VNet to the Storage Account's Private Endpoints.
+- Storage Account `allowSharedKeyAccess` is gated to `requiresContentShare` so it is only enabled for plan families that need the content-share connection string (Y1, EP). Dedicated and Flex plans run fully identity-based with shared-key disabled.
+- Reserved app-setting keys (`AzureWebJobsStorage*`, `APPLICATIONINSIGHTS_CONNECTION_STRING`, `FUNCTIONS_*`, `WEBSITE_CONTENT*`) are filtered out of `appSettingsKeyValuePairs` so module-managed values always win and cannot be silently broken from the consumer side.
+- Linux Function Apps now receive a sensible default `linuxFxVersion` per `functionWorkerRuntime` when `runtimeVersion` is not provided (e.g. `dotnet-isolated|8.0`, `node|20`, `python|3.11`, `java|17`, `powershell|7.4`).
+- `functionAppKind` allowed list expanded with `functionapp,linux,container` (custom Linux container) and `functionapp,workflowapp` (Logic Apps Standard).
 - Added optional `privateDnsZoneResourceIds` (typed) parameter so consumers can wire Private DNS Zones into each Private Endpoint (`sites`, `blob`, `file`, `queue`, `table`) created by this module.
-- `appSettingsKeyValuePairs` description clarified — values must be strings.
+- Added `tags` / `functionAppTags` split: `tags` apply to every resource; `functionAppTags` are merged on top only on the Function App, intended for AZD's `azd-service-name` mapping.
+- `appSettingsKeyValuePairs` description clarified — values must be strings; reserved-key behavior documented.
+- Added `tests/e2e/max` test exercising every parameter (BYO UAMI, BYO Log Analytics workspace, custom names, CORS, lock, diagnostic settings, and `privateDnsZoneResourceIds` wired against deployed zones).
 
 ### Breaking Changes
 
