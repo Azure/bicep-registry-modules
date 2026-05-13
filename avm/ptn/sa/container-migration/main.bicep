@@ -272,7 +272,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // ========== Resource Group Tagging ========== //
-var existingTags = resourceGroup().tags ?? {}
+var existingTags = resourceGroup().?tags ?? {}
 
 resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
   name: 'default'
