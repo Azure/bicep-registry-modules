@@ -237,7 +237,7 @@ module testDeployment '../../../main.bicep' = [
               definition: 'openapi-spec'
               state: 'active'
               customProperties: {
-                apiCostCenter: 'CC-2001'
+                apiTeamOwner: 'Platform Engineering'
               }
               server: {
                 runtimeUri: [

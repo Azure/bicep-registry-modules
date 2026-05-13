@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+        name: 'ApiCenterDeleteLock'
       }
       managedIdentities: {
         systemAssigned: true
@@ -70,20 +70,8 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      metadataSchemas: [
-        {
-          name: 'apiLifecycleStage'
-          schema: '{"type":"string","title":"API Lifecycle Stage","minLength":1,"maxLength":50}'
-          assignedTo: [
-            {
-              entity: 'api'
-              required: true
-            }
-          ]
-        }
-      ]
+      metadataSchemas: []
       tags: {
-        'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
