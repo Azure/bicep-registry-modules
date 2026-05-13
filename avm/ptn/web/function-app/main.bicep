@@ -95,29 +95,34 @@ var isLinux = endsWith(functionAppKind, 'linux')
 var createLogAnalyticsWorkspace = empty(logAnalyticsWorkspaceResourceId) && empty(logAnalyticsWorkspaceName) && enableWafAlignment
 var derivedLogAnalyticsWorkspaceName = empty(logAnalyticsWorkspaceName) ? '${functionAppName}-law' : logAnalyticsWorkspaceName
 
-var defaultAppSettings = union(
+// Static app settings (deploy-time known values only — safe for for-expression)
+var staticAppSettings = union(
   {
-    AzureWebJobsStorage__accountName: storageAccount.outputs.name
     AzureWebJobsStorage__credential: 'managedidentity'
     FUNCTIONS_EXTENSION_VERSION: '~4'
     FUNCTIONS_WORKER_RUNTIME: functionWorkerRuntime
-    APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.outputs.connectionString
   },
   enableWafAlignment
     ? {
         WEBSITE_VNET_ROUTE_ALL: '1'
       }
-    : {}
+    : {},
+  appSettingsKeyValuePairs
 )
 
-var mergedAppSettings = union(defaultAppSettings, appSettingsKeyValuePairs)
-
-var appSettingsArray = [
-  for setting in items(mergedAppSettings): {
+var staticAppSettingsArray = [
+  for setting in items(staticAppSettings): {
     name: setting.key
     value: setting.value
   }
 ]
+
+var runtimeAppSettingsArray = [
+  { name: 'AzureWebJobsStorage__accountName', value: storageAccount.outputs.name }
+  { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: applicationInsights.outputs.connectionString }
+]
+
+var appSettingsArray = concat(staticAppSettingsArray, runtimeAppSettingsArray)
 
 // Build the final site app settings array shape expected by avm/res/web/site.
 var siteConfigBase = {
@@ -182,7 +187,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = {
     workspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
       ? logAnalyticsWorkspaceResourceId
       : (createLogAnalyticsWorkspace
-          ? logAnalyticsWorkspace.outputs.resourceId
+          ? logAnalyticsWorkspace!.outputs.resourceId
           : (!empty(logAnalyticsWorkspaceName) ? existingLogAnalyticsWorkspace.id : ''))
   }
 }
@@ -349,14 +354,14 @@ output applicationInsightsName string = applicationInsights.outputs.name
 output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString
 
 @description('The resource ID of the Key Vault created when `enableWafAlignment` is `true`.')
-output keyVaultResourceId string = enableWafAlignment ? keyVault.outputs.resourceId : ''
+output keyVaultResourceId string = enableWafAlignment ? keyVault!.outputs.resourceId : ''
 
 @description('The name of the Key Vault created when `enableWafAlignment` is `true`.')
-output keyVaultName string = enableWafAlignment ? keyVault.outputs.name : ''
+output keyVaultName string = enableWafAlignment ? keyVault!.outputs.name : ''
 
 @description('The resource ID of the Log Analytics workspace created or referenced by this module, if any.')
 output logAnalyticsWorkspaceResourceId string = !empty(logAnalyticsWorkspaceResourceId)
   ? logAnalyticsWorkspaceResourceId
   : (createLogAnalyticsWorkspace
-      ? logAnalyticsWorkspace.outputs.resourceId
+      ? logAnalyticsWorkspace!.outputs.resourceId
       : (!empty(logAnalyticsWorkspaceName) ? existingLogAnalyticsWorkspace.id : ''))
