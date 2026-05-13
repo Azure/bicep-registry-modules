@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module with the WAF-aligned baseline enabled (Key Vault, VNet integration, Private Endpoints, managed identity, HTTPS-only and TLS 1.2 enforcement).'
+metadata description = 'This instance deploys the module with the WAF-aligned baseline enabled (VNet integration, Private Endpoints, managed identity, HTTPS-only and TLS 1.2 enforcement).'
 
 // ========== //
 // Parameters //

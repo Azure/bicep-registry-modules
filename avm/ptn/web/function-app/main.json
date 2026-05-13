@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "4597288312181185147"
+      "templateHash": "17811297928978120568"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.",
@@ -262,10 +262,10 @@
     },
     "storageAccountName": {
       "type": "string",
-      "defaultValue": "[take(toLower(replace(replace(replace(replace(format('{0}sa{1}', parameters('functionAppName'), uniqueString(resourceGroup().id, parameters('functionAppName'))), '-', ''), '_', ''), '.', ''), ' ', '')), 24)]",
+      "defaultValue": "[take(toLower(format('{0}sa{1}', replace(parameters('functionAppName'), '-', ''), uniqueString(resourceGroup().id, parameters('functionAppName')))), 24)]",
       "maxLength": 24,
       "metadata": {
-        "description": "Optional. The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`."
+        "description": "Optional. The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. Function App names only allow alphanumeric and hyphens, so only hyphens need to be stripped to satisfy Storage Account naming constraints."
       }
     },
     "applicationInsightsName": {
@@ -491,7 +491,25 @@
       "powershell": "POWERSHELL",
       "python": "PYTHON"
     },
-    "runtimeVersionSiteConfig": "[if(not(empty(parameters('runtimeVersion'))), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'node'), createObject('nodeVersion', format('~{0}', parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'java'), createObject('javaVersion', parameters('runtimeVersion')), if(equals(parameters('functionWorkerRuntime'), 'powershell'), createObject('powerShellVersion', format('~{0}', parameters('runtimeVersion'))), createObject('netFrameworkVersion', format('v{0}', parameters('runtimeVersion'))))))), createObject())]",
+    "windowsRuntimeVersionConfigMap": {
+      "dotnet": {
+        "netFrameworkVersion": "[format('v{0}', parameters('runtimeVersion'))]"
+      },
+      "dotnet-isolated": {
+        "netFrameworkVersion": "[format('v{0}', parameters('runtimeVersion'))]"
+      },
+      "java": {
+        "javaVersion": "[parameters('runtimeVersion')]"
+      },
+      "node": {
+        "nodeVersion": "[format('~{0}', parameters('runtimeVersion'))]"
+      },
+      "powershell": {
+        "powerShellVersion": "[format('~{0}', parameters('runtimeVersion'))]"
+      },
+      "python": {}
+    },
+    "runtimeVersionSiteConfig": "[if(not(empty(parameters('runtimeVersion'))), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')]), createObject())]",
     "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
     "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
@@ -5197,7 +5215,7 @@
               }
             ]
           },
-          "privateEndpoints": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pe-{0}-blob', parameters('storageAccountName')), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'blob'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').blob))), null())), createObject('name', format('pe-{0}-file', parameters('storageAccountName')), 'service', 'file', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'file'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').file))), null())), createObject('name', format('pe-{0}-queue', parameters('storageAccountName')), 'service', 'queue', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'queue'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').queue))), null())), createObject('name', format('pe-{0}-table', parameters('storageAccountName')), 'service', 'table', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'table'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').table))), null())))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}-blob', parameters('storageAccountName')), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'blob'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').blob))), null())), createObject('name', format('pe-{0}-file', parameters('storageAccountName')), 'service', 'file', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'file'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').file))), null())), createObject('name', format('pe-{0}-queue', parameters('storageAccountName')), 'service', 'queue', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'queue'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').queue))), null())), createObject('name', format('pe-{0}-table', parameters('storageAccountName')), 'service', 'table', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'table'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').table))), null())))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -14079,7 +14097,7 @@
               ]
             }
           },
-          "virtualNetworkSubnetResourceId": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('functionAppSubnetResourceId')))), createObject('value', parameters('functionAppSubnetResourceId')), createObject('value', null()))]",
+          "virtualNetworkSubnetResourceId": "[if(parameters('enableWafAlignment'), createObject('value', parameters('functionAppSubnetResourceId')), createObject('value', null()))]",
           "publicNetworkAccess": "[if(parameters('enableWafAlignment'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "autoGeneratedDomainNameLabelScope": {
             "value": "[parameters('autoGeneratedDomainNameLabelScope')]"
@@ -14087,7 +14105,7 @@
           "siteConfig": {
             "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), if(variables('requiresContentShare'), createArray(createObject('name', 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', 'value', listOutputsWithSecureValues('storageAccount', '2025-04-01').primaryConnectionString), createObject('name', 'WEBSITE_CONTENTSHARE', 'value', toLower(parameters('functionAppName')))), createArray()), variables('contentOverVnetAppSettings'))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
-          "privateEndpoints": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'sites'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').sites))), null())))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(parameters('privateDnsZoneResourceIds'), 'sites'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceIds').sites))), null())))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
