@@ -139,7 +139,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           }
         ]
         customProperties: {
-          apiCostCenter: 'CC-1234'
+          apiCostCenter: 'CC-2001'
           apiTeamOwner: 'Platform Engineering'
         }
         deployments: [
@@ -148,9 +148,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             environment: 'staging-apim'
             name: 'petstore-staging-deployment'
             title: 'Petstore Staging'
-            version: 'v1-0-0'
+            version: 'v2-0-0-preview'
           }
           {
+            customProperties: {
+              apiTeamOwner: 'Platform Engineering'
+            }
             definition: 'openapi-spec'
             description: 'Production deployment of the Petstore API.'
             environment: 'production-apim'
@@ -170,7 +173,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           {
             description: 'Full reference documentation for the Petstore API.'
             title: 'API Documentation'
-            url: 'https://contoso.com/petstore'
+            url: 'https://contoso.com/docs/petstore'
           }
           {
             title: 'Getting Started Guide'
@@ -179,6 +182,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         ]
         kind: 'rest'
         license: {
+          identifier: 'mit'
           name: 'MIT License'
           url: 'https://opensource.org/licenses/MIT'
         }
@@ -189,6 +193,11 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
         title: 'Petstore API'
         versions: [
+          {
+            lifecycleStage: 'retired'
+            name: 'v0-9-0'
+            title: 'v0.9.0'
+          }
           {
             definitions: [
               {
@@ -216,37 +225,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         ]
       }
       {
-        contacts: [
-          {
-            email: 'commerce@contoso.com'
-            name: 'Commerce Team'
-          }
-        ]
-        customProperties: {
-          apiCostCenter: 'CC-7001'
-          apiTeamOwner: 'Commerce Team'
-        }
-        description: 'A REST API for managing customer orders.'
-        kind: 'rest'
-        name: 'order-api'
-        summary: 'Order management API.'
-        title: 'Order API'
-        versions: [
-          {
-            lifecycleStage: 'production'
-            name: 'v1-0-0'
-            title: 'v1.0.0'
-          }
-        ]
-      }
-      {
         customProperties: {
           apiCostCenter: 'CC-2001'
         }
-        description: 'A  GraphQL API'
+        description: 'A GraphQL API'
         kind: 'graphql'
         name: 'graphql-api'
-        summary: 'GraphQL data query API.'
         title: 'GraphQL API'
       }
       {
@@ -273,8 +257,8 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
         description: 'A gRPC API'
         kind: 'grpc'
-        name: 'grpc-service'
-        title: 'gRPC Service'
+        name: 'grpc-api'
+        title: 'gRPC API'
       }
       {
         customProperties: {
@@ -282,8 +266,8 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
         }
         description: 'A WebSocket API'
         kind: 'websocket'
-        name: 'realtime-ws-api'
-        title: 'Real-Time WebSocket API'
+        name: 'ws-api'
+        title: 'WebSocket API'
       }
     ]
     apiSources: [
@@ -301,7 +285,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     environments: [
       {
         customProperties: {
-          apiCostCenter: 'IT-1234'
+          apiCostCenter: 'CC-1001'
         }
         description: 'Production Azure API Management environment.'
         kind: 'production'
@@ -310,7 +294,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           developerPortalUri: [
             'https://contoso.com/develop'
           ]
-          instructions: 'Sign up at the developer portal to get started with our APIs.'
+          instructions: 'Sign up using the developer portal to get started with our APIs.'
         }
         server: {
           managementPortalUri: [
@@ -333,7 +317,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      name: 'ApiCenterDeleteLock'
     }
     managedIdentities: {
       systemAssigned: true
@@ -428,7 +412,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             }
           ],
           "customProperties": {
-            "apiCostCenter": "CC-1234",
+            "apiCostCenter": "CC-2001",
             "apiTeamOwner": "Platform Engineering"
           },
           "deployments": [
@@ -437,9 +421,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
               "environment": "staging-apim",
               "name": "petstore-staging-deployment",
               "title": "Petstore Staging",
-              "version": "v1-0-0"
+              "version": "v2-0-0-preview"
             },
             {
+              "customProperties": {
+                "apiTeamOwner": "Platform Engineering"
+              },
               "definition": "openapi-spec",
               "description": "Production deployment of the Petstore API.",
               "environment": "production-apim",
@@ -459,7 +446,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             {
               "description": "Full reference documentation for the Petstore API.",
               "title": "API Documentation",
-              "url": "https://contoso.com/petstore"
+              "url": "https://contoso.com/docs/petstore"
             },
             {
               "title": "Getting Started Guide",
@@ -468,6 +455,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           ],
           "kind": "rest",
           "license": {
+            "identifier": "mit",
             "name": "MIT License",
             "url": "https://opensource.org/licenses/MIT"
           },
@@ -478,6 +466,11 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           },
           "title": "Petstore API",
           "versions": [
+            {
+              "lifecycleStage": "retired",
+              "name": "v0-9-0",
+              "title": "v0.9.0"
+            },
             {
               "definitions": [
                 {
@@ -505,37 +498,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           ]
         },
         {
-          "contacts": [
-            {
-              "email": "commerce@contoso.com",
-              "name": "Commerce Team"
-            }
-          ],
-          "customProperties": {
-            "apiCostCenter": "CC-7001",
-            "apiTeamOwner": "Commerce Team"
-          },
-          "description": "A REST API for managing customer orders.",
-          "kind": "rest",
-          "name": "order-api",
-          "summary": "Order management API.",
-          "title": "Order API",
-          "versions": [
-            {
-              "lifecycleStage": "production",
-              "name": "v1-0-0",
-              "title": "v1.0.0"
-            }
-          ]
-        },
-        {
           "customProperties": {
             "apiCostCenter": "CC-2001"
           },
-          "description": "A  GraphQL API",
+          "description": "A GraphQL API",
           "kind": "graphql",
           "name": "graphql-api",
-          "summary": "GraphQL data query API.",
           "title": "GraphQL API"
         },
         {
@@ -562,8 +530,8 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           },
           "description": "A gRPC API",
           "kind": "grpc",
-          "name": "grpc-service",
-          "title": "gRPC Service"
+          "name": "grpc-api",
+          "title": "gRPC API"
         },
         {
           "customProperties": {
@@ -571,8 +539,8 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
           },
           "description": "A WebSocket API",
           "kind": "websocket",
-          "name": "realtime-ws-api",
-          "title": "Real-Time WebSocket API"
+          "name": "ws-api",
+          "title": "WebSocket API"
         }
       ]
     },
@@ -594,7 +562,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       "value": [
         {
           "customProperties": {
-            "apiCostCenter": "IT-1234"
+            "apiCostCenter": "CC-1001"
           },
           "description": "Production Azure API Management environment.",
           "kind": "production",
@@ -603,7 +571,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
             "developerPortalUri": [
               "https://contoso.com/develop"
             ],
-            "instructions": "Sign up at the developer portal to get started with our APIs."
+            "instructions": "Sign up using the developer portal to get started with our APIs."
           },
           "server": {
             "managementPortalUri": [
@@ -630,7 +598,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "ApiCenterDeleteLock"
       }
     },
     "managedIdentities": {
@@ -731,7 +699,7 @@ param apis = [
       }
     ]
     customProperties: {
-      apiCostCenter: 'CC-1234'
+      apiCostCenter: 'CC-2001'
       apiTeamOwner: 'Platform Engineering'
     }
     deployments: [
@@ -740,9 +708,12 @@ param apis = [
         environment: 'staging-apim'
         name: 'petstore-staging-deployment'
         title: 'Petstore Staging'
-        version: 'v1-0-0'
+        version: 'v2-0-0-preview'
       }
       {
+        customProperties: {
+          apiTeamOwner: 'Platform Engineering'
+        }
         definition: 'openapi-spec'
         description: 'Production deployment of the Petstore API.'
         environment: 'production-apim'
@@ -762,7 +733,7 @@ param apis = [
       {
         description: 'Full reference documentation for the Petstore API.'
         title: 'API Documentation'
-        url: 'https://contoso.com/petstore'
+        url: 'https://contoso.com/docs/petstore'
       }
       {
         title: 'Getting Started Guide'
@@ -771,6 +742,7 @@ param apis = [
     ]
     kind: 'rest'
     license: {
+      identifier: 'mit'
       name: 'MIT License'
       url: 'https://opensource.org/licenses/MIT'
     }
@@ -781,6 +753,11 @@ param apis = [
     }
     title: 'Petstore API'
     versions: [
+      {
+        lifecycleStage: 'retired'
+        name: 'v0-9-0'
+        title: 'v0.9.0'
+      }
       {
         definitions: [
           {
@@ -808,37 +785,12 @@ param apis = [
     ]
   }
   {
-    contacts: [
-      {
-        email: 'commerce@contoso.com'
-        name: 'Commerce Team'
-      }
-    ]
-    customProperties: {
-      apiCostCenter: 'CC-7001'
-      apiTeamOwner: 'Commerce Team'
-    }
-    description: 'A REST API for managing customer orders.'
-    kind: 'rest'
-    name: 'order-api'
-    summary: 'Order management API.'
-    title: 'Order API'
-    versions: [
-      {
-        lifecycleStage: 'production'
-        name: 'v1-0-0'
-        title: 'v1.0.0'
-      }
-    ]
-  }
-  {
     customProperties: {
       apiCostCenter: 'CC-2001'
     }
-    description: 'A  GraphQL API'
+    description: 'A GraphQL API'
     kind: 'graphql'
     name: 'graphql-api'
-    summary: 'GraphQL data query API.'
     title: 'GraphQL API'
   }
   {
@@ -865,8 +817,8 @@ param apis = [
     }
     description: 'A gRPC API'
     kind: 'grpc'
-    name: 'grpc-service'
-    title: 'gRPC Service'
+    name: 'grpc-api'
+    title: 'gRPC API'
   }
   {
     customProperties: {
@@ -874,8 +826,8 @@ param apis = [
     }
     description: 'A WebSocket API'
     kind: 'websocket'
-    name: 'realtime-ws-api'
-    title: 'Real-Time WebSocket API'
+    name: 'ws-api'
+    title: 'WebSocket API'
   }
 ]
 param apiSources = [
@@ -893,7 +845,7 @@ param apiSources = [
 param environments = [
   {
     customProperties: {
-      apiCostCenter: 'IT-1234'
+      apiCostCenter: 'CC-1001'
     }
     description: 'Production Azure API Management environment.'
     kind: 'production'
@@ -902,7 +854,7 @@ param environments = [
       developerPortalUri: [
         'https://contoso.com/develop'
       ]
-      instructions: 'Sign up at the developer portal to get started with our APIs.'
+      instructions: 'Sign up using the developer portal to get started with our APIs.'
     }
     server: {
       managementPortalUri: [
@@ -925,7 +877,7 @@ param environments = [
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+  name: 'ApiCenterDeleteLock'
 }
 param managedIdentities = {
   systemAssigned: true
@@ -1013,23 +965,12 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      name: 'ApiCenterDeleteLock'
     }
     managedIdentities: {
       systemAssigned: true
     }
-    metadataSchemas: [
-      {
-        assignedTo: [
-          {
-            entity: 'api'
-            required: true
-          }
-        ]
-        name: 'apiLifecycleStage'
-        schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'minLength\':1,\'maxLength\':50}'
-      }
-    ]
+    metadataSchemas: []
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -1044,7 +985,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     ]
     tags: {
       Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
   }
@@ -1074,7 +1014,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "ApiCenterDeleteLock"
       }
     },
     "managedIdentities": {
@@ -1083,18 +1023,7 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
       }
     },
     "metadataSchemas": {
-      "value": [
-        {
-          "assignedTo": [
-            {
-              "entity": "api",
-              "required": true
-            }
-          ],
-          "name": "apiLifecycleStage",
-          "schema": "{\"type\":\"string\",\"title\":\"API Lifecycle Stage\",\"minLength\":1,\"maxLength\":50}"
-        }
-      ]
+      "value": []
     },
     "roleAssignments": {
       "value": [
@@ -1113,7 +1042,6 @@ module service 'br/public:avm/res/api-center/service:<version>' = {
     "tags": {
       "value": {
         "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
     }
@@ -1137,23 +1065,12 @@ param name = 'aacavmwaf001'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+  name: 'ApiCenterDeleteLock'
 }
 param managedIdentities = {
   systemAssigned: true
 }
-param metadataSchemas = [
-  {
-    assignedTo: [
-      {
-        entity: 'api'
-        required: true
-      }
-    ]
-    name: 'apiLifecycleStage'
-    schema: '{\'type\':\'string\',\'title\':\'API Lifecycle Stage\',\'minLength\':1,\'maxLength\':50}'
-  }
-]
+param metadataSchemas = []
 param roleAssignments = [
   {
     principalId: '<principalId>'
@@ -1168,7 +1085,6 @@ param roleAssignments = [
 ]
 param tags = {
   Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
 ```
