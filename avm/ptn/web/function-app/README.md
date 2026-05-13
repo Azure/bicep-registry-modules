@@ -1,6 +1,6 @@
 # Function App Pattern `[Web/FunctionApp]`
 
-Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, and an Application Insights component (with an optional Log Analytics workspace). When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, a Virtual Network and Private Endpoints for the Function App, Storage Account and Key Vault, configures VNet integration, system-assigned managed identity and HTTPS-only / TLS 1.2 enforcement.
+Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, configures Private Endpoints for the Function App, Storage Account and Key Vault, enables regional VNet integration, and enforces HTTPS-only / TLS 1.2.
 
 You can reference the module as follows:
 ```bicep
@@ -32,12 +32,14 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
@@ -520,19 +522,19 @@ param tags = {
 | [`applicationInsightsName`](#parameter-applicationinsightsname) | string | The name of the Application Insights component. Defaults to `<functionAppName>-ai`. |
 | [`appServicePlanName`](#parameter-appserviceplanname) | string | The name of the App Service Plan to create. Defaults to `<functionAppName>-asp`. |
 | [`appServicePlanSkuCapacity`](#parameter-appserviceplanskucapacity) | int | Number of workers for the App Service Plan. |
-| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). For WAF-aligned deployments consider `EP1` or higher to support VNet integration and zone redundancy. |
+| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name. |
 | [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | The scope of uniqueness for the default hostname of the Function App during resource creation. |
 | [`corsAllowedOrigins`](#parameter-corsallowedorigins) | array | The list of origins that are permitted to make cross-origin requests to the Function App (e.g. `https://portal.azure.com`). When non-empty, these are set as the CORS allowed origins in the site configuration. |
 | [`corsSupportCredentials`](#parameter-corssupportcredentials) | bool | Whether CORS requests with credentials (cookies, authorization headers, or TLS client certificates) are allowed on the Function App. Only takes effect when `corsAllowedOrigins` is non-empty. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the Function App. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableWafAlignment`](#parameter-enablewafalignment) | bool | When `true`, applies the AVM WAF-aligned baseline: Key Vault, Virtual Network with subnets for integration and private endpoints, system-assigned managed identity on the Function App, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account and Private Endpoints for the Function App, Storage Account and Key Vault. |
+| [`enableWafAlignment`](#parameter-enablewafalignment) | bool | When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. |
 | [`functionAppKind`](#parameter-functionappkind) | string | The kind of Function App to deploy. |
 | [`functionAppSubnetResourceId`](#parameter-functionappsubnetresourceid) | string | The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided. |
 | [`functionAppTags`](#parameter-functionapptags) | object | Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag. |
 | [`functionWorkerRuntime`](#parameter-functionworkerruntime) | string | The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (truncated to 24 chars). |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved). |
 | [`location`](#parameter-location) | string | The Azure region into which all resources will be deployed. |
 | [`lock`](#parameter-lock) | object | The lock settings for all resources deployed by this module. |
 | [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | The name of an existing Log Analytics workspace to associate with Application Insights. If left empty and `enableWafAlignment` is `true`, a new workspace named `<functionAppName>-law` is created. |
@@ -541,6 +543,7 @@ param tags = {
 | [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. |
+| [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used. |
 
 ### Parameter: `functionAppName`
 
@@ -576,11 +579,11 @@ Number of workers for the App Service Plan.
 
 ### Parameter: `appServicePlanSkuName`
 
-The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). For WAF-aligned deployments consider `EP1` or higher to support VNet integration and zone redundancy.
+The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically.
 
 - Required: No
 - Type: string
-- Default: `'FC1'`
+- Default: `'Y1'`
 - Allowed:
   ```Bicep
   [
@@ -624,6 +627,15 @@ The scope of uniqueness for the default hostname of the Function App during reso
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoReuse'
+    'ResourceGroupReuse'
+    'SubscriptionReuse'
+    'TenantReuse'
+  ]
+  ```
 
 ### Parameter: `corsAllowedOrigins`
 
@@ -797,7 +809,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `enableWafAlignment`
 
-When `true`, applies the AVM WAF-aligned baseline: Key Vault, Virtual Network with subnets for integration and private endpoints, system-assigned managed identity on the Function App, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account and Private Endpoints for the Function App, Storage Account and Key Vault.
+When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided.
 
 - Required: No
 - Type: bool
@@ -854,11 +866,11 @@ The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`,
 
 ### Parameter: `keyVaultName`
 
-The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (truncated to 24 chars).
+The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved).
 
 - Required: No
 - Type: string
-- Default: `[take(format('{0}-kv', parameters('functionAppName')), 24)]`
+- Default: `[format('{0}-kv', take(parameters('functionAppName'), 21))]`
 
 ### Parameter: `location`
 
@@ -950,7 +962,7 @@ The name of the Storage Account that backs the Function App runtime. Must be glo
 
 - Required: No
 - Type: string
-- Default: `[take(toLower(replace(format('{0}sa{1}', parameters('functionAppName'), uniqueString(resourceGroup().id, parameters('functionAppName'))), '-', '')), 24)]`
+- Default: `[take(toLower(replace(replace(replace(replace(format('{0}sa{1}', parameters('functionAppName'), uniqueString(resourceGroup().id, parameters('functionAppName'))), '-', ''), '_', ''), '.', ''), ' ', '')), 24)]`
 
 ### Parameter: `tags`
 
@@ -958,6 +970,14 @@ Resource tags to apply to all created resources.
 
 - Required: No
 - Type: object
+
+### Parameter: `userAssignedIdentityResourceId`
+
+The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ## Outputs
 
@@ -970,14 +990,16 @@ Resource tags to apply to all created resources.
 | `functionAppDefaultHostname` | string | The default hostname of the deployed Function App. |
 | `functionAppName` | string | The name of the deployed Function App. |
 | `functionAppResourceId` | string | The resource ID of the deployed Function App. |
-| `functionAppSystemAssignedMIPrincipalId` | string | The principal ID of the system-assigned managed identity on the Function App, if enabled. |
 | `keyVaultName` | string | The name of the Key Vault created when `enableWafAlignment` is `true`. |
 | `keyVaultResourceId` | string | The resource ID of the Key Vault created when `enableWafAlignment` is `true`. |
 | `location` | string | The location the resources were deployed into. |
-| `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created or referenced by this module, if any. |
+| `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created or referenced by this module. |
 | `resourceGroupName` | string | The name of the resource group the resources were deployed into. |
 | `storageAccountName` | string | The name of the Storage Account that backs the Function App runtime. |
 | `storageAccountResourceId` | string | The resource ID of the Storage Account that backs the Function App runtime. |
+| `userAssignedIdentityClientId` | string | The client ID of the User-Assigned Managed Identity used by the Function App. |
+| `userAssignedIdentityPrincipalId` | string | The principal (object) ID of the User-Assigned Managed Identity used by the Function App. |
+| `userAssignedIdentityResourceId` | string | The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access (created by this module or supplied via `userAssignedIdentityResourceId`). |
 
 ## Cross-referenced modules
 

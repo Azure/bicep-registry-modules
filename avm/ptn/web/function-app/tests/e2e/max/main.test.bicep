@@ -44,6 +44,9 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+// Note: This test exercises Private Endpoints but does not deploy private DNS
+// zones. Name resolution from the VNet to the PEs is not validated; the
+// deployment validates the AVM module's PE wiring only.
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {

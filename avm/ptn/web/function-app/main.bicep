@@ -1,5 +1,6 @@
 metadata name = 'Function App Pattern'
-metadata description = '''Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, and an Application Insights component (with an optional Log Analytics workspace). When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, a Virtual Network and Private Endpoints for the Function App, Storage Account and Key Vault, configures VNet integration, system-assigned managed identity and HTTPS-only / TLS 1.2 enforcement.'''
+metadata description = '''Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, configures Private Endpoints for the Function App, Storage Account and Key Vault, enables regional VNet integration, and enforces HTTPS-only / TLS 1.2.'''
+metadata owner = 'Azure/avm-ptn-web-functionapp-module-owners-bicep'
 
 import { lockType, diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
@@ -31,7 +32,15 @@ param appServicePlanName string = '${functionAppName}-asp'
 #disable-next-line BCP334
 @maxLength(24)
 param storageAccountName string = take(
-  toLower(replace('${functionAppName}sa${uniqueString(resourceGroup().id, functionAppName)}', '-', '')),
+  toLower(replace(
+    replace(
+      replace(replace('${functionAppName}sa${uniqueString(resourceGroup().id, functionAppName)}', '-', ''), '_', ''),
+      '.',
+      ''
+    ),
+    ' ',
+    ''
+  )),
   24
 )
 
@@ -51,10 +60,10 @@ param logAnalyticsWorkspaceResourceId string = ''
 ])
 param functionAppKind string = 'functionapp,linux'
 
-@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). For WAF-aligned deployments consider `EP1` or higher to support VNet integration and zone redundancy.')
+@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically.')
 @allowed([
-  'FC1'
   'Y1'
+  'FC1'
   'B1'
   'B2'
   'B3'
@@ -77,7 +86,7 @@ param functionAppKind string = 'functionapp,linux'
   'EP2'
   'EP3'
 ])
-param appServicePlanSkuName string = 'FC1'
+param appServicePlanSkuName string = 'Y1'
 
 @description('Optional. Number of workers for the App Service Plan.')
 @minValue(1)
@@ -94,7 +103,7 @@ param appServicePlanSkuCapacity int = 1
 ])
 param functionWorkerRuntime string = 'dotnet-isolated'
 
-@description('Optional. When `true`, applies the AVM WAF-aligned baseline: Key Vault, Virtual Network with subnets for integration and private endpoints, system-assigned managed identity on the Function App, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account and Private Endpoints for the Function App, Storage Account and Key Vault.')
+@description('Optional. When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided.')
 param enableWafAlignment bool = false
 
 @description('Optional. The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided.')
@@ -103,10 +112,10 @@ param functionAppSubnetResourceId string = ''
 @description('Optional. The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided.')
 param privateEndpointSubnetResourceId string = ''
 
-@description('Optional. The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (truncated to 24 chars).')
+@description('Optional. The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved).')
 #disable-next-line BCP334
 @maxLength(24)
-param keyVaultName string = take('${functionAppName}-kv', 24)
+param keyVaultName string = '${take(functionAppName, 21)}-kv'
 
 @description('Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name.')
 param appSettingsKeyValuePairs object = {}
@@ -118,7 +127,16 @@ param corsAllowedOrigins string[] = []
 param corsSupportCredentials bool = false
 
 @description('Optional. The scope of uniqueness for the default hostname of the Function App during resource creation.')
+@allowed([
+  'TenantReuse'
+  'SubscriptionReuse'
+  'ResourceGroupReuse'
+  'NoReuse'
+])
 param autoGeneratedDomainNameLabelScope string?
+
+@description('Optional. The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used.')
+param userAssignedIdentityResourceId string = ''
 
 @description('Optional. The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps.')
 param runtimeVersion string = ''
@@ -160,12 +178,13 @@ var runtimeVersionSiteConfig = !empty(runtimeVersion)
 // Resolve the Log Analytics workspace strategy:
 // 1. Explicit resource ID provided -> use it as-is.
 // 2. Workspace name provided (existing) -> reference it.
-// 3. WAF alignment enabled and no workspace info provided -> create a new workspace.
-// 4. Otherwise -> no workspace (Application Insights uses classic mode).
-var createLogAnalyticsWorkspace = empty(logAnalyticsWorkspaceResourceId) && empty(logAnalyticsWorkspaceName) && enableWafAlignment
+// 3. Otherwise -> create a new workspace (Application Insights classic mode is deprecated).
+var createLogAnalyticsWorkspace = empty(logAnalyticsWorkspaceResourceId) && empty(logAnalyticsWorkspaceName)
 var derivedLogAnalyticsWorkspaceName = empty(logAnalyticsWorkspaceName)
   ? '${functionAppName}-law'
   : logAnalyticsWorkspaceName
+
+var createUserAssignedIdentity = empty(userAssignedIdentityResourceId)
 
 // Static app settings (deploy-time known values only — safe for for-expression)
 var staticAppSettings = union(
@@ -186,10 +205,24 @@ var staticAppSettingsArray = [
 
 var runtimeAppSettingsArray = [
   { name: 'AzureWebJobsStorage__accountName', value: storageAccount.outputs.name }
+  {
+    name: 'AzureWebJobsStorage__clientId'
+    value: createUserAssignedIdentity
+      ? userAssignedIdentity!.outputs.clientId
+      : existingUserAssignedIdentity!.properties.clientId
+  }
   { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: applicationInsights.outputs.connectionString }
 ]
 
 var appSettingsArray = concat(staticAppSettingsArray, runtimeAppSettingsArray)
+
+// Resolved User-Assigned Managed Identity values (created or BYO).
+var userAssignedIdentityResolvedResourceId = createUserAssignedIdentity
+  ? userAssignedIdentity!.outputs.resourceId
+  : userAssignedIdentityResourceId
+var userAssignedIdentityPrincipalId = createUserAssignedIdentity
+  ? userAssignedIdentity!.outputs.principalId
+  : existingUserAssignedIdentity!.properties.principalId
 
 // Build the final site app settings array shape expected by avm/res/web/site.
 var siteConfigBase = union(
@@ -246,9 +279,25 @@ resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces
   name: logAnalyticsWorkspaceName
 }
 
+resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!createUserAssignedIdentity) {
+  name: last(split(userAssignedIdentityResourceId, '/'))
+  scope: resourceGroup(split(userAssignedIdentityResourceId, '/')[2], split(userAssignedIdentityResourceId, '/')[4])
+}
+
 // ================ //
 // Resources        //
 // ================ //
+
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = if (createUserAssignedIdentity) {
+  name: take('${uniqueString(deployment().name, location)}-functionApp-uami', 64)
+  params: {
+    name: '${functionAppName}-uami'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    lock: lock
+  }
+}
 
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (createLogAnalyticsWorkspace) {
   name: take('${uniqueString(deployment().name, location)}-functionApp-law', 64)
@@ -271,9 +320,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = {
     lock: lock
     workspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
       ? logAnalyticsWorkspaceResourceId
-      : (createLogAnalyticsWorkspace
-          ? logAnalyticsWorkspace!.outputs.resourceId
-          : (!empty(logAnalyticsWorkspaceName) ? existingLogAnalyticsWorkspace.id : ''))
+      : (createLogAnalyticsWorkspace ? logAnalyticsWorkspace!.outputs.resourceId : existingLogAnalyticsWorkspace.id)
   }
 }
 
@@ -299,6 +346,26 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
           bypass: 'AzureServices'
           defaultAction: 'Allow'
         }
+    roleAssignments: [
+      // Storage Blob Data Contributor – read/write access to blobs for the Function host and bindings.
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalId: userAssignedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      // Storage Queue Data Contributor – internal queue management.
+      {
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        principalId: userAssignedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      // Storage Table Data Contributor – Durable Functions / internal task hub.
+      {
+        roleDefinitionIdOrName: 'Storage Table Data Contributor'
+        principalId: userAssignedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
     privateEndpoints: (enableWafAlignment && !empty(privateEndpointSubnetResourceId))
       ? [
           {
@@ -341,7 +408,7 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
     zoneRedundant: enableWafAlignment && (startsWith(appServicePlanSkuName, 'P') || startsWith(
       appServicePlanSkuName,
       'EP'
-    ) || appServicePlanSkuName == 'FC1')
+    ))
   }
 }
 
@@ -386,7 +453,9 @@ module functionApp 'br/public:avm/res/web/site:0.23.0' = {
     serverFarmResourceId: appServicePlan.outputs.resourceId
     httpsOnly: true
     managedIdentities: {
-      systemAssigned: true
+      userAssignedResourceIds: [
+        userAssignedIdentityResolvedResourceId
+      ]
     }
     virtualNetworkSubnetResourceId: enableWafAlignment && !empty(functionAppSubnetResourceId)
       ? functionAppSubnetResourceId
@@ -403,57 +472,6 @@ module functionApp 'br/public:avm/res/web/site:0.23.0' = {
           }
         ]
       : null
-  }
-}
-
-// ====================================== //
-// Role Assignments (Storage → Function)  //
-// ====================================== //
-
-resource storageAccountRef 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
-  name: storageAccountName
-  dependsOn: [storageAccount]
-}
-
-// Storage Blob Data Owner – required for blob trigger and storage operations.
-resource storageBlobDataOwnerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, storageAccountName, functionAppName, 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')
-  scope: storageAccountRef
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
-    )
-    principalId: functionApp.outputs.?systemAssignedMIPrincipalId ?? ''
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Storage Queue Data Contributor – required for internal queue management.
-resource storageQueueDataContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, storageAccountName, functionAppName, '974c5e8b-45b9-4653-ba55-5f855dd0fb88')
-  scope: storageAccountRef
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-    )
-    principalId: functionApp.outputs.?systemAssignedMIPrincipalId ?? ''
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Storage Table Data Contributor – required for Durable Functions and internal task hub.
-resource storageTableDataContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, storageAccountName, functionAppName, '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')
-  scope: storageAccountRef
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
-    )
-    principalId: functionApp.outputs.?systemAssignedMIPrincipalId ?? ''
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -476,8 +494,16 @@ output functionAppName string = functionApp.outputs.name
 @description('The default hostname of the deployed Function App.')
 output functionAppDefaultHostname string = functionApp.outputs.defaultHostname
 
-@description('The principal ID of the system-assigned managed identity on the Function App, if enabled.')
-output functionAppSystemAssignedMIPrincipalId string? = functionApp.outputs.?systemAssignedMIPrincipalId
+@description('The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access (created by this module or supplied via `userAssignedIdentityResourceId`).')
+output userAssignedIdentityResourceId string = userAssignedIdentityResolvedResourceId
+
+@description('The principal (object) ID of the User-Assigned Managed Identity used by the Function App.')
+output userAssignedIdentityPrincipalId string = userAssignedIdentityPrincipalId
+
+@description('The client ID of the User-Assigned Managed Identity used by the Function App.')
+output userAssignedIdentityClientId string = createUserAssignedIdentity
+  ? userAssignedIdentity!.outputs.clientId
+  : existingUserAssignedIdentity!.properties.clientId
 
 @description('The resource ID of the App Service Plan.')
 output appServicePlanResourceId string = appServicePlan.outputs.resourceId
@@ -498,14 +524,12 @@ output applicationInsightsResourceId string = applicationInsights.outputs.resour
 output applicationInsightsName string = applicationInsights.outputs.name
 
 @description('The resource ID of the Key Vault created when `enableWafAlignment` is `true`.')
-output keyVaultResourceId string = enableWafAlignment ? keyVault!.outputs.resourceId : ''
+output keyVaultResourceId string? = enableWafAlignment ? keyVault!.outputs.resourceId : null
 
 @description('The name of the Key Vault created when `enableWafAlignment` is `true`.')
-output keyVaultName string = enableWafAlignment ? keyVault!.outputs.name : ''
+output keyVaultName string? = enableWafAlignment ? keyVault!.outputs.name : null
 
-@description('The resource ID of the Log Analytics workspace created or referenced by this module, if any.')
+@description('The resource ID of the Log Analytics workspace created or referenced by this module.')
 output logAnalyticsWorkspaceResourceId string = !empty(logAnalyticsWorkspaceResourceId)
   ? logAnalyticsWorkspaceResourceId
-  : (createLogAnalyticsWorkspace
-      ? logAnalyticsWorkspace!.outputs.resourceId
-      : (!empty(logAnalyticsWorkspaceName) ? existingLogAnalyticsWorkspace.id : ''))
+  : (createLogAnalyticsWorkspace ? logAnalyticsWorkspace!.outputs.resourceId : existingLogAnalyticsWorkspace.id)

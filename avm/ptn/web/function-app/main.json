@@ -6,10 +6,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "10472644069235919912"
+      "templateHash": "15453883352455621517"
     },
     "name": "Function App Pattern",
-    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, and an Application Insights component (with an optional Log Analytics workspace). When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, a Virtual Network and Private Endpoints for the Function App, Storage Account and Key Vault, configures VNet integration, system-assigned managed identity and HTTPS-only / TLS 1.2 enforcement."
+    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, configures Private Endpoints for the Function App, Storage Account and Key Vault, enables regional VNet integration, and enforces HTTPS-only / TLS 1.2.",
+    "owner": "Azure/avm-ptn-web-functionapp-module-owners-bicep"
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -218,7 +219,7 @@
     },
     "storageAccountName": {
       "type": "string",
-      "defaultValue": "[take(toLower(replace(format('{0}sa{1}', parameters('functionAppName'), uniqueString(resourceGroup().id, parameters('functionAppName'))), '-', '')), 24)]",
+      "defaultValue": "[take(toLower(replace(replace(replace(replace(format('{0}sa{1}', parameters('functionAppName'), uniqueString(resourceGroup().id, parameters('functionAppName'))), '-', ''), '_', ''), '.', ''), ' ', '')), 24)]",
       "maxLength": 24,
       "metadata": {
         "description": "Optional. The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`."
@@ -258,10 +259,10 @@
     },
     "appServicePlanSkuName": {
       "type": "string",
-      "defaultValue": "FC1",
+      "defaultValue": "Y1",
       "allowedValues": [
-        "FC1",
         "Y1",
+        "FC1",
         "B1",
         "B2",
         "B3",
@@ -285,7 +286,7 @@
         "EP3"
       ],
       "metadata": {
-        "description": "Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). For WAF-aligned deployments consider `EP1` or higher to support VNet integration and zone redundancy."
+        "description": "Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically."
       }
     },
     "appServicePlanSkuCapacity": {
@@ -315,7 +316,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. When `true`, applies the AVM WAF-aligned baseline: Key Vault, Virtual Network with subnets for integration and private endpoints, system-assigned managed identity on the Function App, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account and Private Endpoints for the Function App, Storage Account and Key Vault."
+        "description": "Optional. When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided."
       }
     },
     "functionAppSubnetResourceId": {
@@ -334,10 +335,10 @@
     },
     "keyVaultName": {
       "type": "string",
-      "defaultValue": "[take(format('{0}-kv', parameters('functionAppName')), 24)]",
+      "defaultValue": "[format('{0}-kv', take(parameters('functionAppName'), 21))]",
       "maxLength": 24,
       "metadata": {
-        "description": "Optional. The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (truncated to 24 chars)."
+        "description": "Optional. The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved)."
       }
     },
     "appSettingsKeyValuePairs": {
@@ -367,8 +368,21 @@
     "autoGeneratedDomainNameLabelScope": {
       "type": "string",
       "nullable": true,
+      "allowedValues": [
+        "TenantReuse",
+        "SubscriptionReuse",
+        "ResourceGroupReuse",
+        "NoReuse"
+      ],
       "metadata": {
         "description": "Optional. The scope of uniqueness for the default hostname of the Function App during resource creation."
+      }
+    },
+    "userAssignedIdentityResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used."
       }
     },
     "runtimeVersion": {
@@ -417,8 +431,9 @@
       "python": "PYTHON"
     },
     "runtimeVersionSiteConfig": "[if(not(empty(parameters('runtimeVersion'))), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'node'), createObject('nodeVersion', format('~{0}', parameters('runtimeVersion'))), if(equals(parameters('functionWorkerRuntime'), 'java'), createObject('javaVersion', parameters('runtimeVersion')), if(equals(parameters('functionWorkerRuntime'), 'powershell'), createObject('powerShellVersion', format('~{0}', parameters('runtimeVersion'))), createObject('netFrameworkVersion', format('v{0}', parameters('runtimeVersion'))))))), createObject())]",
-    "createLogAnalyticsWorkspace": "[and(and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName'))), parameters('enableWafAlignment'))]",
+    "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
+    "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
     "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), parameters('appSettingsKeyValuePairs'))]"
   },
   "resources": {
@@ -449,59 +464,553 @@
       "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
-    "storageAccountRef": {
+    "existingUserAssignedIdentity": {
+      "condition": "[not(variables('createUserAssignedIdentity'))]",
       "existing": true,
-      "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2025-01-01",
-      "name": "[parameters('storageAccountName')]",
-      "dependsOn": [
-        "storageAccount"
-      ]
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "subscriptionId": "[split(parameters('userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('userAssignedIdentityResourceId'), '/'))]"
     },
-    "storageBlobDataOwnerRoleAssignment": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
+    "userAssignedIdentity": {
+      "condition": "[variables('createUserAssignedIdentity')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[take(format('{0}-functionApp-uami', uniqueString(deployment().name, parameters('location'))), 64)]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b')]",
-        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "functionApp",
-        "storageAccount"
-      ]
-    },
-    "storageQueueDataContributorRoleAssignment": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '974c5e8b-45b9-4653-ba55-5f855dd0fb88')]",
-        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "functionApp",
-        "storageAccount"
-      ]
-    },
-    "storageTableDataContributorRoleAssignment": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
-      "name": "[guid(resourceGroup().id, parameters('storageAccountName'), parameters('functionAppName'), '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3')]",
-        "principalId": "[coalesce(tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value'), '')]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "functionApp",
-        "storageAccount"
-      ]
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('{0}-uami', parameters('functionAppName'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "lock": {
+            "value": "[parameters('lock')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.1.21952",
+              "templateHash": "14914442471373925884"
+            },
+            "name": "User Assigned Identities",
+            "description": "This module deploys a User Assigned Identity."
+          },
+          "definitions": {
+            "federatedIdentityCredentialType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the federated identity credential."
+                  }
+                },
+                "audiences": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The list of audiences that can appear in the issued token."
+                  }
+                },
+                "issuer": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The URL of the issuer to be trusted."
+                  }
+                },
+                "subject": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The identifier of the external identity."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the federated identity credential."
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the notes of the lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the User Assigned Identity."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "federatedIdentityCredentials": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/federatedIdentityCredentialType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30#properties/tags"
+                },
+                "description": "Optional. Tags of the resource."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "isolationScope": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "None",
+                "Regional"
+              ],
+              "metadata": {
+                "description": "Optional. Enum to configure regional restrictions on identity assignment, as necessary. Allowed values: \"None\", \"Regional\"."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Managed Identity Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')]",
+              "Managed Identity Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "userAssignedIdentity": {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2024-11-30",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": "[if(not(equals(parameters('isolationScope'), null())), createObject('isolationScope', parameters('isolationScope')), createObject())]"
+            },
+            "userAssignedIdentity_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[coalesce(tryGet(parameters('lock'), 'notes'), if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.'))]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_roleAssignments": {
+              "copy": {
+                "name": "userAssignedIdentity_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            },
+            "userAssignedIdentity_federatedIdentityCredentials": {
+              "copy": {
+                "name": "userAssignedIdentity_federatedIdentityCredentials",
+                "count": "[length(coalesce(parameters('federatedIdentityCredentials'), createArray()))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].name]"
+                  },
+                  "userAssignedIdentityName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "audiences": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].audiences]"
+                  },
+                  "issuer": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].issuer]"
+                  },
+                  "subject": {
+                    "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.43.1.21952",
+                      "templateHash": "15410471523237285295"
+                    },
+                    "name": "User Assigned Identity Federated Identity Credential",
+                    "description": "This module deploys a User Assigned Identity Federated Identity Credential."
+                  },
+                  "parameters": {
+                    "userAssignedIdentityName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the secret."
+                      }
+                    },
+                    "audiences": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token."
+                      }
+                    },
+                    "issuer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged."
+                      }
+                    },
+                    "subject": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.managedid-userassignedidcredential.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+                      "apiVersion": "2024-11-30",
+                      "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
+                      "properties": {
+                        "audiences": "[parameters('audiences')]",
+                        "issuer": "[parameters('issuer')]",
+                        "subject": "[parameters('subject')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the federated identity credential."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the federated identity credential."
+                      },
+                      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials', parameters('userAssignedIdentityName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the federated identity credential was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "userAssignedIdentity"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the user assigned identity."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the user assigned identity."
+              },
+              "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "The principal ID (object ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').principalId]"
+            },
+            "clientId": {
+              "type": "string",
+              "metadata": {
+                "description": "The client ID (application ID) of the user assigned identity."
+              },
+              "value": "[reference('userAssignedIdentity').clientId]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the user assigned identity was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('userAssignedIdentity', '2024-11-30', 'full').location]"
+            }
+          }
+        }
+      }
     },
     "logAnalyticsWorkspace": {
       "condition": "[variables('createLogAnalyticsWorkspace')]",
@@ -3844,7 +4353,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', parameters('logAnalyticsWorkspaceResourceId')), if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), if(not(empty(parameters('logAnalyticsWorkspaceName'))), createObject('value', resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))), createObject('value', ''))))]"
+          "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', parameters('logAnalyticsWorkspaceResourceId')), if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')))))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4607,6 +5116,25 @@
           },
           "publicNetworkAccess": "[if(parameters('enableWafAlignment'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkAcls": "[if(parameters('enableWafAlignment'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Allow')))]",
+          "roleAssignments": {
+            "value": [
+              {
+                "roleDefinitionIdOrName": "Storage Blob Data Contributor",
+                "principalId": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.principalId.value, reference('existingUserAssignedIdentity').principalId)]",
+                "principalType": "ServicePrincipal"
+              },
+              {
+                "roleDefinitionIdOrName": "Storage Queue Data Contributor",
+                "principalId": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.principalId.value, reference('existingUserAssignedIdentity').principalId)]",
+                "principalType": "ServicePrincipal"
+              },
+              {
+                "roleDefinitionIdOrName": "Storage Table Data Contributor",
+                "principalId": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.principalId.value, reference('existingUserAssignedIdentity').principalId)]",
+                "principalType": "ServicePrincipal"
+              }
+            ]
+          },
           "privateEndpoints": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pe-{0}-blob', parameters('storageAccountName')), 'service', 'blob', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')), createObject('name', format('pe-{0}-file', parameters('storageAccountName')), 'service', 'file', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')), createObject('name', format('pe-{0}-queue', parameters('storageAccountName')), 'service', 'queue', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')), createObject('name', format('pe-{0}-table', parameters('storageAccountName')), 'service', 'table', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', null()))]"
         },
         "template": {
@@ -12715,7 +13243,11 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "existingUserAssignedIdentity",
+        "userAssignedIdentity"
+      ]
     },
     "appServicePlan": {
       "type": "Microsoft.Resources/deployments",
@@ -12753,7 +13285,7 @@
             "value": "[variables('isLinux')]"
           },
           "zoneRedundant": {
-            "value": "[and(parameters('enableWafAlignment'), or(or(startsWith(parameters('appServicePlanSkuName'), 'P'), startsWith(parameters('appServicePlanSkuName'), 'EP')), equals(parameters('appServicePlanSkuName'), 'FC1')))]"
+            "value": "[and(parameters('enableWafAlignment'), or(startsWith(parameters('appServicePlanSkuName'), 'P'), startsWith(parameters('appServicePlanSkuName'), 'EP')))]"
           }
         },
         "template": {
@@ -16917,7 +17449,9 @@
           },
           "managedIdentities": {
             "value": {
-              "systemAssigned": true
+              "userAssignedResourceIds": [
+                "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.resourceId.value, parameters('userAssignedIdentityResourceId'))]"
+              ]
             }
           },
           "virtualNetworkSubnetResourceId": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('functionAppSubnetResourceId')))), createObject('value', parameters('functionAppSubnetResourceId')), createObject('value', null()))]",
@@ -16926,7 +17460,7 @@
             "value": "[parameters('autoGeneratedDomainNameLabelScope')]"
           },
           "siteConfig": {
-            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
+            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
           "privateEndpoints": "[if(and(parameters('enableWafAlignment'), not(empty(parameters('privateEndpointSubnetResourceId')))), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId')))), createObject('value', null()))]"
         },
@@ -31512,7 +32046,9 @@
       "dependsOn": [
         "applicationInsights",
         "appServicePlan",
-        "storageAccount"
+        "existingUserAssignedIdentity",
+        "storageAccount",
+        "userAssignedIdentity"
       ]
     }
   },
@@ -31552,13 +32088,26 @@
       },
       "value": "[reference('functionApp').outputs.defaultHostname.value]"
     },
-    "functionAppSystemAssignedMIPrincipalId": {
+    "userAssignedIdentityResourceId": {
       "type": "string",
-      "nullable": true,
       "metadata": {
-        "description": "The principal ID of the system-assigned managed identity on the Function App, if enabled."
+        "description": "The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access (created by this module or supplied via `userAssignedIdentityResourceId`)."
       },
-      "value": "[tryGet(tryGet(reference('functionApp').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
+      "value": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.resourceId.value, parameters('userAssignedIdentityResourceId'))]"
+    },
+    "userAssignedIdentityPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal (object) ID of the User-Assigned Managed Identity used by the Function App."
+      },
+      "value": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.principalId.value, reference('existingUserAssignedIdentity').principalId)]"
+    },
+    "userAssignedIdentityClientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The client ID of the User-Assigned Managed Identity used by the Function App."
+      },
+      "value": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)]"
     },
     "appServicePlanResourceId": {
       "type": "string",
@@ -31604,24 +32153,26 @@
     },
     "keyVaultResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the Key Vault created when `enableWafAlignment` is `true`."
       },
-      "value": "[if(parameters('enableWafAlignment'), reference('keyVault').outputs.resourceId.value, '')]"
+      "value": "[if(parameters('enableWafAlignment'), reference('keyVault').outputs.resourceId.value, null())]"
     },
     "keyVaultName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The name of the Key Vault created when `enableWafAlignment` is `true`."
       },
-      "value": "[if(parameters('enableWafAlignment'), reference('keyVault').outputs.name.value, '')]"
+      "value": "[if(parameters('enableWafAlignment'), reference('keyVault').outputs.name.value, null())]"
     },
     "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Log Analytics workspace created or referenced by this module, if any."
+        "description": "The resource ID of the Log Analytics workspace created or referenced by this module."
       },
-      "value": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), parameters('logAnalyticsWorkspaceResourceId'), if(variables('createLogAnalyticsWorkspace'), reference('logAnalyticsWorkspace').outputs.resourceId.value, if(not(empty(parameters('logAnalyticsWorkspaceName'))), resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')), '')))]"
+      "value": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), parameters('logAnalyticsWorkspaceResourceId'), if(variables('createLogAnalyticsWorkspace'), reference('logAnalyticsWorkspace').outputs.resourceId.value, resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))))]"
     }
   }
 }
