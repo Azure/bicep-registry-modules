@@ -303,38 +303,33 @@ module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.
 
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if ((enableMonitoring || enablePrivateNetworking) && !useExistingLogAnalytics) {
-  name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
+// REMOVE_BEFORE_UPSTREAM_MERGE [psl-container-migration]: this LAW module is now ALWAYS deployed
+// via a local wrapper that re-exposes the secure `primarySharedKey` output. This is the canonical
+// conprov2 pattern (commit cd0ba612a) and avoids invoking `listKeys()` on an outer-scope `existing`
+// resource — which fails ARM template validation when the workspace does not yet exist (e.g.
+// waf-aligned test scenarios). Bicep also forbids accessing `@secure()` outputs of conditional
+// modules via `!` (BCP426), so the wrapper must be unconditional. When `useExistingLogAnalytics`
+// is true, the wrapper still deploys but its outputs are ignored in favour of the user-supplied
+// existing workspace.
+// Original block:
+// module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if ((enableMonitoring || enablePrivateNetworking) && !useExistingLogAnalytics) { ... }
+// resource newLawForContainerApps 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if ((enableMonitoring || enablePrivateNetworking) && !useExistingLogAnalytics) { name: logAnalyticsWorkspaceResourceName }
+module logAnalyticsWorkspace 'modules/log-analytics-workspace.bicep' = {
+  name: take('module.log-analytics-workspace.${solutionSuffix}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
     location: location
-    skuName: 'PerGB2018'
-    dataRetention: 30
-    diagnosticSettings: [{ useThisWorkspace: true }]
     tags: allTags
     enableTelemetry: enableTelemetry
-    features: { enableLogAccessUsingOnlyResourcePermissions: true }
-    dailyQuotaGb: enableRedundancy ? 10 : null
-    replication: enableRedundancy && replicaLocation != null
-      ? {
-          enabled: true
-          location: replicaLocation!
-        }
-      : null
-    publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    enablePrivateNetworking: enablePrivateNetworking
+    enableRedundancy: enableRedundancy
+    replicaLocation: replicaLocation ?? ''
   }
 }
 
 var logAnalyticsWorkspaceResourceId = useExistingLogAnalytics
   ? existingLogAnalyticsWorkspaceId
-  : ((enableMonitoring || enablePrivateNetworking) ? logAnalyticsWorkspace!.outputs.resourceId : '')
-
-// Reference the workspace via an existing resource so we can read its customerId/sharedKey without
-// dereferencing the AVM module's @secure() outputs through a conditional/null-assertion (BCP426).
-resource newLawForContainerApps 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if ((enableMonitoring || enablePrivateNetworking) && !useExistingLogAnalytics) {
-  name: logAnalyticsWorkspaceResourceName
-}
+  : logAnalyticsWorkspace.outputs.resourceId
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
@@ -1135,10 +1130,10 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
           logAnalyticsConfiguration: {
             customerId: useExistingLogAnalytics
               ? existingLogAnalyticsWorkspace!.properties.customerId
-              : newLawForContainerApps!.properties.customerId
+              : logAnalyticsWorkspace.outputs.customerId
             sharedKey: useExistingLogAnalytics
               ? existingLogAnalyticsWorkspace!.listKeys().primarySharedKey
-              : newLawForContainerApps!.listKeys().primarySharedKey
+              : logAnalyticsWorkspace.outputs.primarySharedKey
           }
         }
       : null
