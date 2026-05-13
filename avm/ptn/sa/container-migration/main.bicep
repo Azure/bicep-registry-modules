@@ -465,6 +465,9 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
     tags: allTags
     availabilityZone: 1
     maintenanceConfigurationResourceId: jumpboxMaintenanceConfig!.id
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    enableAutomaticUpdates: true
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
