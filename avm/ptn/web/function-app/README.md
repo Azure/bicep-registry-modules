@@ -1,6 +1,6 @@
 # Function App Pattern `[Web/FunctionApp]`
 
-Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally provisions a Key Vault, configures Private Endpoints for the Function App, Storage Account and Key Vault, enables regional VNet integration, and enforces HTTPS-only / TLS 1.2.
+Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.
 
 You can reference the module as follows:
 ```bicep
@@ -28,18 +28,13 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/components` | 2020-02-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components)</li></ul> |
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/accessPolicies)</li></ul> |
-| `Microsoft.KeyVault/vaults/keys` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
@@ -396,7 +391,7 @@ module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
     // Required parameters
     functionAppName: 'wfawaf001'
     // Non-required parameters
-    appServicePlanSkuCapacity: 1
+    appServicePlanSkuCapacity: 2
     appServicePlanSkuName: 'EP1'
     enableWafAlignment: true
     functionAppKind: 'functionapp,linux'
@@ -434,7 +429,7 @@ module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
     },
     // Non-required parameters
     "appServicePlanSkuCapacity": {
-      "value": 1
+      "value": 2
     },
     "appServicePlanSkuName": {
       "value": "EP1"
@@ -486,7 +481,7 @@ using 'br/public:avm/ptn/web/function-app:<version>'
 // Required parameters
 param functionAppName = 'wfawaf001'
 // Non-required parameters
-param appServicePlanSkuCapacity = 1
+param appServicePlanSkuCapacity = 2
 param appServicePlanSkuName = 'EP1'
 param enableWafAlignment = true
 param functionAppKind = 'functionapp,linux'
@@ -513,7 +508,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`functionAppName`](#parameter-functionappname) | string | The name of the Function App. |
+| [`functionAppName`](#parameter-functionappname) | string | The name of the Function App. Must be globally unique. Note that when `autoGeneratedDomainNameLabelScope` is set to `NoReuse`, the deployed default hostname (`<name>-<hash>.azurewebsites.net`) is longer than 60 characters; consider keeping the name short in that case. |
 
 **Optional parameters**
 
@@ -523,23 +518,23 @@ param tags = {
 | [`appServicePlanName`](#parameter-appserviceplanname) | string | The name of the App Service Plan to create. Defaults to `<functionAppName>-asp`. |
 | [`appServicePlanSkuCapacity`](#parameter-appserviceplanskucapacity) | int | Number of workers for the App Service Plan. |
 | [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically. |
-| [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name. |
+| [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array. |
 | [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | The scope of uniqueness for the default hostname of the Function App during resource creation. |
 | [`corsAllowedOrigins`](#parameter-corsallowedorigins) | array | The list of origins that are permitted to make cross-origin requests to the Function App (e.g. `https://portal.azure.com`). When non-empty, these are set as the CORS allowed origins in the site configuration. |
 | [`corsSupportCredentials`](#parameter-corssupportcredentials) | bool | Whether CORS requests with credentials (cookies, authorization headers, or TLS client certificates) are allowed on the Function App. Only takes effect when `corsAllowedOrigins` is non-empty. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the Function App. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableWafAlignment`](#parameter-enablewafalignment) | bool | When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. |
+| [`enableWafAlignment`](#parameter-enablewafalignment) | bool | When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one. |
 | [`functionAppKind`](#parameter-functionappkind) | string | The kind of Function App to deploy. |
-| [`functionAppSubnetResourceId`](#parameter-functionappsubnetresourceid) | string | The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided. |
+| [`functionAppSubnetResourceId`](#parameter-functionappsubnetresourceid) | string | The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`. |
 | [`functionAppTags`](#parameter-functionapptags) | object | Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag. |
 | [`functionWorkerRuntime`](#parameter-functionworkerruntime) | string | The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved). |
 | [`location`](#parameter-location) | string | The Azure region into which all resources will be deployed. |
 | [`lock`](#parameter-lock) | object | The lock settings for all resources deployed by this module. |
-| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | The name of an existing Log Analytics workspace to associate with Application Insights. If left empty and `enableWafAlignment` is `true`, a new workspace named `<functionAppName>-law` is created. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an existing Log Analytics workspace to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created. |
-| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided. |
+| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created. |
+| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | object | Resource IDs of the Private DNS Zones to associate with the Private Endpoints created by this module when `enableWafAlignment` is `true`. Required for name resolution from the VNet to the Private Endpoints. Each property is optional — when omitted, no DNS Zone Group is configured for that Private Endpoint and consumers are expected to manage DNS resolution out-of-band (e.g., via DNS Private Resolver or Azure-provided DNS). |
+| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true`. |
 | [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. |
@@ -547,7 +542,7 @@ param tags = {
 
 ### Parameter: `functionAppName`
 
-The name of the Function App.
+The name of the Function App. Must be globally unique. Note that when `autoGeneratedDomainNameLabelScope` is set to `NoReuse`, the deployed default hostname (`<name>-<hash>.azurewebsites.net`) is longer than 60 characters; consider keeping the name short in that case.
 
 - Required: Yes
 - Type: string
@@ -615,11 +610,10 @@ The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (C
 
 ### Parameter: `appSettingsKeyValuePairs`
 
-Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name.
+Application settings (`name`/`value` pairs) to merge into the Function App configuration. These are merged on top of the AVM defaults set by this module and override any keys with the same name. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `autoGeneratedDomainNameLabelScope`
 
@@ -809,7 +803,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `enableWafAlignment`
 
-When `true`, applies the AVM WAF-aligned baseline: Key Vault, regional VNet integration, HTTPS-only and TLS 1.2 enforcement, public network access disabled on the Storage Account, and Private Endpoints for the Function App, Storage Account and Key Vault. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided.
+When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one.
 
 - Required: No
 - Type: bool
@@ -832,7 +826,7 @@ The kind of Function App to deploy.
 
 ### Parameter: `functionAppSubnetResourceId`
 
-The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided.
+The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`.
 
 - Required: No
 - Type: string
@@ -863,14 +857,6 @@ The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`,
     'python'
   ]
   ```
-
-### Parameter: `keyVaultName`
-
-The name of the Key Vault created when `enableWafAlignment` is `true`. Defaults to `<functionAppName>-kv` (the function app name is truncated so the `-kv` suffix is preserved).
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-kv', take(parameters('functionAppName'), 21))]`
 
 ### Parameter: `location`
 
@@ -926,7 +912,7 @@ Specify the notes of the lock.
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
-The name of an existing Log Analytics workspace to associate with Application Insights. If left empty and `enableWafAlignment` is `true`, a new workspace named `<functionAppName>-law` is created.
+The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group.
 
 - Required: No
 - Type: string
@@ -934,15 +920,67 @@ The name of an existing Log Analytics workspace to associate with Application In
 
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
-Resource ID of an existing Log Analytics workspace to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created.
+Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created.
 
 - Required: No
 - Type: string
 - Default: `''`
 
+### Parameter: `privateDnsZoneResourceIds`
+
+Resource IDs of the Private DNS Zones to associate with the Private Endpoints created by this module when `enableWafAlignment` is `true`. Required for name resolution from the VNet to the Private Endpoints. Each property is optional — when omitted, no DNS Zone Group is configured for that Private Endpoint and consumers are expected to manage DNS resolution out-of-band (e.g., via DNS Private Resolver or Azure-provided DNS).
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blob`](#parameter-privatednszoneresourceidsblob) | string | Resource ID of the Private DNS Zone for the Storage blob endpoint (typically `privatelink.blob.core.windows.net` for Azure public cloud). |
+| [`file`](#parameter-privatednszoneresourceidsfile) | string | Resource ID of the Private DNS Zone for the Storage file endpoint (typically `privatelink.file.core.windows.net` for Azure public cloud). |
+| [`queue`](#parameter-privatednszoneresourceidsqueue) | string | Resource ID of the Private DNS Zone for the Storage queue endpoint (typically `privatelink.queue.core.windows.net` for Azure public cloud). |
+| [`sites`](#parameter-privatednszoneresourceidssites) | string | Resource ID of the Private DNS Zone for the Function App (typically `privatelink.azurewebsites.net`). |
+| [`table`](#parameter-privatednszoneresourceidstable) | string | Resource ID of the Private DNS Zone for the Storage table endpoint (typically `privatelink.table.core.windows.net` for Azure public cloud). |
+
+### Parameter: `privateDnsZoneResourceIds.blob`
+
+Resource ID of the Private DNS Zone for the Storage blob endpoint (typically `privatelink.blob.core.windows.net` for Azure public cloud).
+
+- Required: No
+- Type: string
+
+### Parameter: `privateDnsZoneResourceIds.file`
+
+Resource ID of the Private DNS Zone for the Storage file endpoint (typically `privatelink.file.core.windows.net` for Azure public cloud).
+
+- Required: No
+- Type: string
+
+### Parameter: `privateDnsZoneResourceIds.queue`
+
+Resource ID of the Private DNS Zone for the Storage queue endpoint (typically `privatelink.queue.core.windows.net` for Azure public cloud).
+
+- Required: No
+- Type: string
+
+### Parameter: `privateDnsZoneResourceIds.sites`
+
+Resource ID of the Private DNS Zone for the Function App (typically `privatelink.azurewebsites.net`).
+
+- Required: No
+- Type: string
+
+### Parameter: `privateDnsZoneResourceIds.table`
+
+Resource ID of the Private DNS Zone for the Storage table endpoint (typically `privatelink.table.core.windows.net` for Azure public cloud).
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpointSubnetResourceId`
 
-The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true` and `virtualNetworkResourceId` is not provided.
+The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true`.
 
 - Required: No
 - Type: string
@@ -990,8 +1028,6 @@ The resource ID of an existing User-Assigned Managed Identity to assign to the F
 | `functionAppDefaultHostname` | string | The default hostname of the deployed Function App. |
 | `functionAppName` | string | The name of the deployed Function App. |
 | `functionAppResourceId` | string | The resource ID of the deployed Function App. |
-| `keyVaultName` | string | The name of the Key Vault created when `enableWafAlignment` is `true`. |
-| `keyVaultResourceId` | string | The resource ID of the Key Vault created when `enableWafAlignment` is `true`. |
 | `location` | string | The location the resources were deployed into. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created or referenced by this module. |
 | `resourceGroupName` | string | The name of the resource group the resources were deployed into. |

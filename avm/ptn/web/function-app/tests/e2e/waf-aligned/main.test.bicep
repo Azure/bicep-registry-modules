@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       enableWafAlignment: true
       appServicePlanSkuName: 'EP1'
-      appServicePlanSkuCapacity: 1
+      appServicePlanSkuCapacity: 2
       functionAppKind: 'functionapp,linux'
       functionWorkerRuntime: 'dotnet-isolated'
       functionAppSubnetResourceId: nestedDependencies.outputs.functionAppSubnetResourceId
