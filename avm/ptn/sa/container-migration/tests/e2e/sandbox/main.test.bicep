@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
       solutionName: '${namePrefix}${serviceShort}'
       location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
+      cosmosLocation: enforcedLocation
       aiModelCapacity: 10
       aiEmbeddingModelCapacity: 10
       enablePrivateNetworking: false
