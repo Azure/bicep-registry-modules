@@ -122,7 +122,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     // Required parameters
     name: 'ndzdnssec001.com'
     // Non-required parameters
-    dnssecConfig: true
+    enableDnsSec: true
   }
 }
 ```
@@ -144,7 +144,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       "value": "ndzdnssec001.com"
     },
     // Non-required parameters
-    "dnssecConfig": {
+    "enableDnsSec": {
       "value": true
     }
   }
@@ -164,7 +164,7 @@ using 'br/public:avm/res/network/dns-zone:<version>'
 // Required parameters
 param name = 'ndzdnssec001.com'
 // Non-required parameters
-param dnssecConfig = true
+param enableDnsSec = true
 ```
 
 </details>
@@ -1269,7 +1269,7 @@ param tags = {
 | [`aaaa`](#parameter-aaaa) | array | Array of AAAA records. |
 | [`caa`](#parameter-caa) | array | Array of CAA records. |
 | [`cname`](#parameter-cname) | array | Array of CNAME records. |
-| [`dnssecConfig`](#parameter-dnssecconfig) | bool | Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step). |
+| [`enableDnsSec`](#parameter-enablednssec) | bool | Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location of the dnsZone. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1949,7 +1949,7 @@ The TTL of the record.
 - Required: No
 - Type: int
 
-### Parameter: `dnssecConfig`
+### Parameter: `enableDnsSec`
 
 Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).
 
