@@ -8,6 +8,7 @@ spec:
   rule:
     - Azure.ACR.GeoReplica # ACR geo-replication requires user input via the `enableRedundancy` parameter (Premium SKU + replica region) and is opt-in for the min/defaults configuration.
     - Azure.Storage.Firewall # Storage firewall (networkAcls.defaultAction=Deny) is enabled when `enablePrivateNetworking` is true and is opt-in for the min/defaults configuration.
+    - Azure.Cosmos.AvailabilityZone # Cosmos DB zone redundancy is enabled via the `enableRedundancy` parameter and is opt-in for the min/defaults configuration.
   if:
     source: Template
     withinPath:
