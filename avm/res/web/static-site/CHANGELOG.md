@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/static-site/CHANGELOG.md).
 
+## 0.9.5
+
+### Changes
+
+- Publishing child modules `avm/res/web/static-site/config`, `avm/res/web/static-site/custom-domain`, and `avm/res/web/static-site/linked-backend`
+
+### Breaking Changes
+
+- None
+
 ## 0.9.4
 
 ### Changes
