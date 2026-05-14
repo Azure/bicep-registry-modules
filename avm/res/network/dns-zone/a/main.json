@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "17881817645418955690"
+      "version": "0.43.8.12551",
+      "templateHash": "389598384472155140"
     },
     "name": "Public DNS Zone A record",
     "description": "This module deploys a Public DNS Zone A record."
