@@ -22,7 +22,6 @@ on:
         type: string
         description: "Default location overwrite (e.g., eastus)"
         required: false
-        default: "westeurope" # Pin to a region where the regional service tag 'AzureCloud.<region>' (used in the 'max' test route table) is recognized; the random selector includes 'germanywestcentral', where it is rejected as InvalidAddressPrefixFormat.
   push:
     branches:
       - main
