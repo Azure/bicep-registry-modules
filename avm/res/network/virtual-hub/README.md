@@ -28,6 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routeMaps` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routeMaps)</li></ul> |
 | `Microsoft.Network/virtualHubs/routingIntent` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routingIntent)</li></ul> |
 
 ## Usage examples
@@ -175,6 +176,32 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       name: 'myCustomLockName'
     }
     preferredRoutingGateway: 'ExpressRoute'
+    routeMaps: [
+      {
+        associatedInboundConnections: []
+        associatedOutboundConnections: []
+        name: 'routeMap1'
+        rules: [
+          {
+            actions: [
+              {
+                type: 'Drop'
+              }
+            ]
+            matchCriteria: [
+              {
+                matchCondition: 'Contains'
+                routePrefix: [
+                  '10.100.0.0/16'
+                ]
+              }
+            ]
+            name: 'rule1'
+            nextStepIfMatched: 'Terminate'
+          }
+        ]
+      }
+    ]
     routingIntent: {}
     sku: 'Standard'
     tags: {
@@ -271,6 +298,34 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "preferredRoutingGateway": {
       "value": "ExpressRoute"
     },
+    "routeMaps": {
+      "value": [
+        {
+          "associatedInboundConnections": [],
+          "associatedOutboundConnections": [],
+          "name": "routeMap1",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "type": "Drop"
+                }
+              ],
+              "matchCriteria": [
+                {
+                  "matchCondition": "Contains",
+                  "routePrefix": [
+                    "10.100.0.0/16"
+                  ]
+                }
+              ],
+              "name": "rule1",
+              "nextStepIfMatched": "Terminate"
+            }
+          ]
+        }
+      ]
+    },
     "routingIntent": {
       "value": {}
     },
@@ -357,6 +412,32 @@ param lock = {
   name: 'myCustomLockName'
 }
 param preferredRoutingGateway = 'ExpressRoute'
+param routeMaps = [
+  {
+    associatedInboundConnections: []
+    associatedOutboundConnections: []
+    name: 'routeMap1'
+    rules: [
+      {
+        actions: [
+          {
+            type: 'Drop'
+          }
+        ]
+        matchCriteria: [
+          {
+            matchCondition: 'Contains'
+            routePrefix: [
+              '10.100.0.0/16'
+            ]
+          }
+        ]
+        name: 'rule1'
+        nextStepIfMatched: 'Terminate'
+      }
+    ]
+  }
+]
 param routingIntent = {}
 param sku = 'Standard'
 param tags = {
@@ -681,6 +762,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayResourceId`](#parameter-p2svpngatewayresourceid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`routeMaps`](#parameter-routemaps) | array | Route maps to create for the virtual hub. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | The VirtualHub route tables. |
 | [`routingIntent`](#parameter-routingintent) | object | The routing intent configuration to create for the virtual hub. |
 | [`securityPartnerProviderResourceId`](#parameter-securitypartnerproviderresourceid) | string | ID of the Security Partner Provider to link to. |
@@ -963,6 +1045,212 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
+
+### Parameter: `routeMaps`
+
+Route maps to create for the virtual hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routemapsname) | string | The route map name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associatedInboundConnections`](#parameter-routemapsassociatedinboundconnections) | array | List of connections which have this route map associated for inbound traffic. |
+| [`associatedOutboundConnections`](#parameter-routemapsassociatedoutboundconnections) | array | List of connections which have this route map associated for outbound traffic. |
+| [`rules`](#parameter-routemapsrules) | array | List of route map rules. |
+
+### Parameter: `routeMaps.name`
+
+The route map name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeMaps.associatedInboundConnections`
+
+List of connections which have this route map associated for inbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.associatedOutboundConnections`
+
+List of connections which have this route map associated for outbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules`
+
+List of route map rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routemapsrulesname) | string | The unique name for the rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actions`](#parameter-routemapsrulesactions) | array | List of actions which will be applied on a match. |
+| [`matchCriteria`](#parameter-routemapsrulesmatchcriteria) | array | List of matching criterion which will be applied to traffic. |
+| [`nextStepIfMatched`](#parameter-routemapsrulesnextstepifmatched) | string | Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'. |
+
+### Parameter: `routeMaps.rules.name`
+
+The unique name for the rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeMaps.rules.actions`
+
+List of actions which will be applied on a match.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`parameters`](#parameter-routemapsrulesactionsparameters) | array | List of parameters relevant to the action. |
+| [`type`](#parameter-routemapsrulesactionstype) | string | Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'. |
+
+### Parameter: `routeMaps.rules.actions.parameters`
+
+List of parameters relevant to the action.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asPath`](#parameter-routemapsrulesactionsparametersaspath) | array | List of AS paths. |
+| [`community`](#parameter-routemapsrulesactionsparameterscommunity) | array | List of BGP communities. |
+| [`routePrefix`](#parameter-routemapsrulesactionsparametersrouteprefix) | array | List of route prefixes. |
+
+### Parameter: `routeMaps.rules.actions.parameters.asPath`
+
+List of AS paths.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.actions.parameters.community`
+
+List of BGP communities.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.actions.parameters.routePrefix`
+
+List of route prefixes.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.actions.type`
+
+Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Add'
+    'Drop'
+    'Remove'
+    'Replace'
+    'Unknown'
+  ]
+  ```
+
+### Parameter: `routeMaps.rules.matchCriteria`
+
+List of matching criterion which will be applied to traffic.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asPath`](#parameter-routemapsrulesmatchcriteriaaspath) | array | List of AS paths which this criteria matches. |
+| [`community`](#parameter-routemapsrulesmatchcriteriacommunity) | array | List of BGP communities which this criteria matches. |
+| [`matchCondition`](#parameter-routemapsrulesmatchcriteriamatchcondition) | string | Match condition to apply RouteMap rules. |
+| [`routePrefix`](#parameter-routemapsrulesmatchcriteriarouteprefix) | array | List of route prefixes which this criteria matches. |
+
+### Parameter: `routeMaps.rules.matchCriteria.asPath`
+
+List of AS paths which this criteria matches.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.matchCriteria.community`
+
+List of BGP communities which this criteria matches.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.matchCriteria.matchCondition`
+
+Match condition to apply RouteMap rules.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Contains'
+    'Equals'
+    'NotContains'
+    'NotEquals'
+    'Unknown'
+  ]
+  ```
+
+### Parameter: `routeMaps.rules.matchCriteria.routePrefix`
+
+List of route prefixes which this criteria matches.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules.nextStepIfMatched`
+
+Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Continue'
+    'Terminate'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `routeTableRoutes`
 

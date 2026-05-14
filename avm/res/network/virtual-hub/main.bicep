@@ -78,6 +78,9 @@ param hubRouteTables hubRouteTableType[]?
 @description('Optional. Virtual network connections to create for the virtual hub.')
 param hubVirtualNetworkConnections hubVirtualNetworkConnectionType[]?
 
+@description('Optional. Route maps to create for the virtual hub.')
+param routeMaps routeMapType[]?
+
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -215,6 +218,20 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
   }
 ]
 
+module virtualHub_routeMaps 'route-map/main.bicep' = [
+  for (routeMap, index) in (routeMaps ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeMap-${index}'
+    params: {
+      virtualHubName: virtualHub.name
+      name: routeMap.name
+      associatedInboundConnections: routeMap.?associatedInboundConnections
+      associatedOutboundConnections: routeMap.?associatedOutboundConnections
+      rules: routeMap.?rules
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 @description('The resource group the virtual hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -283,4 +300,22 @@ type hubVirtualNetworkConnectionType = {
 
   @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
   routingConfiguration: object?
+}
+
+import { routeMapRuleType } from 'route-map/main.bicep'
+
+@export()
+@description('The type of a route map.')
+type routeMapType = {
+  @description('Required. The route map name.')
+  name: string
+
+  @description('Optional. List of connections which have this route map associated for inbound traffic.')
+  associatedInboundConnections: string[]?
+
+  @description('Optional. List of connections which have this route map associated for outbound traffic.')
+  associatedOutboundConnections: string[]?
+
+  @description('Optional. List of route map rules.')
+  rules: routeMapRuleType[]?
 }

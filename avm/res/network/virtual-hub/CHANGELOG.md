@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-hub/CHANGELOG.md).
 
+## 0.4.5
+
+### Changes
+
+- Publishing child module `avm/res/network/virtual-hub/route-map`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.4
 
 ### Changes

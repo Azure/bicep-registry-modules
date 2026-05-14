@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "4083786630125900516"
+      "templateHash": "2554182189882011854"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -143,6 +143,182 @@
         "description": "The type of a hub virtual network connection."
       }
     },
+    "routeMapType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The route map name."
+          }
+        },
+        "associatedInboundConnections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of connections which have this route map associated for inbound traffic."
+          }
+        },
+        "associatedOutboundConnections": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of connections which have this route map associated for outbound traffic."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/routeMapRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of route map rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a route map."
+      }
+    },
+    "_1.actionType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Add",
+            "Drop",
+            "Remove",
+            "Replace",
+            "Unknown"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'."
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.parameterType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of parameters relevant to the action."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a route map action.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "route-map/main.bicep"
+        }
+      }
+    },
+    "_1.criterionType": {
+      "type": "object",
+      "properties": {
+        "asPath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of AS paths which this criteria matches."
+          }
+        },
+        "community": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of BGP communities which this criteria matches."
+          }
+        },
+        "matchCondition": {
+          "type": "string",
+          "allowedValues": [
+            "Contains",
+            "Equals",
+            "NotContains",
+            "NotEquals",
+            "Unknown"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Match condition to apply RouteMap rules."
+          }
+        },
+        "routePrefix": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of route prefixes which this criteria matches."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a route map criterion.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "route-map/main.bicep"
+        }
+      }
+    },
+    "_1.parameterType": {
+      "type": "object",
+      "properties": {
+        "asPath": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of AS paths."
+          }
+        },
+        "community": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of BGP communities."
+          }
+        },
+        "routePrefix": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of route prefixes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a route map action parameter.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "route-map/main.bicep"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -177,6 +353,55 @@
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    },
+    "routeMapRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique name for the rule."
+          }
+        },
+        "matchCriteria": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.criterionType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of matching criterion which will be applied to traffic."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.actionType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of actions which will be applied on a match."
+          }
+        },
+        "nextStepIfMatched": {
+          "type": "string",
+          "allowedValues": [
+            "Continue",
+            "Terminate",
+            "Unknown"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a route map rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "route-map/main.bicep"
         }
       }
     }
@@ -368,6 +593,16 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Virtual network connections to create for the virtual hub."
+      }
+    },
+    "routeMaps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/routeMapType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Route maps to create for the virtual hub."
       }
     },
     "lock": {
@@ -895,6 +1130,344 @@
       "dependsOn": [
         "virtualHub",
         "virtualHub_routeTables"
+      ]
+    },
+    "virtualHub_routeMaps": {
+      "copy": {
+        "name": "virtualHub_routeMaps",
+        "count": "[length(coalesce(parameters('routeMaps'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-routeMap-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualHubName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('routeMaps'), createArray())[copyIndex()].name]"
+          },
+          "associatedInboundConnections": {
+            "value": "[tryGet(coalesce(parameters('routeMaps'), createArray())[copyIndex()], 'associatedInboundConnections')]"
+          },
+          "associatedOutboundConnections": {
+            "value": "[tryGet(coalesce(parameters('routeMaps'), createArray())[copyIndex()], 'associatedOutboundConnections')]"
+          },
+          "rules": {
+            "value": "[tryGet(coalesce(parameters('routeMaps'), createArray())[copyIndex()], 'rules')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.42.1.51946",
+              "templateHash": "10775193976866105070"
+            },
+            "name": "Virtual Hub Route Maps",
+            "description": "This module deploys a Virtual Hub Route Map."
+          },
+          "definitions": {
+            "routeMapRuleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The unique name for the rule."
+                  }
+                },
+                "matchCriteria": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/criterionType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of matching criterion which will be applied to traffic."
+                  }
+                },
+                "actions": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/actionType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of actions which will be applied on a match."
+                  }
+                },
+                "nextStepIfMatched": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Continue",
+                    "Terminate",
+                    "Unknown"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a route map rule."
+              }
+            },
+            "criterionType": {
+              "type": "object",
+              "properties": {
+                "asPath": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of AS paths which this criteria matches."
+                  }
+                },
+                "community": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of BGP communities which this criteria matches."
+                  }
+                },
+                "matchCondition": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Contains",
+                    "Equals",
+                    "NotContains",
+                    "NotEquals",
+                    "Unknown"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Match condition to apply RouteMap rules."
+                  }
+                },
+                "routePrefix": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of route prefixes which this criteria matches."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a route map criterion."
+              }
+            },
+            "actionType": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Add",
+                    "Drop",
+                    "Remove",
+                    "Replace",
+                    "Unknown"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'."
+                  }
+                },
+                "parameters": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/parameterType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of parameters relevant to the action."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a route map action."
+              }
+            },
+            "parameterType": {
+              "type": "object",
+              "properties": {
+                "asPath": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of AS paths."
+                  }
+                },
+                "community": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of BGP communities."
+                  }
+                },
+                "routePrefix": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. List of route prefixes."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a route map action parameter."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the route map."
+              }
+            },
+            "virtualHubName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+              }
+            },
+            "associatedInboundConnections": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of connections which have this route map associated for inbound traffic."
+              }
+            },
+            "associatedOutboundConnections": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of connections which have this route map associated for outbound traffic."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/routeMapRuleType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of route map rules to be applied."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[take(format('46d3xbcp.res.network-virtualhubroutemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "virtualHub": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualHubs",
+              "apiVersion": "2025-01-01",
+              "name": "[parameters('virtualHubName')]"
+            },
+            "routeMap": {
+              "type": "Microsoft.Network/virtualHubs/routeMaps",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+              "properties": {
+                "associatedInboundConnections": "[parameters('associatedInboundConnections')]",
+                "associatedOutboundConnections": "[parameters('associatedOutboundConnections')]",
+                "rules": "[parameters('rules')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed route map."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed route map."
+              },
+              "value": "[resourceId('Microsoft.Network/virtualHubs/routeMaps', parameters('virtualHubName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the route map was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "virtualHub"
       ]
     }
   },
