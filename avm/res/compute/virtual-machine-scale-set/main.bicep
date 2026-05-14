@@ -464,6 +464,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachinescaleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -616,6 +618,7 @@ module vmss_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoin
   name: '${uniqueString(deployment().name, location)}-VMSS-DomainJoin'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'DomainJoin'
     publisher: 'Microsoft.Compute'
     type: 'JsonADDomainExtension'
@@ -634,6 +637,7 @@ module vmss_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extension
   name: '${uniqueString(deployment().name, location)}-VMSS-MicrosoftAntiMalware'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'MicrosoftAntiMalware'
     publisher: 'Microsoft.Azure.Security'
     type: 'IaaSAntimalware'
@@ -660,6 +664,7 @@ module vmss_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMon
   name: '${uniqueString(deployment().name, location)}-VMSS-AzureMonitorAgent'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'AzureMonitorAgent'
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
@@ -686,6 +691,7 @@ module vmss_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepen
   name: '${uniqueString(deployment().name, location)}-VMSS-DependencyAgent'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'DependencyAgent'
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
@@ -703,6 +709,7 @@ module vmss_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionN
   name: '${uniqueString(deployment().name, location)}-VMSS-NetworkWatcherAgent'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'NetworkWatcherAgent'
     publisher: 'Microsoft.Azure.NetworkWatcher'
     type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
@@ -720,6 +727,7 @@ module vmss_desiredStateConfigurationExtension 'extension/main.bicep' = if (exte
   name: '${uniqueString(deployment().name, location)}-VMSS-DesiredStateConfiguration'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'DesiredStateConfiguration'
     publisher: 'Microsoft.Powershell'
     type: 'DSC'
@@ -747,6 +755,7 @@ module vmss_customScriptExtension 'extension/main.bicep' = if (!empty(extensionC
   name: '${uniqueString(deployment().name, location)}-VMSS-CustomScriptExtension'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
     type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
@@ -798,6 +807,7 @@ module vmss_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionA
   name: '${uniqueString(deployment().name, location)}-VMSS-AzureDiskEncryption'
   params: {
     virtualMachineScaleSetName: vmss.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: 'AzureDiskEncryption'
     publisher: 'Microsoft.Azure.Security'
     type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'

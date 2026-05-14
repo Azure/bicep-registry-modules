@@ -26,7 +26,7 @@ param logAnalyticsWorkspaceResourceId string?
 @description('Optional. Values to establish private networking for the Storage Account.')
 param privateNetworking storageAccountPrivateNetworkingType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
