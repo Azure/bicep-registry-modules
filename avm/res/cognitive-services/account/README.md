@@ -8,7 +8,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: { (...) }
 }
 ```
-For examples, please refer to the... [Usage Examples](#usage-examples) section.
+For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 ## Navigation
 
