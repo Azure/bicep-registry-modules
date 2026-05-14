@@ -571,7 +571,7 @@ param tags = {
 | [`flexConsumptionDeploymentStorageContainerName`](#parameter-flexconsumptiondeploymentstoragecontainername) | string | (Flex Consumption only) Name of the blob container that stores the Function App's deployment package. Created in the runtime Storage Account when `appServicePlanSkuName` is `FC1`. |
 | [`flexConsumptionInstanceMemoryMB`](#parameter-flexconsumptioninstancememorymb) | int | (Flex Consumption only) Memory allocated to each instance of the Function App in MB. Allowed values are 512, 2048, and 4096. |
 | [`flexConsumptionMaximumInstanceCount`](#parameter-flexconsumptionmaximuminstancecount) | int | (Flex Consumption only) Maximum number of instances the Function App can scale out to. Allowed range is 40-1000. |
-| [`functionAppKind`](#parameter-functionappkind) | string | The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,linux,container` runs a custom Linux container image; `functionapp,workflowapp` is for Logic Apps Standard. |
+| [`functionAppKind`](#parameter-functionappkind) | string | The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release. |
 | [`functionAppSubnetResourceId`](#parameter-functionappsubnetresourceid) | string | The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`. |
 | [`functionAppTags`](#parameter-functionapptags) | object | Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag. |
 | [`functionWorkerRuntime`](#parameter-functionworkerruntime) | string | The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead. |
@@ -891,7 +891,7 @@ When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HT
 
 ### Parameter: `functionAppKind`
 
-The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,linux,container` runs a custom Linux container image; `functionapp,workflowapp` is for Logic Apps Standard.
+The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release.
 
 - Required: No
 - Type: string
@@ -901,7 +901,6 @@ The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,lin
   [
     'functionapp'
     'functionapp,linux'
-    'functionapp,linux,container'
     'functionapp,workflowapp'
   ]
   ```

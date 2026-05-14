@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "9563886667155774648"
+      "templateHash": "7666622424121753811"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.",
@@ -295,11 +295,10 @@
       "allowedValues": [
         "functionapp",
         "functionapp,linux",
-        "functionapp,linux,container",
         "functionapp,workflowapp"
       ],
       "metadata": {
-        "description": "Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,linux,container` runs a custom Linux container image; `functionapp,workflowapp` is for Logic Apps Standard."
+        "description": "Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release."
       }
     },
     "appServicePlanSkuName": {

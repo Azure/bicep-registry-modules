@@ -17,7 +17,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Storage Account `allowSharedKeyAccess` is gated to `requiresContentShare` so it is only enabled for plan families that need the content-share connection string (Y1, EP). Dedicated and Flex plans run fully identity-based with shared-key disabled.
 - Reserved app-setting keys (`AzureWebJobsStorage*`, `APPLICATIONINSIGHTS_CONNECTION_STRING`, `FUNCTIONS_*`, `WEBSITE_CONTENT*`) are filtered out of `appSettingsKeyValuePairs` so module-managed values always win and cannot be silently broken from the consumer side.
 - Linux Function Apps now receive a sensible default `linuxFxVersion` per `functionWorkerRuntime` when `runtimeVersion` is not provided (e.g. `dotnet-isolated|8.0`, `node|20`, `python|3.11`, `java|17`, `powershell|7.4`).
-- `functionAppKind` allowed list expanded with `functionapp,linux,container` (custom Linux container) and `functionapp,workflowapp` (Logic Apps Standard).
+- `functionAppKind` allowed list expanded with `functionapp,workflowapp` (Logic Apps Standard). Container-based Function Apps (`functionapp,linux,container`) are not exposed in v0.1 — they require dedicated container image / registry parameters and are planned for a future minor release.
 - Added optional `privateDnsZoneResourceIds` (typed) parameter so consumers can wire Private DNS Zones into each Private Endpoint (`sites`, `blob`, `file`, `queue`, `table`) created by this module.
 - Added `tags` / `functionAppTags` split: `tags` apply to every resource; `functionAppTags` are merged on top only on the Function App, intended for AZD's `azd-service-name` mapping.
 - `appSettingsKeyValuePairs` description clarified — values must be strings; reserved-key behavior documented.

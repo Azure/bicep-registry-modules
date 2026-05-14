@@ -69,11 +69,10 @@ param logAnalyticsWorkspaceName string = ''
 @description('Optional. Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created.')
 param logAnalyticsWorkspaceResourceId string = ''
 
-@description('Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,linux,container` runs a custom Linux container image; `functionapp,workflowapp` is for Logic Apps Standard.')
+@description('Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release.')
 @allowed([
   'functionapp'
   'functionapp,linux'
-  'functionapp,linux,container'
   'functionapp,workflowapp'
 ])
 param functionAppKind string = 'functionapp,linux'
