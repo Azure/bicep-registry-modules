@@ -152,6 +152,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     azureAiServiceLocation: '<azureAiServiceLocation>'
     solutionName: 'scmdmin'
     // Non-required parameters
+    cosmosLocation: '<cosmosLocation>'
     enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: true
@@ -181,6 +182,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
       "value": "scmdmin"
     },
     // Non-required parameters
+    "cosmosLocation": {
+      "value": "<cosmosLocation>"
+    },
     "enableMonitoring": {
       "value": false
     },
@@ -214,6 +218,7 @@ using 'br/public:avm/ptn/sa/container-migration:<version>'
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 param solutionName = 'scmdmin'
 // Non-required parameters
+param cosmosLocation = '<cosmosLocation>'
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = true
@@ -244,6 +249,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     // Non-required parameters
     aiEmbeddingModelCapacity: 10
     aiModelCapacity: 10
+    cosmosLocation: '<cosmosLocation>'
     enableMonitoring: false
     enablePrivateNetworking: false
     enableRedundancy: false
@@ -279,6 +285,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     },
     "aiModelCapacity": {
       "value": 10
+    },
+    "cosmosLocation": {
+      "value": "<cosmosLocation>"
     },
     "enableMonitoring": {
       "value": false
@@ -318,6 +327,7 @@ param solutionName = 'scmmin'
 // Non-required parameters
 param aiEmbeddingModelCapacity = 10
 param aiModelCapacity = 10
+param cosmosLocation = '<cosmosLocation>'
 param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = false
@@ -349,6 +359,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     // Non-required parameters
     aiEmbeddingModelCapacity: 10
     aiModelCapacity: 10
+    cosmosLocation: '<cosmosLocation>'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -386,6 +397,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     },
     "aiModelCapacity": {
       "value": 10
+    },
+    "cosmosLocation": {
+      "value": "<cosmosLocation>"
     },
     "enableMonitoring": {
       "value": true
@@ -431,6 +445,7 @@ param solutionName = 'scmwaf'
 // Non-required parameters
 param aiEmbeddingModelCapacity = 10
 param aiModelCapacity = 10
+param cosmosLocation = '<cosmosLocation>'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
