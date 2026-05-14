@@ -31,7 +31,7 @@ param namePrefix string = '#_namePrefix_#'
 // The route table built in `dependencies.bicep` includes a route whose `addressPrefix` uses the regional service tag `AzureCloud.<location>`.
 // That regional service tag is not honored as a service tag in every region (e.g., `germanywestcentral`), causing the deployment to fail with
 // `InvalidAddressPrefixFormat`. Pin the location for this test only to a region where the regional tag is recognized.
-var enforcedLocation = 'westeurope'
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
