@@ -10,7 +10,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the Database Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/mongoClusters@2025-09-01'>.tags?
 
 @description('Required. Username for admin user.')
 param administratorLogin string
@@ -24,14 +24,14 @@ param administratorLoginPassword string
 @description('Optional. Mode to create the Azure Cosmos DB for MongoDB (vCore) cluster.')
 param createMode string = 'Default'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Whether high availability is enabled on the node group.')
+@description('Optional. Whether high availability is enabled on the node group. Requires a cluster tier of at least M30.')
 @allowed([
   'Disabled'
   'SameZone'
@@ -39,7 +39,7 @@ param enableTelemetry bool = true
 ])
 param highAvailabilityMode string = 'ZoneRedundantPreferred'
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -49,11 +49,11 @@ param networkAcls networkAclsType?
 @description('Required. Number of nodes in the node group.')
 param nodeCount int
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -68,6 +68,13 @@ param enableMicrosoftEntraAuth bool = false
 
 @description('Optional. The Microsoft Entra ID authentication identity assignments to be created for the cluster.')
 param entraAuthIdentities authIdentityType[]?
+
+@description('Optional. Controls public network access to the cluster. Allowed values: "Enabled", "Disabled".')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Enabled'
 
 var enableReferencedModulesTelemetry = false
 
@@ -123,7 +130,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.documentdb-mongocluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -141,7 +148,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-09-01' = {
   name: name
   tags: tags
   location: location
@@ -175,6 +182,7 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = 
           : []
       )
     }
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 
@@ -187,14 +195,18 @@ resource mongoCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -249,7 +261,7 @@ module mongoCluster_users 'user/main.bicep' = [
   }
 ]
 
-module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PE-${index}'
     scope: resourceGroup(
