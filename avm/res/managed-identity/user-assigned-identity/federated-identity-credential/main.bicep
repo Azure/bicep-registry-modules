@@ -13,14 +13,17 @@ param audiences array
 @description('Required. The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged.')
 param issuer string
 
-@description('Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD.')
-param subject string
+@description('Optional. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD. Either `subject` or `claimsMatchingExpression` must be defined, but not both.')
+param subject string?
+
+@description('Optional. Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both.')
+param claimsMatchingExpression claimsMatchingExpressionType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.managedid-userassignedidcredential.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -38,18 +41,29 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: userAssignedIdentityName
 }
 
-resource federatedIdentityCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2024-11-30' = {
+resource federatedIdentityCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2025-01-31-preview' = {
   name: name
   parent: userAssignedIdentity
-  properties: {
-    audiences: audiences
-    issuer: issuer
-    subject: subject
-  }
+  properties: union(
+    {
+      audiences: audiences
+      issuer: issuer
+    },
+    !empty(subject)
+      ? {
+          subject: subject
+        }
+      : {},
+    !empty(claimsMatchingExpression ?? {})
+      ? {
+          claimsMatchingExpression: claimsMatchingExpression
+        }
+      : {}
+  )
 }
 
 @description('The name of the federated identity credential.')
@@ -60,3 +74,11 @@ output resourceId string = federatedIdentityCredential.id
 
 @description('The name of the resource group the federated identity credential was created in.')
 output resourceGroupName string = resourceGroup().name
+
+type claimsMatchingExpressionType = {
+  @description('Required. Specifies the version of the flexible federated identity credential language used in the expression.')
+  languageVersion: int
+
+  @description('Required. Wildcard-based expression for matching incoming subject claims.')
+  value: string
+}

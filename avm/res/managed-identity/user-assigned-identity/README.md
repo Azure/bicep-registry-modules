@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2025-01-31-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2025-01-31-preview/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 
 ## Usage examples
 
@@ -127,9 +127,12 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         audiences: [
           'api://AzureADTokenExchange'
         ]
+        claimsMatchingExpression: {
+          languageVersion: 1
+          value: 'system:serviceaccount:default:*'
+        }
         issuer: '<issuer>'
         name: 'test-fed-cred-miuaimax-001'
-        subject: 'system:serviceaccount:default:workload-identity-sa'
       }
       {
         audiences: [
@@ -197,9 +200,12 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           "audiences": [
             "api://AzureADTokenExchange"
           ],
+          "claimsMatchingExpression": {
+            "languageVersion": 1,
+            "value": "system:serviceaccount:default:*"
+          },
           "issuer": "<issuer>",
-          "name": "test-fed-cred-miuaimax-001",
-          "subject": "system:serviceaccount:default:workload-identity-sa"
+          "name": "test-fed-cred-miuaimax-001"
         },
         {
           "audiences": [
@@ -273,9 +279,12 @@ param federatedIdentityCredentials = [
     audiences: [
       'api://AzureADTokenExchange'
     ]
+    claimsMatchingExpression: {
+      languageVersion: 1
+      value: 'system:serviceaccount:default:*'
+    }
     issuer: '<issuer>'
     name: 'test-fed-cred-miuaimax-001'
-    subject: 'system:serviceaccount:default:workload-identity-sa'
   }
   {
     audiences: [
@@ -527,7 +536,13 @@ The federated identity credentials list to indicate which token from the externa
 | [`audiences`](#parameter-federatedidentitycredentialsaudiences) | array | The list of audiences that can appear in the issued token. |
 | [`issuer`](#parameter-federatedidentitycredentialsissuer) | string | The URL of the issuer to be trusted. |
 | [`name`](#parameter-federatedidentitycredentialsname) | string | The name of the federated identity credential. |
-| [`subject`](#parameter-federatedidentitycredentialssubject) | string | The identifier of the external identity. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`claimsMatchingExpression`](#parameter-federatedidentitycredentialsclaimsmatchingexpression) | object | Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both. |
+| [`subject`](#parameter-federatedidentitycredentialssubject) | string | The identifier of the external identity. Either `subject` or `claimsMatchingExpression` must be defined, but not both. |
 
 ### Parameter: `federatedIdentityCredentials.audiences`
 
@@ -550,11 +565,39 @@ The name of the federated identity credential.
 - Required: Yes
 - Type: string
 
-### Parameter: `federatedIdentityCredentials.subject`
+### Parameter: `federatedIdentityCredentials.claimsMatchingExpression`
 
-The identifier of the external identity.
+Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`languageVersion`](#parameter-federatedidentitycredentialsclaimsmatchingexpressionlanguageversion) | int | Specifies the version of the flexible federated identity credential language used in the expression. |
+| [`value`](#parameter-federatedidentitycredentialsclaimsmatchingexpressionvalue) | string | Wildcard-based expression for matching incoming subject claims. |
+
+### Parameter: `federatedIdentityCredentials.claimsMatchingExpression.languageVersion`
+
+Specifies the version of the flexible federated identity credential language used in the expression.
 
 - Required: Yes
+- Type: int
+
+### Parameter: `federatedIdentityCredentials.claimsMatchingExpression.value`
+
+Wildcard-based expression for matching incoming subject claims.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `federatedIdentityCredentials.subject`
+
+The identifier of the external identity. Either `subject` or `claimsMatchingExpression` must be defined, but not both.
+
+- Required: No
 - Type: string
 
 ### Parameter: `isolationScope`

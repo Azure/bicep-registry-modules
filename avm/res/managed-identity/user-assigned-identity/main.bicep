@@ -67,7 +67,7 @@ var formattedRoleAssignments = [
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.managedidentity-userassignedidentity.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -112,7 +112,8 @@ module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-cre
       userAssignedIdentityName: userAssignedIdentity.name
       audiences: federatedIdentityCredential.audiences
       issuer: federatedIdentityCredential.issuer
-      subject: federatedIdentityCredential.subject
+      subject: federatedIdentityCredential.?subject
+      claimsMatchingExpression: federatedIdentityCredential.?claimsMatchingExpression
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
@@ -172,6 +173,19 @@ type federatedIdentityCredentialType = {
   @description('Required. The URL of the issuer to be trusted.')
   issuer: string
 
-  @description('Required. The identifier of the external identity.')
-  subject: string
+  @description('Optional. The identifier of the external identity. Either `subject` or `claimsMatchingExpression` must be defined, but not both.')
+  subject: string?
+
+  @description('Optional. Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both.')
+  claimsMatchingExpression: federatedIdentityCredentialClaimsMatchingExpressionType?
+}
+
+@export()
+@description('The type for the claims matching expression of a federated identity credential.')
+type federatedIdentityCredentialClaimsMatchingExpressionType = {
+  @description('Required. Specifies the version of the flexible federated identity credential language used in the expression.')
+  languageVersion: int
+
+  @description('Required. Wildcard-based expression for matching incoming subject claims.')
+  value: string
 }

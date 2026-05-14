@@ -68,7 +68,10 @@ module testDeployment '../../../main.bicep' = [
             'api://AzureADTokenExchange'
           ]
           issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}01/'
-          subject: 'system:serviceaccount:default:workload-identity-sa'
+          claimsMatchingExpression: {
+            languageVersion: 1
+            value: 'system:serviceaccount:default:*'
+          }
         }
         {
           name: 'test-fed-cred-${serviceShort}-002'
