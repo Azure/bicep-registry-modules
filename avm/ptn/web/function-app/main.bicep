@@ -78,7 +78,7 @@ param logAnalyticsWorkspaceResourceId string = ''
 ])
 param functionAppKind string = 'functionapp,linux'
 
-@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically.')
+@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. For WAF-aligned deployments with full Premium features use `EP1` or higher to support zone redundancy.')
 @allowed([
   'Y1'
   'FC1'
@@ -104,13 +104,13 @@ param functionAppKind string = 'functionapp,linux'
   'EP2'
   'EP3'
 ])
-param appServicePlanSkuName string = 'Y1'
+param appServicePlanSkuName string = 'FC1'
 
 @description('Optional. Number of workers for the App Service Plan.')
 @minValue(1)
 param appServicePlanSkuCapacity int = 1
 
-@description('Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`.')
+@description('Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead.')
 @allowed([
   'dotnet'
   'dotnet-isolated'
@@ -120,6 +120,22 @@ param appServicePlanSkuCapacity int = 1
   'python'
 ])
 param functionWorkerRuntime string = 'dotnet-isolated'
+
+@description('Optional. (Flex Consumption only) Name of the blob container that stores the Function App\'s deployment package. Created in the runtime Storage Account when `appServicePlanSkuName` is `FC1`.')
+param flexConsumptionDeploymentStorageContainerName string = 'app-package'
+
+@description('Optional. (Flex Consumption only) Memory allocated to each instance of the Function App in MB. Allowed values are 512, 2048, and 4096.')
+@allowed([
+  512
+  2048
+  4096
+])
+param flexConsumptionInstanceMemoryMB int = 2048
+
+@description('Optional. (Flex Consumption only) Maximum number of instances the Function App can scale out to. Allowed range is 40-1000.')
+@minValue(40)
+@maxValue(1000)
+param flexConsumptionMaximumInstanceCount int = 100
 
 @description('Optional. When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one.')
 param enableWafAlignment bool = false
@@ -176,9 +192,13 @@ var isElasticPremium = startsWith(appServicePlanSkuName, 'EP')
 
 // Function App plans need a kind that includes `functionapp`/`elastic` so the
 // portal and underlying platform classify the plan correctly.
-var serverFarmKind = isElasticPremium
-  ? (isLinux ? 'linux,elastic' : 'elastic')
-  : (isConsumption || isFlexConsumption) ? (isLinux ? 'functionapp,linux' : 'functionapp') : (isLinux ? 'linux' : 'app')
+// Flex Consumption is Linux-only and the official Microsoft sample uses bare
+// `functionapp` (not `functionapp,linux`) for its plan kind, so we follow suit.
+var serverFarmKind = isFlexConsumption
+  ? 'functionapp'
+  : isElasticPremium
+      ? (isLinux ? 'linux,elastic' : 'elastic')
+      : (isConsumption ? (isLinux ? 'functionapp,linux' : 'functionapp') : (isLinux ? 'linux' : 'app'))
 
 // Only Pv3, Pmv3 and EP SKUs support zone redundancy on App Service Plans, and
 // ARM rejects zone-redundant plans with a worker count below 2.
@@ -239,9 +259,13 @@ var windowsRuntimeVersionConfigMap = {
   python: {}
 }
 
-var runtimeVersionSiteConfig = isLinux
-  ? { linuxFxVersion: '${linuxFxVersionPrefixMap[functionWorkerRuntime]}|${effectiveLinuxRuntimeVersion}' }
-  : (!empty(runtimeVersion) ? windowsRuntimeVersionConfigMap[functionWorkerRuntime] : {})
+var runtimeVersionSiteConfig = isFlexConsumption
+  // Flex Consumption advertises the runtime via `functionAppConfig.runtime` (set below) — setting
+  // `linuxFxVersion` on the site config is not supported and would conflict with that contract.
+  ? {}
+  : (isLinux
+      ? { linuxFxVersion: '${linuxFxVersionPrefixMap[functionWorkerRuntime]}|${effectiveLinuxRuntimeVersion}' }
+      : (!empty(runtimeVersion) ? windowsRuntimeVersionConfigMap[functionWorkerRuntime] : {}))
 
 // Resolve the Log Analytics workspace strategy:
 // 1. Explicit resource ID provided -> use it as-is.
@@ -293,15 +317,24 @@ var sanitizedUserAppSettings = reduce(
   (cur, next) => contains(reservedAppSettingKeys, next.key) ? cur : union(cur, { '${next.key}': next.value })
 )
 
-// Static app settings (deploy-time known values only — safe for for-expression)
-var staticAppSettings = union(
-  {
-    AzureWebJobsStorage__credential: 'managedidentity'
-    FUNCTIONS_EXTENSION_VERSION: '~4'
-    FUNCTIONS_WORKER_RUNTIME: functionWorkerRuntime
-  },
-  sanitizedUserAppSettings
-)
+// Static app settings (deploy-time known values only — safe for for-expression).
+// On Flex Consumption, `FUNCTIONS_EXTENSION_VERSION` and `FUNCTIONS_WORKER_RUNTIME` must NOT be set
+// as app settings — they are managed via `functionAppConfig.runtime` and adding them would conflict.
+var staticAppSettings = isFlexConsumption
+  ? union(
+      {
+        AzureWebJobsStorage__credential: 'managedidentity'
+      },
+      sanitizedUserAppSettings
+    )
+  : union(
+      {
+        AzureWebJobsStorage__credential: 'managedidentity'
+        FUNCTIONS_EXTENSION_VERSION: '~4'
+        FUNCTIONS_WORKER_RUNTIME: functionWorkerRuntime
+      },
+      sanitizedUserAppSettings
+    )
 
 var staticAppSettingsArray = [
   for setting in items(staticAppSettings): {
@@ -385,6 +418,33 @@ var siteConfigBase = union(
       }
     : {}
 )
+
+// `functionAppConfig` is the Flex Consumption-specific contract on Microsoft.Web/sites that wires up
+// identity-based deployment storage, runtime selection and scale/concurrency. Only emitted for FC1
+// — for every other plan family it stays `null` so the underlying site module skips the property.
+// The `dotnet` (in-process .NET) runtime is intentionally not mapped because Flex Consumption only
+// supports `dotnet-isolated`; selecting `dotnet` with `FC1` will surface as a clear ARM validation
+// error from the underlying `Microsoft.Web/sites` resource.
+var flexConsumptionFunctionAppConfig = {
+  deployment: {
+    storage: {
+      type: 'blobContainer'
+      value: '${storageAccount.outputs.primaryBlobEndpoint}${flexConsumptionDeploymentStorageContainerName}'
+      authentication: {
+        type: 'UserAssignedIdentity'
+        userAssignedIdentityResourceId: userAssignedIdentityResolvedResourceId
+      }
+    }
+  }
+  runtime: {
+    name: functionWorkerRuntime
+    version: effectiveLinuxRuntimeVersion
+  }
+  scaleAndConcurrency: {
+    instanceMemoryMB: flexConsumptionInstanceMemoryMB
+    maximumInstanceCount: flexConsumptionMaximumInstanceCount
+  }
+}
 
 // ================ //
 // Telemetry        //
@@ -472,6 +532,24 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     lock: lock
     skuName: enableWafAlignment ? 'Standard_GRS' : 'Standard_LRS'
     kind: 'StorageV2'
+    // Flex Consumption Function Apps deploy from a blob container in the runtime Storage Account
+    // referenced via `functionAppConfig.deployment.storage`. Create that container up-front so the
+    // Function App's first deployment doesn't fail. Soft-delete defaults are kept aligned with the
+    // storage module's defaults so non-Flex plan families behave the same as before.
+    blobServices: {
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
+      containers: isFlexConsumption
+        ? [
+            {
+              name: flexConsumptionDeploymentStorageContainerName
+              publicAccess: 'None'
+            }
+          ]
+        : null
+    }
     allowBlobPublicAccess: false
     minimumTlsVersion: 'TLS1_2'
     // Identity-based access is used for the Functions runtime (`AzureWebJobsStorage__credential = managedidentity`).
@@ -605,6 +683,9 @@ module functionApp 'br/public:avm/res/web/site:0.23.0' = {
     publicNetworkAccess: enableWafAlignment ? 'Disabled' : 'Enabled'
     autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
     siteConfig: siteConfigBase
+    // `functionAppConfig` is only set for Flex Consumption (`FC1`); the underlying site module
+    // ignores `null`, leaving non-Flex plan families on their existing app-settings-driven contract.
+    functionAppConfig: isFlexConsumption ? flexConsumptionFunctionAppConfig : null
     // When `enableWafAlignment` is true, `privateEndpointSubnetResourceId` is required; an empty value
     // will surface as a clear ARM validation error from the underlying module rather than being silently dropped.
     privateEndpoints: enableWafAlignment

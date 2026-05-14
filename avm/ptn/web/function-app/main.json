@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "10945776483133803601"
+      "templateHash": "9563886667155774648"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.",
@@ -304,7 +304,7 @@
     },
     "appServicePlanSkuName": {
       "type": "string",
-      "defaultValue": "Y1",
+      "defaultValue": "FC1",
       "allowedValues": [
         "Y1",
         "FC1",
@@ -331,7 +331,7 @@
         "EP3"
       ],
       "metadata": {
-        "description": "Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `Y1` (Consumption). For WAF-aligned deployments use `EP1` or higher to support VNet integration and zone redundancy. `FC1` (Flex Consumption) is supported by the underlying `avm/res/web/site` module but requires the consumer to also supply a compatible `functionAppConfig` (deployment storage, runtime, instance memory, max instance count) via `siteConfigOverrides` / app-settings tuned for Flex; this pattern does not yet wire that up automatically."
+        "description": "Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. For WAF-aligned deployments with full Premium features use `EP1` or higher to support zone redundancy."
       }
     },
     "appServicePlanSkuCapacity": {
@@ -354,7 +354,35 @@
         "python"
       ],
       "metadata": {
-        "description": "Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`."
+        "description": "Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead."
+      }
+    },
+    "flexConsumptionDeploymentStorageContainerName": {
+      "type": "string",
+      "defaultValue": "app-package",
+      "metadata": {
+        "description": "Optional. (Flex Consumption only) Name of the blob container that stores the Function App's deployment package. Created in the runtime Storage Account when `appServicePlanSkuName` is `FC1`."
+      }
+    },
+    "flexConsumptionInstanceMemoryMB": {
+      "type": "int",
+      "defaultValue": 2048,
+      "allowedValues": [
+        512,
+        2048,
+        4096
+      ],
+      "metadata": {
+        "description": "Optional. (Flex Consumption only) Memory allocated to each instance of the Function App in MB. Allowed values are 512, 2048, and 4096."
+      }
+    },
+    "flexConsumptionMaximumInstanceCount": {
+      "type": "int",
+      "defaultValue": 100,
+      "minValue": 40,
+      "maxValue": 1000,
+      "metadata": {
+        "description": "Optional. (Flex Consumption only) Maximum number of instances the Function App can scale out to. Allowed range is 40-1000."
       }
     },
     "enableWafAlignment": {
@@ -469,7 +497,7 @@
     "isConsumption": "[startsWith(parameters('appServicePlanSkuName'), 'Y')]",
     "isFlexConsumption": "[startsWith(parameters('appServicePlanSkuName'), 'FC')]",
     "isElasticPremium": "[startsWith(parameters('appServicePlanSkuName'), 'EP')]",
-    "serverFarmKind": "[if(variables('isElasticPremium'), if(variables('isLinux'), 'linux,elastic', 'elastic'), if(or(variables('isConsumption'), variables('isFlexConsumption')), if(variables('isLinux'), 'functionapp,linux', 'functionapp'), if(variables('isLinux'), 'linux', 'app')))]",
+    "serverFarmKind": "[if(variables('isFlexConsumption'), 'functionapp', if(variables('isElasticPremium'), if(variables('isLinux'), 'linux,elastic', 'elastic'), if(variables('isConsumption'), if(variables('isLinux'), 'functionapp,linux', 'functionapp'), if(variables('isLinux'), 'linux', 'app'))))]",
     "zoneRedundantEligibleSkus": [
       "P1v3",
       "P2v3",
@@ -520,7 +548,7 @@
       },
       "python": {}
     },
-    "runtimeVersionSiteConfig": "[if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], variables('effectiveLinuxRuntimeVersion'))), if(not(empty(parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')], createObject()))]",
+    "runtimeVersionSiteConfig": "[if(variables('isFlexConsumption'), createObject(), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], variables('effectiveLinuxRuntimeVersion'))), if(not(empty(parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')], createObject())))]",
     "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
     "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
@@ -542,7 +570,7 @@
       "WEBSITE_CONTENTOVERVNET"
     ],
     "sanitizedUserAppSettings": "[reduce(items(coalesce(parameters('appSettingsKeyValuePairs'), createObject())), createObject(), lambda('cur', 'next', if(contains(variables('reservedAppSettingKeys'), lambdaVariables('next').key), lambdaVariables('cur'), union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').key), lambdaVariables('next').value)))))]",
-    "staticAppSettings": "[union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), variables('sanitizedUserAppSettings'))]",
+    "staticAppSettings": "[if(variables('isFlexConsumption'), union(createObject('AzureWebJobsStorage__credential', 'managedidentity'), variables('sanitizedUserAppSettings')), union(createObject('AzureWebJobsStorage__credential', 'managedidentity', 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', parameters('functionWorkerRuntime')), variables('sanitizedUserAppSettings')))]",
     "contentOverVnetAppSettings": "[if(and(parameters('enableWafAlignment'), variables('requiresContentShare')), createArray(createObject('name', 'WEBSITE_CONTENTOVERVNET', 'value', '1')), createArray())]"
   },
   "resources": {
@@ -5216,6 +5244,15 @@
           "skuName": "[if(parameters('enableWafAlignment'), createObject('value', 'Standard_GRS'), createObject('value', 'Standard_LRS'))]",
           "kind": {
             "value": "StorageV2"
+          },
+          "blobServices": {
+            "value": {
+              "containerDeleteRetentionPolicyEnabled": true,
+              "containerDeleteRetentionPolicyDays": 7,
+              "deleteRetentionPolicyEnabled": true,
+              "deleteRetentionPolicyDays": 6,
+              "containers": "[if(variables('isFlexConsumption'), createArray(createObject('name', parameters('flexConsumptionDeploymentStorageContainerName'), 'publicAccess', 'None')), null())]"
+            }
           },
           "allowBlobPublicAccess": {
             "value": false
@@ -14137,6 +14174,7 @@
           "siteConfig": {
             "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', if(parameters('enableWafAlignment'), 'Disabled', 'FtpsOnly'), 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), if(variables('requiresContentShare'), createArray(createObject('name', 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', 'value', listOutputsWithSecureValues('storageAccount', '2025-04-01').primaryConnectionString), createObject('name', 'WEBSITE_CONTENTSHARE', 'value', toLower(parameters('functionAppName')))), createArray()), variables('contentOverVnetAppSettings'))), if(parameters('enableWafAlignment'), createObject('vnetRouteAllEnabled', true()), createObject()), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
+          "functionAppConfig": "[if(variables('isFlexConsumption'), createObject('value', createObject('deployment', createObject('storage', createObject('type', 'blobContainer', 'value', format('{0}{1}', reference('storageAccount').outputs.primaryBlobEndpoint.value, parameters('flexConsumptionDeploymentStorageContainerName')), 'authentication', createObject('type', 'UserAssignedIdentity', 'userAssignedIdentityResourceId', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.resourceId.value, parameters('userAssignedIdentityResourceId'))))), 'runtime', createObject('name', parameters('functionWorkerRuntime'), 'version', variables('effectiveLinuxRuntimeVersion')), 'scaleAndConcurrency', createObject('instanceMemoryMB', parameters('flexConsumptionInstanceMemoryMB'), 'maximumInstanceCount', parameters('flexConsumptionMaximumInstanceCount')))), createObject('value', null()))]",
           "privateEndpoints": "[if(parameters('enableWafAlignment'), createObject('value', createArray(createObject('name', format('pe-{0}', parameters('functionAppName')), 'service', 'sites', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', if(not(empty(tryGet(variables('dnsZoneIds'), 'sites'))), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', tryGet(variables('dnsZoneIds'), 'sites')))), null())))), createObject('value', null()))]"
         },
         "template": {
