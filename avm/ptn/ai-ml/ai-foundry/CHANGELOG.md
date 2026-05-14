@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.7.0
+
+### Changes
+
+- Introduced `aiSearchConfigurationType` to replace `resourceConfigurationType` for AI Search configuration and added properties to set sku (`sku`), replica count (`replicaCount`), and partition count (`partitionCount`)
+- Introduced `cosmosDbConfigurationType` to replace `resourceConfigurationType` for Cosmos DB configuration and added properties to enable zone redundancy (`enableZoneRedundancy`) and serverless pricing model (`enableServerless`)
+- Updated interior module versions
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes
