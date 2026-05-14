@@ -21,19 +21,14 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Generated. Used as a basis for region rotation per test run.')
-param baseTime string = utcNow('yyyy-MM-ddTHH:mm:ssZ')
-
 // =========== //
 // Variables   //
 // =========== //
 
 // The pipeline's random region selector includes regions where the AVM CI test subscription has no SQL MI
 // vCore quota (e.g., northeurope) or where the regional service tag `AzureCloud.<region>` used by the
-// route table is not honored (e.g., germanywestcentral). Restrict to a curated pool of known-good regions
-// and rotate deterministically per test run via `dateTimeToEpoch(baseTime)`.
-var allowedLocations = ['eastasia', 'eastus', 'uksouth']
-var enforcedLocation = allowedLocations[(dateTimeToEpoch(baseTime) % length(allowedLocations))]
+// route table is not honored (e.g., germanywestcentral). Pin this test to a known-good region.
+var enforcedLocation = 'ukwest'
 
 // ============ //
 // Dependencies //
