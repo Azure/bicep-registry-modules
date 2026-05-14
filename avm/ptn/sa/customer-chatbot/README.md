@@ -624,7 +624,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.8.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.15.0` | Remote reference |
-| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
+| `br/public:avm/res/search/search-service:0.12.1` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
