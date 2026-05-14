@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "2695137869330801770"
+      "templateHash": "11573779851552099238"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -25799,7 +25799,7 @@
               "EnableMongo"
             ]
           },
-          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', variables('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosReplicaLocation')))), createObject('value', createArray(createObject('locationName', variables('solutionLocation'), 'failoverPriority', 0, 'isZoneRedundant', true()))))]"
+          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', parameters('enableRedundancy'), 'locationName', variables('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', parameters('enableRedundancy'), 'locationName', parameters('cosmosReplicaLocation')))), createObject('value', createArray(createObject('locationName', variables('solutionLocation'), 'failoverPriority', 0, 'isZoneRedundant', parameters('enableRedundancy')))))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -44609,8 +44609,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]

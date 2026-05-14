@@ -569,7 +569,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
           {
             locationName: solutionLocation
             failoverPriority: 0
-            isZoneRedundant: true
+            isZoneRedundant: enableRedundancy
           }
         ]
   }

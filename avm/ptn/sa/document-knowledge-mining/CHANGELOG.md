@@ -2,10 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/document-knowledge-mining/CHANGELOG.md).
 
-## 0.5.0
+## 0.4.0
 
 ### Changes
 
+- Fixed Document Intelligence WAF deployment failure caused by Kernel Memory's ingestion pipeline rejecting traffic with "Traffic is not from an approved private endpoint." The Document Intelligence cognitive-services account is now deployed with `publicNetworkAccess: 'Enabled'` and `networkAcls.defaultAction: 'Allow'` regardless of the `enablePrivateNetworking` parameter, and its private endpoint has been removed. **Note:** in WAF-aligned deployments this account is therefore no longer privately scoped; consumers requiring strict network isolation for Document Intelligence should track the follow-up work to reintroduce a properly configured private endpoint.
 - Updated AVM module versions to latest available:
   - `network/private-dns-zone`: 0.8.0 → 0.8.1
   - `network/bastion-host`: 0.8.0 → 0.8.2
