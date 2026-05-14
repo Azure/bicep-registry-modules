@@ -76,6 +76,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-dnsresolver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -144,6 +146,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
       subnetResourceId: inboundEndpoint.subnetResourceId
       privateIpAddress: inboundEndpoint.?privateIpAddress
       privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -157,6 +160,7 @@ module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [
       location: outboundEndpoint.?location ?? location
       dnsResolverName: dnsResolver.name
       subnetResourceId: outboundEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
