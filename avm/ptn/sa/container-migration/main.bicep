@@ -118,6 +118,9 @@ param cosmosLocation string = 'eastus2'
 @description('Optional. Resource ID of an existing Log Analytics workspace to reuse. When empty, a new workspace is created if monitoring or private networking is enabled.')
 param existingLogAnalyticsWorkspaceId string = ''
 
+@description('Optional. Enable purge protection for the App Configuration store. When false (default) cleanup can purge the store immediately on resource group teardown, which prevents soft-deleted name collisions in test/CI subscriptions. Set to true for production deployments.')
+param enablePurgeProtection bool = false
+
 @description('Optional. Override for the CreatedBy tag. If not provided, will auto-detect from deployment context.')
 param createdBy string = ''
 
@@ -1071,6 +1074,7 @@ module appConfiguration 'br/public:avm/res/app-configuration/configuration-store
     enableTelemetry: enableTelemetry
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
+    enablePurgeProtection: enablePurgeProtection
     publicNetworkAccess: 'Enabled'
     replicaLocations: enableRedundancy && replicaLocation != null
       ? [
@@ -1091,6 +1095,7 @@ module appConfigurationUpdate 'br/public:avm/res/app-configuration/configuration
     location: location
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
+    enablePurgeProtection: enablePurgeProtection
     enableTelemetry: enableTelemetry
     tags: allTags
     disableLocalAuth: true

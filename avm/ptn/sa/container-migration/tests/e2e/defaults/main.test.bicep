@@ -21,6 +21,9 @@ param serviceShort string = 'scmdmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A per-run timestamp used to break determinism of generated resource names. Prevents collisions with soft-deleted resources from prior runs (App Configuration / Cognitive Services).')
+param baseTime string = utcNow('yyMMddHHmm')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -44,6 +47,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-init'
   params: {
     solutionName: '${namePrefix}${serviceShort}'
+    solutionUniqueText: take(toLower(uniqueString(baseTime, namePrefix, serviceShort)), 5)
     location: enforcedLocation
     azureAiServiceLocation: enforcedLocation
     cosmosLocation: enforcedLocation

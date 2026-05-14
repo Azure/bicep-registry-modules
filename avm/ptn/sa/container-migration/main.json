@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "13678121652561027635"
+      "templateHash": "11879144950856630357"
     },
     "name": "Container Migration Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Container Migration Solution Accelerator](https://github.com/microsoft/Container-Migration-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Container-Migration-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -208,6 +208,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Resource ID of an existing Log Analytics workspace to reuse. When empty, a new workspace is created if monitoring or private networking is enabled."
+      }
+    },
+    "enablePurgeProtection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable purge protection for the App Configuration store. When false (default) cleanup can purge the store immediately on resource group teardown, which prevents soft-deleted name collisions in test/CI subscriptions. Set to true for production deployments."
       }
     },
     "createdBy": {
@@ -39778,6 +39785,9 @@
           "sku": {
             "value": "Standard"
           },
+          "enablePurgeProtection": {
+            "value": "[parameters('enablePurgeProtection')]"
+          },
           "publicNetworkAccess": {
             "value": "Enabled"
           },
@@ -42000,6 +42010,9 @@
           },
           "sku": {
             "value": "Standard"
+          },
+          "enablePurgeProtection": {
+            "value": "[parameters('enablePurgeProtection')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"

@@ -17,6 +17,9 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.cms-${serviceShort}-rg'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A per-run timestamp used to break determinism of generated resource names. Prevents collisions with soft-deleted resources from prior runs (App Configuration / Cognitive Services). Both [init] and [idem] iterations share the same value, so idempotency is preserved within a single run.')
+param baseTime string = utcNow('yyMMddHHmm')
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -41,6 +44,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
+      solutionUniqueText: take(toLower(uniqueString(baseTime, namePrefix, serviceShort)), 5)
       location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
       cosmosLocation: enforcedLocation

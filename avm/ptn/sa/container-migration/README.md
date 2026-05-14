@@ -158,6 +158,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     enableRedundancy: true
     enableScalability: true
     location: '<location>'
+    solutionUniqueText: '<solutionUniqueText>'
   }
 }
 ```
@@ -199,6 +200,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     },
     "location": {
       "value": "<location>"
+    },
+    "solutionUniqueText": {
+      "value": "<solutionUniqueText>"
     }
   }
 }
@@ -224,6 +228,7 @@ param enablePrivateNetworking = false
 param enableRedundancy = true
 param enableScalability = true
 param location = '<location>'
+param solutionUniqueText = '<solutionUniqueText>'
 ```
 
 </details>
@@ -256,6 +261,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     enableScalability: false
     enableTelemetry: true
     location: '<location>'
+    solutionUniqueText: '<solutionUniqueText>'
   }
 }
 ```
@@ -306,6 +312,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     },
     "location": {
       "value": "<location>"
+    },
+    "solutionUniqueText": {
+      "value": "<solutionUniqueText>"
     }
   }
 }
@@ -334,6 +343,7 @@ param enableRedundancy = false
 param enableScalability = false
 param enableTelemetry = true
 param location = '<location>'
+param solutionUniqueText = '<solutionUniqueText>'
 ```
 
 </details>
@@ -366,6 +376,7 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
+    solutionUniqueText: '<solutionUniqueText>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
   }
@@ -419,6 +430,9 @@ module containerMigration 'br/public:avm/ptn/sa/container-migration:<version>' =
     "location": {
       "value": "<location>"
     },
+    "solutionUniqueText": {
+      "value": "<solutionUniqueText>"
+    },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
@@ -452,6 +466,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
+param solutionUniqueText = '<solutionUniqueText>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
 ```
@@ -485,6 +500,7 @@ param vmAdminUsername = 'adminuser'
 | [`createdBy`](#parameter-createdby) | string | Override for the CreatedBy tag. If not provided, will auto-detect from deployment context. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for the App Configuration store. When false (default) cleanup can purge the store immediately on resource group teardown, which prevents soft-deleted name collisions in test/CI subscriptions. Set to true for production deployments. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -643,6 +659,14 @@ Enable monitoring applicable resources, aligned with the Well Architected Framew
 ### Parameter: `enablePrivateNetworking`
 
 Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enablePurgeProtection`
+
+Enable purge protection for the App Configuration store. When false (default) cleanup can purge the store immediately on resource group teardown, which prevents soft-deleted name collisions in test/CI subscriptions. Set to true for production deployments.
 
 - Required: No
 - Type: bool
