@@ -781,7 +781,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-06-01-preview' = {
 }
 
 // Seperate search service module to enable managed identity and update other properties as it decreases deployment time for Search Service
-module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.1' = {
   name: take('avm.res.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName

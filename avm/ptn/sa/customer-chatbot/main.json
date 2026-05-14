@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "4272533649695438762"
+      "templateHash": "14398740157450752919"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -26903,8 +26903,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "6207719545398489494"
+              "version": "0.43.1.21952",
+              "templateHash": "10544525483737006945"
             },
             "name": "Search Services",
             "description": "This module deploys a Search Service."
@@ -27560,7 +27560,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.Search/searchServices@2025-05-01#properties/properties/properties/authOptions"
                 },
-                "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
+                "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. This parameter is ignored if 'disableLocalAuth' is set to true."
               },
               "nullable": true
             },
@@ -27568,7 +27568,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined."
+                "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication."
               }
             },
             "enableTelemetry": {
@@ -27690,7 +27690,7 @@
               "$ref": "#/definitions/secretsExportConfigurationType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+                "description": "Optional. Key vault reference and secret settings for the module's secrets export. This parameter is ignored if 'disableLocalAuth' is set to true."
               }
             },
             "replicaCount": {
@@ -27777,6 +27777,7 @@
               }
             ],
             "enableReferencedModulesTelemetry": false,
+            "shouldExportSecrets": "[and(not(equals(parameters('secretsExportConfiguration'), null())), not(parameters('disableLocalAuth')))]",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', '')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
@@ -27794,8 +27795,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -27822,7 +27823,7 @@
               "tags": "[parameters('tags')]",
               "identity": "[variables('identity')]",
               "properties": {
-                "authOptions": "[parameters('authOptions')]",
+                "authOptions": "[if(parameters('disableLocalAuth'), null(), parameters('authOptions'))]",
                 "disableLocalAuth": "[parameters('disableLocalAuth')]",
                 "encryptionWithCmk": {
                   "enforcement": "[parameters('cmkEnforcement')]"
@@ -27844,7 +27845,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -27882,7 +27883,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -27899,7 +27900,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -27976,8 +27977,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "16604612898799598358"
+                      "version": "0.41.2.15936",
+                      "templateHash": "18436885663402767850"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -28041,7 +28042,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -28140,7 +28141,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -28179,11 +28180,21 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                         },
                         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
                       },
                       "nullable": true
+                    },
+                    "ipVersionType": {
+                      "type": "string",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                        },
+                        "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+                      },
+                      "defaultValue": "IPv4"
                     },
                     "privateDnsZoneGroup": {
                       "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -28220,7 +28231,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                         },
                         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                       },
@@ -28230,7 +28241,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                         },
                         "description": "Optional. Custom DNS configurations."
                       },
@@ -28240,7 +28251,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
                       },
@@ -28250,7 +28261,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
                       },
@@ -28290,7 +28301,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -28308,7 +28319,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -28329,14 +28340,15 @@
                         "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                         "subnet": {
                           "id": "[parameters('subnetResourceId')]"
-                        }
+                        },
+                        "ipVersionType": "[parameters('ipVersionType')]"
                       }
                     },
                     "privateEndpoint_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -28353,7 +28365,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -28396,8 +28408,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.5.1644",
-                              "templateHash": "24141742673128945"
+                              "version": "0.41.2.15936",
+                              "templateHash": "9935179114830442414"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -28456,12 +28468,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "copy": [
@@ -28536,13 +28548,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                           "output": true
                         },
                         "description": "The custom DNS configurations of the private endpoint."
@@ -28616,8 +28628,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "2115224445601868607"
+                      "version": "0.43.1.21952",
+                      "templateHash": "4777097353420226812"
                     },
                     "name": "Search Services Private Link Resources",
                     "description": "This module deploys a Search Service Private Link Resource."
@@ -28710,7 +28722,7 @@
               ]
             },
             "secretsExport": {
-              "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+              "condition": "[variables('shouldExportSecrets')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
@@ -28736,8 +28748,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "696453183181258843"
+                      "version": "0.43.1.21952",
+                      "templateHash": "11743018311663462426"
                     }
                   },
                   "definitions": {
@@ -28909,21 +28921,21 @@
               "metadata": {
                 "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
               },
-              "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+              "value": "[if(variables('shouldExportSecrets'), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
             },
             "primaryKey": {
               "type": "securestring",
               "metadata": {
-                "description": "The primary admin API key of the search service."
+                "description": "The primary admin API key of the search service. Empty when local auth is disabled."
               },
-              "value": "[listAdminKeys('searchService', '2025-05-01').primaryKey]"
+              "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').primaryKey, '')]"
             },
             "secondaryKey": {
               "type": "securestring",
               "metadata": {
-                "description": "The secondaryKey admin API key of the search service."
+                "description": "The secondary admin API key of the search service. Empty when local auth is disabled."
               },
-              "value": "[listAdminKeys('searchService', '2025-05-01').secondaryKey]"
+              "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').secondaryKey, '')]"
             }
           }
         }
