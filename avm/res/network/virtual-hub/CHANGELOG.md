@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added route map support to the virtual hub module
 - Publishing child module `avm/res/network/virtual-hub/route-map`
+- Updated API versions to `2025-05-01`
 
 ### Breaking Changes
 
