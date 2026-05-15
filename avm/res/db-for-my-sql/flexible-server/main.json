@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "3725210885108606939"
+      "version": "0.43.8.12551",
+      "templateHash": "18094487988994556483"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -1383,8 +1383,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "1917109386897384336"
+              "version": "0.43.8.12551",
+              "templateHash": "14819473936315678949"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1520,8 +1520,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17095479392181341475"
+              "version": "0.43.8.12551",
+              "templateHash": "7415558674887043205"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1658,8 +1658,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14475874640043324559"
+              "version": "0.43.8.12551",
+              "templateHash": "1930786379967378229"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1804,8 +1804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10835180653907106779"
+              "version": "0.43.8.12551",
+              "templateHash": "12480301716067557787"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1941,8 +1941,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6856234245124087055"
+              "version": "0.43.8.12551",
+              "templateHash": "1259032340609896448"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
