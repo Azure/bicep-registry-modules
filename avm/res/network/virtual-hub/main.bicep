@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.tags?
+param tags resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.tags?
 
 @description('Required. Address-prefix for this VirtualHub.')
 param addressPrefix string
@@ -27,10 +27,10 @@ param expressRouteGatewayResourceId string?
 param p2SVpnGatewayResourceId string?
 
 @description('Optional. The preferred routing preference for this virtual hub.')
-param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.hubRoutingPreference?
+param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.hubRoutingPreference?
 
 @description('Optional. The preferred routing gateway types.')
-param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
+param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.preferredRoutingGateway?
 
 @description('Optional. The VirtualHub route tables.')
 param routeTableRoutes array?
@@ -52,7 +52,7 @@ param sku string = 'Standard'
 param virtualHubRouteTableV2s array = []
 
 @description('Optional. VirtualRouter ASN.')
-param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.virtualRouterAsn?
+param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.virtualRouterAsn?
 
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array?
@@ -112,7 +112,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 var enableReferencedModulesTelemetry = false
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -309,11 +309,11 @@ type routeMapType = {
   name: string
 
   @description('Optional. List of connections which have this route map associated for inbound traffic.')
-  associatedInboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.associatedInboundConnections?
+  associatedInboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.associatedInboundConnections?
 
   @description('Optional. List of connections which have this route map associated for outbound traffic.')
-  associatedOutboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.associatedOutboundConnections?
+  associatedOutboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.associatedOutboundConnections?
 
   @description('Optional. List of route map rules.')
-  rules: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.rules?
+  rules: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.rules?
 }

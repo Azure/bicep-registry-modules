@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "18135679105998822702"
+      "templateHash": "6592899221761856157"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -156,7 +156,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/associatedInboundConnections"
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-05-01#properties/properties/properties/associatedInboundConnections"
             },
             "description": "Optional. List of connections which have this route map associated for inbound traffic."
           },
@@ -166,7 +166,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/associatedOutboundConnections"
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-05-01#properties/properties/properties/associatedOutboundConnections"
             },
             "description": "Optional. List of connections which have this route map associated for outbound traffic."
           },
@@ -176,7 +176,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/rules"
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-05-01#properties/properties/properties/rules"
             },
             "description": "Optional. List of route map rules."
           },
@@ -244,7 +244,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualHubs@2025-01-01#properties/tags"
+          "source": "Microsoft.Network/virtualHubs@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -288,7 +288,7 @@
       "type": "string",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualHubs@2025-01-01#properties/properties/properties/hubRoutingPreference"
+          "source": "Microsoft.Network/virtualHubs@2025-05-01#properties/properties/properties/hubRoutingPreference"
         },
         "description": "Optional. The preferred routing preference for this virtual hub."
       },
@@ -298,7 +298,7 @@
       "type": "string",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualHubs@2025-01-01#properties/properties/properties/preferredRoutingGateway"
+          "source": "Microsoft.Network/virtualHubs@2025-05-01#properties/properties/properties/preferredRoutingGateway"
         },
         "description": "Optional. The preferred routing gateway types."
       },
@@ -347,7 +347,7 @@
       "type": "int",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/virtualHubs@2025-01-01#properties/properties/properties/virtualRouterAsn"
+          "source": "Microsoft.Network/virtualHubs@2025-05-01#properties/properties/properties/virtualRouterAsn"
         },
         "description": "Optional. VirtualRouter ASN."
       },
@@ -466,7 +466,7 @@
     },
     "virtualHub": {
       "type": "Microsoft.Network/virtualHubs",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -542,7 +542,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "15468730592335706887"
+              "templateHash": "15297641199949127784"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -615,7 +615,7 @@
             },
             {
               "type": "Microsoft.Network/virtualHubs/routingIntent",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"
@@ -689,7 +689,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "12470160270998093384"
+              "templateHash": "4814401607148283588"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -753,12 +753,12 @@
             "virtualHub": {
               "existing": true,
               "type": "Microsoft.Network/virtualHubs",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('virtualHubName')]"
             },
             "hubRouteTable": {
               "type": "Microsoft.Network/virtualHubs/hubRouteTables",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "labels": "[parameters('labels')]",
@@ -836,7 +836,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "2148839526994528985"
+              "templateHash": "4965265376357115243"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -906,12 +906,12 @@
             "virtualHub": {
               "existing": true,
               "type": "Microsoft.Network/virtualHubs",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('virtualHubName')]"
             },
             "hubVirtualNetworkConnection": {
               "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
@@ -993,7 +993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "11133159674004616851"
+              "templateHash": "7894450860661619821"
             },
             "name": "Virtual Hub Route Maps",
             "description": "This module deploys a Virtual Hub Route Map."
@@ -1035,7 +1035,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/rules"
+                  "source": "Microsoft.Network/virtualHubs/routeMaps@2025-05-01#properties/properties/properties/rules"
                 },
                 "description": "Optional. List of route map rules to be applied."
               },
@@ -1073,12 +1073,12 @@
             "virtualHub": {
               "existing": true,
               "type": "Microsoft.Network/virtualHubs",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('virtualHubName')]"
             },
             "routeMap": {
               "type": "Microsoft.Network/virtualHubs/routeMaps",
-              "apiVersion": "2025-01-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "associatedInboundConnections": "[parameters('associatedInboundConnections')]",
@@ -1144,7 +1144,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualHub', '2025-01-01', 'full').location]"
+      "value": "[reference('virtualHub', '2025-05-01', 'full').location]"
     }
   }
 }

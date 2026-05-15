@@ -14,7 +14,7 @@ param associatedInboundConnections string[]?
 param associatedOutboundConnections string[]?
 
 @description('Optional. List of route map rules to be applied.')
-param rules resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.rules?
+param rules resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.rules?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' existing = {
   name: virtualHubName
 }
 
-resource routeMap 'Microsoft.Network/virtualHubs/routeMaps@2025-01-01' = {
+resource routeMap 'Microsoft.Network/virtualHubs/routeMaps@2025-05-01' = {
   name: name
   parent: virtualHub
   properties: {
