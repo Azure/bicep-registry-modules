@@ -1,19 +1,5 @@
 metadata name = 'Key Vault Module'
 // ========== Key Vault Module ========== //
-// param name string
-// param location string
-// param tags object
-// param roleAssignments array = []
-// param enablePurgeProtection bool = false
-// param enableSoftDelete bool = true
-// param enableVaultForDiskEncryption  bool =   true
-// param enableVaultForTemplateDeployment bool = true
-// param publicNetworkAccess string = 'Enabled'
-// param vaultsku string = 'standard'
-// param softDeleteRetentionInDays int = 7
-// param enableRbacAuthorization bool = true
-// param createMode string = 'default'
-// param enableTelemetry bool = true
 
 @description('The name of the Key Vault')
 param keyvaultName string
@@ -62,11 +48,6 @@ param networkAcls object = {
   bypass: 'AzureServices'
   defaultAction: 'Deny'
 }
-
-// @description('Diagnostic settings for the Key Vault')
-// param diagnosticSettings object = {
-//   enabled: true
-// }
 
 @description('Log Analytics Workspace Resource ID for diagnostic settings')
 @secure()
