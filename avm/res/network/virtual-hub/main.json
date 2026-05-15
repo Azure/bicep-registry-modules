@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "2554182189882011854"
+      "templateHash": "18135679105998822702"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -154,169 +154,38 @@
         },
         "associatedInboundConnections": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/associatedInboundConnections"
+            },
             "description": "Optional. List of connections which have this route map associated for inbound traffic."
-          }
+          },
+          "nullable": true
         },
         "associatedOutboundConnections": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/associatedOutboundConnections"
+            },
             "description": "Optional. List of connections which have this route map associated for outbound traffic."
-          }
+          },
+          "nullable": true
         },
         "rules": {
           "type": "array",
-          "items": {
-            "$ref": "#/definitions/routeMapRuleType"
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/rules"
+            },
             "description": "Optional. List of route map rules."
-          }
+          },
+          "nullable": true
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a route map."
-      }
-    },
-    "_1.actionType": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "allowedValues": [
-            "Add",
-            "Drop",
-            "Remove",
-            "Replace",
-            "Unknown"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'."
-          }
-        },
-        "parameters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.parameterType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of parameters relevant to the action."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a route map action.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "route-map/main.bicep"
-        }
-      }
-    },
-    "_1.criterionType": {
-      "type": "object",
-      "properties": {
-        "asPath": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of AS paths which this criteria matches."
-          }
-        },
-        "community": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of BGP communities which this criteria matches."
-          }
-        },
-        "matchCondition": {
-          "type": "string",
-          "allowedValues": [
-            "Contains",
-            "Equals",
-            "NotContains",
-            "NotEquals",
-            "Unknown"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Match condition to apply RouteMap rules."
-          }
-        },
-        "routePrefix": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of route prefixes which this criteria matches."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a route map criterion.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "route-map/main.bicep"
-        }
-      }
-    },
-    "_1.parameterType": {
-      "type": "object",
-      "properties": {
-        "asPath": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of AS paths."
-          }
-        },
-        "community": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of BGP communities."
-          }
-        },
-        "routePrefix": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of route prefixes."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a route map action parameter.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "route-map/main.bicep"
-        }
       }
     },
     "lockType": {
@@ -353,55 +222,6 @@
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "routeMapRuleType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The unique name for the rule."
-          }
-        },
-        "matchCriteria": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.criterionType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of matching criterion which will be applied to traffic."
-          }
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/_1.actionType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. List of actions which will be applied on a match."
-          }
-        },
-        "nextStepIfMatched": {
-          "type": "string",
-          "allowedValues": [
-            "Continue",
-            "Terminate",
-            "Unknown"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a route map rule.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "route-map/main.bicep"
         }
       }
     }
@@ -1173,184 +993,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "10775193976866105070"
+              "templateHash": "11133159674004616851"
             },
             "name": "Virtual Hub Route Maps",
             "description": "This module deploys a Virtual Hub Route Map."
-          },
-          "definitions": {
-            "routeMapRuleType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The unique name for the rule."
-                  }
-                },
-                "matchCriteria": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/criterionType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of matching criterion which will be applied to traffic."
-                  }
-                },
-                "actions": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/actionType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of actions which will be applied on a match."
-                  }
-                },
-                "nextStepIfMatched": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Continue",
-                    "Terminate",
-                    "Unknown"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Next step after rule is evaluated. Current supported behaviors are 'Continue'(to next rule) and 'Terminate'."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a route map rule."
-              }
-            },
-            "criterionType": {
-              "type": "object",
-              "properties": {
-                "asPath": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of AS paths which this criteria matches."
-                  }
-                },
-                "community": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of BGP communities which this criteria matches."
-                  }
-                },
-                "matchCondition": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Contains",
-                    "Equals",
-                    "NotContains",
-                    "NotEquals",
-                    "Unknown"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Match condition to apply RouteMap rules."
-                  }
-                },
-                "routePrefix": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of route prefixes which this criteria matches."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a route map criterion."
-              }
-            },
-            "actionType": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Add",
-                    "Drop",
-                    "Remove",
-                    "Replace",
-                    "Unknown"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Type of action to be taken. Supported types are 'Remove', 'Add', 'Replace', and 'Drop'."
-                  }
-                },
-                "parameters": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/parameterType"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of parameters relevant to the action."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a route map action."
-              }
-            },
-            "parameterType": {
-              "type": "object",
-              "properties": {
-                "asPath": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of AS paths."
-                  }
-                },
-                "community": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of BGP communities."
-                  }
-                },
-                "routePrefix": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of route prefixes."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a route map action parameter."
-              }
-            }
           },
           "parameters": {
             "name": {
@@ -1387,13 +1033,13 @@
             },
             "rules": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/routeMapRuleType"
-              },
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Network/virtualHubs/routeMaps@2025-01-01#properties/properties/properties/rules"
+                },
                 "description": "Optional. List of route map rules to be applied."
-              }
+              },
+              "nullable": true
             },
             "enableTelemetry": {
               "type": "bool",

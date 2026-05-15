@@ -302,8 +302,6 @@ type hubVirtualNetworkConnectionType = {
   routingConfiguration: object?
 }
 
-import { routeMapRuleType } from 'route-map/main.bicep'
-
 @export()
 @description('The type of a route map.')
 type routeMapType = {
@@ -311,11 +309,11 @@ type routeMapType = {
   name: string
 
   @description('Optional. List of connections which have this route map associated for inbound traffic.')
-  associatedInboundConnections: string[]?
+  associatedInboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.associatedInboundConnections?
 
   @description('Optional. List of connections which have this route map associated for outbound traffic.')
-  associatedOutboundConnections: string[]?
+  associatedOutboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.associatedOutboundConnections?
 
   @description('Optional. List of route map rules.')
-  rules: routeMapRuleType[]?
+  rules: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.rules?
 }

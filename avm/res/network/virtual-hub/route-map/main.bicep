@@ -14,7 +14,7 @@ param associatedInboundConnections string[]?
 param associatedOutboundConnections string[]?
 
 @description('Optional. List of route map rules to be applied.')
-param rules routeMapRuleType[]?
+param rules resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-01-01'>.properties.rules?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -63,62 +63,3 @@ output resourceId string = routeMap.id
 
 @description('The resource group the route map was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a route map rule.')
-type routeMapRuleType = {
-  @description('Required. The unique name for the rule.')
-  name: string
-
-  @description('Optional. List of matching criterion which will be applied to traffic.')
-  matchCriteria: criterionType[]?
-
-  @description('Optional. List of actions which will be applied on a match.')
-  actions: actionType[]?
-
-  @description('Optional. Next step after rule is evaluated. Current supported behaviors are \'Continue\'(to next rule) and \'Terminate\'.')
-  nextStepIfMatched: ('Unknown' | 'Continue' | 'Terminate')?
-}
-
-@export()
-@description('The type for a route map criterion.')
-type criterionType = {
-  @description('Optional. List of AS paths which this criteria matches.')
-  asPath: string[]?
-
-  @description('Optional. List of BGP communities which this criteria matches.')
-  community: string[]?
-
-  @description('Optional. Match condition to apply RouteMap rules.')
-  matchCondition: ('Unknown' | 'Contains' | 'Equals' | 'NotContains' | 'NotEquals')?
-
-  @description('Optional. List of route prefixes which this criteria matches.')
-  routePrefix: string[]?
-}
-
-@export()
-@description('The type for a route map action.')
-type actionType = {
-  @description('Optional. Type of action to be taken. Supported types are \'Remove\', \'Add\', \'Replace\', and \'Drop\'.')
-  type: ('Unknown' | 'Remove' | 'Add' | 'Replace' | 'Drop')?
-
-  @description('Optional. List of parameters relevant to the action.')
-  parameters: parameterType[]?
-}
-
-@export()
-@description('The type for a route map action parameter.')
-type parameterType = {
-  @description('Optional. List of AS paths.')
-  asPath: string[]?
-
-  @description('Optional. List of BGP communities.')
-  community: string[]?
-
-  @description('Optional. List of route prefixes.')
-  routePrefix: string[]?
-}
