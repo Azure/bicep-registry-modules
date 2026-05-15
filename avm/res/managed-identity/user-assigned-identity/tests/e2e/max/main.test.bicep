@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
           issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}01/'
           claimsMatchingExpression: {
             languageVersion: 1
-            value: 'system:serviceaccount:default:*'
+            value: 'claims[\'sub\'] matches \'system:serviceaccount:default:*\''
           }
         }
         {

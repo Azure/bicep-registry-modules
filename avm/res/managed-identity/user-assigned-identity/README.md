@@ -129,7 +129,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         ]
         claimsMatchingExpression: {
           languageVersion: 1
-          value: 'system:serviceaccount:default:*'
+          value: 'claims[\'sub\'] matches \'system:serviceaccount:default:*\''
         }
         issuer: '<issuer>'
         name: 'test-fed-cred-miuaimax-001'
@@ -202,7 +202,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
           ],
           "claimsMatchingExpression": {
             "languageVersion": 1,
-            "value": "system:serviceaccount:default:*"
+            "value": "claims[\"sub\"] matches \"system:serviceaccount:default:*\""
           },
           "issuer": "<issuer>",
           "name": "test-fed-cred-miuaimax-001"
@@ -281,7 +281,7 @@ param federatedIdentityCredentials = [
     ]
     claimsMatchingExpression: {
       languageVersion: 1
-      value: 'system:serviceaccount:default:*'
+      value: 'claims[\'sub\'] matches \'system:serviceaccount:default:*\''
     }
     issuer: '<issuer>'
     name: 'test-fed-cred-miuaimax-001'
