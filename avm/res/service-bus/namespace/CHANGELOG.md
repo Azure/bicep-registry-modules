@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/service-bus/namespace/CHANGELOG.md).
 
+## 0.16.2
+
+### Changes
+
+- Added publishing criteria to child modules `authorization-rule`, `disaster-recovery-config`, `migration-configuration`, `network-rule-set`, `queue/authorization-rule`, `topic/authorization-rule`, `topic/subscription` and `topic/subscription/rule`.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.1
 
 ### Changes
