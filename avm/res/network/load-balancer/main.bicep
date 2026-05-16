@@ -319,6 +319,7 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
       loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
       drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
       virtualNetworkResourceId: backendAddressPool.?virtualNetworkResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -339,6 +340,7 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [
       frontendPortRangeStart: inboundNATRule.?frontendPortRangeStart
       idleTimeoutInMinutes: inboundNATRule.?idleTimeoutInMinutes
       protocol: inboundNATRule.?protocol
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       loadBalancer_backendAddressPools

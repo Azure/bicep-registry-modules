@@ -33,7 +33,7 @@ param supportedOSType string
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -42,6 +42,9 @@ param tags resourceInput<'Microsoft.Compute/galleries/applications@2024-03-03'>.
 
 @sys.description('Optional. A list of custom actions that can be performed with all of the Gallery Application Versions within this Gallery Application.')
 param customActions customActionType[]?
+
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   'Compute Gallery Sharing Admin': subscriptionResourceId(
@@ -71,6 +74,25 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.compute-gallery-application.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: galleryName
