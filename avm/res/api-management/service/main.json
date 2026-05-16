@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "13314047686071503508"
+      "templateHash": "321068657858226423"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -7753,7 +7753,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.42.1.51946",
-              "templateHash": "13295778101992633194"
+              "templateHash": "1172347102773612600"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
@@ -7876,7 +7876,7 @@
             },
             "subscriptionRequired": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
               }
