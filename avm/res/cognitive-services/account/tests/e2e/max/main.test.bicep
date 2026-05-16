@@ -94,6 +94,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       networkAcls: {
+        bypass: 'AzureServices'
         defaultAction: 'Deny'
         ipRules: [
           {

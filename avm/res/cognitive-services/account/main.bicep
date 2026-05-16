@@ -74,7 +74,7 @@ param publicNetworkAccess string?
 param customSubDomainName string?
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object?
+param networkAcls networkAclsType?
 
 @description('Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.')
 param networkInjections networkInjectionType?
@@ -338,6 +338,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
+          bypass: networkAcls.?bypass
           defaultAction: networkAcls.?defaultAction
           virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
           ipRules: networkAcls.?ipRules ?? []
@@ -741,4 +742,29 @@ type networkInjectionType = {
 
   @description('Optional. Whether to use Microsoft Managed Network. Defaults to false.')
   useMicrosoftManagedNetwork: bool?
+}
+
+@export()
+@description('The type for rules governing the accessibility of the Cognitive Services account from specific network locations.')
+type networkAclsType = {
+  @description('Optional. Setting for trusted services. Set to \'None\' to prevent any Azure service from bypassing the network ACLs (recommended when using private endpoints).')
+  bypass: ('AzureServices' | 'None')?
+
+  @description('Optional. The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. The list of IP address rules.')
+  ipRules: {
+    @description('Required. An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24" (all addresses that start with 124.56.78).')
+    value: string
+  }[]?
+
+  @description('Optional. The list of virtual network rules.')
+  virtualNetworkRules: {
+    @description('Required. Full resource ID of a vnet subnet.')
+    id: string
+
+    @description('Optional. Ignore missing vnet service endpoint or not.')
+    ignoreMissingVnetServiceEndpoint: bool?
+  }[]?
 }

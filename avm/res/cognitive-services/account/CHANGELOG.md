@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Added a user-defined type `networkAclsType` for the `networkAcls` parameter, exposing the previously hidden `bypass` property (allowed values: `AzureServices`, `None`). This resolves [#5893](https://github.com/Azure/bicep-registry-modules/issues/5893) and allows callers to set `bypass` to `None` as recommended when using private endpoints.
+
+### Breaking Changes
+
+- None. The `networkAcls` parameter remains optional and the new `bypass` property defaults to the Azure Resource Provider behavior (`AzureServices`) when not specified, preserving the prior behavior.
+
 ## 0.14.2
 
 ### Changes
