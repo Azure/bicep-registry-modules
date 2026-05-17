@@ -70,7 +70,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = '${namePrefix}${serviceShort}002'
 var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -87,7 +87,7 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
-      restore: true
+      restore: false
       apis: [
         {
           displayName: 'Echo API'
