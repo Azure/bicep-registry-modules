@@ -83,6 +83,9 @@ module testDeployment '../../../main.bicep' = [
           hubLocation: enforcedLocation2
           hubName: 'dep-${namePrefix}-hub-${enforcedLocation2}-${serviceShort}'
           hubRoutingPreference: 'ExpressRoute'
+          virtualRouterAutoScaleConfiguration: {
+            minCount: 8
+          }
           p2sVpnParameters: {
             deployP2SVpnGateway: false
           }

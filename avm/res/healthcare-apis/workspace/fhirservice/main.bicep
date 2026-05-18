@@ -109,6 +109,9 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -194,6 +197,25 @@ var formattedRoleAssignments = [
 
 resource workspace 'Microsoft.HealthcareApis/workspaces@2022-06-01' existing = {
   name: workspaceName
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.healthcapis-workspace-fhirservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource fhir 'Microsoft.HealthcareApis/workspaces/fhirservices@2022-06-01' = {

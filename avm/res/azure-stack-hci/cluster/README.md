@@ -26,7 +26,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.AzureStackHCI/clusters` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters)</li></ul> |
-| `Microsoft.AzureStackHCI/clusters/deploymentSettings` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_clusters_deploymentsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/clusters/deploymentSettings)</li></ul> |
 | `Microsoft.AzureStackHCI/edgeDevices` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_edgedevices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-10-01/edgeDevices)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2021-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-06-01-preview/vaults/secrets)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -49,6 +48,10 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -407,6 +410,10 @@ This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster,
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 

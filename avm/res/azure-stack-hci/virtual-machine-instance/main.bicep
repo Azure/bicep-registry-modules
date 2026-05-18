@@ -1,5 +1,5 @@
 metadata name = 'Azure Stack HCI Virtual Machine Instance'
-metadata description = 'This module deploys an Azure Stack HCI virtual machine.'
+metadata description = 'This module deploys an Azure Stack HCI Virtual Machine Instance.'
 
 @description('Required. Name of the resource to create.')
 param name string

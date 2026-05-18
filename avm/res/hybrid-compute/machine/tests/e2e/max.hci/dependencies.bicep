@@ -4,7 +4,7 @@ param privateLinkScopeName string
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
-resource privateLinkScope 'Microsoft.HybridCompute/privateLinkScopes@2023-10-03-preview' = {
+resource privateLinkScope 'Microsoft.HybridCompute/privateLinkScopes@2025-01-13' = {
   name: privateLinkScopeName
   location: location
   tags: {

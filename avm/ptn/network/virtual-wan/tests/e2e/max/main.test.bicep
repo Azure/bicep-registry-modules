@@ -87,6 +87,9 @@ module testDeployment '../../../main.bicep' = [
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           allowBranchToBranchTraffic: true
           hubRoutingPreference: 'ASPath'
+          virtualRouterAutoScaleConfiguration: {
+            minCount: 2
+          }
           hubVirtualNetworkConnections: [
             {
               name: 'dep-${namePrefix}-vnetconn1-${serviceShort}'

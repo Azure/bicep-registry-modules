@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.11.2
+
+### Changes
+
+- Updated all API versions to `2025-08-01` for Recovery Services vault and child resources
+- Added `sourceScanConfiguration` parameter and type for security settings
+- Added `resourceGuardOperationRequests` parameter
+- Made backup-config `enhancedSecurityState` and `softDeleteFeatureState` nullable to avoid conflicts with vault-level `softDeleteSettings`
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

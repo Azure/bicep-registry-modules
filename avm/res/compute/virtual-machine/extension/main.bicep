@@ -47,6 +47,28 @@ param protectedSettingsFromKeyVault resourceInput<'Microsoft.Compute/virtualMach
 @description('Optional. Collection of extension names after which this extension needs to be provisioned.')
 param provisionAfterExtensions resourceInput<'Microsoft.Compute/virtualMachines/extensions@2024-11-01'>.properties.provisionAfterExtensions?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.compute-vm-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-11-01' existing = {
   name: virtualMachineName
 }
