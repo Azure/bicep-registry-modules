@@ -125,36 +125,6 @@ function Invoke-ResourcePostRemoval {
                     }
                     break
                 }
-                'Microsoft.ApiCenter/services' {
-                    $subscriptionId = $ResourceId.Split('/')[2]
-                    $resourceGroupName = $ResourceId.Split('/')[4]
-                    $resourceName = Split-Path $ResourceId -Leaf
-
-                    # Fetch service in soft-delete
-                    $getPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiCenter/deletedServices?api-version=2024-06-01-preview' -f $subscriptionId, $resourceGroupName
-                    $getRequestInputObject = @{
-                        Method = 'GET'
-                        Path   = $getPath
-                    }
-                    $softDeletedService = ((Invoke-AzRestMethod @getRequestInputObject).Content | ConvertFrom-Json).value | Where-Object { $_.name -eq $resourceName }
-
-                    if ($softDeletedService) {
-                        # Purge service
-                        $purgePath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.ApiCenter/deletedServices/{2}?api-version=2024-06-01-preview' -f $subscriptionId, $resourceGroupName, $resourceName
-                        $purgeRequestInputObject = @{
-                            Method = 'DELETE'
-                            Path   = $purgePath
-                        }
-                        Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
-                        if ($PSCmdlet.ShouldProcess(('API Center service with ID [{0}]' -f $softDeletedService.id), 'Purge')) {
-                            $response = Invoke-AzRestMethod @purgeRequestInputObject
-                            if ($response.StatusCode -notin @(200, 204)) {
-                                throw ('Purge of resource [{0}] failed with error code [{1}]' -f $ResourceId, $response.StatusCode)
-                            }
-                        }
-                    }
-                    break
-                }
                 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems' {
                     # Remove protected VM
                     # Required if e.g. a VM was listed in an RSV and only that VM is removed
