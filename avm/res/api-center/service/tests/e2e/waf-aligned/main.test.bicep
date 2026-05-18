@@ -20,6 +20,9 @@ param serviceShort string = 'aacavmwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. A temporary per-run suffix to avoid API Center soft-delete name reuse while API Center purge is unavailable.')
+param serviceNameSuffix string = take(uniqueString(deployment().name), 5)
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -49,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}${serviceNameSuffix}'
       location: resourceLocation
       lock: {
         kind: 'CanNotDelete'
