@@ -63,27 +63,27 @@ param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01
 @description('Optional. Purview Account resource identifier.')
 param purviewResourceId string?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings for all Resources in the solution.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -93,13 +93,23 @@ param tags resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.tags?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+// For any Self-Hosted Integration Runtime that is linked to a resource with RBAC authorization, the Data Factory's system assigned identity is required to perform the role assignment on the linked resource.
+// https://learn.microsoft.com/en-us/azure/data-factory/create-shared-self-hosted-integration-runtime-powershell#known-limitations-of-self-hosted-ir-sharing
+var sharedSelfHostedIntegrationRuntimes = filter(
+  integrationRuntimes ?? [],
+  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
+)
+
+// Validate that a system-assigned managed identity is enabled when one or more shared Self-Hosted Integration Runtimes with RBAC authorization are configured, since the Data Factory's system-assigned identity is required to perform the role assignment on the linked resource.
+var sharedSHIRRequiresSystemAssignedIdentity = !empty(sharedSelfHostedIntegrationRuntimes) && !(managedIdentities.?systemAssigned ?? false)
+  ? fail('When one or more Self-Hosted Integration Runtimes are configured with a linked resource using RBAC authorization (shared SHIR), a system-assigned managed identity must be enabled on the Data Factory by setting \'managedIdentities.systemAssigned\' to true.')
+  : null
 
 var identity = !empty(managedIdentities)
   ? {
@@ -140,6 +150,9 @@ var formattedRoleAssignments = [
 ]
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+var enableReferencedModulesTelemetry = false
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
@@ -242,16 +255,36 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
   name: '${uniqueString(deployment().name, location)}-DataFactory-ManagedVNet'
   params: {
     dataFactoryName: dataFactory.name
+    enableTelemetry: enableReferencedModulesTelemetry
     name: managedVirtualNetwork!.name
     managedPrivateEndpoints: managedVirtualNetwork!.?managedPrivateEndpoints
   }
 }
+
+// The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
+module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: {
+    name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    scope: resourceGroup(
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
+      split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[4]
+    )
+    params: {
+      principalId: dataFactory.?identity.?principalId ?? sharedSHIRRequiresSystemAssignedIdentity
+      roleDefinitionId: sharedSelfHostedIntegrationRuntime.?linkedResourceRoleDefinitionId ?? roleDefinitions('Contributor').id // Defaults to Contributor role for shared SHIR
+      principalType: 'ServicePrincipal'
+      resourceId: sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
 
 module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
   for (integrationRuntime, index) in (integrationRuntimes ?? []): {
     name: '${uniqueString(deployment().name, location)}-DataFactory-IntegrationRuntime-${index}'
     params: {
       dataFactoryName: dataFactory.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: integrationRuntime.name
       type: integrationRuntime.type
       integrationRuntimeCustomDescription: integrationRuntime.?integrationRuntimeCustomDescription
@@ -260,6 +293,7 @@ module dataFactory_integrationRuntimes 'integration-runtime/main.bicep' = [
     }
     dependsOn: [
       dataFactory_managedVirtualNetwork
+      dataFactory_roleAssignmentsSharedSHIR
     ]
   }
 ]
@@ -269,6 +303,7 @@ module dataFactory_linkedServices 'linked-service/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-DataFactory-LinkedServices-${index}'
     params: {
       dataFactoryName: dataFactory.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: linkedService.name
       type: linkedService.type
       typeProperties: linkedService.?typeProperties
@@ -338,7 +373,7 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   }
 ]
 
-module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -450,6 +485,9 @@ type integrationRuntimesType = {
 
   @description('Optional. Integration Runtime type properties. Required if type is "Managed".')
   typeProperties: object?
+
+  @description('Optional. The role definition ID (GUID or full resource ID) to assign to the Data Factory\'s system-assigned managed identity on the linked resource when configuring a shared Self-Hosted Integration Runtime with RBAC authorization. Defaults to the Contributor role.')
+  linkedResourceRoleDefinitionId: string?
 }
 
 @export()

@@ -649,6 +649,7 @@ module managedCluster_maintenanceConfigurations 'maintenance-configuration/main.
       maintenanceWindow: maintenanceConfiguration.maintenanceWindow
       notAllowedTime: maintenanceConfiguration.?notAllowedTime
       timeInWeek: maintenanceConfiguration.?timeInWeek
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -659,6 +660,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
     params: {
       managedClusterName: managedCluster.?name
       name: agentPool.name
+      enableTelemetry: enableReferencedModulesTelemetry
       availabilityZones: agentPool.?availabilityZones
       count: agentPool.?count
       capacityReservationGroupResourceId: agentPool.?capacityReservationGroupResourceId

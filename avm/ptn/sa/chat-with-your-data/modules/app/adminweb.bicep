@@ -68,6 +68,9 @@ param publicNetworkAccess string?
 @description('Optional. Configuration details for private endpoints.')
 param privateEndpoints array = []
 
+@description('Optional. Tags to apply to all child resources (e.g., private endpoints). Useful for excluding service-specific tags like azd-service-name from shared resources.')
+param allTags object = {}
+
 // Calculate the linuxFxVersion based on runtime or docker settings
 var linuxFxVersion = useDocker
   ? 'DOCKER|${dockerFullImageName}'
@@ -123,6 +126,7 @@ module adminweb '../core/host/appservice.bicep' = {
     virtualNetworkSubnetId: virtualNetworkSubnetId
     publicNetworkAccess: empty(publicNetworkAccess) ? null : publicNetworkAccess
     privateEndpoints: privateEndpoints
+    allTags: allTags
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [

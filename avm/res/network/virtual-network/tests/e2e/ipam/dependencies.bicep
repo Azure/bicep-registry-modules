@@ -7,7 +7,7 @@ param networkManagerName string
 @description('Required. List of IP address prefixes to be used for the IPAM pool.')
 param addressPrefixes array
 
-resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
+resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' = {
   name: networkManagerName
   location: location
   properties: {
@@ -19,7 +19,7 @@ resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' = {
   }
 }
 
-resource networkManagerIpamPool 'Microsoft.Network/networkManagers/ipamPools@2024-05-01' = {
+resource networkManagerIpamPool 'Microsoft.Network/networkManagers/ipamPools@2025-05-01' = {
   name: '${networkManagerName}-ipamPool'
   parent: networkManager
   location: location

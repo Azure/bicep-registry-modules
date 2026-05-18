@@ -213,6 +213,7 @@ module staticSite_linkedBackend 'linked-backend/main.bicep' = if (!empty(linkedB
     staticSiteName: staticSite.name
     backendResourceId: linkedBackend.resourceId
     region: linkedBackend.?location ?? location
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -222,6 +223,7 @@ module staticSite_appSettings 'config/main.bicep' = if (!empty(appSettings)) {
     kind: 'appsettings'
     staticSiteName: staticSite.name
     properties: appSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -231,6 +233,7 @@ module staticSite_functionAppSettings 'config/main.bicep' = if (!empty(functionA
     kind: 'functionappsettings'
     staticSiteName: staticSite.name
     properties: functionAppSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -243,6 +246,7 @@ module staticSite_customDomains 'custom-domain/main.bicep' = [
       validationMethod: validationMethod ?? (indexOf(customDomain, '.') == lastIndexOf(customDomain, '.')
         ? 'dns-txt-token'
         : 'cname-delegation')
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -274,10 +278,10 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
-module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.8.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
   name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
   params: {
-    name: 'privatelink.${staticSite.properties.defaultHostname}.azurestaticapps.net'
+    name: 'privatelink.${split(staticSite.properties.defaultHostname, '.')[0]}.azurestaticapps.net'
     enableTelemetry: enableReferencedModulesTelemetry
     virtualNetworkLinks: [
       {
@@ -287,7 +291,7 @@ module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7
   }
 }
 
-module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
     scope: resourceGroup(
