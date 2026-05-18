@@ -68,8 +68,9 @@ module testDeployment '../../../main.bicep' = [
             'api://AzureADTokenExchange'
           ]
           issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}01/'
-          //   claimsMatchingExpression must be left out for now as the Azure Service Backend does not yet support it and would cause the deployment to fail. Once the RP supports it, we should add a test case with a claimsMatchingExpression that matches the expected format and one that does not match to verify both scenarios.
-          //   Azure currently rejects deployments that include claimsMatchingExpression for this resource, even if the Bicep syntax is valid. That is why the test intentionally leaves it out for now.
+          //   Temporarily omit claimsMatchingExpression because the Microsoft.ManagedIdentity resource provider (RP) does not yet support it.
+          //   Deployments currently fail when this property is included, even though the Bicep syntax is valid.
+          //   When RP support is available, add two tests: one with a valid claimsMatchingExpression format and one with an invalid format.
           //   claimsMatchingExpression: {
           //     languageVersion: 1
           //     value: 'claims[\'sub\'] matches \'system:serviceaccount:default:*\''
