@@ -129,6 +129,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         ]
         issuer: '<issuer>'
         name: 'test-fed-cred-miuaimax-001'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
       }
       {
         audiences: [
@@ -197,7 +198,8 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
             "api://AzureADTokenExchange"
           ],
           "issuer": "<issuer>",
-          "name": "test-fed-cred-miuaimax-001"
+          "name": "test-fed-cred-miuaimax-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
         },
         {
           "audiences": [
@@ -273,6 +275,7 @@ param federatedIdentityCredentials = [
     ]
     issuer: '<issuer>'
     name: 'test-fed-cred-miuaimax-001'
+    subject: 'system:serviceaccount:default:workload-identity-sa'
   }
   {
     audiences: [
