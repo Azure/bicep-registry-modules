@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
+| `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/components/linkedStorageAccounts)</li></ul> |
 
 ## Parameters
 
@@ -70,7 +70,7 @@ Enable/Disable usage telemetry for module.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the Linked Storage Account. |
-| `resourceGroupName` | string | The resource group the agent pool was deployed into. |
+| `resourceGroupName` | string | The resource group the Linked Storage Account was deployed into. |
 | `resourceId` | string | The resource ID of the Linked Storage Account. |
 
 ## Data Collection

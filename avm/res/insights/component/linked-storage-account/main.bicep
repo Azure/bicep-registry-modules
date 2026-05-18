@@ -47,5 +47,5 @@ output name string = linkedStorageAccount.name
 @description('The resource ID of the Linked Storage Account.')
 output resourceId string = linkedStorageAccount.id
 
-@description('The resource group the agent pool was deployed into.')
+@description('The resource group the Linked Storage Account was deployed into.')
 output resourceGroupName string = resourceGroup().name

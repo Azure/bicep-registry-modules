@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6182125553791029195"
+      "version": "0.43.8.12551",
+      "templateHash": "11610712855259870996"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance."
@@ -609,8 +609,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12204106674143308958"
+              "version": "0.43.8.12551",
+              "templateHash": "2192417628097472493"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account."
@@ -684,7 +684,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The resource group the agent pool was deployed into."
+                "description": "The resource group the Linked Storage Account was deployed into."
               },
               "value": "[resourceGroup().name]"
             }
