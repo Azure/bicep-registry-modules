@@ -47,7 +47,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource replicationPolicy 'Microsoft.RecoveryServices/vaults/replicationPolicies@2023-06-01' = {
+resource replicationPolicy 'Microsoft.RecoveryServices/vaults/replicationPolicies@2025-08-01' = {
   name: '${recoveryVaultName}/${name}'
   properties: {
     providerSpecificInput: {

@@ -243,6 +243,44 @@ $ipChangeOutput2 = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
 log "IP change output (FABRIC2): $ipChangeOutput2"
 
 # ============================================= #
+# NTP Configuration                              #
+# ============================================= #
+
+# Step 1 - Configure DC host to sync from external NTP (time.windows.com)
+# The DC is the authoritative time source for the domain
+log 'Configuring NTP on DC host (time.windows.com)...'
+w32tm /config /manualpeerlist:"time.windows.com" /syncfromflags:manual /reliable:YES /update
+Stop-Service W32Time -Force -ErrorAction SilentlyContinue
+Start-Service W32Time
+Start-Sleep -Seconds 5
+w32tm /resync /force
+log "DC NTP status: $(w32tm /query /status | Out-String)"
+
+# Step 2 - Configure HCI nodes to sync from DC (172.20.0.1)
+# Disable VM IC Time Synchronization and point to DC instead
+log 'Configuring NTP on HCI nodes to sync from DC at 172.20.0.1...'
+$ntpOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    # Disable VM IC Time Synchronization provider - not valid for HCI deployment validation
+    Write-Output "[$env:COMPUTERNAME] Disabling VM IC Time Synchronization provider..."
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimeProvider" /v Enabled /t REG_DWORD /d 0 /f
+
+    # Configure NTP to sync from domain controller at 172.20.0.1
+    Write-Output "[$env:COMPUTERNAME] Configuring NTP server to DC at 172.20.0.1..."
+    w32tm /config /manualpeerlist:"172.20.0.1" /syncfromflags:manual /reliable:YES /update
+    Stop-Service W32Time -Force -ErrorAction SilentlyContinue
+    Start-Service W32Time
+    Start-Sleep -Seconds 5
+    w32tm /resync /force
+
+    # Verify NTP sync
+    $ntpStatus = w32tm /query /status | Out-String
+    Write-Output "[$env:COMPUTERNAME] NTP status: $ntpStatus"
+}
+log "NTP configuration output: $ntpOutput"
+
+# ============================================= #
 # Network Connectivity Validation from HCI nodes #
 # ============================================= #
 log 'Validating outbound network connectivity from HCI nodes to required Azure endpoints...'

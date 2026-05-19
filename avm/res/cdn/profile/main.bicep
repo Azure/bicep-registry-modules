@@ -64,7 +64,7 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 var builtInRoleNames = {
@@ -216,6 +216,7 @@ resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-
 module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpoint)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     profileName: profile.name
     name: endpoint.?name ?? '${profile.name}-endpoint'
     properties: endpoint!.properties
@@ -228,6 +229,7 @@ module profile_secrets 'secret/main.bicep' = [
   for (secret, index) in (secrets ?? []): {
     name: '${uniqueString(deployment().name)}-Profile-Secret-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: secret.name
       profileName: profile.name
       type: secret.type
@@ -303,6 +305,7 @@ module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
       profile_ruleSets
     ]
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       name: afdEndpoint.name
       location: location
       profileName: profile.name

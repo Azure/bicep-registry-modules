@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.AzureStackHCI/virtualHardDisks` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_virtualharddisks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/virtualHardDisks)</li></ul> |
+| `Microsoft.AzureStackHCI/virtualHardDisks` | 2025-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.azurestackhci_virtualharddisks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-04-01-preview/virtualHardDisks)</li></ul> |
 
 ## Usage examples
 
@@ -44,6 +44,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -124,6 +128,10 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -290,6 +298,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the deployment sometimes takes more than 6h, which is the maximum time a GitHub action is allowed to run.
+```
 
 <details>
 
@@ -396,9 +408,14 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`blockSizeBytes`](#parameter-blocksizebytes) | int | Block size in bytes. |
 | [`containerId`](#parameter-containerid) | string | Storage ContainerID of the storage container to be used for VHD. |
+| [`diskFileFormat`](#parameter-diskfileformat) | string | The disk file format. Supported values are VHDX and VHD. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`logicalSectorBytes`](#parameter-logicalsectorbytes) | int | Logical sector size in bytes for the disk. |
+| [`physicalSectorBytes`](#parameter-physicalsectorbytes) | int | Physical sector size in bytes for the disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -430,12 +447,33 @@ Name of the resource to create.
 - Required: Yes
 - Type: string
 
+### Parameter: `blockSizeBytes`
+
+Block size in bytes.
+
+- Required: No
+- Type: int
+
 ### Parameter: `containerId`
 
 Storage ContainerID of the storage container to be used for VHD.
 
 - Required: No
 - Type: string
+
+### Parameter: `diskFileFormat`
+
+The disk file format. Supported values are VHDX and VHD.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'vhd'
+    'vhdx'
+  ]
+  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -445,6 +483,20 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `hyperVGeneration`
+
+The hypervisor generation of the Virtual Machine.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'V1'
+    'V2'
+  ]
+  ```
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -452,6 +504,20 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `logicalSectorBytes`
+
+Logical sector size in bytes for the disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `physicalSectorBytes`
+
+Physical sector size in bytes for the disk.
+
+- Required: No
+- Type: int
 
 ### Parameter: `roleAssignments`
 

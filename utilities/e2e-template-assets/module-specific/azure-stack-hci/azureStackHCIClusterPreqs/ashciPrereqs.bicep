@@ -34,6 +34,9 @@ param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
 param useSharedKeyVault bool = true
 
+@description('Optional. The HCI marketplace image version to use for guest VM deployments. Stored in Key Vault so tests can retrieve it without hardcoding.')
+param hciImageVersionName string = '20348.2461.240510'
+
 // create base64 encoded secret values to be stored in the Azure Key Vault
 var deploymentUserSecretValue = base64('${deploymentUsername}:${deploymentUserPassword}')
 var localAdminSecretValue = base64('${localAdminUsername}:${localAdminPassword}')
@@ -212,6 +215,17 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
       }
     }
   }
+
+  resource keyVaultName_hciImageVersion 'secrets@2023-07-01' = {
+    name: 'hciImageVersionName'
+    properties: {
+      contentType: 'Secret'
+      value: hciImageVersionName
+      attributes: {
+        enabled: true
+      }
+    }
+  }
 }
 
 resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticSettings@2016-09-01' = {
@@ -232,3 +246,6 @@ resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticS
     ]
   }
 }
+
+@description('The HCI marketplace image version stored in Key Vault.')
+output imageVersionName string = hciImageVersionName

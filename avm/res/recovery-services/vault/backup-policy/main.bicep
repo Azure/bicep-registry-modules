@@ -32,11 +32,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2024-10-01' = {
+resource backupPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2025-08-01' = {
   name: name
   parent: rsv
   properties: properties

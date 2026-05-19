@@ -113,6 +113,18 @@ module testDeployment '../../../main.bicep' = [
           periodSeconds: 3
         }
       ]
+      volumes: [
+        {
+          name: 'myemptydir'
+          storageType: 'EmptyDir'
+        }
+      ]
+      volumeMounts: [
+        {
+          volumeName: 'myemptydir'
+          mountPath: '/mnt/data'
+        }
+      ]
       exists: true
     }
   }

@@ -303,7 +303,7 @@ If (!$testNodeInternetConnection) {
     log "Node '$($firstVM.name)' has internet connection. Curl IPInfo: '$($testNodeInternetConnection)'"
 }
 
-## create jobs for each node to initialize Azure Arc
+## create jobs for each node to initialize Azure Arc using new approach
 log "Creating Azure Arc initialization jobs for HCI nodes [$((Get-VM).Name -join ',')]. ArcGatewayId: '$arcGatewayId', ProxyServerEndpoint: '$proxyServerEndpoint'..."
 $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
@@ -319,11 +319,8 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     $proxyBypassString = $args[8]
 
     $optionalParameters = @{}
-
     If ($arcGatewayId) {
-        $optionalParameters += @{
-            'arcGatewayId' = $arcGatewayId
-        }
+        $optionalParameters += @{ 'arcGatewayId' = $arcGatewayId }
     }
     If ($proxyServerEndpoint) {
         $optionalParameters += @{
@@ -331,101 +328,24 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
             'proxyBypass' = $proxyBypassString
         }
     }
-
-    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
-    If (!(Get-PSRepository -Name PSGallery -ErrorAction SilentlyContinue)) { Register-PSRepository -Default }
-    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
-    Install-Module Az.Resources
-    Install-Module -Name AzsHCI.ARCinstaller # -RequiredVersion '0.2.2690.99' # hardcode for 2408 testing
-    Set-PSRepository -Name PSGallery -InstallationPolicy Untrusted
-
-    #wait for bootstrap service to be reachable
-    $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-    While (!(Test-NetConnection -ComputerName '127.0.0.1' -Port 9098 -InformationLevel Quiet) -and $stopwatch.Elapsed.TotalMinutes -lt 30) {
-        Write-Host 'Waiting for bootstrap service at 127.0.0.1:9098 to be reachable...'
-        Start-Sleep -Seconds 30
-    }
-    If ($stopwatch.Elapsed.TotalMinutes -ge 30) {
-        Write-Error 'Bootstrap service at 127.0.0.1:9098 did not become reachable within 30 minutes. Exiting...' -ErrorAction Stop
-    }
-
     try {
-        # Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
+        # Use new bootstrapping approach for newer HCI OS versions
+        # Invoke-AzStackHciArcInitialization is the recommended approach per:
+        # https://learn.microsoft.com/en-us/azure/azure-local/deploy/deployment-without-azure-arc-gateway
+        Import-Module AzsHCI.ARCinstaller -ErrorAction Continue
+        Write-Output "[$env:COMPUTERNAME] Starting Arc initialization using Invoke-AzStackHciArcInitialization..."
 
-        function Install-ModuleIfMissing {
-            param(
-                [Parameter(Mandatory = $true)]
-                [string]$Name,
-                [Parameter(Mandatory = $false)]
-                [string]$Repository = 'PSGallery',
-                [Parameter(Mandatory = $false)]
-                [switch]$Force,
-                [Parameter(Mandatory = $false)]
-                [switch]$AllowClobber
-            )
-            $module = Get-Module -Name $Name -ListAvailable
-            if (!$module) {
-                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
-            }
-        }
+        Invoke-AzStackHciArcInitialization `
+            -SubscriptionID $subscriptionId `
+            -ResourceGroup $resourceGroupName `
+            -TenantID $tenantId `
+            -Cloud AzureCloud `
+            -AccountID $accountName `
+            -ArmAccessToken $t `
+            -Region $location `
+            @optionalParameters
 
-        wget -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
-
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
-        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
-
-        $machineName = [System.Net.Dns]::GetHostName()
-        $correlationID = New-Guid
-
-        $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
-        & "$azcmagentPath" --version
-        & "$azcmagentPath" connect --resource-group "$resourceGroupName" --resource-name "$machineName" --tenant-id "$tenantId" --location "$location" --subscription-id "$subscriptionId" --cloud 'AzureCloud' --correlation-id "$correlationID" --access-token "$t";
-        if ($LASTEXITCODE -ne 0) {
-            throw 'Arc server connection failed'
-        }
-
-        Write-Output 'PUT edge device resource to install mandatory extensions'
-        $uri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.HybridCompute/machines/$machineName/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
-        $body = @{
-            'kind'       = 'HCI';
-            'properties' = @{};
-        }
-        $headers = @{
-            'Authorization' = "Bearer $t";
-        }
-        Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
-
-        Write-Output 'Polling Edge device resource for readiness (no fixed sleep, max 30 min)...'
-        $waitInterval = 60
-        $maxWaitCount = 30
-        $ready = $false
-        for ($waitCount = 0; $waitCount -lt $maxWaitCount; $waitCount++) {
-            try {
-                $headers = @{
-                    'Authorization' = "Bearer $t";
-                }
-                $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
-                if ($response.properties.provisioningState -eq 'Succeeded') {
-                    Write-Output "Edge device resource is ready after $($waitCount * $waitInterval) seconds."
-                    $ready = $true
-                    break
-                } elseif ($response.properties.provisioningState -eq 'Failed') {
-                    throw "Edge device provisioning failed with state 'Failed': $($response.properties | ConvertTo-Json -Compress -Depth 5)"
-                }
-                Write-Output "[$waitCount/$maxWaitCount] Edge device state: $($response.properties.provisioningState). Waiting ${waitInterval}s..."
-            } catch [System.Net.WebException], [Microsoft.PowerShell.Commands.HttpResponseException] {
-                Write-Output "[$waitCount/$maxWaitCount] Edge device HTTP check failed (will retry): $_"
-            }
-            Start-Sleep -Seconds $waitInterval
-        }
-
-        if (!$ready) {
-            throw 'Edge device resource is not ready after 30 minutes.'
-        }
+        Write-Output "[$env:COMPUTERNAME] Arc initialization completed successfully"
     } catch {
         Write-Error $_ -ErrorAction Stop
     }
@@ -446,7 +366,6 @@ $arcInitializationJobs | ForEach-Object {
             Exit 1
         } Else {
             log "[$($job.ComputerName)] Job output: '$($_ | ConvertTo-Json -Compress)'"
-
         }
     }
 }

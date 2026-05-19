@@ -9,20 +9,22 @@ param name string = 'vaultconfig'
 
 @description('Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.')
 @allowed([
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])
-param enhancedSecurityState string = 'Enabled'
+param enhancedSecurityState string?
 
 @description('Optional. ResourceGuard Operation Requests.')
 param resourceGuardOperationRequests array = []
 
 @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
 @allowed([
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])
-param softDeleteFeatureState string = 'Enabled'
+param softDeleteFeatureState string?
 
 @description('Optional. Storage type.')
 @allowed([
@@ -74,11 +76,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2023-01-01' = {
+resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01' = {
   name: name
   parent: rsv
   properties: {

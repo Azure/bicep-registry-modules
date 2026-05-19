@@ -39,11 +39,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2024-10-01' existing = {
+resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 
-resource replicationFabric 'Microsoft.RecoveryServices/vaults/replicationFabrics@2022-10-01' = {
+resource replicationFabric 'Microsoft.RecoveryServices/vaults/replicationFabrics@2025-08-01' = {
   name: name
   parent: recoveryServicesVault
   properties: {

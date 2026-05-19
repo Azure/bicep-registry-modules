@@ -112,6 +112,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -163,6 +165,7 @@ module project_environmentType 'environment-type/main.bicep' = [
       tags: environmentType.?tags
       userRoleAssignmentsRoles: environmentType.?userRoleAssignmentsRoles
       displayName: environmentType.?displayName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -178,6 +181,7 @@ module project_catalog 'catalog/main.bicep' = [
       syncType: catalog.?syncType
       tags: catalog.?tags
       location: location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -202,6 +206,7 @@ module project_pool 'pool/main.bicep' = [
       stopOnDisconnect: pool.?stopOnDisconnect
       stopOnNoConnect: pool.?stopOnNoConnect
       schedule: pool.?schedule
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       project_catalog
