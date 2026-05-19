@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.14.2
+
+### Changes
+
+- Fixed: `hostnameConfigurations` entries are now sanitized to strip read-only / server-computed properties (notably `certificateStatus`) before deployment. This prevents spurious `NotSupported` errors from the API Management resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026) when updating services with pre-existing managed certificates. Resolves #5995.
+- Module ownership: removed the orphaned status — the module is now actively maintained again.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.1
 
 ### Changes

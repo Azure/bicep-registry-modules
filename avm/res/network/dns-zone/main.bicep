@@ -37,7 +37,7 @@ param srv srvType[]?
 param txt txtType[]?
 
 @description('Optional. Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).')
-param dnssecConfig bool?
+param enableDnsSec bool?
 
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
@@ -105,8 +105,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-dnszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -144,6 +146,7 @@ module dnsZone_A 'a/main.bicep' = [
       ttl: aRecord.?ttl ?? 3600
       targetResourceId: aRecord.?targetResourceId
       roleAssignments: aRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -159,6 +162,7 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [
       ttl: aaaaRecord.?ttl ?? 3600
       targetResourceId: aaaaRecord.?targetResourceId
       roleAssignments: aaaaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -174,6 +178,7 @@ module dnsZone_CNAME 'cname/main.bicep' = [
       ttl: cnameRecord.?ttl ?? 3600
       targetResourceId: cnameRecord.?targetResourceId
       roleAssignments: cnameRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -188,6 +193,7 @@ module dnsZone_CAA 'caa/main.bicep' = [
       caaRecords: caaRecord.?caaRecords
       ttl: caaRecord.?ttl ?? 3600
       roleAssignments: caaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -202,6 +208,7 @@ module dnsZone_MX 'mx/main.bicep' = [
       mxRecords: mxRecord.?mxRecords
       ttl: mxRecord.?ttl ?? 3600
       roleAssignments: mxRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -216,6 +223,7 @@ module dnsZone_NS 'ns/main.bicep' = [
       nsRecords: nsRecord.?nsRecords
       ttl: nsRecord.?ttl ?? 3600
       roleAssignments: nsRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -230,6 +238,7 @@ module dnsZone_PTR 'ptr/main.bicep' = [
       ptrRecords: ptrRecord.?ptrRecords
       ttl: ptrRecord.?ttl ?? 3600
       roleAssignments: ptrRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -244,6 +253,7 @@ module dnsZone_SOA 'soa/main.bicep' = [
       soaRecord: soaRecord.?soaRecord
       ttl: soaRecord.?ttl ?? 3600
       roleAssignments: soaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -258,6 +268,7 @@ module dnsZone_SRV 'srv/main.bicep' = [
       srvRecords: srvRecord.?srvRecords
       ttl: srvRecord.?ttl ?? 3600
       roleAssignments: srvRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -272,11 +283,12 @@ module dnsZone_TXT 'txt/main.bicep' = [
       txtRecords: txtRecord.?txtRecords
       ttl: txtRecord.?ttl ?? 3600
       roleAssignments: txtRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (dnssecConfig == true) {
+module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (enableDnsSec == true) {
   name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
   params: {
     dnsZoneName: dnsZone.name
