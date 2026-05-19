@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Recompiled the template with latest Bicep version `0.41.2.15936`
+- Recompiled the template with Bicep version `0.41.2.15936`
 
 ### Breaking Changes
 
