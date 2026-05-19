@@ -25,6 +25,29 @@ param dynamic bool
 @description('Optional. Storage ContainerID of the storage container to be used for VHD.')
 param containerId string?
 
+@description('Optional. Block size in bytes.')
+param blockSizeBytes int?
+
+@description('Optional. The disk file format. Supported values are VHDX and VHD.')
+@allowed([
+  'vhd'
+  'vhdx'
+])
+param diskFileFormat string?
+
+@description('Optional. The hypervisor generation of the Virtual Machine.')
+@allowed([
+  'V1'
+  'V2'
+])
+param hyperVGeneration string?
+
+@description('Optional. Logical sector size in bytes for the disk.')
+param logicalSectorBytes int?
+
+@description('Optional. Physical sector size in bytes for the disk.')
+param physicalSectorBytes int?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -60,7 +83,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.azurestackhci-virtualharddisk.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -78,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHardDisk 'Microsoft.AzureStackHCI/virtualHardDisks@2024-05-01-preview' = {
+resource virtualHardDisk 'Microsoft.AzureStackHCI/virtualHardDisks@2025-04-01-preview' = {
   name: name
   tags: tags
   extendedLocation: {
@@ -90,6 +113,11 @@ resource virtualHardDisk 'Microsoft.AzureStackHCI/virtualHardDisks@2024-05-01-pr
     diskSizeGB: diskSizeGB
     dynamic: dynamic
     containerId: containerId
+    blockSizeBytes: blockSizeBytes
+    diskFileFormat: diskFileFormat
+    hyperVGeneration: hyperVGeneration
+    logicalSectorBytes: logicalSectorBytes
+    physicalSectorBytes: physicalSectorBytes
   }
 }
 

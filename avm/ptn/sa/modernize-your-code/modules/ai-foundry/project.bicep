@@ -29,7 +29,7 @@ resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2024-10-01' e
 }
 
 // Create new AI project only if not reusing existing one
-resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-preview' = if (!useExistingProject) {
+resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-12-01' = if (!useExistingProject) {
   parent: cogServiceReference
   name: name
   tags: tags
@@ -45,9 +45,9 @@ resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-pre
 
 @description('AI Project metadata including name, resource ID, and API endpoint.')
 output aiProjectInfo aiProjectOutputType = {
-  name: useExistingProject ? existingProjName : aiProject.name
-  resourceId: useExistingProject ? azureExistingAIProjectResourceId : aiProject.id
-  apiEndpoint: useExistingProject ? existingProjEndpoint : aiProject.properties.endpoints['AI Foundry API']
+  name: useExistingProject ? existingProjName : aiProject!.name
+  resourceId: useExistingProject ? azureExistingAIProjectResourceId : aiProject!.id
+  apiEndpoint: useExistingProject ? existingProjEndpoint : aiProject!.properties.endpoints['AI Foundry API']
 }
 
 @export()

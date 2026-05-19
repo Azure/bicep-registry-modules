@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/dns-zone/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Added DNSSEC configuration support via `dnssecConfig` parameter and `dnssec-config` child module.
+- Publishing child modules `avm/res/network/dns-zone/a`, `avm/res/network/dns-zone/aaaa`, `avm/res/network/dns-zone/caa`, `avm/res/network/dns-zone/cname`, `avm/res/network/dns-zone/mx`, `avm/res/network/dns-zone/ns`, `avm/res/network/dns-zone/ptr`, `avm/res/network/dns-zone/soa`, `avm/res/network/dns-zone/srv`, `avm/res/network/dns-zone/txt`.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.4
 
 ### Changes

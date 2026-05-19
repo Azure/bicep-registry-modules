@@ -643,7 +643,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
             nodeIdleTimeBeforeScaleDown: 'PT5M'
           }
           vmPriority: 'Dedicated'
-          vmSize: 'STANDARD_DS11_V2'
+          vmSize: 'Standard_D2ads_v5'
         }
         sku: 'Basic'
       }
@@ -823,7 +823,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
               "nodeIdleTimeBeforeScaleDown": "PT5M"
             },
             "vmPriority": "Dedicated",
-            "vmSize": "STANDARD_DS11_V2"
+            "vmSize": "Standard_D2ads_v5"
           },
           "sku": "Basic"
         }
@@ -1029,7 +1029,7 @@ param computes = [
         nodeIdleTimeBeforeScaleDown: 'PT5M'
       }
       vmPriority: 'Dedicated'
-      vmSize: 'STANDARD_DS11_V2'
+      vmSize: 'Standard_D2ads_v5'
     }
     sku: 'Basic'
   }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "16071973512424587469"
+      "version": "0.42.1.51946",
+      "templateHash": "7820669598994523597"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace."
@@ -1842,6 +1842,9 @@
           },
           "eventSubscriptions": {
             "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'eventSubscriptions')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1851,8 +1854,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17749215322060510151"
+              "version": "0.42.1.51946",
+              "templateHash": "170555572971032540"
             },
             "name": "Eventgrid Namespace Topics",
             "description": "This module deploys an Eventgrid Namespace Topic."
@@ -1972,6 +1975,13 @@
             }
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -2054,9 +2064,30 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-topic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",
@@ -2143,6 +2174,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2152,8 +2186,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "11043765954159507396"
+                      "version": "0.42.1.51946",
+                      "templateHash": "12842721477446846235"
                     },
                     "name": "Event Subscriptions",
                     "description": "This module deploys an Event Subscription."
@@ -2236,6 +2270,13 @@
                     }
                   },
                   "parameters": {
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
                     "namespaceName": {
                       "type": "string",
                       "metadata": {
@@ -2316,6 +2357,26 @@
                       "type": "Microsoft.EventGrid/namespaces/topics",
                       "apiVersion": "2023-12-15-preview",
                       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.eventgrid-namespace-topiceventsub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "namespace": {
                       "existing": true,
@@ -2441,6 +2502,9 @@
           },
           "encodedCertificate": {
             "value": "[coalesce(parameters('caCertificates'), createArray())[copyIndex()].encodedCertificate]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2450,13 +2514,20 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3846787754034981490"
+              "version": "0.42.1.51946",
+              "templateHash": "13263250990488873380"
             },
             "name": "Eventgrid Namespace CA Certificates",
             "description": "This module deploys an Eventgrid Namespace CA Certificate."
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -2484,6 +2555,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-cacertificate.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",
@@ -2567,6 +2658,9 @@
           },
           "state": {
             "value": "[tryGet(coalesce(parameters('clients'), createArray())[copyIndex()], 'state')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2576,13 +2670,20 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12451432830986189891"
+              "version": "0.42.1.51946",
+              "templateHash": "18204186684454346963"
             },
             "name": "Eventgrid Namespace Clients",
             "description": "This module deploys an Eventgrid Namespace Client."
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -2652,6 +2753,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-client.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",
@@ -2729,6 +2850,9 @@
           },
           "description": {
             "value": "[tryGet(coalesce(parameters('clientGroups'), createArray())[copyIndex()], 'description')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2738,13 +2862,20 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9345475716567518203"
+              "version": "0.42.1.51946",
+              "templateHash": "3676800688603713566"
             },
             "name": "Eventgrid Namespace Client Groups",
             "description": "This module deploys an Eventgrid Namespace Client Group."
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -2772,6 +2903,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-clientgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",
@@ -2846,6 +2997,9 @@
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('topicSpaces'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2855,8 +3009,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10465959109698685570"
+              "version": "0.42.1.51946",
+              "templateHash": "18359557402189698748"
             },
             "name": "Eventgrid Namespace Topic Spaces",
             "description": "This module deploys an Eventgrid Namespace Topic Space."
@@ -2939,6 +3093,13 @@
             }
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -3001,6 +3162,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-topicspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",
@@ -3100,6 +3281,9 @@
           },
           "permission": {
             "value": "[coalesce(parameters('permissionBindings'), createArray())[copyIndex()].permission]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3109,13 +3293,20 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1237881901244735233"
+              "version": "0.42.1.51946",
+              "templateHash": "9915278853166075938"
             },
             "name": "Eventgrid Namespace Permissions Bindings",
             "description": "This module deploys an Eventgrid Namespace Permission Binding."
           },
           "parameters": {
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "namespaceName": {
               "type": "string",
               "metadata": {
@@ -3159,6 +3350,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.eventgrid-namespace-permbinding.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.EventGrid/namespaces",

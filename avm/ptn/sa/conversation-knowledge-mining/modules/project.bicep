@@ -19,18 +19,28 @@ param existingFoundryProjectResourceId string = ''
 // // Extract components from existing AI Project Resource ID if provided
 var useExistingProject = !empty(existingFoundryProjectResourceId)
 var existingProjName = useExistingProject ? last(split(existingFoundryProjectResourceId, '/')) : ''
-var existingAiFoundryAiServicesSubscriptionId = useExistingProject ? split(existingFoundryProjectResourceId, '/')[2] : ''
-var existingAiFoundryAiServicesResourceGroupName = useExistingProject ? split(existingFoundryProjectResourceId, '/')[4] : ''
+var existingAiFoundryAiServicesSubscriptionId = useExistingProject
+  ? split(existingFoundryProjectResourceId, '/')[2]
+  : ''
+var existingAiFoundryAiServicesResourceGroupName = useExistingProject
+  ? split(existingFoundryProjectResourceId, '/')[4]
+  : ''
 var existingAiFoundryAiServicesServiceName = useExistingProject ? split(existingFoundryProjectResourceId, '/')[8] : ''
 // Example endpoint (only if existing project provided)
-var existingProjEndpoint = useExistingProject ? format('https://{0}.services.ai.azure.com/api/projects/{1}', existingAiFoundryAiServicesServiceName, existingProjName) : ''
+var existingProjEndpoint = useExistingProject
+  ? format(
+      'https://{0}.services.ai.azure.com/api/projects/{1}',
+      existingAiFoundryAiServicesServiceName,
+      existingProjName
+    )
+  : ''
 // Reference to cognitive service in current resource group for new projects
-resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
+resource cogServiceReference 'Microsoft.CognitiveServices/accounts@2026-03-01' existing = {
   name: aiServicesName
 }
 
 // Create new AI project only if not reusing existing one
-resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = if(!useExistingProject) {
+resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2026-03-01' = if (!useExistingProject) {
   parent: cogServiceReference
   name: name
   tags: tags
@@ -45,7 +55,7 @@ resource aiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' = 
 }
 
 // Reference the existing AI Foundry project if reusing
-resource existingAiProject 'Microsoft.CognitiveServices/accounts/projects@2025-06-01' existing = if (useExistingProject){
+resource existingAiProject 'Microsoft.CognitiveServices/accounts/projects@2026-03-01' existing = if (useExistingProject) {
   name: '${existingAiFoundryAiServicesServiceName}/${existingProjName}'
   scope: resourceGroup(existingAiFoundryAiServicesSubscriptionId, existingAiFoundryAiServicesResourceGroupName)
 }
@@ -55,7 +65,9 @@ output aiProjectInfo aiProjectOutputType = {
   name: useExistingProject ? existingProjName : aiProject.name
   resourceId: useExistingProject ? existingFoundryProjectResourceId : aiProject.id
   apiEndpoint: useExistingProject ? existingProjEndpoint : aiProject!.properties.endpoints['AI Foundry API']
-  aiprojectSystemAssignedMIPrincipalId : useExistingProject ? existingAiProject!.identity.principalId : aiProject!.identity.principalId
+  aiprojectSystemAssignedMIPrincipalId: useExistingProject
+    ? existingAiProject!.identity.principalId
+    : aiProject!.identity.principalId
 }
 
 @export()

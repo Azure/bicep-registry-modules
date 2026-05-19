@@ -86,12 +86,13 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.3' = [
       sku: config.hub.?sku
       tags: config.hubTags
       virtualRouterAsn: config.hub.?virtualRouterAsn
+      virtualRouterAutoScaleConfiguration: config.hub.?virtualRouterAutoScaleConfiguration
       virtualRouterIps: config.hub.?virtualRouterIps
     }
   }
 ]
 
-module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
+module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.1' = [
   for config in hubConfigurations: if (config.deploySecureHub) {
     name: config.hub.?secureHubParameters.?azureFirewallName!
     params: {
@@ -118,7 +119,7 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.10.0' = [
   }
 ]
 
-module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuration:0.1.2' = if (createP2sVpnServerConfig) {
+module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuration:0.2.0' = if (createP2sVpnServerConfig) {
   name: virtualWanParameters.?p2sVpnParameters.p2sVpnServerConfigurationName!
   params: {
     name: virtualWanParameters.?p2sVpnParameters.p2sVpnServerConfigurationName!
@@ -143,7 +144,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   }
 }
 
-module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.3' = [
+module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.4' = [
   for config in hubConfigurations: if (config.deployP2sGateway && createP2sVpnServerConfig) {
     name: config.hub.?p2sVpnParameters.?vpnGatewayName!
     params: {
@@ -726,6 +727,12 @@ type virtualHubParameterType = {
 
   @description('Optional. ASN for the Virtual Router.')
   virtualRouterAsn: int?
+
+  @description('Optional. The autoscale configuration for the Virtual Router, defining the minimum number of Routing Infrastructure Units. Each unit supports ~1000 VMs and ~1 Gbps throughput (minimum 2).')
+  virtualRouterAutoScaleConfiguration: {
+    @description('Required. The minimum number of Routing Infrastructure Units for the Virtual Hub Router.')
+    minCount: int
+  }?
 
   @description('Optional. IP addresses for the Virtual Router.')
   virtualRouterIps: array?

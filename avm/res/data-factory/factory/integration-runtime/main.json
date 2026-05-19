@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "179484516669100977"
+      "version": "0.43.1.21952",
+      "templateHash": "14402928367762586800"
     },
     "name": "Data Factory Integration RunTimes",
     "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -53,14 +53,41 @@
       "metadata": {
         "description": "Optional. The description of the Integration Runtime."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": [
     {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.datafactory-factory-integrruntime.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
       "type": "Microsoft.DataFactory/factories/integrationRuntimes",
       "apiVersion": "2018-06-01",
       "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
-      "properties": "[shallowMerge(createArray(createObject('type', parameters('type')), if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'managedVirtualNetwork', createObject('referenceName', parameters('managedVirtualNetworkName'), 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject())))]"
+      "properties": "[shallowMerge(createArray(createObject('type', parameters('type')), if(not(empty(parameters('typeProperties'))), createObject('typeProperties', parameters('typeProperties')), createObject()), if(equals(parameters('type'), 'Managed'), createObject('description', parameters('integrationRuntimeCustomDescription'), 'managedVirtualNetwork', createObject('referenceName', parameters('managedVirtualNetworkName'), 'type', 'ManagedVirtualNetworkReference')), createObject())))]"
     }
   ],
   "outputs": {
