@@ -564,7 +564,7 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-module service_diagnostics 'diagnostic/main.bicep' = [
+module service_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (serviceDiagnostics ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-SvcDiag-${index}'
     params: {
