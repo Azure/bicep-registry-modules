@@ -8,6 +8,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Set default value for `subscriptionRequired` parameter to `true`
 
+### Breaking Changes
+
+- None
+
 ## 0.2.2
 
 ### Changes
