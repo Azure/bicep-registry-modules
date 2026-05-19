@@ -37,7 +37,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    enableAnalyticalStorage: true
     name: '${namePrefix}${serviceShort}001'
     sqlDatabases: [
       {
