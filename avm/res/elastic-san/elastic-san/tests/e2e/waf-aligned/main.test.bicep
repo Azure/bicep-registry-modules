@@ -24,6 +24,9 @@ param namePrefix string = '#_namePrefix_#'
 @sys.description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
+@sys.description('The metric category name to use for diagnostics. Default is AllMetrics.')
+param metricCategoryName string = 'AllMetrics'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -116,12 +119,13 @@ module testDeployment '../../../main.bicep' = [
         Owner: 'Contoso'
         CostCenter: '123-456-789'
       }
+
       diagnosticSettings: [
         {
           name: 'customSetting'
           metricCategories: [
             {
-              category: 'AllMetrics'
+              category: metricCategoryName
             }
           ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -150,3 +154,4 @@ output cmkKeyVaultUrl string = nestedDependencies.outputs.keyVaultUrl
 output cmkKeyVaultEncryptionKeyVersion string = nestedDependencies.outputs.keyVaultEncryptionKeyVersion
 
 output logAnalyticsWorkspaceResourceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+output metricCategoryName string = metricCategoryName
