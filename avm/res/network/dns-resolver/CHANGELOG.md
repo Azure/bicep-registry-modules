@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/dns-resolver/CHANGELOG.md).
 
+## 0.5.7
+
+### Changes
+
+- Publishing child module `avm/res/network/dns-resolver/inbound-endpoint`
+- Publishing child module `avm/res/network/dns-resolver/outbound-endpoint`
+
+### Breaking Changes
+
+- None
+
 ## 0.5.6
 
 ### Changes
