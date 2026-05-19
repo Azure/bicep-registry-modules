@@ -77,6 +77,22 @@ var apimName = '${namePrefix}${serviceShort}001'
 var backend1Name = 'backend1'
 var workspace1Name = 'workspace1'
 var workspace1Backend1Name = 'workspace1-backend1'
+
+// Regression coverage for #5995: this hostname configuration entry includes the read-only
+// `certificateStatus` field, which the module must strip from `hostnameConfigurations`
+// before submitting to ARM. If the strip regresses, the APIM RP would reject this PUT
+// (especially during the Managed Certificates suspension window:
+// https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025).
+#disable-next-line BCP037
+var hostnameConfigurationsWithReadOnlyField = [
+  {
+    type: 'Proxy'
+    hostName: '${apimName}.azure-api.net'
+    certificateSource: 'BuiltIn'
+    negotiateClientCertificate: false
+    certificateStatus: 'In-progress'
+  }
+]
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -103,6 +119,8 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
+      // Regression coverage for #5995 — see `hostnameConfigurationsWithReadOnlyField` above.
+      hostnameConfigurations: hostnameConfigurationsWithReadOnlyField
       apis: [
         {
           displayName: 'Echo API'

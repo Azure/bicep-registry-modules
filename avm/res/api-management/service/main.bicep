@@ -32,7 +32,7 @@ param disableGateway bool = false
 @description('Optional. Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway.')
 param enableClientCertificate bool = false
 
-@description('Optional. Custom hostname configuration of the API Management service.')
+@description('Optional. Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026).')
 param hostnameConfigurations resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.hostnameConfigurations?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -260,7 +260,25 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
-    hostnameConfigurations: hostnameConfigurations
+    // Strip read-only / server-computed fields from `hostnameConfigurations` entries before sending to ARM.
+    // `certificateStatus` is server-computed; supplying it on PUT causes the APIM RP to classify the entry
+    // as a *new* Managed Certificate request, which is rejected during the Managed Certificates suspension
+    // window (Aug 15 2025 – Jun 30 2026):
+    // https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025
+    hostnameConfigurations: hostnameConfigurations == null
+      ? null
+      : map(hostnameConfigurations!, h => {
+          type: h.type
+          hostName: h.hostName
+          certificate: h.?certificate
+          certificatePassword: h.?certificatePassword
+          certificateSource: h.?certificateSource
+          defaultSslBinding: h.?defaultSslBinding
+          encodedCertificate: h.?encodedCertificate
+          identityClientId: h.?identityClientId
+          keyVaultId: h.?keyVaultId
+          negotiateClientCertificate: h.?negotiateClientCertificate
+        })
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? publicNetworkAccess
       : (!empty(privateEndpoints ?? []) ? 'Disabled' : 'Enabled')

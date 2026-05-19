@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the PremiumV2 SKU with most of its
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apisv2max'
+param serviceShort string = 'apiv2max'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -70,7 +70,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = '${namePrefix}${serviceShort}002'
 var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
+      restore: false
       apis: [
         {
           displayName: 'Echo API'
