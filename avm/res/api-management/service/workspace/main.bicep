@@ -210,7 +210,7 @@ module workspace_backends 'backend/main.bicep' = [
   }
 ]
 
-module workspace_diagnostics 'diagnostic/main.bicep' = [
+module workspace_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (diagnostics ?? []): {
     name: '${deployment().name}-Diag-${index}'
     params: {
