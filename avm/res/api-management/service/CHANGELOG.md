@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.14.3
+
+### Changes
+
+- Renamed child module folders `diagnostic` to `diagnostics` and `workspace/diagnostic` to `workspace/diagnostics` for naming consistency
+- Update `avm/res/network/private-endpoint` module reference to latest version `0.12.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.14.2
 
 ### Changes
