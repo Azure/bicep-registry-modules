@@ -45,10 +45,5 @@ module testDeployment '../../../main.bicep' = {
     solutionName: '${namePrefix}${serviceShort}'
     azureAiServiceLocation: enforcedLocation
     gptDeploymentCapacity: 10
-    enablePrivateNetworking: false
-    enableMonitoring: false
-    enableRedundancy: true
-    enableScalability: true
-    cosmosDbReplicaLocation: 'canadacentral'
   }
 }
