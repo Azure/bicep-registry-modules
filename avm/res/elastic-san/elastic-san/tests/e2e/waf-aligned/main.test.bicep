@@ -24,8 +24,7 @@ param namePrefix string = '#_namePrefix_#'
 @sys.description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@sys.description('The metric category name to use for diagnostics. Default is AllMetrics.')
-param metricCategoryName string = 'AllMetrics'
+var metricCategoryName string = 'AllMetrics'
 
 // ============ //
 // Dependencies //

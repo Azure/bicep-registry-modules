@@ -20,8 +20,7 @@ param serviceShort string = 'esanmax'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@sys.description('The metric category name to use for diagnostics. Default is AllMetrics.')
-param metricCategoryName string = 'AllMetrics'
+var metricCategoryName string = 'AllMetrics'
 
 // ============ //
 // Dependencies //
