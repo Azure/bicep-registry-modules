@@ -10,15 +10,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - SKU is automatically promoted to `Premium` and `zoneRedundancy` enabled when `enableRedundancy` is `true` (otherwise `Standard`/`Disabled`).
   - Geo-replication to `cosmosReplicaLocation` is provisioned when `enableRedundancy` is `true`.
   - New parameters `networkRuleSetDefaultAction` (defaults to `Allow`, switches to `Deny` under redundancy) and `exportPolicyStatus` exposed for finer control.
-- Storage account `allowBlobPublicAccess` is now hard-coded to `false` to satisfy the Azure WAF security baseline and the PSRule `Azure.Storage.BlobPublicAccess` rule, which require anonymous blob/container access to be disabled regardless of network exposure (containers can still be created without anonymous access).
-- AKS (`container-service/managed-cluster`) updated to the new module schema:
-  - `aadProfile` keys renamed (`managed`, `enableAzureRBAC`, `tenantID`).
-  - `enablePrivateCluster` moved under `apiServerAccessProfile`.
-  - `autoNodeOsUpgradeProfileUpgradeChannel`/`autoUpgradeProfileUpgradeChannel` consolidated under `autoUpgradeProfile`.
-  - `enableAzureDefender` replaced by `securityProfile.defender` with Log Analytics workspace wiring under private networking.
-- Log Analytics `dailyQuotaGb` now passed as a string to match the updated `operational-insights/workspace` 0.15.0 input type.
-- AVM telemetry deployment resource API version bumped: `Microsoft.Resources/deployments` 2024-03-01 → 2024-11-01.
-- Added e2e test scenarios `defaults` and `waf-aligned`; existing `enterprise-grade` and `sandbox` tests updated to `Microsoft.Resources/resourceGroups@2025-04-01`.
+- Aligned with `container-service/managed-cluster` 0.13.0 schema (AKS).
+- Added e2e test scenarios `defaults` and `waf-aligned`; `sandbox` test updated to `Microsoft.Resources/resourceGroups@2025-04-01`.
 - Updated AVM module versions to latest available:
   - `network/private-dns-zone`: 0.8.0 → 0.8.1
   - `network/bastion-host`: 0.8.0 → 0.8.2
