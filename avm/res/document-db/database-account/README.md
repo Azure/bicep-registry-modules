@@ -2355,7 +2355,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         containers: [
           {
-            analyticalStorageTtl: 0
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
@@ -2628,7 +2627,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "containers": [
             {
-              "analyticalStorageTtl": 0,
               "conflictResolutionPolicy": {
                 "conflictResolutionPath": "/myCustomId",
                 "mode": "LastWriterWins"
@@ -2899,7 +2897,6 @@ param sqlDatabases = [
   {
     containers: [
       {
-        analyticalStorageTtl: 0
         conflictResolutionPolicy: {
           conflictResolutionPath: '/myCustomId'
           mode: 'LastWriterWins'

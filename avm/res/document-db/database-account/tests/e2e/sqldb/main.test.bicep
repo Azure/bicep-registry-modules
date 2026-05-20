@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = {
             paths: [
               '/myPartitionKey'
             ]
-            analyticalStorageTtl: 0
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
