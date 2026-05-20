@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "2329707556825520332"
+      "version": "0.41.2.15936",
+      "templateHash": "1600110571349457682"
     },
     "name": "Elastic SAN Volume Groups",
     "description": "This module deploys an Elastic SAN Volume Group."
@@ -765,13 +765,6 @@
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
-      }
     }
   },
   "variables": {
@@ -798,26 +791,6 @@
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
-    },
-    "avmTelemetry": {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.elsan-elsan-volumegroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      }
     },
     "elasticSan": {
       "existing": true,
@@ -891,9 +864,6 @@
           },
           "snapshots": {
             "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'snapshots')]"
-          },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -903,8 +873,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "2294599013926381865"
+              "version": "0.41.2.15936",
+              "templateHash": "11085400008109760540"
             },
             "name": "Elastic SAN Volumes",
             "description": "This module deploys an Elastic SAN Volume."
@@ -1009,17 +979,7 @@
               "metadata": {
                 "description": "Optional. List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
-          },
-          "variables": {
-            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "elasticSan::volumeGroup": {
@@ -1027,26 +987,6 @@
               "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
               "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
-            },
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.elsan-elsan-volumegroupvolume.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
             },
             "elasticSan": {
               "existing": true,
@@ -1090,9 +1030,6 @@
                   },
                   "location": {
                     "value": "[parameters('location')]"
-                  },
-                  "enableTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1101,8 +1038,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "17993007239195140375"
+                      "version": "0.41.2.15936",
+                      "templateHash": "4884690431664581694"
                     },
                     "name": "Elastic SAN Volume Snapshots",
                     "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -1147,36 +1084,9 @@
                       "metadata": {
                         "description": "Optional. Location for all resources."
                       }
-                    },
-                    "enableTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.elsan-elsan-volumegroupsnapshot.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": [],
-                          "outputs": {
-                            "telemetry": {
-                              "type": "String",
-                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                            }
-                          }
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.ElasticSan/elasticSans/volumegroups/snapshots",
                       "apiVersion": "2024-05-01",
