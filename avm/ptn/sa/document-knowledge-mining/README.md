@@ -142,9 +142,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Default configuration with enterprise-grade parameter values](#example-2-default-configuration-with-enterprise-grade-parameter-values)
-- [Sandbox configuration with default parameter values](#example-3-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -211,117 +210,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Default configuration with enterprise-grade parameter values_
-
-This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  params: {
-    // Required parameters
-    aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    // Non-required parameters
-    cosmosReplicaLocation: '<cosmosReplicaLocation>'
-    createdBy: 'AVM_Pipeline'
-    enableMonitoring: true
-    enablePrivateNetworking: true
-    enableRedundancy: true
-    enableScalability: true
-    enableTelemetry: true
-    location: '<location>'
-    vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'adminuser'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiDeploymentsLocation": {
-      "value": "<aiDeploymentsLocation>"
-    },
-    // Non-required parameters
-    "cosmosReplicaLocation": {
-      "value": "<cosmosReplicaLocation>"
-    },
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableMonitoring": {
-      "value": true
-    },
-    "enablePrivateNetworking": {
-      "value": true
-    },
-    "enableRedundancy": {
-      "value": true
-    },
-    "enableScalability": {
-      "value": true
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "vmAdminPassword": {
-      "value": "<vmAdminPassword>"
-    },
-    "vmAdminUsername": {
-      "value": "adminuser"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
-
-// Required parameters
-param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-// Non-required parameters
-param cosmosReplicaLocation = '<cosmosReplicaLocation>'
-param createdBy = 'AVM_Pipeline'
-param enableMonitoring = true
-param enablePrivateNetworking = true
-param enableRedundancy = true
-param enableScalability = true
-param enableTelemetry = true
-param location = '<location>'
-param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'adminuser'
-```
-
-</details>
-<p>
-
-### Example 3: _Sandbox configuration with default parameter values_
+### Example 2: _Sandbox configuration with default parameter values_
 
 This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
 
@@ -416,7 +305,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
