@@ -2417,30 +2417,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         containers: [
           {
-            analyticalStorageTtl: 1000
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'fixed-analytical-ttl'
-      }
-      {
-        containers: [
-          {
-            analyticalStorageTtl: -1
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'infinite-analytical-ttl'
-      }
-      {
-        containers: [
-          {
             defaultTtl: 1000
             name: 'container-001'
             paths: [
@@ -2689,30 +2665,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "containers": [
             {
-              "analyticalStorageTtl": 1000,
-              "name": "container-001",
-              "paths": [
-                "/myPartitionKey"
-              ]
-            }
-          ],
-          "name": "fixed-analytical-ttl"
-        },
-        {
-          "containers": [
-            {
-              "analyticalStorageTtl": -1,
-              "name": "container-001",
-              "paths": [
-                "/myPartitionKey"
-              ]
-            }
-          ],
-          "name": "infinite-analytical-ttl"
-        },
-        {
-          "containers": [
-            {
               "defaultTtl": 1000,
               "name": "container-001",
               "paths": [
@@ -2955,30 +2907,6 @@ param sqlDatabases = [
       }
     ]
     name: 'last-writer-conflict-resolution-policy'
-  }
-  {
-    containers: [
-      {
-        analyticalStorageTtl: 1000
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'fixed-analytical-ttl'
-  }
-  {
-    containers: [
-      {
-        analyticalStorageTtl: -1
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'infinite-analytical-ttl'
   }
   {
     containers: [
