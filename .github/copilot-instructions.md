@@ -83,6 +83,8 @@ For the list of resource providers or resource types available, latest API versi
 
 ## Fetching Schemas, API versions and existing Published AVM Modules
 
+> **🛑 NEVER copy API versions from existing code.** Always verify the latest available API version using the tools below — including for common resource types like `Microsoft.Resources/deployments`. Existing modules may use outdated versions.
+
 You have exactly these two options (do not use any other method or tool to do this):
 
 1. **Preferred option**: Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
@@ -119,15 +121,24 @@ Instead, always use the **dot-source** (`. `) approach as per the example below.
 
 > [!IMPORTANT]
 >
-> - **Correct** (two-step, dot-source then call):
+> - **Correct** (two **separate** terminal commands — dot-source first, then call):
 >   ```powershell
 >   . .\utilities\tools\Set-AVMModule.ps1
+>   ```
+>   ```powershell
 >   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
 >   ```
 > - **Wrong** (single-step `&` invocation — **NEVER** do this):
 >   ```powershell
 >   & .\utilities\tools\Set-AVMModule.ps1 -ModuleFolderPath 'avm/res/network/virtual-network'
 >   ```
+> - **Wrong** (chaining dot-source and call with `;` in a single command — **NEVER** do this):
+>   ```powershell
+>   . .\utilities\tools\Set-AVMModule.ps1; Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+>
+> - **Do NOT** prefix terminal commands with `Set-Location` (or `cd`) when the terminal is already in the correct working directory. Adding unnecessary prefixes changes the command string and breaks `chat.tools.terminal.autoApprove` pattern matching in `.vscode/settings.json`.
+> - **Do NOT** chain multiple commands with `;` into a single terminal invocation. Each command must be sent as a **separate** terminal call so that `chat.tools.terminal.autoApprove` patterns can match each command individually.
 
 ## Quality Assurance and Troubleshooting
 
@@ -180,3 +191,4 @@ When a user asks to perform a task that falls within the domain of a skill below
 | Skill                       | Description                                                                                                                                                                                      | File                                                  |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
 | avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
+| avm-create-pull-request     | Create a PR for AVM module changes with standard formatting, pipeline badges, and PR template. USE FOR: create PR, open pull request, submit for review, create draft PR.                        | `.github/skills/avm-create-pull-request/SKILL.md`     |
