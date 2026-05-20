@@ -571,7 +571,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest_afv2_2026-04-27_1539'`
+- Default: `'latest_afv2_2026-05-18_1589'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
