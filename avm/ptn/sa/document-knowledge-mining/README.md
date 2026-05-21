@@ -141,109 +141,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/document-knowledge-mining:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Default configuration with enterprise-grade parameter values](#example-2-default-configuration-with-enterprise-grade-parameter-values)
+- [Default configuration with enterprise-grade parameter values](#example-1-default-configuration-with-enterprise-grade-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 
-### Example 1: _Sandbox configuration with default parameter values_
-
-This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
-  params: {
-    // Required parameters
-    aiDeploymentsLocation: '<aiDeploymentsLocation>'
-    // Non-required parameters
-    createdBy: 'AVM_Pipeline'
-    enableMonitoring: false
-    enablePrivateNetworking: false
-    enableRedundancy: false
-    enableScalability: false
-    enableTelemetry: true
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiDeploymentsLocation": {
-      "value": "<aiDeploymentsLocation>"
-    },
-    // Non-required parameters
-    "createdBy": {
-      "value": "AVM_Pipeline"
-    },
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "enableRedundancy": {
-      "value": false
-    },
-    "enableScalability": {
-      "value": false
-    },
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
-
-// Required parameters
-param aiDeploymentsLocation = '<aiDeploymentsLocation>'
-// Non-required parameters
-param createdBy = 'AVM_Pipeline'
-param enableMonitoring = false
-param enablePrivateNetworking = false
-param enableRedundancy = false
-param enableScalability = false
-param enableTelemetry = true
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 2: _Default configuration with enterprise-grade parameter values_
+### Example 1: _Default configuration with enterprise-grade parameter values_
 
 This test deploys the Document Knowledge Mining Solution Accelerator using parameters that deploy the enterprise-grade configuration.
 
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/enterprise-grade]
 
 
 <details>
@@ -344,6 +249,101 @@ param enableTelemetry = true
 param location = '<location>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
+```
+
+</details>
+<p>
+
+### Example 2: _Sandbox configuration with default parameter values_
+
+This test deploys the sandbox configuration for Document Knowledge Mining Solution Accelerator with default parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module documentKnowledgeMining 'br/public:avm/ptn/sa/document-knowledge-mining:<version>' = {
+  params: {
+    // Required parameters
+    aiDeploymentsLocation: '<aiDeploymentsLocation>'
+    // Non-required parameters
+    createdBy: 'AVM_Pipeline'
+    enableMonitoring: false
+    enablePrivateNetworking: false
+    enableRedundancy: false
+    enableScalability: false
+    enableTelemetry: true
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiDeploymentsLocation": {
+      "value": "<aiDeploymentsLocation>"
+    },
+    // Non-required parameters
+    "createdBy": {
+      "value": "AVM_Pipeline"
+    },
+    "enableMonitoring": {
+      "value": false
+    },
+    "enablePrivateNetworking": {
+      "value": false
+    },
+    "enableRedundancy": {
+      "value": false
+    },
+    "enableScalability": {
+      "value": false
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/document-knowledge-mining:<version>'
+
+// Required parameters
+param aiDeploymentsLocation = '<aiDeploymentsLocation>'
+// Non-required parameters
+param createdBy = 'AVM_Pipeline'
+param enableMonitoring = false
+param enablePrivateNetworking = false
+param enableRedundancy = false
+param enableScalability = false
+param enableTelemetry = true
+param location = '<location>'
 ```
 
 </details>
