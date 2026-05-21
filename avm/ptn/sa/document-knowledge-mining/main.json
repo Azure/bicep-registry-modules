@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "15418226037456656469"
+      "templateHash": "12374349737711494757"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -3838,8 +3838,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "14099489006827800075"
+              "version": "0.43.1.21952",
+              "templateHash": "16255384784346254835"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -5081,7 +5081,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.15.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.15.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5134,7 +5134,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -5172,7 +5172,7 @@
               "condition": "[and(not(empty(filter(coalesce(parameters('gallerySolutions'), createArray()), lambda('item', startsWith(lambdaVariables('item').name, 'SecurityInsights'))))), parameters('onboardWorkspaceToSentinel'))]",
               "type": "Microsoft.SecurityInsights/onboardingStates",
               "apiVersion": "2025-09-01",
-              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]",
               "name": "default",
               "properties": {},
               "dependsOn": [
@@ -5183,7 +5183,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -5200,7 +5200,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -5240,6 +5240,9 @@
                   },
                   "storageAccountResourceId": {
                     "value": "[coalesce(parameters('storageInsightsConfigs'), createArray())[copyIndex()].storageAccountResourceId]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5249,8 +5252,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "140290971998938797"
+                      "version": "0.43.1.21952",
+                      "templateHash": "16970809132981262060"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -5304,9 +5307,36 @@
                         "description": "Optional. Tags to configure in the resource."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-stginsightconfig.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "storageAccount": {
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
@@ -5388,6 +5418,9 @@
                   },
                   "writeAccessResourceId": {
                     "value": "[tryGet(coalesce(parameters('linkedServices'), createArray())[copyIndex()], 'writeAccessResourceId')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5397,8 +5430,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "14482465616812596213"
+                      "version": "0.43.1.21952",
+                      "templateHash": "2586870641909243015"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -5439,9 +5472,36 @@
                         "description": "Optional. Tags to configure in the resource."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-linkedservice.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -5510,6 +5570,9 @@
                   },
                   "storageAccountIds": {
                     "value": "[coalesce(parameters('linkedStorageAccounts'), createArray())[copyIndex()].storageAccountIds]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5519,8 +5582,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "14864721709229272590"
+                      "version": "0.43.1.21952",
+                      "templateHash": "15773236513066527280"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -5553,9 +5616,36 @@
                       "metadata": {
                         "description": "Required. Linked storage accounts resources Ids."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-linkedstgaccount.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -5643,6 +5733,9 @@
                   },
                   "version": {
                     "value": "[tryGet(coalesce(parameters('savedSearches'), createArray())[copyIndex()], 'version')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5652,8 +5745,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "17904092372918022238"
+                      "version": "0.43.1.21952",
+                      "templateHash": "4872163436522665316"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -5726,9 +5819,36 @@
                       "metadata": {
                         "description": "Optional. The ETag of the saved search. To override an existing saved search, use \"*\" or specify the current Etag."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-savedsearch.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -5809,6 +5929,9 @@
                   },
                   "tableNames": {
                     "value": "[tryGet(coalesce(parameters('dataExports'), createArray())[copyIndex()], 'tableNames')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5818,8 +5941,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "17943947755417749524"
+                      "version": "0.43.1.21952",
+                      "templateHash": "18367966723065205065"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -5895,9 +6018,36 @@
                       "metadata": {
                         "description": "Required. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-dataexport.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -6002,6 +6152,9 @@
                   },
                   "tags": {
                     "value": "[tryGet(coalesce(parameters('dataSources'), createArray())[copyIndex()], 'tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6011,8 +6164,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "15360290236166491819"
+                      "version": "0.43.1.21952",
+                      "templateHash": "13044189770906733158"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -6133,9 +6286,36 @@
                       "metadata": {
                         "description": "Optional. Severities to configure when kind is LinuxSyslog."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-datasource.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -6232,6 +6412,9 @@
                   },
                   "roleAssignments": {
                     "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'roleAssignments')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -6241,8 +6424,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "18383178824663161801"
+                      "version": "0.43.1.21952",
+                      "templateHash": "16822132824171717546"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table."
@@ -6565,6 +6748,13 @@
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -6588,6 +6778,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.opins-worksp-table.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "workspace": {
                       "existing": true,
                       "type": "Microsoft.OperationalInsights/workspaces",
@@ -6614,7 +6824,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}/tables/{1}', parameters('workspaceName'), parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -6953,7 +7163,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "5695186973979003724"
+              "templateHash": "5581323545890539491"
             }
           },
           "definitions": {
@@ -8094,8 +8304,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "14370126050175308430"
+                      "version": "0.43.1.21952",
+                      "templateHash": "3106558891123876576"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -8200,6 +8410,13 @@
                           "metadata": {
                             "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                           }
+                        },
+                        "enableOnlyIPv6Peering": {
+                          "type": "bool",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Whether only Ipv6 address space is peered for subnet peering."
+                          }
                         }
                       },
                       "metadata": {
@@ -8234,48 +8451,23 @@
                         },
                         "ipamPoolPrefixAllocations": {
                           "type": "array",
-                          "prefixItems": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "pool": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "string",
-                                      "metadata": {
-                                        "description": "Required. The Resource ID of the IPAM pool."
-                                      }
-                                    }
-                                  },
-                                  "metadata": {
-                                    "description": "Required. The Resource ID of the IPAM pool."
-                                  }
-                                },
-                                "numberOfIpAddresses": {
-                                  "type": "string",
-                                  "metadata": {
-                                    "description": "Required. Number of IP addresses allocated from the pool."
-                                  }
-                                }
-                              }
-                            }
-                          ],
-                          "items": false,
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipamPoolPrefixAllocations"
+                            },
                             "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool."
-                          }
+                          },
+                          "nullable": true
                         },
                         "applicationGatewayIPConfigurations": {
                           "type": "array",
-                          "items": {
-                            "type": "object"
-                          },
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/applicationGatewayIPConfigurations"
+                            },
                             "description": "Optional. Application gateway IP configurations of virtual network resource."
-                          }
+                          },
+                          "nullable": true
                         },
                         "delegation": {
                           "type": "string",
@@ -8341,13 +8533,13 @@
                         },
                         "serviceEndpointPolicies": {
                           "type": "array",
-                          "items": {
-                            "type": "object"
-                          },
-                          "nullable": true,
                           "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceEndpointPolicies"
+                            },
                             "description": "Optional. An array of service endpoint policies."
-                          }
+                          },
+                          "nullable": true
                         },
                         "serviceEndpoints": {
                           "type": "array",
@@ -8376,6 +8568,26 @@
                           "metadata": {
                             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
                           }
+                        },
+                        "ipAllocations": {
+                          "type": "array",
+                          "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipAllocations"
+                            },
+                            "description": "Optional. Array of IpAllocation which reference this subnet."
+                          },
+                          "nullable": true
+                        },
+                        "serviceGateway": {
+                          "type": "object",
+                          "metadata": {
+                            "__bicep_resource_derived_type!": {
+                              "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceGateway"
+                            },
+                            "description": "Optional. Reference to an existing service gateway."
+                          },
+                          "nullable": true
                         }
                       },
                       "metadata": {
@@ -8500,7 +8712,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -8537,7 +8749,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -8612,7 +8824,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -8633,6 +8845,9 @@
                     },
                     "addressPrefixes": {
                       "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
                       "metadata": {
                         "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`."
                       }
@@ -8743,10 +8958,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/tags"
+                        },
                         "description": "Optional. Tags of the resource."
-                      }
+                      },
+                      "nullable": true
                     },
                     "enableTelemetry": {
                       "type": "bool",
@@ -8772,6 +8990,16 @@
                       "metadata": {
                         "description": "Optional. Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints."
                       }
+                    },
+                    "ipAllocations": {
+                      "type": "array",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/properties/properties/ipAllocations"
+                        },
+                        "description": "Optional. Array of IpAllocation which reference this VNET."
+                      },
+                      "nullable": true
                     }
                   },
                   "variables": {
@@ -8796,8 +9024,8 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.8.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -8815,11 +9043,12 @@
                     },
                     "virtualNetwork": {
                       "type": "Microsoft.Network/virtualNetworks",
-                      "apiVersion": "2024-05-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
                       "properties": {
+                        "ipAllocations": "[parameters('ipAllocations')]",
                         "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
                         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
                         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
@@ -8975,6 +9204,12 @@
                           "sharingScope": {
                             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'sharingScope')]"
                           },
+                          "ipAllocations": {
+                            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'ipAllocations')]"
+                          },
+                          "serviceGateway": {
+                            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'serviceGateway')]"
+                          },
                           "enableTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -8986,8 +9221,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "17113728662177315319"
+                              "version": "0.43.1.21952",
+                              "templateHash": "13622650545537483607"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet."
@@ -9064,7 +9299,7 @@
                               "metadata": {
                                 "description": "An AVM-aligned type for a role assignment.",
                                 "__bicep_imported_from!": {
-                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                                 }
                               }
                             }
@@ -9091,13 +9326,13 @@
                             },
                             "ipamPoolPrefixAllocations": {
                               "type": "array",
-                              "items": {
-                                "type": "object"
-                              },
-                              "nullable": true,
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipamPoolPrefixAllocations"
+                                },
                                 "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
-                              }
+                              },
+                              "nullable": true
                             },
                             "networkSecurityGroupResourceId": {
                               "type": "string",
@@ -9191,17 +9426,43 @@
                             },
                             "applicationGatewayIPConfigurations": {
                               "type": "array",
-                              "defaultValue": [],
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/applicationGatewayIPConfigurations"
+                                },
                                 "description": "Optional. Application gateway IP configurations of virtual network resource."
-                              }
+                              },
+                              "nullable": true
                             },
                             "serviceEndpointPolicies": {
                               "type": "array",
-                              "defaultValue": [],
                               "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceEndpointPolicies"
+                                },
                                 "description": "Optional. An array of service endpoint policies."
-                              }
+                              },
+                              "nullable": true
+                            },
+                            "ipAllocations": {
+                              "type": "array",
+                              "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipAllocations"
+                                },
+                                "description": "Optional. Array of IpAllocation which reference this subnet."
+                              },
+                              "nullable": true
+                            },
+                            "serviceGateway": {
+                              "type": "object",
+                              "metadata": {
+                                "__bicep_resource_derived_type!": {
+                                  "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceGateway"
+                                },
+                                "description": "Optional. Reference to an existing service gateway."
+                              },
+                              "nullable": true
                             },
                             "roleAssignments": {
                               "type": "array",
@@ -9242,8 +9503,8 @@
                             "avmTelemetry": {
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -9262,12 +9523,12 @@
                             "virtualNetwork": {
                               "existing": true,
                               "type": "Microsoft.Network/virtualNetworks",
-                              "apiVersion": "2024-01-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('virtualNetworkName')]"
                             },
                             "subnet": {
                               "type": "Microsoft.Network/virtualNetworks/subnets",
-                              "apiVersion": "2024-05-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
                               "properties": {
                                 "copy": [
@@ -9282,6 +9543,8 @@
                                 "addressPrefix": "[parameters('addressPrefix')]",
                                 "addressPrefixes": "[parameters('addressPrefixes')]",
                                 "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
+                                "ipAllocations": "[parameters('ipAllocations')]",
+                                "serviceGateway": "[parameters('serviceGateway')]",
                                 "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
                                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
@@ -9405,6 +9668,9 @@
                           "useRemoteGateways": {
                             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'useRemoteGateways')]"
                           },
+                          "enableOnlyIPv6Peering": {
+                            "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'enableOnlyIPv6Peering')]"
+                          },
                           "enableTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -9415,8 +9681,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "17951311301958631828"
+                              "version": "0.43.1.21952",
+                              "templateHash": "13404907008886036392"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -9482,14 +9748,21 @@
                               "metadata": {
                                 "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                               }
+                            },
+                            "enableOnlyIPv6Peering": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Whether only Ipv6 address space is peered for subnet peering."
+                              }
                             }
                           },
                           "resources": [
                             {
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -9507,10 +9780,11 @@
                             },
                             {
                               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-                              "apiVersion": "2024-01-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
                               "properties": {
                                 "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
+                                "enableOnlyIPv6Peering": "[parameters('enableOnlyIPv6Peering')]",
                                 "allowGatewayTransit": "[parameters('allowGatewayTransit')]",
                                 "allowVirtualNetworkAccess": "[parameters('allowVirtualNetworkAccess')]",
                                 "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
@@ -9592,6 +9866,9 @@
                           "useRemoteGateways": {
                             "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'remotePeeringUseRemoteGateways')]"
                           },
+                          "enableOnlyIPv6Peering": {
+                            "value": "[tryGet(coalesce(parameters('peerings'), createArray())[copyIndex()], 'enableOnlyIPv6Peering')]"
+                          },
                           "enableTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -9602,8 +9879,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "17951311301958631828"
+                              "version": "0.43.1.21952",
+                              "templateHash": "13404907008886036392"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering."
@@ -9669,14 +9946,21 @@
                               "metadata": {
                                 "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
                               }
+                            },
+                            "enableOnlyIPv6Peering": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Optional. Whether only Ipv6 address space is peered for subnet peering."
+                              }
                             }
                           },
                           "resources": [
                             {
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-virtualnetwork-peering.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -9694,10 +9978,11 @@
                             },
                             {
                               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-                              "apiVersion": "2024-01-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('localVnetName'), parameters('name'))]",
                               "properties": {
                                 "allowForwardedTraffic": "[parameters('allowForwardedTraffic')]",
+                                "enableOnlyIPv6Peering": "[parameters('enableOnlyIPv6Peering')]",
                                 "allowGatewayTransit": "[parameters('allowGatewayTransit')]",
                                 "allowVirtualNetworkAccess": "[parameters('allowVirtualNetworkAccess')]",
                                 "doNotVerifyRemoteGateways": "[parameters('doNotVerifyRemoteGateways')]",
@@ -9786,7 +10071,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('virtualNetwork', '2024-05-01', 'full').location]"
+                      "value": "[reference('virtualNetwork', '2025-05-01', 'full').location]"
                     }
                   }
                 }
@@ -11696,8 +11981,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17174537341033050778"
+              "version": "0.43.1.21952",
+              "templateHash": "10225325739808319221"
             },
             "name": "Virtual Machines",
             "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -14539,7 +14824,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-07-01",
-              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.22.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.22.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -14856,8 +15141,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "5982155361487304817"
+                      "version": "0.43.1.21952",
+                      "templateHash": "4361477318340016836"
                     }
                   },
                   "definitions": {
@@ -17688,6 +17973,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -17734,8 +18022,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -17847,9 +18135,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -17924,6 +18239,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -17961,8 +18279,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18074,9 +18392,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -18152,6 +18497,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -18193,8 +18541,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18306,9 +18654,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -18384,6 +18759,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -18423,8 +18801,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18536,9 +18914,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -18614,6 +19019,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -18655,8 +19063,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18768,9 +19176,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -18846,6 +19281,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -18882,8 +19320,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18995,9 +19433,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -19073,6 +19538,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -19117,8 +19585,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19230,9 +19698,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -19308,6 +19803,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -19357,8 +19855,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19470,9 +19968,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -19548,6 +20073,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -19590,8 +20118,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19703,9 +20231,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -19781,6 +20336,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -19819,8 +20377,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19932,9 +20490,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -20010,6 +20595,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -20065,8 +20653,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20178,9 +20766,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -20256,6 +20871,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('name')]"
                   },
@@ -20299,8 +20917,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "3581830278162851734"
+                      "version": "0.43.1.21952",
+                      "templateHash": "6219779849957580580"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20412,9 +21030,36 @@
                         "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
@@ -20519,8 +21164,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "17448691641471706096"
+                      "version": "0.43.1.21952",
+                      "templateHash": "15224763141117154516"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -21134,8 +21779,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "7591858083424858339"
+              "version": "0.43.1.21952",
+              "templateHash": "14914442471373925884"
             },
             "name": "User Assigned Identities",
             "description": "This module deploys a User Assigned Identity."
@@ -21376,14 +22021,15 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -21411,7 +22057,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -21428,7 +22074,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -21473,6 +22119,9 @@
                   },
                   "subject": {
                     "value": "[coalesce(parameters('federatedIdentityCredentials'), createArray())[copyIndex()].subject]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -21481,8 +22130,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "1387931959101373036"
+                      "version": "0.43.1.21952",
+                      "templateHash": "15410471523237285295"
                     },
                     "name": "User Assigned Identity Federated Identity Credential",
                     "description": "This module deploys a User Assigned Identity Federated Identity Credential."
@@ -21517,9 +22166,36 @@
                       "metadata": {
                         "description": "Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.managedid-userassignedidcredential.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
                       "apiVersion": "2024-11-30",
@@ -21624,13 +22300,15 @@
           "location": {
             "value": "[variables('solutionLocation')]"
           },
-          "acrSku": "[if(parameters('enableRedundancy'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
+          "acrSku": {
+            "value": "Standard"
+          },
           "publicNetworkAccess": {
             "value": "Enabled"
           },
-          "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
-          "networkRuleSetDefaultAction": "[if(parameters('enableRedundancy'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
-          "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', replace(parameters('cosmosReplicaLocation'), ' ', ''), 'location', parameters('cosmosReplicaLocation'), 'zoneRedundancy', 'Enabled'))), createObject('value', null()))]",
+          "zoneRedundancy": {
+            "value": "Disabled"
+          },
           "roleAssignments": {
             "value": [
               {
@@ -21652,62 +22330,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "9712237770873297657"
+              "templateHash": "9133762733243072406"
             },
             "name": "Container Registry Module"
           },
           "definitions": {
-            "replicationType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the replication."
-                  }
-                },
-                "location": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Location for all resources."
-                  }
-                },
-                "tags": {
-                  "type": "object",
-                  "nullable": true,
-                  "metadata": {
-                    "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.ContainerRegistry/registries/replications@2025-03-01-preview#properties/tags"
-                    },
-                    "description": "Optional. Tags of the resource."
-                  }
-                },
-                "regionEndpointEnabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
-                  }
-                },
-                "zoneRedundancy": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.ContainerRegistry/registries@2025-03-01-preview#properties/properties/properties/zoneRedundancy"
-                    },
-                    "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "The type for a replication.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-registry/registry:0.12.1"
-                }
-              }
-            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -21818,28 +22445,6 @@
                 "description": "Zone redundancy setting for the Azure Container Registry"
               }
             },
-            "networkRuleSetDefaultAction": {
-              "type": "string",
-              "defaultValue": "Allow",
-              "allowedValues": [
-                "Allow",
-                "Deny"
-              ],
-              "metadata": {
-                "description": "Optional. The default action of allow or deny when no other rules match. Note, requires the 'acrSku' to be 'Premium'."
-              }
-            },
-            "exportPolicyStatus": {
-              "type": "string",
-              "defaultValue": "enabled",
-              "allowedValues": [
-                "enabled",
-                "disabled"
-              ],
-              "metadata": {
-                "description": "Optional. The value that indicates whether the export policy is enabled or not. Premium SKU only. Must be 'enabled' when 'publicNetworkAccess' is 'Enabled'."
-              }
-            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -21855,16 +22460,6 @@
               "defaultValue": {},
               "metadata": {
                 "description": "Tags to be applied to the Container Registry"
-              }
-            },
-            "replications": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/replicationType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. All replications to create."
               }
             }
           },
@@ -21894,17 +22489,8 @@
                   "zoneRedundancy": {
                     "value": "[parameters('zoneRedundancy')]"
                   },
-                  "networkRuleSetDefaultAction": {
-                    "value": "[parameters('networkRuleSetDefaultAction')]"
-                  },
-                  "exportPolicyStatus": {
-                    "value": "[parameters('exportPolicyStatus')]"
-                  },
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
-                  },
-                  "replications": {
-                    "value": "[parameters('replications')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -36480,9 +37066,7 @@
               "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
             }
           },
-          "allowBlobPublicAccess": {
-            "value": false
-          },
+          "allowBlobPublicAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', false()), createObject('value', true()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'service', 'blob'), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'storage-dns-zone-group-queue', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)).outputs.resourceId.value))), 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'service', 'queue'))), createObject('value', createArray()))]",
           "blobServices": {
@@ -44609,8 +45193,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -44679,8 +45263,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.39.26.7824",
-              "templateHash": "6207719545398489494"
+              "version": "0.43.1.21952",
+              "templateHash": "10544525483737006945"
             },
             "name": "Search Services",
             "description": "This module deploys a Search Service."
@@ -45336,7 +45920,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.Search/searchServices@2025-05-01#properties/properties/properties/authOptions"
                 },
-                "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
+                "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. This parameter is ignored if 'disableLocalAuth' is set to true."
               },
               "nullable": true
             },
@@ -45344,7 +45928,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined."
+                "description": "Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication."
               }
             },
             "enableTelemetry": {
@@ -45466,7 +46050,7 @@
               "$ref": "#/definitions/secretsExportConfigurationType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+                "description": "Optional. Key vault reference and secret settings for the module's secrets export. This parameter is ignored if 'disableLocalAuth' is set to true."
               }
             },
             "replicaCount": {
@@ -45553,6 +46137,7 @@
               }
             ],
             "enableReferencedModulesTelemetry": false,
+            "shouldExportSecrets": "[and(not(equals(parameters('secretsExportConfiguration'), null())), not(parameters('disableLocalAuth')))]",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', '')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
@@ -45570,8 +46155,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.search-searchservice.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -45598,7 +46183,7 @@
               "tags": "[parameters('tags')]",
               "identity": "[variables('identity')]",
               "properties": {
-                "authOptions": "[parameters('authOptions')]",
+                "authOptions": "[if(parameters('disableLocalAuth'), null(), parameters('authOptions'))]",
                 "disableLocalAuth": "[parameters('disableLocalAuth')]",
                 "encryptionWithCmk": {
                   "enforcement": "[parameters('cmkEnforcement')]"
@@ -45620,7 +46205,7 @@
               },
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
               "properties": {
                 "copy": [
@@ -45658,7 +46243,7 @@
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
                 "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -45675,7 +46260,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Search/searchServices/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Search/searchServices', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -45752,8 +46337,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "16604612898799598358"
+                      "version": "0.41.2.15936",
+                      "templateHash": "18436885663402767850"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -45817,7 +46402,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -45916,7 +46501,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -45955,11 +46540,21 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                         },
                         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
                       },
                       "nullable": true
+                    },
+                    "ipVersionType": {
+                      "type": "string",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                        },
+                        "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+                      },
+                      "defaultValue": "IPv4"
                     },
                     "privateDnsZoneGroup": {
                       "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -45996,7 +46591,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                         },
                         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                       },
@@ -46006,7 +46601,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                         },
                         "description": "Optional. Custom DNS configurations."
                       },
@@ -46016,7 +46611,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
                       },
@@ -46026,7 +46621,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
                       },
@@ -46066,7 +46661,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -46084,7 +46679,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -46105,14 +46700,15 @@
                         "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                         "subnet": {
                           "id": "[parameters('subnetResourceId')]"
-                        }
+                        },
+                        "ipVersionType": "[parameters('ipVersionType')]"
                       }
                     },
                     "privateEndpoint_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -46129,7 +46725,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -46172,8 +46768,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.5.1644",
-                              "templateHash": "24141742673128945"
+                              "version": "0.41.2.15936",
+                              "templateHash": "9935179114830442414"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -46232,12 +46828,12 @@
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('privateEndpointName')]"
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "copy": [
@@ -46312,13 +46908,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                           "output": true
                         },
                         "description": "The custom DNS configurations of the private endpoint."
@@ -46392,8 +46988,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "2115224445601868607"
+                      "version": "0.43.1.21952",
+                      "templateHash": "4777097353420226812"
                     },
                     "name": "Search Services Private Link Resources",
                     "description": "This module deploys a Search Service Private Link Resource."
@@ -46486,7 +47082,7 @@
               ]
             },
             "secretsExport": {
-              "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+              "condition": "[variables('shouldExportSecrets')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
               "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
@@ -46512,8 +47108,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.39.26.7824",
-                      "templateHash": "696453183181258843"
+                      "version": "0.43.1.21952",
+                      "templateHash": "11743018311663462426"
                     }
                   },
                   "definitions": {
@@ -46685,21 +47281,21 @@
               "metadata": {
                 "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
               },
-              "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+              "value": "[if(variables('shouldExportSecrets'), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
             },
             "primaryKey": {
               "type": "securestring",
               "metadata": {
-                "description": "The primary admin API key of the search service."
+                "description": "The primary admin API key of the search service. Empty when local auth is disabled."
               },
-              "value": "[listAdminKeys('searchService', '2025-05-01').primaryKey]"
+              "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').primaryKey, '')]"
             },
             "secondaryKey": {
               "type": "securestring",
               "metadata": {
-                "description": "The secondaryKey admin API key of the search service."
+                "description": "The secondary admin API key of the search service. Empty when local auth is disabled."
               },
-              "value": "[listAdminKeys('searchService', '2025-05-01').secondaryKey]"
+              "value": "[if(not(parameters('disableLocalAuth')), listAdminKeys('searchService', '2025-05-01').secondaryKey, '')]"
             }
           }
         }
@@ -51865,8 +52461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9354255292030724964"
+              "version": "0.43.8.12551",
+              "templateHash": "15843012406201755399"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Clusters",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -53508,7 +54104,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.13.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.13.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -53793,6 +54389,9 @@
                   },
                   "timeInWeek": {
                     "value": "[tryGet(coalesce(parameters('maintenanceConfigurations'), createArray())[copyIndex()], 'timeInWeek')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -53802,13 +54401,20 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "14996726530994398980"
+                      "version": "0.43.8.12551",
+                      "templateHash": "4144399154632135407"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
                   },
                   "parameters": {
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
                     "maintenanceWindow": {
                       "type": "object",
                       "metadata": {
@@ -53853,6 +54459,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.consvc-mgdcluster-maintenancecfg.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "managedCluster": {
                       "existing": true,
                       "type": "Microsoft.ContainerService/managedClusters",
@@ -53918,6 +54544,9 @@
                   },
                   "name": {
                     "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].name]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "availabilityZones": {
                     "value": "[tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'availabilityZones')]"
@@ -54071,13 +54700,20 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "16308202198868744437"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16885510507838845800"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
                   },
                   "parameters": {
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
                     "managedClusterName": {
                       "type": "string",
                       "metadata": {
@@ -54520,6 +55156,26 @@
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.consvc-mgdcluster-agentpool.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "managedCluster": {
                       "existing": true,
                       "type": "Microsoft.ContainerService/managedClusters",

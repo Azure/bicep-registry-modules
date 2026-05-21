@@ -16,30 +16,12 @@ param publicNetworkAccess string = 'Enabled'
 @description('Zone redundancy setting for the Azure Container Registry')
 param zoneRedundancy string = 'Disabled'
 
-@description('Optional. The default action of allow or deny when no other rules match. Note, requires the \'acrSku\' to be \'Premium\'.')
-@allowed([
-  'Allow'
-  'Deny'
-])
-param networkRuleSetDefaultAction string = 'Allow'
-
-@description('Optional. The value that indicates whether the export policy is enabled or not. Premium SKU only. Must be \'enabled\' when \'publicNetworkAccess\' is \'Enabled\'.')
-@allowed([
-  'enabled'
-  'disabled'
-])
-param exportPolicyStatus string = 'enabled'
-
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Tags to be applied to the Container Registry')
 param tags object = {}
-
-import { replicationType } from 'br/public:avm/res/container-registry/registry:0.12.1'
-@description('Optional. All replications to create.')
-param replications replicationType[]?
 
 module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' = {
   name: acrName
@@ -49,10 +31,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     acrSku: acrSku
     publicNetworkAccess: publicNetworkAccess
     zoneRedundancy: zoneRedundancy
-    networkRuleSetDefaultAction: networkRuleSetDefaultAction
-    exportPolicyStatus: exportPolicyStatus
     roleAssignments: roleAssignments
-    replications: replications
     tags: tags
   }
 }

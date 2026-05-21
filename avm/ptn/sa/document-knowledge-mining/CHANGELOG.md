@@ -6,36 +6,29 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Container Registry submodule enhancements:
-  - SKU is automatically promoted to `Premium` and `zoneRedundancy` enabled when `enableRedundancy` is `true` (otherwise `Standard`/`Disabled`).
-  - Geo-replication to `cosmosReplicaLocation` is provisioned when `enableRedundancy` is `true`.
-  - New parameters `networkRuleSetDefaultAction` (defaults to `Allow`, switches to `Deny` under redundancy) and `exportPolicyStatus` exposed for finer control.
-- Aligned with `container-service/managed-cluster` 0.13.0 schema (AKS).
-- Added e2e test scenarios `defaults` and `waf-aligned`; `sandbox` test updated to `Microsoft.Resources/resourceGroups@2025-04-01`.
+- Aligned with `container-service/managed-cluster` 0.13.0 schema (AKS): `aadProfile`, `autoUpgradeProfile`, `apiServerAccessProfile`, and `securityProfile.defender` mappings.
+- Added `!` non-null assertions required by stricter Bicep null-checking on conditional module outputs.
 - Updated AVM module versions to latest available:
   - `network/private-dns-zone`: 0.8.0 → 0.8.1
   - `network/bastion-host`: 0.8.0 → 0.8.2
-  - `compute/virtual-machine`: 0.21.0 → 0.22.0
-  - `managed-identity/user-assigned-identity`: 0.4.2 → 0.5.0
+  - `compute/virtual-machine`: 0.21.0 → 0.22.1
+  - `managed-identity/user-assigned-identity`: 0.4.2 → 0.5.1
   - `document-db/database-account`: 0.18.0 → 0.19.0
   - `app-configuration/configuration-store`: 0.9.2 → 0.9.3
-  - `search/search-service`: 0.11.1 → 0.12.0
+  - `search/search-service`: 0.11.1 → 0.12.1
   - `cognitive-services/account`: 0.14.0 → 0.14.2
   - `network/network-security-group`: 0.5.2 → 0.5.3
   - `container-registry/registry`: 0.9.3 → 0.12.1
-  - `operational-insights/workspace`: 0.14.0 → 0.15.0
+  - `operational-insights/workspace`: 0.14.0 → 0.15.1
   - `maintenance/maintenance-configuration`: 0.3.2 → 0.4.0
   - `storage/storage-account`: 0.29.0 → 0.32.0
-  - `container-service/managed-cluster`: 0.11.1 → 0.13.0
-  - `network/virtual-network`: 0.7.1 → 0.8.1
+  - `container-service/managed-cluster`: 0.11.1 → 0.13.1
+  - `network/virtual-network`: 0.7.1 → 0.9.0
   - `utl/types/avm-common-types`: 0.5.1 → 0.7.0
 - Updated Azure Resource API versions:
   - `Microsoft.ContainerService/managedClusters/maintenanceConfigurations`: 2024-10-01 → 2026-01-01
-  - `Microsoft.Resources/resourceGroups` (test files): 2021-04-01 → 2025-04-01
-
-### Breaking Changes
-
-- Storage account `allowBlobPublicAccess` is now hard-coded to `false` (previously `true` when `enablePrivateNetworking` was `false`) to comply with the Azure WAF security baseline and PSRule `Azure.Storage.BlobPublicAccess`. Deployments that previously relied on anonymous public blob access will need to opt back in out-of-band or front the storage account with a different access pattern (e.g., SAS, Entra ID, or a CDN/Front Door).
+  - `Microsoft.Resources/deployments` (telemetry): 2024-03-01 → 2024-11-01
+  - `Microsoft.Resources/resourceGroups` (sandbox test): 2021-04-01 → 2025-04-01
 
 ## 0.3.0
 

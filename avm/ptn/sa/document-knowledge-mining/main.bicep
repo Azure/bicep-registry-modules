@@ -252,7 +252,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -358,7 +358,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.1' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -464,7 +464,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -480,19 +480,9 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
-    acrSku: enableRedundancy ? 'Premium' : 'Standard'
+    acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
-    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
-    networkRuleSetDefaultAction: enableRedundancy ? 'Deny' : 'Allow'
-    replications: enableRedundancy
-      ? [
-          {
-            name: replace(cosmosReplicaLocation, ' ', '')
-            location: cosmosReplicaLocation
-            zoneRedundancy: 'Enabled'
-          }
-        ]
-      : null
+    zoneRedundancy: 'Disabled'
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId!
@@ -774,7 +764,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
       bypass: 'AzureServices'
       defaultAction: (enablePrivateNetworking) ? 'Deny' : 'Allow'
     }
-    allowBlobPublicAccess: false
+    allowBlobPublicAccess: enablePrivateNetworking ? false : true
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
 
     privateEndpoints: enablePrivateNetworking
@@ -826,7 +816,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
 
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
-module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.12.0' = {
+module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.12.1' = {
   name: take('avm.res.cognitive-search-services.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -984,7 +974,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.2
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.1' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
