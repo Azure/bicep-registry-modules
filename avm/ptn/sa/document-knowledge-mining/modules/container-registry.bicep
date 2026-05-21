@@ -30,6 +30,8 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     location: location
     acrSku: acrSku
     publicNetworkAccess: publicNetworkAccess
+    // Required for non-Premium SKU: v0.12.x emits networkRuleSet when default action is 'Deny', which Standard SKU rejects (NetworkRuleNotSupported).
+    networkRuleSetDefaultAction: 'Allow'
     zoneRedundancy: zoneRedundancy
     roleAssignments: roleAssignments
     tags: tags
