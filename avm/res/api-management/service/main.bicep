@@ -564,7 +564,7 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-module service_diagnostics 'diagnostic/main.bicep' = [
+module service_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (serviceDiagnostics ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-SvcDiag-${index}'
     params: {
@@ -667,7 +667,7 @@ resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
-module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-service-PrivateEndpoint-${index}'
     scope: resourceGroup(

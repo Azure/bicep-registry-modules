@@ -2,6 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/multi-agent-custom-automation-engine/CHANGELOG.md).
 
+## 0.2.4
+
+### Changes
+- Separated the AI Services private endpoint creation from the Cognitive Services account module into a dedicated `avm/res/network/private-endpoint` module deployment, and added an explicit `dependsOn` from the AI Foundry project to the private endpoint, to resolve `AccountProvisioningStateInvalid` failures caused by inline private endpoint creation racing against account provisioning and inline model deployments
+
+### Breaking Changes
+
+- None
+
 ## 0.2.3
 
 ### Changes
