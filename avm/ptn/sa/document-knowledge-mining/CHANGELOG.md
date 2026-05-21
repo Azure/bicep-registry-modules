@@ -30,6 +30,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
   - `Microsoft.Resources/deployments` (telemetry): 2024-03-01 → 2024-11-01
   - `Microsoft.Resources/resourceGroups` (sandbox test): 2021-04-01 → 2025-04-01
 
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes
