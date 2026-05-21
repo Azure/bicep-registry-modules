@@ -2,6 +2,22 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/conversation-knowledge-mining/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Upgraded Content Understanding API version default from `2024-12-01-preview` to `2025-11-01`.
+- Consolidated the separate Content Understanding AI Services account (`-cu`) into the primary AI Foundry AI Services account.
+- Updated allowed values for `aiServiceLocation`: removed `francecentral`; added `southcentralus` and `westeurope`.
+- Added `Microsoft.Insights/dataCollectionRules` (`dcr-<suffix>`) for Windows VM performance counters and security events (deployed when `enablePrivateNetworking` and `enableMonitoring` are both true), and associated it with the jumpbox VM via `extensionMonitoringAgentConfig`.
+- Enabled `requireInfrastructureEncryption` on the storage account.
+- Enabled end-to-end encryption (`e2eEncryptionEnabled`) on backend and frontend web apps.
+
+### Breaking Changes
+
+- Removed parameter `contentUnderstandingLocation` (Content Understanding now uses the consolidated AI Services account in `aiServiceLocation`).
+- Removed outputs `azureContentUnderstandingLocation` and `cuFoundryResourceId`. Output `azureOpenAICuEndpoint` is retained and now sourced from `aiFoundryAiServices.outputs.endpoints['Content Understanding']`.
+
 ## 0.4.0
 
 ### Changes
