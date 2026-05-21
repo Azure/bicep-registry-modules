@@ -276,6 +276,7 @@ module rsv_replicationFabrics 'replication-fabric/main.bicep' = [
       name: replicationFabric.?name
       location: replicationFabric.location
       replicationContainers: replicationFabric.?replicationContainers
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       rsv_replicationPolicies
@@ -293,6 +294,7 @@ module rsv_replicationPolicies 'replication-policy/main.bicep' = [
       crashConsistentFrequencyInMinutes: replicationPolicy.?crashConsistentFrequencyInMinutes
       multiVmSyncStatus: replicationPolicy.?multiVmSyncStatus
       recoveryPointHistory: replicationPolicy.?recoveryPointHistory
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -307,6 +309,7 @@ module rsv_backupFabric_protectionContainer_protectedItems 'backup-fabric/protec
       protectedItemType: protectedItem.protectedItemType
       protectionContainerName: protectedItem.protectionContainerName
       sourceResourceId: protectedItem.sourceResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       rsv_backupPolicies
@@ -321,6 +324,7 @@ module rsv_backupPolicies 'backup-policy/main.bicep' = [
       recoveryVaultName: rsv.name
       name: backupPolicy.name
       properties: backupPolicy.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -337,6 +341,7 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
     storageType: backupConfig.?storageType
     storageTypeState: backupConfig.?storageTypeState
     isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -348,6 +353,7 @@ module rsv_replicationAlertSettings 'replication-alert-setting/main.bicep' = if 
     customEmailAddresses: replicationAlertSettings.?customEmailAddresses
     locale: replicationAlertSettings.?locale
     sendToOwners: replicationAlertSettings.?sendToOwners
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
