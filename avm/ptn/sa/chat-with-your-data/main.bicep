@@ -1508,7 +1508,7 @@ module formrecognizer 'modules/core/ai/cognitiveservices.bicep' = {
     tags: allTags
     kind: 'FormRecognizer'
 
-    enablePrivateNetworking: false // Temporary: enabling public access to resolve 403 private endpoint errors
+    enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
@@ -1559,7 +1559,7 @@ module contentsafety 'modules/core/ai/cognitiveservices.bicep' = {
     tags: allTags
     kind: 'ContentSafety'
 
-    enablePrivateNetworking: false // Temporary: enabling public access to resolve 403 private endpoint errors
+    enablePrivateNetworking: enablePrivateNetworking
     enableMonitoring: enableMonitoring
     enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : null
