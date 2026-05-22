@@ -151,13 +151,7 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    cosmosDbReplicaLocation: 'canadacentral'
-    enableMonitoring: false
-    enablePrivateNetworking: false
-    enableRedundancy: true
-    enableScalability: true
     gptDeploymentCapacity: 10
-    location: '<location>'
     solutionName: 'scpdmin'
   }
 }
@@ -180,26 +174,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
-    "cosmosDbReplicaLocation": {
-      "value": "canadacentral"
-    },
-    "enableMonitoring": {
-      "value": false
-    },
-    "enablePrivateNetworking": {
-      "value": false
-    },
-    "enableRedundancy": {
-      "value": true
-    },
-    "enableScalability": {
-      "value": true
-    },
     "gptDeploymentCapacity": {
       "value": 10
-    },
-    "location": {
-      "value": "<location>"
     },
     "solutionName": {
       "value": "scpdmin"
@@ -221,13 +197,7 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-param cosmosDbReplicaLocation = 'canadacentral'
-param enableMonitoring = false
-param enablePrivateNetworking = false
-param enableRedundancy = true
-param enableScalability = true
 param gptDeploymentCapacity = 10
-param location = '<location>'
 param solutionName = 'scpdmin'
 ```
 
@@ -457,25 +427,20 @@ param vmAdminUsername = 'adminuser'
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Location for the Azure AI Services deployment. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerRegistryEndpoint`](#parameter-containerregistryendpoint) | string | The container registry login server/endpoint for the container images (for example, an Azure Container Registry endpoint). |
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Azure AI Content Understanding service deployment. |
+| [`cosmosDbReplicaLocation`](#parameter-cosmosdbreplicalocation) | string | Location for the secondary Cosmos DB failover region. Used only when enableRedundancy is true. If omitted while enableRedundancy is true, Cosmos DB is provisioned as zone-redundant in the primary region only. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
-| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
+| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to true. |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. This deploys the solution behind a virtual network with private endpoints, a Bastion host and a jumpbox VM. Defaults to true. |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection. Defaults to false. |
-| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true. |
+| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1. |
@@ -509,13 +474,6 @@ Location for the Azure AI Services deployment.
   ]
   ```
 
-### Parameter: `cosmosDbReplicaLocation`
-
-Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.
-
-- Required: No
-- Type: string
-
 ### Parameter: `containerRegistryEndpoint`
 
 The container registry login server/endpoint for the container images (for example, an Azure Container Registry endpoint).
@@ -539,6 +497,13 @@ Location for the Azure AI Content Understanding service deployment.
     'WestUS'
   ]
   ```
+
+### Parameter: `cosmosDbReplicaLocation`
+
+Location for the secondary Cosmos DB failover region. Used only when enableRedundancy is true. If omitted while enableRedundancy is true, Cosmos DB is provisioned as zone-redundant in the primary region only.
+
+- Required: No
+- Type: string
 
 ### Parameter: `createdBy`
 
@@ -565,19 +530,19 @@ Type of GPT deployment to use: Standard | GlobalStandard.
 
 ### Parameter: `enableMonitoring`
 
-Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
+Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePrivateNetworking`
 
-Enable WAF for the deployment.
+Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. This deploys the solution behind a virtual network with private endpoints, a Bastion host and a jumpbox VM. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enablePurgeProtection`
 
@@ -589,19 +554,19 @@ Enable purge protection. Defaults to false.
 
 ### Parameter: `enableRedundancy`
 
-Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableScalability`
 
-Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 

@@ -52,7 +52,7 @@ param contentUnderstandingLocation string = 'WestUS'
 })
 param azureAiServiceLocation string
 
-@description('Conditional. Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true.')
+@description('Optional. Location for the secondary Cosmos DB failover region. Used only when enableRedundancy is true. If omitted while enableRedundancy is true, Cosmos DB is provisioned as zone-redundant in the primary region only.')
 param cosmosDbReplicaLocation string?
 
 @description('Optional. Type of GPT deployment to use: Standard | GlobalStandard.')
@@ -83,20 +83,20 @@ param containerRegistryEndpoint string = 'cpscontainerreg.azurecr.io'
 @description('Optional. The image tag for the container images.')
 param imageTag string = 'latest_v2_2026-05-08_909'
 
-@description('Optional. Enable WAF for the deployment.')
-param enablePrivateNetworking bool = false
+@description('Optional. Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. This deploys the solution behind a virtual network with private endpoints, a Bastion host and a jumpbox VM. Defaults to true.')
+param enablePrivateNetworking bool = true
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.')
-param enableMonitoring bool = false
+@description('Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to true.')
+param enableMonitoring bool = true
 
-@description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableRedundancy bool = false
+@description('Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true.')
+param enableRedundancy bool = true
 
-@description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
-param enableScalability bool = false
+@description('Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true.')
+param enableScalability bool = true
 
 @description('Optional. Enable purge protection. Defaults to false.')
 param enablePurgeProtection bool = false
@@ -1347,19 +1347,27 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
     zoneRedundant: enableRedundancy
     // WAF aligned configuration for Redundancy: explicit failover locations using a caller-supplied
     // replica region (instead of a hardcoded region pair map, which fails in pipeline test regions).
+    // When enableRedundancy is true but no cosmosDbReplicaLocation is supplied, fall back to a single
+    // zone-redundant primary region instead of passing a null locationName.
     failoverLocations: enableRedundancy
-      ? [
-          {
-            failoverPriority: 0
-            isZoneRedundant: true
-            locationName: location
-          }
-          {
-            failoverPriority: 1
-            isZoneRedundant: true
-            locationName: cosmosDbReplicaLocation
-          }
-        ]
+      ? concat(
+          [
+            {
+              failoverPriority: 0
+              isZoneRedundant: true
+              locationName: location
+            }
+          ],
+          empty(cosmosDbReplicaLocation ?? '')
+            ? []
+            : [
+                {
+                  failoverPriority: 1
+                  isZoneRedundant: true
+                  locationName: cosmosDbReplicaLocation!
+                }
+              ]
+        )
       : [
           {
             locationName: location

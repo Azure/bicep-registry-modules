@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "15668089318729801541"
+      "templateHash": "6536890881144872191"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -73,7 +73,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Location for the Cosmos DB replica deployment. Required if enableRedundancy is set to true."
+        "description": "Optional. Location for the secondary Cosmos DB failover region. Used only when enableRedundancy is true. If omitted while enableRedundancy is true, Cosmos DB is provisioned as zone-redundant in the primary region only."
       }
     },
     "deploymentType": {
@@ -130,9 +130,9 @@
     },
     "enablePrivateNetworking": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable WAF for the deployment."
+        "description": "Optional. Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. This deploys the solution behind a virtual network with private endpoints, a Bastion host and a jumpbox VM. Defaults to true."
       }
     },
     "enableTelemetry": {
@@ -144,23 +144,23 @@
     },
     "enableMonitoring": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false."
+        "description": "Optional. Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to true."
       }
     },
     "enableRedundancy": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
+        "description": "Optional. Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true."
       }
     },
     "enableScalability": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false."
+        "description": "Optional. Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to true."
       }
     },
     "enablePurgeProtection": {
@@ -558,9 +558,9 @@
       },
       "dependsOn": [
         "contentUnderstandingPrivateEndpointRes",
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').contentUnderstanding)]"
+        "[format('privateDnsZoneResources[{0}]', variables('dnsZoneIndex').aiServices)]"
       ]
     },
     "containerRegistryReaderIdentity": {
@@ -43728,7 +43728,7 @@
           "zoneRedundant": {
             "value": "[parameters('enableRedundancy')]"
           },
-          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('location')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosDbReplicaLocation')))), createObject('value', createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', false()))))]",
+          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', concat(createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('location'))), if(empty(coalesce(parameters('cosmosDbReplicaLocation'), '')), createArray(), createArray(createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosDbReplicaLocation')))))), createObject('value', createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', false()))))]",
           "networkRestrictions": {
             "value": {
               "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), 'Disabled', 'Enabled')]",
