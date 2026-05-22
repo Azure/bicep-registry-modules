@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4382356593399929897"
+      "version": "0.43.8.12551",
+      "templateHash": "3517063021717500432"
     },
     "name": "API Management Workspace Products",
     "description": "This module deploys a Product in an API Management Workspace."
@@ -195,7 +195,17 @@
       "metadata": {
         "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "service::workspace": {
@@ -209,6 +219,26 @@
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceproduct.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "product": {
       "type": "Microsoft.ApiManagement/service/workspaces/products",
@@ -252,6 +282,9 @@
           },
           "apiResourceId": {
             "value": "[coalesce(parameters('apiLinks'), createArray())[copyIndex()].apiResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -260,8 +293,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1224255340999881019"
+              "version": "0.43.8.12551",
+              "templateHash": "3216344338570878007"
             },
             "name": "API Management Workspace Product API Links",
             "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -296,9 +329,36 @@
               "metadata": {
                 "description": "Required. Full resource Id of an API."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspprodapilink.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/workspaces/products/apiLinks",
               "apiVersion": "2024-05-01",
@@ -365,6 +425,9 @@
           },
           "groupResourceId": {
             "value": "[coalesce(parameters('groupLinks'), createArray())[copyIndex()].groupResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -373,8 +436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "528294820302295428"
+              "version": "0.43.8.12551",
+              "templateHash": "2286955869723323139"
             },
             "name": "API Management Workspace Product Group Links",
             "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -409,9 +472,36 @@
               "metadata": {
                 "description": "Required. Full resource Id of a Group."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspprodgrplink.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/workspaces/products/groupLinks",
               "apiVersion": "2024-05-01",
@@ -481,6 +571,9 @@
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -489,8 +582,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8923963461627228779"
+              "version": "0.43.8.12551",
+              "templateHash": "9043711511873546814"
             },
             "name": "API Management Workspace Product Policies",
             "description": "This module deploys a Policy for a Product in an API Management Workspace."
@@ -539,9 +632,36 @@
               "metadata": {
                 "description": "Required. Contents of the Policy as defined by the format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspprodpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/workspaces/products/policies",
               "apiVersion": "2024-05-01",

@@ -1,8 +1,11 @@
-metadata name = 'API Management Service Diagnostics'
-metadata description = 'This module deploys an API Management Service Diagnostic.'
+metadata name = 'API Management Workspace Diagnostics'
+metadata description = 'This module deploys a Diagnostic at API Management Workspace scope.'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
+
+@description('Conditional. The name of the parent Workspace. Required if the template is used in a standalone deployment.')
+param workspaceName string
 
 @description('Required. Diagnostic Name.')
 param name string
@@ -14,10 +17,10 @@ param loggerResourceId string
 param alwaysLog string = 'allErrors'
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend.')
-param backend resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.backend?
+param backend resourceInput<'Microsoft.ApiManagement/service/workspaces/diagnostics@2024-05-01'>.properties.backend?
 
 @description('Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.')
-param frontend resourceInput<'Microsoft.ApiManagement/service/diagnostics@2024-05-01'>.properties.frontend?
+param frontend resourceInput<'Microsoft.ApiManagement/service/workspaces/diagnostics@2024-05-01'>.properties.frontend?
 
 @allowed([
   'Legacy'
@@ -51,17 +54,43 @@ param samplingPercentage int = 100
 @description('Optional. The verbosity level applied to traces emitted by trace policies.')
 param verbosity string = 'information'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // ============== //
 // Resources      //
 // ============== //
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
+
+  resource workspace 'workspaces@2024-05-01' existing = {
+    name: workspaceName
+  }
 }
 
-resource diagnostic 'Microsoft.ApiManagement/service/diagnostics@2024-05-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-service-workspacediag.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource diagnostic 'Microsoft.ApiManagement/service/workspaces/diagnostics@2024-05-01' = {
   name: name
-  parent: service
+  parent: service::workspace
   properties: {
     loggerId: loggerResourceId
     alwaysLog: alwaysLog
@@ -83,11 +112,11 @@ resource diagnostic 'Microsoft.ApiManagement/service/diagnostics@2024-05-01' = {
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the API Management diagnostic.')
+@description('The resource ID of the workspace diagnostic.')
 output resourceId string = diagnostic.id
 
-@description('The name of the API Management diagnostic.')
+@description('The name of the workspace diagnostic.')
 output name string = diagnostic.name
 
-@description('The name of the resource group the API Management diagnostic was created in.')
+@description('The resource group the workspace diagnostic was deployed into.')
 output resourceGroupName string = resourceGroup().name
