@@ -18,6 +18,9 @@ param publicIPResourceID string = ''
 @description('Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.')
 param additionalPublicIpConfigurations resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>.properties.ipConfigurations = []
 
+@description('Optional. Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.')
+param firewallPrivateIpAddress string = ''
+
 @description('Optional. Specifies the properties of the Public IP to create and be used by the Firewall, if no existing public IP was provided.')
 param publicIPAddressObject object = {
   name: '${name}-pip'
@@ -126,6 +129,11 @@ var ipConfigurations = concat(
               publicIPAddress: {
                 id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.?outputs.resourceId
               }
+            }
+          : {},
+        (azureSkuName == 'AZFW_VNet' && !empty(firewallPrivateIpAddress))
+          ? {
+              privateIPAddress: firewallPrivateIpAddress
             }
           : {}
       )
