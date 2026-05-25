@@ -205,6 +205,7 @@
     "avm/res/network/dns-zone/aaaa",
     "avm/res/network/dns-zone/caa",
     "avm/res/network/dns-zone/cname",
+    "avm/res/network/dns-zone/dnssec-config",
     "avm/res/network/dns-zone/mx",
     "avm/res/network/dns-zone/ns",
     "avm/res/network/dns-zone/ptr",
