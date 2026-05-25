@@ -2,6 +2,36 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
+## 0.14.4
+
+### Changes
+
+- Publishing child module `avm/res/api-management/service/api/operation`
+- Publishing child module `avm/res/api-management/service/api/operation/policy`
+- Publishing child module `avm/res/api-management/service/diagnostics`
+- Publishing child module `avm/res/api-management/service/product/policy`
+- Publishing child module `avm/res/api-management/service/workspace`
+- Publishing child module `avm/res/api-management/service/workspace/api`
+- Publishing child module `avm/res/api-management/service/workspace/api/diagnostics`
+- Publishing child module `avm/res/api-management/service/workspace/api/operation`
+- Publishing child module `avm/res/api-management/service/workspace/api/operation/policy`
+- Publishing child module `avm/res/api-management/service/workspace/api/policy`
+- Publishing child module `avm/res/api-management/service/workspace/api-version-set`
+- Publishing child module `avm/res/api-management/service/workspace/backend`
+- Publishing child module `avm/res/api-management/service/workspace/diagnostics`
+- Publishing child module `avm/res/api-management/service/workspace/logger`
+- Publishing child module `avm/res/api-management/service/workspace/named-value`
+- Publishing child module `avm/res/api-management/service/workspace/policy`
+- Publishing child module `avm/res/api-management/service/workspace/product`
+- Publishing child module `avm/res/api-management/service/workspace/product/api-link`
+- Publishing child module `avm/res/api-management/service/workspace/product/group-link`
+- Publishing child module `avm/res/api-management/service/workspace/product/policy`
+- Publishing child module `avm/res/api-management/service/workspace/subscription`
+
+### Breaking Changes
+
+- None
+
 ## 0.14.3
 
 ### Changes

@@ -348,6 +348,7 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
       groupId: sharedPrivateLinkResource.groupId
       requestMessage: sharedPrivateLinkResource.requestMessage
       resourceRegion: sharedPrivateLinkResource.?resourceRegion
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

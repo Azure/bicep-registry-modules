@@ -580,6 +580,7 @@ module service_diagnostics 'diagnostics/main.bicep' = [
       operationNameFormat: diagnostic.?operationNameFormat
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_loggers
@@ -607,6 +608,7 @@ module service_workspaces 'workspace/main.bicep' = [
       gateway: workspace.gateway
       diagnosticSettings: workspace.?diagnosticSettings
       roleAssignments: workspace.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

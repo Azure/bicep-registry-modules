@@ -121,6 +121,7 @@ module product_policies 'policy/main.bicep' = [
       name: policy.?name
       format: policy.?format
       value: policy.value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
