@@ -2,15 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/chat-with-your-data/CHANGELOG.md).
 
-## 0.4.0
-
-### Changes
-
-- Separated the OpenAI private endpoint creation from the Cognitive Services account module into a dedicated `avm/res/network/private-endpoint` module deployment, and added an explicit dependency from downstream resources to the private endpoint, to resolve `AccountProvisioningStateInvalid` failures caused by inline private endpoint creation racing against account provisioning and inline model deployments.
-
-### Breaking Changes
-
-- None
 
 ## 0.3.0
 
