@@ -139,6 +139,9 @@ param outboundVnetRouting resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
+@description('Optional. Host Name Bindings for the slot.')
+param hostNameBindings hostNameBindingType[]?
+
 @description('Optional. Property to configure various DNS related settings for a site.')
 param dnsConfiguration resourceInput<'Microsoft.Web/sites/slots@2025-03-01'>.properties.dnsConfiguration?
 
@@ -235,7 +238,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-siteslot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -334,6 +337,27 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
+module slot_hostNameBindings 'host-name-binding/main.bicep' = [
+  for (hostNameBinding, index) in (hostNameBindings ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-HostNameBinding-${index}'
+    params: {
+      name: hostNameBinding.?name ?? slot.properties.defaultHostName
+      appName: app.name
+      slotName: slot.name
+      kind: hostNameBinding.?kind
+      azureResourceName: hostNameBinding.?azureResourceName
+      azureResourceType: hostNameBinding.?azureResourceType
+      customHostNameDnsRecordType: hostNameBinding.?customHostNameDnsRecordType
+      domainResourceId: hostNameBinding.?domainResourceId
+      hostNameType: hostNameBinding.?hostNameType
+      siteName: hostNameBinding.?siteName
+      sslState: hostNameBinding.?sslState
+      thumbprint: hostNameBinding.?thumbprint
+      certificate: hostNameBinding.?certificate
+    }
+  }
+]
+
 module slot_config 'config/main.bicep' = [
   for (config, index) in (configs ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-Config-${index}'
@@ -422,7 +446,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -503,9 +527,39 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@description('The host name bindings of the slot.')
+output hostNameBindings hostNameBindingsOutputType[] = [
+  #disable-next-line outputs-should-not-contain-secrets // Only exporting subset of information
+  for (binding, index) in (hostNameBindings ?? []): {
+    name: slot_hostNameBindings[index].outputs.name
+    resourceId: slot_hostNameBindings[index].outputs.resourceId
+    resourceGroupName: slot_hostNameBindings[index].outputs.resourceGroupName
+    certificateThumbprint: slot_hostNameBindings[index].outputs.?certificateThumbprint
+    certificateResourceId: slot_hostNameBindings[index].outputs.?certificateResourceId
+  }
+]
+
 // ================ //
 // Definitions      //
 // ================ //
+@export()
+type hostNameBindingsOutputType = {
+  @description('The name of the host name binding.')
+  name: string
+
+  @description('The resource ID of the host name binding.')
+  resourceId: string
+
+  @description('The name of the resource group the resource was deployed into.')
+  resourceGroupName: string
+
+  @description('The thumbprint of the certificate.')
+  certificateThumbprint: string?
+
+  @description('The resource ID of the certificate.')
+  certificateResourceId: string?
+}
+
 @export()
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
@@ -1898,4 +1952,43 @@ type hybridConnectionRelayType = {
 
   @description('Optional. Name of the authorization rule send key to use.')
   sendKeyName: string?
+}
+
+import { certificateType } from '../modules/certificate.bicep'
+
+@export()
+@description('The type of a host name binding.')
+type hostNameBindingType = {
+  @description('Optional. Hostname in the hostname binding. Defaults to the host name of the app/slot if not specified.')
+  name: string?
+
+  @description('Optional. Kind of resource.')
+  kind: string?
+
+  @description('Optional. Azure resource name.')
+  azureResourceName: string?
+
+  @description('Optional. Azure resource type. Possible values are Website and TrafficManager.')
+  azureResourceType: ('Website' | 'TrafficManager')?
+
+  @description('Optional. Custom DNS record type. Possible values are CName and A.')
+  customHostNameDnsRecordType: ('CName' | 'A')?
+
+  @description('Optional. Fully qualified ARM domain resource URI.')
+  domainResourceId: string?
+
+  @description('Optional. Hostname type. Possible values are Verified and Managed.')
+  hostNameType: ('Verified' | 'Managed')?
+
+  @description('Optional. App Service app name.')
+  siteName: string?
+
+  @description('Optional. SSL type. Possible values are Disabled, SniEnabled, and IpBasedEnabled.')
+  sslState: ('Disabled' | 'SniEnabled' | 'IpBasedEnabled')?
+
+  @description('Optional. SSL certificate thumbprint.')
+  thumbprint: string?
+
+  @description('Optional. Certificate creation properties. If specified, a certificate will be created and used for this hostname binding.')
+  certificate: certificateType?
 }

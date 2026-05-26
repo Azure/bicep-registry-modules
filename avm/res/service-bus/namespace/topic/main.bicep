@@ -72,6 +72,8 @@ param subscriptions subscriptionType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   'Azure Service Bus Data Owner': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -164,6 +166,7 @@ module topic_authorizationRules 'authorization-rule/main.bicep' = [
       topicName: topic.name
       name: authorizationRule.name
       rights: authorizationRule.?rights ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -217,6 +220,7 @@ module topic_subscription 'subscription/main.bicep' = [
       requiresSession: subscription.?requiresSession
       rules: subscription.?rules
       status: subscription.?status
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

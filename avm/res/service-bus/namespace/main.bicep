@@ -251,6 +251,7 @@ module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = 
       namespaceName: serviceBusNamespace.name
       name: authorizationRule.name
       rights: authorizationRule.?rights
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -262,6 +263,7 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
     name: disasterRecoveryConfig.?name ?? 'default'
     alternateName: disasterRecoveryConfig.?alternateName
     partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -271,6 +273,7 @@ module serviceBusNamespace_migrationConfiguration 'migration-configuration/main.
     namespaceName: serviceBusNamespace.name
     postMigrationName: migrationConfiguration!.postMigrationName
     targetNamespaceResourceId: migrationConfiguration!.targetNamespace
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -285,6 +288,7 @@ module serviceBusNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!e
     trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled ?? true
     ipRules: networkRuleSets.?ipRules ?? []
     virtualNetworkRules: networkRuleSets.?virtualNetworkRules ?? []
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

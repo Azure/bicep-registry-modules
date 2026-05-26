@@ -125,6 +125,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -210,6 +212,7 @@ module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = 
       name: ruleCollectionGroup.name
       priority: ruleCollectionGroup.priority
       ruleCollections: ruleCollectionGroup.ruleCollections
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
