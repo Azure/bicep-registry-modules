@@ -51,6 +51,9 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -116,12 +119,33 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry bool = false
+
 // ============== //
 // Resources      //
 // ============== //
 
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
 resource workspace 'Microsoft.ApiManagement/service/workspaces@2024-05-01' = {
@@ -163,6 +187,7 @@ module workspace_apis 'api/main.bicep' = [
       type: api.?type
       value: api.?value
       wsdlSelector: api.?wsdlSelector
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_apiVersionSets
@@ -183,6 +208,7 @@ module workspace_apiVersionSets 'api-version-set/main.bicep' = [
       description: apiVersionSet.?description
       versionHeaderName: apiVersionSet.?versionHeaderName
       versionQueryName: apiVersionSet.?versionQueryName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -206,6 +232,7 @@ module workspace_backends 'backend/main.bicep' = [
       circuitBreaker: backend.?circuitBreaker
       pool: backend.?pool
       type: backend.?type
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -227,6 +254,7 @@ module workspace_diagnostics 'diagnostics/main.bicep' = [
       operationNameFormat: diagnostic.?operationNameFormat
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_loggers
@@ -246,6 +274,7 @@ module workspace_loggers 'logger/main.bicep' = [
       description: logger.?description
       type: logger.type
       targetResourceId: logger.?targetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_namedValues
@@ -265,6 +294,7 @@ module workspace_namedValues 'named-value/main.bicep' = [
       tags: namedValue.?tags
       secret: namedValue.?secret
       value: namedValue.?value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -278,6 +308,7 @@ module workspace_policies 'policy/main.bicep' = [
       name: policy.?name
       format: policy.?format
       value: policy.value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -299,6 +330,7 @@ module workspace_products 'product/main.bicep' = [
       subscriptionRequired: product.?subscriptionRequired
       subscriptionsLimit: product.?subscriptionsLimit
       terms: product.?terms
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_apis
@@ -320,6 +352,7 @@ module workspace_subscriptions 'subscription/main.bicep' = [
       scope: subscription.?scope
       secondaryKey: subscription.?secondaryKey
       state: subscription.?state
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_apis
