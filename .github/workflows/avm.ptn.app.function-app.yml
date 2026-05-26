@@ -1,4 +1,4 @@
-name: "avm.ptn.web.function-app"
+name: "avm.ptn.app.function-app"
 
 on:
   workflow_dispatch:
@@ -28,16 +28,16 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.web.function-app.yml"
-      - "avm/ptn/web/function-app/**"
+      - ".github/workflows/avm.ptn.app.function-app.yml"
+      - "avm/ptn/app/function-app/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/web/function-app"
-  workflowPath: ".github/workflows/avm.ptn.web.function-app.yml"
+  modulePath: "avm/ptn/app/function-app"
+  workflowPath: ".github/workflows/avm.ptn.app.function-app.yml"
 
 concurrency:
   group: ${{ github.workflow }}

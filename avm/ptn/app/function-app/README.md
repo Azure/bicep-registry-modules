@@ -4,7 +4,7 @@ Deploys an Azure Function App together with its supporting resources: an App Ser
 
 You can reference the module as follows:
 ```bicep
-module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: { (...) }
 }
 ```
@@ -79,7 +79,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/web/function-app:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/function-app:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using all parameters](#example-2-using-all-parameters)
@@ -97,7 +97,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
     functionAppName: 'wfamin001'
@@ -139,7 +139,7 @@ module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/web/function-app:<version>'
+using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
 param functionAppName = 'wfamin001'
@@ -162,7 +162,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
     functionAppName: 'wfamax001'
@@ -354,7 +354,7 @@ module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/web/function-app:<version>'
+using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
 param functionAppName = 'wfamax001'
@@ -429,7 +429,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 <summary>via Bicep module</summary>
 
 ```bicep
-module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
     functionAppName: 'wfawaf001'
@@ -519,7 +519,7 @@ module functionApp 'br/public:avm/ptn/web/function-app:<version>' = {
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/web/function-app:<version>'
+using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
 param functionAppName = 'wfawaf001'
