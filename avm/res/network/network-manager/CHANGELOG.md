@@ -2,6 +2,25 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/network-manager/CHANGELOG.md).
 
+## 0.6.1
+
+### Changes
+
+- Publishing child module `avm/res/network/network-manager/connectivity-configuration`
+- Publishing child module `avm/res/network/network-manager/network-group`
+- Publishing child module `avm/res/network/network-manager/network-group/static-member`
+- Publishing child module `avm/res/network/network-manager/routing-configuration`
+- Publishing child module `avm/res/network/network-manager/routing-configuration/rule-collection`
+- Publishing child module `avm/res/network/network-manager/routing-configuration/rule-collection/rule`
+- Publishing child module `avm/res/network/network-manager/scope-connection`
+- Publishing child module `avm/res/network/network-manager/security-admin-configuration`
+- Publishing child module `avm/res/network/network-manager/security-admin-configuration/rule-collection`
+- Publishing child module `avm/res/network/network-manager/security-admin-configuration/rule-collection/rule`
+
+### Breaking Changes
+
+- None
+
 ## 0.6.0
 
 ### Changes
