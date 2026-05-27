@@ -1,4 +1,3 @@
-
 # Workspace `[Microsoft.DesktopVirtualization/workspaces]`
 
 This module deploys an Azure Virtual Desktop Workspace.
