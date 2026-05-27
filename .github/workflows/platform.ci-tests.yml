@@ -77,9 +77,13 @@ jobs:
             Write-Verbose "Invoke task with" -Verbose
             Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-            $outputsFilePath = Test-CI @functionInput
+            $res = Test-CI @functionInput
 
-            Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $outputsFilePath) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $res.path) >> $env:GITHUB_OUTPUT
+
+            if ($res.error) {
+              Write-Error "One or more tests have failed. Please review the test results for more details."
+            }
           azPSVersion: "latest"
 
       - name: "Output to GitHub job summaries"

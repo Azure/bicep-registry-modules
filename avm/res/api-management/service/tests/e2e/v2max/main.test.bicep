@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the PremiumV2 SKU with most of its
 param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apisv2max'
+param serviceShort string = 'apiv2max'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -22,8 +22,8 @@ param namePrefix string = '#_namePrefix_#'
 param customSecret string = newGuid()
 
 // Enforcing test locations due to limited availability of the APIM PremiumV2 SKU in certain regions.
-var enforcedLocation = 'uksouth'
-var enforcedLocationRegion2 = 'germanywestcentral'
+var enforcedLocation = 'germanywestcentral'
+var enforcedLocationRegion2 = 'northeurope'
 
 // ============ //
 // Dependencies //
@@ -70,7 +70,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}001'
+var apimName = '${namePrefix}${serviceShort}002'
 var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkType: 'External'
       subnetResourceId: nestedDependencies.outputs.subnetResourceIdRegion1
       publicNetworkAccess: 'Enabled'
+      restore: false
       apis: [
         {
           displayName: 'Echo API'
@@ -265,7 +266,6 @@ module testDeployment '../../../main.bicep' = [
           subscriptionRequired: false
           policies: [
             {
-              format: 'xml'
               value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
             }
           ]

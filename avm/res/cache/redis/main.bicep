@@ -94,14 +94,11 @@ param subnetResourceId string?
 @description('Optional. A dictionary of tenant settings.')
 param tenantSettings resourceInput<'Microsoft.Cache/redis@2024-11-01'>.properties.tenantSettings = {}
 
-@description('Optional. When true, replicas will be provisioned in availability zones specified in the zones parameter.')
-param zoneRedundant bool = true
-
-@description('Optional. If the zoneRedundant parameter is true, replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
+@description('Optional. Replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed.')
 @allowed([1, 2, 3])
 param availabilityZones int[] = [1, 2, 3]
 
-@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when zoneRedundant is true.')
+@description('Optional. Specifies how availability zones are allocated to the Redis cache. "Automatic" enables zone redundancy and Azure will automatically select zones. "UserDefined" will select availability zones passed in by you using the "availabilityZones" parameter. "NoZones" will produce a non-zonal cache. Only applicable when \'availabilityZones\' are not empty.')
 @allowed([
   'Automatic'
   'NoZones'
@@ -136,12 +133,6 @@ param firewallRules firewallRuleType[]?
 param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
-
-var zones = skuName == 'Premium'
-  ? zoneRedundant
-      ? !empty(availabilityZones) ? availabilityZones : pickZones('Microsoft.Cache', 'redis', location, 3)
-      : []
-  : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -188,7 +179,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cache-redis.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -231,12 +222,13 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
     staticIP: staticIP
     subnetId: subnetResourceId
     tenantSettings: tenantSettings
-    zonalAllocationPolicy: skuName == 'Premium' && zoneRedundant ? zonalAllocationPolicy : null
+    zonalAllocationPolicy: skuName == 'Premium' && !empty(availabilityZones) ? zonalAllocationPolicy : null
   }
-  zones: zones
+  zones: skuName == 'Premium' ? map(availabilityZones, zone => '${zone}') : []
 }
 
 // Deploy access policies
+@batchSize(1)
 module redis_accessPolicies 'access-policy/main.bicep' = [
   for (policy, index) in (accessPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
@@ -249,6 +241,7 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
 ]
 
 // Deploy access policy assignments
+@batchSize(1)
 module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
   for (assignment, index) in (accessPolicyAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
@@ -321,7 +314,7 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 ]
 
-module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -388,7 +381,7 @@ module redis_firewallRules 'firewall-rule/main.bicep' = [
   }
 ]
 
-module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicationObject)) {
+module redis_geoReplication 'linked-server/main.bicep' = if (!empty(geoReplicationObject)) {
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
     redisCacheName: redis.name

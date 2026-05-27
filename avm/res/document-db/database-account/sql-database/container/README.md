@@ -39,11 +39,13 @@ This module deploys a SQL Database Container in a CosmosDB Account.
 | [`autoscaleSettingsMaxThroughput`](#parameter-autoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`conflictResolutionPolicy`](#parameter-conflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
 | [`defaultTtl`](#parameter-defaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`fullTextPolicy`](#parameter-fulltextpolicy) | object | The full text policy for the container. |
 | [`indexingPolicy`](#parameter-indexingpolicy) | object | Indexing policy of the container. |
 | [`kind`](#parameter-kind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
 | [`tags`](#parameter-tags) | object | Tags of the SQL Database resource. |
 | [`throughput`](#parameter-throughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
 | [`uniqueKeyPolicyKeys`](#parameter-uniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`vectorEmbeddingPolicy`](#parameter-vectorembeddingpolicy) | object | The vector embedding policy for the container. |
 | [`version`](#parameter-version) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
 
 ### Parameter: `name`
@@ -106,6 +108,13 @@ Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azur
 - MinValue: -1
 - MaxValue: 2147483647
 
+### Parameter: `fullTextPolicy`
+
+The full text policy for the container.
+
+- Required: No
+- Type: object
+
 ### Parameter: `indexingPolicy`
 
 Indexing policy of the container.
@@ -149,6 +158,13 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
+
+### Parameter: `vectorEmbeddingPolicy`
+
+The vector embedding policy for the container.
+
+- Required: No
+- Type: object
 
 ### Parameter: `version`
 

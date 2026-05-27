@@ -15,7 +15,7 @@ var backendPoolName = 'backEndPool'
 var loadBalancerFrontEndIpConfigurationName = 'myFrontEnd'
 var healthProbeName = 'healthProbe'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -42,7 +42,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   }
 }
 
-resource loadbalancer 'Microsoft.Network/loadBalancers@2024-05-01' = {
+resource loadbalancer 'Microsoft.Network/loadBalancers@2025-05-01' = {
   name: loadbalancerName
   location: location
   sku: {
@@ -121,7 +121,7 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2024-05-01' = {
   }
 }
 
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2024-05-01' = {
+resource privateLinkService 'Microsoft.Network/privateLinkServices@2025-05-01' = {
   name: privateLinkServiceName
   location: location
   properties: {

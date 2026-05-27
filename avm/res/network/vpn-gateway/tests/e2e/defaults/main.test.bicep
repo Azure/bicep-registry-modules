@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualHubName: 'dep-${namePrefix}-vh-${serviceShort}'
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
   }

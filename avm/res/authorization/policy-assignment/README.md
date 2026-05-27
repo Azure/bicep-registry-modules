@@ -1,4 +1,4 @@
-# Policy Assignments (Multi-Scope) `[Microsoft.Authorization/policyassignments]`
+# Policy Assignments (Multi-Scope) `[Microsoft.Authorization/policyAssignments]`
 
 This module's child-modules deploy a Policy Assignment at a Management Group (mg-scope), Subscription (sub-scope) or Resource Group (rg-scope) scope.
 

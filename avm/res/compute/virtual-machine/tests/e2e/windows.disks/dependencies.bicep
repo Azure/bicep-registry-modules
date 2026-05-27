@@ -160,7 +160,7 @@ resource tempVirtualMachine 'Microsoft.Compute/virtualMachines@2025-04-01' = {
   location: location
   properties: {
     hardwareProfile: {
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_D2s_v6'
     }
     osProfile: {
       adminUsername: adminUsername

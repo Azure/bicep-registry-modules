@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "16228181004107605953"
+      "templateHash": "16134680049045134167"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider."
@@ -24,7 +24,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.ApiManagement/service/identityProviders@2024-05-01#properties/properties/properties/allowedTenants"
         },
-        "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+        "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login."
       },
       "defaultValue": []
     },
@@ -137,7 +137,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.apimgmt-identityprovider.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",

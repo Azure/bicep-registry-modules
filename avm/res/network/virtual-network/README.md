@@ -27,9 +27,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
-| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 
 ## Usage examples
 
@@ -65,8 +65,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       '10.0.0.0/16'
     ]
     name: 'nvnmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -91,10 +89,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     },
     "name": {
       "value": "nvnmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -115,8 +109,6 @@ param addressPrefixes = [
   '10.0.0.0/16'
 ]
 param name = 'nvnmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -143,7 +135,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     name: 'nvnipam001'
     // Non-required parameters
     ipamPoolNumberOfIpAddresses: '254'
-    location: '<location>'
     subnets: [
       {
         ipamPoolPrefixAllocations: [
@@ -208,9 +199,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "ipamPoolNumberOfIpAddresses": {
       "value": "254"
     },
-    "location": {
-      "value": "<location>"
-    },
     "subnets": {
       "value": [
         {
@@ -269,7 +257,6 @@ param addressPrefixes = [
 param name = 'nvnipam001'
 // Non-required parameters
 param ipamPoolNumberOfIpAddresses = '254'
-param location = '<location>'
 param subnets = [
   {
     ipamPoolPrefixAllocations: [
@@ -331,7 +318,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     name: 'nvnipv6001'
     // Non-required parameters
-    location: '<location>'
     subnets: [
       {
         addressPrefixes: [
@@ -368,9 +354,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       "value": "nvnipv6001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "subnets": {
       "value": [
         {
@@ -403,7 +386,6 @@ param addressPrefixes = [
 ]
 param name = 'nvnipv6001'
 // Non-required parameters
-param location = '<location>'
 param subnets = [
   {
     addressPrefixes: [
@@ -456,8 +438,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       '10.0.1.4'
       '10.0.1.5'
     ]
+    enablePrivateEndpointVNetPolicies: 'Basic'
     flowTimeoutInMinutes: 20
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -488,6 +470,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -515,12 +498,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -528,6 +513,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-004'
         natGatewayResourceId: ''
         networkSecurityGroupResourceId: ''
@@ -596,11 +582,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         "10.0.1.5"
       ]
     },
+    "enablePrivateEndpointVNetPolicies": {
+      "value": "Basic"
+    },
     "flowTimeoutInMinutes": {
       "value": 20
-    },
-    "location": {
-      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -637,6 +623,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -664,12 +651,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -677,6 +666,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-004",
           "natGatewayResourceId": "",
           "networkSecurityGroupResourceId": "",
@@ -738,8 +728,8 @@ param dnsServers = [
   '10.0.1.4'
   '10.0.1.5'
 ]
+param enablePrivateEndpointVNetPolicies = 'Basic'
 param flowTimeoutInMinutes = 20
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -770,6 +760,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -797,12 +788,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -810,6 +803,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-004'
     natGatewayResourceId: ''
     networkSecurityGroupResourceId: ''
@@ -855,7 +849,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     name: 'nvnpeer001'
     // Non-required parameters
-    location: '<location>'
     peerings: [
       {
         allowForwardedTraffic: true
@@ -915,9 +908,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       "value": "nvnpeer001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "peerings": {
       "value": [
         {
@@ -977,7 +967,6 @@ param addressPrefixes = [
 ]
 param name = 'nvnpeer001'
 // Non-required parameters
-param location = '<location>'
 param peerings = [
   {
     allowForwardedTraffic: true
@@ -1055,7 +1044,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       '10.0.1.5'
     ]
     flowTimeoutInMinutes: 20
-    location: '<location>'
     subnets: [
       {
         addressPrefix: '<addressPrefix>'
@@ -1063,6 +1051,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-001'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
@@ -1080,12 +1069,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
+        defaultOutboundAccess: false
         name: 'az-subnet-x-003'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
@@ -1157,9 +1148,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "flowTimeoutInMinutes": {
       "value": 20
     },
-    "location": {
-      "value": "<location>"
-    },
     "subnets": {
       "value": [
         {
@@ -1168,6 +1156,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-001",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
@@ -1185,12 +1174,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
+          "defaultOutboundAccess": false,
           "name": "az-subnet-x-003",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
@@ -1253,7 +1244,6 @@ param dnsServers = [
   '10.0.1.5'
 ]
 param flowTimeoutInMinutes = 20
-param location = '<location>'
 param subnets = [
   {
     addressPrefix: '<addressPrefix>'
@@ -1261,6 +1251,7 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-001'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     roleAssignments: [
@@ -1278,12 +1269,14 @@ param subnets = [
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     delegation: 'Microsoft.Netapp/volumes'
     name: 'az-subnet-x-002'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
   }
   {
     addressPrefix: '<addressPrefix>'
+    defaultOutboundAccess: false
     name: 'az-subnet-x-003'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
     privateEndpointNetworkPolicies: 'Disabled'
@@ -1325,9 +1318,11 @@ param tags = {
 | [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
+| [`enablePrivateEndpointVNetPolicies`](#parameter-enableprivateendpointvnetpolicies) | string | Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
+| [`ipAllocations`](#parameter-ipallocations) | array | Array of IpAllocation which reference this VNET. |
 | [`ipamPoolNumberOfIpAddresses`](#parameter-ipampoolnumberofipaddresses) | string | Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1513,6 +1508,21 @@ DNS Servers associated to the Virtual Network.
 - Required: No
 - Type: array
 
+### Parameter: `enablePrivateEndpointVNetPolicies`
+
+Enables high scale private endpoints for the virtual network. This is necessary if the virtual network requires more than 1000 private endpoints or is peered to virtual networks with a total of more than 4000 private endpoints.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Disabled'
+  ]
+  ```
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1536,6 +1546,13 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Type: int
 - Default: `0`
 - MaxValue: 30
+
+### Parameter: `ipAllocations`
+
+Array of IpAllocation which reference this VNET.
+
+- Required: No
+- Type: array
 
 ### Parameter: `ipamPoolNumberOfIpAddresses`
 
@@ -1617,6 +1634,7 @@ Virtual Network Peering configurations.
 | [`allowGatewayTransit`](#parameter-peeringsallowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
 | [`allowVirtualNetworkAccess`](#parameter-peeringsallowvirtualnetworkaccess) | bool | Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true. |
 | [`doNotVerifyRemoteGateways`](#parameter-peeringsdonotverifyremotegateways) | bool | Do not verify the provisioning state of the remote gateway. Default is true. |
+| [`enableOnlyIPv6Peering`](#parameter-peeringsenableonlyipv6peering) | bool | Whether only Ipv6 address space is peered for subnet peering. |
 | [`name`](#parameter-peeringsname) | string | The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName. |
 | [`remotePeeringAllowForwardedTraffic`](#parameter-peeringsremotepeeringallowforwardedtraffic) | bool | Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true. |
 | [`remotePeeringAllowGatewayTransit`](#parameter-peeringsremotepeeringallowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
@@ -1658,6 +1676,13 @@ Whether the VMs in the local virtual network space would be able to access the V
 ### Parameter: `peerings.doNotVerifyRemoteGateways`
 
 Do not verify the provisioning state of the remote gateway. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.enableOnlyIPv6Peering`
+
+Whether only Ipv6 address space is peered for subnet peering.
 
 - Required: No
 - Type: bool
@@ -1857,6 +1882,7 @@ An Array of subnets to deploy to the Virtual Network.
 | [`applicationGatewayIPConfigurations`](#parameter-subnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
 | [`defaultOutboundAccess`](#parameter-subnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-subnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`ipAllocations`](#parameter-subnetsipallocations) | array | Array of IpAllocation which reference this subnet. |
 | [`natGatewayResourceId`](#parameter-subnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-subnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-subnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -1865,6 +1891,7 @@ An Array of subnets to deploy to the Virtual Network.
 | [`routeTableResourceId`](#parameter-subnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
 | [`serviceEndpointPolicies`](#parameter-subnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
+| [`serviceGateway`](#parameter-subnetsservicegateway) | object | Reference to an existing service gateway. |
 | [`sharingScope`](#parameter-subnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
 
 ### Parameter: `subnets.name`
@@ -1915,6 +1942,13 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+
+### Parameter: `subnets.ipAllocations`
+
+Array of IpAllocation which reference this subnet.
+
+- Required: No
+- Type: array
 
 ### Parameter: `subnets.natGatewayResourceId`
 
@@ -2085,6 +2119,13 @@ The service endpoints to enable on the subnet.
 - Required: No
 - Type: array
 
+### Parameter: `subnets.serviceGateway`
+
+Reference to an existing service gateway.
+
+- Required: No
+- Type: object
+
 ### Parameter: `subnets.sharingScope`
 
 Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
@@ -2153,8 +2194,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 

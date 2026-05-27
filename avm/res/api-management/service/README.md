@@ -1,10 +1,5 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.
 
 You can reference the module as follows:
@@ -72,8 +67,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 
 ## Usage examples
 
@@ -475,6 +470,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    hostnameConfigurations: '<hostnameConfigurations>'
     identityProviders: [
       {
         allowedTenants: [
@@ -1057,6 +1053,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "hostnameConfigurations": {
+      "value": "<hostnameConfigurations>"
     },
     "identityProviders": {
       "value": [
@@ -1653,6 +1652,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param hostnameConfigurations = '<hostnameConfigurations>'
 param identityProviders = [
   {
     allowedTenants: [
@@ -2270,7 +2270,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         name: 'Starter'
         policies: [
           {
-            format: 'xml'
             value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
           }
         ]
@@ -2278,6 +2277,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     publicNetworkAccess: 'Enabled'
+    restore: false
     roleAssignments: [
       {
         name: '6432d807-dc34-488e-8b15-9c560f79b111'
@@ -2560,7 +2560,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "name": "Starter",
           "policies": [
             {
-              "format": "xml",
               "value": "<policies> <inbound> <rate-limit-by-key calls=\"250\" renewal-period=\"60\" counter-key=\"@(context.Request.IpAddress)\" /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>"
             }
           ],
@@ -2570,6 +2569,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "publicNetworkAccess": {
       "value": "Enabled"
+    },
+    "restore": {
+      "value": false
     },
     "roleAssignments": {
       "value": [
@@ -2830,7 +2832,6 @@ param products = [
     name: 'Starter'
     policies: [
       {
-        format: 'xml'
         value: '<policies> <inbound> <rate-limit-by-key calls=\'250\' renewal-period=\'60\' counter-key=\'@(context.Request.IpAddress)\' /> </inbound> <backend> <forward-request /> </backend> <outbound> </outbound> </policies>'
       }
     ]
@@ -2838,6 +2839,7 @@ param products = [
   }
 ]
 param publicNetworkAccess = 'Enabled'
+param restore = false
 param roleAssignments = [
   {
     name: '6432d807-dc34-488e-8b15-9c560f79b111'
@@ -3693,7 +3695,7 @@ param virtualNetworkType = 'None'
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
 | [`enableDeveloperPortal`](#parameter-enabledeveloperportal) | bool | Enable the Developer Portal. The developer portal is not supported on the Consumption SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. |
+| [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026). |
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -4478,9 +4480,9 @@ API Version Sets.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the Name of API Version Set. |
+| [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the API Version Set. |
 | [`name`](#parameter-apiversionsetsname) | string | API Version set name. |
-| [`versioningScheme`](#parameter-apiversionsetsversioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
+| [`versioningScheme`](#parameter-apiversionsetsversioningscheme) | string | A value that determines where the API Version identifier will be located in an HTTP request. |
 
 **Optional parameters**
 
@@ -4492,7 +4494,7 @@ API Version Sets.
 
 ### Parameter: `apiVersionSets.displayName`
 
-The display name of the Name of API Version Set.
+The display name of the API Version Set.
 
 - Required: Yes
 - Type: string
@@ -4506,7 +4508,7 @@ API Version set name.
 
 ### Parameter: `apiVersionSets.versioningScheme`
 
-An value that determines where the API Version identifier will be located in a HTTP request.
+A value that determines where the API Version identifier will be located in an HTTP request.
 
 - Required: Yes
 - Type: string
@@ -4554,7 +4556,7 @@ Authorization servers.
 | [`authorizationEndpoint`](#parameter-authorizationserversauthorizationendpoint) | string | OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>. |
 | [`clientId`](#parameter-authorizationserversclientid) | securestring | Client or app ID registered with this authorization server. |
 | [`clientSecret`](#parameter-authorizationserversclientsecret) | securestring | Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
-| [`displayName`](#parameter-authorizationserversdisplayname) | string | API Management Service Authorization Servers name. Must be 1 to 50 characters long. |
+| [`displayName`](#parameter-authorizationserversdisplayname) | string | API Management Service Authorization Server name. Must be 1 to 50 characters long. |
 | [`grantTypes`](#parameter-authorizationserversgranttypes) | array | Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials. |
 | [`name`](#parameter-authorizationserversname) | string | Identifier of the authorization server. |
 
@@ -4597,7 +4599,7 @@ Client or app secret registered with this authorization server. This property wi
 
 ### Parameter: `authorizationServers.displayName`
 
-API Management Service Authorization Servers name. Must be 1 to 50 characters long.
+API Management Service Authorization Server name. Must be 1 to 50 characters long.
 
 - Required: Yes
 - Type: string
@@ -4755,7 +4757,7 @@ Backends.
 | [`description`](#parameter-backendsdescription) | string | Backend Description. |
 | [`protocol`](#parameter-backendsprotocol) | string | Backend communication protocol. http or soap. Not supported for Backend Pools. |
 | [`proxy`](#parameter-backendsproxy) | object | Backend Proxy Contract Properties. Not supported for Backend Pools. |
-| [`resourceId`](#parameter-backendsresourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
+| [`resourceId`](#parameter-backendsresourceid) | string | Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools. |
 | [`serviceFabricCluster`](#parameter-backendsservicefabriccluster) | object | Backend Service Fabric Cluster Properties. Not supported for Backend Pools. |
 | [`title`](#parameter-backendstitle) | string | Backend Title. |
 | [`tls`](#parameter-backendstls) | object | Backend TLS Properties. Not supported for Backend Pools. If not specified and type is Single, TLS properties will default to validateCertificateChain and validateCertificateName set to true. |
@@ -4819,7 +4821,7 @@ Backend Proxy Contract Properties. Not supported for Backend Pools.
 
 ### Parameter: `backends.resourceId`
 
-Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
+Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.
 
 - Required: No
 - Type: string
@@ -4879,7 +4881,7 @@ Caches.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-cachesdescription) | string | Cache description. |
-| [`resourceId`](#parameter-cachesresourceid) | string | Original uri of entity in external system cache points to. |
+| [`resourceId`](#parameter-cachesresourceid) | string | Original URI of entity in external system cache points to. |
 
 ### Parameter: `caches.connectionString`
 
@@ -4911,7 +4913,7 @@ Cache description.
 
 ### Parameter: `caches.resourceId`
 
-Original uri of entity in external system cache points to.
+Original URI of entity in external system cache points to.
 
 - Required: No
 - Type: string
@@ -5123,7 +5125,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `hostnameConfigurations`
 
-Custom hostname configuration of the API Management service.
+Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026).
 
 - Required: No
 - Type: array
@@ -5152,7 +5154,7 @@ Identity providers.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowedTenants`](#parameter-identityprovidersallowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. - string. |
+| [`allowedTenants`](#parameter-identityprovidersallowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. |
 | [`authority`](#parameter-identityprovidersauthority) | string | OpenID Connect discovery endpoint hostname for AAD or AAD B2C. |
 | [`clientLibrary`](#parameter-identityprovidersclientlibrary) | string | The client library to be used in the developer portal. Only applies to AAD and AAD B2C Identity Provider. |
 | [`passwordResetPolicyName`](#parameter-identityproviderspasswordresetpolicyname) | string | Password Reset Policy Name. Only applies to AAD B2C Identity Provider. |
@@ -5185,7 +5187,7 @@ Client secret of the Application in external Identity Provider, used to authenti
 
 ### Parameter: `identityProviders.allowedTenants`
 
-List of Allowed Tenants when configuring Azure Active Directory login. - string.
+List of Allowed Tenants when configuring Azure Active Directory login.
 
 - Required: No
 - Type: array
@@ -5335,7 +5337,7 @@ Loggers.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`credentials`](#parameter-loggerscredentials) | secureObject | The name and SendRule connection string of the event hub for azureEventHub logger. Instrumentation key for applicationInsights logger. Required if loggerType = applicationInsights or azureEventHub. |
-| [`targetResourceId`](#parameter-loggerstargetresourceid) | string | Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
+| [`targetResourceId`](#parameter-loggerstargetresourceid) | string | Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub. |
 
 **Optional parameters**
 
@@ -5375,7 +5377,7 @@ The name and SendRule connection string of the event hub for azureEventHub logge
 
 ### Parameter: `loggers.targetResourceId`
 
-Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.
+Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.
 
 - Required: No
 - Type: string
@@ -5447,7 +5449,7 @@ Named values.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVault`](#parameter-namedvalueskeyvault) | object | KeyVault location details of the namedValue. |
+| [`keyVault`](#parameter-namedvalueskeyvault) | object | Key Vault location details of the namedValue. |
 | [`secret`](#parameter-namedvaluessecret) | bool | Determines whether the value is a secret and should be encrypted or not. |
 | [`tags`](#parameter-namedvaluestags) | array | Tags that when provided can be used to filter the NamedValue list. |
 | [`value`](#parameter-namedvaluesvalue) | securestring | Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
@@ -5468,7 +5470,7 @@ The name of the named value.
 
 ### Parameter: `namedValues.keyVault`
 
-KeyVault location details of the namedValue.
+Key Vault location details of the namedValue.
 
 - Required: No
 - Type: object
@@ -5527,7 +5529,7 @@ Policies.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-policiesformat) | string | Format of the policyContent. |
+| [`format`](#parameter-policiesformat) | string | Format of the policy content. |
 | [`name`](#parameter-policiesname) | string | The name of the policy. |
 
 ### Parameter: `policies.value`
@@ -5539,7 +5541,7 @@ Contents of the Policy as defined by the format.
 
 ### Parameter: `policies.format`
 
-Format of the policyContent.
+Format of the policy content.
 
 - Required: No
 - Type: string
@@ -5674,7 +5676,7 @@ Terms of service contract properties.
 - Required: No
 - Type: object
 
-**Otional parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
@@ -6236,11 +6238,11 @@ Products.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apis`](#parameter-productsapis) | array | Names of Product APIs. |
-| [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`approvalRequired`](#parameter-productsapprovalrequired) | bool | Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`description`](#parameter-productsdescription) | string | Product description. May include HTML formatting tags. |
 | [`groups`](#parameter-productsgroups) | array | Names of Product Groups. |
 | [`policies`](#parameter-productspolicies) | array | Array of Policies to apply to the Service Product. |
-| [`state`](#parameter-productsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. |
+| [`state`](#parameter-productsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators. |
 | [`subscriptionRequired`](#parameter-productssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
 | [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`terms`](#parameter-productsterms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
@@ -6268,7 +6270,7 @@ Names of Product APIs.
 
 ### Parameter: `products.approvalRequired`
 
-Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false.
+Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product's APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product's APIs. Can be present only if subscriptionRequired property is present and has a value of false.
 
 - Required: No
 - Type: bool
@@ -6339,7 +6341,7 @@ The name of the policy.
 
 ### Parameter: `products.state`
 
-Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators.
+Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators.
 
 - Required: No
 - Type: string
@@ -6673,7 +6675,7 @@ Subscriptions.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-subscriptionsdisplayname) | string | API Management Service Subscriptions name. |
+| [`displayName`](#parameter-subscriptionsdisplayname) | string | API Management Service Subscription name. |
 | [`name`](#parameter-subscriptionsname) | string | Subscription name. |
 
 **Optional parameters**
@@ -6689,7 +6691,7 @@ Subscriptions.
 
 ### Parameter: `subscriptions.displayName`
 
-API Management Service Subscriptions name.
+API Management Service Subscription name.
 
 - Required: Yes
 - Type: string
@@ -8531,7 +8533,7 @@ Initial subscription state. If no value is specified, subscription is created wi
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the API management service. |
-| `privateEndpoints` | array | The private endpoints of the key vault. |
+| `privateEndpoints` | array | The private endpoints of the API Management service. |
 | `resourceGroupName` | string | The resource group the API management service was deployed into. |
 | `resourceId` | string | The resource ID of the API management service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -8542,8 +8544,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 

@@ -133,6 +133,13 @@ module testDeployment '../../../main.bicep' = [
       originGroups: [
         {
           name: '${namePrefix}-test-${serviceShort}-origin-group-1'
+          authentication: {
+            scope: 'https://storage.azure.com/.default'
+            type: 'UserAssignedIdentity'
+            userAssignedIdentity: {
+              id: nestedDependencies.outputs.managedIdentityResourceId
+            }
+          }
           loadBalancingSettings: {
             additionalLatencyInMilliseconds: 50
             sampleSize: 4
@@ -161,6 +168,13 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-test-${serviceShort}-origin-group-2'
+          authentication: {
+            scope: 'https://storage.azure.com/.default'
+            type: 'UserAssignedIdentity'
+            userAssignedIdentity: {
+              id: nestedDependencies.outputs.managedIdentityResourceId
+            }
+          }
           loadBalancingSettings: {
             additionalLatencyInMilliseconds: 100
             sampleSize: 6
@@ -235,7 +249,7 @@ module testDeployment '../../../main.bicep' = [
                 '${namePrefix}-test1-${serviceShort}-custom-domain'
               ]
               enabledState: 'Enabled'
-              forwardingProtocol: 'MatchRequest'
+              forwardingProtocol: 'HttpsOnly'
               httpsRedirect: 'Enabled'
               linkToDefaultDomain: 'Enabled'
               patternsToMatch: ['/api/*', '/health']

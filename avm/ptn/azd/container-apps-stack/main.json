@@ -6,10 +6,55 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "18021832575415677448"
+      "templateHash": "10947063376728137613"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
+  },
+  "definitions": {
+    "storageType": {
+      "type": "object",
+      "properties": {
+        "accessMode": {
+          "type": "string",
+          "allowedValues": [
+            "ReadOnly",
+            "ReadWrite"
+          ],
+          "metadata": {
+            "description": "Required. Access mode for storage: \"ReadOnly\" or \"ReadWrite\"."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "NFS",
+            "SMB"
+          ],
+          "metadata": {
+            "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
+          }
+        },
+        "storageAccountName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Storage account name."
+          }
+        },
+        "shareName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. File share name."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of the storage.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/app/managed-environment:0.11.2"
+        }
+      }
+    }
   },
   "parameters": {
     "location": {
@@ -157,6 +202,16 @@
       "metadata": {
         "description": "Optional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
+    },
+    "storages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/storageType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of storages to mount on the environment."
+      }
     }
   },
   "variables": {
@@ -249,6 +304,9 @@
           },
           "platformReservedDnsIP": {
             "value": "[parameters('platformReservedDnsIP')]"
+          },
+          "storages": {
+            "value": "[parameters('storages')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"

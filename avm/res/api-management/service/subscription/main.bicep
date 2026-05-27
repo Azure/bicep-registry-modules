@@ -7,7 +7,7 @@ param apiManagementServiceName string
 @description('Required. Subscription name.')
 param name string
 
-@description('Required. API Management Service Subscriptions name.')
+@description('Required. API Management Service Subscription name.')
 @minLength(1)
 @maxLength(100)
 param displayName string
@@ -54,7 +54,7 @@ param state string?
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-subscription.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

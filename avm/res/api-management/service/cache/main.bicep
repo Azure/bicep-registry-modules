@@ -13,7 +13,7 @@ param connectionString string
 @sys.description('Optional. Cache description.')
 param description string?
 
-@sys.description('Optional. Original uri of entity in external system cache points to.')
+@sys.description('Optional. Original URI of entity in external system cache points to.')
 param resourceId string?
 
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
@@ -27,7 +27,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-cache.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

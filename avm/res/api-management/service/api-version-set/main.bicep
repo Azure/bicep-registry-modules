@@ -12,7 +12,7 @@ param name string = 'default'
 @maxLength(100)
 param displayName string
 
-@sys.description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
+@sys.description('Required. A value that determines where the API Version identifier will be located in an HTTP request.')
 @allowed([
   'Header'
   'Query'
@@ -41,7 +41,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-apiversionset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

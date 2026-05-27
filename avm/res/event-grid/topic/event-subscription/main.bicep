@@ -1,6 +1,9 @@
 metadata name = 'EventGrid Topic Event Subscriptions'
 metadata description = 'This module deploys an Event Grid Topic Event Subscription.'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Required. The name of the Event Subscription.')
 param name string
 
@@ -39,6 +42,24 @@ param labels string[]?
 
 @description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
 param retryPolicy resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.retryPolicy?
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.eventgrid-topic-eventsub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, 'eastus'), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource topic 'Microsoft.EventGrid/topics@2025-04-01-preview' existing = {
   name: topicName

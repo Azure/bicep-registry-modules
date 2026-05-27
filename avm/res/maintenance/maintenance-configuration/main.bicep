@@ -17,20 +17,12 @@ param extensionProperties resourceInput<'Microsoft.Maintenance/maintenanceConfig
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Gets or sets maintenanceScope of the configuration.')
-@allowed([
-  'Host'
-  'OSImage'
-  'Extension'
-  'InGuestPatch'
-  'SQLDB'
-  'SQLManagedInstance'
-])
-param maintenanceScope string = 'Host'
+param maintenanceScope resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.maintenanceScope = 'Host'
 
 @description('Optional. Definition of a MaintenanceWindow.')
 param maintenanceWindow resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.maintenanceWindow = {}
@@ -38,7 +30,7 @@ param maintenanceWindow resourceInput<'Microsoft.Maintenance/maintenanceConfigur
 @description('Optional. Gets or sets namespace of the resource.')
 param namespace string = ''
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -46,12 +38,7 @@ param roleAssignments roleAssignmentType[]?
 param tags resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.tags?
 
 @description('Optional. Gets or sets the visibility of the configuration. The default value is \'Custom\'.')
-@allowed([
-  ''
-  'Custom'
-  'Public'
-])
-param visibility string = ''
+param visibility resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.visibility?
 
 @description('Optional. Configuration settings for VM guest patching with Azure Update Manager.')
 param installPatches resourceInput<'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01'>.properties.installPatches = {}
@@ -90,7 +77,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.maintenance-maintenanceconfiguration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'

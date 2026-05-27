@@ -628,7 +628,7 @@ Criteria to limit import of WSDL to a subset of the document.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the API management service API. |
-| `resourceGroupName` | string | The resource group the API management service API was deployed to. |
+| `resourceGroupName` | string | The resource group the API Management service API was deployed into. |
 | `resourceId` | string | The resource ID of the API management service API. |
 
 ## Data Collection

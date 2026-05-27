@@ -33,7 +33,7 @@ param defaultDataLakeStorageCreateManagedPrivateEndpoint bool = false
 @description('Optional. The Entra ID administrator for the synapse workspace.')
 param administrator administratorType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -91,23 +91,23 @@ param accountUrl string = 'https://${last(split(defaultDataLakeStorageAccountRes
 @description('Optional. Git integration settings.')
 param workspaceRepositoryConfiguration object?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -344,7 +344,7 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 // Firewall Rules
-module workspace_firewallRules 'firewall-rules/main.bicep' = [
+module workspace_firewallRules 'firewall-rule/main.bicep' = [
   for (rule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-FirewallRule-${index}'
     params: {
@@ -368,9 +368,11 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
       autoPauseDelayInMinutes: bigDataPool.?autoPauseDelayInMinutes
       autoScale: bigDataPool.?autoScale
       cacheSize: bigDataPool.?cacheSize
+      customLibraries: bigDataPool.?customLibraries
       dynamicExecutorAllocation: bigDataPool.?dynamicExecutorAllocation
       autotuneEnabled: bigDataPool.?autotuneEnabled
       computeIsolationEnabled: bigDataPool.?computeIsolationEnabled
+      libraryRequirements: bigDataPool.?libraryRequirements
       nodeCount: bigDataPool.?nodeCount
       nodeSize: bigDataPool.nodeSize
       nodeSizeFamily: bigDataPool.nodeSizeFamily
@@ -401,8 +403,8 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       recoverableDatabaseResourceId: sqlPool.?recoverableDatabaseResourceId
       storageAccountType: sqlPool.?storageAccountType
       transparentDataEncryption: sqlPool.?transparentDataEncryption
-      diagnosticSettings: sqlPool.?diagnosticSettings
-      roleAssignments: sqlPool.?roleAssignments
+      diagnosticSettings: sqlPool.?diagnosticSettings ?? []
+      roleAssignments: sqlPool.?roleAssignments ?? []
       lock: sqlPool.?lock ?? lock
       tags: sqlPool.?tags ?? tags
     }
@@ -455,7 +457,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
       ).location
       lock: privateEndpoint.?lock ?? lock
       privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
-      roleAssignments: privateEndpoint.?roleAssignments
+      roleAssignments: privateEndpoint.?roleAssignments ?? []
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
       ipConfigurations: privateEndpoint.?ipConfigurations
@@ -578,8 +580,8 @@ type firewallRuleType = {
   endIpAddress: string
 }
 
-import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType } from 'big-data-pool/main.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType, libraryRequirementsType, customLibraryType } from 'big-data-pool/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @export()
 @description('The synapse workspace Big Data Pool definition.')
 type bigDataPoolType = {
@@ -627,6 +629,12 @@ type bigDataPoolType = {
 
   @description('Optional. The Spark events folder.')
   sparkEventsFolder: string?
+
+  @description('Optional. Library version requirements.')
+  libraryRequirements: libraryRequirementsType?
+
+  @description('Optional. List of custom libraries/packages associated with the spark pool.')
+  customLibraries: customLibraryType[]?
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?

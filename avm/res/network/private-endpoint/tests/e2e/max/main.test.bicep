@@ -100,6 +100,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      ipVersionType: 'IPv4'
       customDnsConfigs: [
         {
           fqdn: 'abc.keyvault.com'

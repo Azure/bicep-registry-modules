@@ -1,10 +1,5 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 You can reference the module as follows:
@@ -953,6 +948,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
+    managedIdentities: {
+      systemAssigned: true
+    }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     tags: {
@@ -1006,6 +1004,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -1053,6 +1056,9 @@ param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
+param managedIdentities = {
+  systemAssigned: true
+}
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param tags = {

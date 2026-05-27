@@ -25,6 +25,30 @@ param disableBgpRoutePropagation bool = true
 @sys.description('Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.')
 param rules ruleType[]?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-nwmgr-routingcfgrulecoll.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' existing = {
   name: networkManagerName
 
@@ -56,6 +80,7 @@ module ruleCollection_rules 'rule/main.bicep' = [
       description: rule.?description
       destination: rule.destination
       nextHop: rule.nextHop
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

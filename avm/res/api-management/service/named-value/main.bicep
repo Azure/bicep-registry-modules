@@ -9,7 +9,7 @@ param apiManagementServiceName string
 @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
 param displayName string
 
-@description('Optional. KeyVault location details of the namedValue.')
+@description('Optional. Key Vault location details of the namedValue.')
 param keyVault resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
 @description('Required. The name of the named value.')
@@ -34,7 +34,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimgmt-namedvalue.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

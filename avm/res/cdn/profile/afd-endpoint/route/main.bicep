@@ -61,6 +61,28 @@ param ruleSets string[]?
 @description('Optional. The supported protocols of the rule.')
 param supportedProtocols resourceInput<'Microsoft.Cdn/profiles/afdEndpoints/routes@2025-04-15'>.properties.supportedProtocols?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cdn-profile-afdendpointroute.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource profile 'Microsoft.Cdn/profiles@2025-04-15' existing = {
   name: profileName
 

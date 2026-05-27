@@ -55,6 +55,9 @@ module testDeployment '../../../main.bicep' = [
         destination: 'log-analytics'
         logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
+      managedIdentities: {
+        systemAssigned: true
+      }
       workloadProfiles: [
         {
           workloadProfileType: 'D4'

@@ -35,6 +35,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+          delegations: [
+            {
+              name: 'Microsoft.Network/applicationGateways'
+              properties: {
+                serviceName: 'Microsoft.Network/applicationGateways'
+              }
+              type: 'Microsoft.Network/virtualNetworks/subnets/delegations'
+            }
+          ]
         }
       }
       {
@@ -94,13 +103,15 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
       family: 'A'
       name: 'standard'
     }
-    tenantId: tenant().tenantId
-    enablePurgeProtection: null
-    enabledForTemplateDeployment: true
-    enabledForDiskEncryption: true
-    enabledForDeployment: true
-    enableRbacAuthorization: true
     accessPolicies: []
+    enabledForDeployment: true
+    enabledForDiskEncryption: true
+    enabledForTemplateDeployment: true
+    enablePurgeProtection: null
+    enableRbacAuthorization: true
+    enableSoftDelete: false
+    softDeleteRetentionInDays: 7
+    tenantId: tenant().tenantId
   }
 }
 

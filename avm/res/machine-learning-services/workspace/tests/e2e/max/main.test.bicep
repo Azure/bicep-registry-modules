@@ -98,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
               nodeIdleTimeBeforeScaleDown: 'PT5M'
             }
             vmPriority: 'Dedicated'
-            vmSize: 'STANDARD_DS11_V2'
+            vmSize: 'Standard_D2ads_v5'
           }
           sku: 'Basic'
           managedIdentities: {

@@ -8,10 +8,10 @@ param name string
 param vpnGatewayName string
 
 @description('Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range.')
-param externalMappings vpnNatRuleMappingType[] = []
+param externalMappings resourceInput<'Microsoft.Network/vpnGateways/natRules@2024-07-01'>.properties.externalMappings = []
 
 @description('Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.')
-param internalMappings vpnNatRuleMappingType[] = []
+param internalMappings resourceInput<'Microsoft.Network/vpnGateways/natRules@2024-07-01'>.properties.internalMappings = []
 
 @description('Optional. A NAT rule must be configured to a specific VPN Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both VPN Gateway instances.')
 param ipConfigurationId string?
@@ -29,6 +29,28 @@ param mode string?
   'Static'
 ])
 param type string?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-vpngateway-natrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' existing = {
   name: vpnGatewayName
@@ -54,17 +76,3 @@ output resourceId string = natRule.id
 
 @description('The name of the resource group the NAT rule was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a VPN NAT rule mapping.')
-type vpnNatRuleMappingType = {
-  @description('Required. Address space for VPN NAT rule mapping.')
-  addressSpace: string
-
-  @description('Optional. Port range for VPN NAT rule mapping.')
-  portRange: string?
-}

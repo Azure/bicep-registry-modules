@@ -5,35 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17554607253739700603"
+      "version": "0.43.8.12551",
+      "templateHash": "4013426704939609421"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a VPN Gateway NAT Rule."
-  },
-  "definitions": {
-    "vpnNatRuleMappingType": {
-      "type": "object",
-      "properties": {
-        "addressSpace": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Address space for VPN NAT rule mapping."
-          }
-        },
-        "portRange": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Port range for VPN NAT rule mapping."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a VPN NAT rule mapping."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -50,23 +26,23 @@
     },
     "externalMappings": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/vpnNatRuleMappingType"
-      },
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways/natRules@2024-07-01#properties/properties/properties/externalMappings"
+        },
         "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
-      }
+      },
+      "defaultValue": []
     },
     "internalMappings": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/vpnNatRuleMappingType"
-      },
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways/natRules@2024-07-01#properties/properties/properties/internalMappings"
+        },
         "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
-      }
+      },
+      "defaultValue": []
     },
     "ipConfigurationId": {
       "type": "string",
@@ -96,9 +72,36 @@
       "metadata": {
         "description": "Optional. The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.network-vpngateway-natrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "vpnGateway": {
       "existing": true,
       "type": "Microsoft.Network/vpnGateways",

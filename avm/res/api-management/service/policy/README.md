@@ -42,7 +42,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`format`](#parameter-format) | string | Format of the policyContent. |
+| [`format`](#parameter-format) | string | Format of the policy content. |
 | [`name`](#parameter-name) | string | The name of the policy. |
 
 ### Parameter: `value`
@@ -69,7 +69,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `format`
 
-Format of the policyContent.
+Format of the policy content.
 
 - Required: No
 - Type: string

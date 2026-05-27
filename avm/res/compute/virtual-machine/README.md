@@ -27,7 +27,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
-| `Microsoft.Compute/disks` | 2024-03-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks)</li></ul> |
+| `Microsoft.Compute/disks` | 2025-01-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-01-02/disks)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
@@ -36,7 +36,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
-| `Microsoft.Network/publicIPAddresses` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses)</li></ul> |
+| `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 
 ## Usage examples
@@ -76,7 +76,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinatmg'
+    name: 'vmlinatmg'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -103,7 +103,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdminUser'
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -142,7 +142,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmlinatmg"
+      "value": "vmlinatmg"
     },
     "nicConfigurations": {
       "value": [
@@ -177,7 +177,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -224,7 +224,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinatmg'
+param name = 'vmlinatmg'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -251,7 +251,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
@@ -290,7 +290,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmlinmin'
+    name: 'vmlinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -310,7 +310,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdminUser'
     disablePasswordAuthentication: true
@@ -347,7 +347,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmlinmin"
+      "value": "vmlinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -375,7 +375,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -416,7 +416,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmlinmin'
+param name = 'vmlinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -436,7 +436,7 @@ param osDisk = {
   }
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param disablePasswordAuthentication = true
@@ -473,7 +473,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmlimax'
+    name: 'vmlimax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -584,7 +584,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       name: 'osdisk01'
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminUsername: 'localAdministrator'
     backupPolicyName: '<backupPolicyName>'
@@ -773,7 +773,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "cvmlimax"
+      "value": "vmlimax"
     },
     "nicConfigurations": {
       "value": [
@@ -892,7 +892,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminUsername": {
@@ -1127,7 +1127,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmlimax'
+param name = 'vmlimax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -1238,7 +1238,7 @@ param osDisk = {
   name: 'osdisk01'
 }
 param osType = 'Linux'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdministrator'
 param backupPolicyName = '<backupPolicyName>'
@@ -1427,7 +1427,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinwaf'
+    name: 'vmwinwaf'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -1510,7 +1510,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'VMAdmin'
@@ -1543,9 +1543,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
-      settings: {
-        mdmId: ''
-      }
+      settings: {}
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -1652,7 +1650,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
@@ -1707,7 +1705,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinwaf"
+      "value": "vmwinwaf"
     },
     "nicConfigurations": {
       "value": [
@@ -1798,7 +1796,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -1853,9 +1851,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
-        "settings": {
-          "mdmId": ""
-        },
+        "settings": {},
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1978,7 +1974,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "WindowsServer",
         "publisher": "MicrosoftWindowsServer",
-        "sku": "2019-datacenter",
+        "sku": "2019-datacenter-gensecond",
         "version": "latest"
       }
     },
@@ -2041,7 +2037,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinwaf'
+param name = 'vmwinwaf'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -2124,7 +2120,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'VMAdmin'
@@ -2157,9 +2153,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
-  settings: {
-    mdmId: ''
-  }
+  settings: {}
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -2266,7 +2260,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
-  sku: '2019-datacenter'
+  sku: '2019-datacenter-gensecond'
   version: 'latest'
 }
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
@@ -2321,7 +2315,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinmin'
+    name: 'vmwinmin'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2341,7 +2335,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -2372,7 +2366,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinmin"
+      "value": "vmwinmin"
     },
     "nicConfigurations": {
       "value": [
@@ -2400,7 +2394,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2433,7 +2427,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinmin'
+param name = 'vmwinmin'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2453,7 +2447,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -2484,7 +2478,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    name: 'cvmwindisk02'
+    name: 'vmwindisk02'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2502,7 +2496,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: '<osType>'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_E2s_v3'
     // Non-required parameters
     dataDisks: [
       {
@@ -2547,7 +2541,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 1
     },
     "name": {
-      "value": "cvmwindisk02"
+      "value": "vmwindisk02"
     },
     "nicConfigurations": {
       "value": [
@@ -2573,7 +2567,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<osType>"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_E2s_v3"
     },
     // Non-required parameters
     "dataDisks": {
@@ -2620,7 +2614,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param name = 'cvmwindisk02'
+param name = 'vmwindisk02'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2638,7 +2632,7 @@ param osDisk = {
   }
 }
 param osType = '<osType>'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_E2s_v3'
 // Non-required parameters
 param dataDisks = [
   {
@@ -2707,7 +2701,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -2799,7 +2793,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -2891,7 +2885,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -2971,14 +2965,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D4s_v3'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
     extensionAadJoinConfig: {
       enabled: false
       settings: {
-        mdmId: ''
+        mdmId: '0000000a-0000-0000-c000-000000000000'
       }
       tags: {
         Environment: 'Non-Prod'
@@ -3056,7 +3050,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D4s_v3"
     },
     // Non-required parameters
     "adminPassword": {
@@ -3069,7 +3063,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enabled": false,
         "settings": {
-          "mdmId": ""
+          "mdmId": "0000000a-0000-0000-c000-000000000000"
         },
         "tags": {
           "Environment": "Non-Prod",
@@ -3141,14 +3135,14 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
 param extensionAadJoinConfig = {
   enabled: false
   settings: {
-    mdmId: ''
+    mdmId: '0000000a-0000-0000-c000-000000000000'
   }
   tags: {
     Environment: 'Non-Prod'
@@ -3198,7 +3192,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinmax'
+    name: 'vmwinmax'
     nicConfigurations: [
       {
         deleteOption: 'Delete'
@@ -3479,7 +3473,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     location: '<location>'
@@ -3541,7 +3535,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinmax"
+      "value": "vmwinmax"
     },
     "nicConfigurations": {
       "value": [
@@ -3870,7 +3864,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "offer": "WindowsServer",
         "publisher": "MicrosoftWindowsServer",
-        "sku": "2019-datacenter",
+        "sku": "2019-datacenter-gensecond",
         "version": "latest"
       }
     },
@@ -3944,7 +3938,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinmax'
+param name = 'vmwinmax'
 param nicConfigurations = [
   {
     deleteOption: 'Delete'
@@ -4225,7 +4219,7 @@ param extensionNetworkWatcherAgentConfig = {
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
-  sku: '2019-datacenter'
+  sku: '2019-datacenter-gensecond'
   version: 'latest'
 }
 param location = '<location>'
@@ -4287,7 +4281,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinnv'
+    name: 'vmwinnv'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4343,7 +4337,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinnv"
+      "value": "vmwinnv"
     },
     "nicConfigurations": {
       "value": [
@@ -4415,7 +4409,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinnv'
+param name = 'vmwinnv'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4471,7 +4465,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    name: 'cvmwinvmss'
+    name: 'vmwinvmss'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4491,7 +4485,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
+    vmSize: 'Standard_D2s_v6'
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
@@ -4523,7 +4517,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": -1
     },
     "name": {
-      "value": "cvmwinvmss"
+      "value": "vmwinvmss"
     },
     "nicConfigurations": {
       "value": [
@@ -4551,7 +4545,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Windows"
     },
     "vmSize": {
-      "value": "Standard_D2s_v3"
+      "value": "Standard_D2s_v6"
     },
     // Non-required parameters
     "adminPassword": {
@@ -4587,7 +4581,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param name = 'cvmwinvmss'
+param name = 'vmwinvmss'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4607,7 +4601,7 @@ param osDisk = {
   }
 }
 param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
+param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
@@ -4639,7 +4633,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    name: 'cvmwinzrs'
+    name: 'vmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4699,7 +4693,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     "name": {
-      "value": "cvmwinzrs"
+      "value": "vmwinzrs"
     },
     "nicConfigurations": {
       "value": [
@@ -4771,7 +4765,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param name = 'cvmwinzrs'
+param name = 'vmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -6696,67 +6690,6 @@ OS image reference. In case of marketplace images, it's the combination of the p
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`communityGalleryImageId`](#parameter-imagereferencecommunitygalleryimageid) | string | Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call. |
-| [`id`](#parameter-imagereferenceid) | string | The resource Id of the image reference. |
-| [`offer`](#parameter-imagereferenceoffer) | string | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
-| [`publisher`](#parameter-imagereferencepublisher) | string | The image publisher. |
-| [`sharedGalleryImageId`](#parameter-imagereferencesharedgalleryimageid) | string | Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call. |
-| [`sku`](#parameter-imagereferencesku) | string | The SKU of the image. |
-| [`version`](#parameter-imagereferenceversion) | string | Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available. |
-
-### Parameter: `imageReference.communityGalleryImageId`
-
-Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.id`
-
-The resource Id of the image reference.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.offer`
-
-Specifies the offer of the platform image or marketplace image used to create the virtual machine.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.publisher`
-
-The image publisher.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.sharedGalleryImageId`
-
-Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.sku`
-
-The SKU of the image.
-
-- Required: No
-- Type: string
-
-### Parameter: `imageReference.version`
-
-Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.
-
-- Required: No
-- Type: string
-
 ### Parameter: `additionalUnattendContent`
 
 Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.
@@ -8178,13 +8111,11 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
 | `br/public:avm/res/network/network-interface:0.5.3` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.12.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.9.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 

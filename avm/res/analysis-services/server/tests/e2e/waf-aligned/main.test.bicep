@@ -57,10 +57,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}'
       location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       skuName: 'S0'
       skuCapacity: 1
       firewallSettings: {
@@ -76,19 +72,6 @@ module testDeployment '../../../main.bicep' = [
       diagnosticSettings: [
         {
           name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          logCategoriesAndGroups: [
-            {
-              category: 'Engine'
-            }
-            {
-              category: 'Service'
-            }
-          ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -101,8 +84,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      diagnosticDependencies
-    ]
   }
 ]

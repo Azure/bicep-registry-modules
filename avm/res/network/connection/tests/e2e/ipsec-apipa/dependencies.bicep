@@ -43,6 +43,11 @@ resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   properties: {
     publicIPAllocationMethod: 'Static'
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 resource primaryVirtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05-01' = {
@@ -63,8 +68,8 @@ resource primaryVirtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@
       ]
     }
     sku: {
-      name: 'VpnGw1'
-      tier: 'VpnGw1'
+      name: 'VpnGw2AZ'
+      tier: 'VpnGw2AZ'
     }
     ipConfigurations: [
       {

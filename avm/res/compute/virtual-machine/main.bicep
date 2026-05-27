@@ -23,7 +23,7 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Conditional. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image. Required if not creating the VM from an existing os-disk via the `osDisk.managedDisk.resourceId` parameter.')
-param imageReference imageReferenceType?
+param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01'>.properties.storageProfile.imageReference?
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
@@ -90,7 +90,7 @@ param licenseType string?
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
 param managedIdentities managedIdentityAllType?
 
@@ -224,11 +224,11 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -474,7 +474,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -515,8 +515,8 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId)) {
+resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?resourceId) && (dataDisk.?createOption ?? 'Empty') != 'FromImage') {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -525,14 +525,14 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
     properties: {
       diskSizeGB: dataDisk.?diskSizeGB
       creationData: {
-        createOption: dataDisk.?createoption ?? 'Empty'
+        createOption: dataDisk.?createOption ?? 'Empty'
       }
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
       publicNetworkAccess: publicNetworkAccess
       networkAccessPolicy: networkAccessPolicy
     }
-    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS')
+    zones: availabilityZone != -1 && !contains(dataDisk.managedDisk.?storageAccountType ?? '', 'ZRS')
       ? array(string(availabilityZone))
       : null
     tags: dataDisk.?tags ?? tags
@@ -593,19 +593,31 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           name: !empty(dataDisk.managedDisk.?resourceId)
             ? last(split(dataDisk.managedDisk.resourceId!, '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
-            ? 'Attach'
-            : dataDisk.?createoption ?? 'Empty'
+          createOption: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? 'FromImage'
+            : (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?resourceId))
+                ? 'Attach'
+                : dataDisk.?createOption ?? 'Empty'
           deleteOption: !empty(dataDisk.managedDisk.?resourceId) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: !empty(dataDisk.managedDisk.?resourceId) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
-          managedDisk: {
-            id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
-            diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
-              ? {
-                  id: dataDisk.managedDisk.diskEncryptionSetResourceId
-                }
-              : null
-          }
+          diskSizeGB: (dataDisk.?createOption ?? 'Empty') == 'FromImage' ? null : dataDisk.?diskSizeGB
+          managedDisk: (dataDisk.?createOption ?? 'Empty') == 'FromImage'
+            ? {
+                storageAccountType: dataDisk.managedDisk.?storageAccountType
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
+            : {
+                id: dataDisk.managedDisk.?resourceId ?? managedDataDisks[index].?id
+                diskEncryptionSet: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+                  ? {
+                      id: dataDisk.managedDisk.diskEncryptionSetResourceId
+                    }
+                  : null
+              }
         }
       ]
     }
@@ -640,6 +652,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       ]
     }
+
     capacityReservation: !empty(capacityReservationGroupResourceId)
       ? {
           capacityReservationGroup: {
@@ -717,6 +730,8 @@ resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationPr
 resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15' = if (!empty(autoShutdownConfig)) {
   name: 'shutdown-computevm-${vm.name}'
   location: location
+  #disable-next-line BCP187
+  tags: autoShutdownConfig.?tags ?? tags
   properties: {
     status: autoShutdownConfig.?status ?? 'Disabled'
     targetResourceId: vm.id
@@ -740,6 +755,7 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
 module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDomainJoinConfig.?name ?? 'DomainJoin'
     location: location
@@ -748,7 +764,13 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
     typeHandlerVersion: extensionDomainJoinConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionDomainJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionDomainJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionDomainJoinConfig.settings
+    settings: extensionDomainJoinConfig.?settings ?? {
+      Name: extensionDomainJoinConfig.?domainName
+      OUPath: extensionDomainJoinConfig.?ouPath
+      User: extensionDomainJoinConfig.?user
+      Restart: extensionDomainJoinConfig.?restart
+      Options: extensionDomainJoinConfig.?options
+    }
     supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
     tags: extensionDomainJoinConfig.?tags ?? tags
     protectedSettings: {
@@ -757,9 +779,21 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   }
 }
 
+// The AAD Join extension does not allow empty string for mdmId, so we filter it out if it's empty to avoid deployment failure. This allows customers to conditionally include mdmId in the settings without having to worry about the empty string case.
+var aadJoinSettings = extensionAadJoinConfig.?settings ?? {}
+// filtered settings will only be used if AAD Join extension is enabled, so we don't need to worry about the case where mdmId is required but filtered out since that would be a customer configuration error.
+var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoinSettings.mdmId)
+  ? reduce(
+      items(aadJoinSettings),
+      {},
+      (cur, item) => item.key == 'mdmId' ? cur : union(cur, { '${item.key}': item.value })
+    )
+  : aadJoinSettings
+
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAadJoinConfig.?name ?? 'AADLogin'
     location: location
@@ -768,7 +802,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
     typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
     autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
+    settings: !empty(filteredAadJoinSettings) ? filteredAadJoinSettings : null
     supressFailures: extensionAadJoinConfig.?supressFailures ?? false
     tags: extensionAadJoinConfig.?tags ?? tags
   }
@@ -780,6 +814,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
 module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAntiMalwareConfig.?name ?? 'MicrosoftAntiMalware'
     location: location
@@ -810,6 +845,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
 module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionMonitoringAgentConfig.?name ?? 'AzureMonitorAgent'
     location: location
@@ -818,6 +854,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
     typeHandlerVersion: extensionMonitoringAgentConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '1.22' : '1.29')
     autoUpgradeMinorVersion: extensionMonitoringAgentConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionMonitoringAgentConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionMonitoringAgentConfig.?settings ?? {}
     supressFailures: extensionMonitoringAgentConfig.?supressFailures ?? false
     tags: extensionMonitoringAgentConfig.?tags ?? tags
   }
@@ -826,6 +863,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   ]
 }
 
+#disable-next-line BCP081
 resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2024-03-11' = [
   for (dataCollectionRuleAssociation, index) in extensionMonitoringAgentConfig.dataCollectionRuleAssociations: if (extensionMonitoringAgentConfig.enabled) {
     name: dataCollectionRuleAssociation.name
@@ -842,6 +880,7 @@ resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRul
 module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDependencyAgentConfig.?name ?? 'DependencyAgent'
     location: location
@@ -864,6 +903,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
 module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionNetworkWatcherAgentConfig.?name ?? 'NetworkWatcherAgent'
     location: location
@@ -883,6 +923,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
 module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDSCConfig.?name ?? 'DesiredStateConfiguration'
     location: location
@@ -912,6 +953,7 @@ resource cseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-3
 module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCustomScriptConfig)) {
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     location: location
@@ -957,14 +999,12 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
         : {})
     }
   }
-  dependsOn: [
-    vm_desiredStateConfigurationExtension
-  ]
 }
 
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAzureDiskEncryptionConfig.?name ?? 'AzureDiskEncryption'
     location: location
@@ -986,6 +1026,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
 module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extensionNvidiaGpuDriverWindows.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionNvidiaGpuDriverWindows.?name ?? 'NvidiaGpuDriverWindows'
     location: location
@@ -1005,6 +1046,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
 module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionHostPoolRegistration.?name ?? 'HostPoolRegistration'
     location: location
@@ -1018,11 +1060,15 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
       configurationFunction: extensionHostPoolRegistration.configurationFunction
       properties: {
         hostPoolName: extensionHostPoolRegistration.hostPoolName
-        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
         aadJoin: true
       }
-      supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     }
+    protectedSettings: {
+      properties: {
+        registrationInfoToken: extensionHostPoolRegistration.registrationInfoToken
+      }
+    }
+    supressFailures: extensionHostPoolRegistration.?supressFailures ?? false
     tags: extensionHostPoolRegistration.?tags ?? tags
   }
   dependsOn: [
@@ -1033,6 +1079,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
 module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionGuestConfigurationExtension.?name ?? osType == 'Windows'
       ? 'AzurePolicyforWindows'
@@ -1130,7 +1177,7 @@ output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = vm.location
 
-import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.1'
+import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.3'
 @description('The list of NIC configurations of the virtual machine.')
 output nicConfigurations nicConfigurationOutputType[] = [
   for (nicConfiguration, index) in nicConfigurations: {
@@ -1246,8 +1293,8 @@ type publicKeyType = {
 }
 
 import { ipConfigurationType } from 'modules/nic-configuration.bicep'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.3'
 
 @export()
 @description('The type for the NIC configuration.')

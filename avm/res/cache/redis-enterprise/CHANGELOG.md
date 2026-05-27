@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis-enterprise/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Fixed a bug in which the `availabilityZones` integer-based parameter was not correctly passed to `string` before passing it to the resource provider
+- Minor template-internal restructuring
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

@@ -32,17 +32,17 @@ param disableGateway bool = false
 @description('Optional. Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway.')
 param enableClientCertificate bool = false
 
-@description('Optional. Custom hostname configuration of the API Management service.')
+@description('Optional. Custom hostname configuration of the API Management service. Note: any read-only/server-computed properties supplied per entry (e.g. `certificateStatus`) are stripped before deployment to avoid spurious `NotSupported` errors from the APIM resource provider during the [Managed Certificates suspension window](https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025) (Aug 15 2025 – Jun 30 2026).')
 param hostnameConfigurations resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.hostnameConfigurations?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -61,7 +61,7 @@ param publisherName string
 @description('Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.')
 param restore bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -95,7 +95,7 @@ param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 ])
 param virtualNetworkType string = 'None'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -111,7 +111,7 @@ param availabilityZones int[] = [
   3
 ]
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -228,7 +228,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.apimanagement-service.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -260,7 +260,25 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
-    hostnameConfigurations: hostnameConfigurations
+    // Strip read-only / server-computed fields from `hostnameConfigurations` entries before sending to ARM.
+    // `certificateStatus` is server-computed; supplying it on PUT causes the APIM RP to classify the entry
+    // as a *new* Managed Certificate request, which is rejected during the Managed Certificates suspension
+    // window (Aug 15 2025 – Jun 30 2026):
+    // https://learn.microsoft.com/azure/api-management/breaking-changes/managed-certificates-suspension-august-2025
+    hostnameConfigurations: hostnameConfigurations == null
+      ? null
+      : map(hostnameConfigurations!, h => {
+          type: h.type
+          hostName: h.hostName
+          certificate: h.?certificate
+          certificatePassword: h.?certificatePassword
+          certificateSource: h.?certificateSource
+          defaultSslBinding: h.?defaultSslBinding
+          encodedCertificate: h.?encodedCertificate
+          identityClientId: h.?identityClientId
+          keyVaultId: h.?keyVaultId
+          negotiateClientCertificate: h.?negotiateClientCertificate
+        })
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? publicNetworkAccess
       : (!empty(privateEndpoints ?? []) ? 'Disabled' : 'Enabled')
@@ -509,6 +527,7 @@ module service_products 'product/main.bicep' = [
       apis: product.?apis
       approvalRequired: product.?approvalRequired
       groups: product.?groups
+      policies: product.?policies
       name: product.name
       description: product.?description
       state: product.?state
@@ -545,7 +564,7 @@ module service_subscriptions 'subscription/main.bicep' = [
   }
 ]
 
-module service_diagnostics 'diagnostic/main.bicep' = [
+module service_diagnostics 'diagnostics/main.bicep' = [
   for (diagnostic, index) in (serviceDiagnostics ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-SvcDiag-${index}'
     params: {
@@ -561,6 +580,7 @@ module service_diagnostics 'diagnostic/main.bicep' = [
       operationNameFormat: diagnostic.?operationNameFormat
       samplingPercentage: diagnostic.?samplingPercentage
       verbosity: diagnostic.?verbosity
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       service_loggers
@@ -588,6 +608,7 @@ module service_workspaces 'workspace/main.bicep' = [
       gateway: workspace.gateway
       diagnosticSettings: workspace.?diagnosticSettings
       roleAssignments: workspace.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -648,7 +669,7 @@ resource service_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
-module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module service_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-service-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -718,7 +739,7 @@ output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = service.location
 
-@description('The private endpoints of the key vault.')
+@description('The private endpoints of the API Management service.')
 output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
     name: service_privateEndpoints[index].outputs.name
@@ -739,7 +760,7 @@ type authorizationServerType = {
   @description('Required. Identifier of the authorization server.')
   name: string
 
-  @description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+  @description('Required. API Management Service Authorization Server name. Must be 1 to 50 characters long.')
   @maxLength(50)
   displayName: string
 
@@ -910,12 +931,12 @@ type apiVersionSetType = {
   @description('Required. API Version set name.')
   name: string
 
-  @description('Required. The display name of the Name of API Version Set.')
+  @description('Required. The display name of the API Version Set.')
   @minLength(1)
   @maxLength(100)
   displayName: string
 
-  @description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
+  @description('Required. A value that determines where the API Version identifier will be located in an HTTP request.')
   versioningScheme: ('Header' | 'Query' | 'Segment')
 
   @description('Optional. Description of API Version Set.')
@@ -1017,7 +1038,7 @@ type backendType = {
   @description('Optional. Backend Proxy Contract Properties. Not supported for Backend Pools.')
   proxy: resourceInput<'Microsoft.ApiManagement/service/backends@2024-05-01'>.properties.proxy?
 
-  @description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
+  @description('Optional. Management URI of the Resource in External System. This URL can be the ARM Resource ID of Logic Apps, Function Apps or API Apps. Not supported for Backend Pools.')
   resourceId: string?
 
   @description('Optional. Backend Service Fabric Cluster Properties. Not supported for Backend Pools.')
@@ -1056,7 +1077,7 @@ type cacheType = {
   @description('Optional. Cache description.')
   description: string?
 
-  @description('Optional. Original uri of entity in external system cache points to.')
+  @description('Optional. Original URI of entity in external system cache points to.')
   resourceId: string?
 
   @description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
@@ -1066,7 +1087,7 @@ type cacheType = {
 @export()
 @description('The type of an identity provider.')
 type identityProviderType = {
-  @description('Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string.')
+  @description('Optional. List of Allowed Tenants when configuring Azure Active Directory login.')
   allowedTenants: resourceInput<'Microsoft.ApiManagement/service/identityProviders@2024-05-01'>.properties.allowedTenants?
 
   @description('Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C.')
@@ -1121,7 +1142,7 @@ type loggerType = {
   @description('Required. Logger type.')
   type: ('applicationInsights' | 'azureEventHub' | 'azureMonitor')
 
-  @description('Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
+  @description('Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
   targetResourceId: string?
 
   @secure()
@@ -1137,7 +1158,7 @@ type namedValueType = {
   @description('Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters.')
   displayName: string
 
-  @description('Optional. KeyVault location details of the namedValue.')
+  @description('Optional. Key Vault location details of the namedValue.')
   keyVault: resourceInput<'Microsoft.ApiManagement/service/namedValues@2024-05-01'>.properties.keyVault?
 
   @description('Required. The name of the named value.')
@@ -1161,7 +1182,7 @@ type policyType = {
   @description('Optional. The name of the policy.')
   name: string?
 
-  @description('Optional. Format of the policyContent.')
+  @description('Optional. Format of the policy content.')
   format: ('rawxml' | 'rawxml-link' | 'xml' | 'xml-link')?
 
   @description('Required. Contents of the Policy as defined by the format.')
@@ -1213,7 +1234,7 @@ type subscriptionType = {
 
   @minLength(1)
   @maxLength(100)
-  @description('Required. API Management Service Subscriptions name.')
+  @description('Required. API Management Service Subscription name.')
   displayName: string
 
   @description('Optional. Determines whether tracing can be enabled.')
@@ -1311,7 +1332,7 @@ type productType = {
   @description('Required. Product display name.')
   displayName: string
 
-  @description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product\'s APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the product\'s APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
+  @description('Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the product\'s APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can use any of the product\'s APIs. Can be present only if subscriptionRequired property is present and has a value of false.')
   approvalRequired: bool?
 
   @maxLength(1000)
@@ -1327,7 +1348,7 @@ type productType = {
   @description('Optional. Array of Policies to apply to the Service Product.')
   policies: productPolicyType[]?
 
-  @description('Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators.')
+  @description('Optional. Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators.')
   state: ('notPublished' | 'published')?
 
   @description('Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it\'s value is assumed to be true.')
@@ -1371,13 +1392,13 @@ type signUpPropertiesType = {
 
     @description('Optional. Terms of service contract properties.')
     termsOfService: {
-      @description('Otional. Ask user for consent to the terms of service.')
+      @description('Optional. Ask user for consent to the terms of service.')
       consentRequired: bool?
 
-      @description('Otional. Display terms of service during a sign-up process.')
+      @description('Optional. Display terms of service during a sign-up process.')
       enabled: bool?
 
-      @description('Otional. A terms of service text.')
+      @description('Optional. A terms of service text.')
       text: string?
     }?
   }

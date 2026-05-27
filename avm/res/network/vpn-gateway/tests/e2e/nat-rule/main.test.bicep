@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    location: resourceLocation
     virtualHubName: 'dep-${namePrefix}-vh-${serviceShort}'
     virtualWANName: 'dep-${namePrefix}-vw-${serviceShort}'
     vpnSiteName: 'dep-${namePrefix}-vs-${serviceShort}'
@@ -53,28 +52,27 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       virtualHubResourceId: nestedDependencies.outputs.virtualHubResourceId
-      
+
       // BGP Settings
       bgpSettings: {
         asn: 65515
         peerWeight: 0
-      }     
+      }
       natRules: [
         {
           name: 'testnatrule'
           mode: 'EgressSnat'
-          type: 'Static'  
+          type: 'Static'
           externalMappings: [
             {
-              addressSpace: '10.52.18.0/28'  
+              addressSpace: '10.52.18.0/28'
             }
           ]
           internalMappings: [
             {
-              addressSpace: '10.33.5.64/28' 
+              addressSpace: '10.33.5.64/28'
             }
           ]
         }
@@ -84,17 +82,17 @@ module testDeployment '../../../main.bicep' = [
           type: 'Static'
           externalMappings: [
             {
-              addressSpace: '192.168.100.0/24' 
+              addressSpace: '192.168.100.0/24'
             }
           ]
           internalMappings: [
             {
-              addressSpace: '10.10.10.0/24' 
+              addressSpace: '10.10.10.0/24'
             }
           ]
         }
       ]
-        // VPN Connections that reference the NAT rules
+      // VPN Connections that reference the NAT rules
       vpnConnections: [
         {
           name: 'test-connection-with-nat'
@@ -105,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
           useLocalAzureIpAddress: false
           usePolicyBasedTrafficSelectors: false
           vpnConnectionProtocolType: 'IKEv2'
-          
+
           // VPN Link Connections with NAT rule references
           vpnLinkConnections: [
             {
@@ -120,15 +118,15 @@ module testDeployment '../../../main.bicep' = [
                 vpnLinkConnectionMode: 'Default'
                 vpnSiteLink: {
                   id: nestedDependencies.outputs.vpnSiteLinkResourceId
-                }              
+                }
                 egressNatRules: [
                   {
-                    id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup.name}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/testnatrule'
+                    id: '${resourceGroup.id}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/testnatrule'
                   }
                 ]
                 ingressNatRules: [
                   {
-                    id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup.name}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/ingress-nat-rule'
+                    id: '${resourceGroup.id}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/ingress-nat-rule'
                   }
                 ]
               }
@@ -136,10 +134,9 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      
+
       vpnGatewayScaleUnit: 2
       enableTelemetry: true
     }
   }
 ]
-

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3987804087046971868"
+      "version": "0.42.1.51946",
+      "templateHash": "10241785853990137728"
     },
     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
     "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -26,12 +26,39 @@
       "metadata": {
         "description": "Required. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": [
     {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
-      "apiVersion": "2025-06-01-preview",
+      "apiVersion": "2026-01-01-preview",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
       "properties": {
         "state": "[parameters('serverThreatProtection')]"
@@ -58,7 +85,7 @@
       "metadata": {
         "description": "The advanced threat protection state for the flexible server."
       },
-      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2025-06-01-preview').state]"
+      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2026-01-01-preview').state]"
     },
     "resourceGroupName": {
       "type": "string",

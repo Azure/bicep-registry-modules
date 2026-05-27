@@ -7,12 +7,12 @@ param managedIdentityName string
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
+resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2025-05-01' = {
   name: applicationSecurityGroupName
   location: location
 }

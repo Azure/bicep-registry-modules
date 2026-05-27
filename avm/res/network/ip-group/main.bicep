@@ -8,19 +8,20 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. IpAddresses/IpAddressPrefixes in the IP Group resource.')
-param ipAddresses array = []
+@description('Required. IpAddresses/IpAddressPrefixes in the IP Group resource.')
+@minLength(1)
+param ipAddresses array
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.Network/ipGroups@2024-05-01'>.tags?
+param tags resourceInput<'Microsoft.Network/ipGroups@2025-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -73,7 +74,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource ipGroup 'Microsoft.Network/ipGroups@2024-05-01' = {
+resource ipGroup 'Microsoft.Network/ipGroups@2025-05-01' = {
   name: name
   location: location
   tags: tags

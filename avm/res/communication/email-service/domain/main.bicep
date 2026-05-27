@@ -13,7 +13,7 @@ param name string
 param location string = 'global'
 
 @description('Optional. Endpoint tags.')
-param tags resourceInput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.tags?
+param tags resourceInput<'Microsoft.Communication/emailServices/domains@2025-09-01'>.tags?
 
 @allowed([
   'AzureManaged'
@@ -41,6 +41,9 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -66,15 +69,36 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
 
-resource emailService 'Microsoft.Communication/emailServices@2023-04-01' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.comm-emailservice-domain.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource emailService 'Microsoft.Communication/emailServices@2025-09-01' existing = {
   name: emailServiceName
 }
 
-resource domain 'Microsoft.Communication/emailServices/domains@2023-04-01' = {
+resource domain 'Microsoft.Communication/emailServices/domains@2025-09-01' = {
   name: name
   location: location
   tags: tags
@@ -89,6 +113,7 @@ module domain_senderUsernames 'sender-username/main.bicep' = [
   for (senderUsername, index) in senderUsernames ?? []: {
     name: '${uniqueString(deployment().name, location)}-domain-senderusername-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       emailServiceName: emailService.name
       domainName: domain.name
       name: senderUsername.name
@@ -139,7 +164,7 @@ output resourceId string = domain.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The verification records for the domain.')
-output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2023-04-01'>.properties.verificationRecords = domain.properties.verificationRecords
+output verificationRecords resourceOutput<'Microsoft.Communication/emailServices/domains@2025-09-01'>.properties.verificationRecords = domain.properties.verificationRecords
 
 @description('The from sender domain for the domain.')
 output fromSenderDomain string = domain.properties.fromSenderDomain

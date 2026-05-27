@@ -110,6 +110,12 @@ param targetPort int = 80
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
 
+@description('Optional. The list of volumes that can be mounted by containers in the container app.')
+param volumes volumeType[]?
+
+@description('Optional. Volume mounts for the primary container.')
+param volumeMounts volumeMountType[]?
+
 @description('Optional. The principal ID of the principal to assign the role to.')
 param principalId string = ''
 
@@ -184,6 +190,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
         ]
       : []
     serviceBinds: serviceBinds
+    volumes: volumes
     containers: [
       {
         image: !empty(imageName) ? imageName : 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -194,6 +201,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.19.0' = {
           memory: containerMemory
         }
         probes: containerProbes
+        volumeMounts: volumeMounts
       }
     ]
     scaleSettings: {
@@ -334,4 +342,45 @@ type containerAppProbeType = {
 
   @description('Optional. The type of probe.')
   type: ('Liveness' | 'Startup' | 'Readiness')?
+}
+
+@description('The type for a volume mount.')
+@export()
+type volumeMountType = {
+  @description('Required. Path within the container at which the volume should be mounted. Must not contain \':\'.')
+  mountPath: string
+
+  @description('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to "" (volume\'s root).')
+  subPath: string?
+
+  @description('Required. This must match the Name of a Volume.')
+  volumeName: string
+}
+
+@description('The type for a volume secret.')
+type volumeSecretType = {
+  @description('Required. Path to project secret to. Must be unique per volume and not conflict with other paths in the volume.')
+  path: string
+
+  @description('Required. Name of the Container App secret from which to pull the secret value.')
+  secretRef: string
+}
+
+@description('The type for a volume.')
+@export()
+type volumeType = {
+  @description('Required. Volume name.')
+  name: string
+
+  @description('Optional. Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.')
+  mountOptions: string?
+
+  @description('Optional. Name of storage resource. No need to provide for EmptyDir and Secret.')
+  storageName: string?
+
+  @description('Optional. Storage type for the volume. If not provided, use EmptyDir.')
+  storageType: ('AzureFile' | 'EmptyDir' | 'Secret' | 'NfsAzureFile')?
+
+  @description('Optional. List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume.')
+  secrets: volumeSecretType[]?
 }

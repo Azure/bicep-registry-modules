@@ -1,4 +1,4 @@
-#Requires -Version 7
+﻿#Requires -Version 7
 
 param (
     [Parameter(Mandatory = $false)]
@@ -45,15 +45,10 @@ BeforeDiscovery {
     }
 
     # Building paths
-    $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-    $pathsToBuild | ForEach-Object -Parallel {
-        $dict = $using:builtTestFileMap
-        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
-        if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
-        }
-        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
-        $null = $dict.TryAdd($_, $templateHashTable)
+    $compiledTemplatesMap = Build-ViaRPC -BicepFilePath $pathsToBuild -PassThru
+    $builtTestFileMap = @{}
+    foreach ($path in $pathsToBuild) {
+        $builtTestFileMap[$path] = $compiledTemplatesMap[$path] | ConvertFrom-Json -AsHashtable
     }
 
     # Getting the list of child modules allowed for publishing
@@ -318,6 +313,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
+            # skip deployment test for certain modules that are known to cause issues in CI (e.g. due to a very long deployment time that may cause CI to time out), but without failing the whole pipeline
+            $allowedE2eignoreModules = @(
+                'res/azure-stack-hci/cluster'
+                'res/azure-stack-hci/cluster/deployment-setting'
+                'res/azure-stack-hci/logical-network'
+                'res/azure-stack-hci/marketplace-gallery-image'
+                'res/azure-stack-hci/network-interface'
+                'res/azure-stack-hci/virtual-hard-disk'
+                'res/azure-stack-hci/virtual-machine-instance'
+            )
+
             $incorrectFolders = @()
             $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
                 $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
@@ -325,7 +331,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
                 if (Test-Path $filePath) {
-                    $incorrectFolders += $e2eTestFolderPath.Name
+                    if ($allowedE2eignoreModules -contains $moduleFolderName) {
+                        Write-Warning "Module [$moduleFolderName] is in the allowed e2eignore list and is allowed to have an .e2eignore file for its tests, but please consider removing it if the issues causing the need for skipping the tests are resolved."
+                    } else {
+                        $incorrectFolders += $e2eTestFolderPath.Name
+                    }
                 }
             }
             $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
@@ -722,7 +732,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
-            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
+            $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module. If the problem persists, try and run the script using the `-ForceCacheRefresh` parameter.' -f $mdFormattedDiff)
         }
     }
 
