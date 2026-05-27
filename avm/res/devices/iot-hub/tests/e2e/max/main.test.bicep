@@ -95,7 +95,6 @@ module testDeployment '../../../main.bicep' = [
       disableLocalAuth: true
       disableModuleSAS: true
       enableDataResidency: true
-      enableFileUploadNotifications: true
       eventHubEndpoints: {
         events: {
           retentionTimeInDays: 7
