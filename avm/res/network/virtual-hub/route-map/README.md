@@ -1,10 +1,10 @@
-# Virtual Hub Virtual Network Connections `[Microsoft.Network/virtualHubs/hubVirtualNetworkConnections]`
+# Virtual Hub Route Maps `[Microsoft.Network/virtualHubs/routeMaps]`
 
-This module deploys a Virtual Hub Virtual Network Connection.
+This module deploys a Virtual Hub Route Map.
 
 You can reference the module as follows:
 ```bicep
-module virtualHub 'br/public:avm/res/network/virtual-hub/hub-virtual-network-connection:<version>' = {
+module virtualHub 'br/public:avm/res/network/virtual-hub/route-map:<version>' = {
   params: { (...) }
 }
 ```
@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routeMaps` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/routeMaps)</li></ul> |
 
 ## Parameters
 
@@ -29,8 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The connection name. |
-| [`remoteVirtualNetworkResourceId`](#parameter-remotevirtualnetworkresourceid) | string | Resource ID of the virtual network to link to. |
+| [`name`](#parameter-name) | string | The name of the route map. |
 
 **Conditional parameters**
 
@@ -42,20 +41,14 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable internet security. |
+| [`associatedInboundConnections`](#parameter-associatedinboundconnections) | array | List of connections which have this route map associated for inbound traffic. |
+| [`associatedOutboundConnections`](#parameter-associatedoutboundconnections) | array | List of connections which have this route map associated for outbound traffic. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`routingConfiguration`](#parameter-routingconfiguration) | object | Routing Configuration indicating the associated and propagated route tables for this connection. |
+| [`rules`](#parameter-rules) | array | List of route map rules to be applied. |
 
 ### Parameter: `name`
 
-The connection name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `remoteVirtualNetworkResourceId`
-
-Resource ID of the virtual network to link to.
+The name of the route map.
 
 - Required: Yes
 - Type: string
@@ -67,13 +60,19 @@ The name of the parent virtual hub. Required if the template is used in a standa
 - Required: Yes
 - Type: string
 
-### Parameter: `enableInternetSecurity`
+### Parameter: `associatedInboundConnections`
 
-Enable internet security.
+List of connections which have this route map associated for inbound traffic.
 
 - Required: No
-- Type: bool
-- Default: `True`
+- Type: array
+
+### Parameter: `associatedOutboundConnections`
+
+List of connections which have this route map associated for outbound traffic.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 
@@ -83,20 +82,20 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `routingConfiguration`
+### Parameter: `rules`
 
-Routing Configuration indicating the associated and propagated route tables for this connection.
+List of route map rules to be applied.
 
 - Required: No
-- Type: object
+- Type: array
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the virtual hub connection. |
-| `resourceGroupName` | string | The resource group the virtual hub connection was deployed into. |
-| `resourceId` | string | The resource ID of the virtual hub connection. |
+| `name` | string | The name of the deployed route map. |
+| `resourceGroupName` | string | The resource group the route map was deployed into. |
+| `resourceId` | string | The resource ID of the deployed route map. |
 
 ## Data Collection
 

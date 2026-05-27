@@ -237,6 +237,7 @@
     "avm/res/network/private-endpoint/private-dns-zone-group",
     "avm/res/network/virtual-hub/hub-route-table",
     "avm/res/network/virtual-hub/hub-virtual-network-connection",
+    "avm/res/network/virtual-hub/route-map",
     "avm/res/network/virtual-hub/routing-intent",
     "avm/res/network/virtual-network/subnet",
     "avm/res/network/virtual-network/virtual-network-peering",
