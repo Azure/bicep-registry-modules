@@ -109,7 +109,7 @@ module testDeployment '../../../main.bicep' = [
       }
       messagingEndpoints: {
         fileNotifications: {
-          lockDurationAsIso8601: 'PT1H'
+          lockDurationAsIso8601: 'PT10M'
           maxDeliveryCount: 5
           ttlAsIso8601: 'PT1H'
         }
