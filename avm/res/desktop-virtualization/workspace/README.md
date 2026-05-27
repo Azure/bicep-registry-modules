@@ -1,5 +1,3 @@
-[![avm.res.desktop-virtualization.workspace](https://github.com/reikor0x/bicep-registry-modules/actions/workflows/avm.res.desktop-virtualization.workspace.yml/badge.svg)](https://github.com/reikor0x/bicep-registry-modules/actions/workflows/avm.res.desktop-virtualization.workspace.yml)
-
 
 # Workspace `[Microsoft.DesktopVirtualization/workspaces]`
 
