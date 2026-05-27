@@ -480,7 +480,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       autoRotationEnabled: true
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
-      keyVersion: '<keyVersion>'
     }
     databases: [
       {
@@ -546,8 +545,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "autoRotationEnabled": true,
         "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "keyVersion": "<keyVersion>"
+        "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
     "databases": {
@@ -614,7 +612,6 @@ param customerManagedKey = {
   autoRotationEnabled: true
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
-  keyVersion: '<keyVersion>'
 }
 param databases = [
   {
