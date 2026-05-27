@@ -68,6 +68,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-dnsforwardingruleset.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -110,6 +112,7 @@ module dnsForwardingRuleset_forwardingRule 'forwarding-rule/main.bicep' = [
       domainName: forwardingRule.?domainName
       targetDnsServers: forwardingRule.?targetDnsServers
       metadata: forwardingRule.?metadata
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -121,6 +124,7 @@ module dnsForwardingRuleset_virtualNetworkLinks 'virtual-network-link/main.bicep
       name: virtualNetworkLink.?name ?? '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink-${index}'
       dnsForwardingRulesetName: dnsForwardingRuleset.name
       virtualNetworkResourceId: !empty(virtualNetworkLinks) ? virtualNetworkLink.virtualNetworkResourceId : null
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
