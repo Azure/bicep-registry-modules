@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Added `bypass` property to `networkAcls` so callers can allow trusted Microsoft services (`AzureServices`) through the Cognitive Services firewall (fixes [#7062](https://github.com/Azure/bicep-registry-modules/issues/7062))
+- Replaced the untyped `networkAcls object?` parameter with the strongly-typed `networkAclsType` user-defined type, exposing `bypass`, `defaultAction`, `ipRules` and `virtualNetworkRules`
+
+### Breaking Changes
+
+- The `networkAcls` parameter is now strongly typed via `networkAclsType`. Consumers passing properties outside of `bypass`, `defaultAction`, `ipRules` or `virtualNetworkRules` (which were previously silently dropped) will now receive a validation error.
+
 ## 0.14.2
 
 ### Changes
