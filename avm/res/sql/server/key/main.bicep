@@ -22,19 +22,17 @@ var keyVersion = splittedKeyUri[?5]
 
 // if serverManaged, use serverManaged, if uri provided use concated uri value
 // MUST match the pattern '<keyVaultName>_<keyName>_<keyVersion>'
-var serverKeyName = !empty(name)
-  ? name!
-  : empty(uri)
-      ? 'ServiceManaged'
-      : !empty(keyVersion)
-          ? '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${keyVersion!}'
-          : fail('The `name` parameter is required when using a versionless Key Vault key URI.')
+var serverKeyName = name ?? (empty(uri)
+  ? 'ServiceManaged'
+  : !empty(keyVersion)
+      ? '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${keyVersion!}'
+      : fail('The `name` parameter is required when using a versionless Key Vault key URI.'))
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
-resource key 'Microsoft.Sql/servers/keys@2023-08-01' = {
+resource key 'Microsoft.Sql/servers/keys@2025-01-01' = {
   name: serverKeyName
   parent: server
   properties: {
