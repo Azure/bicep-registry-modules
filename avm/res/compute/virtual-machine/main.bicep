@@ -240,7 +240,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2025-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -546,7 +546,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
   name: name
   location: location
   identity: identity
