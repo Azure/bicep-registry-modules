@@ -82,6 +82,7 @@ module testDeployment '../../../main.bicep' = {
     computerName: '${namePrefix}linvm1'
     location: enforcedLocation
     adminUsername: 'localAdministrator'
+    diskControllerType: 'SCSI'
     imageReference: {
       publisher: 'Canonical'
       offer: '0001-com-ubuntu-server-focal'

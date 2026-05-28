@@ -76,6 +76,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'vmlinatmg'
     nicConfigurations: [
       {
@@ -140,6 +141,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmlinatmg"
@@ -224,6 +228,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'vmlinatmg'
 param nicConfigurations = [
   {
@@ -290,6 +295,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'vmlinmin'
     nicConfigurations: [
       {
@@ -345,6 +351,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmlinmin"
@@ -416,6 +425,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'vmlinmin'
 param nicConfigurations = [
   {
@@ -473,6 +483,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
+    diskControllerType: 'SCSI'
     name: 'vmlimax'
     nicConfigurations: [
       {
@@ -771,6 +782,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmlimax"
@@ -1127,6 +1141,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
+param diskControllerType = 'SCSI'
 param name = 'vmlimax'
 param nicConfigurations = [
   {
@@ -1427,6 +1442,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
+    diskControllerType: 'SCSI'
     name: 'vmwinwaf'
     nicConfigurations: [
       {
@@ -1703,6 +1719,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 2
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinwaf"
@@ -2037,6 +2056,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
+param diskControllerType = 'SCSI'
 param name = 'vmwinwaf'
 param nicConfigurations = [
   {
@@ -2315,6 +2335,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'vmwinmin'
     nicConfigurations: [
       {
@@ -2364,6 +2385,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinmin"
@@ -2427,6 +2451,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'vmwinmin'
 param nicConfigurations = [
   {
@@ -2478,6 +2503,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
+    diskControllerType: 'SCSI'
     name: 'vmwindisk02'
     nicConfigurations: [
       {
@@ -2539,6 +2565,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwindisk02"
@@ -2614,6 +2643,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
+param diskControllerType = 'SCSI'
 param name = 'vmwindisk02'
 param nicConfigurations = [
   {
@@ -2677,6 +2707,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'cvmwingst'
     nicConfigurations: [
       {
@@ -2759,6 +2790,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "cvmwingst"
@@ -2861,6 +2895,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'cvmwingst'
 param nicConfigurations = [
   {
@@ -2945,6 +2980,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: '<name>'
     nicConfigurations: [
       {
@@ -3020,6 +3056,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "<name>"
@@ -3115,6 +3154,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = '<name>'
 param nicConfigurations = [
   {
@@ -3192,6 +3232,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
+    diskControllerType: 'SCSI'
     name: 'vmwinmax'
     nicConfigurations: [
       {
@@ -3533,6 +3574,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 2
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinmax"
@@ -3938,6 +3982,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
+param diskControllerType = 'SCSI'
 param name = 'vmwinmax'
 param nicConfigurations = [
   {
@@ -4281,6 +4326,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'vmwinnv'
     nicConfigurations: [
       {
@@ -4335,6 +4381,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinnv"
@@ -4409,6 +4458,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'vmwinnv'
 param nicConfigurations = [
   {
@@ -4465,6 +4515,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
+    diskControllerType: 'SCSI'
     name: 'vmwinvmss'
     nicConfigurations: [
       {
@@ -4515,6 +4566,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinvmss"
@@ -4581,6 +4635,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
+param diskControllerType = 'SCSI'
 param name = 'vmwinvmss'
 param nicConfigurations = [
   {
@@ -4633,6 +4688,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
+    diskControllerType: 'SCSI'
     name: 'vmwinzrs'
     nicConfigurations: [
       {
@@ -4691,6 +4747,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 2
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "name": {
       "value": "vmwinzrs"
@@ -4765,6 +4824,7 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
+param diskControllerType = 'SCSI'
 param name = 'vmwinzrs'
 param nicConfigurations = [
   {
@@ -4853,6 +4913,7 @@ param imageReference = {
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostResourceId`](#parameter-dedicatedhostresourceid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | Specifies the disk controller type. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -7179,6 +7240,20 @@ Specifies whether password authentication should be disabled.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `diskControllerType`
+
+Specifies the disk controller type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe'
+    'SCSI'
+  ]
+  ```
 
 ### Parameter: `enableAutomaticUpdates`
 

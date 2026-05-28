@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}'
       adminUsername: 'localAdminUser'
+      diskControllerType: 'SCSI'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'

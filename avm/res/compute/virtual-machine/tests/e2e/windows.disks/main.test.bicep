@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = [
       osType: nestedDependencies.outputs.osType
       vmSize: 'Standard_E2s_v3'
       availabilityZone: 1
+      diskControllerType: 'SCSI'
       nicConfigurations: [
         {
           ipConfigurations: [
