@@ -2214,7 +2214,7 @@
     },
     "diskControllerType": {
       "type": "string",
-      "defaultValue": "SCSI",
+      "nullable": true,
       "allowedValues": [
         "NVMe",
         "SCSI"

@@ -33,7 +33,7 @@ param plan planType?
   'NVMe'
   'SCSI'
 ])
-param diskControllerType string = 'SCSI'
+param diskControllerType string?
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
