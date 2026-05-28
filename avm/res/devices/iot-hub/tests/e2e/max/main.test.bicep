@@ -130,17 +130,6 @@ module testDeployment '../../../main.bicep' = [
             application: 'AVM'
           }
         }
-        {
-          service: 'portal'
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        }
       ]
       consumerGroups: [
         '${namePrefix}${serviceShort}cg001'
