@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "7426080542562149606"
+      "templateHash": "6820471046988658340"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -5483,7 +5483,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "15519885883438160721"
+              "templateHash": "2423628847075628725"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5493,7 +5493,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. Required when using a versionless Key Vault key URI."
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs."
               }
             },
             "serverName": {
@@ -5524,18 +5524,18 @@
           "variables": {
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
-            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), fail('The `name` parameter is required when using a versionless Key Vault key URI.'))))]"
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), variables('serverKeyName'))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -5586,9 +5586,6 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), last(split(coalesce(tryGet(if(and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))), reference('cMKKeyVault::cMKKey', '2025-05-01', 'full'), null()), 'properties', 'keyUriWithVersion'), ''), '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))]"
-          },
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
@@ -5602,7 +5599,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "15519885883438160721"
+              "templateHash": "2423628847075628725"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5612,7 +5609,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. Required when using a versionless Key Vault key URI."
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs."
               }
             },
             "serverName": {
@@ -5643,18 +5640,18 @@
           "variables": {
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
-            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), fail('The `name` parameter is required when using a versionless Key Vault key URI.'))))]"
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), variables('serverKeyName'))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",

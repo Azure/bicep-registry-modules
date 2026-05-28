@@ -1,7 +1,7 @@
 metadata name = 'Azure SQL Server Keys'
 metadata description = 'This module deploys an Azure SQL Server Key.'
 
-@description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. Required when using a versionless Key Vault key URI.')
+@description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs.')
 param name string?
 
 @description('Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment.')
@@ -20,13 +20,14 @@ param uri string = ''
 var splittedKeyUri = split(uri, '/')
 var keyVersion = splittedKeyUri[?5]
 
-// if serverManaged, use serverManaged, if uri provided use concated uri value
-// MUST match the pattern '<keyVaultName>_<keyName>_<keyVersion>'
-var serverKeyName = name ?? (empty(uri)
-  ? 'ServiceManaged'
-  : !empty(keyVersion)
-      ? '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${keyVersion!}'
-      : fail('The `name` parameter is required when using a versionless Key Vault key URI.'))
+// If service-managed, use ServiceManaged. Otherwise derive a name that matches the key identifier shape.
+var serverKeyName = !empty(name)
+  ? name!
+  : empty(uri)
+      ? 'ServiceManaged'
+      : !empty(keyVersion)
+          ? '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${keyVersion!}'
+          : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}'
 
 resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
