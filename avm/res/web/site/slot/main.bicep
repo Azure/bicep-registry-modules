@@ -322,6 +322,7 @@ module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-pol
       name: basicPublishingCredentialsPolicy.name
       allow: basicPublishingCredentialsPolicy.?allow
       location: location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -333,6 +334,7 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
       appName: app.name
       slotName: slot.name
       sendKeyName: hybridConnectionRelay.?sendKeyName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -372,6 +374,7 @@ module slot_config 'config/main.bicep' = [
         : {}
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -385,6 +388,7 @@ module app_extensions 'extension/main.bicep' = [
       name: extension.?name
       kind: extension.?kind
       properties: extension.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
