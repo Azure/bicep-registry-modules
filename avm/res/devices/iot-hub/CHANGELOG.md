@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Adding consumerGroups parameter
+- Added support for deploying `Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups` using `consumerGroups` parameter
 
 ### Breaking Changes
 
