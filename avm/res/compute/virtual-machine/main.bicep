@@ -28,11 +28,11 @@ param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
 
+@description('Optional. Specifies the disk controller type.')
 @allowed([
   'NVMe'
   'SCSI'
 ])
-@description('Optional. Specifies the disk controller type.')
 param diskControllerType string
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
