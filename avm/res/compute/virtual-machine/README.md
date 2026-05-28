@@ -76,7 +76,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'vmlinatmg'
     nicConfigurations: [
       {
@@ -109,6 +108,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminUsername: 'localAdminUser'
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -141,9 +141,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmlinatmg"
@@ -193,6 +190,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -228,7 +228,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'vmlinatmg'
 param nicConfigurations = [
   {
@@ -261,6 +260,7 @@ param vmSize = 'Standard_D2s_v6'
 param adminUsername = 'localAdminUser'
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -295,7 +295,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'vmlinmin'
     nicConfigurations: [
       {
@@ -320,6 +319,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminUsername: 'localAdminUser'
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -351,9 +351,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmlinmin"
@@ -393,6 +390,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -425,7 +425,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'vmlinmin'
 param nicConfigurations = [
   {
@@ -450,6 +449,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -483,7 +483,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    diskControllerType: 'SCSI'
     name: 'vmlimax'
     nicConfigurations: [
       {
@@ -625,6 +624,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -782,9 +782,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmlimax"
@@ -950,6 +947,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1141,7 +1141,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param diskControllerType = 'SCSI'
 param name = 'vmlimax'
 param nicConfigurations = [
   {
@@ -1283,6 +1282,7 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -1442,7 +1442,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    diskControllerType: 'SCSI'
     name: 'vmwinwaf'
     nicConfigurations: [
       {
@@ -1555,6 +1554,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -1720,9 +1720,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "availabilityZone": {
       "value": 2
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "name": {
       "value": "vmwinwaf"
     },
@@ -1860,6 +1857,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -2056,7 +2056,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param diskControllerType = 'SCSI'
 param name = 'vmwinwaf'
 param nicConfigurations = [
   {
@@ -2169,6 +2168,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -2335,7 +2335,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'vmwinmin'
     nicConfigurations: [
       {
@@ -2360,6 +2359,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2385,9 +2385,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwinmin"
@@ -2427,6 +2424,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2451,7 +2451,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'vmwinmin'
 param nicConfigurations = [
   {
@@ -2476,6 +2475,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2503,7 +2503,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 1
-    diskControllerType: 'SCSI'
     name: 'vmwindisk02'
     nicConfigurations: [
       {
@@ -2542,6 +2541,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     extensionAntiMalwareConfig: {
       enabled: false
     }
@@ -2565,9 +2565,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwindisk02"
@@ -2619,6 +2616,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "extensionAntiMalwareConfig": {
       "value": {
         "enabled": false
@@ -2643,7 +2643,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 1
-param diskControllerType = 'SCSI'
 param name = 'vmwindisk02'
 param nicConfigurations = [
   {
@@ -2682,6 +2681,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param extensionAntiMalwareConfig = {
   enabled: false
 }
@@ -2707,7 +2707,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'cvmwingst'
     nicConfigurations: [
       {
@@ -2736,6 +2735,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionGuestConfigurationExtension: {
       enabled: true
     }
@@ -2791,9 +2791,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "availabilityZone": {
       "value": -1
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "name": {
       "value": "cvmwingst"
     },
@@ -2835,6 +2832,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "extensionGuestConfigurationExtension": {
       "value": {
@@ -2895,7 +2895,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'cvmwingst'
 param nicConfigurations = [
   {
@@ -2924,6 +2923,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionGuestConfigurationExtension = {
   enabled: true
 }
@@ -2980,7 +2980,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: '<name>'
     nicConfigurations: [
       {
@@ -3005,6 +3004,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionAadJoinConfig: {
       enabled: false
       settings: {
@@ -3057,9 +3057,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "availabilityZone": {
       "value": -1
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "name": {
       "value": "<name>"
     },
@@ -3097,6 +3094,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "adminUsername": {
       "value": "localAdminUser"
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "extensionAadJoinConfig": {
       "value": {
@@ -3154,7 +3154,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = '<name>'
 param nicConfigurations = [
   {
@@ -3179,6 +3178,7 @@ param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionAadJoinConfig = {
   enabled: false
   settings: {
@@ -3232,7 +3232,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    diskControllerType: 'SCSI'
     name: 'vmwinmax'
     nicConfigurations: [
       {
@@ -3395,6 +3394,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -3574,9 +3574,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 2
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwinmax"
@@ -3767,6 +3764,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -3982,7 +3982,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param diskControllerType = 'SCSI'
 param name = 'vmwinmax'
 param nicConfigurations = [
   {
@@ -4145,6 +4144,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -4326,7 +4326,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'vmwinnv'
     nicConfigurations: [
       {
@@ -4351,6 +4350,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionNvidiaGpuDriverWindows: {
       enabled: true
     }
@@ -4381,9 +4381,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwinnv"
@@ -4423,6 +4420,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "extensionNvidiaGpuDriverWindows": {
       "value": {
         "enabled": true
@@ -4458,7 +4458,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'vmwinnv'
 param nicConfigurations = [
   {
@@ -4483,6 +4482,7 @@ param vmSize = 'Standard_NV6ads_A10_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionNvidiaGpuDriverWindows = {
   enabled: true
 }
@@ -4515,7 +4515,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: -1
-    diskControllerType: 'SCSI'
     name: 'vmwinvmss'
     nicConfigurations: [
       {
@@ -4540,6 +4539,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4566,9 +4566,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": -1
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwinvmss"
@@ -4608,6 +4605,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -4635,7 +4635,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = -1
-param diskControllerType = 'SCSI'
 param name = 'vmwinvmss'
 param nicConfigurations = [
   {
@@ -4660,6 +4659,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4688,7 +4688,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
   params: {
     // Required parameters
     availabilityZone: 2
-    diskControllerType: 'SCSI'
     name: 'vmwinzrs'
     nicConfigurations: [
       {
@@ -4722,6 +4721,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4747,9 +4747,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Required parameters
     "availabilityZone": {
       "value": 2
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "name": {
       "value": "vmwinzrs"
@@ -4800,6 +4797,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -4824,7 +4824,6 @@ using 'br/public:avm/res/compute/virtual-machine:<version>'
 
 // Required parameters
 param availabilityZone = 2
-param diskControllerType = 'SCSI'
 param name = 'vmwinzrs'
 param nicConfigurations = [
   {
@@ -4858,6 +4857,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -7245,7 +7245,7 @@ Specifies whether password authentication should be disabled.
 
 Specifies the disk controller type.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
