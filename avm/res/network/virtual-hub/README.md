@@ -25,10 +25,11 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
-| `Microsoft.Network/virtualHubs/routingIntent` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routingIntent)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routeMaps` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/routeMaps)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/routingIntent)</li></ul> |
 
 ## Usage examples
 
@@ -175,6 +176,32 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       name: 'myCustomLockName'
     }
     preferredRoutingGateway: 'ExpressRoute'
+    routeMaps: [
+      {
+        associatedInboundConnections: []
+        associatedOutboundConnections: []
+        name: 'routeMap1'
+        rules: [
+          {
+            actions: [
+              {
+                type: 'Drop'
+              }
+            ]
+            matchCriteria: [
+              {
+                matchCondition: 'Contains'
+                routePrefix: [
+                  '10.100.0.0/16'
+                ]
+              }
+            ]
+            name: 'rule1'
+            nextStepIfMatched: 'Terminate'
+          }
+        ]
+      }
+    ]
     routingIntent: {}
     sku: 'Standard'
     tags: {
@@ -271,6 +298,34 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "preferredRoutingGateway": {
       "value": "ExpressRoute"
     },
+    "routeMaps": {
+      "value": [
+        {
+          "associatedInboundConnections": [],
+          "associatedOutboundConnections": [],
+          "name": "routeMap1",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "type": "Drop"
+                }
+              ],
+              "matchCriteria": [
+                {
+                  "matchCondition": "Contains",
+                  "routePrefix": [
+                    "10.100.0.0/16"
+                  ]
+                }
+              ],
+              "name": "rule1",
+              "nextStepIfMatched": "Terminate"
+            }
+          ]
+        }
+      ]
+    },
     "routingIntent": {
       "value": {}
     },
@@ -357,6 +412,32 @@ param lock = {
   name: 'myCustomLockName'
 }
 param preferredRoutingGateway = 'ExpressRoute'
+param routeMaps = [
+  {
+    associatedInboundConnections: []
+    associatedOutboundConnections: []
+    name: 'routeMap1'
+    rules: [
+      {
+        actions: [
+          {
+            type: 'Drop'
+          }
+        ]
+        matchCriteria: [
+          {
+            matchCondition: 'Contains'
+            routePrefix: [
+              '10.100.0.0/16'
+            ]
+          }
+        ]
+        name: 'rule1'
+        nextStepIfMatched: 'Terminate'
+      }
+    ]
+  }
+]
 param routingIntent = {}
 param sku = 'Standard'
 param tags = {
@@ -681,6 +762,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayResourceId`](#parameter-p2svpngatewayresourceid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`routeMaps`](#parameter-routemaps) | array | Route maps to create for the virtual hub. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | The VirtualHub route tables. |
 | [`routingIntent`](#parameter-routingintent) | object | The routing intent configuration to create for the virtual hub. |
 | [`securityPartnerProviderResourceId`](#parameter-securitypartnerproviderresourceid) | string | ID of the Security Partner Provider to link to. |
@@ -963,6 +1045,55 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
+
+### Parameter: `routeMaps`
+
+Route maps to create for the virtual hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routemapsname) | string | The route map name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associatedInboundConnections`](#parameter-routemapsassociatedinboundconnections) | array | List of connections which have this route map associated for inbound traffic. |
+| [`associatedOutboundConnections`](#parameter-routemapsassociatedoutboundconnections) | array | List of connections which have this route map associated for outbound traffic. |
+| [`rules`](#parameter-routemapsrules) | array | List of route map rules. |
+
+### Parameter: `routeMaps.name`
+
+The route map name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeMaps.associatedInboundConnections`
+
+List of connections which have this route map associated for inbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.associatedOutboundConnections`
+
+List of connections which have this route map associated for outbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules`
+
+List of route map rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `routeTableRoutes`
 

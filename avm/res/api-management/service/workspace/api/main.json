@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1016746411346817273"
+      "version": "0.43.8.12551",
+      "templateHash": "11031755075499903131"
     },
     "name": "API Management Workspace APIs",
     "description": "This module deploys an API in an API Management Workspace."
@@ -530,7 +530,17 @@
         "description": "Optional. Criteria to limit import of WSDL to a subset of the document."
       },
       "nullable": true
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "service::workspace::apiVersionSet": {
@@ -551,6 +561,26 @@
       "type": "Microsoft.ApiManagement/service",
       "apiVersion": "2024-05-01",
       "name": "[parameters('apiManagementServiceName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "api": {
       "type": "Microsoft.ApiManagement/service/workspaces/apis",
@@ -607,6 +637,9 @@
           },
           "value": {
             "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -615,8 +648,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9723836575560979346"
+              "version": "0.43.8.12551",
+              "templateHash": "5980991102197274208"
             },
             "name": "API Management Workspace APIs Policies",
             "description": "This module deploys an API Policy in an API Management Workspace."
@@ -665,9 +698,36 @@
               "metadata": {
                 "description": "Required. Contents of the Policy as defined by the format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapipol.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.ApiManagement/service/workspaces/apis/policies",
               "apiVersion": "2024-05-01",
@@ -762,6 +822,9 @@
           },
           "verbosity": {
             "value": "[tryGet(coalesce(parameters('diagnostics'), createArray())[copyIndex()], 'verbosity')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -771,8 +834,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12517641743721613668"
+              "version": "0.43.8.12551",
+              "templateHash": "15032468180306699703"
             },
             "name": "API Management Workspace APIs Diagnostics",
             "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -896,6 +959,13 @@
               "metadata": {
                 "description": "Optional. The verbosity level applied to traces emitted by trace policies."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -922,6 +992,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapidiag.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "diagnostic": {
               "type": "Microsoft.ApiManagement/service/workspaces/apis/diagnostics",
@@ -1022,6 +1112,9 @@
           },
           "templateParameters": {
             "value": "[tryGet(coalesce(parameters('operations'), createArray())[copyIndex()], 'templateParameters')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1031,8 +1124,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1809215871167311508"
+              "version": "0.43.8.12551",
+              "templateHash": "6163208646596351509"
             },
             "name": "API Management Workspace API Operations",
             "description": "This module deploys an API Operation under an API Management Workspace."
@@ -1166,7 +1259,17 @@
                 "description": "Optional. Collection of URL template parameters."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "service::workspace::api": {
@@ -1186,6 +1289,26 @@
               "type": "Microsoft.ApiManagement/service",
               "apiVersion": "2024-05-01",
               "name": "[parameters('apiManagementServiceName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapiop.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "operation": {
               "type": "Microsoft.ApiManagement/service/workspaces/apis/operations",
@@ -1235,6 +1358,9 @@
                   },
                   "value": {
                     "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1243,8 +1369,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "11728819651453498861"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16921901218007297275"
                     },
                     "name": "API Management Workspace API Operation Policies",
                     "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -1299,9 +1425,36 @@
                       "metadata": {
                         "description": "Required. Contents of the Policy as defined by the format."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapioppol.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.ApiManagement/service/workspaces/apis/operations/policies",
                       "apiVersion": "2024-05-01",
