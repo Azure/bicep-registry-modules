@@ -6,16 +6,16 @@
     "_generator": {
       "name": "bicep",
       "version": "0.42.1.51946",
-      "templateHash": "4814401607148283588"
+      "templateHash": "7894450860661619821"
     },
-    "name": "Virtual Hub Route Tables",
-    "description": "This module deploys a Virtual Hub Route Table."
+    "name": "Virtual Hub Route Maps",
+    "description": "This module deploys a Virtual Hub Route Map."
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The route table name."
+        "description": "Required. The name of the route map."
       }
     },
     "virtualHubName": {
@@ -24,19 +24,35 @@
         "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
       }
     },
-    "labels": {
+    "associatedInboundConnections": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of labels associated with this route table."
+        "description": "Optional. List of connections which have this route map associated for inbound traffic."
       }
     },
-    "routes": {
+    "associatedOutboundConnections": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. List of all routes."
+        "description": "Optional. List of connections which have this route map associated for outbound traffic."
       }
+    },
+    "rules": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualHubs/routeMaps@2025-05-01#properties/properties/properties/rules"
+        },
+        "description": "Optional. List of route map rules to be applied."
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -51,7 +67,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.network-virtualhub-hubroutetable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.res.network-virtualhubroutemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -73,13 +89,14 @@
       "apiVersion": "2025-05-01",
       "name": "[parameters('virtualHubName')]"
     },
-    "hubRouteTable": {
-      "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+    "routeMap": {
+      "type": "Microsoft.Network/virtualHubs/routeMaps",
       "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
-        "labels": "[parameters('labels')]",
-        "routes": "[parameters('routes')]"
+        "associatedInboundConnections": "[parameters('associatedInboundConnections')]",
+        "associatedOutboundConnections": "[parameters('associatedOutboundConnections')]",
+        "rules": "[parameters('rules')]"
       }
     }
   },
@@ -87,21 +104,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the deployed virtual hub route table."
+        "description": "The name of the deployed route map."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the deployed virtual hub route table."
+        "description": "The resource ID of the deployed route map."
       },
-      "value": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.Network/virtualHubs/routeMaps', parameters('virtualHubName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the virtual hub route table was deployed into."
+        "description": "The resource group the route map was deployed into."
       },
       "value": "[resourceGroup().name]"
     }
