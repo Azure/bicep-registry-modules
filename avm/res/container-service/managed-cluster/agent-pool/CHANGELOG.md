@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added `VirtualMachines` as an allowed agent pool type to support AKS static egress gateway private IP scenarios.
+- bicep version update
 
 ### Breaking Changes
 
