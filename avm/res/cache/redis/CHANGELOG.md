@@ -2,20 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis/CHANGELOG.md).
 
-## 0.17.3
-
-### Changes
-
-- Adding description on Azure Cache for Redis announced its retirement
-
-### Breaking Changes
-
-- None
-
 ## 0.17.2
 
 ### Changes
 
+- Adding description on Azure Cache for Redis announced its retirement
 - Recompiled the template with latest Bicep version `0.43.8`
 
 ### Breaking Changes
