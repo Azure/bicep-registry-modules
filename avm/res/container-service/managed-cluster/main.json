@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "6682193649685284731"
+      "version": "0.43.8.12551",
+      "templateHash": "17107780136820564398"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -393,7 +393,8 @@
           "type": "string",
           "allowedValues": [
             "AvailabilitySet",
-            "VirtualMachineScaleSets"
+            "VirtualMachineScaleSets",
+            "VirtualMachines"
           ],
           "nullable": true,
           "metadata": {
@@ -1945,8 +1946,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "17945581677853646830"
+              "version": "0.43.8.12551",
+              "templateHash": "3407323832392008508"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2244,8 +2245,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "7154596970054552429"
+              "version": "0.43.8.12551",
+              "templateHash": "13613747842163177994"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."

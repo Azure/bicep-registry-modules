@@ -789,7 +789,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         ]
         osDiskSizeGB: 0
         osType: 'Linux'
-        type: 'VirtualMachineScaleSets'
+        type: 'VirtualMachines'
         vmSize: 'Standard_DS4_v2'
       }
     ]
@@ -902,7 +902,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ],
           "osDiskSizeGB": 0,
           "osType": "Linux",
-          "type": "VirtualMachineScaleSets",
+          "type": "VirtualMachines",
           "vmSize": "Standard_DS4_v2"
         }
       ]
@@ -1025,7 +1025,7 @@ param primaryAgentPoolProfiles = [
     ]
     osDiskSizeGB: 0
     osType: 'Linux'
-    type: 'VirtualMachineScaleSets'
+    type: 'VirtualMachines'
     vmSize: 'Standard_DS4_v2'
   }
 ]
@@ -3658,6 +3658,7 @@ The type of the agent pool.
   ```Bicep
   [
     'AvailabilitySet'
+    'VirtualMachines'
     'VirtualMachineScaleSets'
   ]
   ```
@@ -4140,6 +4141,7 @@ The type of the agent pool.
   ```Bicep
   [
     'AvailabilitySet'
+    'VirtualMachines'
     'VirtualMachineScaleSets'
   ]
   ```

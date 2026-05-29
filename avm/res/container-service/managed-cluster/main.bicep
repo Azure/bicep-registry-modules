@@ -1025,7 +1025,7 @@ type agentPoolType = {
   tags: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.tags?
 
   @description('Optional. The type of the agent pool.')
-  type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
+  type: ('AvailabilitySet' | 'VirtualMachineScaleSets' | 'VirtualMachines')?
 
   @description('Optional. Upgrade settings.')
   upgradeSettings: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.upgradeSettings?

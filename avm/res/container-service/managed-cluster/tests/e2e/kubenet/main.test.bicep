@@ -83,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          type: 'VirtualMachineScaleSets'
+          type: 'VirtualMachines'
           vmSize: 'Standard_DS4_v2'
         }
       ]
