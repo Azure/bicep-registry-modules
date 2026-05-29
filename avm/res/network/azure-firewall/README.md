@@ -960,6 +960,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    firewallPrivateIpAddress: '10.0.0.4'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1137,6 +1138,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "firewallPrivateIpAddress": {
+      "value": "10.0.0.4"
     },
     "location": {
       "value": "<location>"
@@ -1322,6 +1326,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param firewallPrivateIpAddress = '10.0.0.4'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1966,6 +1971,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of type local virtual network gateway. |
 | [`firewallPrivateIpAddress`](#parameter-firewallprivateipaddress) | string | Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
+| [`firewallPrivateIpAddress`](#parameter-firewallprivateipaddress) | string | Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Azure Firewall. |
@@ -2256,6 +2262,14 @@ Static private IP address for the primary Azure Firewall IP configuration in Azu
 ### Parameter: `firewallPolicyId`
 
 Resource ID of the Firewall Policy that should be attached.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `firewallPrivateIpAddress`
+
+Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.
 
 - Required: No
 - Type: string
