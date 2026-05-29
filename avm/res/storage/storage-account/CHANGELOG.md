@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/storage/storage-account/CHANGELOG.md).
 
+## 0.32.1
+
+### Changes
+
+- Enabling child module `avm/res/storage/storage-account/blob-service` for publishing
+- Enabling child module `avm/res/storage/storage-account/file-service` for publishing
+- Enabling child module `avm/res/storage/storage-account/queue-service` for publishing
+- Enabling child module `avm/res/storage/storage-account/table-service` for publishing
+- Enabling child module `avm/res/storage/storage-account/object-replication-policy` for publishing
+- Enabling child module `avm/res/storage/storage-account/object-replication-policy/policy` for publishing
+
+### Breaking Changes
+
+- None
+
 ## 0.32.0
 
 ### Changes
