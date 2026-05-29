@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/azure-firewall/CHANGELOG.md).
 
+## 0.11.0
+
+### New Features
+
+- Added optional `firewallPrivateIpAddress` parameter to allow consumers to define a static private IP for the primary Azure Firewall IP configuration in `AZFW_VNet` deployments.
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- None
+
 ## 0.10.1
 
 ### Changes
