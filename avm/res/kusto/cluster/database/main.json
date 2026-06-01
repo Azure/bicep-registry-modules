@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "12660760603122737771"
+      "version": "0.43.8.12551",
+      "templateHash": "6784372896250458115"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -231,8 +231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "16827822378130156294"
+              "version": "0.43.8.12551",
+              "templateHash": "661948545988216283"
             },
             "name": "Kusto Cluster Database Principal Assignments",
             "description": "This module deploys a Kusto Cluster Database Principal Assignment."
