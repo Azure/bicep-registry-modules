@@ -81,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
       }
       cosmosDbConfiguration: {
         privateDnsZoneResourceId: dependencies.outputs.documentsDnsZoneResourceId
+        enableZoneRedundancy: true
       }
       aiModelDeployments: [
         {

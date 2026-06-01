@@ -37,11 +37,35 @@ param responses resourceInput<'Microsoft.ApiManagement/service/apis/operations@2
 @sys.description('Optional. Collection of URL template parameters.')
 param templateParameters resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.templateParameters?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry bool = false
+
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
   resource api 'apis@2024-05-01' existing = {
     name: apiName
+  }
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.apimgmt-service-apioperation.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
   }
 }
 
@@ -69,6 +93,7 @@ module operation_policies 'policy/main.bicep' = [
       name: policy.?name
       format: policy.?format
       value: policy.value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

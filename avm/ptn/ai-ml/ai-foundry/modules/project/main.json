@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "7035514747964948913"
+      "version": "0.42.1.51946",
+      "templateHash": "17771797741022052749"
     },
     "name": "AI Foundry Project",
     "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -211,7 +211,7 @@
     },
     "project": {
       "type": "Microsoft.CognitiveServices/accounts/projects",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "identity": {
@@ -226,7 +226,7 @@
     "cosmosDbConnectionResource": {
       "condition": "[not(empty(parameters('cosmosDbConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('cosmosDbConnection').resourceName)]",
       "properties": {
         "category": "CosmosDB",
@@ -247,7 +247,7 @@
     "storageAccountConnectionResource": {
       "condition": "[not(empty(parameters('storageAccountConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('storageAccountConnection').resourceName)]",
       "properties": {
         "category": "AzureStorageAccount",
@@ -269,7 +269,7 @@
     "aiSearchConnectionResource": {
       "condition": "[not(empty(parameters('aiSearchConnection')))]",
       "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), parameters('aiSearchConnection').resourceName)]",
       "properties": {
         "category": "CognitiveSearch",
@@ -292,7 +292,7 @@
     "accountCapabilityHost": {
       "condition": "[variables('createAccountCapabilityHostInternal')]",
       "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}', parameters('accountName'), format('chagent{0}', replace(parameters('accountName'), '-', '')))]",
       "properties": {
         "capabilityHostKind": "Agents",
@@ -308,7 +308,7 @@
     "capabilityHost": {
       "condition": "[variables('createProjectCapabilityHostInternal')]",
       "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-      "apiVersion": "2025-07-01-preview",
+      "apiVersion": "2025-12-01",
       "name": "[format('{0}/{1}/{2}', parameters('accountName'), parameters('name'), format('chagent{0}', replace(parameters('name'), '-', '')))]",
       "properties": {
         "capabilityHostKind": "Agents",
@@ -363,7 +363,7 @@
             "value": "[parameters('cosmosDbConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-12-01', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -372,8 +372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18159445983239950245"
+              "version": "0.42.1.51946",
+              "templateHash": "15379001796842702797"
             }
           },
           "parameters": {
@@ -426,7 +426,7 @@
             "value": "[parameters('storageAccountConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-12-01', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -435,8 +435,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1962474273047499778"
+              "version": "0.42.1.51946",
+              "templateHash": "1306363036412563357"
             }
           },
           "parameters": {
@@ -489,7 +489,7 @@
             "value": "[parameters('aiSearchConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-12-01', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -498,8 +498,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12691179346337632165"
+              "version": "0.42.1.51946",
+              "templateHash": "14387581484372336820"
             }
           },
           "parameters": {
@@ -563,7 +563,7 @@
             "value": "[parameters('cosmosDbConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-12-01', 'full').identity.principalId]"
           },
           "projectWorkspaceId": {
             "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
@@ -575,8 +575,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10626036550019432984"
+              "version": "0.42.1.51946",
+              "templateHash": "8745791481729924045"
             }
           },
           "parameters": {
@@ -650,7 +650,7 @@
             "value": "[parameters('storageAccountConnection').resourceName]"
           },
           "projectIdentityPrincipalId": {
-            "value": "[reference('project', '2025-07-01-preview', 'full').identity.principalId]"
+            "value": "[reference('project', '2025-12-01', 'full').identity.principalId]"
           },
           "projectWorkspaceId": {
             "value": "[format('{0}-{1}-{2}-{3}-{4}', if(greaterOrEquals(length(reference('project').internalId), 8), substring(reference('project').internalId, 0, 8), ''), if(greaterOrEquals(length(reference('project').internalId), 12), substring(reference('project').internalId, 8, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 16), substring(reference('project').internalId, 12, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 20), substring(reference('project').internalId, 16, 4), ''), if(greaterOrEquals(length(reference('project').internalId), 32), substring(reference('project').internalId, 20, 12), ''))]"
@@ -662,8 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5133390612408649446"
+              "version": "0.42.1.51946",
+              "templateHash": "4078163703480267510"
             }
           },
           "parameters": {

@@ -23,7 +23,7 @@ import { resourcePrivateNetworkingType } from 'customTypes.bicep'
 @description('Optional. Values to establish private networking for the Cosmos DB resource.')
 param privateNetworking resourcePrivateNetworkingType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -45,7 +45,6 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: take('avm.res.document-db.database-account.${name}', 64)
   params: {
     name: name
-    enableAnalyticalStorage: true
     location: location
     minimumTlsVersion: 'Tls12'
     defaultConsistencyLevel: 'Session'

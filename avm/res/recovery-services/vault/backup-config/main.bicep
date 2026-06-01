@@ -9,20 +9,22 @@ param name string = 'vaultconfig'
 
 @description('Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations.')
 @allowed([
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])
-param enhancedSecurityState string = 'Enabled'
+param enhancedSecurityState string?
 
 @description('Optional. ResourceGuard Operation Requests.')
 param resourceGuardOperationRequests array = []
 
 @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
 @allowed([
+  'AlwaysON'
   'Disabled'
   'Enabled'
 ])
-param softDeleteFeatureState string = 'Enabled'
+param softDeleteFeatureState string?
 
 @description('Optional. Storage type.')
 @allowed([
@@ -52,11 +54,33 @@ param storageTypeState string = 'Locked'
 @description('Optional. Is soft delete feature state editable.')
 param isSoftDeleteFeatureStateEditable bool = true
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.recsvcs-vault-backupconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2023-01-01' = {
+resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01' = {
   name: name
   parent: rsv
   properties: {
