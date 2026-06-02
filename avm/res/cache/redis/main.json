@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "12606005479985801650"
+      "templateHash": "15546418526388144145"
     },
     "name": "Redis Cache",
-    "description": "This module deploys a Redis Cache."
+    "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n"
   },
   "definitions": {
     "privateEndpointOutputType": {
