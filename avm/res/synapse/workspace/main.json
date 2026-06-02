@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "17017350022770994975"
+      "version": "0.43.8.12551",
+      "templateHash": "13525503871781057414"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -1706,6 +1706,9 @@
           },
           "typeProperties": {
             "value": "[coalesce(tryGet(parameters('integrationRuntimes')[copyIndex()], 'typeProperties'), createObject())]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1714,8 +1717,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5770793455182307848"
+              "version": "0.43.8.12551",
+              "templateHash": "3701131077809102216"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime."
@@ -1749,9 +1752,36 @@
               "metadata": {
                 "description": "Conditional. Integration Runtime type properties. Required if type is \"Managed\"."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-integrationruntime.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Synapse/workspaces/integrationRuntimes",
               "apiVersion": "2021-06-01",
@@ -1813,8 +1843,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "2846206205172290930"
+              "version": "0.43.8.12551",
+              "templateHash": "10340148926701985677"
             }
           },
           "parameters": {
@@ -1893,6 +1923,9 @@
           },
           "workspaceName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1901,8 +1934,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14862823412868014182"
+              "version": "0.43.8.12551",
+              "templateHash": "11641206987710961686"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key."
@@ -1931,9 +1964,36 @@
               "metadata": {
                 "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Synapse/workspaces/keys",
               "apiVersion": "2021-06-01",
@@ -1999,6 +2059,9 @@
           },
           "tenantId": {
             "value": "[tryGet(parameters('administrator'), 'tenantId')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2007,8 +2070,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15730819409265833361"
+              "version": "0.43.8.12551",
+              "templateHash": "14387829316594166643"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators."
@@ -2044,9 +2107,36 @@
               "metadata": {
                 "description": "Optional. Tenant ID of the workspace active directory administrator."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-administrator.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Synapse/workspaces/administrators",
               "apiVersion": "2021-06-01",
@@ -2113,6 +2203,9 @@
           },
           "workspaceName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2121,8 +2214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "9781008388663379802"
+              "version": "0.43.8.12551",
+              "templateHash": "13431675063867494155"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules."
@@ -2151,9 +2244,36 @@
               "metadata": {
                 "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-firewallrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Synapse/workspaces/firewallRules",
               "apiVersion": "2021-06-01",
@@ -2275,6 +2395,9 @@
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(coalesce(parameters('bigDataPools'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2284,8 +2407,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8738155968497282524"
+              "version": "0.43.8.12551",
+              "templateHash": "14635747714156225450"
             },
             "name": "Synapse Workspaces Big Data Pools",
             "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -2902,6 +3025,13 @@
               "metadata": {
                 "description": "Optional. Tags of the resource."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -2922,6 +3052,26 @@
             "enableReferencedModulesTelemetry": false
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-bigdatapool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.Synapse/workspaces",
@@ -3086,8 +3236,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "2092559881266794840"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16148749330862836850"
                     }
                   },
                   "definitions": {
@@ -4115,8 +4265,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "2092559881266794840"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16148749330862836850"
                     }
                   },
                   "definitions": {
@@ -4570,6 +4720,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4579,8 +4732,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "18259127110119819550"
+              "version": "0.43.8.12551",
+              "templateHash": "9559682678058273527"
             },
             "name": "Synapse Workspaces SQL Pools",
             "description": "This module deploys a Synapse Workspaces SQL Pool."
@@ -4953,6 +5106,13 @@
                 "description": "Optional. Tags of the resource."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -4972,6 +5132,26 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.synapse-workspace-sqlpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.Synapse/workspaces",
