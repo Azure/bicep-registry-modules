@@ -569,7 +569,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
     }
     storageProfile: {
       imageReference: imageReference
-      diskControllerType: diskControllerType
+      diskControllerType: diskControllerType ?? 'SCSI'
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))
