@@ -1969,7 +1969,6 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`enableManagementNic`](#parameter-enablemanagementnic) | bool | Enable/Disable to support Forced Tunneling and Packet capture scenarios. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of type local virtual network gateway. |
-| [`firewallPrivateIpAddress`](#parameter-firewallprivateipaddress) | string | Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
 | [`firewallPrivateIpAddress`](#parameter-firewallprivateipaddress) | string | Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -2250,14 +2249,6 @@ The extended location of type local virtual network gateway.
 
 - Required: No
 - Type: object
-
-### Parameter: `firewallPrivateIpAddress`
-
-Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `firewallPolicyId`
 
