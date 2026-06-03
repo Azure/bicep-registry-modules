@@ -1,5 +1,9 @@
 metadata name = 'Redis Cache'
-metadata description = 'This module deploys a Redis Cache.'
+metadata description = '''This module deploys a Redis Cache.
+
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).
+We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+'''
 
 @description('Optional. The location to deploy the Redis cache service.')
 param location string = resourceGroup().location
