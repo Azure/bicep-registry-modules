@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: 'azureblob-${namePrefix}-${serviceShort}'
       displayName: 'azureblob'
-      location: resourceLocation
       kind: 'V2'
       api: {
         id: '${subscription().id}/providers/Microsoft.Web/locations/${resourceLocation}/managedApis/azureblob'
@@ -51,11 +50,6 @@ module testDeployment '../../../main.bicep' = [
       parameterValueSet: {
         name: 'managedIdentityAuth'
         values: {}
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
       }
     }
   }

@@ -315,15 +315,9 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
       id: '<id>'
     }
     kind: 'V2'
-    location: '<location>'
     parameterValueSet: {
       name: 'managedIdentityAuth'
       values: {}
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
     }
   }
 }
@@ -357,20 +351,10 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     "kind": {
       "value": "V2"
     },
-    "location": {
-      "value": "<location>"
-    },
     "parameterValueSet": {
       "value": {
         "name": "managedIdentityAuth",
         "values": {}
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
       }
     }
   }
@@ -395,15 +379,9 @@ param api = {
   id: '<id>'
 }
 param kind = 'V2'
-param location = '<location>'
 param parameterValueSet = {
   name: 'managedIdentityAuth'
   values: {}
-}
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
 }
 ```
 
@@ -433,12 +411,6 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
       id: '<id>'
     }
     kind: 'V2'
-    location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -473,16 +445,6 @@ module connection 'br/public:avm/res/web/connection:<version>' = {
     },
     "kind": {
       "value": "V2"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -507,12 +469,6 @@ param api = {
   id: '<id>'
 }
 param kind = 'V2'
-param location = '<location>'
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>

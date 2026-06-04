@@ -9,7 +9,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added `kind` parameter to support V1/V2 connection types for managed identity authentication.
 - Added `alternativeParameterValues` parameter for single-authentication (MSI) scenarios.
 - Auto-computed `parameterValueType` property set to `Alternative` when `alternativeParameterValues` is provided.
-- Added e2e tests for single-authentication and multi-authentication MSI configurations.
 
 ### Breaking Changes
 
