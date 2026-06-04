@@ -238,6 +238,7 @@ module api_operations 'operation/main.bicep' = [
       request: operation.?request
       responses: operation.?responses
       templateParameters: operation.?templateParameters
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

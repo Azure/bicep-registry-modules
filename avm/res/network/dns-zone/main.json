@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "12654256637847758338"
+      "templateHash": "9415679549418200789"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone."
@@ -3910,6 +3910,9 @@
         "parameters": {
           "dnsZoneName": {
             "value": "[parameters('name')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3919,7 +3922,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "16044096216076479550"
+              "templateHash": "10291808938274577934"
             },
             "name": "Public DNS Zone DNSSEC Config",
             "description": "This module deploys a Public DNS Zone DNSSEC configuration."
@@ -3930,9 +3933,36 @@
               "metadata": {
                 "description": "Conditional. The name of the parent DNS zone. Required if the template is used in a standalone deployment."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-dnszone-dnssecconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Network/dnsZones/dnssecConfigs",
               "apiVersion": "2023-07-01-preview",

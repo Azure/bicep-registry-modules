@@ -9,7 +9,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.tags?
+param tags resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.tags?
 
 @description('Required. Address-prefix for this VirtualHub.')
 param addressPrefix string
@@ -27,10 +27,10 @@ param expressRouteGatewayResourceId string?
 param p2SVpnGatewayResourceId string?
 
 @description('Optional. The preferred routing preference for this virtual hub.')
-param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.hubRoutingPreference?
+param hubRoutingPreference resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.hubRoutingPreference?
 
 @description('Optional. The preferred routing gateway types.')
-param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.preferredRoutingGateway?
+param preferredRoutingGateway resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.preferredRoutingGateway?
 
 @description('Optional. The VirtualHub route tables.')
 param routeTableRoutes array?
@@ -52,7 +52,7 @@ param sku string = 'Standard'
 param virtualHubRouteTableV2s array = []
 
 @description('Optional. VirtualRouter ASN.')
-param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-01-01'>.properties.virtualRouterAsn?
+param virtualRouterAsn resourceInput<'Microsoft.Network/virtualHubs@2025-05-01'>.properties.virtualRouterAsn?
 
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array?
@@ -77,6 +77,9 @@ param hubRouteTables hubRouteTableType[]?
 
 @description('Optional. Virtual network connections to create for the virtual hub.')
 param hubVirtualNetworkConnections hubVirtualNetworkConnectionType[]?
+
+@description('Optional. Route maps to create for the virtual hub.')
+param routeMaps routeMapType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
 @description('Optional. The lock settings of the service.')
@@ -109,7 +112,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 var enableReferencedModulesTelemetry = false
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' = {
   name: name
   location: location
   tags: tags
@@ -215,6 +218,20 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
   }
 ]
 
+module virtualHub_routeMaps 'route-map/main.bicep' = [
+  for (routeMap, index) in (routeMaps ?? []): {
+    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeMap-${index}'
+    params: {
+      virtualHubName: virtualHub.name
+      name: routeMap.name
+      associatedInboundConnections: routeMap.?associatedInboundConnections
+      associatedOutboundConnections: routeMap.?associatedOutboundConnections
+      rules: routeMap.?rules
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 @description('The resource group the virtual hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -283,4 +300,20 @@ type hubVirtualNetworkConnectionType = {
 
   @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
   routingConfiguration: object?
+}
+
+@export()
+@description('The type of a route map.')
+type routeMapType = {
+  @description('Required. The route map name.')
+  name: string
+
+  @description('Optional. List of connections which have this route map associated for inbound traffic.')
+  associatedInboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.associatedInboundConnections?
+
+  @description('Optional. List of connections which have this route map associated for outbound traffic.')
+  associatedOutboundConnections: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.associatedOutboundConnections?
+
+  @description('Optional. List of route map rules.')
+  rules: resourceInput<'Microsoft.Network/virtualHubs/routeMaps@2025-05-01'>.properties.rules?
 }
