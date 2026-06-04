@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6592899221761856157"
+      "version": "0.43.8.12551",
+      "templateHash": "3735214363683093691"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -541,8 +541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15297641199949127784"
+              "version": "0.43.8.12551",
+              "templateHash": "1471518964992359820"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -688,8 +688,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "4814401607148283588"
+              "version": "0.43.8.12551",
+              "templateHash": "16744792367573945645"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -835,8 +835,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "4965265376357115243"
+              "version": "0.43.8.12551",
+              "templateHash": "1558261917369879793"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -992,8 +992,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "7894450860661619821"
+              "version": "0.43.8.12551",
+              "templateHash": "4667181888475273658"
             },
             "name": "Virtual Hub Route Maps",
             "description": "This module deploys a Virtual Hub Route Map."
@@ -1113,7 +1113,9 @@
         }
       },
       "dependsOn": [
-        "virtualHub"
+        "virtualHub",
+        "virtualHub_hubVirtualNetworkConnections",
+        "virtualHub_routeTables"
       ]
     }
   },
