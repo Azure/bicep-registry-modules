@@ -5,10 +5,13 @@ targetScope = 'subscription'
 
 @export()
 type notificationType = {
+  @description('Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
   operator: 'EqualTo' | 'GreaterThan' | 'GreaterThanOrEqualTo'
+  @description('Required. Percent threshold of budget for when to get a notification. Must be between 1 and 1000.')
   @minValue(1)
   @maxValue(1000)
   threshold: int
+  @description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
   thresholdType: 'Actual' | 'Forecasted'
 }
 

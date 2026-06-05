@@ -410,6 +410,52 @@ The list of notifications to configure, each with independent operator and thres
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`operator`](#parameter-notificationsoperator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
+| [`threshold`](#parameter-notificationsthreshold) | int | Percent threshold of budget for when to get a notification. Must be between 1 and 1000. |
+| [`thresholdType`](#parameter-notificationsthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+
+### Parameter: `notifications.operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
+### Parameter: `notifications.threshold`
+
+Percent threshold of budget for when to get a notification. Must be between 1 and 1000.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 1000
+
+### Parameter: `notifications.thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecasted'
+  ]
+  ```
+
 ### Parameter: `operator`
 
 The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
