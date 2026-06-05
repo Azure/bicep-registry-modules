@@ -3,6 +3,15 @@ metadata description = 'This module deploys a Consumption Budget for a Subscript
 
 targetScope = 'subscription'
 
+@export()
+type notificationType = {
+  operator: 'EqualTo' | 'GreaterThan' | 'GreaterThanOrEqualTo'
+  @minValue(1)
+  @maxValue(1000)
+  threshold: int
+  thresholdType: 'Actual' | 'Forecasted'
+}
+
 @description('Required. The name of the budget.')
 param name string
 
@@ -42,7 +51,7 @@ param endDate string = ''
 param operator string = 'GreaterThan'
 
 @maxLength(5)
-@description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
+@description('Optional. Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
 param thresholds int[] = [
   50
   75
@@ -50,6 +59,10 @@ param thresholds int[] = [
   100
   110
 ]
+
+@maxLength(5)
+@description('Optional. The list of notifications to configure, each with independent operator and threshold type.')
+param notifications notificationType[]?
 
 @description('Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided.')
 param contactEmails string[]?
@@ -64,7 +77,7 @@ param actionGroups string[]?
   'Actual'
   'Forecasted'
 ])
-@description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+@description('Optional. Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')
@@ -79,16 +92,26 @@ param enableTelemetry bool = true
 @description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
-var notificationsArray = [
+var notificationsFromThresholds = [
   for threshold in thresholds: {
-    'Actual_GreaterThan_${threshold}_Percentage': {
+    operator: operator
+    threshold: threshold
+    thresholdType: thresholdType
+  }
+]
+
+var notificationSettings = !empty(notifications ?? []) ? notifications! : notificationsFromThresholds
+
+var notificationsArray = [
+  for notification in notificationSettings: {
+    '${notification.thresholdType}_${notification.operator}_${notification.threshold}_Percentage': {
       enabled: true
-      operator: operator
-      threshold: threshold
+      operator: notification.operator
+      threshold: notification.threshold
       contactEmails: contactEmails
       contactRoles: contactRoles
       contactGroups: actionGroups
-      thresholdType: thresholdType
+      thresholdType: notification.thresholdType
     }
   }
 ]

@@ -5,11 +5,41 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "6639878603761627079"
+      "version": "0.43.8.12551",
+      "templateHash": "6707581971499384327"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for a Subscription."
+  },
+  "definitions": {
+    "notificationType": {
+      "type": "object",
+      "properties": {
+        "operator": {
+          "type": "string",
+          "allowedValues": [
+            "EqualTo",
+            "GreaterThan",
+            "GreaterThanOrEqualTo"
+          ]
+        },
+        "threshold": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 1000
+        },
+        "thresholdType": {
+          "type": "string",
+          "allowedValues": [
+            "Actual",
+            "Forecasted"
+          ]
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -90,7 +120,18 @@
       ],
       "maxLength": 5,
       "metadata": {
-        "description": "Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000."
+        "description": "Optional. Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000."
+      }
+    },
+    "notifications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/notificationType"
+      },
+      "nullable": true,
+      "maxLength": 5,
+      "metadata": {
+        "description": "Optional. The list of notifications to configure, each with independent operator and threshold type."
       }
     },
     "contactEmails": {
@@ -131,7 +172,7 @@
         "Forecasted"
       ],
       "metadata": {
-        "description": "Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
+        "description": "Optional. Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
       }
     },
     "filter": {
@@ -172,21 +213,31 @@
   "variables": {
     "copy": [
       {
-        "name": "notificationsArray",
+        "name": "notificationsFromThresholds",
         "count": "[length(parameters('thresholds'))]",
         "input": {
-          "[format('Actual_GreaterThan_{0}_Percentage', parameters('thresholds')[copyIndex('notificationsArray')])]": {
+          "operator": "[parameters('operator')]",
+          "threshold": "[parameters('thresholds')[copyIndex('notificationsFromThresholds')]]",
+          "thresholdType": "[parameters('thresholdType')]"
+        }
+      },
+      {
+        "name": "notificationsArray",
+        "count": "[length(variables('notificationSettings'))]",
+        "input": {
+          "[format('{0}_{1}_{2}_Percentage', variables('notificationSettings')[copyIndex('notificationsArray')].thresholdType, variables('notificationSettings')[copyIndex('notificationsArray')].operator, variables('notificationSettings')[copyIndex('notificationsArray')].threshold)]": {
             "enabled": true,
-            "operator": "[parameters('operator')]",
-            "threshold": "[parameters('thresholds')[copyIndex('notificationsArray')]]",
+            "operator": "[variables('notificationSettings')[copyIndex('notificationsArray')].operator]",
+            "threshold": "[variables('notificationSettings')[copyIndex('notificationsArray')].threshold]",
             "contactEmails": "[parameters('contactEmails')]",
             "contactRoles": "[parameters('contactRoles')]",
             "contactGroups": "[parameters('actionGroups')]",
-            "thresholdType": "[parameters('thresholdType')]"
+            "thresholdType": "[variables('notificationSettings')[copyIndex('notificationsArray')].thresholdType]"
           }
         }
       }
-    ]
+    ],
+    "notificationSettings": "[if(not(empty(coalesce(parameters('notifications'), createArray()))), parameters('notifications'), variables('notificationsFromThresholds'))]"
   },
   "resources": {
     "avmTelemetry": {
