@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14660955563240786925"
+      "version": "0.43.8.12551",
+      "templateHash": "12772660407178474031"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -357,7 +357,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/managedInstances/databases@2025-02-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -398,12 +398,12 @@
     "managedInstance": {
       "existing": true,
       "type": "Microsoft.Sql/managedInstances",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('managedInstanceName')]"
     },
     "database": {
       "type": "Microsoft.Sql/managedInstances/databases",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-02-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -499,8 +499,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5490669363293060827"
+              "version": "0.43.8.12551",
+              "templateHash": "12986008102676624172"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -563,7 +563,7 @@
             },
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
                 "retentionDays": "[parameters('retentionDays')]"
@@ -641,8 +641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12779066002956645910"
+              "version": "0.43.8.12551",
+              "templateHash": "11765878311253241663"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -737,7 +737,7 @@
             },
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
                 "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
@@ -806,7 +806,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('database', '2025-02-01-preview', 'full').location]"
     }
   }
 }

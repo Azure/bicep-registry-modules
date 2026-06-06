@@ -7,15 +7,12 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
+@description('Conditional. The administrator username for the server. Required if no `aadAdministrator` is provided.')
 param administratorLogin string?
 
-@description('Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
+@description('Conditional. The administrator login password. Required if no `aadAdministrator` is provided.')
 @secure()
 param administratorLoginPassword string?
-
-@description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
-param administrators serverExternalAdministratorType?
 
 @description('Required. The fully qualified resource ID of the subnet on which the SQL managed instance will be placed.')
 param subnetResourceId string
@@ -32,7 +29,7 @@ param skuTier string = 'GeneralPurpose'
 param storageSizeInGB int = 32
 
 @description('Optional. The number of vCores.')
-param vCores resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.properties.vCores = 4
+param vCores resourceInput<'Microsoft.Sql/managedInstances@2025-02-01-preview'>.properties.vCores = 4
 
 @description('Optional. The license type. Possible values are \'LicenseIncluded\' (regular price inclusive of a new SQL license) and \'BasePrice\' (discounted AHB price for bringing your own SQL licenses).')
 @allowed([
@@ -103,7 +100,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/managedInstances@2025-02-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -160,6 +157,32 @@ param minimalTlsVersion string = '1.2'
   'Zone'
 ])
 param requestedBackupStorageRedundancy string = 'Geo'
+
+@description('Optional. The managed instance authentication metadata lookup mode.')
+@allowed([
+  'AzureAD'
+  'Paired'
+  'Windows'
+])
+param authenticationMetadata string?
+
+@description('Optional. Pricing model of the managed instance.')
+@allowed([
+  'Freemium'
+  'Regular'
+])
+param pricingModel string?
+
+@description('Optional. Storage IOps. Minimum value: 300. Maximum value: 80000. Increments of 1 IOps allowed only. Maximum value depends on the selected hardware family and number of vCores.')
+@minValue(300)
+@maxValue(80000)
+param storageIOps int?
+
+@description('Optional. The Azure AD administrator for post-creation management. To configure Azure AD-only authentication, use the azureADOnlyAuthentication parameter.')
+param aadAdministrator aadAdministratorType?
+
+@description('Optional. Whether Azure Active Directory-only authentication is enabled. Requires an aadAdministrator to be set.')
+param azureADOnlyAuthentication bool?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -239,7 +262,7 @@ var maintenanceConfigurationId = maintenanceWindow == 'Custom1' || maintenanceWi
 var enableReferencedModulesTelemetry bool = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -257,7 +280,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -272,7 +295,6 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
     managedInstanceCreateMode: managedInstanceCreateMode
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     subnetId: subnetResourceId
     licenseType: licenseType
     vCores: vCores
@@ -293,6 +315,9 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
     }
     minimalTlsVersion: minimalTlsVersion
     maintenanceConfigurationId: maintenanceConfigurationId
+    authenticationMetadata: authenticationMetadata
+    pricingModel: pricingModel
+    storageIOps: storageIOps
   }
 }
 
@@ -430,6 +455,27 @@ module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = i
   ]
 }
 
+module managedInstance_administrator 'administrator/main.bicep' = if (!empty(aadAdministrator)) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-Admin'
+  params: {
+    managedInstanceName: managedInstance.name
+    login: aadAdministrator!.login
+    sid: aadAdministrator!.sid
+    tenantId: aadAdministrator.?tenantId
+  }
+}
+
+module managedInstance_azureADOnlyAuthentication 'azure-ad-only-authentication/main.bicep' = if (azureADOnlyAuthentication != null) {
+  name: '${uniqueString(deployment().name, location)}-SqlMi-AADOnlyAuth'
+  params: {
+    managedInstanceName: managedInstance.name
+    azureADOnlyAuthentication: azureADOnlyAuthentication!
+  }
+  dependsOn: [
+    managedInstance_administrator
+  ]
+}
+
 @description('The name of the deployed managed instance.')
 output name string = managedInstance.name
 
@@ -453,32 +499,13 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 import { managedInstanceShortTermRetentionPolicyType, managedInstanceLongTermRetentionPolicyType } from 'database/main.bicep'
 
 @export()
-@description('The type for a sever-external administrator.')
-type serverExternalAdministratorType = {
-  @description('Required. Azure Active Directory only Authentication enabled.')
-  azureADOnlyAuthentication: bool
-
-  @description('Required. Login name of the server administrator.')
-  login: string
-
-  @description('Required. Principal Type of the sever administrator.')
-  principalType: 'Application' | 'Group' | 'User'
-
-  @description('Required. SID (object ID) of the server administrator.')
-  sid: string
-
-  @description('Optional. Tenant ID of the administrator.')
-  tenantId: string?
-}
-
-@export()
 @description('The type for the vulnerability assessment configuration.')
 type vulnerabilityAssessmentType = {
   @description('Required. The name of the vulnerability assessment.')
   name: string
 
   @description('Optional. The recurring scans configuration.')
-  recurringScans: resourceInput<'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01'>.properties.recurringScans?
+  recurringScans: resourceInput<'Microsoft.Sql/managedInstances/vulnerabilityAssessments@2025-02-01-preview'>.properties.recurringScans?
 
   @description('Required. A blob storage to hold the scan results.')
   storageAccountResourceId: string
@@ -605,5 +632,18 @@ type databaseType = {
   backupLongTermRetentionPolicy: managedInstanceLongTermRetentionPolicyType?
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.Sql/managedInstances/databases@2023-08-01'>.tags?
+  tags: resourceInput<'Microsoft.Sql/managedInstances/databases@2025-02-01-preview'>.tags?
+}
+
+@export()
+@description('The type for the Azure AD administrator configuration (post-creation management).')
+type aadAdministratorType = {
+  @description('Required. Login name of the managed instance Azure AD administrator.')
+  login: string
+
+  @description('Required. SID (object ID) of the managed instance Azure AD administrator.')
+  sid: string
+
+  @description('Optional. Tenant ID of the managed instance Azure AD administrator.')
+  tenantId: string?
 }

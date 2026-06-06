@@ -5,58 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "7752023352800362951"
+      "version": "0.43.8.12551",
+      "templateHash": "14667426716637457794"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
   },
   "definitions": {
-    "serverExternalAdministratorType": {
-      "type": "object",
-      "properties": {
-        "azureADOnlyAuthentication": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Azure Active Directory only Authentication enabled."
-          }
-        },
-        "login": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Login name of the server administrator."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Application",
-            "Group",
-            "User"
-          ],
-          "metadata": {
-            "description": "Required. Principal Type of the sever administrator."
-          }
-        },
-        "sid": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. SID (object ID) of the server administrator."
-          }
-        },
-        "tenantId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Tenant ID of the administrator."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a sever-external administrator."
-      }
-    },
     "vulnerabilityAssessmentType": {
       "type": "object",
       "properties": {
@@ -70,7 +25,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01#properties/properties/properties/recurringScans"
+              "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2025-02-01-preview#properties/properties/properties/recurringScans"
             },
             "description": "Optional. The recurring scans configuration."
           },
@@ -368,7 +323,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+              "source": "Microsoft.Sql/managedInstances/databases@2025-02-01-preview#properties/tags"
             },
             "description": "Optional. Tags of the resource."
           },
@@ -378,6 +333,34 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a database."
+      }
+    },
+    "aadAdministratorType": {
+      "type": "object",
+      "properties": {
+        "login": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Login name of the managed instance Azure AD administrator."
+          }
+        },
+        "sid": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. SID (object ID) of the managed instance Azure AD administrator."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tenant ID of the managed instance Azure AD administrator."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the Azure AD administrator configuration (post-creation management)."
       }
     },
     "diagnosticSettingFullType": {
@@ -840,21 +823,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
+        "description": "Conditional. The administrator username for the server. Required if no `aadAdministrator` is provided."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided."
-      }
-    },
-    "administrators": {
-      "$ref": "#/definitions/serverExternalAdministratorType",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided."
+        "description": "Conditional. The administrator login password. Required if no `aadAdministrator` is provided."
       }
     },
     "subnetResourceId": {
@@ -890,7 +866,7 @@
       "type": "int",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/properties/properties/vCores"
+          "source": "Microsoft.Sql/managedInstances@2025-02-01-preview#properties/properties/properties/vCores"
         },
         "description": "Optional. The number of vCores."
       },
@@ -1035,7 +1011,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/managedInstances@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/managedInstances@2025-02-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -1140,6 +1116,52 @@
       "metadata": {
         "description": "Optional. The storage account type used to store backups for this database."
       }
+    },
+    "authenticationMetadata": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "AzureAD",
+        "Paired",
+        "Windows"
+      ],
+      "metadata": {
+        "description": "Optional. The managed instance authentication metadata lookup mode."
+      }
+    },
+    "pricingModel": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Freemium",
+        "Regular"
+      ],
+      "metadata": {
+        "description": "Optional. Pricing model of the managed instance."
+      }
+    },
+    "storageIOps": {
+      "type": "int",
+      "nullable": true,
+      "minValue": 300,
+      "maxValue": 80000,
+      "metadata": {
+        "description": "Optional. Storage IOps. Minimum value: 300. Maximum value: 80000. Increments of 1 IOps allowed only. Maximum value depends on the selected hardware family and number of vCores."
+      }
+    },
+    "aadAdministrator": {
+      "$ref": "#/definitions/aadAdministratorType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Azure AD administrator for post-creation management. To configure Azure AD-only authentication, use the azureADOnlyAuthentication parameter."
+      }
+    },
+    "azureADOnlyAuthentication": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Whether Azure Active Directory-only authentication is enabled. Requires an aadAdministrator to be set."
+      }
     }
   },
   "variables": {
@@ -1173,7 +1195,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.sql-managedinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1192,7 +1214,7 @@
     },
     "managedInstance": {
       "type": "Microsoft.Sql/managedInstances",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1206,7 +1228,6 @@
         "managedInstanceCreateMode": "[parameters('managedInstanceCreateMode')]",
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "subnetId": "[parameters('subnetResourceId')]",
         "licenseType": "[parameters('licenseType')]",
         "vCores": "[parameters('vCores')]",
@@ -1226,7 +1247,10 @@
           "type": "[parameters('servicePrincipal')]"
         },
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
-        "maintenanceConfigurationId": "[variables('maintenanceConfigurationId')]"
+        "maintenanceConfigurationId": "[variables('maintenanceConfigurationId')]",
+        "authenticationMetadata": "[parameters('authenticationMetadata')]",
+        "pricingModel": "[parameters('pricingModel')]",
+        "storageIOps": "[parameters('storageIOps')]"
       }
     },
     "managedInstance_lock": {
@@ -1330,7 +1354,7 @@
             "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "location": {
-            "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'location'), reference('managedInstance', '2024-05-01-preview', 'full').location)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'location'), reference('managedInstance', '2025-02-01-preview', 'full').location)]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -1376,8 +1400,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14660955563240786925"
+              "version": "0.43.8.12551",
+              "templateHash": "12772660407178474031"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1728,7 +1752,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Sql/managedInstances/databases@2023-08-01#properties/tags"
+                  "source": "Microsoft.Sql/managedInstances/databases@2025-02-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -1769,12 +1793,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "database": {
               "type": "Microsoft.Sql/managedInstances/databases",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1870,8 +1894,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "5490669363293060827"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12986008102676624172"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -1934,7 +1958,7 @@
                     },
                     {
                       "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
-                      "apiVersion": "2024-05-01-preview",
+                      "apiVersion": "2025-02-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
                       "properties": {
                         "retentionDays": "[parameters('retentionDays')]"
@@ -2012,8 +2036,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "12779066002956645910"
+                      "version": "0.43.8.12551",
+                      "templateHash": "11765878311253241663"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -2108,7 +2132,7 @@
                     },
                     {
                       "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2024-05-01-preview",
+                      "apiVersion": "2025-02-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
                       "properties": {
                         "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
@@ -2177,7 +2201,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('database', '2024-05-01-preview', 'full').location]"
+              "value": "[reference('database', '2025-02-01-preview', 'full').location]"
             }
           }
         }
@@ -2232,8 +2256,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "2194551498145527573"
+              "version": "0.43.8.12551",
+              "templateHash": "5988869367746214860"
             },
             "name": "SQL Managed Instance Security Alert Policies",
             "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -2349,12 +2373,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "securityAlertPolicy": {
               "type": "Microsoft.Sql/managedInstances/securityAlertPolicies",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "properties": {
                 "disabledAlerts": "[parameters('disabledAlerts')]",
@@ -2439,8 +2463,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "3954310753993221095"
+              "version": "0.43.8.12551",
+              "templateHash": "1199437430490941747"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -2462,7 +2486,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2023-08-01#properties/properties/properties/recurringScans"
+                  "source": "Microsoft.Sql/managedInstances/vulnerabilityAssessments@2025-02-01-preview#properties/properties/properties/recurringScans"
                 },
                 "description": "Optional. The recurring scans configuration."
               },
@@ -2520,7 +2544,7 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "storageAccount": {
@@ -2533,7 +2557,7 @@
             },
             "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/managedInstances/vulnerabilityAssessments",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
@@ -2557,7 +2581,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('managedInstance', '2025-02-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -2566,8 +2590,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "489317061422368661"
+                      "version": "0.43.8.12551",
+                      "templateHash": "7801324597748856044"
                     }
                   },
                   "parameters": {
@@ -2671,8 +2695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14454001215761463072"
+              "version": "0.43.8.12551",
+              "templateHash": "17461506967263083278"
             },
             "name": "SQL Managed Instance Keys",
             "description": "This module deploys a SQL Managed Instance Key."
@@ -2744,12 +2768,12 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "key": {
               "type": "Microsoft.Sql/managedInstances/keys",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -2819,8 +2843,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "8542176197730417399"
+              "version": "0.43.8.12551",
+              "templateHash": "5889471964472977650"
             },
             "name": "SQL Managed Instance Encryption Protector",
             "description": "This module deploys a SQL Managed Instance Encryption Protector."
@@ -2887,7 +2911,7 @@
             },
             {
               "type": "Microsoft.Sql/managedInstances/encryptionProtector",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'current')]",
               "properties": {
                 "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
@@ -2925,6 +2949,202 @@
         "managedInstance",
         "managedInstance_keys"
       ]
+    },
+    "managedInstance_administrator": {
+      "condition": "[not(empty(parameters('aadAdministrator')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-SqlMi-Admin', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "managedInstanceName": {
+            "value": "[parameters('name')]"
+          },
+          "login": {
+            "value": "[parameters('aadAdministrator').login]"
+          },
+          "sid": {
+            "value": "[parameters('aadAdministrator').sid]"
+          },
+          "tenantId": {
+            "value": "[tryGet(parameters('aadAdministrator'), 'tenantId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "13359064212675076286"
+            },
+            "name": "SQL Managed Instance Administrator",
+            "description": "This module deploys a SQL Managed Instance Administrator."
+          },
+          "parameters": {
+            "managedInstanceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+              }
+            },
+            "login": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Login name of the managed instance administrator."
+              }
+            },
+            "sid": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. SID (object ID) of the managed instance administrator."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tenant ID of the managed instance administrator."
+              }
+            }
+          },
+          "resources": {
+            "managedInstance": {
+              "existing": true,
+              "type": "Microsoft.Sql/managedInstances",
+              "apiVersion": "2025-02-01-preview",
+              "name": "[parameters('managedInstanceName')]"
+            },
+            "administrator": {
+              "type": "Microsoft.Sql/managedInstances/administrators",
+              "apiVersion": "2025-02-01-preview",
+              "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'ActiveDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "login": "[parameters('login')]",
+                "sid": "[parameters('sid')]",
+                "tenantId": "[parameters('tenantId')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed managed instance administrator."
+              },
+              "value": "ActiveDirectory"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed managed instance administrator."
+              },
+              "value": "[resourceId('Microsoft.Sql/managedInstances/administrators', parameters('managedInstanceName'), 'ActiveDirectory')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed managed instance administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "managedInstance"
+      ]
+    },
+    "managedInstance_azureADOnlyAuthentication": {
+      "condition": "[not(equals(parameters('azureADOnlyAuthentication'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-SqlMi-AADOnlyAuth', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "managedInstanceName": {
+            "value": "[parameters('name')]"
+          },
+          "azureADOnlyAuthentication": {
+            "value": "[parameters('azureADOnlyAuthentication')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "13772034420644683289"
+            },
+            "name": "SQL Managed Instance Azure AD Only Authentications",
+            "description": "This module deploys a SQL Managed Instance Azure AD Only Authentication setting."
+          },
+          "parameters": {
+            "managedInstanceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment."
+              }
+            },
+            "azureADOnlyAuthentication": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether Azure Active Directory-only authentication is enabled."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Sql/managedInstances/azureADOnlyAuthentications",
+              "apiVersion": "2025-02-01-preview",
+              "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'Default')]",
+              "properties": {
+                "azureADOnlyAuthentication": "[parameters('azureADOnlyAuthentication')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed Azure AD Only Authentication resource."
+              },
+              "value": "Default"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed Azure AD Only Authentication resource."
+              },
+              "value": "[resourceId('Microsoft.Sql/managedInstances/azureADOnlyAuthentications', parameters('managedInstanceName'), 'Default')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed Azure AD Only Authentication resource."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "managedInstance",
+        "managedInstance_administrator"
+      ]
     }
   },
   "outputs": {
@@ -2955,14 +3175,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedInstance', '2024-05-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedInstance', '2025-02-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedInstance', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('managedInstance', '2025-02-01-preview', 'full').location]"
     }
   }
 }

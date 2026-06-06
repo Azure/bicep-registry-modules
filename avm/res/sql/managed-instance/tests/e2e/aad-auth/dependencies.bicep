@@ -7,11 +7,19 @@ param networkSecurityGroupName string
 @description('Required. The name of the Route Table to create.')
 param routeTableName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
 var addressPrefix = '10.0.0.0/16'
 var addressPrefixString = replace(replace(addressPrefix, '.', '-'), '/', '-')
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: managedIdentityName
+  location: location
+}
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2025-05-01' = {
   name: networkSecurityGroupName
@@ -117,3 +125,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The principal ID of the created Managed Identity.')
+output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The name of the created Managed Identity.')
+output managedIdentityName string = managedIdentity.name

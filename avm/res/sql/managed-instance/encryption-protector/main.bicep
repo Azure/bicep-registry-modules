@@ -39,11 +39,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource encryptionProtector 'Microsoft.Sql/managedInstances/encryptionProtector@2024-05-01-preview' = {
+resource encryptionProtector 'Microsoft.Sql/managedInstances/encryptionProtector@2025-02-01-preview' = {
   name: 'current'
   parent: managedInstance
   properties: {

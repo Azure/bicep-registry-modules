@@ -47,11 +47,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource key 'Microsoft.Sql/managedInstances/keys@2024-05-01-preview' = {
+resource key 'Microsoft.Sql/managedInstances/keys@2025-02-01-preview' = {
   name: !empty(name) ? name : serverKeyName
   parent: managedInstance
   properties: {

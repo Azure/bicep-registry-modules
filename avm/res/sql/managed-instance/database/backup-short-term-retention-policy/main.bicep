@@ -35,7 +35,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 
   resource managedInstaceDatabase 'databases@2024-05-01-preview' existing = {
@@ -43,7 +43,7 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' exi
   }
 }
 
-resource backupShortTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies@2024-05-01-preview' = {
+resource backupShortTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies@2025-02-01-preview' = {
   name: name
   parent: managedInstance::managedInstaceDatabase
   properties: {

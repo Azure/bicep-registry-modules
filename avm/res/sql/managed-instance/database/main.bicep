@@ -63,7 +63,7 @@ param backupShortTermRetentionPolicy managedInstanceShortTermRetentionPolicyType
 param backupLongTermRetentionPolicy managedInstanceLongTermRetentionPolicyType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/managedInstances/databases@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/managedInstances/databases@2025-02-01-preview'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -89,11 +89,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-02-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource database 'Microsoft.Sql/managedInstances/databases@2024-05-01-preview' = {
+resource database 'Microsoft.Sql/managedInstances/databases@2025-02-01-preview' = {
   name: name
   parent: managedInstance
   location: location
