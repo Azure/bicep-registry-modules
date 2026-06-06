@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
       enableScaling: true
       enablePrivateNetworking: true
       azureAiServiceLocation: enforcedLocation
+      gptModelVersion: '2024-11-20'
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword
     }

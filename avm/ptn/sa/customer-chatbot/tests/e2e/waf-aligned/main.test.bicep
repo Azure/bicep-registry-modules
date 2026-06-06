@@ -28,6 +28,9 @@ param virtualMachineAdminPassword string = newGuid()
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedLocation = 'australiaeast'
 
+#disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
+var enforcedAiServiceLocation = 'swedencentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
@@ -47,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
-      azureAiServiceLocation: enforcedLocation
+      azureAiServiceLocation: enforcedAiServiceLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true

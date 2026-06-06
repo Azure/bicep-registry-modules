@@ -52,6 +52,8 @@ var finalBgpSettings = bgpSettings != null
     }
   : null
 
+var enableReferencedModulesTelemetry = false
+
 // ================//
 // Deployments     //
 // ================//
@@ -117,6 +119,7 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
       ipConfigurationId: natRule.?ipConfigurationId
       mode: natRule.?mode
       type: natRule.?type
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -142,6 +145,7 @@ module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [
       ipsecPolicies: connection.?ipsecPolicies
       trafficSelectorPolicies: connection.?trafficSelectorPolicies
       vpnLinkConnections: connection.?vpnLinkConnections
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

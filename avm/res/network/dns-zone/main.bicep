@@ -292,6 +292,7 @@ module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (enableDnsSec == tru
   name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
   params: {
     dnsZoneName: dnsZone.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
