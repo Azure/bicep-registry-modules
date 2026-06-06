@@ -27,6 +27,28 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. File shares to create.')
 param shares fileShareType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-storageaccount-fileservice.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 var enableReferencedModulesTelemetry = false
 
 // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind (unless V2 where accessTier is not supported so null is supplied), 'TransactionOptimized' otherwise
