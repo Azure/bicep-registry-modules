@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Added `bypass` property to `networkAcls` so callers can allow trusted Microsoft services (`AzureServices`) through the Cognitive Services firewall (fixes [#7062](https://github.com/Azure/bicep-registry-modules/issues/7062))
 - Replaced the untyped `networkAcls object?` parameter with the strongly-typed `networkAclsType` user-defined type, exposing `bypass`, `defaultAction`, `ipRules` and `virtualNetworkRules`
+- Bumped the AVM telemetry deployment API version from `Microsoft.Resources/deployments@2024-03-01` to `@2025-04-01` to satisfy the `use-recent-api-versions` linter
 
 ### Breaking Changes
 
