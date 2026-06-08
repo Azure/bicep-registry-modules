@@ -229,6 +229,10 @@ module virtualHub_routeMaps 'route-map/main.bicep' = [
       rules: routeMap.?rules
       enableTelemetry: enableReferencedModulesTelemetry
     }
+    dependsOn: [
+      virtualHub_routeTables
+      virtualHub_hubVirtualNetworkConnections
+    ]
   }
 ]
 
