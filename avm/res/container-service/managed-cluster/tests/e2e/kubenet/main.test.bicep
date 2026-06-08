@@ -73,9 +73,7 @@ module testDeployment '../../../main.bicep' = [
           ]
           count: 1
           enableAutoScaling: true
-          maxCount: 3
           maxPods: 30
-          minCount: 1
           mode: 'System'
           name: 'systempool'
           nodeTaints: [
