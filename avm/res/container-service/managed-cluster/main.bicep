@@ -418,8 +418,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.?count ?? 1
-      availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
+      // count and vmSize cannot be set for the 'VirtualMachines' agent pool type; node sizing/scaling is defined via virtualMachinesProfile.
+      count: profile.?type == 'VirtualMachines' ? null : (profile.?count ?? 1)
+      // availabilityZones can only be set for the 'VirtualMachineScaleSets' agent pool type; omit it for 'VirtualMachines'.
+      availabilityZones: profile.?type == 'VirtualMachines'
+        ? null
+        : map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             sourceResourceId: profile.?sourceResourceId
@@ -467,7 +471,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       type: profile.?type
       upgradeSettings: profile.?upgradeSettings
       virtualMachinesProfile: profile.?virtualMachinesProfile
-      vmSize: profile.?vmSize ?? 'Standard_D2s_v3'
+      vmSize: profile.?type == 'VirtualMachines' ? null : (profile.?vmSize ?? 'Standard_D2s_v3')
       vnetSubnetID: profile.?vnetSubnetResourceId
       windowsProfile: profile.?windowsProfile
       workloadRuntime: profile.?workloadRuntime
