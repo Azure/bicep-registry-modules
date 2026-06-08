@@ -168,7 +168,7 @@ param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/a
 param virtualMachinesProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.virtualMachinesProfile?
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.consvc-mgdcluster-agentpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

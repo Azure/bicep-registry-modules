@@ -384,7 +384,7 @@ var formattedRoleAssignments = [
 // ============ //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -742,6 +742,7 @@ resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   scope: managedCluster
 }
 
+#disable-next-line use-recent-api-versions
 resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

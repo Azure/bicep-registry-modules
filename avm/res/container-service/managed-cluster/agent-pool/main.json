@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "13613747842163177994"
+      "templateHash": "5924178948776681006"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -464,7 +464,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.consvc-mgdcluster-agentpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
