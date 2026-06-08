@@ -425,7 +425,8 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
             sourceResourceId: profile.?sourceResourceId
           }
         : null
-      enableAutoScaling: profile.?enableAutoScaling ?? false
+      // EnableAutoScaling, minCount and maxCount are VMSS-specific and cannot be set for the 'VirtualMachines' agent pool type.
+      enableAutoScaling: profile.?type == 'VirtualMachines' ? null : (profile.?enableAutoScaling ?? false)
       enableEncryptionAtHost: profile.?enableEncryptionAtHost ?? false
       enableFIPS: profile.?enableFIPS ?? false
       enableNodePublicIP: profile.?enableNodePublicIP ?? false
@@ -439,10 +440,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       kubeletDiskType: profile.?kubeletDiskType
       linuxOSConfig: profile.?linuxOSConfig
       localDNSProfile: profile.?localDNSProfile
-      maxCount: profile.?maxCount
+      maxCount: profile.?type == 'VirtualMachines' ? null : profile.?maxCount
       maxPods: profile.?maxPods
       messageOfTheDay: profile.?messageOfTheDay
-      minCount: profile.?minCount
+      minCount: profile.?type == 'VirtualMachines' ? null : profile.?minCount
       mode: profile.?mode
       networkProfile: profile.?networkProfile
       nodeLabels: profile.?nodeLabels

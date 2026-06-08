@@ -778,7 +778,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           3
         ]
         count: 1
-        enableAutoScaling: true
         maxPods: 30
         mode: 'System'
         name: 'systempool'
@@ -889,7 +888,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             3
           ],
           "count": 1,
-          "enableAutoScaling": true,
           "maxPods": 30,
           "mode": "System",
           "name": "systempool",
@@ -1010,7 +1008,6 @@ param primaryAgentPoolProfiles = [
       3
     ]
     count: 1
-    enableAutoScaling: true
     maxPods: 30
     mode: 'System'
     name: 'systempool'
