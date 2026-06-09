@@ -178,6 +178,8 @@ var identity = !empty(managedIdentities)
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
+var enableReferencedModulesTelemetry = false
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
@@ -313,6 +315,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
     databaseName: database.name
     diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours
     retentionDays: backupShortTermRetentionPolicy.?retentionDays
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -325,6 +328,7 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
     weekOfYear: backupLongTermRetentionPolicy.?weekOfYear
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -375,6 +379,9 @@ type shortTermBackupRetentionPolicyType = {
 
   @description('Optional. Point-in-time retention in days.')
   retentionDays: int?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -391,4 +398,7 @@ type longTermBackupRetentionPolicyType = {
 
   @description('Optional. Yearly retention in ISO 8601 duration format.')
   yearlyRetention: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }

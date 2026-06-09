@@ -42,6 +42,9 @@ param retentionDays int = 90
 @description('Optional. A blob storage to hold the auditing storage account.')
 param storageAccountResourceId string = ''
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
@@ -62,6 +65,25 @@ module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = i
     managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
       ? primaryUserAssignedIdentityPrincipalId
       : server.identity.principalId
+  }
+}
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-server-auditingsetting.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
   }
 }
 

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/database/CHANGELOG.md).
 
+## 0.2.3
+
+### Changes
+
+- Enabled child modules `avm/res/sql/server/database/backup-short-term-retention-policy` and `avm/res/sql/server/database/backup-long-term-retention-policy` for publishing
+
+### Breaking Changes
+
+- None
+
 ## 0.2.2
 
 ### Changes

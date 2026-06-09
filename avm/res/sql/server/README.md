@@ -2850,6 +2850,7 @@ The audit settings configuration. If you want to disable auditing, set the parma
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditActionsAndGroups`](#parameter-auditsettingsauditactionsandgroups) | array | Specifies the Actions-Groups and Actions to audit. |
+| [`enableTelemetry`](#parameter-auditsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`isAzureMonitorTargetEnabled`](#parameter-auditsettingsisazuremonitortargetenabled) | bool | Specifies whether audit events are sent to Azure Monitor. |
 | [`isDevopsAuditEnabled`](#parameter-auditsettingsisdevopsauditenabled) | bool | Specifies the state of devops audit. If state is Enabled, devops logs will be sent to Azure Monitor. |
 | [`isManagedIdentityInUse`](#parameter-auditsettingsismanagedidentityinuse) | bool | Specifies whether Managed Identity is used to access blob storage. |
@@ -2866,6 +2867,13 @@ Specifies the Actions-Groups and Actions to audit.
 
 - Required: No
 - Type: array
+
+### Parameter: `auditSettings.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `auditSettings.isAzureMonitorTargetEnabled`
 
@@ -3037,6 +3045,7 @@ The databases to create in the server.
 | [`customerManagedKey`](#parameter-databasescustomermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
+| [`enableTelemetry`](#parameter-databasesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
@@ -3108,10 +3117,18 @@ The long term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-databasesbackuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `databases.backupLongTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -3153,6 +3170,7 @@ The short term backup retention policy for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-databasesbackupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
+| [`enableTelemetry`](#parameter-databasesbackupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-databasesbackupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -3161,6 +3179,13 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
+
+### Parameter: `databases.backupShortTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.backupShortTermRetentionPolicy.retentionDays`
 
@@ -3414,6 +3439,13 @@ The resource identifier of the elastic pool containing this database.
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `databases.federatedClientId`
 
@@ -3782,6 +3814,7 @@ The Elastic Pools to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
+| [`enableTelemetry`](#parameter-elasticpoolsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`lock`](#parameter-elasticpoolslock) | object | The lock settings of the elastic pool. |
@@ -3824,6 +3857,13 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 
 - Required: No
 - Type: int
+
+### Parameter: `elasticPools.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `elasticPools.highAvailabilityReplicaCount`
 
@@ -4195,6 +4235,7 @@ The failover groups configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-failovergroupsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
 | [`tags`](#parameter-failovergroupstags) | object | Tags of the resource. |
 
@@ -4273,6 +4314,13 @@ Databases secondary type on partner server.
   ]
   ```
 
+### Parameter: `failoverGroups.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `failoverGroups.readOnlyEndpoint`
 
 Read-only endpoint of the failover group instance.
@@ -4339,6 +4387,7 @@ The firewall rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-firewallrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 | [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 
@@ -4348,6 +4397,13 @@ The name of the firewall rule.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `firewallRules.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `firewallRules.endIpAddress`
 
@@ -4389,9 +4445,17 @@ The keys to configure.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-keysenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
 | [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
 | [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `keys.name`
 
@@ -5148,6 +5212,7 @@ The security alert policies to create in the server.
 | [`disabledAlerts`](#parameter-securityalertpoliciesdisabledalerts) | array | Alerts to disable. |
 | [`emailAccountAdmins`](#parameter-securityalertpoliciesemailaccountadmins) | bool | Specifies that the alert is sent to the account administrators. |
 | [`emailAddresses`](#parameter-securityalertpoliciesemailaddresses) | array | Specifies an array of email addresses to which the alert is sent. |
+| [`enableTelemetry`](#parameter-securityalertpoliciesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-securityalertpoliciesretentiondays) | int | Specifies the number of days to keep in the Threat Detection audit logs. |
 | [`state`](#parameter-securityalertpoliciesstate) | string | Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database. |
 | [`storageAccountAccessKey`](#parameter-securityalertpoliciesstorageaccountaccesskey) | string | Specifies the identifier key of the Threat Detection audit storage account. |
@@ -5191,6 +5256,13 @@ Specifies an array of email addresses to which the alert is sent.
 
 - Required: No
 - Type: array
+
+### Parameter: `securityAlertPolicies.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `securityAlertPolicies.retentionDays`
 
@@ -5252,6 +5324,7 @@ The virtual network rules to create in the server.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-virtualnetworkrulesenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ignoreMissingVnetServiceEndpoint`](#parameter-virtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Allow creating a firewall rule before the virtual network has vnet service endpoint enabled. |
 
 ### Parameter: `virtualNetworkRules.name`
@@ -5267,6 +5340,13 @@ The resource ID of the virtual network subnet.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `virtualNetworkRules.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
 
@@ -5294,6 +5374,7 @@ The vulnerability assessment configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`createStorageRoleAssignment`](#parameter-vulnerabilityassessmentsobjcreatestorageroleassignment) | bool | Specifies whether to create a role assignment for the storage account. |
+| [`enableTelemetry`](#parameter-vulnerabilityassessmentsobjenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`recurringScans`](#parameter-vulnerabilityassessmentsobjrecurringscans) | object | The recurring scans settings. |
 | [`useStorageAccountAccessKey`](#parameter-vulnerabilityassessmentsobjusestorageaccountaccesskey) | bool | Specifies whether to use the storage account access key to access the storage account. |
 
@@ -5314,6 +5395,13 @@ The resource ID of the storage account to store the scan reports.
 ### Parameter: `vulnerabilityAssessmentsObj.createStorageRoleAssignment`
 
 Specifies whether to create a role assignment for the storage account.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vulnerabilityAssessmentsObj.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

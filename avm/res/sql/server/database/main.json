@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "10188757547508963573"
+      "templateHash": "10639628481025492116"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -71,6 +71,13 @@
           "metadata": {
             "description": "Optional. Point-in-time retention in days."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -107,6 +114,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Yearly retention in ISO 8601 duration format."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -699,7 +713,8 @@
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -870,6 +885,9 @@
           },
           "retentionDays": {
             "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -879,7 +897,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "538766532128200830"
+              "templateHash": "9961895639933756266"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -910,9 +928,36 @@
               "metadata": {
                 "description": "Optional. Poin-in-time retention in days."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-dbbckpshorttermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
               "apiVersion": "2025-01-01",
@@ -980,6 +1025,9 @@
           },
           "weekOfYear": {
             "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -990,7 +1038,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "4571689662894653167"
+              "templateHash": "4166313002074913692"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -1035,6 +1083,13 @@
               "metadata": {
                 "description": "Optional. Yearly retention in ISO 8601 duration format."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -1049,6 +1104,26 @@
               "type": "Microsoft.Sql/servers",
               "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-dbbckplongtermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "backupLongTermRetentionPolicy": {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",

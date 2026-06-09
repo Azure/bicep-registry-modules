@@ -137,10 +137,18 @@ The long term backup retention policy to create for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`enableTelemetry`](#parameter-backuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
+
+### Parameter: `backupLongTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -182,6 +190,7 @@ The short term backup retention policy to create for the database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-backupshorttermretentionpolicydiffbackupintervalinhours) | int | Differential backup interval in hours. For Hyperscale tiers this value will be ignored. |
+| [`enableTelemetry`](#parameter-backupshorttermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | Point-in-time retention in days. |
 
 ### Parameter: `backupShortTermRetentionPolicy.diffBackupIntervalInHours`
@@ -190,6 +199,13 @@ Differential backup interval in hours. For Hyperscale tiers this value will be i
 
 - Required: No
 - Type: int
+
+### Parameter: `backupShortTermRetentionPolicy.enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `backupShortTermRetentionPolicy.retentionDays`
 
