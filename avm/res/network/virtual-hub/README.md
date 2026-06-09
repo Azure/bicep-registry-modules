@@ -41,8 +41,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Routing Intent](#example-3-using-routing-intent)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using Route Maps](#example-3-using-route-maps)
+- [Using Routing Intent](#example-4-using-routing-intent)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -176,32 +177,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       name: 'myCustomLockName'
     }
     preferredRoutingGateway: 'ExpressRoute'
-    routeMaps: [
-      {
-        associatedInboundConnections: []
-        associatedOutboundConnections: []
-        name: 'routeMap1'
-        rules: [
-          {
-            actions: [
-              {
-                type: 'Drop'
-              }
-            ]
-            matchCriteria: [
-              {
-                matchCondition: 'Contains'
-                routePrefix: [
-                  '10.100.0.0/16'
-                ]
-              }
-            ]
-            name: 'rule1'
-            nextStepIfMatched: 'Terminate'
-          }
-        ]
-      }
-    ]
     routingIntent: {}
     sku: 'Standard'
     tags: {
@@ -298,34 +273,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "preferredRoutingGateway": {
       "value": "ExpressRoute"
     },
-    "routeMaps": {
-      "value": [
-        {
-          "associatedInboundConnections": [],
-          "associatedOutboundConnections": [],
-          "name": "routeMap1",
-          "rules": [
-            {
-              "actions": [
-                {
-                  "type": "Drop"
-                }
-              ],
-              "matchCriteria": [
-                {
-                  "matchCondition": "Contains",
-                  "routePrefix": [
-                    "10.100.0.0/16"
-                  ]
-                }
-              ],
-              "name": "rule1",
-              "nextStepIfMatched": "Terminate"
-            }
-          ]
-        }
-      ]
-    },
     "routingIntent": {
       "value": {}
     },
@@ -412,32 +359,6 @@ param lock = {
   name: 'myCustomLockName'
 }
 param preferredRoutingGateway = 'ExpressRoute'
-param routeMaps = [
-  {
-    associatedInboundConnections: []
-    associatedOutboundConnections: []
-    name: 'routeMap1'
-    rules: [
-      {
-        actions: [
-          {
-            type: 'Drop'
-          }
-        ]
-        matchCriteria: [
-          {
-            matchCondition: 'Contains'
-            routePrefix: [
-              '10.100.0.0/16'
-            ]
-          }
-        ]
-        name: 'rule1'
-        nextStepIfMatched: 'Terminate'
-      }
-    ]
-  }
-]
 param routingIntent = {}
 param sku = 'Standard'
 param tags = {
@@ -454,7 +375,166 @@ param virtualRouterAutoScaleConfiguration = {
 </details>
 <p>
 
-### Example 3: _Using Routing Intent_
+### Example 3: _Using Route Maps_
+
+This instance deploys the module with Route-maps enabled. Route-maps require the virtual hub to have a gateway-based connection (S2S VPN, P2S VPN, or ExpressRoute); a VPN gateway is deployed as a dependency to satisfy this prerequisite.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/route-map]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  params: {
+    // Required parameters
+    addressPrefix: '10.10.0.0/23'
+    name: 'nvhrmap'
+    virtualWanResourceId: '<virtualWanResourceId>'
+    // Non-required parameters
+    routeMaps: [
+      {
+        associatedInboundConnections: []
+        associatedOutboundConnections: []
+        name: 'routeMap1'
+        rules: [
+          {
+            actions: [
+              {
+                parameters: []
+                type: 'Drop'
+              }
+            ]
+            matchCriteria: [
+              {
+                asPath: []
+                community: []
+                matchCondition: 'Contains'
+                routePrefix: [
+                  '10.100.0.0/16'
+                ]
+              }
+            ]
+            name: 'rule1'
+            nextStepIfMatched: 'Terminate'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.10.0.0/23"
+    },
+    "name": {
+      "value": "nvhrmap"
+    },
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
+    },
+    // Non-required parameters
+    "routeMaps": {
+      "value": [
+        {
+          "associatedInboundConnections": [],
+          "associatedOutboundConnections": [],
+          "name": "routeMap1",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "parameters": [],
+                  "type": "Drop"
+                }
+              ],
+              "matchCriteria": [
+                {
+                  "asPath": [],
+                  "community": [],
+                  "matchCondition": "Contains",
+                  "routePrefix": [
+                    "10.100.0.0/16"
+                  ]
+                }
+              ],
+              "name": "rule1",
+              "nextStepIfMatched": "Terminate"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.10.0.0/23'
+param name = 'nvhrmap'
+param virtualWanResourceId = '<virtualWanResourceId>'
+// Non-required parameters
+param routeMaps = [
+  {
+    associatedInboundConnections: []
+    associatedOutboundConnections: []
+    name: 'routeMap1'
+    rules: [
+      {
+        actions: [
+          {
+            parameters: []
+            type: 'Drop'
+          }
+        ]
+        matchCriteria: [
+          {
+            asPath: []
+            community: []
+            matchCondition: 'Contains'
+            routePrefix: [
+              '10.100.0.0/16'
+            ]
+          }
+        ]
+        name: 'rule1'
+        nextStepIfMatched: 'Terminate'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using Routing Intent_
 
 This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
 
@@ -568,7 +648,7 @@ param routingIntent = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

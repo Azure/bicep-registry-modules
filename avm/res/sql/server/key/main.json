@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14370289665777691397"
+      "version": "0.43.8.12551",
+      "templateHash": "2423628847075628725"
     },
     "name": "Azure SQL Server Keys",
     "description": "This module deploys an Azure SQL Server Key."
@@ -16,7 +16,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+        "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs."
       }
     },
     "serverName": {
@@ -40,25 +40,26 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+        "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'."
       }
     }
   },
   "variables": {
     "splittedKeyUri": "[split(parameters('uri'), '/')]",
-    "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+    "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
+    "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
   },
   "resources": {
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
     },
     "key": {
       "type": "Microsoft.Sql/servers/keys",
-      "apiVersion": "2023-08-01",
-      "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('serverName'), variables('serverKeyName'))]",
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
         "uri": "[parameters('uri')]"
@@ -71,14 +72,14 @@
       "metadata": {
         "description": "The name of the deployed server key."
       },
-      "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
+      "value": "[variables('serverKeyName')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed server key."
       },
-      "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
+      "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), variables('serverKeyName'))]"
     },
     "resourceGroupName": {
       "type": "string",

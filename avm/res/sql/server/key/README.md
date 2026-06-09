@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Key.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.Sql/servers/keys` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys)</li></ul> |
+| `Microsoft.Sql/servers/keys` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/keys)</li></ul> |
 
 ## Parameters
 
@@ -26,9 +26,9 @@ This module deploys an Azure SQL Server Key.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
+| [`name`](#parameter-name) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs. |
 | [`serverKeyType`](#parameter-serverkeytype) | string | The server key type. |
-| [`uri`](#parameter-uri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+| [`uri`](#parameter-uri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'. |
 
 ### Parameter: `serverName`
 
@@ -39,7 +39,7 @@ The name of the parent SQL server. Required if the template is used in a standal
 
 ### Parameter: `name`
 
-The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs.
 
 - Required: No
 - Type: string
@@ -61,7 +61,7 @@ The server key type.
 
 ### Parameter: `uri`
 
-The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'.
 
 - Required: No
 - Type: string
