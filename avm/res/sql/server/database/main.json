@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "11770000580914899387"
+      "templateHash": "10188757547508963573"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -637,7 +637,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/servers/database@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/servers/databases@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -714,7 +714,7 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
     },
     "cMKKeyVault": {
@@ -748,7 +748,7 @@
     },
     "database": {
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -879,7 +879,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "3924283624527887363"
+              "templateHash": "538766532128200830"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -915,10 +915,10 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
+                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2025-01-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                 "retentionDays": "[parameters('retentionDays')]"
               }
             }
@@ -990,7 +990,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "12661346280845172269"
+              "templateHash": "4571689662894653167"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -1041,18 +1041,18 @@
             "server::database": {
               "existing": true,
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
             },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "backupLongTermRetentionPolicy": {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
                 "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -1119,7 +1119,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01', 'full').location]"
+      "value": "[reference('database', '2025-01-01', 'full').location]"
     }
   }
 }

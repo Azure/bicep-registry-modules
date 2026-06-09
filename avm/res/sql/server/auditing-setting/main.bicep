@@ -42,7 +42,7 @@ param retentionDays int = 90
 @description('Optional. A blob storage to hold the auditing storage account.')
 param storageAccountResourceId string = ''
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
@@ -65,7 +65,7 @@ module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = i
   }
 }
 
-resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2023-08-01' = {
+resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2025-01-01' = {
   name: name
   parent: server
   properties: {

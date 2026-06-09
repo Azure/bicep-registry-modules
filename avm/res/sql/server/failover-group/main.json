@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "14309622795813551436"
+      "templateHash": "5237775222611257461"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
@@ -122,7 +122,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/servers/failoverGroups@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -133,12 +133,12 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
     },
     "failoverGroup": {
       "type": "Microsoft.Sql/servers/failoverGroups",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {

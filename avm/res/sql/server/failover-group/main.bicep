@@ -22,17 +22,17 @@ param readWriteEndpoint readWriteEndpointType
 @description('Required. Databases secondary type on partner server.')
 param secondaryType 'Geo' | 'Standby'
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/servers/failoverGroups@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/servers/failoverGroups@2025-01-01'>.tags?
 
 // https://stackoverflow.com/questions/78337117/azure-sql-failover-group-fails-on-second-run
 // https://github.com/Azure/bicep-types-az/issues/2153
 
-resource failoverGroup 'Microsoft.Sql/servers/failoverGroups@2024-05-01-preview' = {
+resource failoverGroup 'Microsoft.Sql/servers/failoverGroups@2025-01-01' = {
   name: name
   parent: server
   tags: tags

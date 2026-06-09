@@ -30,7 +30,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/servers@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/servers@2025-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -237,7 +237,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource server 'Microsoft.Sql/servers@2023-08-01' = {
+resource server 'Microsoft.Sql/servers@2025-01-01' = {
   location: location
   name: name
   tags: tags
@@ -387,7 +387,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -605,7 +605,7 @@ module failover_groups 'failover-group/main.bicep' = [
   }
 ]
 
-resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023-08-01' = {
+resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2025-01-01' = {
   name: 'default'
   parent: server
   properties: {
@@ -613,7 +613,7 @@ resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023
   }
 }
 
-resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2023-08-01' = [
+resource server_outbound_firewall_rules 'Microsoft.Sql/servers/outboundFirewallRules@2025-01-01' = [
   for domain in (outboundFirewallRules ?? []): if (outboundFirewallRules != null) {
     parent: server
     name: domain

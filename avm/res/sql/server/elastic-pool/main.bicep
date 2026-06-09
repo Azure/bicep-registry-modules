@@ -138,11 +138,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
-resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01' = {
+resource elasticPool 'Microsoft.Sql/servers/elasticPools@2025-01-01' = {
   name: name
   location: location
   parent: server

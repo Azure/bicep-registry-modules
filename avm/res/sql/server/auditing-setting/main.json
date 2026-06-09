@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "9772376778203892337"
+      "templateHash": "3562824291789962567"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -103,12 +103,12 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
     },
     "auditSettings": {
       "type": "Microsoft.Sql/servers/auditingSettings",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "properties": {
         "state": "[parameters('state')]",
@@ -140,7 +140,7 @@
           "storageAccountName": {
             "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
           },
-          "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01', 'full').identity.principalId))]"
+          "managedIdentityPrincipalId": "[if(equals(reference('server', '2025-01-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2025-01-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

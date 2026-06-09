@@ -132,7 +132,7 @@ param enableTelemetry bool = true
 // END OF DATABASE PROPERTIES
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/servers/database@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/servers/databases@2025-01-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -159,7 +159,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition for database TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
@@ -209,7 +209,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
+resource database 'Microsoft.Sql/servers/databases@2025-01-01' = {
   name: name
   parent: server
   location: location
