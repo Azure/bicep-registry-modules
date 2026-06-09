@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "15452000279358180556"
+      "version": "0.43.8.12551",
+      "templateHash": "6820471046988658340"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2480,8 +2480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "16781958177725786003"
+              "version": "0.43.8.12551",
+              "templateHash": "11770000580914899387"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3353,8 +3353,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "14420215760569758925"
+                      "version": "0.43.8.12551",
+                      "templateHash": "3924283624527887363"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3464,8 +3464,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "1616593108309626717"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12661346280845172269"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3674,8 +3674,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13020123827134295575"
+              "version": "0.43.8.12551",
+              "templateHash": "12826141547644661350"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4854,8 +4854,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6826609288742338637"
+              "version": "0.43.8.12551",
+              "templateHash": "2602071436491506764"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4961,8 +4961,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11378553975041019859"
+              "version": "0.43.8.12551",
+              "templateHash": "12690262809526446016"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5083,8 +5083,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17925146373535954470"
+              "version": "0.43.8.12551",
+              "templateHash": "15738852699687322632"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5258,8 +5258,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "271996853569266956"
+              "version": "0.43.8.12551",
+              "templateHash": "16329360340386949169"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5386,8 +5386,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "17102686291937449378"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12780761655518868811"
                     }
                   },
                   "parameters": {
@@ -5482,8 +5482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14370289665777691397"
+              "version": "0.43.8.12551",
+              "templateHash": "2423628847075628725"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5493,7 +5493,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs."
               }
             },
             "serverName": {
@@ -5517,25 +5517,26 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'."
               }
             }
           },
           "variables": {
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
-            "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+            "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01",
-              "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('serverName'), variables('serverKeyName'))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
                 "uri": "[parameters('uri')]"
@@ -5548,14 +5549,14 @@
               "metadata": {
                 "description": "The name of the deployed server key."
               },
-              "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
+              "value": "[variables('serverKeyName')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed server key."
               },
-              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
+              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), variables('serverKeyName'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -5585,9 +5586,6 @@
           "serverName": {
             "value": "[parameters('name')]"
           },
-          "name": {
-            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), last(split(coalesce(tryGet(if(and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))), reference('cMKKeyVault::cMKKey', '2025-05-01', 'full'), null()), 'properties', 'keyUriWithVersion'), ''), '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.'))))]"
-          },
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
@@ -5600,8 +5598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14370289665777691397"
+              "version": "0.43.8.12551",
+              "templateHash": "2423628847075628725"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5611,7 +5609,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern for versioned URIs or [<keyVaultName>_<keyName>] for versionless URIs."
               }
             },
             "serverName": {
@@ -5635,25 +5633,26 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'."
               }
             }
           },
           "variables": {
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
-            "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+            "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01",
-              "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('serverName'), variables('serverKeyName'))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
                 "uri": "[parameters('uri')]"
@@ -5666,14 +5665,14 @@
               "metadata": {
                 "description": "The name of the deployed server key."
               },
-              "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
+              "value": "[variables('serverKeyName')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed server key."
               },
-              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
+              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), variables('serverKeyName'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -5720,8 +5719,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17898664712532064313"
+              "version": "0.43.8.12551",
+              "templateHash": "3226695724730285151"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5852,8 +5851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12956701023461852729"
+              "version": "0.43.8.12551",
+              "templateHash": "9772376778203892337"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5995,8 +5994,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "9669967762325474323"
+                      "version": "0.43.8.12551",
+                      "templateHash": "6781985198792456674"
                     }
                   },
                   "parameters": {
@@ -6083,8 +6082,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13696935636826567929"
+              "version": "0.43.8.12551",
+              "templateHash": "3852390215310069788"
             }
           },
           "definitions": {
@@ -6249,8 +6248,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14403989670372227788"
+              "version": "0.43.8.12551",
+              "templateHash": "14309622795813551436"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."

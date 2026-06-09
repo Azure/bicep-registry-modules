@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.21.3
+
+### Changes
+
+- Fixed server-level customer-managed key autorotation when using a versionless Key Vault key URI
+- Added regression coverage for CMK autorotation without an explicit server key version
+
+### Breaking Changes
+
+- None
+
 ## 0.21.2
 
 ### Changes
