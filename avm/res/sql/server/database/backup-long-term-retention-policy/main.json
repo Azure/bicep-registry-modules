@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "12661346280845172269"
+      "templateHash": "4166313002074913692"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -51,24 +51,51 @@
       "metadata": {
         "description": "Optional. Yearly retention in ISO 8601 duration format."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
     "server::database": {
       "existing": true,
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
     },
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.sql-server-dbbckplongtermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "backupLongTermRetentionPolicy": {
       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
       "properties": {
         "monthlyRetention": "[parameters('monthlyRetention')]",

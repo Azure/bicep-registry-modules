@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.21.4
+
+### Changes
+
+- Enabled child modules `avm/res/sql/server/auditing-setting`, `avm/res/sql/server/elastic-pool`, `avm/res/sql/server/encryption-protector`, `avm/res/sql/server/failover-group`, `avm/res/sql/server/firewall-rule`, `avm/res/sql/server/key`, `avm/res/sql/server/security-alert-policy`, `avm/res/sql/server/virtual-network-rule`, `avm/res/sql/server/vulnerability-assessment`, `avm/res/sql/server/database/backup-short-term-retention-policy`, and `avm/res/sql/server/database/backup-long-term-retention-policy` for publishing
+
+### Breaking Changes
+
+- None
+
 ## 0.21.3
 
 ### Changes

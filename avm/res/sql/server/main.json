@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "6820471046988658340"
+      "templateHash": "15832973986496872023"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -154,6 +154,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the identifier key of the auditing storage account."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -579,6 +586,13 @@
           "metadata": {
             "description": "Optional. The long term backup retention policy for the database."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -708,6 +722,13 @@
           "metadata": {
             "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -750,6 +771,13 @@
           "metadata": {
             "description": "Optional. Specifies whether to create a role assignment for the storage account."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -778,6 +806,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -813,6 +848,13 @@
           "metadata": {
             "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -840,6 +882,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -920,6 +969,13 @@
           "metadata": {
             "description": "Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -982,6 +1038,13 @@
           ],
           "metadata": {
             "description": "Required. Databases secondary type on partner server."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -1405,6 +1468,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Yearly retention in ISO 8601 duration format."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         }
       },
@@ -1835,6 +1905,13 @@
           "metadata": {
             "description": "Optional. Point-in-time retention in days."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -1967,7 +2044,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/servers@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/servers@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -2247,7 +2324,7 @@
     },
     "server": {
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2307,7 +2384,7 @@
     },
     "server_connection_policy": {
       "type": "Microsoft.Sql/servers/connectionPolicies",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('name'), 'default')]",
       "properties": {
         "connectionType": "[parameters('connectionPolicy')]"
@@ -2323,7 +2400,7 @@
       },
       "condition": "[not(equals(parameters('outboundFirewallRules'), null()))]",
       "type": "Microsoft.Sql/servers/outboundFirewallRules",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('outboundFirewallRules'), createArray())[copyIndex()])]",
       "dependsOn": [
         "server"
@@ -2481,7 +2558,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "11770000580914899387"
+              "templateHash": "10639628481025492116"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -2546,6 +2623,13 @@
                   "metadata": {
                     "description": "Optional. Point-in-time retention in days."
                   }
+                },
+                "enableTelemetry": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable/Disable usage telemetry for module."
+                  }
                 }
               },
               "metadata": {
@@ -2582,6 +2666,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Yearly retention in ISO 8601 duration format."
+                  }
+                },
+                "enableTelemetry": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enable/Disable usage telemetry for module."
                   }
                 }
               },
@@ -3112,7 +3203,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Sql/servers/database@2023-08-01#properties/tags"
+                  "source": "Microsoft.Sql/servers/databases@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -3174,7 +3265,8 @@
           "variables": {
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-            "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
+            "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "cMKKeyVault::cMKKey": {
@@ -3189,7 +3281,7 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "cMKKeyVault": {
@@ -3223,7 +3315,7 @@
             },
             "database": {
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3345,6 +3437,9 @@
                   },
                   "retentionDays": {
                     "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3354,7 +3449,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "3924283624527887363"
+                      "templateHash": "9961895639933756266"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3385,15 +3480,42 @@
                       "metadata": {
                         "description": "Optional. Poin-in-time retention in days."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
                     {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.sql-server-dbbckpshorttermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
                       "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-                      "apiVersion": "2023-08-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
-                        "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
+                        "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2025-01-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                         "retentionDays": "[parameters('retentionDays')]"
                       }
                     }
@@ -3455,6 +3577,9 @@
                   },
                   "weekOfYear": {
                     "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3465,7 +3590,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.43.8.12551",
-                      "templateHash": "12661346280845172269"
+                      "templateHash": "4166313002074913692"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3510,24 +3635,51 @@
                       "metadata": {
                         "description": "Optional. Yearly retention in ISO 8601 duration format."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
                     "server::database": {
                       "existing": true,
                       "type": "Microsoft.Sql/servers/databases",
-                      "apiVersion": "2023-08-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
                     },
                     "server": {
                       "existing": true,
                       "type": "Microsoft.Sql/servers",
-                      "apiVersion": "2023-08-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[parameters('serverName')]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.sql-server-dbbckplongtermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "backupLongTermRetentionPolicy": {
                       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2023-08-01",
+                      "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
                         "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -3594,7 +3746,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('database', '2023-08-01', 'full').location]"
+              "value": "[reference('database', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -3665,6 +3817,9 @@
           },
           "zoneRedundant": {
             "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'zoneRedundant')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3675,7 +3830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "12826141547644661350"
+              "templateHash": "13781651425120727439"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4023,6 +4178,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -4051,15 +4213,35 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-elasticpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "elasticPool": {
               "type": "Microsoft.Sql/servers/elasticPools",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -4141,7 +4323,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('elasticPool', '2023-08-01', 'full').location]"
+              "value": "[reference('elasticPool', '2025-01-01', 'full').location]"
             }
           }
         }
@@ -4212,8 +4394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18436885663402767850"
+              "version": "0.43.8.12551",
+              "templateHash": "4295240387232557710"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -4529,14 +4711,15 @@
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4634,6 +4817,9 @@
                   },
                   "privateDnsZoneConfigs": {
                     "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4643,8 +4829,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "9935179114830442414"
+                      "version": "0.43.8.12551",
+                      "templateHash": "15830984844857508530"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -4697,6 +4883,13 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -4705,6 +4898,26 @@
                       "type": "Microsoft.Network/privateEndpoints",
                       "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-privendpoint-privdnszonegrp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
@@ -4846,6 +5059,9 @@
           },
           "startIpAddress": {
             "value": "[tryGet(coalesce(parameters('firewallRules'), createArray())[copyIndex()], 'startIpAddress')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4855,7 +5071,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "2602071436491506764"
+              "templateHash": "17446827792160737188"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4886,12 +5102,39 @@
               "metadata": {
                 "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-firewallrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.Sql/servers/firewallRules",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -4953,6 +5196,9 @@
           },
           "virtualNetworkSubnetResourceId": {
             "value": "[coalesce(parameters('virtualNetworkRules'), createArray())[copyIndex()].virtualNetworkSubnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4962,7 +5208,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "12690262809526446016"
+              "templateHash": "120812629885112557"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -4992,12 +5238,39 @@
               "metadata": {
                 "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-virtualnetworkrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.Sql/servers/virtualNetworkRules",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
@@ -5074,6 +5347,9 @@
           },
           "storageEndpoint": {
             "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'storageEndpoint')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5084,7 +5360,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "15738852699687322632"
+              "templateHash": "8978573008583143310"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5168,18 +5444,45 @@
               "metadata": {
                 "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-securityalertpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "securityAlertPolicy": {
               "type": "Microsoft.Sql/servers/securityAlertPolicies",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "disabledAlerts": "[parameters('disabledAlerts')]",
@@ -5249,6 +5552,9 @@
           },
           "createStorageRoleAssignment": {
             "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5259,7 +5565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "16329360340386949169"
+              "templateHash": "6270054903478032685"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5341,18 +5647,45 @@
               "metadata": {
                 "description": "Optional. Create the Storage Blob Data Contributor role assignment on the storage account. Note, the role assignment must not already exist on the storage account."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-vulnerabilityassessment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
@@ -5377,7 +5710,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('server', '2023-08-01', 'full').identity.principalId]"
+                    "value": "[reference('server', '2025-01-01', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -5473,6 +5806,9 @@
           },
           "uri": {
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'uri')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5483,7 +5819,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "2423628847075628725"
+              "templateHash": "3115052094829248423"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5519,6 +5855,13 @@
               "metadata": {
                 "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -5527,6 +5870,26 @@
             "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
@@ -5589,7 +5952,10 @@
           "serverKeyType": {
             "value": "AzureKeyVault"
           },
-          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))]"
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(not(variables('isHSMManagedCMK')), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion)), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}/{2}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName, parameters('customerManagedKey').keyVersion))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName))), if(not(variables('isHSMManagedCMK')), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion), createObject('value', fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))))]",
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5599,7 +5965,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "2423628847075628725"
+              "templateHash": "3115052094829248423"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5635,6 +6001,13 @@
               "metadata": {
                 "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI must be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion' or 'https://YourVaultName.azure.net/keys/YourKeyName'."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -5643,6 +6016,26 @@
             "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
@@ -5711,6 +6104,9 @@
           },
           "autoRotationEnabled": {
             "value": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5720,7 +6116,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "3226695724730285151"
+              "templateHash": "11691660816915017764"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5755,12 +6151,39 @@
               "metadata": {
                 "description": "Optional. The encryption protector type."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
             {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-encryptionprotector.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.Sql/servers/encryptionProtector",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -5842,6 +6265,9 @@
           },
           "storageAccountResourceId": {
             "value": "[tryGet(parameters('auditSettings'), 'storageAccountResourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5852,7 +6278,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "9772376778203892337"
+              "templateHash": "12807607536894632897"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5943,18 +6369,45 @@
               "metadata": {
                 "description": "Optional. A blob storage to hold the auditing storage account."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-auditingsetting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "auditSettings": {
               "type": "Microsoft.Sql/servers/auditingSettings",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "state": "[parameters('state')]",
@@ -5986,7 +6439,7 @@
                   "storageAccountName": {
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
-                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01', 'full').identity.principalId))]"
+                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2025-01-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2025-01-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2025-01-01', 'full').identity.principalId))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -6083,7 +6536,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "3852390215310069788"
+              "templateHash": "6118913051085236298"
             }
           },
           "definitions": {
@@ -6112,7 +6565,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                 }
               }
             },
@@ -6161,7 +6614,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -6170,7 +6623,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2025-05-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -6239,6 +6692,9 @@
           },
           "secondaryType": {
             "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].secondaryType]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -6249,7 +6705,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "14309622795813551436"
+              "templateHash": "8763483354034533252"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6361,11 +6817,18 @@
                 "description": "Required. Databases secondary type on partner server."
               }
             },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
             "tags": {
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+                  "source": "Microsoft.Sql/servers/failoverGroups@2025-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -6373,15 +6836,35 @@
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.sql-server-failovergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('serverName')]"
             },
             "failoverGroup": {
               "type": "Microsoft.Sql/servers/failoverGroups",
-              "apiVersion": "2024-05-01-preview",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -6471,14 +6954,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('server', '2023-08-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('server', '2025-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('server', '2023-08-01', 'full').location]"
+      "value": "[reference('server', '2025-01-01', 'full').location]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
