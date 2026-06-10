@@ -8,14 +8,6 @@ This module's child-modules deploy a Consumption Budget at a Management Group (m
 > - `rg-scope`
 
 
-You can reference the module as follows:
-```bicep
-module budget 'br/public:avm/res/consumption/budget:<version>' = {
-  params: { (...) }
-}
-```
-For examples, please refer to the [Usage Examples](#usage-examples) section.
-
 ## Navigation
 
 - [Resource Types](#Resource-Types)
