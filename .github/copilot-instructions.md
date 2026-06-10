@@ -173,10 +173,24 @@ For example:
 | ..  | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
 | n   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
 
+## Fixing an issue in an existing module (ordered checklist)
+
+When assigned an issue to fix or implement a change in an existing module (`avm/res/`, `avm/ptn/`, `avm/utl/`), follow this order. For full detail, open the [avm-bicep-module-contribution](.github/skills/avm-bicep-module-contribution/SKILL.md) skill.
+
+1. **Branch**: from an up-to-date `main`, create `fix/<issue>-<desc>` or `feat/<issue>-<desc>`. Detect the contribution model via `git remote get-url origin` - maintainers push branches directly to `Azure/bicep-registry-modules` (no fork required); fork contributors push to their fork.
+2. **Implement**: edit `main.bicep` (and child `main.bicep`) only, per the AVM Bicep specs (`https://azure.github.io/Azure-Verified-Modules/llms.txt`). Never hand-edit `main.json` or `README.md`.
+3. **Version + changelog**: bump `version.json` (MINOR for features, MAJOR for breaking) and add a `CHANGELOG.md` entry.
+4. **Regenerate (MANDATORY)**: `. ./utilities/tools/Set-AVMModule.ps1` then `Set-AVMModule -ModuleFolderPath 'avm/<scope>/<provider>/<type>' -Recurse` to rebuild `main.json` and `README.md`.
+5. **Tests**: update/add e2e tests under `tests/e2e/*/main.test.bicep` when behavior changes.
+6. **Local static tests green (MANDATORY)**: `. ./utilities/tools/Test-ModuleLocally.ps1` then `Test-ModuleLocally -TemplateFilePath 'avm/<scope>/<provider>/<type>/main.bicep' -PesterTest`. Fix until clean.
+7. **e2e pipeline + badge**: ensure the module workflow `.github/workflows/avm.<res|ptn|utl>.<provider>.<type>.yml` exists; add its PR-branch status badge to the PR's *Pipeline Reference* table. The agent environment has no Azure subscription and cannot run the e2e deployment - state plainly that the e2e workflow must be run (push-triggered for maintainers on upstream, or `workflow_dispatch` in a fork) and must pass green before merge. Do not claim e2e passed if it was not run.
+8. **PR**: follow [.github/pull_request_template.md](.github/pull_request_template.md) - semantic title (`fix:`/`feat: <module name>`), `Fixes #<issue>`, checklist ticked, badge present.
+
 ## Skills
 
 When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding to acquire the full instructions from the file path before proceeding.
 
-| Skill                       | Description                                                                                                                                                                                      | File                                                  |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| avm-child-module-publishing | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list. | `.github/skills/avm-child-module-publishing/SKILL.md` |
+| Skill                          | Description                                                                                                                                                                                                                       | File                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| avm-bicep-module-contribution  | Fix an issue or implement a change in an existing AVM Bicep module up to a review-ready PR. USE FOR: resolve an assigned BRM issue, run Set-AVMModule, get local static (Pester) unit tests green, prepare e2e workflow + attach pipeline status badge to the PR. | `.github/skills/avm-bicep-module-contribution/SKILL.md`  |
+| avm-child-module-publishing    | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list.                                 | `.github/skills/avm-child-module-publishing/SKILL.md`    |
