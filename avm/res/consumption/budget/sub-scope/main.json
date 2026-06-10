@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "6707581971499384327"
+      "templateHash": "10900417553245074156"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for a Subscription."
@@ -21,19 +21,28 @@
             "EqualTo",
             "GreaterThan",
             "GreaterThanOrEqualTo"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`."
+          }
         },
         "threshold": {
           "type": "int",
           "minValue": 1,
-          "maxValue": 1000
+          "maxValue": 1000,
+          "metadata": {
+            "description": "Required. Percent threshold of budget for when to get a notification. Must be between 1 and 1000."
+          }
         },
         "thresholdType": {
           "type": "string",
           "allowedValues": [
             "Actual",
             "Forecasted"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`."
+          }
         }
       },
       "metadata": {

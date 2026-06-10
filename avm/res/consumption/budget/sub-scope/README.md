@@ -1,4 +1,4 @@
-# Consumption Budgets `[Microsoft.consumption/budget]`
+# Consumption Budgets `[Microsoft.Consumption/budgets]`
 
 This module deploys a Consumption Budget for a Subscription.
 
@@ -32,12 +32,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/consumption/budget/sub-scope:<version>`.
 
-- [Sub-Scope.Defaults](#example-1-sub-scopedefaults)
-- [Sub-Scope.Max](#example-2-sub-scopemax)
-- [Sub-Scope.Notifications](#example-3-sub-scopenotifications)
-- [Sub-Scope.Waf-Aligned](#example-4-sub-scopewaf-aligned)
+- [Using only defaults (Subscription scope)](#example-1-using-only-defaults-subscription-scope)
+- [Using large parameter set (Subscription scope)](#example-2-using-large-parameter-set-subscription-scope)
+- [Using custom notifications (Subscription scope)](#example-3-using-custom-notifications-subscription-scope)
+- [WAF-aligned (Subscription scope)](#example-4-waf-aligned-subscription-scope)
 
-### Example 1: _Sub-Scope.Defaults_
+### Example 1: _Using only defaults (Subscription scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.defaults]
 
 
@@ -110,7 +113,10 @@ param contactEmails = [
 </details>
 <p>
 
-### Example 2: _Sub-Scope.Max_
+### Example 2: _Using large parameter set (Subscription scope)_
+
+This instance deploys the module with most of its features enabled.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.max]
 
 
@@ -230,7 +236,10 @@ param thresholdType = 'Forecasted'
 </details>
 <p>
 
-### Example 3: _Sub-Scope.Notifications_
+### Example 3: _Using custom notifications (Subscription scope)_
+
+This instance deploys the module using per-threshold notification control with mixed actual and forecasted notifications.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.notifications]
 
 
@@ -346,7 +355,10 @@ param notifications = [
 </details>
 <p>
 
-### Example 4: _Sub-Scope.Waf-Aligned_
+### Example 4: _WAF-aligned (Subscription scope)_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.waf-aligned]
 
 
@@ -540,6 +552,52 @@ The list of notifications to configure, each with independent operator and thres
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`operator`](#parameter-notificationsoperator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
+| [`threshold`](#parameter-notificationsthreshold) | int | Percent threshold of budget for when to get a notification. Must be between 1 and 1000. |
+| [`thresholdType`](#parameter-notificationsthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+
+### Parameter: `notifications.operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
+### Parameter: `notifications.threshold`
+
+Percent threshold of budget for when to get a notification. Must be between 1 and 1000.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 1000
+
+### Parameter: `notifications.thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecasted'
+  ]
+  ```
 
 ### Parameter: `operator`
 

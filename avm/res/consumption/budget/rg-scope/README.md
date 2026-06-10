@@ -1,4 +1,4 @@
-# Consumption Budgets `[Microsoft.consumption/budget]`
+# Consumption Budgets `[Microsoft.Consumption/budgets]`
 
 This module deploys a Consumption Budget for a Resource Group.
 
@@ -32,11 +32,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/consumption/budget/rg-scope:<version>`.
 
-- [Rg-Scope.Defaults](#example-1-rg-scopedefaults)
-- [Rg-Scope.Max](#example-2-rg-scopemax)
-- [Rg-Scope.Waf-Aligned](#example-3-rg-scopewaf-aligned)
+- [Using only defaults (Resource Group scope)](#example-1-using-only-defaults-resource-group-scope)
+- [Using large parameter set (Resource Group scope)](#example-2-using-large-parameter-set-resource-group-scope)
+- [WAF-aligned (Resource Group scope)](#example-3-waf-aligned-resource-group-scope)
 
-### Example 1: _Rg-Scope.Defaults_
+### Example 1: _Using only defaults (Resource Group scope)_
+
+This instance deploys the module with the minimum set of required parameters.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.defaults]
 
 
@@ -109,7 +112,10 @@ param contactEmails = [
 </details>
 <p>
 
-### Example 2: _Rg-Scope.Max_
+### Example 2: _Using large parameter set (Resource Group scope)_
+
+This instance deploys the module with most of its features enabled.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.max]
 
 
@@ -224,7 +230,10 @@ param thresholdType = 'Forecasted'
 </details>
 <p>
 
-### Example 3: _Rg-Scope.Waf-Aligned_
+### Example 3: _WAF-aligned (Resource Group scope)_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/rg-scope.waf-aligned]
 
 
