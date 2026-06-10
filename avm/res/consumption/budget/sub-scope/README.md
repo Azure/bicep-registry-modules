@@ -53,7 +53,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbsubmin001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -79,7 +79,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbsubmin001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -103,7 +103,7 @@ using 'br/public:avm/res/consumption/budget/sub-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbsubmin001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
@@ -129,7 +129,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbsubmax001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -168,7 +168,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbsubmax001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -213,7 +213,7 @@ using 'br/public:avm/res/consumption/budget/sub-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbsubmax001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
@@ -252,7 +252,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbsubnot001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -291,7 +291,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbsubnot001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -332,7 +332,7 @@ using 'br/public:avm/res/consumption/budget/sub-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbsubnot001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
@@ -371,7 +371,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbsubwaf001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -397,7 +397,7 @@ module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbsubwaf001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -421,7 +421,7 @@ using 'br/public:avm/res/consumption/budget/sub-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbsubwaf001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'

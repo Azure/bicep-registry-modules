@@ -52,7 +52,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbrgmin001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -78,7 +78,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbrgmin001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -102,7 +102,7 @@ using 'br/public:avm/res/consumption/budget/rg-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbrgmin001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
@@ -128,7 +128,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbrgmax001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -166,7 +166,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbrgmax001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -208,7 +208,7 @@ using 'br/public:avm/res/consumption/budget/rg-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbrgmax001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
@@ -246,7 +246,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
   params: {
     // Required parameters
     amount: 500
-    name: '<name>'
+    name: 'rcbrgmwaf001'
     // Non-required parameters
     contactEmails: [
       'dummy@contoso.com'
@@ -272,7 +272,7 @@ module budget 'br/public:avm/res/consumption/budget/rg-scope:<version>' = {
       "value": 500
     },
     "name": {
-      "value": "<name>"
+      "value": "rcbrgmwaf001"
     },
     // Non-required parameters
     "contactEmails": {
@@ -296,7 +296,7 @@ using 'br/public:avm/res/consumption/budget/rg-scope:<version>'
 
 // Required parameters
 param amount = 500
-param name = '<name>'
+param name = 'rcbrgmwaf001'
 // Non-required parameters
 param contactEmails = [
   'dummy@contoso.com'
