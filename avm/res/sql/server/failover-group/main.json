@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "14309622795813551436"
+      "templateHash": "8763483354034533252"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
@@ -118,11 +118,18 @@
         "description": "Required. Databases secondary type on partner server."
       }
     },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
     "tags": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Sql/servers/failoverGroups@2023-08-01#properties/tags"
+          "source": "Microsoft.Sql/servers/failoverGroups@2025-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -130,15 +137,35 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.sql-server-failovergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('serverName')]"
     },
     "failoverGroup": {
       "type": "Microsoft.Sql/servers/failoverGroups",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
