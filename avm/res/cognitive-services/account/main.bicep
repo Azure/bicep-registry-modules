@@ -398,11 +398,8 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       versionUpgradeOption: deployment.?versionUpgradeOption
     }
     sku: deployment.?sku ?? {
-      name: sku
-      capacity: sku.?capacity
-      tier: sku.?tier
-      size: sku.?size
-      family: sku.?family
+      name: 'Standard'
+      capacity: 1
     }
   }
 ]

@@ -12,6 +12,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None. The `networkAcls` parameter remains optional and the new `bypass` property defaults to the Azure Resource Provider behavior (`AzureServices`) when not specified, preserving the prior behavior.
 
+## 0.14.3
+
+### Changes
+
+- Fixed invalid default `sku` for model deployments. The fallback previously used the account-level SKU name (e.g. `S0`), which is not a valid deployment SKU and caused `The deployment sku name 'S0' is invalid.` errors. The default is now `{ name: 'Standard', capacity: 1 }`.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.2
 
 ### Changes

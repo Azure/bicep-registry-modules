@@ -16,7 +16,7 @@ param applicationGroupName string
 var addressPrefix = '10.0.0.0/16'
 
 #disable-next-line use-recent-api-versions
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -55,13 +55,13 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
 }
 
 #disable-next-line use-recent-api-versions
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
 #disable-next-line use-recent-api-versions
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-10-10' = {
   name: hostPoolName
   location: location
   properties: {
@@ -72,7 +72,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
 }
 
 #disable-next-line use-recent-api-versions
-resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-03-01-preview' = {
+resource applicationGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-10-10' = {
   name: applicationGroupName
   location: location
   properties: {

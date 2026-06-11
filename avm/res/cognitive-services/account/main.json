@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "1947607869649628989"
+      "version": "0.36.1.42791",
+      "templateHash": "15709876744855874135"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1525,7 +1525,7 @@
         "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
         "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
       },
-      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku'), 'capacity', tryGet(parameters('sku'), 'capacity'), 'tier', tryGet(parameters('sku'), 'tier'), 'size', tryGet(parameters('sku'), 'size'), 'family', tryGet(parameters('sku'), 'family')))]",
+      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]",
       "dependsOn": [
         "cognitiveService"
       ]
@@ -1534,7 +1534,7 @@
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
+      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -1564,7 +1564,7 @@
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
+      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -1605,7 +1605,7 @@
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]",
+      "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1626,7 +1626,7 @@
         "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
@@ -2283,7 +2283,7 @@
     "secretsExport": {
       "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
@@ -2307,8 +2307,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6852234379693140302"
+              "version": "0.36.1.42791",
+              "templateHash": "1495524513158904104"
             }
           },
           "definitions": {

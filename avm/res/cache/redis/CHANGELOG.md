@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Adding description on Azure Cache for Redis announced its retirement
+- Fixing passive Geo-Replicated Redis Cache test
 - Recompiled the template with latest Bicep version `0.43.8`
 
 ### Breaking Changes
