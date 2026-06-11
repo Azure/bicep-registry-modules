@@ -1,79 +1,195 @@
----
-description: "Azure Verified Modules (AVM) and Bicep"
-applyTo: "**/*.bicep, **/*.bicepparam, **/main.json, **/version.json"
----
+# Azure Verified Modules (AVM) Bicep - Agent Instructions
 
-# Azure Verified Modules (AVM) Bicep
+> Cross-assistant instructions for any AI agent (GitHub Copilot, Claude Code, Cursor, and others) working in this repository. This file mirrors [.github/copilot-instructions.md](.github/copilot-instructions.md); keep the two in sync.
 
-This repository (`Azure/bicep-registry-modules`, "BRM") is the official home of the
-Azure Verified Modules (AVM) for **Bicep** - pre-built, tested, validated modules
-that follow Azure best practices. Modules live under `avm/res/` (resource),
-`avm/ptn/` (pattern), and `avm/utl/` (utility).
+## Overview
 
-Authoritative rules live in
-[.github/copilot-instructions.md](.github/copilot-instructions.md). For step-by-step
-workflows, use the skills under [.github/skills/](.github/skills/). This file is the
-high-level orientation for any agent working in this repo.
+Azure Verified Modules (AVM) are pre-built, tested, and validated Bicep modules that follow Azure best practices. Use these modules to create, update, or review Azure Infrastructure as Code (IaC) with confidence.
 
-## AVM Specifications
+This repository contains **Azure Verified Modules (AVM)** for Bicep - the official Microsoft standard for reusable Azure infrastructure modules. The codebase follows strict AVM specifications and is organized into three main module types:
 
-The authoritative source for every AVM rule (Bicep, shared) is the spec index:
+- **`avm/res/`** - Resource modules (individual Azure resources) - [Resource module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv)
+- **`avm/ptn/`** - Pattern modules (multi-resource solutions) - [Pattern module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv)
+- **`avm/utl/`** - Utility modules (shared types and functions) - [Utility module index](https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv)
 
-- **Index of all specs and docs (raw markdown URLs):** `https://azure.github.io/Azure-Verified-Modules/llms.txt`
-- **Rendered docs site:** `https://azure.github.io/Azure-Verified-Modules/`
+## Critical Compliance Requirements
 
-When a spec ID is mentioned (e.g. `BCPNFR23`, `RMFR4`, `SNFR1`), fetch `llms.txt`
-once, look up the raw markdown URL for that ID, and read the current text. Do not
-cite a spec from memory.
+### Pre-flight check
+
+> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
+
+```json
+{
+  "agent-mode": "<your agent name - e.g., agent|ask|plan>",
+  "model": "<your model name>"
+}
+```
+
+> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.8` or `Fable`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.8` or `Fable`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
+
+### Compliance with ALL AVM Bicep and Shared specifications
+
+** ‼️ CRITICAL REQUIREMENTS FOR AVM BICEP MODULES ‼️**: **All changes MUST comply with Azure Verified Modules (AVM) standards, best practices, naming conventions, version management, development guidelines, validation requirements, etc.,described or referenced in these instructions when generating or modifying Bicep code in this repository.** Failure to comply will result in pull request rejections. Before reviewing or generating any Bicep code, always use `#fetch` tool to get LLM documentation index: `https://azure.github.io/Azure-Verified-Modules/llms.txt` for the list of all AVM specifications and detailed guidelines. **READ AND ADHERE TO ALL OF THESE SPECIFICATIONS!**
+For additional guidance, follow this logic: if Microsoft Learn (Microsoft Docs) tools `documentation` and `search` are available, you MUST use them to get the most up-to-date information, otherwise use `#fetch` to get documentation from Microsoft Learn (Microsoft Docs).
+
+### Updating README.md Documentation
+
+**🛑 NEVER update README.md documentation or Markdowns directly**: Always run the [utilities/tools/Set-AVMModule.ps1](utilities/tools/Set-AVMModule.ps1) script to update the module README.md and compile the Bicep files.
+
+1. When the script is only used for Readme generation, use the `-SkipBuild` switch, unless you are instructed otherwise by the user or other instructions.
+2. In all other cases, when the `main.bicep` file is updated, you need to update the related `main.json` file - which needs to be done via the same script by not using the `-SkipBuild` switch, targeting the explicit path of the `main.bicep` file.
+
+### Fallback to Use Quick Starts as a last resort
+
+When required information or relevant example is not available in the Bicep schema or in the Azure Resource Reference when generating new AVM Bicep code, as a last effort, you can refer to the Bicep Quick Starts in the https://github.com/Azure/azure-quickstart-templates repo. Use the `#github/search_code` tool to search for relevant Bicep Quick Starts as examples of how to deploy specific resources.
+
+## Use Available Tools
+
+**⚠️ MANDATORY if tool available**: Always use these tools if available:
+
+- `#azure_get_deployment_best_practices` to ensure meeting deployment best practices.
+- `#microsoft_docs_fetch` to fetch Microsoft documentation.
+- `#list_az_resource_types_for_provider` to list resource types for an Azure resource provider.
+- `#get_az_resource_type_schema` to get the schema for a resource type.
+- `#list_avm_metadata` to list AVM module metadata.
+- `#fetch` to get related documentation from a URL.
+- `#todos` to track outstanding tasks.
 
 ## Module Discovery
 
-- **Bicep Resource Modules Index:** `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv`
-- **Bicep Pattern Modules Index:** `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv`
-- **Bicep Utility Modules Index:** `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv`
-- **Published versions (MCR):** `https://mcr.microsoft.com/v2/bicep/{moduleName}/tags/list` (tags are not version-ordered; sort them).
+### Official AVM Module Index
 
-## Module Naming Conventions
+Start here to understand which modules are published (with the ModuleStatus being "Available" or "Orphaned"):
 
-- **Resource Modules:** `avm/res/{service}/{resource}` -> registry `br/public:avm/res/{service}/{resource}`
-- **Pattern Modules:** `avm/ptn/{group}/{name}` -> registry `br/public:avm/ptn/{group}/{name}`
-- **Utility Modules:** `avm/utl/{group}/{name}` -> registry `br/public:avm/utl/{group}/{name}`
-- Use kebab-case for services and resources; `camelCase` for parameters and variables.
-- Each module folder maps to a workflow `avm.<res|ptn|utl>.<...>.yml` (path `/` replaced by `.`).
+- **Bicep Resources**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepResourceModules.csv`
+- **Bicep Patterns**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepPatternModules.csv`
+- **Bicep Utilities**: `https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/refs/heads/main/docs/static/module-indexes/BicepUtilityModules.csv`
 
-## Module Usage
+### Use Microsoft Container Registry (MCR) to fetch AVM Module versions
 
-When consuming AVM Bicep modules:
+Use the `#fetch` tool to search for published AVM modules and check available versions:
 
-1. Pin to a specific version: `br/public:avm/res/{service}/{resource}:1.2.3`.
-2. Map telemetry to a root parameter: `enableTelemetry: enableTelemetry`.
-3. Start from the official examples in the module's `README.md` / `tests/e2e`.
-4. Discover available versions via the MCR tags list (see Module Discovery).
+- **URL Pattern**: `https://mcr.microsoft.com/v2/bicep/{ModuleName as per the AVM Module index}/tags/list`
+- **Example**: `https://mcr.microsoft.com/v2/bicep/avm/res/storage/storage-account/tags/list`
 
-## Module Sources
+> [!IMPORTANT]
+> The tags list returned by `https://mcr.microsoft.com/v2/bicep/avm/res/` is not in version order. It will need to be ordered correctly.
 
-- **Public registry:** `br/public:avm/{res|ptn|utl}/{...}:{version}`
-- **Source code:** `https://github.com/Azure/bicep-registry-modules/tree/main/avm/{res|ptn|utl}/{...}`
-- **Generated files:** `main.json` and `README.md` are produced by `Set-AVMModule`; never hand-edit them.
+### Use Fetch Tool (When Bicep VS Code Extension Tools Are Not Available)
 
-## Contributing (issue -> review-ready PR)
+For the list of resource providers or resource types available, latest API versions, and Bicep schema for specific resources, use the `#microsoft_docs_fetch` tool to fetch information from Azure Resource Reference page, available at **https://learn.microsoft.com/en-us/azure/templates/**.
 
-For fixing an issue or implementing a change in an existing module, follow
-[avm-bicep-module-contribution](.github/skills/avm-bicep-module-contribution/SKILL.md)
-end to end; an ordered checklist also lives in
-[.github/copilot-instructions.md](.github/copilot-instructions.md). To publish a
-child module, follow
-[avm-child-module-publishing](.github/skills/avm-child-module-publishing/SKILL.md).
+## Fetching Schemas, API versions and existing Published AVM Modules
 
-Non-negotiable gates:
+You have exactly these two options (do not use any other method or tool to do this):
 
-- Edit `main.bicep` only; regenerate `main.json` + `README.md` via `Set-AVMModule`.
-- Run PowerShell by dot-sourcing (`. ./script.ps1`); never use the `&` call operator.
-- Local static (Pester) validation must be green, and the module's e2e pipeline must
-  run green with its status badge attached to the PR before merge.
+1. **Preferred option**: Use tools from Bicep VS Code extension: `#list_az_resource_types_for_provider`, `#get_az_resource_type_schema`, `#list_avm_metadata`.
+2. **Alternative option** (if option 1 fails): Use the `#fetch` tool to get information from related URLs.
 
-**Contribution models** (detect via `git remote get-url origin`):
+- **URL for specific version**: `https://learn.microsoft.com/azure/templates/{resourceType}/{resourceName}?pivots=deployment-language-bicep`
+- **Example**: `https://learn.microsoft.com/azure/templates/Microsoft.Storage/storageAccounts?pivots=deployment-language-bicep`
 
-- **Maintainer (no fork):** `origin` is `Azure/bicep-registry-modules`; push feature
-  branches directly to upstream and open the PR within the same repo. No fork required.
-- **Fork contributor:** `origin` is your fork; push there and open a PR to upstream.
+### Use Bicep VS Code Extension Tools (Preferred)
+
+- `#list_az_resource_types_for_provider` takes a resource provider (e.g. `Microsoft.Storage`) as input and outputs a list of resource types including their API versions.
+- `#get_az_resource_type_schema` takes a resource type (e.g. `Microsoft.Storage/storageAccounts`) and an API version (e.g. `2023-01-01`) as input and outputs the schema for that resource type and API version.
+- `#list_avm_metadata` lists up-to-date metadata for all published AVM modules. The return value is a newline-separated list of AVM metadata. Each line includes the module name, description, versions, and documentation URI for a specific module.
+
+## Running PowerShell Scripts (Example)
+
+**🛑 NEVER use the `&` (call) operator to invoke PowerShell scripts.** The `&` operator loads and invokes a script in a single step, which is not permitted.
+
+Instead, always use the **dot-source** (`. `) approach as per the example below.
+
+> Note: This is just an example of how to run any PowerShell script in this repository, and does not mean that this script always needs exactly these parameters.
+
+1. **Dot-source the script** to load its functions into the current session:
+
+   ```powershell
+   . .\utilities\tools\Set-AVMModule.ps1
+   ```
+
+2. **Call the function by name** with any required parameters:
+
+   ```powershell
+   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network' -Recurse
+   ```
+
+> [!IMPORTANT]
+>
+> - **Correct** (two-step, dot-source then call):
+>   ```powershell
+>   . .\utilities\tools\Set-AVMModule.ps1
+>   Set-AVMModule -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+> - **Wrong** (single-step `&` invocation — **NEVER** do this):
+>   ```powershell
+>   & .\utilities\tools\Set-AVMModule.ps1 -ModuleFolderPath 'avm/res/network/virtual-network'
+>   ```
+
+## Quality Assurance and Troubleshooting
+
+### Code Quality
+
+- ✅ **Always** validate Bicep syntax before committing
+- ✅ **Use** meaningful parameter and variable names
+- ✅ **Add** proper metadata and descriptions
+- ✅ **Follow** Azure naming conventions and constraints
+- ✅ **Test** with all required test scenarios (defaults/max/waf-aligned)
+- ✅ **Document** any customizations or deviations from examples
+
+### Common Issues
+
+1. **Module Resolution**: When referencing modules, make sure MCR paths exist with the correct versions
+2. **Parameter Validation**: Check required parameters and data types in module documentation
+3. **Naming Conflicts**: Use `uniqueString()` for globally unique resource names
+4. **API Version Compatibility**: Verify ARM API versions match module requirements
+5. **Validation Failures**: Run local Pester tests (validation tests) before committing changes
+
+### Support Resources
+
+1. Official documentation:
+
+- **Bicep Documentation**: `https://docs.microsoft.com/azure/azure-resource-manager/bicep/`
+
+2. Community forums - **ALWAYS consult the user** before taking a decision or action based on information you found on the following pages:
+
+- **GitHub Issues**: AVM Bicep issues in the bicep-registry-modules repository - `https://github.com/Azure/bicep-registry-modules/issues`
+- **Community**: Azure Bicep GitHub discussions - `https://github.com/Azure/bicep/discussions`
+
+## Output and formatting
+
+### Files Modified (Summary)
+
+Whenever you modify, create or delete any files, you MUST summarize the changes in a table format with three columns: `#` (numbered list of changes), `File` (file path), and `Change` (brief description of the change made).
+
+For example:
+
+| #   | Change type                              | File                                                            | Change                                      |
+| --- | ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------------- |
+| 1   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| ..  | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+| n   | 🟢Created <or> 🟡Modified <or> 🔴Deleted | `<path to the file modified, relative to the root of the repo>` | <1-sentence summary of the changes applied> |
+
+## Fixing an issue in an existing module (ordered checklist)
+
+When assigned an issue to fix or implement a change in an existing module (`avm/res/`, `avm/ptn/`, `avm/utl/`), follow this order.
+
+Treat this order as mandatory. Do not skip steps, reorder them, or hand-edit generated files to avoid any step. If a step is not possible in the current environment, say so explicitly and stop rather than assuming it was done.
+
+1. **Branch**: start from an up-to-date `main` and create `fix/<issue>-<desc>` or `feat/<issue>-<desc>`. First detect the contribution model with `git remote get-url origin`. Maintainers with write access push feature branches directly to `Azure/bicep-registry-modules`. Fork contributors push to their fork and open the PR from there.
+2. **Implement**: edit `main.bicep` only, and any child `main.bicep` that belongs to the same module. Do not hand-edit `main.json`, `README.md`, `version.json`, or `CHANGELOG.md` unless the checklist below explicitly says to update them.
+3. **Version + changelog**: bump `version.json` and add a `CHANGELOG.md` entry before regeneration. Use MINOR for features and MAJOR for breaking changes.
+4. **Regenerate (MANDATORY)**: run `. ./utilities/tools/Set-AVMModule.ps1` and then `Set-AVMModule -ModuleFolderPath 'avm/<scope>/<provider>/<type>' -Recurse` so `main.json` and `README.md` are regenerated from source. Never skip this step when `main.bicep` changes.
+5. **Tests**: update or add e2e tests under `tests/e2e/*/main.test.bicep` whenever module behavior changes. Do not treat existing tests as optional if the change affects inputs, outputs, naming, or deployment behavior.
+6. **Local static tests green (MANDATORY)**: run `. ./utilities/tools/Test-ModuleLocally.ps1` and then `Test-ModuleLocally -TemplateFilePath 'avm/<scope>/<provider>/<type>/main.bicep' -PesterTest`. Treat this as the required local unit-test gate before any push or PR. Keep fixing until local validation is clean.
+7. **e2e workflow + badge (MANDATORY)**: ensure the module workflow `.github/workflows/avm.<res|ptn|utl>.<provider>.<type>.yml` exists, add its PR-branch status badge to the PR's *Pipeline Reference* table, and make it clear in the PR that the e2e workflow must run and pass green before merge. The agent environment cannot run the Azure deployment itself, so do not imply e2e success unless the workflow was actually executed.
+8. **PR**: follow [.github/pull_request_template.md](.github/pull_request_template.md) with a semantic title (`fix:`/`feat: <module name>`), `Fixes #<issue>`, completed checklist items, and the pipeline badge attached.
+
+## Skills
+
+When a user asks to perform a task that falls within the domain of a skill below, read and follow the full instructions from the file path before proceeding.
+
+| Skill                          | Description                                                                                                                                                                                                                       | File                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| avm-child-module-publishing    | Publish Bicep child modules to the AVM public registry. USE FOR: publish child module, add child module telemetry, child module version.json, child module CHANGELOG, child module allowed list.                                 | `.github/skills/avm-child-module-publishing/SKILL.md`    |
