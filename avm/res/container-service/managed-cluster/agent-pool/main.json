@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "7154596970054552429"
+      "version": "0.43.8.12551",
+      "templateHash": "8419782549162061894"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -464,7 +464,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.consvc-mgdcluster-agentpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -492,11 +492,11 @@
       "apiVersion": "2025-10-01",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
-        "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+        "availabilityZones": "[if(equals(parameters('type'), 'VirtualMachines'), null(), map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone')))))]",
         "capacityReservationGroupID": "[parameters('capacityReservationGroupResourceId')]",
-        "count": "[parameters('count')]",
+        "count": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('count'))]",
         "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
-        "enableAutoScaling": "[parameters('enableAutoScaling')]",
+        "enableAutoScaling": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('enableAutoScaling'))]",
         "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
         "enableFIPS": "[parameters('enableFIPS')]",
         "enableNodePublicIP": "[parameters('enableNodePublicIP')]",
@@ -509,10 +509,10 @@
         "kubeletDiskType": "[parameters('kubeletDiskType')]",
         "linuxOSConfig": "[parameters('linuxOSConfig')]",
         "localDNSProfile": "[parameters('localDNSProfile')]",
-        "maxCount": "[parameters('maxCount')]",
+        "maxCount": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('maxCount'))]",
         "maxPods": "[parameters('maxPods')]",
         "messageOfTheDay": "[parameters('messageOfTheDay')]",
-        "minCount": "[parameters('minCount')]",
+        "minCount": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('minCount'))]",
         "mode": "[parameters('mode')]",
         "networkProfile": "[parameters('networkProfile')]",
         "nodeLabels": "[parameters('nodeLabels')]",
@@ -536,7 +536,7 @@
         "type": "[parameters('type')]",
         "upgradeSettings": "[parameters('upgradeSettings')]",
         "virtualMachinesProfile": "[parameters('virtualMachinesProfile')]",
-        "vmSize": "[parameters('vmSize')]",
+        "vmSize": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('vmSize'))]",
         "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
         "workloadRuntime": "[parameters('workloadRuntime')]",
         "windowsProfile": "[parameters('windowsProfile')]"
