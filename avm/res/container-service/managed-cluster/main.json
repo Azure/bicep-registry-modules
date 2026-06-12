@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "6682193649685284731"
+      "version": "0.43.8.12551",
+      "templateHash": "5867404440086891543"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -393,7 +393,8 @@
           "type": "string",
           "allowedValues": [
             "AvailabilitySet",
-            "VirtualMachineScaleSets"
+            "VirtualMachineScaleSets",
+            "VirtualMachines"
           ],
           "nullable": true,
           "metadata": {
@@ -1647,7 +1648,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1676,7 +1677,7 @@
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
-        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', coalesce(tryGet(lambdaVariables('profile'), 'count'), 1), 'availabilityZones', map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone')))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false()), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupResourceId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', tryGet(lambdaVariables('profile'), 'maxCount'), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', tryGet(lambdaVariables('profile'), 'minCount'), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIPAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', tryGet(lambdaVariables('profile'), 'securityProfile'), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3'), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
+        "agentPoolProfiles": "[map(parameters('primaryAgentPoolProfiles'), lambda('profile', createObject('name', lambdaVariables('profile').name, 'count', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), coalesce(tryGet(lambdaVariables('profile'), 'count'), 1)), 'availabilityZones', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), map(coalesce(tryGet(lambdaVariables('profile'), 'availabilityZones'), createArray(1, 2, 3)), lambda('zone', format('{0}', lambdaVariables('zone'))))), 'creationData', if(not(empty(tryGet(lambdaVariables('profile'), 'sourceResourceId'))), createObject('sourceResourceId', tryGet(lambdaVariables('profile'), 'sourceResourceId')), null()), 'enableAutoScaling', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), coalesce(tryGet(lambdaVariables('profile'), 'enableAutoScaling'), false())), 'enableEncryptionAtHost', coalesce(tryGet(lambdaVariables('profile'), 'enableEncryptionAtHost'), false()), 'enableFIPS', coalesce(tryGet(lambdaVariables('profile'), 'enableFIPS'), false()), 'enableNodePublicIP', coalesce(tryGet(lambdaVariables('profile'), 'enableNodePublicIP'), false()), 'enableUltraSSD', coalesce(tryGet(lambdaVariables('profile'), 'enableUltraSSD'), false()), 'capacityReservationGroupID', tryGet(lambdaVariables('profile'), 'capacityReservationGroupResourceId'), 'gatewayProfile', tryGet(lambdaVariables('profile'), 'gatewayProfile'), 'gpuInstanceProfile', tryGet(lambdaVariables('profile'), 'gpuInstanceProfile'), 'gpuProfile', tryGet(lambdaVariables('profile'), 'gpuProfile'), 'hostGroupID', tryGet(lambdaVariables('profile'), 'hostGroupResourceId'), 'kubeletConfig', tryGet(lambdaVariables('profile'), 'kubeletConfig'), 'kubeletDiskType', tryGet(lambdaVariables('profile'), 'kubeletDiskType'), 'linuxOSConfig', tryGet(lambdaVariables('profile'), 'linuxOSConfig'), 'localDNSProfile', tryGet(lambdaVariables('profile'), 'localDNSProfile'), 'maxCount', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), tryGet(lambdaVariables('profile'), 'maxCount')), 'maxPods', tryGet(lambdaVariables('profile'), 'maxPods'), 'messageOfTheDay', tryGet(lambdaVariables('profile'), 'messageOfTheDay'), 'minCount', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), tryGet(lambdaVariables('profile'), 'minCount')), 'mode', tryGet(lambdaVariables('profile'), 'mode'), 'networkProfile', tryGet(lambdaVariables('profile'), 'networkProfile'), 'nodeLabels', tryGet(lambdaVariables('profile'), 'nodeLabels'), 'nodePublicIPPrefixID', tryGet(lambdaVariables('profile'), 'nodePublicIpPrefixResourceId'), 'nodeTaints', tryGet(lambdaVariables('profile'), 'nodeTaints'), 'orchestratorVersion', tryGet(lambdaVariables('profile'), 'orchestratorVersion'), 'osDiskSizeGB', tryGet(lambdaVariables('profile'), 'osDiskSizeGB'), 'osDiskType', tryGet(lambdaVariables('profile'), 'osDiskType'), 'osType', coalesce(tryGet(lambdaVariables('profile'), 'osType'), 'Linux'), 'osSKU', tryGet(lambdaVariables('profile'), 'osSKU'), 'podIPAllocationMode', tryGet(lambdaVariables('profile'), 'podIPAllocationMode'), 'podSubnetID', tryGet(lambdaVariables('profile'), 'podSubnetResourceId'), 'powerState', tryGet(lambdaVariables('profile'), 'powerState'), 'proximityPlacementGroupID', tryGet(lambdaVariables('profile'), 'proximityPlacementGroupResourceId'), 'scaleDownMode', coalesce(tryGet(lambdaVariables('profile'), 'scaleDownMode'), 'Delete'), 'scaleSetEvictionPolicy', coalesce(tryGet(lambdaVariables('profile'), 'scaleSetEvictionPolicy'), 'Delete'), 'scaleSetPriority', tryGet(lambdaVariables('profile'), 'scaleSetPriority'), 'securityProfile', tryGet(lambdaVariables('profile'), 'securityProfile'), 'spotMaxPrice', tryGet(lambdaVariables('profile'), 'spotMaxPrice'), 'tags', tryGet(lambdaVariables('profile'), 'tags'), 'type', tryGet(lambdaVariables('profile'), 'type'), 'upgradeSettings', tryGet(lambdaVariables('profile'), 'upgradeSettings'), 'virtualMachinesProfile', tryGet(lambdaVariables('profile'), 'virtualMachinesProfile'), 'vmSize', if(equals(tryGet(lambdaVariables('profile'), 'type'), 'VirtualMachines'), null(), coalesce(tryGet(lambdaVariables('profile'), 'vmSize'), 'Standard_D2s_v3')), 'vnetSubnetID', tryGet(lambdaVariables('profile'), 'vnetSubnetResourceId'), 'windowsProfile', tryGet(lambdaVariables('profile'), 'windowsProfile'), 'workloadRuntime', tryGet(lambdaVariables('profile'), 'workloadRuntime'))))]",
         "aiToolchainOperatorProfile": "[parameters('aiToolchainOperatorProfile')]",
         "bootstrapProfile": "[parameters('bootstrapProfile')]",
         "httpProxyConfig": "[parameters('httpProxyConfig')]",
@@ -1945,8 +1946,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "17945581677853646830"
+              "version": "0.43.8.12551",
+              "templateHash": "6749791830023646623"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2006,7 +2007,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.consvc-mgdcluster-maintenancecfg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -2244,8 +2245,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "7154596970054552429"
+              "version": "0.43.8.12551",
+              "templateHash": "8419782549162061894"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2703,7 +2704,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.consvc-mgdcluster-agentpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -2731,11 +2732,11 @@
               "apiVersion": "2025-10-01",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
               "properties": {
-                "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+                "availabilityZones": "[if(equals(parameters('type'), 'VirtualMachines'), null(), map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone')))))]",
                 "capacityReservationGroupID": "[parameters('capacityReservationGroupResourceId')]",
-                "count": "[parameters('count')]",
+                "count": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('count'))]",
                 "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
-                "enableAutoScaling": "[parameters('enableAutoScaling')]",
+                "enableAutoScaling": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('enableAutoScaling'))]",
                 "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
                 "enableFIPS": "[parameters('enableFIPS')]",
                 "enableNodePublicIP": "[parameters('enableNodePublicIP')]",
@@ -2748,10 +2749,10 @@
                 "kubeletDiskType": "[parameters('kubeletDiskType')]",
                 "linuxOSConfig": "[parameters('linuxOSConfig')]",
                 "localDNSProfile": "[parameters('localDNSProfile')]",
-                "maxCount": "[parameters('maxCount')]",
+                "maxCount": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('maxCount'))]",
                 "maxPods": "[parameters('maxPods')]",
                 "messageOfTheDay": "[parameters('messageOfTheDay')]",
-                "minCount": "[parameters('minCount')]",
+                "minCount": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('minCount'))]",
                 "mode": "[parameters('mode')]",
                 "networkProfile": "[parameters('networkProfile')]",
                 "nodeLabels": "[parameters('nodeLabels')]",
@@ -2775,7 +2776,7 @@
                 "type": "[parameters('type')]",
                 "upgradeSettings": "[parameters('upgradeSettings')]",
                 "virtualMachinesProfile": "[parameters('virtualMachinesProfile')]",
-                "vmSize": "[parameters('vmSize')]",
+                "vmSize": "[if(equals(parameters('type'), 'VirtualMachines'), null(), parameters('vmSize'))]",
                 "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
                 "workloadRuntime": "[parameters('workloadRuntime')]",
                 "windowsProfile": "[parameters('windowsProfile')]"
