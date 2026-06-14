@@ -384,7 +384,7 @@ var formattedRoleAssignments = [
 // ============ //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -418,14 +418,19 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.?count ?? 1
-      availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
+      // count and vmSize cannot be set for the 'VirtualMachines' agent pool type; node sizing/scaling is defined via virtualMachinesProfile.
+      count: profile.?type == 'VirtualMachines' ? null : (profile.?count ?? 1)
+      // availabilityZones can only be set for the 'VirtualMachineScaleSets' agent pool type; omit it for 'VirtualMachines'.
+      availabilityZones: profile.?type == 'VirtualMachines'
+        ? null
+        : map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             sourceResourceId: profile.?sourceResourceId
           }
         : null
-      enableAutoScaling: profile.?enableAutoScaling ?? false
+      // EnableAutoScaling, minCount and maxCount are VMSS-specific and cannot be set for the 'VirtualMachines' agent pool type.
+      enableAutoScaling: profile.?type == 'VirtualMachines' ? null : (profile.?enableAutoScaling ?? false)
       enableEncryptionAtHost: profile.?enableEncryptionAtHost ?? false
       enableFIPS: profile.?enableFIPS ?? false
       enableNodePublicIP: profile.?enableNodePublicIP ?? false
@@ -439,10 +444,10 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       kubeletDiskType: profile.?kubeletDiskType
       linuxOSConfig: profile.?linuxOSConfig
       localDNSProfile: profile.?localDNSProfile
-      maxCount: profile.?maxCount
+      maxCount: profile.?type == 'VirtualMachines' ? null : profile.?maxCount
       maxPods: profile.?maxPods
       messageOfTheDay: profile.?messageOfTheDay
-      minCount: profile.?minCount
+      minCount: profile.?type == 'VirtualMachines' ? null : profile.?minCount
       mode: profile.?mode
       networkProfile: profile.?networkProfile
       nodeLabels: profile.?nodeLabels
@@ -466,7 +471,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       type: profile.?type
       upgradeSettings: profile.?upgradeSettings
       virtualMachinesProfile: profile.?virtualMachinesProfile
-      vmSize: profile.?vmSize ?? 'Standard_D2s_v3'
+      vmSize: profile.?type == 'VirtualMachines' ? null : (profile.?vmSize ?? 'Standard_D2s_v3')
       vnetSubnetID: profile.?vnetSubnetResourceId
       windowsProfile: profile.?windowsProfile
       workloadRuntime: profile.?workloadRuntime
@@ -742,6 +747,7 @@ resource managedCluster_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!e
   scope: managedCluster
 }
 
+#disable-next-line use-recent-api-versions
 resource managedCluster_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -1025,7 +1031,7 @@ type agentPoolType = {
   tags: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.tags?
 
   @description('Optional. The type of the agent pool.')
-  type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
+  type: ('AvailabilitySet' | 'VirtualMachineScaleSets' | 'VirtualMachines')?
 
   @description('Optional. Upgrade settings.')
   upgradeSettings: resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.upgradeSettings?
