@@ -859,13 +859,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
       }
       {
-        description: 'A test workspace with a gateway using External VNet'
+        description: 'A test workspace with a gateway'
         displayName: 'Test Workspace 2'
         gateway: {
           capacity: 1
           name: '<name>'
-          subnetResourceId: '<subnetResourceId>'
-          virtualNetworkType: 'External'
         }
         name: 'workspace2'
       }
@@ -1478,13 +1476,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ]
         },
         {
-          "description": "A test workspace with a gateway using External VNet",
+          "description": "A test workspace with a gateway",
           "displayName": "Test Workspace 2",
           "gateway": {
             "capacity": 1,
-            "name": "<name>",
-            "subnetResourceId": "<subnetResourceId>",
-            "virtualNetworkType": "External"
+            "name": "<name>"
           },
           "name": "workspace2"
         }
@@ -2041,13 +2037,11 @@ param workspaces = [
     ]
   }
   {
-    description: 'A test workspace with a gateway using External VNet'
+    description: 'A test workspace with a gateway'
     displayName: 'Test Workspace 2'
     gateway: {
       capacity: 1
       name: '<name>'
-      subnetResourceId: '<subnetResourceId>'
-      virtualNetworkType: 'External'
     }
     name: 'workspace2'
   }
