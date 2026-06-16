@@ -6,10 +6,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Publishing child module `avm/res/cache/redis/access-policy`
-- Publishing child module `avm/res/cache/redis/access-policy-assignment`
-- Publishing child module `avm/res/cache/redis/firewall-rule`
-- Publishing child module `avm/res/cache/redis/linked-server`
+- Adding description on Azure Cache for Redis announced its retirement
+- Fixing passive Geo-Replicated Redis Cache test
+- Recompiled the template with latest Bicep version `0.43.8`
 
 ### Breaking Changes
 

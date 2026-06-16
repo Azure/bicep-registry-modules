@@ -132,7 +132,7 @@ param enableTelemetry bool = true
 // END OF DATABASE PROPERTIES
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Sql/servers/database@2023-08-01'>.tags?
+param tags resourceInput<'Microsoft.Sql/servers/databases@2025-01-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -159,7 +159,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition for database TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 }
 
@@ -177,6 +177,8 @@ var identity = !empty(managedIdentities)
   : null
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+
+var enableReferencedModulesTelemetry = false
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
@@ -209,7 +211,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
+resource database 'Microsoft.Sql/servers/databases@2025-01-01' = {
   name: name
   parent: server
   location: location
@@ -313,6 +315,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
     databaseName: database.name
     diffBackupIntervalInHours: backupShortTermRetentionPolicy.?diffBackupIntervalInHours
     retentionDays: backupShortTermRetentionPolicy.?retentionDays
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -325,6 +328,7 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
     weekOfYear: backupLongTermRetentionPolicy.?weekOfYear
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -375,6 +379,9 @@ type shortTermBackupRetentionPolicyType = {
 
   @description('Optional. Point-in-time retention in days.')
   retentionDays: int?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()
@@ -391,4 +398,7 @@ type longTermBackupRetentionPolicyType = {
 
   @description('Optional. Yearly retention in ISO 8601 duration format.')
   yearlyRetention: string?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }

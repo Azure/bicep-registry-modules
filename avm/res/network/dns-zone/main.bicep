@@ -18,6 +18,9 @@ param cname cnameType[]?
 @description('Optional. Array of CAA records.')
 param caa caaType[]?
 
+@description('Optional. Array of DS records.')
+param ds dsType[]?
+
 @description('Optional. Array of MX records.')
 param mx mxType[]?
 
@@ -37,7 +40,7 @@ param srv srvType[]?
 param txt txtType[]?
 
 @description('Optional. Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).')
-param dnssecConfig bool?
+param enableDnsSec bool?
 
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
@@ -105,8 +108,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-dnszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -144,6 +149,7 @@ module dnsZone_A 'a/main.bicep' = [
       ttl: aRecord.?ttl ?? 3600
       targetResourceId: aRecord.?targetResourceId
       roleAssignments: aRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -159,6 +165,7 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [
       ttl: aaaaRecord.?ttl ?? 3600
       targetResourceId: aaaaRecord.?targetResourceId
       roleAssignments: aaaaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -174,6 +181,7 @@ module dnsZone_CNAME 'cname/main.bicep' = [
       ttl: cnameRecord.?ttl ?? 3600
       targetResourceId: cnameRecord.?targetResourceId
       roleAssignments: cnameRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -188,6 +196,22 @@ module dnsZone_CAA 'caa/main.bicep' = [
       caaRecords: caaRecord.?caaRecords
       ttl: caaRecord.?ttl ?? 3600
       roleAssignments: caaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
+module dnsZone_DS 'ds/main.bicep' = [
+  for (dsRecord, index) in (ds ?? []): {
+    name: '${uniqueString(deployment().name, location)}-dnsZone-DSRecord-${index}'
+    params: {
+      dnsZoneName: dnsZone.name
+      name: dsRecord.name
+      metadata: dsRecord.?metadata
+      dsRecords: dsRecord.?dsRecords
+      ttl: dsRecord.?ttl ?? 3600
+      roleAssignments: dsRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -202,6 +226,7 @@ module dnsZone_MX 'mx/main.bicep' = [
       mxRecords: mxRecord.?mxRecords
       ttl: mxRecord.?ttl ?? 3600
       roleAssignments: mxRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -216,6 +241,7 @@ module dnsZone_NS 'ns/main.bicep' = [
       nsRecords: nsRecord.?nsRecords
       ttl: nsRecord.?ttl ?? 3600
       roleAssignments: nsRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -230,6 +256,7 @@ module dnsZone_PTR 'ptr/main.bicep' = [
       ptrRecords: ptrRecord.?ptrRecords
       ttl: ptrRecord.?ttl ?? 3600
       roleAssignments: ptrRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -244,6 +271,7 @@ module dnsZone_SOA 'soa/main.bicep' = [
       soaRecord: soaRecord.?soaRecord
       ttl: soaRecord.?ttl ?? 3600
       roleAssignments: soaRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -258,6 +286,7 @@ module dnsZone_SRV 'srv/main.bicep' = [
       srvRecords: srvRecord.?srvRecords
       ttl: srvRecord.?ttl ?? 3600
       roleAssignments: srvRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -272,14 +301,16 @@ module dnsZone_TXT 'txt/main.bicep' = [
       txtRecords: txtRecord.?txtRecords
       ttl: txtRecord.?ttl ?? 3600
       roleAssignments: txtRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (dnssecConfig == true) {
+module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (enableDnsSec == true) {
   name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
   params: {
     dnsZoneName: dnsZone.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -412,6 +443,25 @@ type caaType = {
 
   @description('Optional. The list of CAA records in the record set.')
   caaRecords: resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.caaRecords?
+}
+
+@export()
+@description('Type definition for a DS record.')
+type dsType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: resourceInput<'Microsoft.Network/dnsZones/DS@2023-07-01-preview'>.properties.metadata?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of DS records in the record set.')
+  dsRecords: resourceInput<'Microsoft.Network/dnsZones/DS@2023-07-01-preview'>.properties.DSRecords?
 }
 
 @export()
