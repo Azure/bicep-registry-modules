@@ -171,6 +171,8 @@
     "avm/res/hybrid-compute/machine/extension",
     "avm/res/insights/component/linked-storage-account",
     "avm/res/insights/private-link-scope/scoped-resource",
+    "avm/res/edge/site/sub-scope",
+    "avm/res/edge/site/rg-scope",
     "avm/res/key-vault/vault/access-policy",
     "avm/res/key-vault/vault/key",
     "avm/res/key-vault/vault/secret",

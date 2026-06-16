@@ -1,0 +1,125 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.37.4.10188",
+      "templateHash": "10110123724688272413"
+    },
+    "name": "Microsoft Edge Site Resources",
+    "description": "Subscription scoped resources for Microsoft Edge Site."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the resource to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the site."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "Optional. The display name of the site."
+      }
+    },
+    "labels": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/labels"
+        },
+        "description": "Optional. Labels for the site."
+      },
+      "nullable": true
+    },
+    "siteAddress": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/siteAddress"
+        },
+        "description": "Required. The physical address configuration of the site."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.edge-site_subscope.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "site": {
+      "type": "Microsoft.Edge/sites",
+      "apiVersion": "2025-03-01-preview",
+      "name": "[parameters('name')]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "displayName": "[parameters('displayName')]",
+        "labels": "[parameters('labels')]",
+        "siteAddress": "[parameters('siteAddress')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the site."
+      },
+      "value": "[subscriptionResourceId('Microsoft.Edge/sites', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the site."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[parameters('location')]"
+    }
+  }
+}
