@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "10110123724688272413"
+      "version": "0.44.1.10279",
+      "templateHash": "11876403986074674500"
     },
     "name": "Microsoft Edge Site Resources",
     "description": "Subscription scoped resources for Microsoft Edge Site."
@@ -49,7 +49,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/labels"
+          "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/labels"
         },
         "description": "Optional. Labels for the site."
       },
@@ -59,7 +59,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Edge/sites@2025-03-01-preview#properties/properties/properties/siteAddress"
+          "source": "Microsoft.Edge/sites@2025-06-01#properties/properties/properties/siteAddress"
         },
         "description": "Required. The physical address configuration of the site."
       }
@@ -69,7 +69,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.edge-site_subscope.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -89,7 +89,7 @@
     },
     "site": {
       "type": "Microsoft.Edge/sites",
-      "apiVersion": "2025-03-01-preview",
+      "apiVersion": "2025-06-01",
       "name": "[parameters('name')]",
       "properties": {
         "description": "[parameters('description')]",

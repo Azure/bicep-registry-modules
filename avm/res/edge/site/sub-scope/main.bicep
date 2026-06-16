@@ -23,17 +23,17 @@ param description string?
 param displayName string = name
 
 @sys.description('Optional. Labels for the site.')
-param labels resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.labels?
+param labels resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.labels?
 
 @sys.description('Required. The physical address configuration of the site.')
-param siteAddress resourceInput<'Microsoft.Edge/sites@2025-03-01-preview'>.properties.siteAddress
+param siteAddress resourceInput<'Microsoft.Edge/sites@2025-06-01'>.properties.siteAddress
 
 // ============== //
 // Resources      //
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.edge-site_subscope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   location: location
   properties: {
@@ -53,7 +53,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // Deploy Edge Site at subscription scope
-resource site 'Microsoft.Edge/sites@2025-03-01-preview' = {
+resource site 'Microsoft.Edge/sites@2025-06-01' = {
   name: name
   properties: {
     description: description
