@@ -35,7 +35,6 @@ module testDeployment '../../../rg-scope/main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       siteAddress: {
         country: 'US'
       }

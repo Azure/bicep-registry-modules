@@ -54,8 +54,6 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
     siteAddress: {
       country: 'US'
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -80,10 +78,6 @@ module site 'br/public:avm/res/edge/site/rg-scope:<version>' = {
       "value": {
         "country": "US"
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -104,8 +98,6 @@ param name = 'esrgmin001'
 param siteAddress = {
   country: 'US'
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
