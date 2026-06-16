@@ -80,6 +80,7 @@ module testDeployment '../../../main.bicep' = [
       osDisk: {
         managedDisk: {
           resourceId: nestedDependencies.outputs.osDiskResourceId
+          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
@@ -88,7 +89,8 @@ module testDeployment '../../../main.bicep' = [
           createOption: 'Empty'
           caching: 'None'
           managedDisk: {
-            storageAccountType: 'PremiumV2_LRS'
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
           diskIOPSReadWrite: 3000
           diskMBpsReadWrite: 125
