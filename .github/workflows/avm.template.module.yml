@@ -150,32 +150,32 @@ jobs:
   ##################
   #   Publishing   #
   ##################
-  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Publishing"
-    runs-on: ubuntu-latest
-    # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
-    if: |
-      !cancelled() &&
-      needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success' &&
-      github.ref == 'refs/heads/main' &&
-      github.repository	 == 'Azure/bicep-registry-modules'
-    needs:
-      - job_module_static_validation
-      - job_module_deploy_validation
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Publishing"
-        uses: ./.github/actions/templates/avm-publishModule
-        with:
-          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-        env:
-          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
-          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
-          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
-          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+  # job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  #   name: "Publishing"
+  #   runs-on: ubuntu-latest
+  #   # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
+  #   if: |
+  #     !cancelled() &&
+  #     needs.job_module_static_validation.result == 'success' &&
+  #     needs.job_module_deploy_validation.result == 'success' &&
+  #     github.ref == 'refs/heads/main' &&
+  #     github.repository	 == 'Azure/bicep-registry-modules'
+  #   needs:
+  #     - job_module_static_validation
+  #     - job_module_deploy_validation
+  #   steps:
+  #     - name: "Checkout"
+  #       uses: actions/checkout@v5
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Set environment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
+  #     - name: "Publishing"
+  #       uses: ./.github/actions/templates/avm-publishModule
+  #       with:
+  #         templateFilePath: "${{ inputs.modulePath }}/main.bicep"
+  #       env:
+  #         PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
+  #         PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
+  #         PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
+  #         PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
