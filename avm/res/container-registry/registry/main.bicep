@@ -113,8 +113,8 @@ param networkRuleBypassOptions string = 'AzureServices'
 @description('Optional. The default action of allow or deny when no other rules match.')
 param networkRuleSetDefaultAction string = 'Deny'
 
-@description('Optional. Whether if ACR Tasks can bypass the network rules.)
-param networkRuleBypassAllowedForTasks boolean = false
+@description('Optional. Whether if ACR Tasks can bypass the network rules.')
+param networkRuleBypassAllowedForTasks bool = false
 
 @description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'. Set to an empty array to explicitly configure no allowed IPs.')
 param networkRuleSetIpRules array?
