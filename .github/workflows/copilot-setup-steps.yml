@@ -35,7 +35,7 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
 
       - name: Validate AVM tools setup
-        uses: azure/powershell@v2
+        uses: azure/powershell@v3
         with:
           azPSVersion: "latest"
           inlineScript: |
