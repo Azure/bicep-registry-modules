@@ -324,7 +324,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
-The test is skipped because Redis anaunced retirenment.
+The test is skipped because Azure Cache for Redis announced its retirement.
 ```
 
 <details>
@@ -966,7 +966,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
-The test is skipped because Redis anaunced retirenment.
+The test is skipped because Azure Cache for Redis announced its retirement.
 ```
 
 <details>
