@@ -284,7 +284,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -742,23 +742,23 @@ type networkInjectionType = {
 }
 
 @export()
-@description('The type for rules governing the accessibility of the Cognitive Services account from specific network locations.')
+@description('Type for the network rule set (firewall) governing the accessibility of the Cognitive Services account from specific network locations.')
 type networkAclsType = {
-  @description('Optional. Setting for trusted services. Set to \'None\' to prevent any Azure service from bypassing the network ACLs (recommended when using private endpoints).')
-  bypass: ('AzureServices' | 'None')?
+  @description('Optional. Setting for trusted services. Use \'AzureServices\' to allow trusted Microsoft services to bypass the firewall.')
+  bypass: ('None' | 'AzureServices')?
 
   @description('Optional. The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.')
   defaultAction: ('Allow' | 'Deny')?
 
   @description('Optional. The list of IP address rules.')
   ipRules: {
-    @description('Required. An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24" (all addresses that start with 124.56.78).')
+    @description('Required. An IPv4 address range in CIDR notation, such as \'124.56.78.91\' (simple IP address) or \'124.56.78.0/24\' (all addresses that start with 124.56.78).')
     value: string
   }[]?
 
   @description('Optional. The list of virtual network rules.')
   virtualNetworkRules: {
-    @description('Required. Full resource ID of a vnet subnet.')
+    @description('Required. Full resource id of a vnet subnet, such as \'/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1\'.')
     id: string
 
     @description('Optional. Ignore missing vnet service endpoint or not.')

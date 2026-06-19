@@ -2692,14 +2692,14 @@ A collection of rules governing the accessibility from specific network location
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bypass`](#parameter-networkaclsbypass) | string | Setting for trusted services. Set to 'None' to prevent any Azure service from bypassing the network ACLs (recommended when using private endpoints). |
+| [`bypass`](#parameter-networkaclsbypass) | string | Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall. |
 | [`defaultAction`](#parameter-networkaclsdefaultaction) | string | The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated. |
 | [`ipRules`](#parameter-networkaclsiprules) | array | The list of IP address rules. |
 | [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | The list of virtual network rules. |
 
 ### Parameter: `networkAcls.bypass`
 
-Setting for trusted services. Set to 'None' to prevent any Azure service from bypassing the network ACLs (recommended when using private endpoints).
+Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall.
 
 - Required: No
 - Type: string
@@ -2736,11 +2736,11 @@ The list of IP address rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24" (all addresses that start with 124.56.78). |
+| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78). |
 
 ### Parameter: `networkAcls.ipRules.value`
 
-An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24" (all addresses that start with 124.56.78).
+An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78).
 
 - Required: Yes
 - Type: string
@@ -2756,7 +2756,7 @@ The list of virtual network rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`id`](#parameter-networkaclsvirtualnetworkrulesid) | string | Full resource ID of a vnet subnet. |
+| [`id`](#parameter-networkaclsvirtualnetworkrulesid) | string | Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'. |
 
 **Optional parameters**
 
@@ -2766,7 +2766,7 @@ The list of virtual network rules.
 
 ### Parameter: `networkAcls.virtualNetworkRules.id`
 
-Full resource ID of a vnet subnet.
+Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'.
 
 - Required: Yes
 - Type: string

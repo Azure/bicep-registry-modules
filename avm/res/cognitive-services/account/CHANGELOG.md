@@ -6,12 +6,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added a user-defined type `networkAclsType` for the `networkAcls` parameter, exposing the previously hidden `bypass` property (allowed values: `AzureServices`, `None`). This resolves [#5893](https://github.com/Azure/bicep-registry-modules/issues/5893) and allows callers to set `bypass` to `None` as recommended when using private endpoints.
+- Added `bypass` property to `networkAcls` so callers can allow trusted Microsoft services (`AzureServices`) through the Cognitive Services firewall (fixes [#7062](https://github.com/Azure/bicep-registry-modules/issues/7062))
+- Replaced the untyped `networkAcls object?` parameter with the strongly-typed `networkAclsType` user-defined type, exposing `bypass`, `defaultAction`, `ipRules` and `virtualNetworkRules`
+- Bumped the AVM telemetry deployment API version from `Microsoft.Resources/deployments@2024-03-01` to `@2025-04-01` to satisfy the `use-recent-api-versions` linter
 
 ### Breaking Changes
 
-- None. The `networkAcls` parameter remains optional and the new `bypass` property defaults to the Azure Resource Provider behavior (`AzureServices`) when not specified, preserving the prior behavior.
-
+- The `networkAcls` parameter is now strongly typed via `networkAclsType`. Consumers passing properties outside of `bypass`, `defaultAction`, `ipRules` or `virtualNetworkRules` (which were previously silently dropped) will now receive a validation error.
 ## 0.14.3
 
 ### Changes
