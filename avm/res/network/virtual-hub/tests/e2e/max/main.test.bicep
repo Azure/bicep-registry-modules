@@ -98,32 +98,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      routeMaps: [
-        {
-          name: 'routeMap1'
-          associatedInboundConnections: []
-          associatedOutboundConnections: []
-          rules: [
-            {
-              name: 'rule1'
-              matchCriteria: [
-                {
-                  matchCondition: 'Contains'
-                  routePrefix: [
-                    '10.100.0.0/16'
-                  ]
-                }
-              ]
-              actions: [
-                {
-                  type: 'Drop'
-                }
-              ]
-              nextStepIfMatched: 'Terminate'
-            }
-          ]
-        }
-      ]
       sku: 'Standard'
       virtualRouterAutoScaleConfiguration: {
         minCount: 2

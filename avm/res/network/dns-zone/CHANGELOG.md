@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/dns-zone/CHANGELOG.md).
 
+## 0.6.2
+
+### Changes
+
+- Added DS record support via `ds` parameter and publishing child module `avm/res/network/dns-zone/ds`.
+
+### Breaking Changes
+
+- None
+
 ## 0.6.1
 
 ### Changes

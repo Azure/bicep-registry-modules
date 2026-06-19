@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.13.2
+
+### Changes
+
+- Added `VirtualMachines` as an allowed agent pool type to support AKS static egress gateway private IP scenarios.
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes

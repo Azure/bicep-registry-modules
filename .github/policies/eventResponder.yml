@@ -224,8 +224,6 @@ configuration:
                 - .github/workflows/avm.template.module.yml
                 - utilities/pipelines
               excludedFiles:
-                - utilities/pipelines/platform/Invoke-AvmJsonModuleIndexGeneration.ps1
-                - utilities/pipelines/platform/Publish-ModuleFromTagToPBR.ps1
                 - utilities/pipelines/platform/Set-AvmGitHubIssueForWorkflow.ps1
                 - utilities/pipelines/platform/Set-AvmGitHubIssueOwnerConfig.ps1
                 - utilities/pipelines/platform/Set-AvmGitHubPrLabels.ps1
