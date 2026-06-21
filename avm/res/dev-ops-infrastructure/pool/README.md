@@ -440,7 +440,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     ]
     runtimeConfiguration: {
-      workFolder: 'B:\\custom-work-folder '
+      workFolder: 'B:\\custom-work-folder'
     }
     storageProfile: {
       dataDisks: [
@@ -598,7 +598,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     },
     "runtimeConfiguration": {
       "value": {
-        "workFolder": "B:\\custom-work-folder "
+        "workFolder": "B:\\custom-work-folder"
       }
     },
     "storageProfile": {
@@ -736,7 +736,7 @@ param roleAssignments = [
   }
 ]
 param runtimeConfiguration = {
-  workFolder: 'B:\\custom-work-folder '
+  workFolder: 'B:\\custom-work-folder'
 }
 param storageProfile = {
   dataDisks: [

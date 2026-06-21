@@ -164,7 +164,7 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       runtimeConfiguration: {
-        workFolder: 'B:\\custom-work-folder '
+        workFolder: 'B:\\custom-work-folder'
       }
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       roleAssignments: [

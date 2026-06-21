@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/dev-ops-infrastructure/pool/CHANGELOG.md).
 
+## 0.7.2
+
+### Changes
+
+- Added support for `runtimeConfiguration/workFolder` parameter.
+- Updated 'avm-common-types' versions to `0.7.0`, enabling custom notes for locks.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.1
 
 ### Changes
