@@ -439,6 +439,9 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         roleDefinitionIdOrName: 'Owner'
       }
     ]
+    runtimeConfiguration: {
+      workFolder: 'B:\\custom-work-folder '
+    }
     storageProfile: {
       dataDisks: [
         {
@@ -593,6 +596,11 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         }
       ]
     },
+    "runtimeConfiguration": {
+      "value": {
+        "workFolder": "B:\\custom-work-folder "
+      }
+    },
     "storageProfile": {
       "value": {
         "dataDisks": [
@@ -727,6 +735,9 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'Owner'
   }
 ]
+param runtimeConfiguration = {
+  workFolder: 'B:\\custom-work-folder '
+}
 param storageProfile = {
   dataDisks: [
     {
