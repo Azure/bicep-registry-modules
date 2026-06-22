@@ -322,6 +322,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 'res/azure-stack-hci/network-interface'
                 'res/azure-stack-hci/virtual-hard-disk'
                 'res/azure-stack-hci/virtual-machine-instance'
+                'res/cache/redis'
             )
 
             $incorrectFolders = @()
