@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "14130399851454646570"
+      "templateHash": "15204129388339277479"
     },
     "name": "Container Registries Tokens",
-    "description": "This module deploys an Azure Container Registry (ACR) Token."
+    "description": "Deploys an Azure Container Registry (ACR) Token."
   },
   "parameters": {
     "registryName": {

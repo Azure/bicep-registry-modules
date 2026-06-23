@@ -1,5 +1,5 @@
 metadata name = 'Container Registries Tokens'
-metadata description = 'This module deploys an Azure Container Registry (ACR) Token.'
+metadata description = 'Deploys an Azure Container Registry (ACR) Token.'
 
 @description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string

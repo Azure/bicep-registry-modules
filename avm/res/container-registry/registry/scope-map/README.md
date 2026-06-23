@@ -1,6 +1,6 @@
-# Container Registries scopeMaps `[Microsoft.ContainerRegistry/registries/scopeMaps]`
+# Container Registries scope maps `[Microsoft.ContainerRegistry/registries/scopeMaps]`
 
-This module deploys an Azure Container Registry (ACR) scopeMap.
+This module deploys an Azure Container Registry (ACR) scope map.
 
 You can reference the module as follows:
 ```bicep

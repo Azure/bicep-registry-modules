@@ -41,6 +41,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using probes](#example-2-using-probes)
+- [Using volumes](#example-3-using-volumes)
 
 ### Example 1: _Using only defaults_
 
@@ -235,6 +236,116 @@ param location = '<location>'
 </details>
 <p>
 
+### Example 3: _Using volumes_
+
+This instance deploys the module with an EmptyDir volume mount.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/volumes]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module acrContainerApp 'br/public:avm/ptn/azd/acr-container-app:<version>' = {
+  params: {
+    // Required parameters
+    containerAppsEnvironmentName: '<containerAppsEnvironmentName>'
+    name: 'acracavol001'
+    // Non-required parameters
+    location: '<location>'
+    volumeMounts: [
+      {
+        mountPath: '/mnt/data'
+        volumeName: 'myemptydir'
+      }
+    ]
+    volumes: [
+      {
+        name: 'myemptydir'
+        storageType: 'EmptyDir'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "containerAppsEnvironmentName": {
+      "value": "<containerAppsEnvironmentName>"
+    },
+    "name": {
+      "value": "acracavol001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "volumeMounts": {
+      "value": [
+        {
+          "mountPath": "/mnt/data",
+          "volumeName": "myemptydir"
+        }
+      ]
+    },
+    "volumes": {
+      "value": [
+        {
+          "name": "myemptydir",
+          "storageType": "EmptyDir"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/acr-container-app:<version>'
+
+// Required parameters
+param containerAppsEnvironmentName = '<containerAppsEnvironmentName>'
+param name = 'acracavol001'
+// Non-required parameters
+param location = '<location>'
+param volumeMounts = [
+  {
+    mountPath: '/mnt/data'
+    volumeName: 'myemptydir'
+  }
+]
+param volumes = [
+  {
+    name: 'myemptydir'
+    storageType: 'EmptyDir'
+  }
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -280,6 +391,8 @@ param location = '<location>'
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetPort`](#parameter-targetport) | int | The target port for the container. |
 | [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource id of the user-assigned identity. |
+| [`volumeMounts`](#parameter-volumemounts) | array | Volume mounts for the primary container. |
+| [`volumes`](#parameter-volumes) | array | The list of volumes that can be mounted by containers in the container app. |
 
 ### Parameter: `containerAppsEnvironmentName`
 
@@ -855,6 +968,134 @@ The resource id of the user-assigned identity.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `volumeMounts`
+
+Volume mounts for the primary container.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountPath`](#parameter-volumemountsmountpath) | string | Path within the container at which the volume should be mounted. Must not contain ':'. |
+| [`volumeName`](#parameter-volumemountsvolumename) | string | This must match the Name of a Volume. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subPath`](#parameter-volumemountssubpath) | string | Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root). |
+
+### Parameter: `volumeMounts.mountPath`
+
+Path within the container at which the volume should be mounted. Must not contain ':'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeMounts.volumeName`
+
+This must match the Name of a Volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumeMounts.subPath`
+
+Path within the volume from which the container's volume should be mounted. Defaults to "" (volume's root).
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes`
+
+The list of volumes that can be mounted by containers in the container app.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-volumesname) | string | Volume name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mountOptions`](#parameter-volumesmountoptions) | string | Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string. |
+| [`secrets`](#parameter-volumessecrets) | array | List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume. |
+| [`storageName`](#parameter-volumesstoragename) | string | Name of storage resource. No need to provide for EmptyDir and Secret. |
+| [`storageType`](#parameter-volumesstoragetype) | string | Storage type for the volume. If not provided, use EmptyDir. |
+
+### Parameter: `volumes.name`
+
+Volume name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.mountOptions`
+
+Mount options used while mounting the Azure file share or NFS Azure file share. Must be a comma-separated string.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes.secrets`
+
+List of secrets to be added in volume. If no secrets are provided, all secrets in collection will be available to volume.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`path`](#parameter-volumessecretspath) | string | Path to project secret to. Must be unique per volume and not conflict with other paths in the volume. |
+| [`secretRef`](#parameter-volumessecretssecretref) | string | Name of the Container App secret from which to pull the secret value. |
+
+### Parameter: `volumes.secrets.path`
+
+Path to project secret to. Must be unique per volume and not conflict with other paths in the volume.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.secrets.secretRef`
+
+Name of the Container App secret from which to pull the secret value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.storageName`
+
+Name of storage resource. No need to provide for EmptyDir and Secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes.storageType`
+
+Storage type for the volume. If not provided, use EmptyDir.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureFile'
+    'EmptyDir'
+    'NfsAzureFile'
+    'Secret'
+  ]
+  ```
 
 ## Outputs
 

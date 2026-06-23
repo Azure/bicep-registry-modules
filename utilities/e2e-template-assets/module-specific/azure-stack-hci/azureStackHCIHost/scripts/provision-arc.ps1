@@ -28,6 +28,13 @@ param(
 $script:ErrorActionPreference = 'Stop'
 
 try {
+    # Ensure WinRM TrustedHosts includes the target IP (required for non-domain-joined remoting)
+    $currentTrustedHosts = (Get-Item WSMan:\localhost\Client\TrustedHosts).Value
+    if ($currentTrustedHosts -notmatch [regex]::Escape($IP)) {
+        Set-Item WSMan:\localhost\Client\TrustedHosts -Value $IP -Concatenate -Force
+        Write-Output "Added $IP to WinRM TrustedHosts"
+    }
+
     $username = ".\$LocalAdministratorAccount"
     $securePassword = ConvertTo-SecureString $LocalAdministratorPassword -AsPlainText -Force
     $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $username, $securePassword

@@ -1,5 +1,5 @@
 metadata name = 'Container Registries Tasks'
-metadata description = 'This module deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).'
+metadata description = 'Deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).'
 
 @description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string

@@ -2,6 +2,40 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
 
+## 0.19.3
+
+### Changes
+
+- Documented that the `logAnalyticsDestinationType` property of `diagnosticSettings` is ignored by the platform for CDN profiles, since Azure CDN only emits resource logs in Azure Diagnostics mode.
+
+### Breaking Changes
+
+- None
+
+## 0.19.2
+
+### Changes
+
+- Publishing child module `avm/res/cdn/profile/afd-endpoint`.
+- Publishing child module `avm/res/cdn/profile/endpoint`.
+- Publishing child module `avm/res/cdn/profile/endpoint/origin`.
+- Publishing child module `avm/res/cdn/profile/rule-set/rule`.
+- Publishing child module `avm/res/cdn/profile/secret`.
+
+### Breaking Changes
+
+- None
+
+## 0.19.1
+
+### Changes
+
+- Publishing child module `avm/res/cdn/profile/origin-group/origin`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes

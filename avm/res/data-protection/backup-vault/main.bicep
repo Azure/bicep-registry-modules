@@ -135,6 +135,8 @@ var formattedRoleAssignments = [
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
+var enableReferencedModulesTelemetry = false
+
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
@@ -237,6 +239,7 @@ module backupVault_backupPolicies 'backup-policy/main.bicep' = [
       backupVaultName: backupVault.name
       name: backupPolicy.name
       properties: backupPolicy.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -251,6 +254,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       friendlyName: backupInstance.?friendlyName
       dataSourceInfo: backupInstance.dataSourceInfo
       policyInfo: backupInstance.policyInfo
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       backupVault_backupPolicies

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5957282577108175179"
+      "version": "0.43.1.21952",
+      "templateHash": "9451806107229217327"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1131,7 +1131,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored."
       }
     }
   },
@@ -1281,6 +1281,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "profileName": {
             "value": "[parameters('name')]"
           },
@@ -1304,8 +1307,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18145549684078987782"
+              "version": "0.43.1.21952",
+              "templateHash": "11436902781078853668"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1348,9 +1351,39 @@
                 "description": "Optional. Endpoint tags."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.cdn-profile-endpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -1379,6 +1412,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "profileName": {
                     "value": "[parameters('profileName')]"
                   },
@@ -1426,8 +1462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "730586843445522115"
+                      "version": "0.43.1.21952",
+                      "templateHash": "1490754851041638567"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1520,9 +1556,36 @@
                       "metadata": {
                         "description": "Optional. The name of the CDN profile. Default to \"default\"."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.cdn-profile-endpointorigin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "profile": {
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles",
@@ -1643,6 +1706,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "name": {
             "value": "[coalesce(parameters('secrets'), createArray())[copyIndex()].name]"
           },
@@ -1672,8 +1738,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3394038339205028576"
+              "version": "0.43.1.21952",
+              "templateHash": "9350005169817405811"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1734,9 +1800,36 @@
               "metadata": {
                 "description": "Optional. Indicates whether to use the latest version of the secret."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.cdn-profile-secret.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -1839,8 +1932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3504319607874832551"
+              "version": "0.43.1.21952",
+              "templateHash": "6883060219010743162"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -2118,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11354323423619918567"
+              "version": "0.43.1.21952",
+              "templateHash": "6506136652954900600"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2361,6 +2454,9 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -2447,6 +2543,9 @@
                   },
                   "sharedPrivateLinkResource": {
                     "value": "[tryGet(parameters('origins')[copyIndex()], 'sharedPrivateLinkResource')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2456,8 +2555,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "9365226509800420471"
+                      "version": "0.43.1.21952",
+                      "templateHash": "15384076797375871606"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2549,6 +2648,13 @@
                       "metadata": {
                         "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -2557,6 +2663,26 @@
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.cdn-profile-origingroup-origin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "profile": {
                       "existing": true,
@@ -2681,8 +2807,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14532099365660870046"
+              "version": "0.43.1.21952",
+              "templateHash": "8966266643094712937"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2772,6 +2898,9 @@
               }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -2818,6 +2947,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  },
                   "profileName": {
                     "value": "[parameters('profileName')]"
                   },
@@ -2847,8 +2979,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "16688520520458465657"
+                      "version": "0.43.1.21952",
+                      "templateHash": "12930386980400641349"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -2908,6 +3040,13 @@
                       "metadata": {
                         "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -2916,6 +3055,26 @@
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.cdn-profile-rulesetrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "profile": {
                       "existing": true,
@@ -3006,6 +3165,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "name": {
             "value": "[coalesce(parameters('afdEndpoints'), createArray())[copyIndex()].name]"
           },
@@ -3035,8 +3197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12423353766252209627"
+              "version": "0.43.1.21952",
+              "templateHash": "3470267530732764401"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3226,12 +3388,39 @@
               "metadata": {
                 "description": "Optional. The list of routes for this AFD Endpoint."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
             "enableReferencedModulesTelemetry": false
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.cdn-profile-afdendpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
@@ -3316,8 +3505,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "4729616825439135911"
+                      "version": "0.43.1.21952",
+                      "templateHash": "16338982868678591577"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3675,8 +3864,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2114053675026141794"
+              "version": "0.43.1.21952",
+              "templateHash": "15741706543761130014"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."

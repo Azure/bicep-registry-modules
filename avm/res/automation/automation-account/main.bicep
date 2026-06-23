@@ -70,7 +70,7 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -105,11 +105,11 @@ var formattedUserAssignedIdentities = reduce(
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) && (managedIdentities.?systemAssigned ?? false || !empty(formattedUserAssignedIdentities))
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : 'UserAssigned'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -198,6 +198,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
   name: name
   location: location
   tags: tags
+  #disable-next-line BCP036 // Despite claims from the documentation, 'None' is not an allowed value, nor is null
   identity: identity
   properties: {
     sku: {
@@ -236,6 +237,7 @@ module automationAccount_credentials 'credential/main.bicep' = [
       password: credential.password
       userName: credential.userName
       description: credential.?description
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -250,11 +252,12 @@ module automationAccount_modules 'module/main.bicep' = [
       uri: module.uri
       location: location
       tags: module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
+module automationAccount_powershell72modules 'powershell72-module/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
     params: {
@@ -264,11 +267,12 @@ module automationAccount_powershell72modules 'powershell72-modules/main.bicep' =
       uri: pwsh72module.uri
       location: pwsh72module.?location
       tags: pwsh72module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module automationAccount_python3packages 'python3-packages/main.bicep' = [
+module automationAccount_python3packages 'python3-package/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
     params: {
@@ -277,11 +281,12 @@ module automationAccount_python3packages 'python3-packages/main.bicep' = [
       version: python3package.version
       uri: python3package.uri
       tags: python3package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module automationAccount_python2packages 'python2-packages/main.bicep' = [
+module automationAccount_python2packages 'python2-package/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
     name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
     params: {
@@ -290,6 +295,7 @@ module automationAccount_python2packages 'python2-packages/main.bicep' = [
       version: python2package.version
       uri: python2package.uri
       tags: python2package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -307,6 +313,7 @@ module automationAccount_schedules 'schedule/main.bicep' = [
       interval: schedule.?interval
       startTime: schedule.?startTime
       timeZone: schedule.?timeZone
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -325,6 +332,7 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
       scriptStorageAccountResourceId: runbook.?scriptStorageAccountResourceId
       location: location
       tags: runbook.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -338,6 +346,7 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
       scheduleName: jobSchedule.scheduleName
       parameters: jobSchedule.?parameters
       runOn: jobSchedule.?runOn
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_schedules
@@ -355,6 +364,7 @@ module automationAccount_variables 'variable/main.bicep' = [
       description: variable.?description
       value: variable.value
       isEncrypted: variable.?isEncrypted
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -369,6 +379,7 @@ module automationAccount_webhook 'webhook/main.bicep' = [
       runOn: webhook.?runOn
       expiryTime: webhook.?expiryTime
       parameters: webhook.?parameters
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -387,6 +398,7 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
       securityToken: configuration.?securityToken
       autoSync: configuration.?autoSync
       publishRunbook: configuration.?publishRunbook
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -445,6 +457,7 @@ module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep'
       hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
       name: group.name
       credentialName: group.?credentialName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_credentials
@@ -472,14 +485,18 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

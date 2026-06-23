@@ -159,49 +159,181 @@ $vmNicLocalNamingOut = Invoke-Command -VMName (Get-VM).Name -Credential $adminCr
 }
 log "VM NIC local naming output: $vmNicLocalNamingOut"
 
-# change dynamically assigned mgmt IP addresses to static IPs as required by validation
-log 'Changing dynamically assigned mgmt IP addresses to static IPs on HCI nodes...'
+# change dynamically assigned FABRIC IP addresses to static IPs as required by validation
+log 'Changing dynamically assigned FABRIC IP addresses to static IPs on HCI nodes...'
 $ipChangeOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
     $ErrorActionPreference = 'Stop'
 
-    $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'mgmt'
-    $prefixLength = Get-NetIPAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
-    $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'mgmt' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
+    $dhcpIpConfig = Get-NetIPConfiguration -InterfaceAlias 'FABRIC'
+    $prefixLength = Get-NetIPAddress -InterfaceAlias 'FABRIC' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+    $dnsClientConfig = Get-DnsClientServerAddress -InterfaceAlias 'FABRIC' -AddressFamily IPv4 | Select-Object -ExpandProperty ServerAddresses
 
     try {
-        If (!(Get-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
-            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'mgmt'..."
+        If (!(Get-NetIPInterface -InterfaceAlias 'FABRIC' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'FABRIC'..."
         } Else {
-            Write-Output "[$env:computerName]Disabling DHCP on network interface 'mgmt'..."
-            Set-NetIPInterface -InterfaceAlias 'mgmt' -Dhcp Disabled
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'FABRIC'..."
+            Set-NetIPInterface -InterfaceAlias 'FABRIC' -Dhcp Disabled
         }
     } catch {
-        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 
     try {
-        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -InterfaceAlias 'mgmt' -ErrorAction SilentlyContinue)) {
-            Write-Output "[$env:computerName]Setting static IP address on network interface 'mgmt'..."
-            New-NetIPAddress -InterfaceAlias 'mgmt' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -InterfaceAlias 'FABRIC' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'FABRIC'..."
+            New-NetIPAddress -InterfaceAlias 'FABRIC' -IPAddress $dhcpIpConfig.IPv4Address.ipAddress -DefaultGateway $dhcpIpConfig.Ipv4DefaultGateway.NextHop -AddressFamily IPv4 -PrefixLength $prefixLength
         } Else {
-            Write-Output "[$env:computerName]Static IP address already set on network interface 'mgmt'..."
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'FABRIC'..."
         }
     } catch {
-        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 
     try {
-        Write-Output "[$env:computerName]Setting DNS server addresses on network interface 'mgmt' to '$dnsClientConfig'..."
-        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ResetServerAddresses
-        Set-DnsClientServerAddress -InterfaceAlias 'mgmt' -ServerAddresses $dnsClientConfig
+        Write-Output "[$env:computerName]Setting DNS server addresses on network interface 'FABRIC' to '$dnsClientConfig'..."
+        Set-DnsClientServerAddress -InterfaceAlias 'FABRIC' -ResetServerAddresses
+        Set-DnsClientServerAddress -InterfaceAlias 'FABRIC' -ServerAddresses $dnsClientConfig
     } catch {
-        Write-Output "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..."
-        Write-Error "[$env:computerName]Failed to set DNS server addresses on network interface 'mgmt'. Error message: $_. Exiting..." -ErrorAction Stop
+        Write-Output "[$env:computerName]Failed to set DNS server addresses on network interface 'FABRIC'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set DNS server addresses on network interface 'FABRIC'. Error message: $_. Exiting..." -ErrorAction Stop
         Exit 1
     }
 }
 log "IP change output: $ipChangeOutput"
+
+# change dynamically assigned FABRIC2 IP addresses to static IPs as required by validation
+log 'Changing dynamically assigned FABRIC2 IP addresses to static IPs on HCI nodes...'
+$ipChangeOutput2 = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    $dhcpIpConfig2 = Get-NetIPConfiguration -InterfaceAlias 'FABRIC2'
+    $prefixLength2 = Get-NetIPAddress -InterfaceAlias 'FABRIC2' -AddressFamily IPv4 | Select-Object -ExpandProperty PrefixLength
+
+    try {
+        If (!(Get-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Enabled -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]DHCP is already disabled on network interface 'FABRIC2'..."
+        } Else {
+            Write-Output "[$env:computerName]Disabling DHCP on network interface 'FABRIC2'..."
+            Set-NetIPInterface -InterfaceAlias 'FABRIC2' -Dhcp Disabled
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to disable DHCP on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+
+    try {
+        If (!(Get-NetIPAddress -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -InterfaceAlias 'FABRIC2' -ErrorAction SilentlyContinue)) {
+            Write-Output "[$env:computerName]Setting static IP address on network interface 'FABRIC2'..."
+            New-NetIPAddress -InterfaceAlias 'FABRIC2' -IPAddress $dhcpIpConfig2.IPv4Address.ipAddress -AddressFamily IPv4 -PrefixLength $prefixLength2
+        } Else {
+            Write-Output "[$env:computerName]Static IP address already set on network interface 'FABRIC2'..."
+        }
+    } catch {
+        Write-Output "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..."
+        Write-Error "[$env:computerName]Failed to set static IP address on network interface 'FABRIC2'. Error message: $_. Exiting..." -ErrorAction Stop
+        Exit 1
+    }
+}
+log "IP change output (FABRIC2): $ipChangeOutput2"
+
+# ============================================= #
+# NTP Configuration                              #
+# ============================================= #
+
+# Step 1 - Configure DC host to sync from external NTP (time.windows.com)
+# The DC is the authoritative time source for the domain
+log 'Configuring NTP on DC host (time.windows.com)...'
+w32tm /config /manualpeerlist:"time.windows.com" /syncfromflags:manual /reliable:YES /update
+Stop-Service W32Time -Force -ErrorAction SilentlyContinue
+Start-Service W32Time
+Start-Sleep -Seconds 5
+w32tm /resync /force
+log "DC NTP status: $(w32tm /query /status | Out-String)"
+
+# Step 2 - Configure HCI nodes to sync from DC (172.20.0.1)
+# Disable VM IC Time Synchronization and point to DC instead
+log 'Configuring NTP on HCI nodes to sync from DC at 172.20.0.1...'
+$ntpOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    # Disable VM IC Time Synchronization provider - not valid for HCI deployment validation
+    Write-Output "[$env:COMPUTERNAME] Disabling VM IC Time Synchronization provider..."
+    reg add "HKLM\SYSTEM\CurrentControlSet\Services\W32Time\TimeProviders\VMICTimeProvider" /v Enabled /t REG_DWORD /d 0 /f
+
+    # Configure NTP to sync from domain controller at 172.20.0.1
+    Write-Output "[$env:COMPUTERNAME] Configuring NTP server to DC at 172.20.0.1..."
+    w32tm /config /manualpeerlist:"172.20.0.1" /syncfromflags:manual /reliable:YES /update
+    Stop-Service W32Time -Force -ErrorAction SilentlyContinue
+    Start-Service W32Time
+    Start-Sleep -Seconds 5
+    w32tm /resync /force
+
+    # Verify NTP sync
+    $ntpStatus = w32tm /query /status | Out-String
+    Write-Output "[$env:COMPUTERNAME] NTP status: $ntpStatus"
+}
+log "NTP configuration output: $ntpOutput"
+
+# ============================================= #
+# Network Connectivity Validation from HCI nodes #
+# ============================================= #
+log 'Validating outbound network connectivity from HCI nodes to required Azure endpoints...'
+$connectivityOutput = Invoke-Command -VMName (Get-VM).Name -Credential $adminCred {
+    $ErrorActionPreference = 'Stop'
+
+    $endpoints = @(
+        @{ Host = 'login.microsoftonline.com'; Port = 443; Description = 'Azure AD authentication' }
+        @{ Host = 'management.azure.com'; Port = 443; Description = 'Azure Resource Manager' }
+        @{ Host = 'dp.stackhci.azure.com'; Port = 443; Description = 'Azure Stack HCI data plane' }
+        @{ Host = 'azurestackhci.azurefd.net'; Port = 443; Description = 'Azure Stack HCI front door' }
+    )
+
+    $allPassed = $true
+    foreach ($ep in $endpoints) {
+        $maxRetries = 3
+        $connected = $false
+        for ($retry = 1; $retry -le $maxRetries; $retry++) {
+            try {
+                $tcp = New-Object System.Net.Sockets.TcpClient
+                $asyncResult = $tcp.BeginConnect($ep.Host, $ep.Port, $null, $null)
+                $wait = $asyncResult.AsyncWaitHandle.WaitOne(10000, $false) # 10s timeout
+                if ($wait -and $tcp.Connected) {
+                    $tcp.EndConnect($asyncResult)
+                    Write-Output ("[$env:COMPUTERNAME] OK: {0}:{1} ({2})" -f $ep.Host, $ep.Port, $ep.Description)
+                    $connected = $true
+                    $tcp.Close()
+                    break
+                } else {
+                    $tcp.Close()
+                    throw "Connection timed out"
+                }
+            } catch {
+                    Write-Output ("[$env:COMPUTERNAME] RETRY {0}/{1}: {2}:{3} - {4}" -f $retry, $maxRetries, $ep.Host, $ep.Port, $_.Exception.Message)
+                if ($retry -lt $maxRetries) { Start-Sleep -Seconds 10 }
+            }
+        }
+        if (-not $connected) {
+            Write-Output ("[$env:COMPUTERNAME] FAIL: {0}:{1} ({2}) - unreachable after {3} attempts" -f $ep.Host, $ep.Port, $ep.Description, $maxRetries)
+            $allPassed = $false
+        }
+    }
+
+    # Also validate DNS resolution for the domain
+    try {
+        $domainDns = Resolve-DnsName -Name 'hci.local' -ErrorAction Stop
+        Write-Output "[$env:COMPUTERNAME] OK: DNS resolution for 'hci.local' -> $($domainDns.IPAddress -join ', ')"
+    } catch {
+        Write-Output "[$env:COMPUTERNAME] WARN: DNS resolution for 'hci.local' failed: $($_.Exception.Message)"
+    }
+
+    if (-not $allPassed) {
+        Write-Error "[$env:COMPUTERNAME] One or more Azure endpoints are unreachable. Cluster deployment will likely fail." -ErrorAction Stop
+    }
+}
+log "Network connectivity validation output: $connectivityOutput"

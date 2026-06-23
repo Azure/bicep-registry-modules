@@ -118,17 +118,9 @@ param capacity int = 2
 @description('Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.')
 param skuName string = 'Balanced_B5'
 
-@allowed([
-  1
-  2
-  3
-])
 @description('Optional. The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs.')
-param availabilityZones int[] = [
-  1
-  2
-  3
-]
+@allowed([1, 2, 3])
+param availabilityZones int[] = [1, 2, 3]
 
 // ================ //
 // Database params  //
@@ -158,8 +150,6 @@ var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptim
   'FlashOptimized'
 ) || startsWith(skuName, 'MemoryOptimized')
 var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'EnterpriseFlash')
-
-var zones = isEnterprise ? map(availabilityZones, zone => string(zone)) : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -208,7 +198,7 @@ var formattedRoleAssignments = [
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cache-redisenterprise.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -282,7 +272,7 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' = {
     capacity: isEnterprise ? capacity : null
     name: skuName
   }
-  zones: !empty(zones) ? zones : null
+  zones: isEnterprise ? map(availabilityZones, zone => string(zone)) : null
 }
 
 module redisCluster_database 'database/main.bicep' = {
@@ -353,7 +343,7 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(

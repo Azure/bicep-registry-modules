@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      availabilityZones: map(pickZones('Microsoft.Cache', 'redisEnterprise', resourceLocation, 3), zone => int(zone))
       publicNetworkAccess: 'Disabled'
       diagnosticSettings: [
         {

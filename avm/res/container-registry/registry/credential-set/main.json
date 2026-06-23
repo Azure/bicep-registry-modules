@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "12293214947057934525"
+      "templateHash": "2883076078456569579"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set."
@@ -101,9 +101,6 @@
       }
     }
   },
-  "variables": {
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]"
-  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -135,7 +132,7 @@
       "type": "Microsoft.ContainerRegistry/registries/credentialSets",
       "apiVersion": "2025-11-01",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
-      "identity": "[variables('identity')]",
+      "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]",
       "properties": {
         "authCredentials": "[parameters('authCredentials')]",
         "loginServer": "[parameters('loginServer')]"

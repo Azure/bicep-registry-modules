@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.41.2.15936",
+      "templateHash": "8801335399588539922"
+    }
+  },
+  "parameters": {
+    "privateLinkScopeName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Private Link Scope to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy to."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.HybridCompute/privateLinkScopes",
+      "apiVersion": "2025-06-01",
+      "name": "[parameters('privateLinkScopeName')]",
+      "location": "[parameters('location')]",
+      "tags": {
+        "hidden-title": "This is visible in the resource name",
+        "Environment": "Non-Prod",
+        "Role": "DeploymentValidation"
+      },
+      "properties": {
+        "publicNetworkAccess": "Enabled"
+      }
+    }
+  ],
+  "outputs": {
+    "privateLinkScopeResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created Private Link Scope."
+      },
+      "value": "[resourceId('Microsoft.HybridCompute/privateLinkScopes', parameters('privateLinkScopeName'))]"
+    }
+  }
+}

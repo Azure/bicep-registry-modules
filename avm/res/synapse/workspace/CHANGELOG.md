@@ -2,6 +2,32 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/synapse/workspace/CHANGELOG.md).
 
+## 0.14.4
+
+### Changes
+
+- Publishing child module `avm/res/synapse/workspace/administrator`
+- Publishing child module `avm/res/synapse/workspace/big-data-pool`
+- Publishing child module `avm/res/synapse/workspace/firewall-rule`
+- Publishing child module `avm/res/synapse/workspace/integration-runtime`
+- Publishing child module `avm/res/synapse/workspace/key`
+- Publishing child module `avm/res/synapse/workspace/sql-pool`
+
+### Breaking Changes
+
+- None
+
+## 0.14.3
+
+### Changes
+
+- Added support for `libraryRequirements` and `customLibraries` when creating Big Data Pools
+- Updated API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.14.2
 
 ### Changes

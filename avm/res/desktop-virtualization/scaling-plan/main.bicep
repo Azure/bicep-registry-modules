@@ -35,18 +35,18 @@ param description string = name
 @sys.description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.DesktopVirtualization/scalingPlans@2025-03-01-preview'>.tags?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The database-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -132,7 +132,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.desktopvirtualization-scalingplan.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -160,10 +160,12 @@ resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2025-03-01-pr
     hostPoolType: hostPoolType
     exclusionTag: exclusionTag
     schedules: schedules
-    hostPoolReferences: map(hostPoolReferences ?? [], reference => {
-      hostPoolArmPath: reference.hostPoolResourceId
-      scalingPlanEnabled: reference.?scalingPlanEnabled ?? true
-    })
+    hostPoolReferences: !empty(hostPoolReferences)
+      ? map(hostPoolReferences!, reference => {
+          hostPoolArmPath: reference.hostPoolResourceId
+          scalingPlanEnabled: reference.?scalingPlanEnabled ?? true
+        })
+      : null
     description: description
   }
 }

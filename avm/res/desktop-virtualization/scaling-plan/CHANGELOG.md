@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/scaling-plan/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Updated behavior of `hostPoolReferences` parameter to not default to `null` instead of `[]` when no `hostPoolReferences` are defined.
+- Updated 'avm-common-types version' references to `0.7.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.1
 
 ### Changes

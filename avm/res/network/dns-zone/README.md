@@ -30,6 +30,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/dnsZones/AAAA` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_aaaa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/AAAA)</li></ul> |
 | `Microsoft.Network/dnsZones/CAA` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_caa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CAA)</li></ul> |
 | `Microsoft.Network/dnsZones/CNAME` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_cname.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CNAME)</li></ul> |
+| `Microsoft.Network/dnsZones/dnssecConfigs` | 2023-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_dnssecconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-07-01-preview/dnsZones/dnssecConfigs)</li></ul> |
+| `Microsoft.Network/dnsZones/DS` | 2023-07-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_ds.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-07-01-preview/dnsZones/DS)</li></ul> |
 | `Microsoft.Network/dnsZones/MX` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_mx.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/MX)</li></ul> |
 | `Microsoft.Network/dnsZones/NS` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_ns.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/NS)</li></ul> |
 | `Microsoft.Network/dnsZones/PTR` | 2018-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_dnszones_ptr.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/PTR)</li></ul> |
@@ -46,8 +48,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/dns-zone:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Deploying with DNSSEC enabled](#example-2-deploying-with-dnssec-enabled)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -103,7 +106,72 @@ param name = 'ndzmin001.com'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Deploying with DNSSEC enabled_
+
+This instance deploys the module with DNSSEC configuration enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/dnssec]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ndzdnssec001.com'
+    // Non-required parameters
+    enableDnsSec: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ndzdnssec001.com"
+    },
+    // Non-required parameters
+    "enableDnsSec": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/dns-zone:<version>'
+
+// Required parameters
+param name = 'ndzdnssec001.com'
+// Non-required parameters
+param enableDnsSec = true
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -217,6 +285,39 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       {
         name: 'CNAME_aliasRecordSet'
         targetResourceId: '<targetResourceId>'
+      }
+    ]
+    ds: [
+      {
+        dsRecords: [
+          {
+            algorithm: 13
+            digest: {
+              algorithmType: 2
+              value: 'AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'
+            }
+            keyTag: 12345
+          }
+        ]
+        name: 'DS_test'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        ttl: 3600
       }
     ]
     location: 'global'
@@ -551,6 +652,41 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
         {
           "name": "CNAME_aliasRecordSet",
           "targetResourceId": "<targetResourceId>"
+        }
+      ]
+    },
+    "ds": {
+      "value": [
+        {
+          "dsRecords": [
+            {
+              "algorithm": 13,
+              "digest": {
+                "algorithmType": 2,
+                "value": "AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899"
+              },
+              "keyTag": 12345
+            }
+          ],
+          "name": "DS_test",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "ttl": 3600
         }
       ]
     },
@@ -897,6 +1033,39 @@ param cname = [
     targetResourceId: '<targetResourceId>'
   }
 ]
+param ds = [
+  {
+    dsRecords: [
+      {
+        algorithm: 13
+        digest: {
+          algorithmType: 2
+          value: 'AABBCCDDEEFF00112233445566778899AABBCCDDEEFF00112233445566778899'
+        }
+        keyTag: 12345
+      }
+    ]
+    name: 'DS_test'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    ttl: 3600
+  }
+]
 param location = 'global'
 param lock = {
   kind: 'CanNotDelete'
@@ -1109,7 +1278,7 @@ param txt = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1202,6 +1371,8 @@ param tags = {
 | [`aaaa`](#parameter-aaaa) | array | Array of AAAA records. |
 | [`caa`](#parameter-caa) | array | Array of CAA records. |
 | [`cname`](#parameter-cname) | array | Array of CNAME records. |
+| [`ds`](#parameter-ds) | array | Array of DS records. |
+| [`enableDnsSec`](#parameter-enablednssec) | bool | Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | The location of the dnsZone. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1880,6 +2051,172 @@ The TTL of the record.
 
 - Required: No
 - Type: int
+
+### Parameter: `ds`
+
+Array of DS records.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dsname) | string | The name of the record. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dsRecords`](#parameter-dsdsrecords) | array | The list of DS records in the record set. |
+| [`metadata`](#parameter-dsmetadata) | object | The metadata of the record. |
+| [`roleAssignments`](#parameter-dsroleassignments) | array | Array of role assignments to create. |
+| [`ttl`](#parameter-dsttl) | int | The TTL of the record. |
+
+### Parameter: `ds.name`
+
+The name of the record.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ds.dsRecords`
+
+The list of DS records in the record set.
+
+- Required: No
+- Type: array
+
+### Parameter: `ds.metadata`
+
+The metadata of the record.
+
+- Required: No
+- Type: object
+
+### Parameter: `ds.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-dsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-dsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-dsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-dsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-dsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-dsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-dsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-dsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `ds.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ds.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ds.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `ds.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `ds.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `ds.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `ds.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `ds.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `ds.ttl`
+
+The TTL of the record.
+
+- Required: No
+- Type: int
+
+### Parameter: `enableDnsSec`
+
+Enable DNSSEC for the DNS zone. Public keys from the RP are ½ of the public/private keypairs used to sign requests. They are exposed because they need to be configured as DS recorded in the parent zone to create a chain of trust (which is a secondary manual step).
+
+- Required: No
+- Type: bool
 
 ### Parameter: `enableTelemetry`
 

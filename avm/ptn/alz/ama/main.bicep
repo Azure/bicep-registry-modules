@@ -37,7 +37,7 @@ param enableTelemetry bool = true
 // Resources      //
 // ============== //
 
-module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.3' = {
+module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserAssignedIdentity'
   params: {
     name: userAssignedIdentityName
@@ -151,7 +151,7 @@ resource dataCollectionRuleVMInsightsPerfOnly 'Microsoft.Insights/dataCollection
 
 resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name)) && dataCollectionRuleVMInsightsExperience == 'PerfAndMap') {
   scope: dataCollectionRuleVMInsightsPerfAndMap
-  name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfAndMap.name}-lock'
+  name: '${lockConfig.?name ?? dataCollectionRuleVMInsightsPerfAndMap.name}-perfandmap-lock'
   properties: {
     level: lockConfig.?kind ?? 'ReadOnly'
   }
@@ -159,7 +159,7 @@ resource dataCollectionRuleVMInsightsPerfandMapLock 'Microsoft.Authorization/loc
 
 resource dataCollectionRuleVMInsightsPerfOnlyLock 'Microsoft.Authorization/locks@2020-05-01' = if (lockConfig.?kind != 'None' && !(empty(lockConfig.?name)) && dataCollectionRuleVMInsightsExperience == 'PerfOnly') {
   scope: dataCollectionRuleVMInsightsPerfOnly
-  name: lockConfig.?name ?? '${dataCollectionRuleVMInsightsPerfOnly.name}-lock'
+  name: '${lockConfig.?name ?? dataCollectionRuleVMInsightsPerfOnly.name}-perfonly-lock'
   properties: {
     level: lockConfig.?kind ?? 'ReadOnly'
   }
@@ -495,7 +495,7 @@ resource dataCollectionRuleMDFCSQLLock 'Microsoft.Authorization/locks@2020-05-01
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.alz-ama.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'

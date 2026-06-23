@@ -20,12 +20,6 @@ param loginServer string
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var identity = !empty(managedIdentities)
-  ? {
-      type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
-    }
-  : null
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   #disable-next-line BCP332
@@ -53,7 +47,11 @@ resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing =
 resource credentialSet 'Microsoft.ContainerRegistry/registries/credentialSets@2025-11-01' = {
   name: name
   parent: registry
-  identity: identity
+  identity: !empty(managedIdentities)
+    ? {
+        type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
+      }
+    : null
   properties: {
     authCredentials: authCredentials
     loginServer: loginServer

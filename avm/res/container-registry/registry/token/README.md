@@ -1,6 +1,6 @@
 # Container Registries Tokens `[Microsoft.ContainerRegistry/registries/tokens]`
 
-This module deploys an Azure Container Registry (ACR) Token.
+Deploys an Azure Container Registry (ACR) Token.
 
 You can reference the module as follows:
 ```bicep

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -39,7 +39,6 @@ module nestedDependencies 'dependencies.bicep' = {
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkSecurityGroupBastionName: 'dep-${namePrefix}-nsg-bastion-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -53,7 +52,6 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -69,7 +67,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       addressPrefixes: [
         addressPrefix
       ]
@@ -99,6 +96,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 1)
+          defaultOutboundAccess: false
           name: '${namePrefix}-az-subnet-x-001'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           roleAssignments: [
@@ -116,12 +114,14 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 2)
+          defaultOutboundAccess: false
           delegation: 'Microsoft.Netapp/volumes'
           name: '${namePrefix}-az-subnet-x-002'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         }
         {
           addressPrefix: cidrSubnet(addressPrefix, 24, 3)
+          defaultOutboundAccess: false
           name: '${namePrefix}-az-subnet-x-003'
           networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
           privateEndpointNetworkPolicies: 'Disabled'

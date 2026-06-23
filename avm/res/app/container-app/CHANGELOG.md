@@ -2,6 +2,32 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/container-app/CHANGELOG.md).
 
+## 0.22.1
+
+### Changes
+
+- Publishing child module `avm/res/app/container-app/auth-config`.
+
+### Breaking Changes
+
+- None
+
+## 0.22.0
+
+### New Features
+
+- Added `traffic` array parameter to support traffic splitting across multiple revisions, enabling blue-green and canary deployment patterns. Closes [#6713](https://github.com/Azure/bicep-registry-modules/issues/6713).
+
+### Changes
+
+- Updated `Microsoft.App/containerApps` and `Microsoft.App/containerApps/authConfigs` API versions from `2025-10-02-preview` to `2026-01-01`.
+- Updated `Microsoft.App/managedEnvironments` API version from `2025-10-02-preview` to `2026-01-01` in all test dependency files.
+
+### Breaking Changes
+
+- **Removed** individual traffic scalar parameters (`trafficLabel`, `trafficLatestRevision`, `trafficRevisionName`, `trafficWeight`) in favor of the new `traffic` array parameter using the resource-derived type. Callers must migrate to the new `traffic` parameter.
+- **Removed** `targetPortHttpScheme` parameter as the property was removed in API version `2026-01-01`.
+
 ## 0.21.0
 
 ### Changes

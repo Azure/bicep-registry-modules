@@ -427,12 +427,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         model: {
           format: 'OpenAI'
           name: 'gpt-4o'
-          version: '2024-11-20'
         }
         name: 'gpt-4o'
         sku: {
           capacity: 10
-          name: 'Standard'
+          name: 'GlobalStandard'
         }
       }
     ]
@@ -468,13 +467,12 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "gpt-4o"
           },
           "name": "gpt-4o",
           "sku": {
             "capacity": 10,
-            "name": "Standard"
+            "name": "GlobalStandard"
           }
         }
       ]
@@ -503,12 +501,11 @@ param deployments = [
     model: {
       format: 'OpenAI'
       name: 'gpt-4o'
-      version: '2024-11-20'
     }
     name: 'gpt-4o'
     sku: {
       capacity: 10
-      name: 'Standard'
+      name: 'GlobalStandard'
     }
   }
 ]
@@ -1060,6 +1057,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       ]
     }
     networkAcls: {
+      bypass: 'AzureServices'
       defaultAction: 'Deny'
       ipRules: [
         {
@@ -1232,6 +1230,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "networkAcls": {
       "value": {
+        "bypass": "AzureServices",
         "defaultAction": "Deny",
         "ipRules": [
           {
@@ -1398,6 +1397,7 @@ param managedIdentities = {
   ]
 }
 param networkAcls = {
+  bypass: 'AzureServices'
   defaultAction: 'Deny'
   ipRules: [
     {
@@ -2318,7 +2318,12 @@ Properties of Cognitive Services account deployment model.
 | :-- | :-- | :-- |
 | [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
 | [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
-| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. Required if the model does not have a default version. |
 
 ### Parameter: `deployments.model.format`
 
@@ -2336,9 +2341,9 @@ The name of Cognitive Services account deployment model.
 
 ### Parameter: `deployments.model.version`
 
-The version of Cognitive Services account deployment model.
+The version of Cognitive Services account deployment model. Required if the model does not have a default version.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `deployments.name`
@@ -2682,6 +2687,96 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkaclsbypass) | string | Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall. |
+| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated. |
+| [`ipRules`](#parameter-networkaclsiprules) | array | The list of IP address rules. |
+| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | The list of virtual network rules. |
+
+### Parameter: `networkAcls.bypass`
+
+Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureServices'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkAcls.defaultAction`
+
+The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkAcls.ipRules`
+
+The list of IP address rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78). |
+
+### Parameter: `networkAcls.ipRules.value`
+
+An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules`
+
+The list of virtual network rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-networkaclsvirtualnetworkrulesid) | string | Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-networkaclsvirtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Ignore missing vnet service endpoint or not. |
+
+### Parameter: `networkAcls.virtualNetworkRules.id`
+
+Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Ignore missing vnet service endpoint or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `networkInjections`
 
