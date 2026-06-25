@@ -26,13 +26,8 @@ on:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.alerts-management.action-rule.yml"
       - "avm/res/alerts-management/action-rule/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
