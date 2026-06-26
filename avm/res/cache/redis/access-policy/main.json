@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "9890157890454042104"
+      "version": "0.44.1.10279",
+      "templateHash": "3690683927688770257"
     },
     "name": "Redis Cache Access Policy",
     "description": "This module deploys an access policy for Redis Cache."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10290048196218358466"
+      "version": "0.44.1.10279",
+      "templateHash": "8436730227575572607"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -631,7 +631,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -668,7 +668,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -696,7 +696,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -771,7 +771,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -856,7 +856,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DevOpsInfrastructure/pools@2025-01-21#properties/properties/properties/organizationProfile"
+          "source": "Microsoft.DevOpsInfrastructure/pools@2025-09-20#properties/properties/properties/organizationProfile"
         },
         "description": "Required. Defines the organization in which the pool will be used."
       }
@@ -912,6 +912,16 @@
         "example": "  {\n    systemAssigned: true,\n    userAssignedResourceIds: [\n      '/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myManagedIdentity'\n    ]\n  }\n  {\n    systemAssigned: true\n  }\n  ",
         "description": "Optional. The managed service identities assigned to this resource."
       }
+    },
+    "runtimeConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevOpsInfrastructure/pools@2025-09-20#properties/properties/properties/runtimeConfiguration"
+        },
+        "description": "Optional. The runtime configuration of the pool."
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -942,7 +952,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.devopsinfrastructure-pool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -961,12 +971,13 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2025-01-21",
+      "apiVersion": "2025-09-20",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
+        "runtimeConfiguration": "[parameters('runtimeConfiguration')]",
         "agentProfile": "[if(equals(parameters('agentProfile').kind, 'Stateful'), createObject('kind', 'Stateful', 'maxAgentLifetime', parameters('agentProfile').maxAgentLifetime, 'gracePeriodTimeSpan', parameters('agentProfile').gracePeriodTimeSpan, 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')), createObject('kind', 'Stateless', 'resourcePredictions', if(not(empty(tryGet(parameters('agentProfile'), 'resourcePredictions'))), createObject('timeZone', tryGet(parameters('agentProfile'), 'resourcePredictions', 'timeZone'), 'daysData', variables('formattedDaysData')), null()), 'resourcePredictionsProfile', tryGet(parameters('agentProfile'), 'resourcePredictionsProfile')))]",
         "devCenterProjectResourceId": "[parameters('devCenterProjectResourceId')]",
         "fabricProfile": {
@@ -1088,7 +1099,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2025-01-21', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2025-09-20', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1096,7 +1107,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-01-21', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-09-20', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
