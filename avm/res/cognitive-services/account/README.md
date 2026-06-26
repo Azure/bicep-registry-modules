@@ -28,6 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/raiPolicies` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_raipolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/raiPolicies)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
@@ -429,10 +430,34 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           name: 'gpt-4o'
         }
         name: 'gpt-4o'
+        raiPolicyName: 'custom-rai-policy'
         sku: {
           capacity: 10
           name: 'GlobalStandard'
         }
+      }
+    ]
+    raiPolicies: [
+      {
+        basePolicyName: 'Microsoft.Default'
+        contentFilters: [
+          {
+            blocking: true
+            enabled: true
+            name: 'Hate'
+            severityThreshold: 'High'
+            source: 'Prompt'
+          }
+          {
+            blocking: true
+            enabled: true
+            name: 'Hate'
+            severityThreshold: 'High'
+            source: 'Completion'
+          }
+        ]
+        mode: 'Asynchronous_filter'
+        name: 'custom-rai-policy'
       }
     ]
   }
@@ -470,10 +495,36 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
             "name": "gpt-4o"
           },
           "name": "gpt-4o",
+          "raiPolicyName": "custom-rai-policy",
           "sku": {
             "capacity": 10,
             "name": "GlobalStandard"
           }
+        }
+      ]
+    },
+    "raiPolicies": {
+      "value": [
+        {
+          "basePolicyName": "Microsoft.Default",
+          "contentFilters": [
+            {
+              "blocking": true,
+              "enabled": true,
+              "name": "Hate",
+              "severityThreshold": "High",
+              "source": "Prompt"
+            },
+            {
+              "blocking": true,
+              "enabled": true,
+              "name": "Hate",
+              "severityThreshold": "High",
+              "source": "Completion"
+            }
+          ],
+          "mode": "Asynchronous_filter",
+          "name": "custom-rai-policy"
         }
       ]
     }
@@ -503,10 +554,34 @@ param deployments = [
       name: 'gpt-4o'
     }
     name: 'gpt-4o'
+    raiPolicyName: 'custom-rai-policy'
     sku: {
       capacity: 10
       name: 'GlobalStandard'
     }
+  }
+]
+param raiPolicies = [
+  {
+    basePolicyName: 'Microsoft.Default'
+    contentFilters: [
+      {
+        blocking: true
+        enabled: true
+        name: 'Hate'
+        severityThreshold: 'High'
+        source: 'Prompt'
+      }
+      {
+        blocking: true
+        enabled: true
+        name: 'Hate'
+        severityThreshold: 'High'
+        source: 'Completion'
+      }
+    ]
+    mode: 'Asynchronous_filter'
+    name: 'custom-rai-policy'
   }
 ]
 ```
@@ -2048,6 +2123,7 @@ param tags = {
 | [`networkInjections`](#parameter-networkinjections) | object | Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
+| [`raiPolicies`](#parameter-raipolicies) | array | Array of Responsible AI (RAI) policies to create within the cognitive services account. Custom policies can be referenced by name from `deployments` via the `raiPolicyName` property. |
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -3256,6 +3332,168 @@ Whether or not public network access is allowed for this resource. For security 
   [
     'Disabled'
     'Enabled'
+  ]
+  ```
+
+### Parameter: `raiPolicies`
+
+Array of Responsible AI (RAI) policies to create within the cognitive services account. Custom policies can be referenced by name from `deployments` via the `raiPolicyName` property.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-raipoliciesname) | string | The name of the RAI policy. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`basePolicyName`](#parameter-raipoliciesbasepolicyname) | string | The name of the base RAI policy to derive from. |
+| [`contentFilters`](#parameter-raipoliciescontentfilters) | array | The list of content filters to apply. |
+| [`customBlocklists`](#parameter-raipoliciescustomblocklists) | array | The list of custom blocklists to apply. |
+| [`mode`](#parameter-raipoliciesmode) | string | RAI policy mode. Use 'Asynchronous_filter' after API version 2025-06-01 (equivalent to 'Deferred' in previous versions). |
+
+### Parameter: `raiPolicies.name`
+
+The name of the RAI policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `raiPolicies.basePolicyName`
+
+The name of the base RAI policy to derive from.
+
+- Required: No
+- Type: string
+
+### Parameter: `raiPolicies.contentFilters`
+
+The list of content filters to apply.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blocking`](#parameter-raipoliciescontentfiltersblocking) | bool | If blocking would occur. |
+| [`enabled`](#parameter-raipoliciescontentfiltersenabled) | bool | If the content filter is enabled. |
+| [`name`](#parameter-raipoliciescontentfiltersname) | string | Name of the content filter. |
+| [`severityThreshold`](#parameter-raipoliciescontentfiltersseveritythreshold) | string | Level at which content is filtered. |
+| [`source`](#parameter-raipoliciescontentfilterssource) | string | Content source to apply the content filter. |
+
+### Parameter: `raiPolicies.contentFilters.blocking`
+
+If blocking would occur.
+
+- Required: No
+- Type: bool
+
+### Parameter: `raiPolicies.contentFilters.enabled`
+
+If the content filter is enabled.
+
+- Required: No
+- Type: bool
+
+### Parameter: `raiPolicies.contentFilters.name`
+
+Name of the content filter.
+
+- Required: No
+- Type: string
+
+### Parameter: `raiPolicies.contentFilters.severityThreshold`
+
+Level at which content is filtered.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'High'
+    'Low'
+    'Medium'
+  ]
+  ```
+
+### Parameter: `raiPolicies.contentFilters.source`
+
+Content source to apply the content filter.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Completion'
+    'Prompt'
+  ]
+  ```
+
+### Parameter: `raiPolicies.customBlocklists`
+
+The list of custom blocklists to apply.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blocking`](#parameter-raipoliciescustomblocklistsblocking) | bool | If blocking would occur. |
+| [`blocklistName`](#parameter-raipoliciescustomblocklistsblocklistname) | string | Name of the blocklist. |
+| [`source`](#parameter-raipoliciescustomblocklistssource) | string | Content source to apply the blocklist. |
+
+### Parameter: `raiPolicies.customBlocklists.blocking`
+
+If blocking would occur.
+
+- Required: No
+- Type: bool
+
+### Parameter: `raiPolicies.customBlocklists.blocklistName`
+
+Name of the blocklist.
+
+- Required: No
+- Type: string
+
+### Parameter: `raiPolicies.customBlocklists.source`
+
+Content source to apply the blocklist.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Completion'
+    'Prompt'
+  ]
+  ```
+
+### Parameter: `raiPolicies.mode`
+
+RAI policy mode. Use 'Asynchronous_filter' after API version 2025-06-01 (equivalent to 'Deferred' in previous versions).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Asynchronous_filter'
+    'Blocking'
+    'Default'
+    'Deferred'
   ]
   ```
 

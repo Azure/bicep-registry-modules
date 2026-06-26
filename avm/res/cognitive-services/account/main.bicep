@@ -133,6 +133,9 @@ param enableTelemetry bool = true
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentType[]?
 
+@description('Optional. Array of Responsible AI (RAI) policies to create within the cognitive services account. Custom policies can be referenced by name from `deployments` via the `raiPolicyName` property.')
+param raiPolicies raiPolicyType[]?
+
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
@@ -387,6 +390,19 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
   }
 }
 
+resource cognitiveService_raiPolicies 'Microsoft.CognitiveServices/accounts/raiPolicies@2025-06-01' = [
+  for raiPolicy in (raiPolicies ?? []): {
+    parent: cognitiveService
+    name: raiPolicy.name
+    properties: {
+      basePolicyName: raiPolicy.?basePolicyName
+      contentFilters: raiPolicy.?contentFilters
+      customBlocklists: raiPolicy.?customBlocklists
+      mode: raiPolicy.?mode
+    }
+  }
+]
+
 @batchSize(1)
 resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-06-01' = [
   for (deployment, index) in (deployments ?? []): {
@@ -401,6 +417,9 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       name: 'Standard'
       capacity: 1
     }
+    dependsOn: [
+      cognitiveService_raiPolicies
+    ]
   }
 ]
 
@@ -670,6 +689,49 @@ type deploymentType = {
 
   @description('Optional. The version upgrade option.')
   versionUpgradeOption: string?
+}
+
+@export()
+@description('The type for a Responsible AI (RAI) policy.')
+type raiPolicyType = {
+  @description('Required. The name of the RAI policy.')
+  name: string
+
+  @description('Optional. The name of the base RAI policy to derive from.')
+  basePolicyName: string?
+
+  @description('Optional. The list of content filters to apply.')
+  contentFilters: {
+    @description('Optional. Name of the content filter.')
+    name: string?
+
+    @description('Optional. If the content filter is enabled.')
+    enabled: bool?
+
+    @description('Optional. If blocking would occur.')
+    blocking: bool?
+
+    @description('Optional. Level at which content is filtered.')
+    severityThreshold: ('Low' | 'Medium' | 'High')?
+
+    @description('Optional. Content source to apply the content filter.')
+    source: ('Prompt' | 'Completion')?
+  }[]?
+
+  @description('Optional. The list of custom blocklists to apply.')
+  customBlocklists: {
+    @description('Optional. If blocking would occur.')
+    blocking: bool?
+
+    @description('Optional. Name of the blocklist.')
+    blocklistName: string?
+
+    @description('Optional. Content source to apply the blocklist.')
+    source: ('Prompt' | 'Completion')?
+  }[]?
+
+  @description('Optional. RAI policy mode. Use \'Asynchronous_filter\' after API version 2025-06-01 (equivalent to \'Deferred\' in previous versions).')
+  mode: ('Default' | 'Deferred' | 'Blocking' | 'Asynchronous_filter')?
 }
 
 @export()
