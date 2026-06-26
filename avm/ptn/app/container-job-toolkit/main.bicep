@@ -43,7 +43,7 @@ param appInsightsConnectionString string?
 @maxLength(24)
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
 param keyVaultRoleAssignments roleAssignmentType[]?
 
@@ -142,7 +142,7 @@ param workloadProfileName string?
 })
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 

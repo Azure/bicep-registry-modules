@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Update referenced module versions
+- Update referenced AVM module versions.
 
 ### Breaking Changes
 

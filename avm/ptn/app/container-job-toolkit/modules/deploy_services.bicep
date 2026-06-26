@@ -56,7 +56,7 @@ param keyVaultName string
 @description('Optional. Secrets that will be added to Key Vault for later reference in the Container App Job.')
 param keyVaultSecrets secretType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Role assignments that will be added to the Key Vault. The managed Identity will be assigned the `Key Vault Secrets User` role by default.')
 param keyVaultRoleAssignments roleAssignmentType[]?
 
@@ -72,7 +72,7 @@ param workloadProfiles array?
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
