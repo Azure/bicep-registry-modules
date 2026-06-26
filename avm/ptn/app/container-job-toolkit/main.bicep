@@ -151,7 +151,7 @@ param lock lockType?
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.app-containerjobtoolkit.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -218,7 +218,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4
   }
 }
 
-module job 'br/public:avm/res/app/job:0.6.0' = {
+module job 'br/public:avm/res/app/job:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: '${name}-container-job'
