@@ -102,6 +102,9 @@ param lock lockType?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -128,6 +131,25 @@ var formattedRoleAssignments = [
 ]
 
 var enableReferencedModulesTelemetry bool = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.synapse-workspace-bigdatapool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 // Initial pool creation - libraries must not be included on first deployment.
 module bigDataPool_create '../modules/bigDataPool.bicep' = {
@@ -215,9 +237,9 @@ resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
 resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' existing = {
   name: name
   parent: workspace
-    dependsOn: [
-      bigDataPool_create
-    ]
+  dependsOn: [
+    bigDataPool_create
+  ]
 }
 
 resource bigDataPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {

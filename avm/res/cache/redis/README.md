@@ -2,6 +2,10 @@
 
 This module deploys a Redis Cache.
 
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).
+We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+
+
 You can reference the module as follows:
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
@@ -318,6 +322,10 @@ This instance deploys the module saving all its secrets in a key vault.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kv-secrets]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -956,6 +964,10 @@ This instance deploys the module with geo-replication enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passive-geo-replication]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 

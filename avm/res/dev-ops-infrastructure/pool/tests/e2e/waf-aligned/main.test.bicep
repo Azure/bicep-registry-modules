@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
       agentProfile: {
         kind: 'Stateless'
         resourcePredictionsProfile: {
@@ -80,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
           ephemeralType: 'CacheDisk'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v2'
+      fabricProfileSkuName: 'Standard_DS2_v2'
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       organizationProfile: {
         kind: 'AzureDevOps'

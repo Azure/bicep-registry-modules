@@ -2,6 +2,15 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/config/CHANGELOG.md).
 
+## 0.2.2
+
+### Changes
+
+- Updated Telemetry deployment API version
+
+### Breaking Changes
+
+- None
 ## 0.2.1
 
 ### Changes
