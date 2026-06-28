@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 @metadata({
   example: '''
   - 'contoso.onmicrosoft.com'
-  - 'aaddscontoso.com'
+  - 'aad-ds-contoso.com'
   '''
 })
 @description('Required. The domain name specific to the Azure AD DS service.')
