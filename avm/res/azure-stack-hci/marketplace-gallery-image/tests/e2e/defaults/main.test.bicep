@@ -37,10 +37,15 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+@description('Optional. The resource ID of a pre-baked Azure Compute Gallery image for the HCI host VM. Injected via CI-hciHostImageReferenceId secret.')
+@secure()
+#disable-next-line secure-parameter-default
+param hciHostImageReferenceId string = ''
+
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -49,7 +54,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}01'
+    clusterName: '${namePrefix}${serviceShort}1'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -67,10 +72,11 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
     localAdminPassword: arbLocalAdminAndDeploymentUserPass
     location: enforcedLocation
+    hciHostImageReferenceId: hciHostImageReferenceId
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.4.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -86,13 +92,13 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '192.168.1.1'
+      defaultGateway: '172.20.0.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['192.168.1.254']
-      domainFqdn: 'jumpstart.local'
+      dnsServers: ['172.20.0.1']
+      domainFqdn: 'hci.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '192.168.1.55'
-      endingIPAddress: '192.168.1.65'
+      startingIPAddress: '172.20.0.55'
+      endingIPAddress: '172.20.0.65'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
@@ -168,11 +174,27 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.12' = {
   }
 }
 
+// Wait for the HCI cluster's edge device to finish provisioning before deploying marketplace images.
+// The cluster module's deployment script returns after ARM accepts the deploymentSettings, but the
+// edge device continues provisioning asynchronously. Marketplace image downloads require the edge
+// device to be fully operational.
+module waitForEdgeDeviceProvisioning '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/waitForEdgeDevice/waitForEdgeDevice.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-waitForEdgeDevice-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
+    location: enforcedLocation
+  }
+  dependsOn: [
+    azlocal
+  ]
+}
+
 resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-15' existing = {
   scope: resourceGroup
   name: '${namePrefix}${serviceShort}-location'
   dependsOn: [
-    azlocal
+    waitForEdgeDeviceProvisioning
   ]
 }
 
@@ -185,11 +207,11 @@ module testDeployment '../../../main.bicep' = {
     identifier: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
+      sku: '2025-datacenter-azure-edition'
     }
     osType: 'Windows'
     version: {
-      name: '20348.2461.240510'
+      name: '26100.32313.260207'
     }
   }
 }
