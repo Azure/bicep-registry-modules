@@ -19,7 +19,7 @@ var enforcedLocation = 'eastus2'
 param personalAccessToken string = newGuid()
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ghaca'
+param serviceShort string = 'ghminaca'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   scope: resourceGroup
   params: {
-    namingPrefix: namePrefix
+    namingPrefix: '${namePrefix}${serviceShort}'
     location: enforcedLocation
     computeTypes: [
       'azure-container-app'
