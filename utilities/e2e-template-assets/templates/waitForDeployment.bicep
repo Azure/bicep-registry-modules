@@ -46,9 +46,16 @@ param maxRetries int = 60
 @description('Optional. The interval between checks for resource deployment status, in seconds.')
 param waitIntervalInSeconds int = 30
 
+@description('Optional. A JSON string of key-value pairs for tags to be applied to resources in the environment. E.g., \'{ "customTag1": "value1", "customTag2": "value2" }\'.')
+param tags {
+  @description('Optional.The key-value pair to be applied as a tag to the resources.')
+  *: string
+}?
+
 resource msi 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
+  tags: tags
 }
 
 // Required role assignment to allow the deployment script to read resource status
@@ -67,6 +74,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 resource waitForDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: deploymentScriptName
   location: location
+  tags: tags
   kind: 'AzurePowerShell'
   identity: {
     type: 'UserAssigned'
