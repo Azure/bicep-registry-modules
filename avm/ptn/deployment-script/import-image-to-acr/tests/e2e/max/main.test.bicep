@@ -47,7 +47,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
 }
