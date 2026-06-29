@@ -587,13 +587,8 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         )
 
         $expectedPushTriggerPathFilters = @(
-            '.github/actions/templates/avm-**',
-            '.github/workflows/avm.template.module.yml',
             ".github/workflows/$WorkflowFileName",
             "$RelativeModulePath/**",
-            'utilities/pipelines/**',
-            '!utilities/pipelines/platform/**',
-            '!*/**/child-module-publish-allowed-list.json',
             '!*/**/README.md'
         )
 
@@ -611,13 +606,8 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         )
 
         $expectedPushTriggerPathFilters = @(
-            '.github/actions/templates/avm-**',
-            '.github/workflows/avm.template.module.yml',
             ".github/workflows/$WorkflowFileName",
             "$RelativeModulePath/**",
-            'utilities/pipelines/**',
-            '!utilities/pipelines/platform/**',
-            '!*/**/child-module-publish-allowed-list.json',
             '!*/**/README.md'
         )
 
