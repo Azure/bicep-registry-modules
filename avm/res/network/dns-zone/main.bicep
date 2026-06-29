@@ -18,6 +18,9 @@ param cname cnameType[]?
 @description('Optional. Array of CAA records.')
 param caa caaType[]?
 
+@description('Optional. Array of DS records.')
+param ds dsType[]?
+
 @description('Optional. Array of MX records.')
 param mx mxType[]?
 
@@ -198,6 +201,21 @@ module dnsZone_CAA 'caa/main.bicep' = [
   }
 ]
 
+module dnsZone_DS 'ds/main.bicep' = [
+  for (dsRecord, index) in (ds ?? []): {
+    name: '${uniqueString(deployment().name, location)}-dnsZone-DSRecord-${index}'
+    params: {
+      dnsZoneName: dnsZone.name
+      name: dsRecord.name
+      metadata: dsRecord.?metadata
+      dsRecords: dsRecord.?dsRecords
+      ttl: dsRecord.?ttl ?? 3600
+      roleAssignments: dsRecord.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 module dnsZone_MX 'mx/main.bicep' = [
   for (mxRecord, index) in (mx ?? []): {
     name: '${uniqueString(deployment().name, location)}-dnsZone-MXRecord-${index}'
@@ -292,6 +310,7 @@ module dnsZone_dnssecConfig 'dnssec-config/main.bicep' = if (enableDnsSec == tru
   name: '${uniqueString(deployment().name, location)}-dnsZone-DnssecConfig'
   params: {
     dnsZoneName: dnsZone.name
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -424,6 +443,25 @@ type caaType = {
 
   @description('Optional. The list of CAA records in the record set.')
   caaRecords: resourceInput<'Microsoft.Network/dnsZones/CAA@2018-05-01'>.properties.caaRecords?
+}
+
+@export()
+@description('Type definition for a DS record.')
+type dsType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: resourceInput<'Microsoft.Network/dnsZones/DS@2023-07-01-preview'>.properties.metadata?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of DS records in the record set.')
+  dsRecords: resourceInput<'Microsoft.Network/dnsZones/DS@2023-07-01-preview'>.properties.DSRecords?
 }
 
 @export()

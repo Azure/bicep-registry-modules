@@ -527,6 +527,11 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
       creationData: {
         createOption: dataDisk.?createOption ?? 'Empty'
       }
+      encryption: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+        ? {
+            diskEncryptionSetId: dataDisk.managedDisk.?diskEncryptionSetResourceId
+          }
+        : null
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
       publicNetworkAccess: publicNetworkAccess

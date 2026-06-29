@@ -141,6 +141,7 @@ module privateLinkScope_scopedResource 'scoped-resource/main.bicep' = [
       name: scopedResource.name
       privateLinkScopeName: privateLinkScope.name
       linkedResourceId: scopedResource.linkedResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

@@ -341,6 +341,7 @@ module app_extensions 'extension/main.bicep' = [
     params: {
       appName: app.name
       properties: extension.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -418,6 +419,7 @@ module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-poli
       name: basicPublishingCredentialsPolicy.name
       allow: basicPublishingCredentialsPolicy.?allow
       location: location
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -429,6 +431,7 @@ module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep'
       hybridConnectionResourceId: hybridConnectionRelay.hybridConnectionResourceId
       appName: app.name
       sendKeyName: hybridConnectionRelay.?sendKeyName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

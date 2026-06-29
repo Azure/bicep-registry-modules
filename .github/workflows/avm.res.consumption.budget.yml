@@ -26,13 +26,8 @@ on:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.consumption.budget.yml"
       - "avm/res/consumption/budget/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

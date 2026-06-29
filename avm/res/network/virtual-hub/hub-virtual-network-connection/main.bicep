@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2025-01-01' existing = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2025-05-01' existing = {
   name: virtualHubName
 }
 
-resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2025-01-01' = {
+resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNetworkConnections@2025-05-01' = {
   name: name
   parent: virtualHub
   properties: {

@@ -1,5 +1,9 @@
 metadata name = 'Redis Cache'
-metadata description = 'This module deploys a Redis Cache.'
+metadata description = '''This module deploys a Redis Cache.
+
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).
+We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+'''
 
 @description('Optional. The location to deploy the Redis cache service.')
 param location string = resourceGroup().location
@@ -236,7 +240,6 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
       redisCacheName: redis.name
       name: policy.name
       permissions: policy.permissions
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -252,7 +255,6 @@ module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
-      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       redis_accessPolicies // Ensure policies exist before assigning them
@@ -379,7 +381,6 @@ module redis_firewallRules 'firewall-rule/main.bicep' = [
       redisCacheName: redis.name
       startIP: firewallRule.startIP
       endIP: firewallRule.endIP
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -391,7 +392,6 @@ module redis_geoReplication 'linked-server/main.bicep' = if (!empty(geoReplicati
     name: geoReplicationObject!.?name
     linkedRedisCacheResourceId: geoReplicationObject!.linkedRedisCacheResourceId
     linkedRedisCacheLocation: geoReplicationObject!.?linkedRedisCacheLocation
-    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: redis_privateEndpoints
 }
