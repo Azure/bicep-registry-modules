@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
+        SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
       }
       acrName: dependencies.outputs.acrName
       location: resourceLocation
