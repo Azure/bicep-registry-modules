@@ -13,15 +13,37 @@ param diffBackupIntervalInHours int = 24
 @description('Optional. Poin-in-time retention in days.')
 param retentionDays int = 7
 
-resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+resource server 'Microsoft.Sql/servers@2025-01-01' existing = {
   name: serverName
 
-  resource database 'databases@2023-08-01' existing = {
+  resource database 'databases@2025-01-01' existing = {
     name: databaseName
   }
 }
 
-resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2023-08-01' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-server-dbbckpshorttermretpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2025-01-01' = {
   name: 'default'
   parent: server::database
   properties: {

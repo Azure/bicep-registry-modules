@@ -236,7 +236,7 @@ var dnsZoneIndex = {
   containerRegistry: 8
 }
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: 'dns-zone-${i}'
     params: {
@@ -252,7 +252,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.14.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -264,7 +264,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     features: { enableLogAccessUsingOnlyResourcePermissions: true }
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
-    dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
+    dailyQuotaGb: enableRedundancy ? '10' : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
     replication: enableRedundancy
       ? {
           enabled: true
@@ -329,7 +329,7 @@ module virtualNetwork 'modules/virtualNetwork.bicep' = if (enablePrivateNetworki
 }
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -358,7 +358,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.1' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -368,7 +368,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enable
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: tags
     availabilityZone: 1
-    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
+    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -425,7 +425,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.21.0' = if (enable
 // using AVM Virtual Machine module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/compute/virtual-machine
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -464,7 +464,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -485,7 +485,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
     zoneRedundancy: 'Disabled'
     roleAssignments: [
       {
-        principalId: managedCluster.outputs.systemAssignedMIPrincipalId
+        principalId: managedCluster.outputs.systemAssignedMIPrincipalId!
         roleDefinitionIdOrName: 'AcrPull'
         principalType: 'ServicePrincipal'
       }
@@ -495,7 +495,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
   name: take('avm.res.cosmos-${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -528,7 +528,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB].outputs.resourceId
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId
                 }
               ]
             }
@@ -567,7 +567,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
 
 // ========== App Configuration store ========== //
 var appConfigName = 'appcs-${solutionSuffix}'
-module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = {
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.3' = {
   name: take('avm.res.app-configuration.configuration-store.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -695,7 +695,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
   }
 }
 
-module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
+module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.3' = if (enablePrivateNetworking) {
   name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -739,7 +739,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -816,7 +816,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.29.0' = {
 
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
-module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' = {
+module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.12.1' = {
   name: take('avm.res.cognitive-search-services.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -862,7 +862,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.11.1' 
 
 // ========== Cognitive Services - OpenAI module ========== //
 var openAiAccountName = 'oai-${solutionSuffix}'
-module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.0' = {
+module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitiveservices.account.${openAiAccountName}', 64)
   params: {
     name: openAiAccountName
@@ -922,7 +922,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.0' = {
 
 // ========== Cognitive Services - Document Intellignece module ========== //
 var docIntelAccountName = 'di-${solutionSuffix}'
-module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.0' = {
+module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitiveservices.account.${docIntelAccountName}', 64)
   params: {
     name: docIntelAccountName
@@ -974,7 +974,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.0
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.1' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.1' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
@@ -985,9 +985,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.
     dnsPrefix: 'aks-${solutionSuffix}'
     enableRBAC: true
     aadProfile: {
-      aadProfileManaged: true
-      aadProfileEnableAzureRBAC: true
-      aadProfileTenantId: subscription().tenantId
+      managed: true
+      enableAzureRBAC: true
+      tenantID: subscription().tenantId
     }
     disableLocalAccounts: false
     publicNetworkAccess: 'Enabled'
@@ -996,7 +996,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.
     }
     serviceCidr: '10.20.0.0/16'
     dnsServiceIP: '10.20.0.10'
-    enablePrivateCluster: false
+    apiServerAccessProfile: {
+      enablePrivateCluster: false
+    }
     primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
@@ -1015,9 +1017,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.
         vnetSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
       }
     ]
-    autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
-    autoUpgradeProfileUpgradeChannel: 'stable'
-    enableAzureDefender: enablePrivateNetworking
+    autoUpgradeProfile: {
+      nodeOSUpgradeChannel: 'Unmanaged'
+      upgradeChannel: 'stable'
+    }
+    securityProfile: {
+      defender: {
+        logAnalyticsWorkspaceResourceId: enablePrivateNetworking ? logAnalyticsWorkspaceResourceId : null
+        securityMonitoring: {
+          enabled: enablePrivateNetworking
+        }
+      }
+    }
     networkPlugin: 'azure'
     networkPolicy: 'azure'
     omsAgentEnabled: true
@@ -1064,7 +1075,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.
 // ========== AKS Maintenance Windows ========== //
 // Configure customer-controlled maintenance windows for AKS cluster and node OS upgrades
 // This addresses Azure.AKS.MaintenanceWindow PSRule requirement
-resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2024-10-01' = {
+resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2026-01-01' = {
   name: 'aks-${solutionSuffix}/aksManagedAutoUpgradeSchedule'
   properties: {
     maintenanceWindow: {
@@ -1085,7 +1096,7 @@ resource aksManagedAutoUpgradeSchedule 'Microsoft.ContainerService/managedCluste
   ]
 }
 
-resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2024-10-01' = {
+resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClusters/maintenanceConfigurations@2026-01-01' = {
   name: 'aks-${solutionSuffix}/aksManagedNodeOSUpgradeSchedule'
   properties: {
     maintenanceWindow: {
@@ -1127,7 +1138,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (en
 
 // ============ AVM TELEMETRY ============
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.ptn.sa-documentknowledgeminingsolution.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64

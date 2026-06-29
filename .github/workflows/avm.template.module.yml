@@ -147,10 +147,13 @@ jobs:
           VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
-  ##################
-  #   Publishing   #
-  ##################
-  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  ####################
+  #   Tag creation   #
+  ####################
+  # Note: brm CI only creates the module release tag(s). The actual publishing to the Public Bicep
+  # Registry is performed by the Azure DevOps OneBranch pipelines that poll these tags. See the AME
+  # deploy migration to ADO documentation (Workstream 5) in the Azure-Verified-Modules repository.
+  job_publish_module: # Note: Keep this job's display name ("Publishing") stable; it may be referenced as a required branch-protection status check.
     name: "Publishing"
     runs-on: ubuntu-latest
     # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
@@ -170,12 +173,25 @@ jobs:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Publishing"
-        uses: ./.github/actions/templates/avm-publishModule
-        with:
-          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-        env:
-          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
-          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
-          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
-          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+      - name: "Create module release tag"
+        shell: pwsh
+        run: |
+          # Grouping task logs
+          Write-Output '::group::Create module release tag'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
+            RepoRoot         = $env:GITHUB_WORKSPACE
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
+            Write-Verbose ("Created release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          }
+
+          Write-Output '::endgroup::'

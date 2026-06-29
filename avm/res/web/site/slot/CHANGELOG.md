@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/slot/CHANGELOG.md).
 
+## 0.4.1
+
+### Changes
+
+- Publishing child module `avm/res/web/site/slot/basic-publishing-credentials-policy`
+- Publishing child module `avm/res/web/site/slot/config`
+- Publishing child module `avm/res/web/site/slot/extension`
+- Publishing child module `avm/res/web/site/slot/hybrid-connection-namespace/relay`
+
+### Breaking Changes
+
+- None
+
 ## 0.4.0
 
 ### Changes

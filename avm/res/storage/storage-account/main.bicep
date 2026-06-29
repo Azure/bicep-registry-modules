@@ -655,6 +655,7 @@ module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobSe
   name: '${uniqueString(deployment().name, location)}-Storage-BlobServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     containers: blobServices.?containers
     automaticSnapshotPolicyEnabled: blobServices.?automaticSnapshotPolicyEnabled
     changeFeedEnabled: blobServices.?changeFeedEnabled
@@ -680,6 +681,7 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
   name: '${uniqueString(deployment().name, location)}-Storage-FileServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: fileServices.?diagnosticSettings
     protocolSettings: fileServices.?protocolSettings
     shareDeleteRetentionPolicy: fileServices.?shareDeleteRetentionPolicy
@@ -693,6 +695,7 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
   name: '${uniqueString(deployment().name, location)}-Storage-QueueServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: queueServices.?diagnosticSettings
     queues: queueServices.?queues
     corsRules: queueServices.?corsRules
@@ -704,6 +707,7 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
   name: '${uniqueString(deployment().name, location)}-Storage-TableServices'
   params: {
     storageAccountName: storageAccount.name
+    enableTelemetry: enableReferencedModulesTelemetry
     diagnosticSettings: tableServices.?diagnosticSettings
     tables: tableServices.?tables
     corsRules: tableServices.?corsRules
@@ -761,6 +765,7 @@ module storageAccount_objectReplicationPolicies 'object-replication-policy/main.
     name: '${uniqueString(deployment().name, location)}-Storage-ObjRepPolicy-${index}'
     params: {
       storageAccountName: storageAccount.name
+      enableTelemetry: enableReferencedModulesTelemetry
       destinationAccountResourceId: policy.destinationStorageAccountResourceId
       enableMetrics: policy.?enableMetrics ?? false
       rules: policy.?rules

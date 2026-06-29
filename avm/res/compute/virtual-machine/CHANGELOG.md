@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.2
+
+### Changes
+
+- Fix bug where Key Encryption parameter for created Data Disks was not correctly passed through
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

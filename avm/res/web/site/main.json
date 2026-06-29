@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "9236534509657866286"
+      "version": "0.43.8.12551",
+      "templateHash": "881688153174200595"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -5493,8 +5493,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "15057814777787607098"
+              "version": "0.43.8.12551",
+              "templateHash": "8196639045793921819"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5680,6 +5680,9 @@
           },
           "properties": {
             "value": "[coalesce(parameters('extensions'), createArray())[copyIndex()].properties]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -5689,8 +5692,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "12646199295143712890"
+              "version": "0.43.8.12551",
+              "templateHash": "17421047680730389436"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -5731,9 +5734,36 @@
                 "description": "Optional. Sets the properties."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.web-site-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "app": {
               "existing": true,
               "type": "Microsoft.Web/sites",
@@ -5955,8 +5985,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "9656461500337753265"
+              "version": "0.43.8.12551",
+              "templateHash": "7338894437592448374"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -10902,6 +10932,9 @@
                   },
                   "location": {
                     "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -10910,8 +10943,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "15204791604048389859"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12400296843955929309"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -10952,9 +10985,36 @@
                       "metadata": {
                         "description": "Optional. Location for all Resources."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.web-site-slotbasicpubcredpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies",
                       "apiVersion": "2025-03-01",
@@ -11026,6 +11086,9 @@
                   },
                   "sendKeyName": {
                     "value": "[tryGet(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -11034,8 +11097,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "9741768479322010336"
+                      "version": "0.43.8.12551",
+                      "templateHash": "8087090962178783374"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -11065,9 +11128,36 @@
                       "metadata": {
                         "description": "Optional. Name of the authorization rule send key to use."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.web-site-slothybconnnamespacerelay.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays",
                       "apiVersion": "2025-03-01",
@@ -11174,8 +11264,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "12578676136943349153"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16648305975161016120"
                     },
                     "name": "Web/Function Apps Slot Host Name Bindings",
                     "description": "This module deploys a Site Slot Host Name Binding."
@@ -11480,8 +11570,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.1.21952",
-                              "templateHash": "3742347899492518189"
+                              "version": "0.43.8.12551",
+                              "templateHash": "5581960621773069173"
                             },
                             "name": "Web/Function Apps Certificates",
                             "description": "This module deploys a Web/Function App Certificate."
@@ -11818,6 +11908,9 @@
                   },
                   "storageAccountUseIdentityAuthentication": {
                     "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'storageAccountUseIdentityAuthentication')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -11827,8 +11920,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "18208363610429513199"
+                      "version": "0.43.8.12551",
+                      "templateHash": "7503025049132170420"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -11905,6 +11998,13 @@
                       "metadata": {
                         "description": "Optional. Resource ID of the application insight to leverage for this resource."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -11913,6 +12013,26 @@
                       "type": "Microsoft.Web/sites/slots",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.web-site-slotconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "applicationInsights": {
                       "condition": "[not(empty(parameters('applicationInsightResourceId')))]",
@@ -12007,6 +12127,9 @@
                   },
                   "properties": {
                     "value": "[coalesce(parameters('extensions'), createArray())[copyIndex()].properties]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -12016,8 +12139,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "15037868253957170676"
+                      "version": "0.43.8.12551",
+                      "templateHash": "8033268013141574535"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -12064,6 +12187,13 @@
                         "description": "Optional. Sets the properties."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -12072,6 +12202,26 @@
                       "type": "Microsoft.Web/sites/slots",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.web-site-slotextension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "app": {
                       "existing": true,
@@ -12895,6 +13045,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -12903,8 +13056,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "8039430580490092034"
+              "version": "0.43.8.12551",
+              "templateHash": "8859123930793780293"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -12939,9 +13092,36 @@
               "metadata": {
                 "description": "Optional. Location for all Resources."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.web-site-basicpublishingcredpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Web/sites/basicPublishingCredentialsPolicies",
               "apiVersion": "2025-03-01",
@@ -13010,6 +13190,9 @@
           },
           "sendKeyName": {
             "value": "[tryGet(coalesce(parameters('hybridConnectionRelays'), createArray())[copyIndex()], 'sendKeyName')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -13018,8 +13201,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "7998048854455473102"
+              "version": "0.43.8.12551",
+              "templateHash": "4487847291124957757"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -13043,9 +13226,36 @@
               "metadata": {
                 "description": "Optional. Name of the authorization rule send key to use."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.web-site-hybconnnamespacerelay.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Web/sites/hybridConnectionNamespaces/relays",
               "apiVersion": "2025-03-01",
@@ -13150,8 +13360,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "15185388957861667018"
+              "version": "0.43.8.12551",
+              "templateHash": "3602988070549748557"
             },
             "name": "Web/Function Apps Slot Host Name Bindings",
             "description": "This module deploys a Site Slot Host Name Binding."
@@ -13444,8 +13654,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "3742347899492518189"
+                      "version": "0.43.8.12551",
+                      "templateHash": "5581960621773069173"
                     },
                     "name": "Web/Function Apps Certificates",
                     "description": "This module deploys a Web/Function App Certificate."
