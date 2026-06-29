@@ -18,6 +18,30 @@ import { objectReplicationPolicyRuleType } from 'policy/main.bicep'
 @description('Required. Rules for the object replication policy.')
 param rules objectReplicationPolicyRuleType[]
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-storacct-objectreplpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+var enableReferencedModulesTelemetry = false
+
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 }
@@ -43,6 +67,7 @@ module destinationPolicy 'policy/main.bicep' = {
     sourceStorageAccountResourceId: storageAccount.id
     destinationAccountResourceId: destinationAccountResourceId
     enableMetrics: enableMetrics
+    enableTelemetry: enableReferencedModulesTelemetry
     rules: rules
   }
 }
@@ -58,6 +83,7 @@ module sourcePolicy 'policy/main.bicep' = {
     sourceStorageAccountResourceId: storageAccount.id
     destinationAccountResourceId: destinationAccountResourceId
     enableMetrics: enableMetrics
+    enableTelemetry: enableReferencedModulesTelemetry
     rules: [
       for (rule, i) in rules: union(rule, {
         ruleId: destinationPolicy.outputs.rules[i].ruleId
