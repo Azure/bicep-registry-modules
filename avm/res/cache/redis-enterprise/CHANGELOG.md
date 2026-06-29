@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis-enterprise/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Publishing child module `avm/res/cache/redis-enterprise/database`
+- Publishing child module `avm/res/cache/redis-enterprise/database/access-policy-assignment`
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes
