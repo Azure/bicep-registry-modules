@@ -1,0 +1,188 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "12213803849239914091"
+    },
+    "name": "API Center Service Workspace Environments",
+    "description": "This module deploys an API Center Service Workspace Environment."
+  },
+  "definitions": {
+    "environmentServerType": {
+      "type": "object",
+      "properties": {
+        "managementPortalUri": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The management portal URIs."
+          }
+        },
+        "type": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of server that represents the environment."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "environmentOnboardingType": {
+      "type": "object",
+      "properties": {
+        "developerPortalUri": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The developer portal URIs."
+          }
+        },
+        "instructions": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Onboarding instructions."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the environment."
+      }
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. The title of the environment."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "allowedValues": [
+        "development",
+        "production",
+        "staging",
+        "testing"
+      ],
+      "metadata": {
+        "description": "Required. The kind of environment."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The description of the environment."
+      }
+    },
+    "customProperties": {
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01#properties/properties/properties/customProperties"
+        },
+        "description": "Optional. The custom metadata defined for API catalog entities."
+      },
+      "nullable": true
+    },
+    "server": {
+      "$ref": "#/definitions/environmentServerType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Server information of the environment."
+      }
+    },
+    "onboarding": {
+      "$ref": "#/definitions/environmentOnboardingType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Onboarding information for the environment."
+      }
+    }
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "environment": {
+      "type": "Microsoft.ApiCenter/services/workspaces/environments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "title": "[parameters('title')]",
+        "kind": "[parameters('kind')]",
+        "description": "[parameters('description')]",
+        "customProperties": "[parameters('customProperties')]",
+        "server": "[parameters('server')]",
+        "onboarding": "[parameters('onboarding')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the environment."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the environment."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/environments', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the environment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
