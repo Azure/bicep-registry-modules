@@ -106,6 +106,9 @@ module storage 'br/public:avm/res/storage/storage-account:0.32.1' = {
         roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
       }
     ]
+    tags: {
+      SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+    }
   }
 }
 
