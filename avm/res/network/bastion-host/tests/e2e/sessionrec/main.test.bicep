@@ -62,6 +62,10 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      sessionRecordingConfiguration: {
+        blobContainerUri: nestedDependencies.outputs.recordingsContainerUri
+        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      }
     }
   }
 ]

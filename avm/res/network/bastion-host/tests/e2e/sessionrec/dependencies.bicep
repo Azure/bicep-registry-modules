@@ -83,3 +83,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Storage Account used for session recordings.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The URI of the blob container used to store session recordings.')
+output recordingsContainerUri string = '${storageAccount.properties.primaryEndpoints.blob}${storageAccount::blobServices::container.name}'
