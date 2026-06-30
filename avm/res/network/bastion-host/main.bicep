@@ -53,6 +53,9 @@ param enableShareableLink bool = false
 @description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
 param enableSessionRecording bool = false
 
+@description('Optional. The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`.')
+param sessionRecordingConfiguration sessionRecordingConfigurationType?
+
 @description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
 param enablePrivateOnlyBastion bool = false
 
@@ -228,6 +231,23 @@ var bastionpropertiesVar = union(
         enableSessionRecording: enableSessionRecording
         enablePrivateOnlyBastion: enablePrivateOnlyBastion
       }
+    : {}),
+  ((skuName == 'Premium' && enableSessionRecording && !empty(sessionRecordingConfiguration))
+    ? {
+        sessionRecordingConfiguration: {
+          blobContainerUri: sessionRecordingConfiguration!.blobContainerUri
+          identity: !empty(sessionRecordingConfiguration.?userAssignedIdentityResourceId)
+            ? {
+                type: 'UserAssigned'
+                userAssignedIdentities: {
+                  '${sessionRecordingConfiguration.?userAssignedIdentityResourceId}': {}
+                }
+              }
+            : {
+                type: 'SystemAssigned'
+              }
+        }
+      }
     : {})
 )
 
@@ -318,6 +338,16 @@ output systemAssignedMIPrincipalId string? = azureBastion.?identity.?principalId
 // ================ //
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+
+@export()
+@description('The type for the Session Recording configuration of the Bastion Host.')
+type sessionRecordingConfigurationType = {
+  @description('Required. The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`.')
+  blobContainerUri: string
+
+  @description('Optional. The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used.')
+  userAssignedIdentityResourceId: string?
+}
 
 @export()
 @description('The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
