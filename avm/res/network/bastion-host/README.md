@@ -958,6 +958,12 @@ param tags = {
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
 | [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | Shared services Virtual Network resource Id. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sessionRecordingConfiguration`](#parameter-sessionrecordingconfiguration) | object | The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Required if `enableSessionRecording` is set to `true`. Requires the Premium SKU. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -979,7 +985,6 @@ param tags = {
 | [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units. |
-| [`sessionRecordingConfiguration`](#parameter-sessionrecordingconfiguration) | object | The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`. |
 | [`skuName`](#parameter-skuname) | string | The SKU of this Bastion Host. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -995,6 +1000,39 @@ Name of the Azure Bastion resource.
 Shared services Virtual Network resource Id.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `sessionRecordingConfiguration`
+
+The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Required if `enableSessionRecording` is set to `true`. Requires the Premium SKU.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blobContainerUri`](#parameter-sessionrecordingconfigurationblobcontaineruri) | string | The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentityResourceId`](#parameter-sessionrecordingconfigurationuserassignedidentityresourceid) | string | The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used. |
+
+### Parameter: `sessionRecordingConfiguration.blobContainerUri`
+
+The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sessionRecordingConfiguration.userAssignedIdentityResourceId`
+
+The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used.
+
+- Required: No
 - Type: string
 
 ### Parameter: `availabilityZones`
@@ -1840,39 +1878,6 @@ The scale units for the Bastion Host resource. The Basic and Developer SKU only 
 - Required: No
 - Type: int
 - Default: `2`
-
-### Parameter: `sessionRecordingConfiguration`
-
-The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`blobContainerUri`](#parameter-sessionrecordingconfigurationblobcontaineruri) | string | The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedIdentityResourceId`](#parameter-sessionrecordingconfigurationuserassignedidentityresourceid) | string | The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used. |
-
-### Parameter: `sessionRecordingConfiguration.blobContainerUri`
-
-The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sessionRecordingConfiguration.userAssignedIdentityResourceId`
-
-The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used.
-
-- Required: No
-- Type: string
 
 ### Parameter: `skuName`
 

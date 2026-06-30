@@ -53,7 +53,7 @@ param enableShareableLink bool = false
 @description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
 param enableSessionRecording bool = false
 
-@description('Optional. The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`.')
+@description('Conditional. The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Required if `enableSessionRecording` is set to `true`. Requires the Premium SKU.')
 param sessionRecordingConfiguration sessionRecordingConfigurationType?
 
 @description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
@@ -232,7 +232,7 @@ var bastionpropertiesVar = union(
         enablePrivateOnlyBastion: enablePrivateOnlyBastion
       }
     : {}),
-  ((skuName == 'Premium' && enableSessionRecording && !empty(sessionRecordingConfiguration))
+  ((skuName == 'Premium' && enableSessionRecording)
     ? {
         sessionRecordingConfiguration: {
           blobContainerUri: sessionRecordingConfiguration!.blobContainerUri
