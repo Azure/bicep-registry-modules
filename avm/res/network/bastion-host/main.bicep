@@ -68,7 +68,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/bastionHosts@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/bastionHosts@2025-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -231,7 +231,7 @@ var bastionpropertiesVar = union(
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2025-01-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2025-07-01' = {
   name: name
   location: location
   // Managed identity support for Azure Bastion is currently in preview and not yet present in the published resource provider schema for this API version. The value is cast with any() and BCP187 is suppressed to allow setting the (functional) identity property.
@@ -368,7 +368,7 @@ type publicIPAddressObjectType = {
   idleTimeoutInMinutes: int?
 
   @description('Optional. Tags to apply to the Public IP resource.')
-  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-07-01'>.tags?
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.tags?
 
   @description('Optional. Diagnostic settings for the Public IP resource.')
   diagnosticSettings: diagnosticSettingFullType[]?
