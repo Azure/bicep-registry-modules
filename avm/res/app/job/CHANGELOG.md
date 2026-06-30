@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated resource provider `Microsoft.App/jobs`to `2026-01-01`.
+- Updated resource provider `Microsoft.App/jobs` to `2026-01-01`.
 - Updated `avm-common-types` to `0.7.0`.
 
 ### Breaking Changes
