@@ -18,11 +18,11 @@ param publicIPAddressObject publicIPAddressObjectType = {
   name: '${name}-pip'
 }
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -59,11 +59,11 @@ param enablePrivateOnlyBastion bool = false
 @description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
 param scaleUnits int = 2
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema.')
 param managedIdentities managedIdentityAllType?
 
@@ -317,8 +317,7 @@ output systemAssignedMIPrincipalId string? = azureBastion.?identity.?principalId
 // Definitions      //
 // ================ //
 
-import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.10.0'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @export()
 @description('The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
@@ -339,10 +338,10 @@ type publicIPAddressObjectType = {
   publicIPAddressVersion: 'IPv4' | 'IPv6'?
 
   @description('Optional. The DNS settings of the public IP address.')
-  dnsSettings: dnsSettingsType?
+  dnsSettings: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.dnsSettings?
 
   @description('Optional. The list of tags associated with the public IP address.')
-  ipTags: ipTagType[]?
+  ipTags: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ipTags?
 
   @description('Optional. The lock settings of the service.')
   lock: lockType?
@@ -354,7 +353,7 @@ type publicIPAddressObjectType = {
   skuTier: 'Global' | 'Regional'?
 
   @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
-  ddosSettings: ddosSettingsType?
+  ddosSettings: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ddosSettings?
 
   @description('Optional. Location for the Public IP resource.')
   location: string?
