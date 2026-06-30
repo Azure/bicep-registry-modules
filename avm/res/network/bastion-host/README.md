@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/bastionHosts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/bastionHosts)</li></ul> |
+| `Microsoft.Network/bastionHosts` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-07-01/bastionHosts)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
 
 ## Usage examples
@@ -42,7 +42,8 @@ The following section provides usage examples for the module, which were used to
 - [Using Developer SKU](#example-3-using-developer-sku)
 - [Using large parameter set](#example-4-using-large-parameter-set)
 - [Private-only deployment](#example-5-private-only-deployment)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Session recording with a user-assigned identity](#example-6-session-recording-with-a-user-assigned-identity)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _With a custom public IP address deployed by the module_
 
@@ -686,7 +687,118 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 6: _Session recording with a user-assigned identity_
+
+This instance deploys the module with Session Recording enabled, using a user-assigned identity to store recordings in a Storage Account.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sessionrec]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
+  params: {
+    // Required parameters
+    name: 'nbhsr001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    enableSessionRecording: true
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    sessionRecordingConfiguration: {
+      blobContainerUri: '<blobContainerUri>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    skuName: 'Premium'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nbhsr001"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    // Non-required parameters
+    "enableSessionRecording": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "sessionRecordingConfiguration": {
+      "value": {
+        "blobContainerUri": "<blobContainerUri>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "skuName": {
+      "value": "Premium"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhsr001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param enableSessionRecording = true
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param sessionRecordingConfiguration = {
+  blobContainerUri: '<blobContainerUri>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param skuName = 'Premium'
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -863,9 +975,11 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema. |
 | [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units. |
+| [`sessionRecordingConfiguration`](#parameter-sessionrecordingconfiguration) | object | The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`. |
 | [`skuName`](#parameter-skuname) | string | The SKU of this Bastion Host. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1135,6 +1249,34 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `publicIPAddressObject`
 
 Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true.
@@ -1195,51 +1337,6 @@ The DDoS protection plan configuration associated with the public IP address.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`protectionMode`](#parameter-publicipaddressobjectddossettingsprotectionmode) | string | The DDoS protection policy customizations. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ddosProtectionPlan`](#parameter-publicipaddressobjectddossettingsddosprotectionplan) | object | The DDoS protection plan associated with the public IP address. |
-
-### Parameter: `publicIPAddressObject.ddosSettings.protectionMode`
-
-The DDoS protection policy customizations.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Enabled'
-  ]
-  ```
-
-### Parameter: `publicIPAddressObject.ddosSettings.ddosProtectionPlan`
-
-The DDoS protection plan associated with the public IP address.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-publicipaddressobjectddossettingsddosprotectionplanid) | string | The resource ID of the DDOS protection plan associated with the public IP address. |
-
-### Parameter: `publicIPAddressObject.ddosSettings.ddosProtectionPlan.id`
-
-The resource ID of the DDOS protection plan associated with the public IP address.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `publicIPAddressObject.diagnosticSettings`
 
@@ -1394,57 +1491,6 @@ The DNS settings of the public IP address.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`domainNameLabel`](#parameter-publicipaddressobjectdnssettingsdomainnamelabel) | string | The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`domainNameLabelScope`](#parameter-publicipaddressobjectdnssettingsdomainnamelabelscope) | string | The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. |
-| [`fqdn`](#parameter-publicipaddressobjectdnssettingsfqdn) | string | The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone. |
-| [`reverseFqdn`](#parameter-publicipaddressobjectdnssettingsreversefqdn) | string | The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN. |
-
-### Parameter: `publicIPAddressObject.dnsSettings.domainNameLabel`
-
-The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `publicIPAddressObject.dnsSettings.domainNameLabelScope`
-
-The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'NoReuse'
-    'ResourceGroupReuse'
-    'SubscriptionReuse'
-    'TenantReuse'
-  ]
-  ```
-
-### Parameter: `publicIPAddressObject.dnsSettings.fqdn`
-
-The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone.
-
-- Required: No
-- Type: string
-
-### Parameter: `publicIPAddressObject.dnsSettings.reverseFqdn`
-
-The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.
-
-- Required: No
-- Type: string
-
 ### Parameter: `publicIPAddressObject.enableTelemetry`
 
 Enable or disable usage telemetry for the Public IP module.
@@ -1465,27 +1511,6 @@ The list of tags associated with the public IP address.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ipTagType`](#parameter-publicipaddressobjectiptagsiptagtype) | string | The IP tag type. |
-| [`tag`](#parameter-publicipaddressobjectiptagstag) | string | The IP tag. |
-
-### Parameter: `publicIPAddressObject.ipTags.ipTagType`
-
-The IP tag type.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `publicIPAddressObject.ipTags.tag`
-
-The IP tag.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `publicIPAddressObject.location`
 
@@ -1816,6 +1841,39 @@ The scale units for the Bastion Host resource. The Basic and Developer SKU only 
 - Type: int
 - Default: `2`
 
+### Parameter: `sessionRecordingConfiguration`
+
+The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Requires the Premium SKU and `enableSessionRecording` set to `true`.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`blobContainerUri`](#parameter-sessionrecordingconfigurationblobcontaineruri) | string | The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentityResourceId`](#parameter-sessionrecordingconfigurationuserassignedidentityresourceid) | string | The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used. |
+
+### Parameter: `sessionRecordingConfiguration.blobContainerUri`
+
+The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sessionRecordingConfiguration.userAssignedIdentityResourceId`
+
+The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used.
+
+- Required: No
+- Type: string
+
 ### Parameter: `skuName`
 
 The SKU of this Bastion Host.
@@ -1849,6 +1907,7 @@ Tags of the resource.
 | `name` | string | The name the Azure Bastion. |
 | `resourceGroupName` | string | The resource group the Azure Bastion was deployed into. |
 | `resourceId` | string | The resource ID the Azure Bastion. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
@@ -1857,6 +1916,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/network/public-ip-address:0.10.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.12.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
