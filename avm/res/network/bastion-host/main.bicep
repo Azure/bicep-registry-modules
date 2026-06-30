@@ -239,9 +239,7 @@ var bastionpropertiesVar = union(
           identity: !empty(sessionRecordingConfiguration.?userAssignedIdentityResourceId)
             ? {
                 type: 'UserAssigned'
-                userAssignedIdentities: {
-                  '${sessionRecordingConfiguration.?userAssignedIdentityResourceId}': {}
-                }
+                userAssignedIdentityId: sessionRecordingConfiguration.?userAssignedIdentityResourceId
               }
             : {
                 type: 'SystemAssigned'
