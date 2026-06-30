@@ -63,6 +63,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The managed identity definition for this resource. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema.')
+param managedIdentities managedIdentityAllType?
+
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Network/bastionHosts@2024-07-01'>.tags?
 
@@ -78,6 +82,21 @@ param enableTelemetry bool = true
 param availabilityZones int[] = [] // Availability Zones are currently in preview (August 2025, see https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#az) and only available in certain regions, therefore the default is an empty array.
 
 var enableReferencedModulesTelemetry = false
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -215,6 +234,9 @@ var bastionpropertiesVar = union(
 resource azureBastion 'Microsoft.Network/bastionHosts@2025-01-01' = {
   name: name
   location: location
+  // Managed identity support for Azure Bastion is currently in preview and not yet present in the published resource provider schema for this API version. The value is cast with any() and BCP187 is suppressed to allow setting the (functional) identity property.
+  #disable-next-line BCP187
+  identity: any(identity)
   tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
   sku: {
     name: skuName
@@ -286,6 +308,10 @@ output location string = azureBastion.location
 
 @description('The Public IPconfiguration object for the AzureBastionSubnet.')
 output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBastion.properties.ipConfigurations[0]
+
+@description('The principal ID of the system assigned identity.')
+#disable-next-line BCP187
+output systemAssignedMIPrincipalId string? = azureBastion.?identity.?principalId
 
 // ================ //
 // Definitions      //
