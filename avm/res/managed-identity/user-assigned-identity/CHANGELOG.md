@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/managed-identity/user-assigned-identity/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Added `claimsMatchingExpression` support for federated identity credentials in `federatedIdentityCredentials`.
+- Updated federated identity credential resources to API version `2025-01-31-preview` to support wildcard OIDC claim mapping.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes

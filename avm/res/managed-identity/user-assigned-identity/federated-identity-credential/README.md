@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | 2025-01-31-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities_federatedidentitycredentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2025-01-31-preview/userAssignedIdentities/federatedIdentityCredentials)</li></ul> |
 
 ## Parameters
 
@@ -32,7 +32,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`audiences`](#parameter-audiences) | array | The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token. |
 | [`issuer`](#parameter-issuer) | string | The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged. |
 | [`name`](#parameter-name) | string | The name of the secret. |
-| [`subject`](#parameter-subject) | string | The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD. |
 
 **Conditional parameters**
 
@@ -44,7 +43,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`claimsMatchingExpression`](#parameter-claimsmatchingexpression) | object | Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`subject`](#parameter-subject) | string | The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD. Either `subject` or `claimsMatchingExpression` must be defined, but not both. |
 
 ### Parameter: `audiences`
 
@@ -67,16 +68,37 @@ The name of the secret.
 - Required: Yes
 - Type: string
 
-### Parameter: `subject`
+### Parameter: `userAssignedIdentityName`
 
-The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD.
+The name of the parent user assigned identity. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `userAssignedIdentityName`
+### Parameter: `claimsMatchingExpression`
 
-The name of the parent user assigned identity. Required if the template is used in a standalone deployment.
+Object for defining the allowed identifiers of external identities. Either `subject` or `claimsMatchingExpression` must be defined, but not both.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`languageVersion`](#parameter-claimsmatchingexpressionlanguageversion) | int | Specifies the version of the flexible federated identity credential language used in the expression. |
+| [`value`](#parameter-claimsmatchingexpressionvalue) | string | Wildcard-based expression for matching incoming subject claims. |
+
+### Parameter: `claimsMatchingExpression.languageVersion`
+
+Specifies the version of the flexible federated identity credential language used in the expression.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `claimsMatchingExpression.value`
+
+Wildcard-based expression for matching incoming subject claims.
 
 - Required: Yes
 - Type: string
@@ -88,6 +110,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `subject`
+
+The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD. Either `subject` or `claimsMatchingExpression` must be defined, but not both.
+
+- Required: No
+- Type: string
 
 ## Outputs
 
