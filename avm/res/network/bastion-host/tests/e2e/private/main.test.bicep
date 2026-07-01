@@ -54,7 +54,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       skuName: 'Premium'
-      enableSessionRecording: true
       enablePrivateOnlyBastion: true
     }
   }
