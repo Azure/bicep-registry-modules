@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fixed `staticIp` output failing to deploy for Managed Environments that do not expose a static IP (e.g., external/non-VNet environments). The output is now nullable and uses safe-dereference (`?.staticIp`).
+- Fixed `staticIp` output failing to deploy for Managed Environments that do not expose a static IP (e.g., external/non-VNet environments). The output is now nullable and uses safe-dereference (`.?staticIp`).
 
 ### Breaking Changes
 
