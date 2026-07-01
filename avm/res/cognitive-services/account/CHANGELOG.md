@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Added `raiPolicies` parameter to create custom Responsible AI (RAI) policies within the cognitive services account. Custom policies are created before model deployments and can be referenced by name from `deployments` via `raiPolicyName` (fixes [#6642](https://github.com/Azure/bicep-registry-modules/issues/6642))
+- Exposed the new `raiPolicyType` user-defined type
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes

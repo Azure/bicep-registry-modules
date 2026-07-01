@@ -48,6 +48,29 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}002'
       kind: 'AIServices'
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
+      raiPolicies: [
+        {
+          name: 'custom-rai-policy'
+          basePolicyName: 'Microsoft.Default'
+          mode: 'Asynchronous_filter'
+          contentFilters: [
+            {
+              name: 'Hate'
+              enabled: true
+              blocking: true
+              severityThreshold: 'High'
+              source: 'Prompt'
+            }
+            {
+              name: 'Hate'
+              enabled: true
+              blocking: true
+              severityThreshold: 'High'
+              source: 'Completion'
+            }
+          ]
+        }
+      ]
       deployments: [
         {
           name: 'gpt-4o'
@@ -55,6 +78,7 @@ module testDeployment '../../../main.bicep' = [
             format: 'OpenAI'
             name: 'gpt-4o'
           }
+          raiPolicyName: 'custom-rai-policy'
           sku: {
             name: 'GlobalStandard'
             capacity: 10

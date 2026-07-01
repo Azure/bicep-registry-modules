@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "1543390349360649528"
+      "templateHash": "10712040174836477050"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -174,6 +174,134 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a cognitive services account deployment."
+      }
+    },
+    "raiPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the RAI policy."
+          }
+        },
+        "basePolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the base RAI policy to derive from."
+          }
+        },
+        "contentFilters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of the content filter."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If the content filter is enabled."
+                }
+              },
+              "blocking": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If blocking would occur."
+                }
+              },
+              "severityThreshold": {
+                "type": "string",
+                "allowedValues": [
+                  "High",
+                  "Low",
+                  "Medium"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Level at which content is filtered."
+                }
+              },
+              "source": {
+                "type": "string",
+                "allowedValues": [
+                  "Completion",
+                  "Prompt"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Content source to apply the content filter."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of content filters to apply."
+          }
+        },
+        "customBlocklists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "blocking": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. If blocking would occur."
+                }
+              },
+              "blocklistName": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of the blocklist."
+                }
+              },
+              "source": {
+                "type": "string",
+                "allowedValues": [
+                  "Completion",
+                  "Prompt"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Content source to apply the blocklist."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of custom blocklists to apply."
+          }
+        },
+        "mode": {
+          "type": "string",
+          "allowedValues": [
+            "Asynchronous_filter",
+            "Blocking",
+            "Default",
+            "Deferred"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. RAI policy mode. Use 'Asynchronous_filter' after API version 2025-06-01 (equivalent to 'Deferred' in previous versions)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Responsible AI (RAI) policy."
       }
     },
     "endpointType": {
@@ -1359,6 +1487,16 @@
         "description": "Optional. Array of deployments about cognitive service accounts to create."
       }
     },
+    "raiPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/raiPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of Responsible AI (RAI) policies to create within the cognitive services account. Custom policies can be referenced by name from `deployments` via the `raiPolicyName` property."
+      }
+    },
     "secretsExportConfiguration": {
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
@@ -1510,6 +1648,24 @@
         "cMKUserAssignedIdentity"
       ]
     },
+    "cognitiveService_raiPolicies": {
+      "copy": {
+        "name": "cognitiveService_raiPolicies",
+        "count": "[length(coalesce(parameters('raiPolicies'), createArray()))]"
+      },
+      "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('raiPolicies'), createArray())[copyIndex()].name)]",
+      "properties": {
+        "basePolicyName": "[tryGet(coalesce(parameters('raiPolicies'), createArray())[copyIndex()], 'basePolicyName')]",
+        "contentFilters": "[tryGet(coalesce(parameters('raiPolicies'), createArray())[copyIndex()], 'contentFilters')]",
+        "customBlocklists": "[tryGet(coalesce(parameters('raiPolicies'), createArray())[copyIndex()], 'customBlocklists')]",
+        "mode": "[tryGet(coalesce(parameters('raiPolicies'), createArray())[copyIndex()], 'mode')]"
+      },
+      "dependsOn": [
+        "cognitiveService"
+      ]
+    },
     "cognitiveService_deployments": {
       "copy": {
         "name": "cognitiveService_deployments",
@@ -1527,7 +1683,8 @@
       },
       "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]",
       "dependsOn": [
-        "cognitiveService"
+        "cognitiveService",
+        "cognitiveService_raiPolicies"
       ]
     },
     "cognitiveService_lock": {
