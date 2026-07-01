@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Required. Resource ID of Container Apps Environment.')
 param environmentResourceId string
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -23,7 +23,7 @@ param lock lockType?
   }
   '''
 })
-param tags resourceInput<'Microsoft.App/jobs@2025-02-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/jobs@2026-01-01'>.tags?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 @metadata({
@@ -46,7 +46,7 @@ param tags resourceInput<'Microsoft.App/jobs@2025-02-02-preview'>.tags?
 })
 param registries registryType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 @metadata({
   example: '''
@@ -63,7 +63,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 })
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -197,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-03-01' = if (enableT
   }
 }
 
-resource job 'Microsoft.App/jobs@2025-02-02-preview' = {
+resource job 'Microsoft.App/jobs@2026-01-01' = {
   name: name
   tags: tags
   location: location
