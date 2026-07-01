@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/hosting-environment/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Renamed child module folder from `configuration--customdnssuffix` to `configuration` for consistency with AVM module index naming
+- Publishing child module `avm/res/web/hosting-environment/configuration`
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes
