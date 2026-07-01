@@ -1,8 +1,24 @@
 metadata name = 'Redis Cache'
 metadata description = '''This module deploys a Redis Cache.
 
-Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).
 We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+
+**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**
+
+| Date | Description |
+| --- | --- |
+| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+
+**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**
+
+| Date | Description |
+| --- | --- |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
 '''
 
 @description('Optional. The location to deploy the Redis cache service.')

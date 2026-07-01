@@ -62,6 +62,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     // Non-required parameters
     location: '<location>'
     overwriteExistingImage: true
+    tags: {
+      SecurityControl: 'Ignore'
+    }
   }
 }
 ```
@@ -94,6 +97,11 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "overwriteExistingImage": {
       "value": true
+    },
+    "tags": {
+      "value": {
+        "SecurityControl": "Ignore"
+      }
     }
   }
 }
@@ -116,6 +124,9 @@ param name = 'dsiitamin001'
 // Non-required parameters
 param location = '<location>'
 param overwriteExistingImage = true
+param tags = {
+  SecurityControl: 'Ignore'
+}
 ```
 
 </details>
@@ -153,6 +164,7 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
+      SecurityControl: 'Ignore'
     }
   }
 }
@@ -214,7 +226,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "tags": {
       "value": {
         "Env": "test",
-        "hidden-title": "This is visible in the resource name"
+        "hidden-title": "This is visible in the resource name",
+        "SecurityControl": "Ignore"
       }
     }
   }
@@ -249,6 +262,7 @@ param subnetResourceIds = '<subnetResourceIds>'
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
+  SecurityControl: 'Ignore'
 }
 ```
 
@@ -277,6 +291,9 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     location: '<location>'
     managedIdentities: '<managedIdentities>'
     overwriteExistingImage: true
+    tags: {
+      SecurityControl: 'Ignore'
+    }
   }
 }
 ```
@@ -312,6 +329,11 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     },
     "overwriteExistingImage": {
       "value": true
+    },
+    "tags": {
+      "value": {
+        "SecurityControl": "Ignore"
+      }
     }
   }
 }
@@ -335,6 +357,9 @@ param name = 'dsiitawaf001'
 param location = '<location>'
 param managedIdentities = '<managedIdentities>'
 param overwriteExistingImage = true
+param tags = {
+  SecurityControl: 'Ignore'
+}
 ```
 
 </details>
@@ -571,8 +596,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.2` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 

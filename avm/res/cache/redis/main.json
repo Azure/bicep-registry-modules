@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "4652581959433378712"
+      "templateHash": "15301708179038813582"
     },
     "name": "Redis Cache",
-    "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n"
+    "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n\n**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**\n\n| Date | Description |\n| --- | --- |\n| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n\n**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**\n\n| Date | Description |\n| --- | --- |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n"
   },
   "definitions": {
     "privateEndpointOutputType": {
