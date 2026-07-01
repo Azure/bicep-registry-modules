@@ -621,7 +621,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     enablePrivateOnlyBastion: true
-    enableSessionRecording: true
     location: '<location>'
     skuName: 'Premium'
   }
@@ -651,9 +650,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     "enablePrivateOnlyBastion": {
       "value": true
     },
-    "enableSessionRecording": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -679,7 +675,6 @@ param name = 'nbhprv001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param enablePrivateOnlyBastion = true
-param enableSessionRecording = true
 param location = '<location>'
 param skuName = 'Premium'
 ```
