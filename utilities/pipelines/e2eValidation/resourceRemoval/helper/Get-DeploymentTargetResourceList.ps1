@@ -282,8 +282,18 @@ function Get-DeploymentTargetResourceListInner {
         } elseif ($deployment -match '/managementgroups/') {
             # Management Group Level Child Deployments #
             ############################################
+            # Extract the actual management group ID from the deployment resource path,
+            # rather than re-using the parent scope's [$ManagementGroupId]. A tenant- or
+            # management-group-scoped deployment can nest deployments into different (e.g.
+            # child) management groups, so we must look them up under the MG they were
+            # actually deployed to.
+            if ($deployment -match '\/managementGroups\/([^\/]+)\/') {
+                $childManagementGroupId = $Matches[1]
+            } else {
+                $childManagementGroupId = $ManagementGroupId
+            }
             Write-Verbose ('Found [management group] deployment [{0}]' -f $deployment)
-            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'managementgroup' -ManagementGroupId $ManagementGroupId
+            [array]$resultSet += Get-DeploymentTargetResourceListInner -Name $name -Scope 'managementgroup' -ManagementGroupId $childManagementGroupId
         } else {
             # Tenant Level Child Deployments #
             ##################################
