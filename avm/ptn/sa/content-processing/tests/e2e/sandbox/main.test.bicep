@@ -41,7 +41,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
-      aiServiceLocation: enforcedLocation
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 10
       enablePrivateNetworking: false
       enableMonitoring: false

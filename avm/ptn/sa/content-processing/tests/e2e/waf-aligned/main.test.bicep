@@ -47,7 +47,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionName: '${namePrefix}${serviceShort}'
-      aiServiceLocation: enforcedLocation
+      location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
       gptDeploymentCapacity: 10
       enableScalability: true
       enableTelemetry: true
@@ -56,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       vmAdminUsername: 'adminuser'
       vmAdminPassword: virtualMachineAdminPassword
+      cosmosDbReplicaLocation: 'canadacentral'
     }
   }
 ]
