@@ -43,7 +43,7 @@ param appInsightsConnectionString string?
 @maxLength(24)
 param keyVaultName string = 'kv${uniqueString(name, location, resourceGroup().name)}'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The permissions that will be assigned to the Key Vault. The managed Identity will be assigned the permissions to get and list secrets.')
 param keyVaultRoleAssignments roleAssignmentType[]?
 
@@ -142,7 +142,7 @@ param workloadProfileName string?
 })
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -151,7 +151,7 @@ param lock lockType?
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.app-containerjobtoolkit.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -218,7 +218,7 @@ module import_image 'br/public:avm/ptn/deployment-script/import-image-to-acr:0.4
   }
 }
 
-module job 'br/public:avm/res/app/job:0.6.0' = {
+module job 'br/public:avm/res/app/job:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-${resourceGroup().name}-appjob'
   params: {
     name: '${name}-container-job'
