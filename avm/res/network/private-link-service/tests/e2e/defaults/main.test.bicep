@@ -58,10 +58,8 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      loadBalancerFrontendIpConfigurations: [
-        {
-          resourceId: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-        }
+      loadBalancerFrontendIpConfigurationResourceIds: [
+        nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
       ]
     }
   }

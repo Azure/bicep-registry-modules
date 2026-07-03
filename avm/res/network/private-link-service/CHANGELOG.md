@@ -6,19 +6,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated `Microsoft.Network/privateLinkServices` API version from `2024-05-01` to `2025-05-01`
-- Updated `avm-common-types` imports to `0.7.0`
-- Updated telemetry deployment API version to `2025-04-01`
-- Added `accessMode` parameter (`'Default' | 'Restricted'`)
-- Added `destinationIPAddress` parameter
-- Made `loadBalancerFrontendIpConfigurations` optional to enable PLS Direct Connect mode (which uses `destinationIPAddress` instead). Mutually exclusive with `destinationIPAddress`.
-- Introduced strong user-defined types: `ipConfigurationType`, `loadBalancerFrontendIpConfigurationType`, `extendedLocationType`, `autoApprovalType`, `visibilityType` (all `@export()`-ed)
-- Replaced untyped `array` / `object` parameters with the new typed shapes
+- Added support for PLS Direct Connect mode via new `accessMode` and `destinationIPAddress` parameters
+- Introduced user-defined types and flattened single-property parameters
+- Updated `Microsoft.Network/privateLinkServices` API version to `2025-05-01`
 
 ### Breaking Changes
 
 - `ipConfigurations[].properties.subnet.id` is now `ipConfigurations[].subnetResourceId`
-- `loadBalancerFrontendIpConfigurations[].id` is now `loadBalancerFrontendIpConfigurations[].resourceId`
+- `loadBalancerFrontendIpConfigurations[].id` is now `loadBalancerFrontendIpConfigurationResourceIds`
+- `autoApproval.subscriptions` is now `autoApprovalSubscriptionIds`
+- `visibility.subscriptions` is now `visibilitySubscriptionIds`
 
 ## 0.3.1
 

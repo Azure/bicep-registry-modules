@@ -18,14 +18,14 @@ param tags resourceInput<'Microsoft.Network/privateLinkServices@2025-05-01'>.tag
 @description('Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service.')
 param ipConfigurations ipConfigurationType[]
 
-@description('Optional. References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.')
-param loadBalancerFrontendIpConfigurations loadBalancerFrontendIpConfigurationType[]?
+@description('Optional. Resource IDs of the Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.')
+param loadBalancerFrontendIpConfigurationResourceIds string[]?
 
 @description('Optional. The extended location of the load balancer.')
 param extendedLocation extendedLocationType?
 
-@description('Optional. The auto-approval list of the private link service.')
-param autoApproval autoApprovalType?
+@description('Optional. The list of subscription IDs allowed to automatically approve a connection to the private link service. Use `*` to auto-approve all subscriptions.')
+param autoApprovalSubscriptionIds string[]?
 
 @description('Optional. Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header.')
 param enableProxyProtocol bool = false
@@ -33,8 +33,8 @@ param enableProxyProtocol bool = false
 @description('Optional. The list of Fqdn.')
 param fqdns string[]?
 
-@description('Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.')
-param visibility visibilityType?
+@description('Optional. The list of subscription IDs the private link service is visible to. Service providers can limit exposure to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions by using `*`.')
+param visibilitySubscriptionIds string[]?
 
 @description('Optional. The access mode of the private link service. Defaults to "Default" when not specified.')
 param accessMode ('Default' | 'Restricted')?
@@ -108,7 +108,7 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2025-05-01' =
   extendedLocation: extendedLocation
   properties: {
     accessMode: accessMode
-    autoApproval: autoApproval
+    autoApproval: !empty(autoApprovalSubscriptionIds) ? { subscriptions: autoApprovalSubscriptionIds } : null
     destinationIPAddress: destinationIPAddress
     enableProxyProtocol: enableProxyProtocol
     fqdns: fqdns
@@ -126,12 +126,12 @@ resource privateLinkService 'Microsoft.Network/privateLinkServices@2025-05-01' =
         }
       }
     ]
-    loadBalancerFrontendIpConfigurations: !empty(loadBalancerFrontendIpConfigurations)
-      ? map(loadBalancerFrontendIpConfigurations!, lbConfig => {
-          id: lbConfig.resourceId
+    loadBalancerFrontendIpConfigurations: !empty(loadBalancerFrontendIpConfigurationResourceIds)
+      ? map(loadBalancerFrontendIpConfigurationResourceIds ?? [], resourceId => {
+          id: resourceId
         })
       : null
-    visibility: visibility
+    visibility: !empty(visibilitySubscriptionIds) ? { subscriptions: visibilitySubscriptionIds } : null
   }
 }
 
@@ -205,13 +205,6 @@ type ipConfigurationType = {
 }
 
 @export()
-@description('The type of a load balancer frontend IP configuration reference for the private link service.')
-type loadBalancerFrontendIpConfigurationType = {
-  @description('Required. The resource ID of the load balancer frontend IP configuration.')
-  resourceId: string
-}
-
-@export()
 @description('The type of the extended location of the load balancer.')
 type extendedLocationType = {
   @description('Required. The name of the extended location.')
@@ -219,18 +212,4 @@ type extendedLocationType = {
 
   @description('Required. The type of the extended location.')
   type: 'EdgeZone'
-}
-
-@export()
-@description('The type of the auto-approval settings of the private link service.')
-type autoApprovalType = {
-  @description('Optional. The list of subscriptions allowed to auto-approve.')
-  subscriptions: string[]?
-}
-
-@export()
-@description('The type of the visibility settings of the private link service.')
-type visibilityType = {
-  @description('Optional. The list of subscriptions the service is visible to.')
-  subscriptions: string[]?
 }

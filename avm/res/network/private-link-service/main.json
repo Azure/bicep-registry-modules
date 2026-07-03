@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "9535487058885060506"
+      "templateHash": "16369873113792680770"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
@@ -69,21 +69,6 @@
         "description": "The type of a private link service IP configuration."
       }
     },
-    "loadBalancerFrontendIpConfigurationType": {
-      "type": "object",
-      "properties": {
-        "resourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the load balancer frontend IP configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of a load balancer frontend IP configuration reference for the private link service."
-      }
-    },
     "extendedLocationType": {
       "type": "object",
       "properties": {
@@ -106,44 +91,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of the extended location of the load balancer."
-      }
-    },
-    "autoApprovalType": {
-      "type": "object",
-      "properties": {
-        "subscriptions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The list of subscriptions allowed to auto-approve."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of the auto-approval settings of the private link service."
-      }
-    },
-    "visibilityType": {
-      "type": "object",
-      "properties": {
-        "subscriptions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The list of subscriptions the service is visible to."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type of the visibility settings of the private link service."
       }
     },
     "lockType": {
@@ -300,14 +247,14 @@
         "description": "Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service."
       }
     },
-    "loadBalancerFrontendIpConfigurations": {
+    "loadBalancerFrontendIpConfigurationResourceIds": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/loadBalancerFrontendIpConfigurationType"
+        "type": "string"
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`."
+        "description": "Optional. Resource IDs of the Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`."
       }
     },
     "extendedLocation": {
@@ -317,11 +264,14 @@
         "description": "Optional. The extended location of the load balancer."
       }
     },
-    "autoApproval": {
-      "$ref": "#/definitions/autoApprovalType",
+    "autoApprovalSubscriptionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The auto-approval list of the private link service."
+        "description": "Optional. The list of subscription IDs allowed to automatically approve a connection to the private link service. Use `*` to auto-approve all subscriptions."
       }
     },
     "enableProxyProtocol": {
@@ -341,11 +291,14 @@
         "description": "Optional. The list of Fqdn."
       }
     },
-    "visibility": {
-      "$ref": "#/definitions/visibilityType",
+    "visibilitySubscriptionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions."
+        "description": "Optional. The list of subscription IDs the private link service is visible to. Service providers can limit exposure to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions by using `*`."
       }
     },
     "accessMode": {
@@ -450,12 +403,12 @@
           }
         ],
         "accessMode": "[parameters('accessMode')]",
-        "autoApproval": "[parameters('autoApproval')]",
+        "autoApproval": "[if(not(empty(parameters('autoApprovalSubscriptionIds'))), createObject('subscriptions', parameters('autoApprovalSubscriptionIds')), null())]",
         "destinationIPAddress": "[parameters('destinationIPAddress')]",
         "enableProxyProtocol": "[parameters('enableProxyProtocol')]",
         "fqdns": "[parameters('fqdns')]",
-        "loadBalancerFrontendIpConfigurations": "[if(not(empty(parameters('loadBalancerFrontendIpConfigurations'))), map(parameters('loadBalancerFrontendIpConfigurations'), lambda('lbConfig', createObject('id', lambdaVariables('lbConfig').resourceId))), null())]",
-        "visibility": "[parameters('visibility')]"
+        "loadBalancerFrontendIpConfigurations": "[if(not(empty(parameters('loadBalancerFrontendIpConfigurationResourceIds'))), map(coalesce(parameters('loadBalancerFrontendIpConfigurationResourceIds'), createArray()), lambda('resourceId', createObject('id', lambdaVariables('resourceId')))), null())]",
+        "visibility": "[if(not(empty(parameters('visibilitySubscriptionIds'))), createObject('subscriptions', parameters('visibilitySubscriptionIds')), null())]"
       }
     },
     "privateLinkService_lock": {

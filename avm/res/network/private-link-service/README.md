@@ -62,10 +62,8 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     ]
     name: 'nplsmin001'
     // Non-required parameters
-    loadBalancerFrontendIpConfigurations: [
-      {
-        resourceId: '<resourceId>'
-      }
+    loadBalancerFrontendIpConfigurationResourceIds: [
+      '<loadBalancerFrontendIpConfigurationResourceId>'
     ]
   }
 }
@@ -96,11 +94,9 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       "value": "nplsmin001"
     },
     // Non-required parameters
-    "loadBalancerFrontendIpConfigurations": {
+    "loadBalancerFrontendIpConfigurationResourceIds": {
       "value": [
-        {
-          "resourceId": "<resourceId>"
-        }
+        "<loadBalancerFrontendIpConfigurationResourceId>"
       ]
     }
   }
@@ -126,10 +122,8 @@ param ipConfigurations = [
 ]
 param name = 'nplsmin001'
 // Non-required parameters
-param loadBalancerFrontendIpConfigurations = [
-  {
-    resourceId: '<resourceId>'
-  }
+param loadBalancerFrontendIpConfigurationResourceIds = [
+  '<loadBalancerFrontendIpConfigurationResourceId>'
 ]
 ```
 
@@ -162,20 +156,16 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     name: 'nplsmax001'
     // Non-required parameters
     accessMode: 'Default'
-    autoApproval: {
-      subscriptions: [
-        '*'
-      ]
-    }
+    autoApprovalSubscriptionIds: [
+      '*'
+    ]
     enableProxyProtocol: true
     fqdns: [
       'nplsmax.plsfqdn01.azure.privatelinkservice'
       'nplsmax.plsfqdn02.azure.privatelinkservice'
     ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        resourceId: '<resourceId>'
-      }
+    loadBalancerFrontendIpConfigurationResourceIds: [
+      '<loadBalancerFrontendIpConfigurationResourceId>'
     ]
     location: '<location>'
     lock: {
@@ -206,11 +196,9 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    visibility: {
-      subscriptions: [
-        '<subscriptionId>'
-      ]
-    }
+    visibilitySubscriptionIds: [
+      '<subscriptionId>'
+    ]
   }
 }
 ```
@@ -245,12 +233,10 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     "accessMode": {
       "value": "Default"
     },
-    "autoApproval": {
-      "value": {
-        "subscriptions": [
-          "*"
-        ]
-      }
+    "autoApprovalSubscriptionIds": {
+      "value": [
+        "*"
+      ]
     },
     "enableProxyProtocol": {
       "value": true
@@ -261,11 +247,9 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "nplsmax.plsfqdn02.azure.privatelinkservice"
       ]
     },
-    "loadBalancerFrontendIpConfigurations": {
+    "loadBalancerFrontendIpConfigurationResourceIds": {
       "value": [
-        {
-          "resourceId": "<resourceId>"
-        }
+        "<loadBalancerFrontendIpConfigurationResourceId>"
       ]
     },
     "location": {
@@ -305,12 +289,10 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "Role": "DeploymentValidation"
       }
     },
-    "visibility": {
-      "value": {
-        "subscriptions": [
-          "<subscriptionId>"
-        ]
-      }
+    "visibilitySubscriptionIds": {
+      "value": [
+        "<subscriptionId>"
+      ]
     }
   }
 }
@@ -338,20 +320,16 @@ param ipConfigurations = [
 param name = 'nplsmax001'
 // Non-required parameters
 param accessMode = 'Default'
-param autoApproval = {
-  subscriptions: [
-    '*'
-  ]
-}
+param autoApprovalSubscriptionIds = [
+  '*'
+]
 param enableProxyProtocol = true
 param fqdns = [
   'nplsmax.plsfqdn01.azure.privatelinkservice'
   'nplsmax.plsfqdn02.azure.privatelinkservice'
 ]
-param loadBalancerFrontendIpConfigurations = [
-  {
-    resourceId: '<resourceId>'
-  }
+param loadBalancerFrontendIpConfigurationResourceIds = [
+  '<loadBalancerFrontendIpConfigurationResourceId>'
 ]
 param location = '<location>'
 param lock = {
@@ -382,11 +360,9 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param visibility = {
-  subscriptions: [
-    '<subscriptionId>'
-  ]
-}
+param visibilitySubscriptionIds = [
+  '<subscriptionId>'
+]
 ```
 
 </details>
@@ -417,31 +393,25 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     ]
     name: 'nplswaf001'
     // Non-required parameters
-    autoApproval: {
-      subscriptions: [
-        '*'
-      ]
-    }
+    autoApprovalSubscriptionIds: [
+      '*'
+    ]
     enableProxyProtocol: true
     fqdns: [
       'nplswaf.plsfqdn01.azure.privatelinkservice'
       'nplswaf.plsfqdn02.azure.privatelinkservice'
     ]
-    loadBalancerFrontendIpConfigurations: [
-      {
-        resourceId: '<resourceId>'
-      }
+    loadBalancerFrontendIpConfigurationResourceIds: [
+      '<loadBalancerFrontendIpConfigurationResourceId>'
     ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    visibility: {
-      subscriptions: [
-        '<subscriptionId>'
-      ]
-    }
+    visibilitySubscriptionIds: [
+      '<subscriptionId>'
+    ]
   }
 }
 ```
@@ -473,12 +443,10 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       "value": "nplswaf001"
     },
     // Non-required parameters
-    "autoApproval": {
-      "value": {
-        "subscriptions": [
-          "*"
-        ]
-      }
+    "autoApprovalSubscriptionIds": {
+      "value": [
+        "*"
+      ]
     },
     "enableProxyProtocol": {
       "value": true
@@ -489,11 +457,9 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "nplswaf.plsfqdn02.azure.privatelinkservice"
       ]
     },
-    "loadBalancerFrontendIpConfigurations": {
+    "loadBalancerFrontendIpConfigurationResourceIds": {
       "value": [
-        {
-          "resourceId": "<resourceId>"
-        }
+        "<loadBalancerFrontendIpConfigurationResourceId>"
       ]
     },
     "tags": {
@@ -503,12 +469,10 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "Role": "DeploymentValidation"
       }
     },
-    "visibility": {
-      "value": {
-        "subscriptions": [
-          "<subscriptionId>"
-        ]
-      }
+    "visibilitySubscriptionIds": {
+      "value": [
+        "<subscriptionId>"
+      ]
     }
   }
 }
@@ -535,31 +499,25 @@ param ipConfigurations = [
 ]
 param name = 'nplswaf001'
 // Non-required parameters
-param autoApproval = {
-  subscriptions: [
-    '*'
-  ]
-}
+param autoApprovalSubscriptionIds = [
+  '*'
+]
 param enableProxyProtocol = true
 param fqdns = [
   'nplswaf.plsfqdn01.azure.privatelinkservice'
   'nplswaf.plsfqdn02.azure.privatelinkservice'
 ]
-param loadBalancerFrontendIpConfigurations = [
-  {
-    resourceId: '<resourceId>'
-  }
+param loadBalancerFrontendIpConfigurationResourceIds = [
+  '<loadBalancerFrontendIpConfigurationResourceId>'
 ]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param visibility = {
-  subscriptions: [
-    '<subscriptionId>'
-  ]
-}
+param visibilitySubscriptionIds = [
+  '<subscriptionId>'
+]
 ```
 
 </details>
@@ -579,18 +537,18 @@ param visibility = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accessMode`](#parameter-accessmode) | string | The access mode of the private link service. Defaults to "Default" when not specified. |
-| [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
+| [`autoApprovalSubscriptionIds`](#parameter-autoapprovalsubscriptionids) | array | The list of subscription IDs allowed to automatically approve a connection to the private link service. Use `*` to auto-approve all subscriptions. |
 | [`destinationIPAddress`](#parameter-destinationipaddress) | string | Privately routable destination IP for Private Link Service Direct Connect mode, used when consumers need direct IP routing instead of load-balancer forwarding (e.g. databases, legacy applications, on-premises endpoints). Mutually exclusive with `loadBalancerFrontendIpConfigurations`. |
 | [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
 | [`fqdns`](#parameter-fqdns) | array | The list of Fqdn. |
-| [`loadBalancerFrontendIpConfigurations`](#parameter-loadbalancerfrontendipconfigurations) | array | References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`. |
+| [`loadBalancerFrontendIpConfigurationResourceIds`](#parameter-loadbalancerfrontendipconfigurationresourceids) | array | Resource IDs of the Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-| [`visibility`](#parameter-visibility) | object | Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions. |
+| [`visibilitySubscriptionIds`](#parameter-visibilitysubscriptionids) | array | The list of subscription IDs the private link service is visible to. Service providers can limit exposure to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions by using `*`. |
 
 ### Parameter: `ipConfigurations`
 
@@ -692,22 +650,9 @@ The access mode of the private link service. Defaults to "Default" when not spec
   ]
   ```
 
-### Parameter: `autoApproval`
+### Parameter: `autoApprovalSubscriptionIds`
 
-The auto-approval list of the private link service.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`subscriptions`](#parameter-autoapprovalsubscriptions) | array | The list of subscriptions allowed to auto-approve. |
-
-### Parameter: `autoApproval.subscriptions`
-
-The list of subscriptions allowed to auto-approve.
+The list of subscription IDs allowed to automatically approve a connection to the private link service. Use `*` to auto-approve all subscriptions.
 
 - Required: No
 - Type: array
@@ -776,25 +721,12 @@ The list of Fqdn.
 - Required: No
 - Type: array
 
-### Parameter: `loadBalancerFrontendIpConfigurations`
+### Parameter: `loadBalancerFrontendIpConfigurationResourceIds`
 
-References to Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.
+Resource IDs of the Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`.
 
 - Required: No
 - Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`resourceId`](#parameter-loadbalancerfrontendipconfigurationsresourceid) | string | The resource ID of the load balancer frontend IP configuration. |
-
-### Parameter: `loadBalancerFrontendIpConfigurations.resourceId`
-
-The resource ID of the load balancer frontend IP configuration.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `location`
 
@@ -960,22 +892,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `visibility`
+### Parameter: `visibilitySubscriptionIds`
 
-Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`subscriptions`](#parameter-visibilitysubscriptions) | array | The list of subscriptions the service is visible to. |
-
-### Parameter: `visibility.subscriptions`
-
-The list of subscriptions the service is visible to.
+The list of subscription IDs the private link service is visible to. Service providers can limit exposure to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions by using `*`.
 
 - Required: No
 - Type: array

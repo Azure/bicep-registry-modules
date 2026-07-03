@@ -66,22 +66,16 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      loadBalancerFrontendIpConfigurations: [
-        {
-          resourceId: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-        }
+      loadBalancerFrontendIpConfigurationResourceIds: [
+        nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
       ]
       accessMode: 'Default'
-      autoApproval: {
-        subscriptions: [
-          '*'
-        ]
-      }
-      visibility: {
-        subscriptions: [
-          subscription().subscriptionId
-        ]
-      }
+      autoApprovalSubscriptionIds: [
+        '*'
+      ]
+      visibilitySubscriptionIds: [
+        subscription().subscriptionId
+      ]
       enableProxyProtocol: true
       fqdns: [
         '${serviceShort}.plsfqdn01.azure.privatelinkservice'
