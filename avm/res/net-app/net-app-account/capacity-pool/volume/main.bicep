@@ -177,7 +177,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   }
 }
 
-resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
+resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2025-05-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
   name: last(split(keyVaultPrivateEndpointResourceId!, '/'))
   scope: resourceGroup(
     split(keyVaultPrivateEndpointResourceId!, '/')[2],
@@ -202,11 +202,11 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existi
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-05-01' existing = {
   name: split(subnetResourceId, '/')[8]
   scope: resourceGroup(split(subnetResourceId, '/')[2], split(subnetResourceId, '/')[4])
 
-  resource subnet 'subnets@2024-03-01' existing = {
+  resource subnet 'subnets@2025-05-01' existing = {
     name: last(split(subnetResourceId, '/'))
   }
 }

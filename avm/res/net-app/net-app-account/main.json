@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "6382393095508450660"
+      "templateHash": "8662869752099180220"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -2329,7 +2329,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.41.2.15936",
-              "templateHash": "12607202355830263795"
+              "templateHash": "1868425064467731724"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3182,7 +3182,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.41.2.15936",
-                      "templateHash": "7655093124751319462"
+                      "templateHash": "11377497829434119976"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3830,7 +3830,7 @@
                     "vnet::subnet": {
                       "existing": true,
                       "type": "Microsoft.Network/virtualNetworks/subnets",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/')))]"
@@ -3845,7 +3845,7 @@
                       "condition": "[not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp'))]",
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('keyVaultPrivateEndpointResourceId'), '/'))]"
@@ -3862,7 +3862,7 @@
                     "vnet": {
                       "existing": true,
                       "type": "Microsoft.Network/virtualNetworks",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
                       "name": "[split(parameters('subnetResourceId'), '/')[8]]"
