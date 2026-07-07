@@ -388,7 +388,12 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-06-01' = [
+// api-version 2026-05-01 is the minimum GA version that accepts `properties.modelProviderData`
+// (required for GA partner models such as Anthropic Claude). Live-verified deploying Opus 4.8 on a
+// Production EA subscription. It is newer than the current Bicep type catalog, so BCP081 (no
+// pre-deploy property validation) is expected and intentional; it does not block deployment.
+#disable-next-line BCP081
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2026-05-01' = [
   for (deployment, index) in (deployments ?? []): {
     parent: cognitiveService
     name: deployment.?name ?? '${name}-deployments'
@@ -396,6 +401,9 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       model: deployment.model
       raiPolicyName: deployment.?raiPolicyName
       versionUpgradeOption: deployment.?versionUpgradeOption
+      // Attestation for GA partner models (e.g. Anthropic Claude). Only emitted when
+      // supplied, so OpenAI and other first-party deployments are unaffected.
+      modelProviderData: deployment.?modelProviderData
     }
     sku: deployment.?sku ?? {
       name: 'Standard'
@@ -670,6 +678,18 @@ type deploymentType = {
 
   @description('Optional. The version upgrade option.')
   versionUpgradeOption: string?
+
+  @description('Optional. Model-provider attestation. Required by the Cognitive Services RP for GA partner models such as Anthropic Claude (`model.format` == `Anthropic`); the RP uses it to auto-accept the partner\'s Azure Marketplace offer. Ignored for first-party (e.g. OpenAI) models.')
+  modelProviderData: {
+    @description('Required. Legal entity name of the organization deploying the model.')
+    organizationName: string
+
+    @description('Required. Two-letter ISO 3166-1 alpha-2 country/region code (e.g. `US`).')
+    countryCode: string
+
+    @description('Required. Organization industry, lowercase. RP-validated (e.g. `technology`, `finance`, `healthcare`, `education`, `retail`, `manufacturing`, `government`, `media`, `other`).')
+    industry: string
+  }?
 }
 
 @export()

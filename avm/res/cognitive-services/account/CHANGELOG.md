@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- Added optional `modelProviderData` (`organizationName`, `countryCode`, `industry`) to `deploymentType`, and project it onto `Microsoft.CognitiveServices/accounts/deployments`. This carries the model-provider attestation that the Cognitive Services RP requires for GA partner models such as Anthropic Claude (`model.format == 'Anthropic'`), which it uses to auto-accept the partner's Azure Marketplace offer (fixes [#7197](https://github.com/Azure/bicep-registry-modules/issues/7197))
+- Bumped the `Microsoft.CognitiveServices/accounts/deployments` API version from `@2025-06-01` to `@2026-05-01`, the minimum GA version that accepts `properties.modelProviderData`
+
+### Breaking Changes
+
+- None. `modelProviderData` is optional and only emitted when supplied (via `deployment.?modelProviderData`), so existing first-party (e.g. OpenAI) deployments are unaffected.
+
 ## 0.15.0
 
 ### Changes

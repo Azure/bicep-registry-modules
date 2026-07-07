@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "1543390349360649528"
+      "templateHash": "10758749619964066451"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -168,6 +168,33 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The version upgrade option."
+          }
+        },
+        "modelProviderData": {
+          "type": "object",
+          "properties": {
+            "organizationName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Legal entity name of the organization deploying the model."
+              }
+            },
+            "countryCode": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Two-letter ISO 3166-1 alpha-2 country/region code (e.g. `US`)."
+              }
+            },
+            "industry": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Organization industry, lowercase. RP-validated (e.g. `technology`, `finance`, `healthcare`, `education`, `retail`, `manufacturing`, `government`, `media`, `other`)."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Model-provider attestation. Required by the Cognitive Services RP for GA partner models such as Anthropic Claude (`model.format` == `Anthropic`); the RP uses it to auto-accept the partner's Azure Marketplace offer. Ignored for first-party (e.g. OpenAI) models."
           }
         }
       },
@@ -1518,12 +1545,13 @@
         "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2025-06-01",
+      "apiVersion": "2026-05-01",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
         "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
-        "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
+        "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]",
+        "modelProviderData": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'modelProviderData')]"
       },
       "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]",
       "dependsOn": [
