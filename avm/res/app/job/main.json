@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14936556497596447856"
+      "version": "0.44.1.10279",
+      "templateHash": "1097523041733817466"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -735,7 +735,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -763,7 +763,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -838,7 +838,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -874,7 +874,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/jobs@2025-02-02-preview#properties/tags"
+          "source": "Microsoft.App/jobs@2026-01-01#properties/tags"
         },
         "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
         "description": "Optional. Tags of the resource."
@@ -1053,7 +1053,7 @@
     },
     "job": {
       "type": "Microsoft.App/jobs",
-      "apiVersion": "2025-02-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -1146,7 +1146,7 @@
         "example": "Germany West Central",
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('job', '2025-02-02-preview', 'full').location]"
+      "value": "[reference('job', '2026-01-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1155,7 +1155,7 @@
         "example": "00000000-0000-0000-0000-000000000000",
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('job', '2025-02-02-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('job', '2026-01-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

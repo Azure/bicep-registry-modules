@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fix bug where Key Encryption parameter for created Data Disks was not correctly passed through
+- Adding new parameter `diskControllerType` to specify the disk controller type to allow to deploy NVME enabled virtual machines.
 
 ### Breaking Changes
 
