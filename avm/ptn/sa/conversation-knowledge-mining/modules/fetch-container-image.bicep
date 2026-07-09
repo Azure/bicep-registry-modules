@@ -1,7 +1,7 @@
 param exists bool
 param name string
 
-resource existingApp 'Microsoft.App/containerApps@2023-05-02-preview' existing = if (exists) {
+resource existingApp 'Microsoft.App/containerApps@2026-01-01' existing = if (exists) {
   name: name
 }
 

@@ -406,6 +406,33 @@ param networkSecurityGroups networkSecurityGroupType[] = []
 @sys.description('Optional. The name of the resource group to create the standalone network security groups in, outside of what can be declared in the `virtualNetworkSubnets` parameter.')
 param networkSecurityGroupResourceGroupName string = ''
 
+@sys.description('Optional. The name of the budget.')
+param budgetName string = ''
+
+@sys.description('Optional. The total amount of cost or usage to track with the budget.')
+param budgetAmount int = 100
+
+@sys.description('Optional. The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month).')
+param budgetStartDate string = '${utcNow('yyyy')}-${utcNow('MM')}-01T00:00:00Z'
+
+@sys.description('Optional. The list of email addresses to send the budget notification to when the thresholds are exceeded.')
+param budgetContactEmails array = []
+
+@sys.description('Optional. List of action group resource IDs that will receive the alert.')
+param budgetActionGroups array = []
+
+@sys.description('Optional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Defaults to the Owner role if neither `budgetActionGroups` nor `budgetContactEmails` was provided.')
+param budgetContactRoles array = (empty(budgetActionGroups) && empty(budgetContactEmails)) ? ['Owner'] : []
+
+@sys.description('Optional. The category of the budget, whether the budget tracks cost or usage.')
+param budgetCategory string = 'Cost'
+
+@sys.description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+param budgetThresholdType string = 'Forecasted'
+
+@sys.description('Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.')
+param budgetThresholds array = [90]
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -618,6 +645,15 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     routeTablesResourceGroupName: routeTablesResourceGroupName
     networkSecurityGroups: networkSecurityGroups
     networkSecurityGroupResourceGroupName: networkSecurityGroupResourceGroupName
+    budgetName: budgetName
+    budgetStartDate: budgetStartDate
+    budgetAmount: budgetAmount
+    budgetCategory: budgetCategory
+    budgetContactEmails: budgetContactEmails
+    budgetActionGroups: budgetActionGroups
+    budgetContactRoles: budgetContactRoles
+    budgetThresholds: budgetThresholds
+    budgetThresholdType: budgetThresholdType
     enableTelemetry: enableTelemetry
   }
 }

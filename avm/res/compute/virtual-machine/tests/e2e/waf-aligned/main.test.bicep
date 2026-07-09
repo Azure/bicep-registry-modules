@@ -87,6 +87,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}'
       computerName: take('w${namePrefix}${serviceShort}', 15)
       adminUsername: 'VMAdmin'
+      diskControllerType: 'SCSI'
       imageReference: {
         publisher: 'MicrosoftWindowsServer'
         offer: 'WindowsServer'

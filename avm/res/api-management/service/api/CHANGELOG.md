@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/api/CHANGELOG.md).
 
+## 0.2.2
+
+### Changes
+
+- Publishing child module `avm/res/api-management/service/api/operation`
+- Publishing child module `avm/res/api-management/service/api/operation/policy`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.1
 
 ### Changes

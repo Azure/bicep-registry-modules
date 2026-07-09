@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/nat-gateway/CHANGELOG.md).
 
+## 2.1.0
+
+### Changes
+
+- Added support for IPv6 Public IP Addresses via `publicIPAddressesV6` and `publicIpResourceIdsV6` parameters
+- Added support for IPv6 Public IP Prefixes via `publicIPPrefixesV6` and `publicIPPrefixResourceIdsV6` parameters
+- IPv6 Public IPs and Prefixes can be created inline (like their IPv4 counterparts) or referenced by existing resource IDs
+- Added `ipv6` e2e test case demonstrating dual-stack NAT Gateway with `StandardV2` SKU
+
+### Breaking Changes
+
+- None
+
 ## 2.0.1
 
 ### Changes

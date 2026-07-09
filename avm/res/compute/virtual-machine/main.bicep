@@ -28,6 +28,13 @@ param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
 
+@description('Optional. Specifies the disk controller type.')
+@allowed([
+  'NVMe'
+  'SCSI'
+])
+param diskControllerType string?
+
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
 
@@ -233,7 +240,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2025-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -527,6 +534,11 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
       creationData: {
         createOption: dataDisk.?createOption ?? 'Empty'
       }
+      encryption: !empty(dataDisk.managedDisk.?diskEncryptionSetResourceId)
+        ? {
+            diskEncryptionSetId: dataDisk.managedDisk.?diskEncryptionSetResourceId
+          }
+        : null
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
       publicNetworkAccess: publicNetworkAccess
@@ -539,7 +551,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
   name: name
   location: location
   identity: identity
@@ -562,6 +574,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     }
     storageProfile: {
       imageReference: imageReference
+      diskControllerType: diskControllerType ?? 'SCSI'
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))
@@ -755,6 +768,7 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
 module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDomainJoinConfig.?name ?? 'DomainJoin'
     location: location
@@ -792,6 +806,7 @@ var filteredAadJoinSettings = contains(aadJoinSettings, 'mdmId') && empty(aadJoi
 module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAadJoinConfig.?name ?? 'AADLogin'
     location: location
@@ -812,6 +827,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
 module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAntiMalwareConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAntiMalwareConfig.?name ?? 'MicrosoftAntiMalware'
     location: location
@@ -842,6 +858,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
 module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonitoringAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionMonitoringAgentConfig.?name ?? 'AzureMonitorAgent'
     location: location
@@ -876,6 +893,7 @@ resource vm_dataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRul
 module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDependencyAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDependencyAgentConfig.?name ?? 'DependencyAgent'
     location: location
@@ -898,6 +916,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
 module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNetworkWatcherAgentConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionNetworkWatcherAgentConfig.?name ?? 'NetworkWatcherAgent'
     location: location
@@ -917,6 +936,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
 module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extensionDSCConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionDSCConfig.?name ?? 'DesiredStateConfiguration'
     location: location
@@ -946,6 +966,7 @@ resource cseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-3
 module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCustomScriptConfig)) {
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     location: location
@@ -996,6 +1017,7 @@ module vm_customScriptExtension 'extension/main.bicep' = if (!empty(extensionCus
 module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzureDiskEncryptionConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionAzureDiskEncryptionConfig.?name ?? 'AzureDiskEncryption'
     location: location
@@ -1017,6 +1039,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
 module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extensionNvidiaGpuDriverWindows.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionNvidiaGpuDriverWindows.?name ?? 'NvidiaGpuDriverWindows'
     location: location
@@ -1036,6 +1059,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
 module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHostPoolRegistration.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionHostPoolRegistration.?name ?? 'HostPoolRegistration'
     location: location
@@ -1068,6 +1092,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
 module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensionGuestConfigurationExtension.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
+    enableTelemetry: enableReferencedModulesTelemetry
     virtualMachineName: vm.name
     name: extensionGuestConfigurationExtension.?name ?? osType == 'Windows'
       ? 'AzurePolicyforWindows'

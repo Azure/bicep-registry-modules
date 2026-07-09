@@ -65,14 +65,14 @@ param existingFoundryProjectResourceId string = ''
 @description('Optional. Specifies the OpenAI deployments to create.')
 param deployments deploymentType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[] = []
 
 @description('Optional. Values to establish private networking for the AI Services resource.')
 param privateNetworking aiServicesPrivateNetworkingType?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -89,11 +89,11 @@ param customSubDomainName string?
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -109,7 +109,7 @@ param apiProperties object?
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -129,7 +129,7 @@ param restrictOutboundNetworkAccess bool = true
 @description('Optional. The storage accounts for this resource.')
 param userOwnedStorage array?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -158,7 +158,7 @@ var identity = !empty(managedIdentities)
   : null
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -208,7 +208,7 @@ var aiServicesPrivateDnsZoneResourceId = privateNetworking != null
   ? privateNetworking.?aiServicesPrivateDnsZoneResourceId ?? ''
   : ''
 
-resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-07-01-preview' = if (!useExistingService) {
+resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-12-01' = if (!useExistingService) {
   name: name
   kind: kind
   identity: identity
@@ -218,8 +218,8 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-07-01-pr
     name: sku
   }
   properties: {
-    allowProjectManagement: true // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
-    customSubDomainName: name
+    allowProjectManagement: allowProjectManagement ?? true // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
+    customSubDomainName: customSubDomainName ?? name
     networkAcls: !empty(networkAcls ?? {})
       ? {
           defaultAction: networkAcls.?defaultAction
@@ -238,13 +238,13 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-07-01-pr
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity!.properties.clientId
               : null
-            keyVaultUri: cMKKeyVault.properties.vaultUri
+            keyVaultUri: cMKKeyVault!.properties.vaultUri
             keyName: customerManagedKey!.keyName
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.?keyVersion
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           }
         }
       : null
@@ -258,17 +258,12 @@ resource cognitiveServiceNew 'Microsoft.CognitiveServices/accounts@2025-07-01-pr
 
 var existingCognitiveServiceDetails = split(existingFoundryProjectResourceId, '/')
 
-resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-07-01-preview' existing = if (useExistingService) {
+resource cognitiveServiceExisting 'Microsoft.CognitiveServices/accounts@2025-12-01' existing = if (useExistingService) {
   name: existingCognitiveServiceDetails[8]
   scope: resourceGroup(existingCognitiveServiceDetails[2], existingCognitiveServiceDetails[4])
 }
 module cognitive_service_dependencies './dependencies.bicep' = if (!useExistingService) {
   name: take('${name}-cognitive-service-${cognitiveServiceNew.name}-dependencies', 64)
-  // Explicit dependency: ensure cognitiveServiceNew provisioning completes before deploying its dependent resources
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [
-    cognitiveServiceNew
-  ]
   params: {
     projectName: projectName
     projectDescription: projectDescription
@@ -335,10 +330,10 @@ module existing_cognitive_service_dependencies './dependencies.bicep' = if (useE
 var cognitiveService = useExistingService ? cognitiveServiceExisting : cognitiveServiceNew
 
 @description('The name of the cognitive services account.')
-output name string = useExistingService ? cognitiveServiceExisting.name : cognitiveServiceNew.name
+output name string = useExistingService ? cognitiveServiceExisting!.name : cognitiveServiceNew!.name
 
 @description('The resource ID of the cognitive services account.')
-output resourceId string = useExistingService ? cognitiveServiceExisting.id : cognitiveServiceNew.id
+output resourceId string = useExistingService ? cognitiveServiceExisting!.id : cognitiveServiceNew!.id
 
 @description('The resource group the cognitive services account was deployed into.')
 output subscriptionId string = useExistingService ? existingCognitiveServiceDetails[2] : subscription().subscriptionId
@@ -348,38 +343,38 @@ output resourceGroupName string = useExistingService ? existingCognitiveServiceD
 
 @description('The service endpoint of the cognitive services account.')
 output endpoint string = useExistingService
-  ? cognitiveServiceExisting.properties.endpoint
-  : cognitiveService.properties.endpoint
+  ? cognitiveServiceExisting!.properties.endpoint
+  : cognitiveService!.properties.endpoint
 
 @description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
 output endpoints endpointType = useExistingService
-  ? cognitiveServiceExisting.properties.endpoints
-  : cognitiveService.properties.endpoints
+  ? cognitiveServiceExisting!.properties.endpoints
+  : cognitiveService!.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = useExistingService
-  ? cognitiveServiceExisting.identity.principalId
-  : cognitiveService.?identity.?principalId
+  ? cognitiveServiceExisting!.identity.principalId
+  : cognitiveService!.?identity.?principalId
 
 @description('The location the resource was deployed into.')
-output location string = useExistingService ? cognitiveServiceExisting.location : cognitiveService.location
+output location string = useExistingService ? cognitiveServiceExisting!.location : cognitiveService!.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = useExistingService
-  ? existing_cognitive_service_dependencies.outputs.exportedSecrets
-  : cognitive_service_dependencies.outputs.exportedSecrets
+  ? existing_cognitive_service_dependencies!.outputs.exportedSecrets
+  : cognitive_service_dependencies!.outputs.exportedSecrets
 
 @description('The private endpoints of the cognitive services account.')
 output privateEndpoints privateEndpointOutputType[] = useExistingService
-  ? existing_cognitive_service_dependencies.outputs.privateEndpoints
-  : cognitive_service_dependencies.outputs.privateEndpoints
+  ? existing_cognitive_service_dependencies!.outputs.privateEndpoints
+  : cognitive_service_dependencies!.outputs.privateEndpoints
 
 import { aiProjectOutputType } from './project.bicep'
 @description('AI Project Information.')
 output aiProjectInfo aiProjectOutputType = useExistingService
-  ? existing_cognitive_service_dependencies.outputs.aiProjectInfo
-  : cognitive_service_dependencies.outputs.aiProjectInfo
+  ? existing_cognitive_service_dependencies!.outputs.aiProjectInfo
+  : cognitive_service_dependencies!.outputs.aiProjectInfo
 
 @export()
 @description('A custom AVM-aligned type for a role assignment for AI Services and Project.')

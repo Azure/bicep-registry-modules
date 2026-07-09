@@ -178,6 +178,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.devtestlab-lab.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -247,6 +249,7 @@ module lab_virtualNetworks 'virtualnetwork/main.bicep' = [
       description: virtualNetwork.?description
       allowedSubnets: virtualNetwork.?allowedSubnets
       subnetOverrides: virtualNetwork.?subnetOverrides
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -263,6 +266,7 @@ module lab_policies 'policyset/policy/main.bicep' = [
       factName: policy.factName
       status: policy.?status ?? 'Enabled'
       threshold: policy.threshold
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -282,6 +286,7 @@ module lab_schedules 'schedule/main.bicep' = [
       targetResourceId: schedule.?targetResourceId
       timeZoneId: schedule.?timeZoneId ?? 'Pacific Standard time'
       notificationSettings: schedule.?notificationSettings
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -298,6 +303,7 @@ module lab_notificationChannels 'notificationchannel/main.bicep' = [
       emailRecipient: notificationChannel.?emailRecipient
       webHookUrl: notificationChannel.?webHookUrl
       notificationLocale: notificationChannel.?notificationLocale ?? 'en'
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -317,6 +323,7 @@ module lab_artifactSources 'artifactsource/main.bicep' = [
       status: artifactSource.?status ?? 'Enabled'
       uri: artifactSource.uri
       securityToken: artifactSource.?securityToken
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -342,6 +349,7 @@ module lab_costs 'cost/main.bicep' = if (!empty(costs)) {
     thresholdValue100SendNotificationWhenExceeded: costs.?thresholdValue100SendNotificationWhenExceeded ?? 'Disabled'
     thresholdValue125DisplayOnChart: costs.?thresholdValue125DisplayOnChart ?? 'Disabled'
     thresholdValue125SendNotificationWhenExceeded: costs.?thresholdValue125SendNotificationWhenExceeded ?? 'Disabled'
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -354,6 +362,7 @@ module lab_secrets 'secret/main.bicep' = [
       value: secret.value
       enabledForArtifacts: secret.?enabledForArtifacts
       enabledForVmCreation: secret.?enabledForVmCreation
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

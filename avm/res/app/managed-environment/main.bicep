@@ -146,6 +146,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -245,6 +247,7 @@ module managedEnvironment_storage 'storage/main.bicep' = [
       kind: storage.kind
       accessMode: storage.accessMode
       storageAccountName: storage.storageAccountName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -280,7 +283,7 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
-module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
+module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(certificate)) {
   name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
   params: {
     name: certificate.?name ?? 'cert-${name}'
@@ -291,6 +294,7 @@ module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(cer
     certificatePassword: certificate.?certificatePassword
     location: certificate.?location
     tags: certificate.?tags
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -322,7 +326,7 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
-import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
+import { certificateKeyVaultPropertiesType } from 'certificate/main.bicep'
 
 @export()
 @description('The type for a certificate.')

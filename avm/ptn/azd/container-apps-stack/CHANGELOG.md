@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/azd/container-apps-stack/CHANGELOG.md).
 
+## 0.4.0
+
+### Changes
+
+- Added new `storages` parameter to enable volume mount scenarios for container apps.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

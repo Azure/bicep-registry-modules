@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "15057970563566829605"
+      "version": "0.43.8.12551",
+      "templateHash": "18077931941429792070"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2212,6 +2212,17 @@
         "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
       }
     },
+    "diskControllerType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "NVMe",
+        "SCSI"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the disk controller type."
+      }
+    },
     "osDisk": {
       "$ref": "#/definitions/osDiskType",
       "metadata": {
@@ -2614,7 +2625,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Compute/virtualMachines@2024-11-01#properties/tags"
+          "source": "Microsoft.Compute/virtualMachines@2025-11-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -2882,6 +2893,7 @@
         "creationData": {
           "createOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'createOption'), 'Empty')]"
         },
+        "encryption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId'))), createObject('diskEncryptionSetId', tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'diskEncryptionSetResourceId')), null())]",
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -2892,7 +2904,7 @@
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2025-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -2921,6 +2933,7 @@
             }
           ],
           "imageReference": "[parameters('imageReference')]",
+          "diskControllerType": "[parameters('diskControllerType')]",
           "osDisk": {
             "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
             "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
@@ -3165,8 +3178,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5982155361487304817"
+              "version": "0.43.8.12551",
+              "templateHash": "13152243424900766553"
             }
           },
           "definitions": {
@@ -5997,6 +6010,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -6043,8 +6059,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6156,9 +6172,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -6233,6 +6276,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -6270,8 +6316,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6383,9 +6429,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -6461,6 +6534,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -6502,8 +6578,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6615,9 +6691,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -6693,6 +6796,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -6732,8 +6838,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6845,9 +6951,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -6923,6 +7056,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -6964,8 +7100,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7077,9 +7213,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -7155,6 +7318,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -7191,8 +7357,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7304,9 +7470,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -7382,6 +7575,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -7426,8 +7622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7539,9 +7735,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -7617,6 +7840,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -7666,8 +7892,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7779,9 +8005,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -7857,6 +8110,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -7899,8 +8155,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8012,9 +8268,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -8090,6 +8373,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -8128,8 +8414,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8241,9 +8527,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -8319,6 +8632,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -8374,8 +8690,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8487,9 +8803,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -8565,6 +8908,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
@@ -8608,8 +8954,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3581830278162851734"
+              "version": "0.43.8.12551",
+              "templateHash": "17459797226184405445"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8721,9 +9067,36 @@
                 "description": "Optional. Collection of extension names after which this extension needs to be provisioned."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.compute-vm-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "virtualMachine": {
               "existing": true,
               "type": "Microsoft.Compute/virtualMachines",
@@ -8828,8 +9201,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17448691641471706096"
+              "version": "0.43.8.12551",
+              "templateHash": "4064888873647963457"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -8963,14 +9336,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('vm', '2025-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vm', '2024-07-01', 'full').location]"
+      "value": "[reference('vm', '2025-11-01', 'full').location]"
     },
     "nicConfigurations": {
       "type": "array",

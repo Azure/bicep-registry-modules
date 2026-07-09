@@ -93,8 +93,11 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelName string = 'gpt-4o'
 
 @minLength(1)
-@description('Optional. Set the Image tag. Defaults to latest_2025-11-10_599.')
-param imageVersion string = 'latest_2025-11-10_599'
+@description('Optional. Set the Image tag. Defaults to latest_2026-04-27_934.')
+param imageVersion string = 'latest_2026-04-27_934'
+
+@description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.')
+param acrName string = 'cmsacontainerreg.azurecr.io'
 
 @minLength(1)
 @description('Optional. Version of the GPT model to deploy. Defaults to 2024-08-06.')
@@ -173,7 +176,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.ptn.sa-modernizeyourcode.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -194,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-${solutionSuffix}'
@@ -208,7 +211,7 @@ module appIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 // Deploy new Log Analytics workspace only if required and not using existing
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring || enablePrivateNetworking) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring || enablePrivateNetworking) {
   name: take('avm.res.operational-insights.workspace.${solutionSuffix}', 64)
   params: {
     name: 'log-${solutionSuffix}'
@@ -220,7 +223,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     tags: allTags
     enableTelemetry: enableTelemetry
     // WAF aligned configuration for Redundancy
-    dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
+    dailyQuotaGb: enableRedundancy ? '10' : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
     replication: enableRedundancy
       ? {
           enabled: true
@@ -267,31 +270,45 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-// Log Analytics workspace ID, customer ID, and shared key (existing or new)
-var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace.outputs.resourceId
-var LogAnalyticsPrimarySharedKey string = logAnalyticsWorkspace.outputs.primarySharedKey
-var LogAnalyticsWorkspaceId = logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+// Log Analytics workspace ID and name (existing or new)
+var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
+var logAnalyticsWorkspaceName = logAnalyticsWorkspace!.outputs.name
 
 // ========== Application Insights ========== //
 // WAF best practices for Application Insights: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/application-insights
 // WAF PSRules for  Application Insights: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#application-insights
-var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${solutionSuffix}', 64)
   params: {
-    name: applicationInsightsResourceName
-    tags: allTags
+    name: 'appi-${solutionSuffix}'
     location: location
+    workspaceResourceId: logAnalyticsWorkspaceResourceId
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    tags: allTags
     enableTelemetry: enableTelemetry
     retentionInDays: 365
     kind: 'web'
     disableIpMasking: false
-    // WAF aligned configuration - Disable local authentication to enforce Azure AD authentication
     disableLocalAuth: true
     flowType: 'Bluefield'
-    // WAF aligned configuration for Monitoring
-    workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace!.outputs.resourceId : ''
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
+    // WAF aligned configuration for Private Networking - block public ingestion/query
+    publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+  }
+}
+
+// ========== Data Collection Endpoint (DCE) ========== //
+// Required for Azure Monitor Private Link - provides private ingestion and configuration endpoints
+// Per: https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/private-link-configure
+module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:0.5.1' = if (enablePrivateNetworking && enableMonitoring) {
+  name: take('avm.res.insights.data-collection-endpoint.${solutionSuffix}', 64)
+  params: {
+    name: 'dce-${solutionSuffix}'
+    location: location
+    kind: 'Windows'
+    publicNetworkAccess: 'Disabled'
+    tags: allTags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -318,6 +335,10 @@ var privateDnsZones = [
   'privatelink.vaultcore.azure.net'
   'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.file.${environment().suffixes.storage}'
+  'privatelink.monitor.azure.com' // Azure Monitor global endpoints (App Insights, DCE)
+  'privatelink.oms.opinsights.azure.com' // Log Analytics OMS endpoints
+  'privatelink.ods.opinsights.azure.com' // Log Analytics ODS ingestion endpoints
+  'privatelink.agentsvc.azure-automation.net' // Agent service automation endpoints
 ]
 
 // DNS Zone Index Constants
@@ -329,6 +350,10 @@ var dnsZoneIndex = {
   keyVault: 4
   storageBlob: 5
   storageFile: 6
+  monitor: 7
+  oms: 8
+  ods: 9
+  agentSvc: 10
 }
 
 // ===================================================
@@ -337,7 +362,7 @@ var dnsZoneIndex = {
 // - Excludes AI-related zones when using with an existing Foundry project
 // ===================================================
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: take('avm.res.network.private-dns-zone.${split(zone, '.')[1]}.${solutionSuffix}', 64)
     params: {
@@ -354,9 +379,84 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
   }
 ]
 
+// ========== Azure Monitor Private Link Scope (AMPLS) ========== //
+// Step 1: Create AMPLS
+// Step 2: Connect Azure Monitor resources (LAW, Application Insights, DCE) to the AMPLS
+// Step 3: Connect AMPLS to a private endpoint with required DNS zones
+// Per: https://learn.microsoft.com/en-us/azure/azure-monitor/fundamentals/private-link-configure
+module azureMonitorPrivateLinkScope 'br/public:avm/res/insights/private-link-scope:0.7.2' = if (enablePrivateNetworking) {
+  name: take('avm.res.insights.private-link-scope.${solutionSuffix}', 64)
+  #disable-next-line no-unnecessary-dependson
+  dependsOn: [logAnalyticsWorkspace, applicationInsights, dataCollectionEndpoint, virtualNetwork]
+  params: {
+    name: 'ampls-${solutionSuffix}'
+    location: 'global'
+    // Access mode: PrivateOnly ensures all ingestion and queries go through private link
+    accessModeSettings: {
+      ingestionAccessMode: 'PrivateOnly'
+      queryAccessMode: 'PrivateOnly'
+    }
+    // Step 2: Connect Azure Monitor resources to the AMPLS as scoped resources
+    scopedResources: concat(
+      [
+        {
+          name: 'scoped-law'
+          linkedResourceId: logAnalyticsWorkspaceResourceId
+        }
+      ],
+      enableMonitoring
+        ? [
+            {
+              name: 'scoped-appi'
+              linkedResourceId: applicationInsights!.outputs.resourceId
+            }
+            {
+              name: 'scoped-dce'
+              linkedResourceId: dataCollectionEndpoint!.outputs.resourceId
+            }
+          ]
+        : []
+    )
+    // Step 3: Connect AMPLS to a private endpoint
+    // The private endpoint requires 5 DNS zones per documentation:
+    // - privatelink.monitor.azure.com (App Insights + DCE global endpoints)
+    // - privatelink.oms.opinsights.azure.com (Log Analytics OMS)
+    // - privatelink.ods.opinsights.azure.com (Log Analytics ODS ingestion)
+    // - privatelink.agentsvc.azure-automation.net (Agent service automation)
+    // - privatelink.blob.core.windows.net (Agent solution packs storage)
+    privateEndpoints: [
+      {
+        name: 'pep-ampls-${solutionSuffix}'
+        subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.monitor]!.outputs.resourceId
+            }
+            {
+              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.oms]!.outputs.resourceId
+            }
+            {
+              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.ods]!.outputs.resourceId
+            }
+            {
+              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.agentSvc]!.outputs.resourceId
+            }
+            {
+              privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
+            }
+          ]
+        }
+      }
+    ]
+    tags: allTags
+    enableTelemetry: enableTelemetry
+  }
+}
+
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -379,86 +479,19 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
     enableTelemetry: enableTelemetry
     publicIPAddressObject: {
       name: 'pip-${bastionHostName}'
-      zones: []
+      availabilityZones: enableRedundancy ? [1, 2, 3] : []
     }
   }
 }
 
-// Jumpbox Virtual Machine
-var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
-  name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
+// ========== Jumpbox Virtual machine ========== //
+var maintenanceConfigurationResourceName = 'mc-${solutionSuffix}'
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${maintenanceConfigurationResourceName}', 64)
   params: {
-    name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: vmSize ?? 'Standard_DS2_v2'
+    name: maintenanceConfigurationResourceName
     location: location
-    adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
-    // WAF aligned configuration - Use provided password or generate a secure unique password
-    adminPassword: vmAdminPassword
-    tags: allTags
-    // WAF aligned configuration for Redundancy - use availability zone when redundancy is enabled
-    availabilityZone: enableRedundancy ? 1 : -1
-    imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
-      version: 'latest'
-    }
-    osType: 'Windows'
-    // WAF aligned configuration - Enable automatic patching with platform management
-    patchMode: 'AutomaticByPlatform'
-    bypassPlatformSafetyChecksOnUserSchedule: true
-    osDisk: {
-      name: 'osdisk-${jumpboxVmName}'
-      managedDisk: {
-        // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
-        storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
-      }
-    }
-    encryptionAtHost: false // Some Azure subscriptions do not support encryption at host
-    // WAF aligned configuration - VM maintenance configuration for reduced unplanned disruptions
-    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
-    nicConfigurations: [
-      {
-        name: 'nic-${jumpboxVmName}'
-        ipConfigurations: [
-          {
-            name: 'ipconfig1'
-            subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
-          }
-        ]
-        diagnosticSettings: enableMonitoring
-          ? [
-              {
-                name: 'jumpboxNicDiagnostics'
-                workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
-                logCategoriesAndGroups: [
-                  {
-                    categoryGroup: 'allLogs'
-                    enabled: true
-                  }
-                ]
-                metricCategories: [
-                  {
-                    category: 'AllMetrics'
-                    enabled: true
-                  }
-                ]
-              }
-            ]
-          : []
-      }
-    ]
-    enableTelemetry: enableTelemetry
-  }
-}
-// Jumpbox Virtual Machine Maintenance Configuration
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = {
-  name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
-  params: {
-    name: 'mc-${jumpboxVmName}'
-    location: location
-    tags: allTags
+    tags: tags
     enableTelemetry: enableTelemetry
     extensionProperties: {
       InGuestPatchMode: 'User'
@@ -489,6 +522,220 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
   }
 }
 
+var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
+var dataCollectionRulesLocation = logAnalyticsWorkspace!.outputs.location
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
+  name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
+  params: {
+    name: dataCollectionRulesResourceName
+    tags: tags
+    enableTelemetry: enableTelemetry
+    location: dataCollectionRulesLocation
+    dataCollectionRuleProperties: {
+      kind: 'Windows'
+      dataCollectionEndpointResourceId: dataCollectionEndpoint!.outputs.resourceId
+      dataSources: {
+        performanceCounters: [
+          {
+            streams: [
+              'Microsoft-Perf'
+            ]
+            samplingFrequencyInSeconds: 60
+            counterSpecifiers: [
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Processes'
+              '\\Process(_Total)\\Thread Count'
+              '\\Process(_Total)\\Handle Count'
+              '\\System\\System Up Time'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processor Queue Length'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Memory\\Available Bytes'
+              '\\Memory\\Committed Bytes'
+              '\\Memory\\Cache Bytes'
+              '\\Memory\\Pool Paged Bytes'
+              '\\Memory\\Pool Nonpaged Bytes'
+              '\\Memory\\Pages/sec'
+              '\\Memory\\Page Faults/sec'
+              '\\Process(_Total)\\Working Set'
+              '\\Process(_Total)\\Working Set - Private'
+              '\\LogicalDisk(_Total)\\% Disk Time'
+              '\\LogicalDisk(_Total)\\% Disk Read Time'
+              '\\LogicalDisk(_Total)\\% Disk Write Time'
+              '\\LogicalDisk(_Total)\\% Idle Time'
+              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+              '\\LogicalDisk(_Total)\\Disk Reads/sec'
+              '\\LogicalDisk(_Total)\\Disk Writes/sec'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\LogicalDisk(_Total)\\Free Megabytes'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Network Interface(*)\\Bytes Sent/sec'
+              '\\Network Interface(*)\\Bytes Received/sec'
+              '\\Network Interface(*)\\Packets/sec'
+              '\\Network Interface(*)\\Packets Sent/sec'
+              '\\Network Interface(*)\\Packets Received/sec'
+              '\\Network Interface(*)\\Packets Outbound Errors'
+              '\\Network Interface(*)\\Packets Received Errors'
+            ]
+            name: 'perfCounterDataSource60'
+          }
+        ]
+      }
+      destinations: {
+        logAnalytics: [
+          {
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            name: 'la-${dataCollectionRulesResourceName}'
+          }
+        ]
+      }
+      dataFlows: [
+        {
+          streams: [
+            'Microsoft-Perf'
+          ]
+          destinations: [
+            'la-${dataCollectionRulesResourceName}'
+          ]
+        }
+      ]
+    }
+  }
+}
+
+var proximityPlacementGroupResourceName = 'ppg-${solutionSuffix}'
+module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.proximity-placement-group.${proximityPlacementGroupResourceName}', 64)
+  params: {
+    name: proximityPlacementGroupResourceName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    availabilityZone: enableRedundancy ? 1 : -1
+    intent: enableRedundancy
+      ? {
+          vmSizes: [
+            vmSize ?? 'Standard_D2s_v3'
+          ]
+        }
+      : null
+  }
+}
+
+var virtualMachineResourceName = take('vm-${solutionSuffix}', 15)
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
+  params: {
+    name: virtualMachineResourceName
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    computerName: take(virtualMachineResourceName, 15)
+    osType: 'Windows'
+    vmSize: vmSize ?? 'Standard_D2s_v3'
+    adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
+    adminPassword: vmAdminPassword
+    managedIdentities: {
+      systemAssigned: true
+    }
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    proximityPlacementGroupResourceId: proximityPlacementGroup!.outputs.resourceId
+    availabilityZone: enableRedundancy ? 1 : -1
+    imageReference: {
+      publisher: 'microsoft-dsvm'
+      offer: 'dsvm-win-2022'
+      sku: 'winserver-2022'
+      version: 'latest'
+    }
+    osDisk: {
+      name: 'osdisk-${virtualMachineResourceName}'
+      caching: 'ReadWrite'
+      createOption: 'FromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
+      managedDisk: {
+        // WAF aligned configuration - use Premium storage for better SLA when redundancy is enabled
+        storageAccountType: enableRedundancy ? 'Premium_LRS' : 'Standard_LRS'
+      }
+    }
+    nicConfigurations: [
+      {
+        name: 'nic-${virtualMachineResourceName}'
+        tags: tags
+        deleteOption: 'Delete'
+        diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
+          ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+          : null
+        ipConfigurations: [
+          {
+            name: '${virtualMachineResourceName}-nic01-ipconfig01'
+            subnetResourceId: virtualNetwork!.outputs.jumpboxSubnetResourceId
+            diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
+              ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+              : null
+          }
+        ]
+      }
+    ]
+    extensionAadJoinConfig: {
+      enabled: true
+      tags: tags
+      typeHandlerVersion: '1.0'
+      settings: {
+        mdmId: ''
+      }
+    }
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: 'true'
+        Exclusions: {}
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+      tags: tags
+    }
+    //WAF aligned configuration for Monitoring
+    extensionMonitoringAgentConfig: enableMonitoring
+      ? {
+          dataCollectionRuleAssociations: [
+            {
+              dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
+              name: 'send-${logAnalyticsWorkspaceName}'
+            }
+          ]
+          enabled: true
+          tags: tags
+        }
+      : null
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: tags
+    }
+  }
+}
+
 module aiServices 'modules/ai-foundry/aifoundry.bicep' = {
   name: take('module.aifoundry.${solutionSuffix}', 64)
   #disable-next-line no-unnecessary-dependson
@@ -502,15 +749,7 @@ module aiServices 'modules/ai-foundry/aifoundry.bicep' = {
     projectName: 'proj-${solutionSuffix}'
     projectDescription: 'proj-${solutionSuffix}'
     logAnalyticsWorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspaceResourceId : ''
-    privateNetworking: enablePrivateNetworking
-      ? {
-          virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
-          subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-          cogServicesPrivateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-          openAIPrivateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
-          aiServicesPrivateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
-        }
-      : null
+    privateNetworking: null // Private endpoint is handled by the standalone aiFoundryPrivateEndpoint module
     disableLocalAuth: true //Should be set to true for WAF aligned configuration
     customSubDomainName: 'aif-${solutionSuffix}'
     apiProperties: {
@@ -545,6 +784,45 @@ module aiServices 'modules/ai-foundry/aifoundry.bicep' = {
     ]
     tags: allTags
     enableTelemetry: enableTelemetry
+  }
+}
+
+var aiFoundryAiServicesResourceName = 'aif-${solutionSuffix}'
+
+module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+  name: take('pep-${aiFoundryAiServicesResourceName}-deployment', 64)
+  params: {
+    name: 'pep-${aiFoundryAiServicesResourceName}'
+    customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
+    location: location
+    tags: allTags
+    enableTelemetry: enableTelemetry
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${aiFoundryAiServicesResourceName}-connection'
+        properties: {
+          privateLinkServiceId: aiServices.outputs.resourceId
+          groupIds: ['account']
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'ai-services-dns-zone-cognitiveservices'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
+        }
+        {
+          name: 'ai-services-dns-zone-openai'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
+        }
+        {
+          name: 'ai-services-dns-zone-aiservices'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
+        }
+      ]
+    }
+    subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
   }
 }
 
@@ -640,7 +918,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = {
 
 var containerAppsEnvironmentName = 'cae-${solutionSuffix}'
 
-module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.3' = {
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.2' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [applicationInsights, logAnalyticsWorkspace, virtualNetwork] // required due to optional flags that could change dependency
@@ -656,16 +934,13 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
         appIdentity.outputs.resourceId
       ]
     }
-    appInsightsConnectionString: enableMonitoring ? applicationInsights.outputs.connectionString : null
+    appInsightsConnectionString: enableMonitoring ? applicationInsights!.outputs.connectionString : null
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: LogAnalyticsWorkspaceId
-            sharedKey: LogAnalyticsPrimarySharedKey
-          }
+          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
         }
-      : {}
+      : null
     workloadProfiles: enablePrivateNetworking
       ? [
           // NOTE: workload profiles are required for private networking
@@ -680,7 +955,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
   }
 }
 
-module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerAppBackend 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.backend.${solutionSuffix}', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [applicationInsights] // required due to optional flags that could change dependency
@@ -696,7 +971,7 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'cmsabackend'
-        image: 'cmsacontainerreg.azurecr.io/cmsabackend:${imageVersion}'
+        image: '${acrName}/cmsabackend:${imageVersion}'
         env: concat(
           [
             {
@@ -726,10 +1001,6 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
             {
               name: 'AZURE_BLOB_CONTAINER_NAME'
               value: appStorageContainerName
-            }
-            {
-              name: 'AZURE_OPENAI_ENDPOINT'
-              value: 'https://${aiServices.outputs.name}.openai.azure.com/'
             }
             {
               name: 'MIGRATOR_AGENT_MODEL_DEPLOY'
@@ -795,16 +1066,28 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
               name: 'APP_ENV'
               value: 'prod'
             }
+            {
+              name: 'AZURE_BASIC_LOGGING_LEVEL'
+              value: 'INFO'
+            }
+            {
+              name: 'AZURE_PACKAGE_LOGGING_LEVEL'
+              value: 'WARNING'
+            }
+            {
+              name: 'AZURE_LOGGING_PACKAGES'
+              value: ''
+            }
           ],
           enableMonitoring
             ? [
                 {
                   name: 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY'
-                  value: applicationInsights.outputs.instrumentationKey
+                  value: applicationInsights!.outputs.instrumentationKey
                 }
                 {
                   name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-                  value: applicationInsights.outputs.connectionString
+                  value: applicationInsights!.outputs.connectionString
                 }
               ]
             : []
@@ -851,7 +1134,7 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.19.0' = {
   }
 }
 
-module containerAppFrontend 'br/public:avm/res/app/container-app:0.19.0' = {
+module containerAppFrontend 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.frontend.${solutionSuffix}', 64)
   params: {
     name: take('ca-frontend-${solutionSuffix}', 32)
@@ -874,10 +1157,10 @@ module containerAppFrontend 'br/public:avm/res/app/container-app:0.19.0' = {
             value: 'prod'
           }
         ]
-        image: 'cmsacontainerreg.azurecr.io/cmsafrontend:${imageVersion}'
+        image: '${acrName}/cmsafrontend:${imageVersion}'
         name: 'cmsafrontend'
         resources: {
-          cpu: '1'
+          cpu: 1
           memory: '2.0Gi'
         }
       }
