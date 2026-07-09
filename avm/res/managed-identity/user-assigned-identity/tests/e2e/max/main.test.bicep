@@ -69,6 +69,13 @@ module testDeployment '../../../main.bicep' = [
           ]
           issuer: 'https://contoso.com/${subscription().tenantId}/${guid(deployment().name)}01/'
           subject: 'system:serviceaccount:default:workload-identity-sa'
+          //   Temporarily omit claimsMatchingExpression because the Microsoft.ManagedIdentity resource provider (RP) does not yet support it.
+          //   Deployments currently fail when this property is included, even though the Bicep syntax is valid.
+          //   When RP support is available, add two tests: one with a valid claimsMatchingExpression format and one with an invalid format.
+          //   claimsMatchingExpression: {
+          //     languageVersion: 1
+          //     value: 'claims[\'sub\'] matches \'system:serviceaccount:default:*\''
+          //   }
         }
         {
           name: 'test-fed-cred-${serviceShort}-002'
