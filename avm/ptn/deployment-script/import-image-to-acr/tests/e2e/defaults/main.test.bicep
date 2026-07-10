@@ -54,6 +54,9 @@ module testDeployment '../../../main.bicep' = [
       acrName: dependencies.outputs.acrName
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       overwriteExistingImage: true // the default is false. For the idem test, we want to overwrite the image
+      tags: {
+        SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+      }
     }
   }
 ]

@@ -2,8 +2,24 @@
 
 This module deploys a Redis Cache.
 
-Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview)).
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).
 We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+
+**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**
+
+| Date | Description |
+| --- | --- |
+| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+
+**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**
+
+| Date | Description |
+| --- | --- |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
 
 
 You can reference the module as follows:
@@ -64,6 +80,10 @@ This instance deploys the module with clustering enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/clustering]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -154,6 +174,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -208,6 +232,10 @@ This instance deploys the module with EntraID authentication.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/entra-id]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -415,6 +443,10 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1090,6 +1122,10 @@ This instance deploys the module with data persistence enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/persistence]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1213,6 +1249,10 @@ This instance deploys the module with custom Redis configuration.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/redis-config]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1293,6 +1333,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
