@@ -1,5 +1,5 @@
 {
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.bracketPairColorization.enabled": true,
   "files.trimTrailingWhitespace": true,
   "files.autoSave": "onFocusChange",
