@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3575126935204689897"
+      "version": "0.43.8.12551",
+      "templateHash": "6784372896250458115"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -123,6 +123,7 @@
   "parameters": {
     "name": {
       "type": "string",
+      "maxLength": 260,
       "metadata": {
         "description": "Required. The name of the Kusto Cluster database."
       }
@@ -230,8 +231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2050858883185100947"
+              "version": "0.43.8.12551",
+              "templateHash": "661948545988216283"
             },
             "name": "Kusto Cluster Database Principal Assignments",
             "description": "This module deploys a Kusto Cluster Database Principal Assignment."
@@ -246,8 +247,7 @@
             },
             "kustoDatabaseName": {
               "type": "string",
-              "minLength": 4,
-              "maxLength": 22,
+              "maxLength": 260,
               "metadata": {
                 "description": "Required. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment."
               }

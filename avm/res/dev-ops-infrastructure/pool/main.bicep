@@ -44,25 +44,25 @@ param osProfile osProfileType = {
 param storageProfile storageProfileType?
 
 @description('Required. Defines the organization in which the pool will be used.')
-param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-01-21'>.properties.organizationProfile
+param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.properties.organizationProfile
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.tags?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType?
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 
 @description('Optional. The managed service identities assigned to this resource.')
 @metadata({
@@ -79,7 +79,10 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
   '''
 })
 param managedIdentities managedIdentityAllType?
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+
+@description('Optional. The runtime configuration of the pool.')
+param runtimeConfiguration resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-09-20'>.properties.runtimeConfiguration?
 
 // ================ //
 // Input validation //
@@ -177,7 +180,7 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.devopsinfrastructure-pool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -195,12 +198,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-01-21' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-09-20' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
+    runtimeConfiguration: runtimeConfiguration
     agentProfile: agentProfile.kind == 'Stateful'
       ? {
           kind: 'Stateful'

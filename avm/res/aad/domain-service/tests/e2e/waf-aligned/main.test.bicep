@@ -67,7 +67,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
 }
@@ -115,11 +115,11 @@ module testDeployment '../../../main.bicep' = {
         location: resourceLocation
         subnetId: nestedDependencies.outputs.subnetResourceId
       }
-      // replicaset currently are not working, when deployed via Bicep
-      // {
-      //   location: replicaLocation
-      //   subnetId: nestedDependencies.outputs.replicaSubnetResourceId
-      // }
+      // The initial deployment ignores the replica (without an error), but the replica is deployed in a second iteration.
+      {
+        location: replicaLocation
+        subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+      }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'

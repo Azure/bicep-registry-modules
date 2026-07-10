@@ -1,0 +1,154 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "10767660738388525669"
+    },
+    "name": "API Center Service Metadata Schemas",
+    "description": "This module deploys an API Center Service Metadata Schema."
+  },
+  "definitions": {
+    "metadataSchemaAssignedToType": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "allowedValues": [
+            "api",
+            "deployment",
+            "environment"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The entity the metadata schema is assigned to."
+          }
+        },
+        "required": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the metadata is required for the entity."
+          }
+        },
+        "deprecated": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the metadata property is deprecated."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "metadataSchemaType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 90,
+          "metadata": {
+            "description": "Required. The name of the metadata schema."
+          }
+        },
+        "schema": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The JSON schema defining the metadata type."
+          }
+        },
+        "assignedTo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metadataSchemaAssignedToType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The entities the metadata schema is assigned to."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the metadata schema."
+      }
+    },
+    "schema": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The JSON schema defining the metadata type."
+      }
+    },
+    "assignedTo": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/metadataSchemaAssignedToType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The entities the metadata schema is assigned to."
+      }
+    }
+  },
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-03-01",
+      "name": "[parameters('serviceName')]"
+    },
+    "metadataSchema": {
+      "type": "Microsoft.ApiCenter/services/metadataSchemas",
+      "apiVersion": "2024-03-01",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('name'))]",
+      "properties": {
+        "schema": "[parameters('schema')]",
+        "assignedTo": "[if(not(equals(parameters('assignedTo'), null())), parameters('assignedTo'), createArray())]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the metadata schema."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the metadata schema."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/metadataSchemas', parameters('serviceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the metadata schema was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
