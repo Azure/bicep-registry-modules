@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "579000068461766281"
+      "version": "0.44.1.10279",
+      "templateHash": "8611422577558834059"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity."
@@ -254,7 +254,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.managedidentity-userassignedidentity.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -324,7 +324,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-UserMSI-FederatedIdentityCred-{1}', uniqueString(subscription().id, resourceGroup().id, parameters('location'), parameters('name')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -356,8 +356,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "7329546700093028781"
+              "version": "0.44.1.10279",
+              "templateHash": "15166247979040459344"
             },
             "name": "User Assigned Identity Federated Identity Credential",
             "description": "This module deploys a User Assigned Identity Federated Identity Credential."
@@ -405,7 +405,7 @@
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.managedid-userassignedidcredential.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
