@@ -130,6 +130,7 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { deploymentType } from 'deployment/main.bicep'
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentType[]?
 
@@ -388,26 +389,21 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
 }
 
 @batchSize(1)
-// api-version 2026-05-01 is the minimum GA version that accepts `properties.modelProviderData`
-// (required for GA partner models such as Anthropic Claude). Live-verified deploying Opus 4.8 on a
-// Production EA subscription. It is newer than the current Bicep type catalog, so BCP081 (no
-// pre-deploy property validation) is expected and intentional; it does not block deployment.
-#disable-next-line BCP081
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2026-05-01' = [
-  for (deployment, index) in (deployments ?? []): {
-    parent: cognitiveService
-    name: deployment.?name ?? '${name}-deployments'
-    properties: {
-      model: deployment.model
-      raiPolicyName: deployment.?raiPolicyName
-      versionUpgradeOption: deployment.?versionUpgradeOption
-      // Attestation for GA partner models (e.g. Anthropic Claude). Only emitted when
-      // supplied, so OpenAI and other first-party deployments are unaffected.
-      modelProviderData: deployment.?modelProviderData
-    }
-    sku: deployment.?sku ?? {
-      name: 'Standard'
-      capacity: 1
+module cognitiveService_deployments 'deployment/main.bicep' = [
+  for (deploymentConfiguration, index) in (deployments ?? []): {
+    name: '${uniqueString(deploymentConfiguration.?name ?? name, string(index))}-CognitiveService-Deployment'
+    params: {
+      accountName: cognitiveService.name
+      name: deploymentConfiguration.?name ?? '${name}-deployments'
+      model: deploymentConfiguration.model
+      sku: deploymentConfiguration.?sku ?? {
+        name: 'Standard'
+        capacity: 1
+      }
+      raiPolicyName: deploymentConfiguration.?raiPolicyName
+      versionUpgradeOption: deploymentConfiguration.?versionUpgradeOption
+      modelProviderData: deploymentConfiguration.?modelProviderData
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -635,61 +631,6 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
-}
-
-@export()
-@description('The type for a cognitive services account deployment.')
-type deploymentType = {
-  @description('Optional. Specify the name of cognitive service account deployment.')
-  name: string?
-
-  @description('Required. Properties of Cognitive Services account deployment model.')
-  model: {
-    @description('Required. The name of Cognitive Services account deployment model.')
-    name: string
-
-    @description('Required. The format of Cognitive Services account deployment model.')
-    format: string
-
-    @description('Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version.')
-    version: string?
-  }
-
-  @description('Optional. The resource model definition representing SKU.')
-  sku: {
-    @description('Required. The name of the resource model definition representing SKU.')
-    name: string
-
-    @description('Optional. The capacity of the resource model definition representing SKU.')
-    capacity: int?
-
-    @description('Optional. The tier of the resource model definition representing SKU.')
-    tier: string?
-
-    @description('Optional. The size of the resource model definition representing SKU.')
-    size: string?
-
-    @description('Optional. The family of the resource model definition representing SKU.')
-    family: string?
-  }?
-
-  @description('Optional. The name of RAI policy.')
-  raiPolicyName: string?
-
-  @description('Optional. The version upgrade option.')
-  versionUpgradeOption: string?
-
-  @description('Optional. Model-provider attestation. Required by the Cognitive Services RP for GA partner models such as Anthropic Claude (`model.format` == `Anthropic`); the RP uses it to auto-accept the partner\'s Azure Marketplace offer. Ignored for first-party (e.g. OpenAI) models.')
-  modelProviderData: {
-    @description('Required. Legal entity name of the organization deploying the model.')
-    organizationName: string
-
-    @description('Required. Two-letter ISO 3166-1 alpha-2 country/region code (e.g. `US`).')
-    countryCode: string
-
-    @description('Required. Organization industry, lowercase. RP-validated (e.g. `technology`, `finance`, `healthcare`, `education`, `retail`, `manufacturing`, `government`, `media`, `other`).')
-    industry: string
-  }?
 }
 
 @export()

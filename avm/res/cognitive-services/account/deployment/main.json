@@ -1,0 +1,226 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.45.6.27763",
+      "templateHash": "7057316138591440411"
+    },
+    "name": "Cognitive Services Account Deployment",
+    "description": "This module deploys a Cognitive Services account model deployment."
+  },
+  "definitions": {
+    "modelProviderDataType": {
+      "type": "object",
+      "properties": {
+        "organizationName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Legal entity name of the organization deploying the model."
+          }
+        },
+        "countryCode": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+          }
+        },
+        "industry": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The organization industry accepted by the resource provider."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Model-provider attestation information."
+      }
+    },
+    "deploymentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Cognitive Services account deployment."
+          }
+        },
+        "model": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/properties/properties/model"
+            },
+            "description": "Required. Properties of the deployment model."
+          }
+        },
+        "sku": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/sku"
+            },
+            "description": "Optional. The resource model definition representing the SKU."
+          },
+          "nullable": true
+        },
+        "raiPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the RAI policy."
+          }
+        },
+        "versionUpgradeOption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version upgrade option."
+          }
+        },
+        "modelProviderData": {
+          "$ref": "#/definitions/modelProviderDataType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Model-provider attestation required for GA partner models."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Cognitive Services account deployment."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Cognitive Services account deployment."
+      }
+    },
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent Cognitive Services account."
+      }
+    },
+    "model": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/properties/properties/model"
+        },
+        "description": "Required. Properties of the Cognitive Services account deployment model."
+      }
+    },
+    "sku": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/sku"
+        },
+        "description": "Optional. The resource model definition representing the SKU."
+      },
+      "defaultValue": {
+        "name": "Standard",
+        "capacity": 1
+      }
+    },
+    "raiPolicyName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the RAI policy."
+      }
+    },
+    "versionUpgradeOption": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The version upgrade option."
+      }
+    },
+    "modelProviderData": {
+      "$ref": "#/definitions/modelProviderDataType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Model-provider attestation required for GA partner models such as Anthropic Claude."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable or disable usage telemetry for the module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.cognitiveservices-account-deployment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "cognitiveServiceAccount": {
+      "existing": true,
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2025-06-01",
+      "name": "[parameters('accountName')]"
+    },
+    "cognitiveServiceDeployment": {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2026-05-01",
+      "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
+      "properties": {
+        "model": "[parameters('model')]",
+        "raiPolicyName": "[parameters('raiPolicyName')]",
+        "versionUpgradeOption": "[parameters('versionUpgradeOption')]",
+        "modelProviderData": "[parameters('modelProviderData')]"
+      },
+      "sku": "[parameters('sku')]"
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Cognitive Services account deployment."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Cognitive Services account deployment."
+      },
+      "value": "[resourceId('Microsoft.CognitiveServices/accounts/deployments', parameters('accountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group in which the deployment was created."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

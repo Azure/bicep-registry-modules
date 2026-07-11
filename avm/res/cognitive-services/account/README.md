@@ -2424,62 +2424,28 @@ Array of deployments about cognitive service accounts to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`model`](#parameter-deploymentsmodel) | object | Properties of Cognitive Services account deployment model. |
+| [`model`](#parameter-deploymentsmodel) | object | Properties of the deployment model. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation. Required by the Cognitive Services RP for GA partner models such as Anthropic Claude (`model.format` == `Anthropic`); the RP uses it to auto-accept the partner's Azure Marketplace offer. Ignored for first-party (e.g. OpenAI) models. |
-| [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
-| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
-| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation required for GA partner models. |
+| [`name`](#parameter-deploymentsname) | string | The name of the Cognitive Services account deployment. |
+| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of the RAI policy. |
+| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing the SKU. |
 | [`versionUpgradeOption`](#parameter-deploymentsversionupgradeoption) | string | The version upgrade option. |
 
 ### Parameter: `deployments.model`
 
-Properties of Cognitive Services account deployment model.
+Properties of the deployment model.
 
 - Required: Yes
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
-| [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. Required if the model does not have a default version. |
-
-### Parameter: `deployments.model.format`
-
-The format of Cognitive Services account deployment model.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deployments.model.name`
-
-The name of Cognitive Services account deployment model.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deployments.model.version`
-
-The version of Cognitive Services account deployment model. Required if the model does not have a default version.
-
-- Required: No
-- Type: string
 
 ### Parameter: `deployments.modelProviderData`
 
-Model-provider attestation. Required by the Cognitive Services RP for GA partner models such as Anthropic Claude (`model.format` == `Anthropic`); the RP uses it to auto-accept the partner's Azure Marketplace offer. Ignored for first-party (e.g. OpenAI) models.
+Model-provider attestation required for GA partner models.
 
 - Required: No
 - Type: object
@@ -2488,20 +2454,20 @@ Model-provider attestation. Required by the Cognitive Services RP for GA partner
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`countryCode`](#parameter-deploymentsmodelproviderdatacountrycode) | string | Two-letter ISO 3166-1 alpha-2 country/region code (e.g. `US`). |
-| [`industry`](#parameter-deploymentsmodelproviderdataindustry) | string | Organization industry, lowercase. RP-validated (e.g. `technology`, `finance`, `healthcare`, `education`, `retail`, `manufacturing`, `government`, `media`, `other`). |
+| [`countryCode`](#parameter-deploymentsmodelproviderdatacountrycode) | string | Two-letter ISO 3166-1 alpha-2 country or region code. |
+| [`industry`](#parameter-deploymentsmodelproviderdataindustry) | string | The organization industry accepted by the resource provider. |
 | [`organizationName`](#parameter-deploymentsmodelproviderdataorganizationname) | string | Legal entity name of the organization deploying the model. |
 
 ### Parameter: `deployments.modelProviderData.countryCode`
 
-Two-letter ISO 3166-1 alpha-2 country/region code (e.g. `US`).
+Two-letter ISO 3166-1 alpha-2 country or region code.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `deployments.modelProviderData.industry`
 
-Organization industry, lowercase. RP-validated (e.g. `technology`, `finance`, `healthcare`, `education`, `retail`, `manufacturing`, `government`, `media`, `other`).
+The organization industry accepted by the resource provider.
 
 - Required: Yes
 - Type: string
@@ -2515,74 +2481,24 @@ Legal entity name of the organization deploying the model.
 
 ### Parameter: `deployments.name`
 
-Specify the name of cognitive service account deployment.
+The name of the Cognitive Services account deployment.
 
 - Required: No
 - Type: string
 
 ### Parameter: `deployments.raiPolicyName`
 
-The name of RAI policy.
+The name of the RAI policy.
 
 - Required: No
 - Type: string
 
 ### Parameter: `deployments.sku`
 
-The resource model definition representing SKU.
+The resource model definition representing the SKU.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-deploymentsskuname) | string | The name of the resource model definition representing SKU. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
-| [`family`](#parameter-deploymentsskufamily) | string | The family of the resource model definition representing SKU. |
-| [`size`](#parameter-deploymentsskusize) | string | The size of the resource model definition representing SKU. |
-| [`tier`](#parameter-deploymentsskutier) | string | The tier of the resource model definition representing SKU. |
-
-### Parameter: `deployments.sku.name`
-
-The name of the resource model definition representing SKU.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deployments.sku.capacity`
-
-The capacity of the resource model definition representing SKU.
-
-- Required: No
-- Type: int
-
-### Parameter: `deployments.sku.family`
-
-The family of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
-
-### Parameter: `deployments.sku.size`
-
-The size of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
-
-### Parameter: `deployments.sku.tier`
-
-The tier of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
 
 ### Parameter: `deployments.versionUpgradeOption`
 
