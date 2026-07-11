@@ -11,7 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None. `modelProviderData` is optional and only emitted when supplied (via `deployment.?modelProviderData`), so existing first-party (e.g. OpenAI) deployments are unaffected.
+- None.
 
 ## 0.15.0
 
