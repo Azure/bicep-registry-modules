@@ -124,8 +124,8 @@ param identitySettings resourceInput<'Microsoft.App/containerApps@2026-01-01'>.p
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
-@description('Optional. Runtime configuration for the Container App.')
-param runtime resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.runtime?
+@description('Optional. Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema.')
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
 param containers resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.containers
@@ -273,6 +273,7 @@ resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: registries
       secrets: secrets
+      #disable-next-line BCP037 // The 'dotnet' property of 'runtime' is supported by the API but is not yet part of the GA `2026-01-01` Bicep type definition. Required to preserve .NET stack settings (e.g., set via the Azure Portal) across deployments.
       runtime: runtime
     }
   }
@@ -584,4 +585,19 @@ type authConfigType = {
 
   @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
   platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.platform?
+}
+
+@description('The type for the Container App runtime configuration. Supports both Java and .NET stacks.')
+type runtimeType = {
+  @description('Optional. Java app configuration.')
+  java: {
+    @description('Optional. Enable jmx core metrics for the java app.')
+    enableMetrics: bool?
+  }?
+
+  @description('Optional. .NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments.')
+  dotnet: {
+    @description('Optional. Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment.')
+    autoConfigureDataProtection: bool?
+  }?
 }
