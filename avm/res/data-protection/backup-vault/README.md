@@ -1483,6 +1483,7 @@ List of all backup instances.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dataSourceSetInfo`](#parameter-backupinstancesdatasourcesetinfo) | object | The data source set info for the backup instance. Required for some data source types (e.g., AKS). |
 | [`friendlyName`](#parameter-backupinstancesfriendlyname) | string | The friendly name of the backup instance. |
 
 ### Parameter: `backupInstances.dataSourceInfo`
@@ -1579,6 +1580,66 @@ Policy parameters for the backup instance.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `backupInstances.dataSourceSetInfo`
+
+The data source set info for the backup instance. Required for some data source types (e.g., AKS).
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`datasourceType`](#parameter-backupinstancesdatasourcesetinfodatasourcetype) | string | The data source type of the resource. |
+| [`resourceID`](#parameter-backupinstancesdatasourcesetinforesourceid) | string | The resource ID of the resource. |
+| [`resourceLocation`](#parameter-backupinstancesdatasourcesetinforesourcelocation) | string | The location of the data source. |
+| [`resourceName`](#parameter-backupinstancesdatasourcesetinforesourcename) | string | Unique identifier of the resource in the context of parent. |
+| [`resourceType`](#parameter-backupinstancesdatasourcesetinforesourcetype) | string | The resource type of the data source. |
+| [`resourceUri`](#parameter-backupinstancesdatasourcesetinforesourceuri) | string | The Uri of the resource. |
+
+### Parameter: `backupInstances.dataSourceSetInfo.datasourceType`
+
+The data source type of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceID`
+
+The resource ID of the resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceLocation`
+
+The location of the data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceName`
+
+Unique identifier of the resource in the context of parent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceType`
+
+The resource type of the data source.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `backupInstances.dataSourceSetInfo.resourceUri`
+
+The Uri of the resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `backupInstances.friendlyName`
 
