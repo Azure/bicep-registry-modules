@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.13.4
+
+### Changes
+
+- Added `dotNetComponents` parameter and child module `avm/res/app/managed-environment/dot-net-component` to support Aspire Dashboard and other .NET components
+
+### Breaking Changes
+
+- None
+
 ## 0.13.3
 
 ### Changes
