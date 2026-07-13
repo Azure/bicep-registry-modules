@@ -8,7 +8,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - For child-modules `table-service`, `queue-service`, `file-service` & `blob-service`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
-
 ### Breaking Changes
 
 - None
