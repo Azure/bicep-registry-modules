@@ -40,6 +40,913 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    name: 'sssmin002'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "sssmin002"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+param name = 'sssmin002'
+```
+
+</details>
+<p>
+
+### Example 2: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving admin key secrets in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kv-ref'
+    // Non-required parameters
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
+    disableLocalAuth: false
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryAdminKeyName: 'Primary-Admin-Key'
+      secondaryAdminKeyName: 'Secondary-Admin-Key'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kv-ref"
+    },
+    // Non-required parameters
+    "authOptions": {
+      "value": {
+        "aadOrApiKey": {
+          "aadAuthFailureMode": "http401WithBearerChallenge"
+        }
+      }
+    },
+    "disableLocalAuth": {
+      "value": false
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryAdminKeyName": "Primary-Admin-Key",
+        "secondaryAdminKeyName": "Secondary-Admin-Key"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'kv-ref'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param disableLocalAuth = false
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  primaryAdminKeyName: 'Primary-Admin-Key'
+  secondaryAdminKeyName: 'Secondary-Admin-Key'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sssmax001'
+    // Non-required parameters
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
+    cmkEnforcement: 'Enabled'
+    computeType: 'Default'
+    dataExfiltrationProtections: [
+      'All'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableLocalAuth: false
+    hostingMode: 'HighDensity'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkRuleSet: {
+      bypass: 'AzureServices'
+      ipRules: [
+        {
+          value: '40.74.28.0/23'
+        }
+        {
+          value: '87.147.204.13'
+        }
+      ]
+    }
+    partitionCount: 2
+    replicaCount: 3
+    roleAssignments: [
+      {
+        name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    semanticSearch: 'standard'
+    sku: 'standard3'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sssmax001"
+    },
+    // Non-required parameters
+    "authOptions": {
+      "value": {
+        "aadOrApiKey": {
+          "aadAuthFailureMode": "http401WithBearerChallenge"
+        }
+      }
+    },
+    "cmkEnforcement": {
+      "value": "Enabled"
+    },
+    "computeType": {
+      "value": "Default"
+    },
+    "dataExfiltrationProtections": {
+      "value": [
+        "All"
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableLocalAuth": {
+      "value": false
+    },
+    "hostingMode": {
+      "value": "HighDensity"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkRuleSet": {
+      "value": {
+        "bypass": "AzureServices",
+        "ipRules": [
+          {
+            "value": "40.74.28.0/23"
+          },
+          {
+            "value": "87.147.204.13"
+          }
+        ]
+      }
+    },
+    "partitionCount": {
+      "value": 2
+    },
+    "replicaCount": {
+      "value": 3
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "73ec30e0-2e25-475f-beec-d90cab332eb7",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "semanticSearch": {
+      "value": "standard"
+    },
+    "sku": {
+      "value": "standard3"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'sssmax001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param computeType = 'Default'
+param dataExfiltrationProtections = [
+  'All'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'HighDensity'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRuleSet = {
+  bypass: 'AzureServices'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param roleAssignments = [
+  {
+    name: '73ec30e0-2e25-475f-beec-d90cab332eb7'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param semanticSearch = 'standard'
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssspr001'
+    // Non-required parameters
+    privateEndpoints: [
+      {
+        applicationSecurityGroupResourceIds: [
+          '<applicationSecurityGroupResourceId>'
+        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    sharedPrivateLinkResources: [
+      {
+        groupId: 'blob'
+        privateLinkResourceId: '<privateLinkResourceId>'
+        requestMessage: 'Please approve this request'
+        resourceRegion: '<resourceRegion>'
+      }
+      {
+        groupId: 'vault'
+        privateLinkResourceId: '<privateLinkResourceId>'
+        requestMessage: 'Please approve this request'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssspr001"
+    },
+    // Non-required parameters
+    "privateEndpoints": {
+      "value": [
+        {
+          "applicationSecurityGroupResourceIds": [
+            "<applicationSecurityGroupResourceId>"
+          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "sharedPrivateLinkResources": {
+      "value": [
+        {
+          "groupId": "blob",
+          "privateLinkResourceId": "<privateLinkResourceId>",
+          "requestMessage": "Please approve this request",
+          "resourceRegion": "<resourceRegion>"
+        },
+        {
+          "groupId": "vault",
+          "privateLinkResourceId": "<privateLinkResourceId>",
+          "requestMessage": "Please approve this request"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssspr001'
+// Non-required parameters
+param privateEndpoints = [
+  {
+    applicationSecurityGroupResourceIds: [
+      '<applicationSecurityGroupResourceId>'
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param sharedPrivateLinkResources = [
+  {
+    groupId: 'blob'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+    resourceRegion: '<resourceRegion>'
+  }
+  {
+    groupId: 'vault'
+    privateLinkResourceId: '<privateLinkResourceId>'
+    requestMessage: 'Please approve this request'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssswaf001'
+    // Non-required parameters
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
+    cmkEnforcement: 'Enabled'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableLocalAuth: false
+    hostingMode: 'HighDensity'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    networkRuleSet: {
+      bypass: 'AzureServices'
+      ipRules: [
+        {
+          value: '40.74.28.0/23'
+        }
+        {
+          value: '87.147.204.13'
+        }
+      ]
+    }
+    partitionCount: 2
+    replicaCount: 3
+    sku: 'standard3'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssswaf001"
+    },
+    // Non-required parameters
+    "authOptions": {
+      "value": {
+        "aadOrApiKey": {
+          "aadAuthFailureMode": "http401WithBearerChallenge"
+        }
+      }
+    },
+    "cmkEnforcement": {
+      "value": "Enabled"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableLocalAuth": {
+      "value": false
+    },
+    "hostingMode": {
+      "value": "HighDensity"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "networkRuleSet": {
+      "value": {
+        "bypass": "AzureServices",
+        "ipRules": [
+          {
+            "value": "40.74.28.0/23"
+          },
+          {
+            "value": "87.147.204.13"
+          }
+        ]
+      }
+    },
+    "partitionCount": {
+      "value": 2
+    },
+    "replicaCount": {
+      "value": 3
+    },
+    "sku": {
+      "value": "standard3"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/search/search-service:<version>'
+
+// Required parameters
+param name = 'ssswaf001'
+// Non-required parameters
+param authOptions = {
+  aadOrApiKey: {
+    aadAuthFailureMode: 'http401WithBearerChallenge'
+  }
+}
+param cmkEnforcement = 'Enabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableLocalAuth = false
+param hostingMode = 'HighDensity'
+param managedIdentities = {
+  systemAssigned: true
+}
+param networkRuleSet = {
+  bypass: 'AzureServices'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+    {
+      value: '87.147.204.13'
+    }
+  ]
+}
+param partitionCount = 2
+param replicaCount = 3
+param sku = 'standard3'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

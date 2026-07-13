@@ -39,6 +39,976 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/topic:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters while demonstrating managed identity delivery and private endpoints.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module topic 'br/public:avm/res/event-grid/topic:<version>' = {
+  params: {
+    // Required parameters
+    name: 'egtmin001'
+    // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        name: 'egtmin001'
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egtmin001"
+    },
+    // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "name": "egtmin001"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtmin001'
+// Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    name: 'egtmin001'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module topic 'br/public:avm/res/event-grid/topic:<version>' = {
+  params: {
+    // Required parameters
+    name: 'egtmax001'
+    // Non-required parameters
+    dataResidencyBoundary: 'WithinRegion'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egtmax001'
+        retryPolicy: {
+          eventTimeToLiveInMinutes: 120
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    inboundIpRules: [
+      {
+        action: 'Allow'
+        ipMask: '40.74.28.0/23'
+      }
+    ]
+    inputSchema: 'CloudEventSchemaV1_0'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    minimumTlsVersionAllowed: '1.2'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egtmax001"
+    },
+    // Non-required parameters
+    "dataResidencyBoundary": {
+      "value": "WithinRegion"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egtmax001",
+          "retryPolicy": {
+            "eventTimeToLiveInMinutes": 120,
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "inboundIpRules": {
+      "value": [
+        {
+          "action": "Allow",
+          "ipMask": "40.74.28.0/23"
+        }
+      ]
+    },
+    "inputSchema": {
+      "value": "CloudEventSchemaV1_0"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "minimumTlsVersionAllowed": {
+      "value": "1.2"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "f80d2f24-53f6-41b3-811f-668b2273dcf8",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtmax001'
+// Non-required parameters
+param dataResidencyBoundary = 'WithinRegion'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egtmax001'
+    retryPolicy: {
+      eventTimeToLiveInMinutes: 120
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param inboundIpRules = [
+  {
+    action: 'Allow'
+    ipMask: '40.74.28.0/23'
+  }
+]
+param inputSchema = 'CloudEventSchemaV1_0'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersionAllowed = '1.2'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module topic 'br/public:avm/res/event-grid/topic:<version>' = {
+  params: {
+    // Required parameters
+    name: 'egtwaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egtwaf001'
+        retryPolicy: {
+          eventTimeToLiveInMinutes: 120
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    inboundIpRules: []
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egtwaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egtwaf001",
+          "retryPolicy": {
+            "eventTimeToLiveInMinutes": 120,
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "inboundIpRules": {
+      "value": []
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/topic:<version>'
+
+// Required parameters
+param name = 'egtwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egtwaf001'
+    retryPolicy: {
+      eventTimeToLiveInMinutes: 120
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param inboundIpRules = []
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

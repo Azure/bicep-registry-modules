@@ -54,6 +54,2630 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/server:<version>`.
 
+- [With an administrator](#example-1-with-an-administrator)
+- [With audit settings](#example-2-with-audit-settings)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-3-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Using elastic pool](#example-6-using-elastic-pool)
+- [Using failover groups](#example-7-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-8-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [With a secondary database](#example-10-with-a-secondary-database)
+- [With vulnerability assessment](#example-11-with-vulnerability-assessment)
+- [WAF-aligned](#example-12-waf-aligned)
+
+### Example 1: _With an administrator_
+
+This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/admin]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlsadmin'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlsadmin"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsadmin'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _With audit settings_
+
+This instance deploys the module with auditing settings.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/audit]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssaud001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    auditSettings: {
+      isManagedIdentityInUse: true
+      state: 'Enabled'
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssaud001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "auditSettings": {
+      "value": {
+        "isManagedIdentityInUse": true,
+        "state": "Enabled",
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssaud001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param auditSettings = {
+  isManagedIdentityInUse: true
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sshsmu001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sshsmu-db-001'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sshsmu001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sshsmu-db-001",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sshsmu001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sshsmu-db-001'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sscmk001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sscmk-db'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sscmk001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sscmk-db",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sscmk001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sscmk-db'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssmin001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: '<login>'
+      principalType: 'Application'
+      sid: '<sid>'
+    }
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssmin001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "<login>",
+        "principalType": "Application",
+        "sid": "<sid>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssmin001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: '<login>'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 6: _Using elastic pool_
+
+This instance deploys the module with an elastic pool.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/elasticPool]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssep001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    elasticPools: [
+      {
+        availabilityZone: -1
+        name: 'ssep-ep-001'
+        zoneRedundant: false
+      }
+      {
+        availabilityZone: -1
+        name: 'ssep-ep-002'
+        perDatabaseSettings: {
+          maxCapacity: '4'
+          minCapacity: '0.5'
+        }
+        sku: {
+          capacity: 4
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+        zoneRedundant: false
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssep001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "elasticPools": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "name": "ssep-ep-001",
+          "zoneRedundant": false
+        },
+        {
+          "availabilityZone": -1,
+          "name": "ssep-ep-002",
+          "perDatabaseSettings": {
+            "maxCapacity": "4",
+            "minCapacity": "0.5"
+          },
+          "sku": {
+            "capacity": 4,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssep001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param elasticPools = [
+  {
+    availabilityZone: -1
+    name: 'ssep-ep-001'
+    zoneRedundant: false
+  }
+  {
+    availabilityZone: -1
+    name: 'ssep-ep-002'
+    perDatabaseSettings: {
+      maxCapacity: '4'
+      minCapacity: '0.5'
+    }
+    sku: {
+      capacity: 4
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+    zoneRedundant: false
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 7: _Using failover groups_
+
+This instance deploys the module with failover groups.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/failover-group]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'ssfog001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        availabilityZone: -1
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db1'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+      {
+        availabilityZone: -1
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db2'
+        sku: {
+          capacity: 2
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+        zoneRedundant: false
+      }
+      {
+        availabilityZone: -1
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db3'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+    ]
+    failoverGroups: [
+      {
+        databases: [
+          'ssfog-db1'
+        ]
+        name: 'ssfog-fg-geo'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+      {
+        databases: [
+          'ssfog-db2'
+        ]
+        name: 'ssfog-fg-standby'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Automatic'
+          failoverWithDataLossGracePeriodMinutes: 60
+        }
+        secondaryType: 'Standby'
+      }
+      {
+        databases: [
+          'ssfog-db3'
+        ]
+        name: 'ssfog-fg-readonly'
+        partnerServerResourceIds: [
+          '<secondaryServerResourceId>'
+        ]
+        readOnlyEndpoint: {
+          failoverPolicy: 'Enabled'
+          targetServer: '<targetServer>'
+        }
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssfog001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db1",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "availabilityZone": -1,
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db2",
+          "sku": {
+            "capacity": 2,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "availabilityZone": -1,
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db3",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "failoverGroups": {
+      "value": [
+        {
+          "databases": [
+            "ssfog-db1"
+          ],
+          "name": "ssfog-fg-geo",
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        },
+        {
+          "databases": [
+            "ssfog-db2"
+          ],
+          "name": "ssfog-fg-standby",
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Automatic",
+            "failoverWithDataLossGracePeriodMinutes": 60
+          },
+          "secondaryType": "Standby"
+        },
+        {
+          "databases": [
+            "ssfog-db3"
+          ],
+          "name": "ssfog-fg-readonly",
+          "partnerServerResourceIds": [
+            "<secondaryServerResourceId>"
+          ],
+          "readOnlyEndpoint": {
+            "failoverPolicy": "Enabled",
+            "targetServer": "<targetServer>"
+          },
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssfog001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    availabilityZone: -1
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db1'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+  {
+    availabilityZone: -1
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db2'
+    sku: {
+      capacity: 2
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+    zoneRedundant: false
+  }
+  {
+    availabilityZone: -1
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db3'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+]
+param failoverGroups = [
+  {
+    databases: [
+      'ssfog-db1'
+    ]
+    name: 'ssfog-fg-geo'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+  {
+    databases: [
+      'ssfog-db2'
+    ]
+    name: 'ssfog-fg-standby'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Automatic'
+      failoverWithDataLossGracePeriodMinutes: 60
+    }
+    secondaryType: 'Standby'
+  }
+  {
+    databases: [
+      'ssfog-db3'
+    ]
+    name: 'ssfog-fg-readonly'
+    partnerServerResourceIds: [
+      '<secondaryServerResourceId>'
+    ]
+    readOnlyEndpoint: {
+      failoverPolicy: 'Enabled'
+      targetServer: '<targetServer>'
+    }
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 8: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kvSecrets]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlkvs001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        availabilityZone: -1
+        name: 'myDatabase'
+        zoneRedundant: false
+      }
+    ]
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+      sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlkvs001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "name": "myDatabase",
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "sqlAdminPasswordSecretName": "adminLoginPasswordKey",
+        "sqlAzureConnectionStringSecretName": "sqlConnectionStringKey"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlkvs001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    availabilityZone: -1
+    name: 'myDatabase'
+    zoneRedundant: false
+  }
+]
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
+  sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
+}
+```
+
+</details>
+<p>
+
+### Example 9: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlsmax'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    databases: [
+      {
+        availabilityZone: -1
+        backupLongTermRetentionPolicy: {
+          monthlyRetention: 'P6M'
+        }
+        backupShortTermRetentionPolicy: {
+          retentionDays: 14
+        }
+        collation: 'SQL_Latin1_General_CP1_CI_AS'
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        elasticPoolResourceId: '<elasticPoolResourceId>'
+        licenseType: 'LicenseIncluded'
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 34359738368
+        name: 'sqlsmaxdb-001'
+        sku: {
+          capacity: 0
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+        }
+      }
+    ]
+    elasticPools: [
+      {
+        availabilityZone: -1
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
+        name: 'sqlsmax-ep-001'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'SQL DB Contributor'
+          }
+        ]
+        sku: {
+          capacity: 10
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+      }
+    ]
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<serverIdentityResourceId>'
+      ]
+    }
+    outboundFirewallRules: [
+      'www.bing.com'
+      'www.microsoft.com'
+    ]
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    restrictOutboundNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    securityAlertPolicies: [
+      {
+        emailAccountAdmins: true
+        name: 'Default'
+        state: 'Enabled'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    virtualNetworkRules: [
+      {
+        ignoreMissingVnetServiceEndpoint: true
+        name: 'newVnetRule1'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+      }
+    ]
+    vulnerabilityAssessmentsObj: {
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlsmax"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "backupLongTermRetentionPolicy": {
+            "monthlyRetention": "P6M"
+          },
+          "backupShortTermRetentionPolicy": {
+            "retentionDays": 14
+          },
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "elasticPoolResourceId": "<elasticPoolResourceId>",
+          "licenseType": "LicenseIncluded",
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 34359738368,
+          "name": "sqlsmaxdb-001",
+          "sku": {
+            "capacity": 0,
+            "name": "ElasticPool",
+            "tier": "GeneralPurpose"
+          }
+        }
+      ]
+    },
+    "elasticPools": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
+          "name": "sqlsmax-ep-001",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "SQL DB Contributor"
+            }
+          ],
+          "sku": {
+            "capacity": 10,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          }
+        }
+      ]
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIpAddress": "0.0.0.0"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<serverIdentityResourceId>"
+        ]
+      }
+    },
+    "outboundFirewallRules": {
+      "value": [
+        "www.bing.com",
+        "www.microsoft.com"
+      ]
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "securityAlertPolicies": {
+      "value": [
+        {
+          "emailAccountAdmins": true,
+          "name": "Default",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "virtualNetworkRules": {
+      "value": [
+        {
+          "ignoreMissingVnetServiceEndpoint": true,
+          "name": "newVnetRule1",
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
+        }
+      ]
+    },
+    "vulnerabilityAssessmentsObj": {
+      "value": {
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsmax'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param databases = [
+  {
+    availabilityZone: -1
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolResourceId: '<elasticPoolResourceId>'
+    licenseType: 'LicenseIncluded'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 34359738368
+    name: 'sqlsmaxdb-001'
+    sku: {
+      capacity: 0
+      name: 'ElasticPool'
+      tier: 'GeneralPurpose'
+    }
+  }
+]
+param elasticPools = [
+  {
+    availabilityZone: -1
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    name: 'sqlsmax-ep-001'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'SQL DB Contributor'
+      }
+    ]
+    sku: {
+      capacity: 10
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+  }
+]
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<serverIdentityResourceId>'
+  ]
+}
+param outboundFirewallRules = [
+  'www.bing.com'
+  'www.microsoft.com'
+]
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 10: _With a secondary database_
+
+This instance deploys the module with a secondary database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/secondary]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlsec-sec'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        availabilityZone: -1
+        createMode: 'Secondary'
+        maxSizeBytes: 2147483648
+        name: '<name>'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+        zoneRedundant: false
+      }
+    ]
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlsec-sec"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "createMode": "Secondary",
+          "maxSizeBytes": 2147483648,
+          "name": "<name>",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "sourceDatabaseResourceId": "<sourceDatabaseResourceId>",
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsec-sec'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    availabilityZone: -1
+    createMode: 'Secondary'
+    maxSizeBytes: 2147483648
+    name: '<name>'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
+    zoneRedundant: false
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 11: _With vulnerability assessment_
+
+This instance deploys the module with a vulnerability assessment.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vulnAssm]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlsvln'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+    securityAlertPolicies: [
+      {
+        emailAccountAdmins: true
+        name: 'Default'
+        state: 'Enabled'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    vulnerabilityAssessmentsObj: {
+      createStorageRoleAssignment: true
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+      useStorageAccountAccessKey: false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlsvln"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    },
+    "securityAlertPolicies": {
+      "value": [
+        {
+          "emailAccountAdmins": true,
+          "name": "Default",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "vulnerabilityAssessmentsObj": {
+      "value": {
+        "createStorageRoleAssignment": true,
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>",
+        "useStorageAccountAccessKey": false
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsvln'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vulnerabilityAssessmentsObj = {
+  createStorageRoleAssignment: true
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+  useStorageAccountAccessKey: false
+}
+```
+
+</details>
+<p>
+
+### Example 12: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlswaf'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    connectionPolicy: 'Redirect'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    databases: [
+      {
+        availabilityZone: 1
+        backupLongTermRetentionPolicy: {
+          monthlyRetention: 'P6M'
+        }
+        backupShortTermRetentionPolicy: {
+          retentionDays: 14
+        }
+        collation: 'SQL_Latin1_General_CP1_CI_AS'
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        elasticPoolResourceId: '<elasticPoolResourceId>'
+        licenseType: 'LicenseIncluded'
+        maxSizeBytes: 34359738368
+        name: 'sqlswafdb-001'
+        sku: {
+          capacity: 0
+          name: 'ElasticPool'
+          tier: 'GeneralPurpose'
+        }
+      }
+    ]
+    elasticPools: [
+      {
+        availabilityZone: -1
+        maintenanceConfigurationId: '<maintenanceConfigurationId>'
+        name: 'sqlswaf-ep-001'
+        sku: {
+          capacity: 10
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'sqlServer'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    restrictOutboundNetworkAccess: 'Disabled'
+    securityAlertPolicies: [
+      {
+        emailAccountAdmins: true
+        name: 'Default'
+        state: 'Enabled'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    virtualNetworkRules: [
+      {
+        ignoreMissingVnetServiceEndpoint: true
+        name: 'newVnetRule1'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+      }
+    ]
+    vulnerabilityAssessmentsObj: {
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlswaf"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "connectionPolicy": {
+      "value": "Redirect"
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": 1,
+          "backupLongTermRetentionPolicy": {
+            "monthlyRetention": "P6M"
+          },
+          "backupShortTermRetentionPolicy": {
+            "retentionDays": 14
+          },
+          "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "elasticPoolResourceId": "<elasticPoolResourceId>",
+          "licenseType": "LicenseIncluded",
+          "maxSizeBytes": 34359738368,
+          "name": "sqlswafdb-001",
+          "sku": {
+            "capacity": 0,
+            "name": "ElasticPool",
+            "tier": "GeneralPurpose"
+          }
+        }
+      ]
+    },
+    "elasticPools": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "maintenanceConfigurationId": "<maintenanceConfigurationId>",
+          "name": "sqlswaf-ep-001",
+          "sku": {
+            "capacity": 10,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "sqlServer",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": "Disabled"
+    },
+    "securityAlertPolicies": {
+      "value": [
+        {
+          "emailAccountAdmins": true,
+          "name": "Default",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "virtualNetworkRules": {
+      "value": [
+        {
+          "ignoreMissingVnetServiceEndpoint": true,
+          "name": "newVnetRule1",
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
+        }
+      ]
+    },
+    "vulnerabilityAssessmentsObj": {
+      "value": {
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlswaf'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param connectionPolicy = 'Redirect'
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param databases = [
+  {
+    availabilityZone: 1
+    backupLongTermRetentionPolicy: {
+      monthlyRetention: 'P6M'
+    }
+    backupShortTermRetentionPolicy: {
+      retentionDays: 14
+    }
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    elasticPoolResourceId: '<elasticPoolResourceId>'
+    licenseType: 'LicenseIncluded'
+    maxSizeBytes: 34359738368
+    name: 'sqlswafdb-001'
+    sku: {
+      capacity: 0
+      name: 'ElasticPool'
+      tier: 'GeneralPurpose'
+    }
+  }
+]
+param elasticPools = [
+  {
+    availabilityZone: -1
+    maintenanceConfigurationId: '<maintenanceConfigurationId>'
+    name: 'sqlswaf-ep-001'
+    sku: {
+      capacity: 10
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'sqlServer'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param restrictOutboundNetworkAccess = 'Disabled'
+param securityAlertPolicies = [
+  {
+    emailAccountAdmins: true
+    name: 'Default'
+    state: 'Enabled'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param virtualNetworkRules = [
+  {
+    ignoreMissingVnetServiceEndpoint: true
+    name: 'newVnetRule1'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+  }
+]
+param vulnerabilityAssessmentsObj = {
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

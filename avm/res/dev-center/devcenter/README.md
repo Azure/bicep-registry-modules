@@ -47,6 +47,1104 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/dev-center/devcenter:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
+  params: {
+    name: 'dcdcmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "dcdcmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-center/devcenter:<version>'
+
+param name = 'dcdcmin001'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    attachedNetworks: [
+      {
+        name: 'test-attached-network'
+        networkConnectionResourceId: '<networkConnectionResourceId>'
+      }
+    ]
+    catalogs: [
+      {
+        gitHub: {
+          branch: 'main'
+          path: 'Environment-Definitions'
+          uri: 'https://github.com/microsoft/devcenter-catalog.git'
+        }
+        name: 'quickstart-catalog'
+        syncType: 'Scheduled'
+      }
+      {
+        adoGit: {
+          branch: 'main'
+          secretIdentifier: '<secretIdentifier>'
+          uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
+        }
+        name: 'testCatalogAzureDevOpsGit'
+        syncType: 'Manual'
+      }
+    ]
+    devboxDefinitions: [
+      {
+        hibernateSupport: 'Enabled'
+        imageResourceId: '<imageResourceId>'
+        name: 'test-devbox-definition-builtin-gallery-image'
+        sku: {
+          capacity: 1
+          family: 'general_i'
+          name: 'general_i_8c32gb512ssd_v2'
+        }
+        tags: {
+          costCenter: '1234'
+        }
+      }
+      {
+        imageResourceId: '<imageResourceId>'
+        name: '<name>'
+        sku: {
+          name: 'general_i_8c32gb256ssd_v2'
+        }
+      }
+    ]
+    devBoxProvisioningSettings: {
+      installAzureMonitorAgentEnableStatus: 'Enabled'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    displayName: 'Dev Center Test'
+    environmentTypes: [
+      {
+        displayName: 'Development Environment'
+        name: 'dev'
+        tags: {
+          costCenter: '1234'
+        }
+      }
+      {
+        displayName: 'Testing Environment'
+        name: 'test'
+        tags: {
+          costCenter: '5678'
+        }
+      }
+      {
+        displayName: 'Production Environment'
+        name: 'prod'
+        tags: {
+          costCenter: '9012'
+        }
+      }
+    ]
+    galleries: [
+      {
+        devCenterIdentityPrincipalId: '<devCenterIdentityPrincipalId>'
+        galleryResourceId: '<galleryResourceId>'
+        name: 'computegallery'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkSettings: {
+      microsoftHostedNetworkEnableStatus: 'Disabled'
+    }
+    projectCatalogSettings: {
+      catalogItemSyncEnableStatus: 'Enabled'
+    }
+    projectPolicies: [
+      {
+        name: 'Default'
+        resourcePolicies: [
+          {
+            action: 'Allow'
+            resourceType: 'Images'
+          }
+          {
+            action: 'Allow'
+            resourceType: 'Skus'
+          }
+          {
+            action: 'Allow'
+            resourceType: 'AttachedNetworks'
+          }
+        ]
+      }
+      {
+        name: 'DevProjectsPolicy'
+        projectsResourceIdOrName: [
+          '<value>/providers/Microsoft.DevCenter/projects/test-project-another-resource-group'
+          'test-project-same-resource-group'
+        ]
+        resourcePolicies: [
+          {
+            filter: 'Name eq \'general_i_8c32gb512ssd_v2\''
+            resources: '<resources>'
+          }
+          {
+            resources: '<resources>'
+          }
+          {
+            resources: '<resources>'
+          }
+          {
+            resources: '<resources>'
+          }
+        ]
+      }
+    ]
+    projects: [
+      {
+        catalogSettings: {
+          catalogItemSyncTypes: [
+            'EnvironmentDefinition'
+            'ImageDefinition'
+          ]
+        }
+        environmentTypes: [
+          {
+            creatorRoleAssignmentRoles: [
+              'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            ]
+            deploymentTargetSubscriptionResourceId: '<deploymentTargetSubscriptionResourceId>'
+            displayName: 'My Sandbox Environment Type'
+            managedIdentities: {
+              systemAssigned: false
+              userAssignedResourceIds: [
+                '<managedIdentityResourceId>'
+              ]
+            }
+            name: 'dev'
+            status: 'Enabled'
+          }
+        ]
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        maxDevBoxesPerUser: 2
+        name: 'test-project-same-resource-group'
+        pools: [
+          {
+            devBoxDefinitionName: '<devBoxDefinitionName>'
+            devBoxDefinitionType: 'Reference'
+            displayName: 'My Sandbox Pool - Unmanaged Network'
+            localAdministrator: 'Disabled'
+            name: 'sandbox-pool'
+            networkConnectionName: 'test-attached-network'
+            singleSignOnStatus: 'Enabled'
+            stopOnDisconnect: {
+              gracePeriodMinutes: 60
+              status: 'Enabled'
+            }
+            virtualNetworkType: 'Unmanaged'
+          }
+        ]
+      }
+      {
+        name: 'test-project-another-resource-group'
+        resourceGroupResourceId: '<resourceGroupResourceId>'
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'DevCenter Project Admin'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      costCenter: '1234'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "attachedNetworks": {
+      "value": [
+        {
+          "name": "test-attached-network",
+          "networkConnectionResourceId": "<networkConnectionResourceId>"
+        }
+      ]
+    },
+    "catalogs": {
+      "value": [
+        {
+          "gitHub": {
+            "branch": "main",
+            "path": "Environment-Definitions",
+            "uri": "https://github.com/microsoft/devcenter-catalog.git"
+          },
+          "name": "quickstart-catalog",
+          "syncType": "Scheduled"
+        },
+        {
+          "adoGit": {
+            "branch": "main",
+            "secretIdentifier": "<secretIdentifier>",
+            "uri": "https://contoso@dev.azure.com/contoso/your-project/_git/your-repo"
+          },
+          "name": "testCatalogAzureDevOpsGit",
+          "syncType": "Manual"
+        }
+      ]
+    },
+    "devboxDefinitions": {
+      "value": [
+        {
+          "hibernateSupport": "Enabled",
+          "imageResourceId": "<imageResourceId>",
+          "name": "test-devbox-definition-builtin-gallery-image",
+          "sku": {
+            "capacity": 1,
+            "family": "general_i",
+            "name": "general_i_8c32gb512ssd_v2"
+          },
+          "tags": {
+            "costCenter": "1234"
+          }
+        },
+        {
+          "imageResourceId": "<imageResourceId>",
+          "name": "<name>",
+          "sku": {
+            "name": "general_i_8c32gb256ssd_v2"
+          }
+        }
+      ]
+    },
+    "devBoxProvisioningSettings": {
+      "value": {
+        "installAzureMonitorAgentEnableStatus": "Enabled"
+      }
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "displayName": {
+      "value": "Dev Center Test"
+    },
+    "environmentTypes": {
+      "value": [
+        {
+          "displayName": "Development Environment",
+          "name": "dev",
+          "tags": {
+            "costCenter": "1234"
+          }
+        },
+        {
+          "displayName": "Testing Environment",
+          "name": "test",
+          "tags": {
+            "costCenter": "5678"
+          }
+        },
+        {
+          "displayName": "Production Environment",
+          "name": "prod",
+          "tags": {
+            "costCenter": "9012"
+          }
+        }
+      ]
+    },
+    "galleries": {
+      "value": [
+        {
+          "devCenterIdentityPrincipalId": "<devCenterIdentityPrincipalId>",
+          "galleryResourceId": "<galleryResourceId>",
+          "name": "computegallery"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkSettings": {
+      "value": {
+        "microsoftHostedNetworkEnableStatus": "Disabled"
+      }
+    },
+    "projectCatalogSettings": {
+      "value": {
+        "catalogItemSyncEnableStatus": "Enabled"
+      }
+    },
+    "projectPolicies": {
+      "value": [
+        {
+          "name": "Default",
+          "resourcePolicies": [
+            {
+              "action": "Allow",
+              "resourceType": "Images"
+            },
+            {
+              "action": "Allow",
+              "resourceType": "Skus"
+            },
+            {
+              "action": "Allow",
+              "resourceType": "AttachedNetworks"
+            }
+          ]
+        },
+        {
+          "name": "DevProjectsPolicy",
+          "projectsResourceIdOrName": [
+            "<value>/providers/Microsoft.DevCenter/projects/test-project-another-resource-group",
+            "test-project-same-resource-group"
+          ],
+          "resourcePolicies": [
+            {
+              "filter": "Name eq \"general_i_8c32gb512ssd_v2\"",
+              "resources": "<resources>"
+            },
+            {
+              "resources": "<resources>"
+            },
+            {
+              "resources": "<resources>"
+            },
+            {
+              "resources": "<resources>"
+            }
+          ]
+        }
+      ]
+    },
+    "projects": {
+      "value": [
+        {
+          "catalogSettings": {
+            "catalogItemSyncTypes": [
+              "EnvironmentDefinition",
+              "ImageDefinition"
+            ]
+          },
+          "environmentTypes": [
+            {
+              "creatorRoleAssignmentRoles": [
+                "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+              ],
+              "deploymentTargetSubscriptionResourceId": "<deploymentTargetSubscriptionResourceId>",
+              "displayName": "My Sandbox Environment Type",
+              "managedIdentities": {
+                "systemAssigned": false,
+                "userAssignedResourceIds": [
+                  "<managedIdentityResourceId>"
+                ]
+              },
+              "name": "dev",
+              "status": "Enabled"
+            }
+          ],
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "maxDevBoxesPerUser": 2,
+          "name": "test-project-same-resource-group",
+          "pools": [
+            {
+              "devBoxDefinitionName": "<devBoxDefinitionName>",
+              "devBoxDefinitionType": "Reference",
+              "displayName": "My Sandbox Pool - Unmanaged Network",
+              "localAdministrator": "Disabled",
+              "name": "sandbox-pool",
+              "networkConnectionName": "test-attached-network",
+              "singleSignOnStatus": "Enabled",
+              "stopOnDisconnect": {
+                "gracePeriodMinutes": 60,
+                "status": "Enabled"
+              },
+              "virtualNetworkType": "Unmanaged"
+            }
+          ]
+        },
+        {
+          "name": "test-project-another-resource-group",
+          "resourceGroupResourceId": "<resourceGroupResourceId>"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "DevCenter Project Admin"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "costCenter": "1234"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-center/devcenter:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param attachedNetworks = [
+  {
+    name: 'test-attached-network'
+    networkConnectionResourceId: '<networkConnectionResourceId>'
+  }
+]
+param catalogs = [
+  {
+    gitHub: {
+      branch: 'main'
+      path: 'Environment-Definitions'
+      uri: 'https://github.com/microsoft/devcenter-catalog.git'
+    }
+    name: 'quickstart-catalog'
+    syncType: 'Scheduled'
+  }
+  {
+    adoGit: {
+      branch: 'main'
+      secretIdentifier: '<secretIdentifier>'
+      uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
+    }
+    name: 'testCatalogAzureDevOpsGit'
+    syncType: 'Manual'
+  }
+]
+param devboxDefinitions = [
+  {
+    hibernateSupport: 'Enabled'
+    imageResourceId: '<imageResourceId>'
+    name: 'test-devbox-definition-builtin-gallery-image'
+    sku: {
+      capacity: 1
+      family: 'general_i'
+      name: 'general_i_8c32gb512ssd_v2'
+    }
+    tags: {
+      costCenter: '1234'
+    }
+  }
+  {
+    imageResourceId: '<imageResourceId>'
+    name: '<name>'
+    sku: {
+      name: 'general_i_8c32gb256ssd_v2'
+    }
+  }
+]
+param devBoxProvisioningSettings = {
+  installAzureMonitorAgentEnableStatus: 'Enabled'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param displayName = 'Dev Center Test'
+param environmentTypes = [
+  {
+    displayName: 'Development Environment'
+    name: 'dev'
+    tags: {
+      costCenter: '1234'
+    }
+  }
+  {
+    displayName: 'Testing Environment'
+    name: 'test'
+    tags: {
+      costCenter: '5678'
+    }
+  }
+  {
+    displayName: 'Production Environment'
+    name: 'prod'
+    tags: {
+      costCenter: '9012'
+    }
+  }
+]
+param galleries = [
+  {
+    devCenterIdentityPrincipalId: '<devCenterIdentityPrincipalId>'
+    galleryResourceId: '<galleryResourceId>'
+    name: 'computegallery'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkSettings = {
+  microsoftHostedNetworkEnableStatus: 'Disabled'
+}
+param projectCatalogSettings = {
+  catalogItemSyncEnableStatus: 'Enabled'
+}
+param projectPolicies = [
+  {
+    name: 'Default'
+    resourcePolicies: [
+      {
+        action: 'Allow'
+        resourceType: 'Images'
+      }
+      {
+        action: 'Allow'
+        resourceType: 'Skus'
+      }
+      {
+        action: 'Allow'
+        resourceType: 'AttachedNetworks'
+      }
+    ]
+  }
+  {
+    name: 'DevProjectsPolicy'
+    projectsResourceIdOrName: [
+      '<value>/providers/Microsoft.DevCenter/projects/test-project-another-resource-group'
+      'test-project-same-resource-group'
+    ]
+    resourcePolicies: [
+      {
+        filter: 'Name eq \'general_i_8c32gb512ssd_v2\''
+        resources: '<resources>'
+      }
+      {
+        resources: '<resources>'
+      }
+      {
+        resources: '<resources>'
+      }
+      {
+        resources: '<resources>'
+      }
+    ]
+  }
+]
+param projects = [
+  {
+    catalogSettings: {
+      catalogItemSyncTypes: [
+        'EnvironmentDefinition'
+        'ImageDefinition'
+      ]
+    }
+    environmentTypes: [
+      {
+        creatorRoleAssignmentRoles: [
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        ]
+        deploymentTargetSubscriptionResourceId: '<deploymentTargetSubscriptionResourceId>'
+        displayName: 'My Sandbox Environment Type'
+        managedIdentities: {
+          systemAssigned: false
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'dev'
+        status: 'Enabled'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    maxDevBoxesPerUser: 2
+    name: 'test-project-same-resource-group'
+    pools: [
+      {
+        devBoxDefinitionName: '<devBoxDefinitionName>'
+        devBoxDefinitionType: 'Reference'
+        displayName: 'My Sandbox Pool - Unmanaged Network'
+        localAdministrator: 'Disabled'
+        name: 'sandbox-pool'
+        networkConnectionName: 'test-attached-network'
+        singleSignOnStatus: 'Enabled'
+        stopOnDisconnect: {
+          gracePeriodMinutes: 60
+          status: 'Enabled'
+        }
+        virtualNetworkType: 'Unmanaged'
+      }
+    ]
+  }
+  {
+    name: 'test-project-another-resource-group'
+    resourceGroupResourceId: '<resourceGroupResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'DevCenter Project Admin'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  costCenter: '1234'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module devcenter 'br/public:avm/res/dev-center/devcenter:<version>' = {
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    attachedNetworks: [
+      {
+        name: 'test-attached-network'
+        networkConnectionResourceId: '<networkConnectionResourceId>'
+      }
+    ]
+    catalogs: [
+      {
+        gitHub: {
+          branch: 'main'
+          path: 'Environment-Definitions'
+          uri: 'https://github.com/microsoft/devcenter-catalog.git'
+        }
+        name: 'quickstart-catalog'
+        syncType: 'Scheduled'
+      }
+    ]
+    devboxDefinitions: [
+      {
+        hibernateSupport: 'Enabled'
+        imageResourceId: '<imageResourceId>'
+        name: 'test-devbox-definition-builtin-gallery-image'
+        sku: {
+          name: 'general_i_8c32gb512ssd_v2'
+        }
+      }
+    ]
+    devBoxProvisioningSettings: {
+      installAzureMonitorAgentEnableStatus: 'Enabled'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkSettings: {
+      microsoftHostedNetworkEnableStatus: 'Disabled'
+    }
+    projectCatalogSettings: {
+      catalogItemSyncEnableStatus: 'Enabled'
+    }
+    projectPolicies: [
+      {
+        name: 'Default'
+        resourcePolicies: [
+          {
+            action: 'Allow'
+            resourceType: 'Images'
+          }
+          {
+            action: 'Allow'
+            resourceType: 'Skus'
+          }
+          {
+            action: 'Allow'
+            resourceType: 'AttachedNetworks'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "attachedNetworks": {
+      "value": [
+        {
+          "name": "test-attached-network",
+          "networkConnectionResourceId": "<networkConnectionResourceId>"
+        }
+      ]
+    },
+    "catalogs": {
+      "value": [
+        {
+          "gitHub": {
+            "branch": "main",
+            "path": "Environment-Definitions",
+            "uri": "https://github.com/microsoft/devcenter-catalog.git"
+          },
+          "name": "quickstart-catalog",
+          "syncType": "Scheduled"
+        }
+      ]
+    },
+    "devboxDefinitions": {
+      "value": [
+        {
+          "hibernateSupport": "Enabled",
+          "imageResourceId": "<imageResourceId>",
+          "name": "test-devbox-definition-builtin-gallery-image",
+          "sku": {
+            "name": "general_i_8c32gb512ssd_v2"
+          }
+        }
+      ]
+    },
+    "devBoxProvisioningSettings": {
+      "value": {
+        "installAzureMonitorAgentEnableStatus": "Enabled"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkSettings": {
+      "value": {
+        "microsoftHostedNetworkEnableStatus": "Disabled"
+      }
+    },
+    "projectCatalogSettings": {
+      "value": {
+        "catalogItemSyncEnableStatus": "Enabled"
+      }
+    },
+    "projectPolicies": {
+      "value": [
+        {
+          "name": "Default",
+          "resourcePolicies": [
+            {
+              "action": "Allow",
+              "resourceType": "Images"
+            },
+            {
+              "action": "Allow",
+              "resourceType": "Skus"
+            },
+            {
+              "action": "Allow",
+              "resourceType": "AttachedNetworks"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/dev-center/devcenter:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param attachedNetworks = [
+  {
+    name: 'test-attached-network'
+    networkConnectionResourceId: '<networkConnectionResourceId>'
+  }
+]
+param catalogs = [
+  {
+    gitHub: {
+      branch: 'main'
+      path: 'Environment-Definitions'
+      uri: 'https://github.com/microsoft/devcenter-catalog.git'
+    }
+    name: 'quickstart-catalog'
+    syncType: 'Scheduled'
+  }
+]
+param devboxDefinitions = [
+  {
+    hibernateSupport: 'Enabled'
+    imageResourceId: '<imageResourceId>'
+    name: 'test-devbox-definition-builtin-gallery-image'
+    sku: {
+      name: 'general_i_8c32gb512ssd_v2'
+    }
+  }
+]
+param devBoxProvisioningSettings = {
+  installAzureMonitorAgentEnableStatus: 'Enabled'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkSettings = {
+  microsoftHostedNetworkEnableStatus: 'Disabled'
+}
+param projectCatalogSettings = {
+  catalogItemSyncEnableStatus: 'Enabled'
+}
+param projectPolicies = [
+  {
+    name: 'Default'
+    resourcePolicies: [
+      {
+        action: 'Allow'
+        resourceType: 'Images'
+      }
+      {
+        action: 'Allow'
+        resourceType: 'Skus'
+      }
+      {
+        action: 'Allow'
+        resourceType: 'AttachedNetworks'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

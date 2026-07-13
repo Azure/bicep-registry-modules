@@ -64,6 +64,1500 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis:<version>`.
 
+- [Using clustering configuration](#example-1-using-clustering-configuration)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using EntraID authentication](#example-3-using-entraid-authentication)
+- [Deploying with a key vault reference to save secrets](#example-4-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Passive Geo-Replicated Redis Cache](#example-6-passive-geo-replicated-redis-cache)
+- [Using data persistence configuration](#example-7-using-data-persistence-configuration)
+- [Using custom Redis configuration](#example-8-using-custom-redis-configuration)
+- [WAF-aligned](#example-9-waf-aligned)
+
+### Example 1: _Using clustering configuration_
+
+This instance deploys the module with clustering enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/clustering]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crclst001'
+    // Non-required parameters
+    availabilityZones: '<availabilityZones>'
+    capacity: 3
+    replicasPerMaster: 1
+    replicasPerPrimary: 1
+    shardCount: 3
+    skuName: 'Premium'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crclst001"
+    },
+    // Non-required parameters
+    "availabilityZones": {
+      "value": "<availabilityZones>"
+    },
+    "capacity": {
+      "value": 3
+    },
+    "replicasPerMaster": {
+      "value": 1
+    },
+    "replicasPerPrimary": {
+      "value": 1
+    },
+    "shardCount": {
+      "value": 3
+    },
+    "skuName": {
+      "value": "Premium"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crclst001'
+// Non-required parameters
+param availabilityZones = '<availabilityZones>'
+param capacity = 3
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
+param shardCount = 3
+param skuName = 'Premium'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    name: 'crmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "crmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+param name = 'crmin001'
+```
+
+</details>
+<p>
+
+### Example 3: _Using EntraID authentication_
+
+This instance deploys the module with EntraID authentication.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/entra-id]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crentrid001'
+    // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Prefixed Contributor'
+        permissions: '+@read +set ~Az*'
+      }
+    ]
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Data Contributor'
+        objectId: '<objectId>'
+        objectIdAlias: '<objectIdAlias>'
+      }
+    ]
+    redisConfiguration: {
+      'aad-enabled': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crentrid001"
+    },
+    // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Prefixed Contributor",
+          "permissions": "+@read +set ~Az*"
+        }
+      ]
+    },
+    "accessPolicyAssignments": {
+      "value": [
+        {
+          "accessPolicyName": "Data Contributor",
+          "objectId": "<objectId>",
+          "objectIdAlias": "<objectIdAlias>"
+        }
+      ]
+    },
+    "redisConfiguration": {
+      "value": {
+        "aad-enabled": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crentrid001'
+// Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Prefixed Contributor'
+    permissions: '+@read +set ~Az*'
+  }
+]
+param accessPolicyAssignments = [
+  {
+    accessPolicyName: 'Data Contributor'
+    objectId: '<objectId>'
+    objectIdAlias: '<objectIdAlias>'
+  }
+]
+param redisConfiguration = {
+  'aad-enabled': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kv-secrets]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kvref'
+    // Non-required parameters
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      primaryAccessKeyName: 'custom-primaryAccessKey-name'
+      primaryConnectionStringName: 'custom-primaryConnectionString-name'
+      primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
+      secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+      secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+      secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kvref"
+    },
+    // Non-required parameters
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "primaryAccessKeyName": "custom-primaryAccessKey-name",
+        "primaryConnectionStringName": "custom-primaryConnectionString-name",
+        "primaryStackExchangeRedisConnectionStringName": "custom-primaryStackExchangeRedisConnectionString-name",
+        "secondaryAccessKeyName": "custom-secondaryAccessKey-name",
+        "secondaryConnectionStringName": "custom-secondaryConnectionString-name",
+        "secondaryStackExchangeRedisConnectionStringName": "custom-secondaryStackExchangeRedisConnectionString-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'kvref'
+// Non-required parameters
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  primaryAccessKeyName: 'custom-primaryAccessKey-name'
+  primaryConnectionStringName: 'custom-primaryConnectionString-name'
+  primaryStackExchangeRedisConnectionStringName: 'custom-primaryStackExchangeRedisConnectionString-name'
+  secondaryAccessKeyName: 'custom-secondaryAccessKey-name'
+  secondaryConnectionStringName: 'custom-secondaryConnectionString-name'
+  secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crmax001'
+    // Non-required parameters
+    accessPolicies: [
+      {
+        name: 'Read Only Policy'
+        permissions: '+@read'
+      }
+      {
+        name: 'Write Only Policy'
+        permissions: '+@write'
+      }
+      {
+        name: 'Admin Policy'
+        permissions: '+@all'
+      }
+      {
+        name: 'Custom Pattern Policy'
+        permissions: '+@read +set ~cache:*'
+      }
+    ]
+    accessPolicyAssignments: [
+      {
+        accessPolicyName: 'Custom Pattern Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi-crmax'
+      }
+      {
+        accessPolicyName: 'Admin Policy'
+        objectId: '<objectId>'
+        objectIdAlias: 'dep-msi2-crmax'
+      }
+    ]
+    availabilityZones: [
+      1
+      2
+    ]
+    capacity: 2
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    enableNonSslPort: true
+    firewallRules: [
+      {
+        endIP: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIP: '0.0.0.0'
+      }
+      {
+        endIP: '10.10.10.10'
+        name: 'testrule1'
+        startIP: '10.10.10.1'
+      }
+      {
+        endIP: '100.100.100.10'
+        name: 'testrule2'
+        startIP: '100.100.100.1'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    minimumTlsVersion: '1.2'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        roleAssignments: [
+          {
+            name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    redisVersion: '6'
+    roleAssignments: [
+      {
+        name: 'f20e5c94-a697-421e-8768-d576399dbd87'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    shardCount: 1
+    skuName: 'Premium'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      resourceType: 'Redis Cache'
+    }
+    zonalAllocationPolicy: 'UserDefined'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crmax001"
+    },
+    // Non-required parameters
+    "accessPolicies": {
+      "value": [
+        {
+          "name": "Read Only Policy",
+          "permissions": "+@read"
+        },
+        {
+          "name": "Write Only Policy",
+          "permissions": "+@write"
+        },
+        {
+          "name": "Admin Policy",
+          "permissions": "+@all"
+        },
+        {
+          "name": "Custom Pattern Policy",
+          "permissions": "+@read +set ~cache:*"
+        }
+      ]
+    },
+    "accessPolicyAssignments": {
+      "value": [
+        {
+          "accessPolicyName": "Custom Pattern Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi-crmax"
+        },
+        {
+          "accessPolicyName": "Admin Policy",
+          "objectId": "<objectId>",
+          "objectIdAlias": "dep-msi2-crmax"
+        }
+      ]
+    },
+    "availabilityZones": {
+      "value": [
+        1,
+        2
+      ]
+    },
+    "capacity": {
+      "value": 2
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "enableNonSslPort": {
+      "value": true
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "endIP": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIP": "0.0.0.0"
+        },
+        {
+          "endIP": "10.10.10.10",
+          "name": "testrule1",
+          "startIP": "10.10.10.1"
+        },
+        {
+          "endIP": "100.100.100.10",
+          "name": "testrule2",
+          "startIP": "100.100.100.1"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "minimumTlsVersion": {
+      "value": "1.2"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "roleAssignments": [
+            {
+              "name": "8d6043f5-8a22-447f-bc31-23d23e09de6c",
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "redisVersion": {
+      "value": "6"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "f20e5c94-a697-421e-8768-d576399dbd87",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "shardCount": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "Premium"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "resourceType": "Redis Cache"
+      }
+    },
+    "zonalAllocationPolicy": {
+      "value": "UserDefined"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crmax001'
+// Non-required parameters
+param accessPolicies = [
+  {
+    name: 'Read Only Policy'
+    permissions: '+@read'
+  }
+  {
+    name: 'Write Only Policy'
+    permissions: '+@write'
+  }
+  {
+    name: 'Admin Policy'
+    permissions: '+@all'
+  }
+  {
+    name: 'Custom Pattern Policy'
+    permissions: '+@read +set ~cache:*'
+  }
+]
+param accessPolicyAssignments = [
+  {
+    accessPolicyName: 'Custom Pattern Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi-crmax'
+  }
+  {
+    accessPolicyName: 'Admin Policy'
+    objectId: '<objectId>'
+    objectIdAlias: 'dep-msi2-crmax'
+  }
+]
+param availabilityZones = [
+  1
+  2
+]
+param capacity = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enableNonSslPort = true
+param firewallRules = [
+  {
+    endIP: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIP: '0.0.0.0'
+  }
+  {
+    endIP: '10.10.10.10'
+    name: 'testrule1'
+    startIP: '10.10.10.1'
+  }
+  {
+    endIP: '100.100.100.10'
+    name: 'testrule2'
+    startIP: '100.100.100.1'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param minimumTlsVersion = '1.2'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    roleAssignments: [
+      {
+        name: '8d6043f5-8a22-447f-bc31-23d23e09de6c'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param redisVersion = '6'
+param roleAssignments = [
+  {
+    name: 'f20e5c94-a697-421e-8768-d576399dbd87'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param shardCount = 1
+param skuName = 'Premium'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Redis Cache'
+}
+param zonalAllocationPolicy = 'UserDefined'
+```
+
+</details>
+<p>
+
+### Example 6: _Passive Geo-Replicated Redis Cache_
+
+This instance deploys the module with geo-replication enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passive-geo-replication]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crpgeo001'
+    // Non-required parameters
+    availabilityZones: []
+    capacity: 2
+    enableNonSslPort: true
+    geoReplicationObject: {
+      linkedRedisCacheLocation: '<linkedRedisCacheLocation>'
+      linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
+      name: '<name>'
+    }
+    minimumTlsVersion: '1.2'
+    redisVersion: '6'
+    replicasPerMaster: 1
+    replicasPerPrimary: 1
+    shardCount: 1
+    skuName: 'Premium'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crpgeo001"
+    },
+    // Non-required parameters
+    "availabilityZones": {
+      "value": []
+    },
+    "capacity": {
+      "value": 2
+    },
+    "enableNonSslPort": {
+      "value": true
+    },
+    "geoReplicationObject": {
+      "value": {
+        "linkedRedisCacheLocation": "<linkedRedisCacheLocation>",
+        "linkedRedisCacheResourceId": "<linkedRedisCacheResourceId>",
+        "name": "<name>"
+      }
+    },
+    "minimumTlsVersion": {
+      "value": "1.2"
+    },
+    "redisVersion": {
+      "value": "6"
+    },
+    "replicasPerMaster": {
+      "value": 1
+    },
+    "replicasPerPrimary": {
+      "value": 1
+    },
+    "shardCount": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "Premium"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crpgeo001'
+// Non-required parameters
+param availabilityZones = []
+param capacity = 2
+param enableNonSslPort = true
+param geoReplicationObject = {
+  linkedRedisCacheLocation: '<linkedRedisCacheLocation>'
+  linkedRedisCacheResourceId: '<linkedRedisCacheResourceId>'
+  name: '<name>'
+}
+param minimumTlsVersion = '1.2'
+param redisVersion = '6'
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
+param shardCount = 1
+param skuName = 'Premium'
+```
+
+</details>
+<p>
+
+### Example 7: _Using data persistence configuration_
+
+This instance deploys the module with data persistence enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/persistence]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crper001'
+    // Non-required parameters
+    availabilityZones: []
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    redisConfiguration: {
+      'preferred-data-persistence-auth-method': 'ManagedIdentity'
+      'rdb-backup-enabled': 'true'
+      'rdb-backup-frequency': '60'
+      'rdb-backup-max-snapshot-count': '1'
+      'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+      'storage-subscription-id': '<storage-subscription-id>'
+    }
+    replicasPerMaster: 1
+    replicasPerPrimary: 1
+    skuName: 'Premium'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crper001"
+    },
+    // Non-required parameters
+    "availabilityZones": {
+      "value": []
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "redisConfiguration": {
+      "value": {
+        "preferred-data-persistence-auth-method": "ManagedIdentity",
+        "rdb-backup-enabled": "true",
+        "rdb-backup-frequency": "60",
+        "rdb-backup-max-snapshot-count": "1",
+        "rdb-storage-connection-string": "<rdb-storage-connection-string>",
+        "storage-subscription-id": "<storage-subscription-id>"
+      }
+    },
+    "replicasPerMaster": {
+      "value": 1
+    },
+    "replicasPerPrimary": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "Premium"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crper001'
+// Non-required parameters
+param availabilityZones = []
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param redisConfiguration = {
+  'preferred-data-persistence-auth-method': 'ManagedIdentity'
+  'rdb-backup-enabled': 'true'
+  'rdb-backup-frequency': '60'
+  'rdb-backup-max-snapshot-count': '1'
+  'rdb-storage-connection-string': '<rdb-storage-connection-string>'
+  'storage-subscription-id': '<storage-subscription-id>'
+}
+param replicasPerMaster = 1
+param replicasPerPrimary = 1
+param skuName = 'Premium'
+```
+
+</details>
+<p>
+
+### Example 8: _Using custom Redis configuration_
+
+This instance deploys the module with custom Redis configuration.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/redis-config]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crcfg001'
+    // Non-required parameters
+    redisConfiguration: {
+      'maxfragmentationmemory-reserved': '50'
+      'maxmemory-delta': '50'
+      'maxmemory-policy': 'allkeys-lru'
+      'maxmemory-reserved': '50'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crcfg001"
+    },
+    // Non-required parameters
+    "redisConfiguration": {
+      "value": {
+        "maxfragmentationmemory-reserved": "50",
+        "maxmemory-delta": "50",
+        "maxmemory-policy": "allkeys-lru",
+        "maxmemory-reserved": "50"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crcfg001'
+// Non-required parameters
+param redisConfiguration = {
+  'maxfragmentationmemory-reserved': '50'
+  'maxmemory-delta': '50'
+  'maxmemory-policy': 'allkeys-lru'
+  'maxmemory-reserved': '50'
+}
+```
+
+</details>
+<p>
+
+### Example 9: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module redis 'br/public:avm/res/cache/redis:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crwaf001'
+    // Non-required parameters
+    availabilityZones: '<availabilityZones>'
+    capacity: 2
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+    minimumTlsVersion: '1.2'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    redisVersion: '6'
+    replicasPerMaster: 3
+    replicasPerPrimary: 3
+    shardCount: 1
+    skuName: 'Premium'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      resourceType: 'Redis Cache'
+    }
+    zonalAllocationPolicy: 'UserDefined'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crwaf001"
+    },
+    // Non-required parameters
+    "availabilityZones": {
+      "value": "<availabilityZones>"
+    },
+    "capacity": {
+      "value": 2
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "minimumTlsVersion": {
+      "value": "1.2"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "redisVersion": {
+      "value": "6"
+    },
+    "replicasPerMaster": {
+      "value": 3
+    },
+    "replicasPerPrimary": {
+      "value": 3
+    },
+    "shardCount": {
+      "value": 1
+    },
+    "skuName": {
+      "value": "Premium"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "resourceType": "Redis Cache"
+      }
+    },
+    "zonalAllocationPolicy": {
+      "value": "UserDefined"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cache/redis:<version>'
+
+// Required parameters
+param name = 'crwaf001'
+// Non-required parameters
+param availabilityZones = '<availabilityZones>'
+param capacity = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+}
+param minimumTlsVersion = '1.2'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param redisVersion = '6'
+param replicasPerMaster = 3
+param replicasPerPrimary = 3
+param shardCount = 1
+param skuName = 'Premium'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Redis Cache'
+}
+param zonalAllocationPolicy = 'UserDefined'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

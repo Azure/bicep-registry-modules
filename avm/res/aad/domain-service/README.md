@@ -37,6 +37,234 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/aad/domain-service:<version>`.
 
+- [WAF-aligned](#example-1-waf-aligned)
+
+### Example 1: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
+  params: {
+    // Required parameters
+    domainName: 'onmicrosoft.com'
+    // Non-required parameters
+    additionalRecipients: [
+      '@noreply.github.com'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    externalAccess: 'Enabled'
+    ldaps: 'Enabled'
+    location: '<location>'
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+      notes: 'This is a custom lock for the deployment'
+    }
+    name: 'aaddswaf001'
+    pfxCertificate: '<pfxCertificate>'
+    pfxCertificatePassword: '<pfxCertificatePassword>'
+    replicaSets: [
+      {
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
+      {
+        location: '<location>'
+        subnetId: '<subnetId>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "domainName": {
+      "value": "onmicrosoft.com"
+    },
+    // Non-required parameters
+    "additionalRecipients": {
+      "value": [
+        "@noreply.github.com"
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "externalAccess": {
+      "value": "Enabled"
+    },
+    "ldaps": {
+      "value": "Enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "None",
+        "name": "myCustomLockName",
+        "notes": "This is a custom lock for the deployment"
+      }
+    },
+    "name": {
+      "value": "aaddswaf001"
+    },
+    "pfxCertificate": {
+      "value": "<pfxCertificate>"
+    },
+    "pfxCertificatePassword": {
+      "value": "<pfxCertificatePassword>"
+    },
+    "replicaSets": {
+      "value": [
+        {
+          "location": "<location>",
+          "subnetId": "<subnetId>"
+        },
+        {
+          "location": "<location>",
+          "subnetId": "<subnetId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/aad/domain-service:<version>'
+
+// Required parameters
+param domainName = 'onmicrosoft.com'
+// Non-required parameters
+param additionalRecipients = [
+  '@noreply.github.com'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param externalAccess = 'Enabled'
+param ldaps = 'Enabled'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+  name: 'myCustomLockName'
+  notes: 'This is a custom lock for the deployment'
+}
+param name = 'aaddswaf001'
+param pfxCertificate = '<pfxCertificate>'
+param pfxCertificatePassword = '<pfxCertificatePassword>'
+param replicaSets = [
+  {
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
+  {
+    location: '<location>'
+    subnetId: '<subnetId>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

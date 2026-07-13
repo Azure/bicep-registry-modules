@@ -41,6 +41,1979 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
+- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Storing keys of service in key vault](#example-7-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-8-using-only-defaults)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-10-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-11-as-speech-service)
+- [WAF-aligned](#example-12-waf-aligned)
+
+### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
+
+This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private-agent]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadpa003'
+    // Non-required parameters
+    customSubDomainName: 'xcsadpaai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-3-large'
+          version: '1'
+        }
+        name: 'text-embedding-3-large'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadpa003"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpaai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-large",
+            "version": "1"
+          },
+          "name": "text-embedding-3-large",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              },
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadpa003'
+// Non-required parameters
+param customSubDomainName = 'xcsadpaai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'text-embedding-3-large'
+      version: '1'
+    }
+    name: 'text-embedding-3-large'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-private]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadp003'
+    // Non-required parameters
+    customSubDomainName: 'xcsadpai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-3-large'
+          version: '1'
+        }
+        name: 'text-embedding-3-large'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadp003"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadpai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-large",
+            "version": "1"
+          },
+          "name": "text-embedding-3-large",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              },
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadp003'
+// Non-required parameters
+param customSubDomainName = 'xcsadpai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'text-embedding-3-large'
+      version: '1'
+    }
+    name: 'text-embedding-3-large'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 3: _Using `AIServices` with `deployments` in parameter set_
+
+This instance deploys the module with the AI model deployment feature.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csad002'
+    // Non-required parameters
+    customSubDomainName: 'xcsadai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-3-large'
+          version: '1'
+        }
+        name: 'text-embedding-3-large'
+        sku: {
+          capacity: 10
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csad002"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-large",
+            "version": "1"
+          },
+          "name": "text-embedding-3-large",
+          "sku": {
+            "capacity": 10,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csad002'
+// Non-required parameters
+param customSubDomainName = 'xcsadai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'text-embedding-3-large'
+      version: '1'
+    }
+    name: 'text-embedding-3-large'
+    sku: {
+      capacity: 10
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csahsmu001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csahsmu001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csahsmu001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: '<name>'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = '<name>'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csaencr001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    sku: 'S0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csaencr001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "sku": {
+      "value": "S0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaencr001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Enabled'
+param restrictOutboundNetworkAccess = false
+param sku = 'S0'
+```
+
+</details>
+<p>
+
+### Example 7: _Storing keys of service in key vault_
+
+This instance deploys the module and stores its keys in a key vault.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-with-key-vault]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csakv001'
+    // Non-required parameters
+    disableLocalAuth: false
+    secretsExportConfiguration: {
+      accessKey1Name: 'csakv001-accessKey1'
+      accessKey2Name: 'csakv001-accessKey2'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csakv001"
+    },
+    // Non-required parameters
+    "disableLocalAuth": {
+      "value": false
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "accessKey1Name": "csakv001-accessKey1",
+        "accessKey2Name": "csakv001-accessKey2",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csakv001'
+// Non-required parameters
+param disableLocalAuth = false
+param secretsExportConfiguration = {
+  accessKey1Name: 'csakv001-accessKey1'
+  accessKey2Name: 'csakv001-accessKey2'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 8: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csamin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csamin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csamin001'
+```
+
+</details>
+<p>
+
+### Example 9: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csamax001'
+    // Non-required parameters
+    allowProjectManagement: false
+    customSubDomainName: 'xcsamax'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'RequestResponse'
+          }
+          {
+            category: 'Audit'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+      ipRules: [
+        {
+          value: '40.74.28.0/23'
+        }
+      ]
+      virtualNetworkRules: [
+        {
+          id: '<id>'
+          ignoreMissingVnetServiceEndpoint: false
+        }
+      ]
+    }
+    networkInjections: {
+      scenario: 'agent'
+      subnetResourceId: '<subnetResourceId>'
+      useMicrosoftManagedNetwork: false
+    }
+    privateEndpoints: [
+      {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.account.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfigDefault'
+            properties: {
+              groupId: 'account'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+          {
+            name: 'myIPconfigSecondary'
+            properties: {
+              groupId: 'account'
+              memberName: 'secondary'
+              privateIPAddress: '10.0.0.11'
+            }
+          }
+          {
+            name: 'myIPconfigThird'
+            properties: {
+              groupId: 'account'
+              memberName: 'third'
+              privateIPAddress: '10.0.0.12'
+            }
+          }
+        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    roleAssignments: [
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    sku: 'S0'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csamax001"
+    },
+    // Non-required parameters
+    "allowProjectManagement": {
+      "value": false
+    },
+    "customSubDomainName": {
+      "value": "xcsamax"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "RequestResponse"
+            },
+            {
+              "category": "Audit"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkAcls": {
+      "value": {
+        "bypass": "AzureServices",
+        "defaultAction": "Deny",
+        "ipRules": [
+          {
+            "value": "40.74.28.0/23"
+          }
+        ],
+        "virtualNetworkRules": [
+          {
+            "id": "<id>",
+            "ignoreMissingVnetServiceEndpoint": false
+          }
+        ]
+      }
+    },
+    "networkInjections": {
+      "value": {
+        "scenario": "agent",
+        "subnetResourceId": "<subnetResourceId>",
+        "useMicrosoftManagedNetwork": false
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.account.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfigDefault",
+              "properties": {
+                "groupId": "account",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
+            },
+            {
+              "name": "myIPconfigSecondary",
+              "properties": {
+                "groupId": "account",
+                "memberName": "secondary",
+                "privateIPAddress": "10.0.0.11"
+              }
+            },
+            {
+              "name": "myIPconfigThird",
+              "properties": {
+                "groupId": "account",
+                "memberName": "third",
+                "privateIPAddress": "10.0.0.12"
+              }
+            }
+          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csamax001'
+// Non-required parameters
+param allowProjectManagement = false
+param customSubDomainName = 'xcsamax'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'RequestResponse'
+      }
+      {
+        category: 'Audit'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkAcls = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+  ipRules: [
+    {
+      value: '40.74.28.0/23'
+    }
+  ]
+  virtualNetworkRules: [
+    {
+      id: '<id>'
+      ignoreMissingVnetServiceEndpoint: false
+    }
+  ]
+}
+param networkInjections = {
+  scenario: 'agent'
+  subnetResourceId: '<subnetResourceId>'
+  useMicrosoftManagedNetwork: false
+}
+param privateEndpoints = [
+  {
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.account.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfigDefault'
+        properties: {
+          groupId: 'account'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+      {
+        name: 'myIPconfigSecondary'
+        properties: {
+          groupId: 'account'
+          memberName: 'secondary'
+          privateIPAddress: '10.0.0.11'
+        }
+      }
+      {
+        name: 'myIPconfigThird'
+        properties: {
+          groupId: 'account'
+          memberName: 'third'
+          privateIPAddress: '10.0.0.12'
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param roleAssignments = [
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 10: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/openai-private]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'OpenAI'
+    name: 'csoai002'
+    // Non-required parameters
+    customSubDomainName: 'xcsoaiai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-3-large'
+          version: '1'
+        }
+        name: 'text-embedding-3-large'
+        sku: {
+          capacity: 10
+          name: 'Standard'
+        }
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "OpenAI"
+    },
+    "name": {
+      "value": "csoai002"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsoaiai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-large",
+            "version": "1"
+          },
+          "name": "text-embedding-3-large",
+          "sku": {
+            "capacity": 10,
+            "name": "Standard"
+          }
+        }
+      ]
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'OpenAI'
+param name = 'csoai002'
+// Non-required parameters
+param customSubDomainName = 'xcsoaiai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'text-embedding-3-large'
+      version: '1'
+    }
+    name: 'text-embedding-3-large'
+    sku: {
+      capacity: 10
+      name: 'Standard'
+    }
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 11: _As Speech Service_
+
+This instance deploys the module as a Speech Service.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/speech]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csaspeech001'
+    // Non-required parameters
+    customSubDomainName: 'speechdomain'
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    sku: 'S0'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csaspeech001"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "speechdomain"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'SpeechServices'
+param name = 'csaspeech001'
+// Non-required parameters
+param customSubDomainName = 'speechdomain'
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 12: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'Face'
+    name: 'csawaf001'
+    // Non-required parameters
+    customSubDomainName: 'xcsawaf'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    sku: 'S0'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "Face"
+    },
+    "name": {
+      "value": "csawaf001"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsawaf"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'Face'
+param name = 'csawaf001'
+// Non-required parameters
+param customSubDomainName = 'xcsawaf'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param sku = 'S0'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

@@ -46,6 +46,621 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/healthcare-apis/workspace:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'hawmin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "hawmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/healthcare-apis/workspace:<version>'
+
+// Required parameters
+param name = 'hawmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'hawmax001'
+    // Non-required parameters
+    dicomservices: [
+      {
+        corsAllowCredentials: false
+        corsHeaders: [
+          '*'
+        ]
+        corsMaxAge: 600
+        corsMethods: [
+          'GET'
+        ]
+        corsOrigins: [
+          '*'
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        location: '<location>'
+        managedIdentities: {
+          systemAssigned: false
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'az-dicom-x-001'
+        publicNetworkAccess: 'Enabled'
+        workspaceName: 'hawmax001'
+      }
+    ]
+    fhirservices: [
+      {
+        corsAllowCredentials: false
+        corsHeaders: [
+          '*'
+        ]
+        corsMaxAge: 600
+        corsMethods: [
+          'GET'
+        ]
+        corsOrigins: [
+          '*'
+        ]
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        importEnabled: false
+        initialImportMode: false
+        kind: 'fhir-R4'
+        location: '<location>'
+        managedIdentities: {
+          systemAssigned: false
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'az-fhir-x-001'
+        publicNetworkAccess: 'Enabled'
+        resourceVersionPolicy: 'versioned'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        smartProxyEnabled: false
+        workspaceName: 'hawmax001'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    publicNetworkAccess: 'Enabled'
+    roleAssignments: [
+      {
+        name: '6bfff821-2b18-4790-89fa-2849d86bc6be'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "hawmax001"
+    },
+    // Non-required parameters
+    "dicomservices": {
+      "value": [
+        {
+          "corsAllowCredentials": false,
+          "corsHeaders": [
+            "*"
+          ],
+          "corsMaxAge": 600,
+          "corsMethods": [
+            "GET"
+          ],
+          "corsOrigins": [
+            "*"
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "location": "<location>",
+          "managedIdentities": {
+            "systemAssigned": false,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "az-dicom-x-001",
+          "publicNetworkAccess": "Enabled",
+          "workspaceName": "hawmax001"
+        }
+      ]
+    },
+    "fhirservices": {
+      "value": [
+        {
+          "corsAllowCredentials": false,
+          "corsHeaders": [
+            "*"
+          ],
+          "corsMaxAge": 600,
+          "corsMethods": [
+            "GET"
+          ],
+          "corsOrigins": [
+            "*"
+          ],
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "metricCategories": [
+                {
+                  "category": "AllMetrics"
+                }
+              ],
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "importEnabled": false,
+          "initialImportMode": false,
+          "kind": "fhir-R4",
+          "location": "<location>",
+          "managedIdentities": {
+            "systemAssigned": false,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "az-fhir-x-001",
+          "publicNetworkAccess": "Enabled",
+          "resourceVersionPolicy": "versioned",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "smartProxyEnabled": false,
+          "workspaceName": "hawmax001"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "6bfff821-2b18-4790-89fa-2849d86bc6be",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/healthcare-apis/workspace:<version>'
+
+// Required parameters
+param name = 'hawmax001'
+// Non-required parameters
+param dicomservices = [
+  {
+    corsAllowCredentials: false
+    corsHeaders: [
+      '*'
+    ]
+    corsMaxAge: 600
+    corsMethods: [
+      'GET'
+    ]
+    corsOrigins: [
+      '*'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'az-dicom-x-001'
+    publicNetworkAccess: 'Enabled'
+    workspaceName: 'hawmax001'
+  }
+]
+param fhirservices = [
+  {
+    corsAllowCredentials: false
+    corsHeaders: [
+      '*'
+    ]
+    corsMaxAge: 600
+    corsMethods: [
+      'GET'
+    ]
+    corsOrigins: [
+      '*'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    importEnabled: false
+    initialImportMode: false
+    kind: 'fhir-R4'
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'az-fhir-x-001'
+    publicNetworkAccess: 'Enabled'
+    resourceVersionPolicy: 'versioned'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    smartProxyEnabled: false
+    workspaceName: 'hawmax001'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param publicNetworkAccess = 'Enabled'
+param roleAssignments = [
+  {
+    name: '6bfff821-2b18-4790-89fa-2849d86bc6be'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/healthcare-apis/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'hawwaf001'
+    // Non-required parameters
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "hawwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/healthcare-apis/workspace:<version>'
+
+// Required parameters
+param name = 'hawwaf001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

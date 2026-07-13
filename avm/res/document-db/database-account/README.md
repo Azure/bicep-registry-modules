@@ -52,6 +52,3813 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
+- [Using analytical storage](#example-1-using-analytical-storage)
+- [Using bounded consistency](#example-2-using-bounded-consistency)
+- [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using encryption with Customer-Managed-Key](#example-5-using-encryption-with-customer-managed-key)
+- [Using only defaults](#example-6-using-only-defaults)
+- [Gremlin Database](#example-7-gremlin-database)
+- [Deploying with Managed identities](#example-8-deploying-with-managed-identities)
+- [Mongo Database](#example-9-mongo-database)
+- [Deploying multiple regions](#example-10-deploying-multiple-regions)
+- [Plain](#example-11-plain)
+- [Public network restricted access with ACL](#example-12-public-network-restricted-access-with-acl)
+- [SQL Database](#example-13-sql-database)
+- [Deploying with a sql role definition and assignment](#example-14-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-15-api-for-table)
+- [WAF-aligned](#example-16-waf-aligned)
+
+### Example 1: _Using analytical storage_
+
+This instance deploys the module with analytical storage enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/analytical]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'analytical'
+    // Non-required parameters
+    enableAnalyticalStorage: true
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "analytical"
+    },
+    // Non-required parameters
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'analytical'
+// Non-required parameters
+param enableAnalyticalStorage = true
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 2: _Using bounded consistency_
+
+This instance deploys the module specifying a default consistency level.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/boundedConsistency]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'bounded'
+    // Non-required parameters
+    defaultConsistencyLevel: 'BoundedStaleness'
+    maxIntervalInSeconds: 600
+    maxStalenessPrefix: 200000
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "bounded"
+    },
+    // Non-required parameters
+    "defaultConsistencyLevel": {
+      "value": "BoundedStaleness"
+    },
+    "maxIntervalInSeconds": {
+      "value": 600
+    },
+    "maxStalenessPrefix": {
+      "value": 200000
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'bounded'
+// Non-required parameters
+param defaultConsistencyLevel = 'BoundedStaleness'
+param maxIntervalInSeconds = 600
+param maxStalenessPrefix = 200000
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 3: _Cassandra Keyspaces - WAF-aligned_
+
+This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddacswaf001'
+    // Non-required parameters
+    backupPolicyType: 'Periodic'
+    capabilitiesToAdd: [
+      'EnableCassandra'
+    ]
+    cassandraKeyspaces: [
+      {
+        name: 'cks-dddacswaf-001'
+        tables: [
+          {
+            analyticalStorageTtl: 86400
+            defaultTtl: 7200
+            name: 'secure_orders'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'order_date'
+                  orderBy: 'Desc'
+                }
+                {
+                  name: 'order_id'
+                  orderBy: 'Asc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'order_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'customer_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'order_date'
+                  type: 'timestamp'
+                }
+                {
+                  name: 'total_amount'
+                  type: 'decimal'
+                }
+                {
+                  name: 'status'
+                  type: 'text'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'customer_id'
+                }
+              ]
+            }
+          }
+        ]
+        throughput: 1000
+      }
+      {
+        autoscaleSettingsMaxThroughput: 4000
+        name: 'cks-dddacswaf-002'
+        tables: [
+          {
+            analyticalStorageTtl: -1
+            name: 'secure_users'
+            schema: {
+              clusterKeys: [
+                {
+                  name: 'created_at'
+                  orderBy: 'Desc'
+                }
+              ]
+              columns: [
+                {
+                  name: 'user_id'
+                  type: 'uuid'
+                }
+                {
+                  name: 'email'
+                  type: 'text'
+                }
+                {
+                  name: 'created_at'
+                  type: 'timestamp'
+                }
+              ]
+              partitionKeys: [
+                {
+                  name: 'user_id'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    enableAnalyticalStorage: true
+    enableAutomaticFailover: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    minimumTlsVersion: 'Tls12'
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Disabled'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'Cassandra'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      environment: 'production'
+      role: 'validation'
+      type: 'waf-aligned-cassandra'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddacswaf001"
+    },
+    // Non-required parameters
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableCassandra"
+      ]
+    },
+    "cassandraKeyspaces": {
+      "value": [
+        {
+          "name": "cks-dddacswaf-001",
+          "tables": [
+            {
+              "analyticalStorageTtl": 86400,
+              "defaultTtl": 7200,
+              "name": "secure_orders",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "order_date",
+                    "orderBy": "Desc"
+                  },
+                  {
+                    "name": "order_id",
+                    "orderBy": "Asc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "order_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "customer_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "order_date",
+                    "type": "timestamp"
+                  },
+                  {
+                    "name": "total_amount",
+                    "type": "decimal"
+                  },
+                  {
+                    "name": "status",
+                    "type": "text"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "customer_id"
+                  }
+                ]
+              }
+            }
+          ],
+          "throughput": 1000
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 4000,
+          "name": "cks-dddacswaf-002",
+          "tables": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "secure_users",
+              "schema": {
+                "clusterKeys": [
+                  {
+                    "name": "created_at",
+                    "orderBy": "Desc"
+                  }
+                ],
+                "columns": [
+                  {
+                    "name": "user_id",
+                    "type": "uuid"
+                  },
+                  {
+                    "name": "email",
+                    "type": "text"
+                  },
+                  {
+                    "name": "created_at",
+                    "type": "timestamp"
+                  }
+                ],
+                "partitionKeys": [
+                  {
+                    "name": "user_id"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
+    "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "enableAutomaticFailover": {
+      "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "minimumTlsVersion": {
+      "value": "Tls12"
+    },
+    "networkRestrictions": {
+      "value": {
+        "networkAclBypass": "None",
+        "publicNetworkAccess": "Disabled"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "Cassandra",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "production",
+        "role": "validation",
+        "type": "waf-aligned-cassandra"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddacswaf001'
+// Non-required parameters
+param backupPolicyType = 'Periodic'
+param capabilitiesToAdd = [
+  'EnableCassandra'
+]
+param cassandraKeyspaces = [
+  {
+    name: 'cks-dddacswaf-001'
+    tables: [
+      {
+        analyticalStorageTtl: 86400
+        defaultTtl: 7200
+        name: 'secure_orders'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'order_date'
+              orderBy: 'Desc'
+            }
+            {
+              name: 'order_id'
+              orderBy: 'Asc'
+            }
+          ]
+          columns: [
+            {
+              name: 'order_id'
+              type: 'uuid'
+            }
+            {
+              name: 'customer_id'
+              type: 'uuid'
+            }
+            {
+              name: 'order_date'
+              type: 'timestamp'
+            }
+            {
+              name: 'total_amount'
+              type: 'decimal'
+            }
+            {
+              name: 'status'
+              type: 'text'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'customer_id'
+            }
+          ]
+        }
+      }
+    ]
+    throughput: 1000
+  }
+  {
+    autoscaleSettingsMaxThroughput: 4000
+    name: 'cks-dddacswaf-002'
+    tables: [
+      {
+        analyticalStorageTtl: -1
+        name: 'secure_users'
+        schema: {
+          clusterKeys: [
+            {
+              name: 'created_at'
+              orderBy: 'Desc'
+            }
+          ]
+          columns: [
+            {
+              name: 'user_id'
+              type: 'uuid'
+            }
+            {
+              name: 'email'
+              type: 'text'
+            }
+            {
+              name: 'created_at'
+              type: 'timestamp'
+            }
+          ]
+          partitionKeys: [
+            {
+              name: 'user_id'
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuthentication = true
+param enableAnalyticalStorage = true
+param enableAutomaticFailover = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param minimumTlsVersion = 'Tls12'
+param networkRestrictions = {
+  networkAclBypass: 'None'
+  publicNetworkAccess: 'Disabled'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Cassandra'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  environment: 'production'
+  role: 'validation'
+  type: 'waf-aligned-cassandra'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because running the HSM scenario requires a persistent Managed HSM instance to be available and configured at all times, which would incur significant costs for contributors.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddamhsm001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddamhsm001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamhsm001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 5: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddaenc001'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    defaultIdentity: {
+      name: 'UserAssignedIdentity'
+      resourceId: '<resourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddaenc001"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "defaultIdentity": {
+      "value": {
+        "name": "UserAssignedIdentity",
+        "resourceId": "<resourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddaenc001'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param defaultIdentity = {
+  name: 'UserAssignedIdentity'
+  resourceId: '<resourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 6: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    name: 'dddamin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "dddamin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+param name = 'dddamin001'
+```
+
+</details>
+<p>
+
+### Example 7: _Gremlin Database_
+
+This instance deploys the module with a Gremlin Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/gremlindb]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddagrm002'
+    // Non-required parameters
+    capabilitiesToAdd: [
+      'EnableGremlin'
+    ]
+    gremlinDatabases: [
+      {
+        graphs: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'car_collection'
+            partitionKeyPaths: [
+              '/car_id'
+            ]
+          }
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'truck_collection'
+            partitionKeyPaths: [
+              '/truck_id'
+            ]
+          }
+        ]
+        name: 'gdb-dddagrm-001'
+        throughput: 10000
+      }
+      {
+        graphs: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'bike_collection'
+            partitionKeyPaths: [
+              '/bike_id'
+            ]
+          }
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'bicycle_collection'
+            partitionKeyPaths: [
+              '/bicycle_id'
+            ]
+          }
+        ]
+        name: 'gdb-dddagrm-002'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddagrm002"
+    },
+    // Non-required parameters
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableGremlin"
+      ]
+    },
+    "gremlinDatabases": {
+      "value": [
+        {
+          "graphs": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "car_collection",
+              "partitionKeyPaths": [
+                "/car_id"
+              ]
+            },
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "truck_collection",
+              "partitionKeyPaths": [
+                "/truck_id"
+              ]
+            }
+          ],
+          "name": "gdb-dddagrm-001",
+          "throughput": 10000
+        },
+        {
+          "graphs": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "bike_collection",
+              "partitionKeyPaths": [
+                "/bike_id"
+              ]
+            },
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "bicycle_collection",
+              "partitionKeyPaths": [
+                "/bicycle_id"
+              ]
+            }
+          ],
+          "name": "gdb-dddagrm-002"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddagrm002'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableGremlin'
+]
+param gremlinDatabases = [
+  {
+    graphs: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'car_collection'
+        partitionKeyPaths: [
+          '/car_id'
+        ]
+      }
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'truck_collection'
+        partitionKeyPaths: [
+          '/truck_id'
+        ]
+      }
+    ]
+    name: 'gdb-dddagrm-001'
+    throughput: 10000
+  }
+  {
+    graphs: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'bike_collection'
+        partitionKeyPaths: [
+          '/bike_id'
+        ]
+      }
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'bicycle_collection'
+        partitionKeyPaths: [
+          '/bicycle_id'
+        ]
+      }
+    ]
+    name: 'gdb-dddagrm-002'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 8: _Deploying with Managed identities_
+
+This instance deploys the module with an system and user assigned managed identity.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/managedIdentity]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'user-mi'
+    // Non-required parameters
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "user-mi"
+    },
+    // Non-required parameters
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'user-mi'
+// Non-required parameters
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 9: _Mongo Database_
+
+This instance deploys the module with a Mongo Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/mongodb]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddamng001'
+    // Non-required parameters
+    mongodbDatabases: [
+      {
+        collections: [
+          {
+            indexes: [
+              {
+                key: {
+                  keys: [
+                    '_id'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '$**'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    'car_id'
+                    'car_model'
+                  ]
+                }
+                options: {
+                  unique: true
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '_ts'
+                  ]
+                }
+                options: {
+                  expireAfterSeconds: 2629746
+                }
+              }
+            ]
+            name: 'car_collection'
+            shardKey: {
+              car_id: 'Hash'
+            }
+            throughput: 600
+          }
+          {
+            indexes: [
+              {
+                key: {
+                  keys: [
+                    '_id'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '$**'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    'truck_id'
+                    'truck_model'
+                  ]
+                }
+                options: {
+                  unique: true
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '_ts'
+                  ]
+                }
+                options: {
+                  expireAfterSeconds: 2629746
+                }
+              }
+            ]
+            name: 'truck_collection'
+            shardKey: {
+              truck_id: 'Hash'
+            }
+          }
+        ]
+        name: 'mdb-dddamng-001'
+        throughput: 800
+      }
+      {
+        collections: [
+          {
+            indexes: [
+              {
+                key: {
+                  keys: [
+                    '_id'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '$**'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    'bike_id'
+                    'bike_model'
+                  ]
+                }
+                options: {
+                  unique: true
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '_ts'
+                  ]
+                }
+                options: {
+                  expireAfterSeconds: 2629746
+                }
+              }
+            ]
+            name: 'bike_collection'
+            shardKey: {
+              bike_id: 'Hash'
+            }
+          }
+          {
+            indexes: [
+              {
+                key: {
+                  keys: [
+                    '_id'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '$**'
+                  ]
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    'bicycle_id'
+                    'bicycle_model'
+                  ]
+                }
+                options: {
+                  unique: true
+                }
+              }
+              {
+                key: {
+                  keys: [
+                    '_ts'
+                  ]
+                }
+                options: {
+                  expireAfterSeconds: 2629746
+                }
+              }
+            ]
+            name: 'bicycle_collection'
+            shardKey: {
+              bicycle_id: 'Hash'
+            }
+          }
+        ]
+        name: 'mdb-dddamng-002'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddamng001"
+    },
+    // Non-required parameters
+    "mongodbDatabases": {
+      "value": [
+        {
+          "collections": [
+            {
+              "indexes": [
+                {
+                  "key": {
+                    "keys": [
+                      "_id"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "$**"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "car_id",
+                      "car_model"
+                    ]
+                  },
+                  "options": {
+                    "unique": true
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "_ts"
+                    ]
+                  },
+                  "options": {
+                    "expireAfterSeconds": 2629746
+                  }
+                }
+              ],
+              "name": "car_collection",
+              "shardKey": {
+                "car_id": "Hash"
+              },
+              "throughput": 600
+            },
+            {
+              "indexes": [
+                {
+                  "key": {
+                    "keys": [
+                      "_id"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "$**"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "truck_id",
+                      "truck_model"
+                    ]
+                  },
+                  "options": {
+                    "unique": true
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "_ts"
+                    ]
+                  },
+                  "options": {
+                    "expireAfterSeconds": 2629746
+                  }
+                }
+              ],
+              "name": "truck_collection",
+              "shardKey": {
+                "truck_id": "Hash"
+              }
+            }
+          ],
+          "name": "mdb-dddamng-001",
+          "throughput": 800
+        },
+        {
+          "collections": [
+            {
+              "indexes": [
+                {
+                  "key": {
+                    "keys": [
+                      "_id"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "$**"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "bike_id",
+                      "bike_model"
+                    ]
+                  },
+                  "options": {
+                    "unique": true
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "_ts"
+                    ]
+                  },
+                  "options": {
+                    "expireAfterSeconds": 2629746
+                  }
+                }
+              ],
+              "name": "bike_collection",
+              "shardKey": {
+                "bike_id": "Hash"
+              }
+            },
+            {
+              "indexes": [
+                {
+                  "key": {
+                    "keys": [
+                      "_id"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "$**"
+                    ]
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "bicycle_id",
+                      "bicycle_model"
+                    ]
+                  },
+                  "options": {
+                    "unique": true
+                  }
+                },
+                {
+                  "key": {
+                    "keys": [
+                      "_ts"
+                    ]
+                  },
+                  "options": {
+                    "expireAfterSeconds": 2629746
+                  }
+                }
+              ],
+              "name": "bicycle_collection",
+              "shardKey": {
+                "bicycle_id": "Hash"
+              }
+            }
+          ],
+          "name": "mdb-dddamng-002"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddamng001'
+// Non-required parameters
+param mongodbDatabases = [
+  {
+    collections: [
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'car_id'
+                'car_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'car_collection'
+        shardKey: {
+          car_id: 'Hash'
+        }
+        throughput: 600
+      }
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'truck_id'
+                'truck_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'truck_collection'
+        shardKey: {
+          truck_id: 'Hash'
+        }
+      }
+    ]
+    name: 'mdb-dddamng-001'
+    throughput: 800
+  }
+  {
+    collections: [
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'bike_id'
+                'bike_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'bike_collection'
+        shardKey: {
+          bike_id: 'Hash'
+        }
+      }
+      {
+        indexes: [
+          {
+            key: {
+              keys: [
+                '_id'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                '$**'
+              ]
+            }
+          }
+          {
+            key: {
+              keys: [
+                'bicycle_id'
+                'bicycle_model'
+              ]
+            }
+            options: {
+              unique: true
+            }
+          }
+          {
+            key: {
+              keys: [
+                '_ts'
+              ]
+            }
+            options: {
+              expireAfterSeconds: 2629746
+            }
+          }
+        ]
+        name: 'bicycle_collection'
+        shardKey: {
+          bicycle_id: 'Hash'
+        }
+      }
+    ]
+    name: 'mdb-dddamng-002'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 10: _Deploying multiple regions_
+
+This instance deploys the module in multiple regions with configs specific of multi region scenarios.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multiRegion]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'multi-region'
+    // Non-required parameters
+    backupIntervalInMinutes: 300
+    backupPolicyType: 'Periodic'
+    backupRetentionIntervalInHours: 16
+    backupStorageRedundancy: 'Geo'
+    enableAutomaticFailover: true
+    enableMultipleWriteLocations: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "multi-region"
+    },
+    // Non-required parameters
+    "backupIntervalInMinutes": {
+      "value": 300
+    },
+    "backupPolicyType": {
+      "value": "Periodic"
+    },
+    "backupRetentionIntervalInHours": {
+      "value": 16
+    },
+    "backupStorageRedundancy": {
+      "value": "Geo"
+    },
+    "enableAutomaticFailover": {
+      "value": true
+    },
+    "enableMultipleWriteLocations": {
+      "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'multi-region'
+// Non-required parameters
+param backupIntervalInMinutes = 300
+param backupPolicyType = 'Periodic'
+param backupRetentionIntervalInHours = 16
+param backupStorageRedundancy = 'Geo'
+param enableAutomaticFailover = true
+param enableMultipleWriteLocations = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 11: _Plain_
+
+This instance deploys the module without a Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/plain]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddapln001'
+    // Non-required parameters
+    capabilitiesToAdd: [
+      'EnableServerless'
+    ]
+    databaseAccountOfferType: 'Standard'
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    totalThroughputLimit: 4000
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddapln001"
+    },
+    // Non-required parameters
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableServerless"
+      ]
+    },
+    "databaseAccountOfferType": {
+      "value": "Standard"
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "totalThroughputLimit": {
+      "value": 4000
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddapln001'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableServerless'
+]
+param databaseAccountOfferType = 'Standard'
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: false
+    locationName: '<locationName>'
+  }
+]
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+param totalThroughputLimit = 4000
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 12: _Public network restricted access with ACL_
+
+This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/publicRestrictedAccess]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddapres001'
+    // Non-required parameters
+    networkRestrictions: {
+      ipRules: [
+        '79.0.0.0'
+        '80.0.0.0'
+      ]
+      networkAclBypass: 'AzureServices'
+      publicNetworkAccess: 'Enabled'
+      virtualNetworkRules: [
+        {
+          subnetResourceId: '<subnetResourceId>'
+        }
+      ]
+    }
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddapres001"
+    },
+    // Non-required parameters
+    "networkRestrictions": {
+      "value": {
+        "ipRules": [
+          "79.0.0.0",
+          "80.0.0.0"
+        ],
+        "networkAclBypass": "AzureServices",
+        "publicNetworkAccess": "Enabled",
+        "virtualNetworkRules": [
+          {
+            "subnetResourceId": "<subnetResourceId>"
+          }
+        ]
+      }
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddapres001'
+// Non-required parameters
+param networkRestrictions = {
+  ipRules: [
+    '79.0.0.0'
+    '80.0.0.0'
+  ]
+  networkAclBypass: 'AzureServices'
+  publicNetworkAccess: 'Enabled'
+  virtualNetworkRules: [
+    {
+      subnetResourceId: '<subnetResourceId>'
+    }
+  ]
+}
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 13: _SQL Database_
+
+This instance deploys the module with a SQL Database.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqldb]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddasql001'
+    // Non-required parameters
+    enableAnalyticalStorage: true
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            analyticalStorageTtl: 0
+            conflictResolutionPolicy: {
+              conflictResolutionPath: '/myCustomId'
+              mode: 'LastWriterWins'
+            }
+            defaultTtl: 1000
+            indexingPolicy: {
+              automatic: true
+            }
+            kind: 'Hash'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 600
+            uniqueKeyPolicyKeys: [
+              {
+                paths: [
+                  '/firstName'
+                ]
+              }
+              {
+                paths: [
+                  '/lastName'
+                ]
+              }
+            ]
+          }
+        ]
+        name: 'all-configs-specified'
+      }
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'automatic-indexing-policy'
+      }
+      {
+        containers: [
+          {
+            conflictResolutionPolicy: {
+              conflictResolutionPath: '/myCustomId'
+              mode: 'LastWriterWins'
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'last-writer-conflict-resolution-policy'
+      }
+      {
+        containers: [
+          {
+            analyticalStorageTtl: 1000
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'fixed-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            analyticalStorageTtl: -1
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'infinite-analytical-ttl'
+      }
+      {
+        containers: [
+          {
+            defaultTtl: 1000
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'document-ttl'
+      }
+      {
+        containers: [
+          {
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            uniqueKeyPolicyKeys: [
+              {
+                paths: [
+                  '/firstName'
+                ]
+              }
+              {
+                paths: [
+                  '/lastName'
+                ]
+              }
+            ]
+          }
+        ]
+        name: 'unique-key-policy'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 500
+          }
+        ]
+        name: 'db-and-container-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 500
+          }
+        ]
+        name: 'container-fixed-throughput-level'
+      }
+      {
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-fixed-throughput-level'
+        throughput: 500
+      }
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        containers: [
+          {
+            autoscaleSettingsMaxThroughput: 1000
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'db-and-container-autoscale-level'
+      }
+      {
+        containers: [
+          {
+            autoscaleSettingsMaxThroughput: 1000
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'container-autoscale-level'
+      }
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        containers: [
+          {
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'database-autoscale-level'
+      }
+      {
+        containers: [
+          {
+            kind: 'MultiHash'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey1'
+              '/myPartitionKey2'
+              '/myPartitionKey3'
+            ]
+          }
+          {
+            kind: 'MultiHash'
+            name: 'container-002'
+            paths: [
+              'myPartitionKey1'
+              'myPartitionKey2'
+              'myPartitionKey3'
+            ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-003'
+            paths: [
+              '/myPartitionKey1'
+            ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-004'
+            paths: [
+              'myPartitionKey1'
+            ]
+          }
+          {
+            kind: 'Hash'
+            name: 'container-005'
+            paths: [
+              'myPartitionKey1'
+            ]
+            version: 2
+          }
+        ]
+        name: 'all-partition-key-types'
+      }
+      {
+        containers: []
+        name: 'empty-containers-array'
+      }
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddasql001"
+    },
+    // Non-required parameters
+    "enableAnalyticalStorage": {
+      "value": true
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": 0,
+              "conflictResolutionPolicy": {
+                "conflictResolutionPath": "/myCustomId",
+                "mode": "LastWriterWins"
+              },
+              "defaultTtl": 1000,
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "kind": "Hash",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 600,
+              "uniqueKeyPolicyKeys": [
+                {
+                  "paths": [
+                    "/firstName"
+                  ]
+                },
+                {
+                  "paths": [
+                    "/lastName"
+                  ]
+                }
+              ]
+            }
+          ],
+          "name": "all-configs-specified"
+        },
+        {
+          "containers": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "automatic-indexing-policy"
+        },
+        {
+          "containers": [
+            {
+              "conflictResolutionPolicy": {
+                "conflictResolutionPath": "/myCustomId",
+                "mode": "LastWriterWins"
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "last-writer-conflict-resolution-policy"
+        },
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": 1000,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "fixed-analytical-ttl"
+        },
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": -1,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "infinite-analytical-ttl"
+        },
+        {
+          "containers": [
+            {
+              "defaultTtl": 1000,
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "document-ttl"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "uniqueKeyPolicyKeys": [
+                {
+                  "paths": [
+                    "/firstName"
+                  ]
+                },
+                {
+                  "paths": [
+                    "/lastName"
+                  ]
+                }
+              ]
+            }
+          ],
+          "name": "unique-key-policy"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 500
+            }
+          ],
+          "name": "db-and-container-fixed-throughput-level",
+          "throughput": 500
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 500
+            }
+          ],
+          "name": "container-fixed-throughput-level"
+        },
+        {
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "database-fixed-throughput-level",
+          "throughput": 500
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 1000,
+          "containers": [
+            {
+              "autoscaleSettingsMaxThroughput": 1000,
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "db-and-container-autoscale-level"
+        },
+        {
+          "containers": [
+            {
+              "autoscaleSettingsMaxThroughput": 1000,
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "container-autoscale-level"
+        },
+        {
+          "autoscaleSettingsMaxThroughput": 1000,
+          "containers": [
+            {
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "database-autoscale-level"
+        },
+        {
+          "containers": [
+            {
+              "kind": "MultiHash",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey1",
+                "/myPartitionKey2",
+                "/myPartitionKey3"
+              ]
+            },
+            {
+              "kind": "MultiHash",
+              "name": "container-002",
+              "paths": [
+                "myPartitionKey1",
+                "myPartitionKey2",
+                "myPartitionKey3"
+              ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-003",
+              "paths": [
+                "/myPartitionKey1"
+              ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-004",
+              "paths": [
+                "myPartitionKey1"
+              ]
+            },
+            {
+              "kind": "Hash",
+              "name": "container-005",
+              "paths": [
+                "myPartitionKey1"
+              ],
+              "version": 2
+            }
+          ],
+          "name": "all-partition-key-types"
+        },
+        {
+          "containers": [],
+          "name": "empty-containers-array"
+        },
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddasql001'
+// Non-required parameters
+param enableAnalyticalStorage = true
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        analyticalStorageTtl: 0
+        conflictResolutionPolicy: {
+          conflictResolutionPath: '/myCustomId'
+          mode: 'LastWriterWins'
+        }
+        defaultTtl: 1000
+        indexingPolicy: {
+          automatic: true
+        }
+        kind: 'Hash'
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 600
+        uniqueKeyPolicyKeys: [
+          {
+            paths: [
+              '/firstName'
+            ]
+          }
+          {
+            paths: [
+              '/lastName'
+            ]
+          }
+        ]
+      }
+    ]
+    name: 'all-configs-specified'
+  }
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'automatic-indexing-policy'
+  }
+  {
+    containers: [
+      {
+        conflictResolutionPolicy: {
+          conflictResolutionPath: '/myCustomId'
+          mode: 'LastWriterWins'
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'last-writer-conflict-resolution-policy'
+  }
+  {
+    containers: [
+      {
+        analyticalStorageTtl: 1000
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'fixed-analytical-ttl'
+  }
+  {
+    containers: [
+      {
+        analyticalStorageTtl: -1
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'infinite-analytical-ttl'
+  }
+  {
+    containers: [
+      {
+        defaultTtl: 1000
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'document-ttl'
+  }
+  {
+    containers: [
+      {
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+        uniqueKeyPolicyKeys: [
+          {
+            paths: [
+              '/firstName'
+            ]
+          }
+          {
+            paths: [
+              '/lastName'
+            ]
+          }
+        ]
+      }
+    ]
+    name: 'unique-key-policy'
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 500
+      }
+    ]
+    name: 'db-and-container-fixed-throughput-level'
+    throughput: 500
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+        throughput: 500
+      }
+    ]
+    name: 'container-fixed-throughput-level'
+  }
+  {
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'database-fixed-throughput-level'
+    throughput: 500
+  }
+  {
+    autoscaleSettingsMaxThroughput: 1000
+    containers: [
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'db-and-container-autoscale-level'
+  }
+  {
+    containers: [
+      {
+        autoscaleSettingsMaxThroughput: 1000
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'container-autoscale-level'
+  }
+  {
+    autoscaleSettingsMaxThroughput: 1000
+    containers: [
+      {
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'database-autoscale-level'
+  }
+  {
+    containers: [
+      {
+        kind: 'MultiHash'
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey1'
+          '/myPartitionKey2'
+          '/myPartitionKey3'
+        ]
+      }
+      {
+        kind: 'MultiHash'
+        name: 'container-002'
+        paths: [
+          'myPartitionKey1'
+          'myPartitionKey2'
+          'myPartitionKey3'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-003'
+        paths: [
+          '/myPartitionKey1'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-004'
+        paths: [
+          'myPartitionKey1'
+        ]
+      }
+      {
+        kind: 'Hash'
+        name: 'container-005'
+        paths: [
+          'myPartitionKey1'
+        ]
+        version: 2
+      }
+    ]
+    name: 'all-partition-key-types'
+  }
+  {
+    containers: []
+    name: 'empty-containers-array'
+  }
+  {
+    name: 'no-containers-specified'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 14: _Deploying with a sql role definition and assignment_
+
+This instance deploys the module with sql role definition and assignment
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sqlroles]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddarole001'
+    // Non-required parameters
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            indexingPolicy: {
+              automatic: true
+            }
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+          }
+        ]
+        name: 'simple-db'
+      }
+    ]
+    sqlRoleAssignments: [
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '<roleDefinitionId>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '<scope>'
+      }
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+        scope: '<scope>'
+      }
+    ]
+    sqlRoleDefinitions: [
+      {
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+        ]
+        assignments: [
+          {
+            principalId: '<principalId>'
+          }
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        name: '<name>'
+        roleName: 'cosmos-sql-role-test'
+      }
+      {
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test-2'
+      }
+      {
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test-3'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddarole001"
+    },
+    // Non-required parameters
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ]
+            }
+          ],
+          "name": "simple-db"
+        }
+      ]
+    },
+    "sqlRoleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "<roleDefinitionId>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "00000000-0000-0000-0000-000000000001",
+          "scope": "<scope>"
+        },
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "Cosmos DB Built-in Data Reader",
+          "scope": "<scope>"
+        }
+      ]
+    },
+    "sqlRoleDefinitions": {
+      "value": [
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+          ],
+          "assignments": [
+            {
+              "principalId": "<principalId>"
+            }
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "name": "<name>",
+          "roleName": "cosmos-sql-role-test"
+        },
+        {
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-2"
+        },
+        {
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test-3"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddarole001'
+// Non-required parameters
+param sqlDatabases = [
+  {
+    containers: [
+      {
+        indexingPolicy: {
+          automatic: true
+        }
+        name: 'container-001'
+        paths: [
+          '/myPartitionKey'
+        ]
+      }
+    ]
+    name: 'simple-db'
+  }
+]
+param sqlRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '<roleDefinitionId>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+    scope: '<scope>'
+  }
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: 'Cosmos DB Built-in Data Reader'
+    scope: '<scope>'
+  }
+]
+param sqlRoleDefinitions = [
+  {
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+    ]
+    assignments: [
+      {
+        principalId: '<principalId>'
+      }
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    name: '<name>'
+    roleName: 'cosmos-sql-role-test'
+  }
+  {
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/dddarole001'
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test-2'
+  }
+  {
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test-3'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 15: _API for Table_
+
+This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/table]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddatbl001'
+    // Non-required parameters
+    capabilitiesToAdd: [
+      'EnableTable'
+    ]
+    tables: [
+      {
+        name: 'tbl-dddatableminprov'
+        throughput: 400
+      }
+      {
+        maxThroughput: 1000
+        name: 'tbl-dddatableminauto'
+      }
+    ]
+    zoneRedundant: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddatbl001"
+    },
+    // Non-required parameters
+    "capabilitiesToAdd": {
+      "value": [
+        "EnableTable"
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "tbl-dddatableminprov",
+          "throughput": 400
+        },
+        {
+          "maxThroughput": 1000,
+          "name": "tbl-dddatableminauto"
+        }
+      ]
+    },
+    "zoneRedundant": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddatbl001'
+// Non-required parameters
+param capabilitiesToAdd = [
+  'EnableTable'
+]
+param tables = [
+  {
+    name: 'tbl-dddatableminprov'
+    throughput: 400
+  }
+  {
+    maxThroughput: 1000
+    name: 'tbl-dddatableminauto'
+  }
+]
+param zoneRedundant = false
+```
+
+</details>
+<p>
+
+### Example 16: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddawaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableKeyBasedMetadataWriteAccess: true
+    disableLocalAuthentication: true
+    enableAutomaticFailover: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+    ]
+    minimumTlsVersion: 'Tls12'
+    networkRestrictions: {
+      networkAclBypass: 'None'
+      publicNetworkAccess: 'Disabled'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'Sql'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    sqlDatabases: [
+      {
+        name: 'no-containers-specified'
+      }
+    ]
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
+    zoneRedundant: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddawaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableKeyBasedMetadataWriteAccess": {
+      "value": true
+    },
+    "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAutomaticFailover": {
+      "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "minimumTlsVersion": {
+      "value": "Tls12"
+    },
+    "networkRestrictions": {
+      "value": {
+        "networkAclBypass": "None",
+        "publicNetworkAccess": "Disabled"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "Sql",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "name": "no-containers-specified"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "role": "validation",
+        "type": "waf-aligned"
+      }
+    },
+    "zoneRedundant": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddawaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableKeyBasedMetadataWriteAccess = true
+param disableLocalAuthentication = true
+param enableAutomaticFailover = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+]
+param minimumTlsVersion = 'Tls12'
+param networkRestrictions = {
+  networkAclBypass: 'None'
+  publicNetworkAccess: 'Disabled'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Sql'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param sqlDatabases = [
+  {
+    name: 'no-containers-specified'
+  }
+]
+param tags = {
+  environment: 'dev'
+  role: 'validation'
+  type: 'waf-aligned'
+}
+param zoneRedundant = true
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

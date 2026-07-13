@@ -58,8 +58,10 @@ function Invoke-Async {
 
             if ($PassThruObject) {
                 # Relay any pending output from the child jobs.
-                $result = ($job | Receive-Job -WriteJobInResults -Wait)[1]
-                $PassThruObject += $result ?? @{}
+                ($job | Receive-Job -WriteJobInResults -Wait) | Where-Object { $_.GetType().Name -eq 'HashTable' } | ForEach-Object {
+                    $result = $_
+                    $PassThruObject += $result ?? @{}
+                }
             } else {
                 # Relay any pending output from the child jobs.
                 $job | Receive-Job

@@ -37,9 +37,392 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/logic/workflow:<version>`.
 
-- [WAF-aligned](#example-1-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _WAF-aligned_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workflow 'br/public:avm/res/logic/workflow:<version>' = {
+  params: {
+    // Required parameters
+    name: 'lwmin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "lwmin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/logic/workflow:<version>'
+
+// Required parameters
+param name = 'lwmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workflow 'br/public:avm/res/logic/workflow:<version>' = {
+  params: {
+    // Required parameters
+    name: 'lwmax001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    workflowActions: {
+      HTTP: {
+        inputs: {
+          body: {
+            BeginPeakTime: '<BeginPeakTime>'
+            EndPeakTime: '<EndPeakTime>'
+            HostPoolName: '<HostPoolName>'
+            LAWorkspaceName: '<LAWorkspaceName>'
+            LimitSecondsToForceLogOffUser: '<LimitSecondsToForceLogOffUser>'
+            LogOffMessageBody: '<LogOffMessageBody>'
+            LogOffMessageTitle: '<LogOffMessageTitle>'
+            MinimumNumberOfRDSH: 1
+            ResourceGroupName: '<ResourceGroupName>'
+            SessionThresholdPerCPU: 1
+            UtcOffset: '<UtcOffset>'
+          }
+          method: 'POST'
+          uri: 'https://testStringForValidation.com'
+        }
+        type: 'Http'
+      }
+    }
+    workflowTriggers: {
+      Recurrence: {
+        recurrence: {
+          frequency: 'Minute'
+          interval: 15
+        }
+        type: 'Recurrence'
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "lwmax001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "1f98c16b-ea00-4686-8b81-05353b594ea3",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "workflowActions": {
+      "value": {
+        "HTTP": {
+          "inputs": {
+            "body": {
+              "BeginPeakTime": "<BeginPeakTime>",
+              "EndPeakTime": "<EndPeakTime>",
+              "HostPoolName": "<HostPoolName>",
+              "LAWorkspaceName": "<LAWorkspaceName>",
+              "LimitSecondsToForceLogOffUser": "<LimitSecondsToForceLogOffUser>",
+              "LogOffMessageBody": "<LogOffMessageBody>",
+              "LogOffMessageTitle": "<LogOffMessageTitle>",
+              "MinimumNumberOfRDSH": 1,
+              "ResourceGroupName": "<ResourceGroupName>",
+              "SessionThresholdPerCPU": 1,
+              "UtcOffset": "<UtcOffset>"
+            },
+            "method": "POST",
+            "uri": "https://testStringForValidation.com"
+          },
+          "type": "Http"
+        }
+      }
+    },
+    "workflowTriggers": {
+      "value": {
+        "Recurrence": {
+          "recurrence": {
+            "frequency": "Minute",
+            "interval": 15
+          },
+          "type": "Recurrence"
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/logic/workflow:<version>'
+
+// Required parameters
+param name = 'lwmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param roleAssignments = [
+  {
+    name: '1f98c16b-ea00-4686-8b81-05353b594ea3'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param workflowActions = {
+  HTTP: {
+    inputs: {
+      body: {
+        BeginPeakTime: '<BeginPeakTime>'
+        EndPeakTime: '<EndPeakTime>'
+        HostPoolName: '<HostPoolName>'
+        LAWorkspaceName: '<LAWorkspaceName>'
+        LimitSecondsToForceLogOffUser: '<LimitSecondsToForceLogOffUser>'
+        LogOffMessageBody: '<LogOffMessageBody>'
+        LogOffMessageTitle: '<LogOffMessageTitle>'
+        MinimumNumberOfRDSH: 1
+        ResourceGroupName: '<ResourceGroupName>'
+        SessionThresholdPerCPU: 1
+        UtcOffset: '<UtcOffset>'
+      }
+      method: 'POST'
+      uri: 'https://testStringForValidation.com'
+    }
+    type: 'Http'
+  }
+}
+param workflowTriggers = {
+  Recurrence: {
+    recurrence: {
+      frequency: 'Minute'
+      interval: 15
+    }
+    type: 'Recurrence'
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

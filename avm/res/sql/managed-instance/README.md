@@ -43,6 +43,1113 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/managed-instance:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [With vulnerability assessment](#example-3-with-vulnerability-assessment)
+- [WAF-aligned](#example-4-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlmimin'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlmimin"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param name = 'sqlmimin'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlmimax'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    databases: [
+      {
+        backupLongTermRetentionPolicy: {
+          name: 'default'
+        }
+        backupShortTermRetentionPolicy: {
+          name: 'default'
+        }
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        name: 'sqlmimax-db-001'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsZonePartnerResourceId: ''
+    encryptionProtector: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    hardwareFamily: 'Gen5'
+    keys: [
+      {
+        name: '<name>'
+        serverKeyType: 'AzureKeyVault'
+        uri: '<uri>'
+      }
+    ]
+    licenseType: 'LicenseIncluded'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    maintenanceWindow: 'Custom1'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+    proxyOverride: 'Proxy'
+    publicDataEndpointEnabled: false
+    roleAssignments: [
+      {
+        name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    securityAlertPolicy: {
+      disabledAlerts: [
+        'Unsafe_Action'
+      ]
+      emailAccountAdmins: true
+      emailAddresses: [
+        'test1@contoso.com'
+        'test2@contoso.com'
+      ]
+      name: 'default'
+      retentionDays: 7
+      state: 'Enabled'
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+    servicePrincipal: 'SystemAssigned'
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+    storageSizeInGB: 32
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    timezoneId: 'UTC'
+    vCores: 4
+    vulnerabilityAssessment: {
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "sqlmimax"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "collation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "databases": {
+      "value": [
+        {
+          "backupLongTermRetentionPolicy": {
+            "name": "default"
+          },
+          "backupShortTermRetentionPolicy": {
+            "name": "default"
+          },
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "name": "sqlmimax-db-001"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "dnsZonePartnerResourceId": {
+      "value": ""
+    },
+    "encryptionProtector": {
+      "value": {
+        "serverKeyName": "<serverKeyName>",
+        "serverKeyType": "AzureKeyVault"
+      }
+    },
+    "hardwareFamily": {
+      "value": "Gen5"
+    },
+    "keys": {
+      "value": [
+        {
+          "name": "<name>",
+          "serverKeyType": "AzureKeyVault",
+          "uri": "<uri>"
+        }
+      ]
+    },
+    "licenseType": {
+      "value": "LicenseIncluded"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "maintenanceWindow": {
+      "value": "Custom1"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    },
+    "proxyOverride": {
+      "value": "Proxy"
+    },
+    "publicDataEndpointEnabled": {
+      "value": false
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "4de0cbb1-1f3d-4eb3-ac11-5797f548199b",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "securityAlertPolicy": {
+      "value": {
+        "disabledAlerts": [
+          "Unsafe_Action"
+        ],
+        "emailAccountAdmins": true,
+        "emailAddresses": [
+          "test1@contoso.com",
+          "test2@contoso.com"
+        ],
+        "name": "default",
+        "retentionDays": 7,
+        "state": "Enabled",
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    },
+    "servicePrincipal": {
+      "value": "SystemAssigned"
+    },
+    "skuName": {
+      "value": "GP_Gen5"
+    },
+    "skuTier": {
+      "value": "GeneralPurpose"
+    },
+    "storageSizeInGB": {
+      "value": 32
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "timezoneId": {
+      "value": "UTC"
+    },
+    "vCores": {
+      "value": 4
+    },
+    "vulnerabilityAssessment": {
+      "value": {
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param name = 'sqlmimax'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param collation = 'SQL_Latin1_General_CP1_CI_AS'
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      name: 'default'
+    }
+    backupShortTermRetentionPolicy: {
+      name: 'default'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'sqlmimax-db-001'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsZonePartnerResourceId = ''
+param encryptionProtector = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
+param hardwareFamily = 'Gen5'
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param licenseType = 'LicenseIncluded'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maintenanceWindow = 'Custom1'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+param proxyOverride = 'Proxy'
+param publicDataEndpointEnabled = false
+param roleAssignments = [
+  {
+    name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param securityAlertPolicy = {
+  disabledAlerts: [
+    'Unsafe_Action'
+  ]
+  emailAccountAdmins: true
+  emailAddresses: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  name: 'default'
+  retentionDays: 7
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param servicePrincipal = 'SystemAssigned'
+param skuName = 'GP_Gen5'
+param skuTier = 'GeneralPurpose'
+param storageSizeInGB = 32
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param timezoneId = 'UTC'
+param vCores = 4
+param vulnerabilityAssessment = {
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _With vulnerability assessment_
+
+This instance deploys the module with a vulnerability assessment.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/vulnAssm]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlmivln'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    securityAlertPolicy: {
+      disabledAlerts: [
+        'Unsafe_Action'
+      ]
+      emailAccountAdmins: true
+      emailAddresses: [
+        'test1@contoso.com'
+        'test2@contoso.com'
+      ]
+      name: 'default'
+      retentionDays: 7
+      state: 'Enabled'
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+    vulnerabilityAssessment: {
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlmivln"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "securityAlertPolicy": {
+      "value": {
+        "disabledAlerts": [
+          "Unsafe_Action"
+        ],
+        "emailAccountAdmins": true,
+        "emailAddresses": [
+          "test1@contoso.com",
+          "test2@contoso.com"
+        ],
+        "name": "default",
+        "retentionDays": 7,
+        "state": "Enabled",
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    },
+    "vulnerabilityAssessment": {
+      "value": {
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param name = 'sqlmivln'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param securityAlertPolicy = {
+  disabledAlerts: [
+    'Unsafe_Action'
+  ]
+  emailAccountAdmins: true
+  emailAddresses: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  name: 'default'
+  retentionDays: 7
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param vulnerabilityAssessment = {
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
+  params: {
+    // Required parameters
+    name: 'sqlmiwaf'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    databases: [
+      {
+        backupLongTermRetentionPolicy: {
+          name: 'default'
+        }
+        backupShortTermRetentionPolicy: {
+          name: 'default'
+        }
+        diagnosticSettings: [
+          {
+            eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+            eventHubName: '<eventHubName>'
+            name: 'customSetting'
+            storageAccountResourceId: '<storageAccountResourceId>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+        name: 'sqlmiwaf-db-001'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsZonePartnerResourceId: ''
+    encryptionProtector: {
+      serverKeyName: '<serverKeyName>'
+      serverKeyType: 'AzureKeyVault'
+    }
+    hardwareFamily: 'Gen5'
+    keys: [
+      {
+        name: '<name>'
+        serverKeyType: 'AzureKeyVault'
+        uri: '<uri>'
+      }
+    ]
+    licenseType: 'LicenseIncluded'
+    maintenanceWindow: 'Custom2'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+    proxyOverride: 'Proxy'
+    publicDataEndpointEnabled: false
+    securityAlertPolicy: {
+      emailAccountAdmins: true
+      emailAddresses: [
+        'test1@contoso.com'
+        'test2@contoso.com'
+      ]
+      name: 'default'
+      state: 'Enabled'
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+    servicePrincipal: 'SystemAssigned'
+    skuName: 'GP_Gen5'
+    skuTier: 'GeneralPurpose'
+    storageSizeInGB: 32
+    timezoneId: 'UTC'
+    vCores: 4
+    vulnerabilityAssessment: {
+      name: 'default'
+      recurringScans: {
+        emails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        emailSubscriptionAdmins: true
+        isEnabled: true
+      }
+      storageAccountResourceId: '<storageAccountResourceId>'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "sqlmiwaf"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "collation": {
+      "value": "SQL_Latin1_General_CP1_CI_AS"
+    },
+    "databases": {
+      "value": [
+        {
+          "backupLongTermRetentionPolicy": {
+            "name": "default"
+          },
+          "backupShortTermRetentionPolicy": {
+            "name": "default"
+          },
+          "diagnosticSettings": [
+            {
+              "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+              "eventHubName": "<eventHubName>",
+              "name": "customSetting",
+              "storageAccountResourceId": "<storageAccountResourceId>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ],
+          "name": "sqlmiwaf-db-001"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "dnsZonePartnerResourceId": {
+      "value": ""
+    },
+    "encryptionProtector": {
+      "value": {
+        "serverKeyName": "<serverKeyName>",
+        "serverKeyType": "AzureKeyVault"
+      }
+    },
+    "hardwareFamily": {
+      "value": "Gen5"
+    },
+    "keys": {
+      "value": [
+        {
+          "name": "<name>",
+          "serverKeyType": "AzureKeyVault",
+          "uri": "<uri>"
+        }
+      ]
+    },
+    "licenseType": {
+      "value": "LicenseIncluded"
+    },
+    "maintenanceWindow": {
+      "value": "Custom2"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    },
+    "proxyOverride": {
+      "value": "Proxy"
+    },
+    "publicDataEndpointEnabled": {
+      "value": false
+    },
+    "securityAlertPolicy": {
+      "value": {
+        "emailAccountAdmins": true,
+        "emailAddresses": [
+          "test1@contoso.com",
+          "test2@contoso.com"
+        ],
+        "name": "default",
+        "state": "Enabled",
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    },
+    "servicePrincipal": {
+      "value": "SystemAssigned"
+    },
+    "skuName": {
+      "value": "GP_Gen5"
+    },
+    "skuTier": {
+      "value": "GeneralPurpose"
+    },
+    "storageSizeInGB": {
+      "value": 32
+    },
+    "timezoneId": {
+      "value": "UTC"
+    },
+    "vCores": {
+      "value": 4
+    },
+    "vulnerabilityAssessment": {
+      "value": {
+        "name": "default",
+        "recurringScans": {
+          "emails": [
+            "test1@contoso.com",
+            "test2@contoso.com"
+          ],
+          "emailSubscriptionAdmins": true,
+          "isEnabled": true
+        },
+        "storageAccountResourceId": "<storageAccountResourceId>"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/managed-instance:<version>'
+
+// Required parameters
+param name = 'sqlmiwaf'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param collation = 'SQL_Latin1_General_CP1_CI_AS'
+param databases = [
+  {
+    backupLongTermRetentionPolicy: {
+      name: 'default'
+    }
+    backupShortTermRetentionPolicy: {
+      name: 'default'
+    }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    name: 'sqlmiwaf-db-001'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsZonePartnerResourceId = ''
+param encryptionProtector = {
+  serverKeyName: '<serverKeyName>'
+  serverKeyType: 'AzureKeyVault'
+}
+param hardwareFamily = 'Gen5'
+param keys = [
+  {
+    name: '<name>'
+    serverKeyType: 'AzureKeyVault'
+    uri: '<uri>'
+  }
+]
+param licenseType = 'LicenseIncluded'
+param maintenanceWindow = 'Custom2'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+param proxyOverride = 'Proxy'
+param publicDataEndpointEnabled = false
+param securityAlertPolicy = {
+  emailAccountAdmins: true
+  emailAddresses: [
+    'test1@contoso.com'
+    'test2@contoso.com'
+  ]
+  name: 'default'
+  state: 'Enabled'
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+param servicePrincipal = 'SystemAssigned'
+param skuName = 'GP_Gen5'
+param skuTier = 'GeneralPurpose'
+param storageSizeInGB = 32
+param timezoneId = 'UTC'
+param vCores = 4
+param vulnerabilityAssessment = {
+  name: 'default'
+  recurringScans: {
+    emails: [
+      'test1@contoso.com'
+      'test2@contoso.com'
+    ]
+    emailSubscriptionAdmins: true
+    isEnabled: true
+  }
+  storageAccountResourceId: '<storageAccountResourceId>'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

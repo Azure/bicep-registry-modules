@@ -45,6 +45,2722 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/workspace:<version>`.
 
+- [Advanced features](#example-1-advanced-features)
+- [Using Log Analytics Cluster with Customer-Managed-Keys](#example-2-using-log-analytics-cluster-with-customer-managed-keys)
+- [Using default Data Collection Rule](#example-3-using-default-data-collection-rule)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
+
+### Example 1: _Advanced features_
+
+This instance deploys the module with advanced features like custom tables, data exports & encryption.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/adv]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwadv001'
+    // Non-required parameters
+    dailyQuotaGb: '<dailyQuotaGb>'
+    dataExports: [
+      {
+        destination: {
+          metaData: {
+            eventHubName: '<eventHubName>'
+          }
+          resourceId: '<resourceId>'
+        }
+        enable: true
+        name: 'eventHubExport'
+        tableNames: [
+          'Alert'
+          'InsightsMetrics'
+        ]
+      }
+      {
+        destination: {
+          resourceId: '<resourceId>'
+        }
+        enable: true
+        name: 'storageAccountExport'
+        tableNames: [
+          'Operation'
+        ]
+      }
+    ]
+    dataSources: [
+      {
+        eventLogName: 'Application'
+        eventTypes: [
+          {
+            eventType: 'Error'
+          }
+          {
+            eventType: 'Warning'
+          }
+          {
+            eventType: 'Information'
+          }
+        ]
+        kind: 'WindowsEvent'
+        name: 'applicationEvent'
+      }
+      {
+        counterName: '% Processor Time'
+        instanceName: '*'
+        intervalSeconds: 60
+        kind: 'WindowsPerformanceCounter'
+        name: 'windowsPerfCounter1'
+        objectName: 'Processor'
+      }
+      {
+        kind: 'IISLogs'
+        name: 'sampleIISLog1'
+        state: 'OnPremiseEnabled'
+      }
+      {
+        kind: 'LinuxSyslog'
+        name: 'sampleSyslog1'
+        syslogName: 'kern'
+        syslogSeverities: [
+          {
+            severity: 'emerg'
+          }
+          {
+            severity: 'alert'
+          }
+          {
+            severity: 'crit'
+          }
+          {
+            severity: 'err'
+          }
+          {
+            severity: 'warning'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxSyslogCollection'
+        name: 'sampleSyslogCollection1'
+        state: 'Enabled'
+      }
+      {
+        instanceName: '*'
+        intervalSeconds: 10
+        kind: 'LinuxPerformanceObject'
+        name: 'sampleLinuxPerf1'
+        objectName: 'Logical Disk'
+        syslogSeverities: [
+          {
+            counterName: '% Used Inodes'
+          }
+          {
+            counterName: 'Free Megabytes'
+          }
+          {
+            counterName: '% Used Space'
+          }
+          {
+            counterName: 'Disk Transfers/sec'
+          }
+          {
+            counterName: 'Disk Reads/sec'
+          }
+          {
+            counterName: 'Disk Writes/sec'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxPerformanceCollection'
+        name: 'sampleLinuxPerfCollection1'
+        state: 'Enabled'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+      {
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'sendingDiagnosticSettingsToSelf'
+        useThisWorkspace: true
+      }
+    ]
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
+    gallerySolutions: [
+      {
+        name: 'AzureAutomation(oiwadv001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+    ]
+    linkedServices: [
+      {
+        name: 'Automation'
+        resourceId: '<resourceId>'
+      }
+    ]
+    linkedStorageAccounts: [
+      {
+        name: 'Query'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccessForIngestion: 'Disabled'
+    publicNetworkAccessForQuery: 'Enabled'
+    savedSearches: [
+      {
+        category: 'VDC Saved Searches'
+        displayName: 'VMSS Instance Count2'
+        name: 'VMSSQueries'
+        query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+      }
+    ]
+    storageInsightsConfigs: [
+      {
+        storageAccountResourceId: '<storageAccountResourceId>'
+        tables: [
+          'LinuxsyslogVer2v0'
+          'WADETWEventTable'
+          'WADServiceFabric*EventTable'
+          'WADWindowsEventLogsTable'
+        ]
+      }
+    ]
+    tables: [
+      {
+        name: 'CustomTableBasic_CL'
+        retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'dateTime'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+          name: 'CustomTableBasic_CL'
+        }
+        totalRetentionInDays: 90
+      }
+      {
+        name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'dateTime'
+            }
+            {
+              name: 'EventTime'
+              type: 'dateTime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'string'
+            }
+            {
+              name: 'EventCode'
+              type: 'int'
+            }
+            {
+              name: 'Message'
+              type: 'string'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+          name: 'CustomTableAdvanced_CL'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwadv001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": "<dailyQuotaGb>"
+    },
+    "dataExports": {
+      "value": [
+        {
+          "destination": {
+            "metaData": {
+              "eventHubName": "<eventHubName>"
+            },
+            "resourceId": "<resourceId>"
+          },
+          "enable": true,
+          "name": "eventHubExport",
+          "tableNames": [
+            "Alert",
+            "InsightsMetrics"
+          ]
+        },
+        {
+          "destination": {
+            "resourceId": "<resourceId>"
+          },
+          "enable": true,
+          "name": "storageAccountExport",
+          "tableNames": [
+            "Operation"
+          ]
+        }
+      ]
+    },
+    "dataSources": {
+      "value": [
+        {
+          "eventLogName": "Application",
+          "eventTypes": [
+            {
+              "eventType": "Error"
+            },
+            {
+              "eventType": "Warning"
+            },
+            {
+              "eventType": "Information"
+            }
+          ],
+          "kind": "WindowsEvent",
+          "name": "applicationEvent"
+        },
+        {
+          "counterName": "% Processor Time",
+          "instanceName": "*",
+          "intervalSeconds": 60,
+          "kind": "WindowsPerformanceCounter",
+          "name": "windowsPerfCounter1",
+          "objectName": "Processor"
+        },
+        {
+          "kind": "IISLogs",
+          "name": "sampleIISLog1",
+          "state": "OnPremiseEnabled"
+        },
+        {
+          "kind": "LinuxSyslog",
+          "name": "sampleSyslog1",
+          "syslogName": "kern",
+          "syslogSeverities": [
+            {
+              "severity": "emerg"
+            },
+            {
+              "severity": "alert"
+            },
+            {
+              "severity": "crit"
+            },
+            {
+              "severity": "err"
+            },
+            {
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxSyslogCollection",
+          "name": "sampleSyslogCollection1",
+          "state": "Enabled"
+        },
+        {
+          "instanceName": "*",
+          "intervalSeconds": 10,
+          "kind": "LinuxPerformanceObject",
+          "name": "sampleLinuxPerf1",
+          "objectName": "Logical Disk",
+          "syslogSeverities": [
+            {
+              "counterName": "% Used Inodes"
+            },
+            {
+              "counterName": "Free Megabytes"
+            },
+            {
+              "counterName": "% Used Space"
+            },
+            {
+              "counterName": "Disk Transfers/sec"
+            },
+            {
+              "counterName": "Disk Reads/sec"
+            },
+            {
+              "counterName": "Disk Writes/sec"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxPerformanceCollection",
+          "name": "sampleLinuxPerfCollection1",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        },
+        {
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "sendingDiagnosticSettingsToSelf",
+          "useThisWorkspace": true
+        }
+      ]
+    },
+    "features": {
+      "value": {
+        "enableLogAccessUsingOnlyResourcePermissions": true
+      }
+    },
+    "gallerySolutions": {
+      "value": [
+        {
+          "name": "AzureAutomation(oiwadv001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Automation",
+          "resourceId": "<resourceId>"
+        }
+      ]
+    },
+    "linkedStorageAccounts": {
+      "value": [
+        {
+          "name": "Query",
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccessForIngestion": {
+      "value": "Disabled"
+    },
+    "publicNetworkAccessForQuery": {
+      "value": "Enabled"
+    },
+    "savedSearches": {
+      "value": [
+        {
+          "category": "VDC Saved Searches",
+          "displayName": "VMSS Instance Count2",
+          "name": "VMSSQueries",
+          "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer"
+        }
+      ]
+    },
+    "storageInsightsConfigs": {
+      "value": [
+        {
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "tables": [
+            "LinuxsyslogVer2v0",
+            "WADETWEventTable",
+            "WADServiceFabric*EventTable",
+            "WADWindowsEventLogsTable"
+          ]
+        }
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "CustomTableBasic_CL",
+          "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "dateTime"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
+            ],
+            "name": "CustomTableBasic_CL"
+          },
+          "totalRetentionInDays": 90
+        },
+        {
+          "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "dateTime"
+              },
+              {
+                "name": "EventTime",
+                "type": "dateTime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "string"
+              },
+              {
+                "name": "EventCode",
+                "type": "int"
+              },
+              {
+                "name": "Message",
+                "type": "string"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
+            ],
+            "name": "CustomTableAdvanced_CL"
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwadv001'
+// Non-required parameters
+param dailyQuotaGb = '<dailyQuotaGb>'
+param dataExports = [
+  {
+    destination: {
+      metaData: {
+        eventHubName: '<eventHubName>'
+      }
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'eventHubExport'
+    tableNames: [
+      'Alert'
+      'InsightsMetrics'
+    ]
+  }
+  {
+    destination: {
+      resourceId: '<resourceId>'
+    }
+    enable: true
+    name: 'storageAccountExport'
+    tableNames: [
+      'Operation'
+    ]
+  }
+]
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+  {
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'sendingDiagnosticSettingsToSelf'
+    useThisWorkspace: true
+  }
+]
+param features = {
+  enableLogAccessUsingOnlyResourcePermissions: true
+}
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwadv001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Enabled'
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'dateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'dateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'dateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'string'
+        }
+        {
+          name: 'EventCode'
+          type: 'int'
+        }
+        {
+          name: 'Message'
+          type: 'string'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Log Analytics Cluster with Customer-Managed-Keys_
+
+This instance deploys a Log Analytics Cluster with Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity and links the Log Analytics Workspace to it.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-hsm-uami]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because the Log Analytics Cluster resource is very restrictive when it comes to how many instance one can have and how to lifecycle them.
+For further information, please refer to: [ref](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/logs-dedicated-clusters?tabs=azure-portal#delete-cluster)
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwmhsmu001'
+    // Non-required parameters
+    dailyQuotaGb: '10'
+    linkedServices: [
+      {
+        name: 'Cluster'
+        writeAccessResourceId: '<writeAccessResourceId>'
+      }
+    ]
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    skuName: 'LACluster'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmhsmu001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": "10"
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Cluster",
+          "writeAccessResourceId": "<writeAccessResourceId>"
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "LACluster"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmhsmu001'
+// Non-required parameters
+param dailyQuotaGb = '10'
+param linkedServices = [
+  {
+    name: 'Cluster'
+    writeAccessResourceId: '<writeAccessResourceId>'
+  }
+]
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param skuName = 'LACluster'
+```
+
+</details>
+<p>
+
+### Example 3: _Using default Data Collection Rule_
+
+This instance deploys the module with a default Data Collection Rule.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/default-dcr]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwdcr001'
+    // Non-required parameters
+    defaultDataCollectionRuleResourceId: '<defaultDataCollectionRuleResourceId>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwdcr001"
+    },
+    // Non-required parameters
+    "defaultDataCollectionRuleResourceId": {
+      "value": "<defaultDataCollectionRuleResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwdcr001'
+// Non-required parameters
+param defaultDataCollectionRuleResourceId = '<defaultDataCollectionRuleResourceId>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    name: 'oiwmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "oiwmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+param name = 'oiwmin001'
+```
+
+</details>
+<p>
+
+### Example 5: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwmax001'
+    // Non-required parameters
+    dailyQuotaGb: '<dailyQuotaGb>'
+    dataSources: [
+      {
+        eventLogName: 'Application'
+        eventTypes: [
+          {
+            eventType: 'Error'
+          }
+          {
+            eventType: 'Warning'
+          }
+          {
+            eventType: 'Information'
+          }
+        ]
+        kind: 'WindowsEvent'
+        name: 'applicationEvent'
+      }
+      {
+        counterName: '% Processor Time'
+        instanceName: '*'
+        intervalSeconds: 60
+        kind: 'WindowsPerformanceCounter'
+        name: 'windowsPerfCounter1'
+        objectName: 'Processor'
+      }
+      {
+        kind: 'IISLogs'
+        name: 'sampleIISLog1'
+        state: 'OnPremiseEnabled'
+      }
+      {
+        kind: 'LinuxSyslog'
+        name: 'sampleSyslog1'
+        syslogName: 'kern'
+        syslogSeverities: [
+          {
+            severity: 'emerg'
+          }
+          {
+            severity: 'alert'
+          }
+          {
+            severity: 'crit'
+          }
+          {
+            severity: 'err'
+          }
+          {
+            severity: 'warning'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxSyslogCollection'
+        name: 'sampleSyslogCollection1'
+        state: 'Enabled'
+      }
+      {
+        instanceName: '*'
+        intervalSeconds: 10
+        kind: 'LinuxPerformanceObject'
+        name: 'sampleLinuxPerf1'
+        objectName: 'Logical Disk'
+        syslogSeverities: [
+          {
+            counterName: '% Used Inodes'
+          }
+          {
+            counterName: 'Free Megabytes'
+          }
+          {
+            counterName: '% Used Space'
+          }
+          {
+            counterName: 'Disk Transfers/sec'
+          }
+          {
+            counterName: 'Disk Reads/sec'
+          }
+          {
+            counterName: 'Disk Writes/sec'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxPerformanceCollection'
+        name: 'sampleLinuxPerfCollection1'
+        state: 'Enabled'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    features: {
+      disableLocalAuth: true
+      enableDataExport: true
+      enableLogAccessUsingOnlyResourcePermissions: true
+      immediatePurgeDataOn30Days: true
+    }
+    gallerySolutions: [
+      {
+        name: 'AzureAutomation(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+      {
+        name: 'SecurityInsights(oiwmax001)'
+        plan: {
+          product: 'OMSGallery/SecurityInsights'
+          publisher: 'Microsoft'
+        }
+      }
+      {
+        name: 'SQLAuditing(oiwmax001)'
+        plan: {
+          name: 'SQLAuditing(oiwmax001)'
+          product: 'SQLAuditing'
+          publisher: 'Microsoft'
+        }
+      }
+    ]
+    linkedServices: [
+      {
+        name: 'Automation'
+        resourceId: '<resourceId>'
+      }
+    ]
+    linkedStorageAccounts: [
+      {
+        name: 'Query'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    onboardWorkspaceToSentinel: true
+    publicNetworkAccessForIngestion: 'Disabled'
+    publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
+    roleAssignments: [
+      {
+        name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    savedSearches: [
+      {
+        category: 'VDC Saved Searches'
+        displayName: 'VMSS Instance Count2'
+        name: 'VMSSQueries'
+        query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+        tags: [
+          {
+            Name: 'Environment'
+            Value: 'Non-Prod'
+          }
+          {
+            Name: 'Role'
+            Value: 'DeploymentValidation'
+          }
+        ]
+      }
+    ]
+    storageInsightsConfigs: [
+      {
+        storageAccountResourceId: '<storageAccountResourceId>'
+        tables: [
+          'LinuxsyslogVer2v0'
+          'WADETWEventTable'
+          'WADServiceFabric*EventTable'
+          'WADWindowsEventLogsTable'
+        ]
+      }
+    ]
+    tables: [
+      {
+        name: 'CustomTableBasic_CL'
+        retentionInDays: 60
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'dateTime'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+          name: 'CustomTableBasic_CL'
+        }
+        totalRetentionInDays: 90
+      }
+      {
+        name: 'CustomTableAdvanced_CL'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+          }
+        ]
+        schema: {
+          columns: [
+            {
+              name: 'TimeGenerated'
+              type: 'dateTime'
+            }
+            {
+              name: 'EventTime'
+              type: 'dateTime'
+            }
+            {
+              name: 'EventLevel'
+              type: 'string'
+            }
+            {
+              name: 'EventCode'
+              type: 'int'
+            }
+            {
+              name: 'Message'
+              type: 'string'
+            }
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+          ]
+          name: 'CustomTableAdvanced_CL'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwmax001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": "<dailyQuotaGb>"
+    },
+    "dataSources": {
+      "value": [
+        {
+          "eventLogName": "Application",
+          "eventTypes": [
+            {
+              "eventType": "Error"
+            },
+            {
+              "eventType": "Warning"
+            },
+            {
+              "eventType": "Information"
+            }
+          ],
+          "kind": "WindowsEvent",
+          "name": "applicationEvent"
+        },
+        {
+          "counterName": "% Processor Time",
+          "instanceName": "*",
+          "intervalSeconds": 60,
+          "kind": "WindowsPerformanceCounter",
+          "name": "windowsPerfCounter1",
+          "objectName": "Processor"
+        },
+        {
+          "kind": "IISLogs",
+          "name": "sampleIISLog1",
+          "state": "OnPremiseEnabled"
+        },
+        {
+          "kind": "LinuxSyslog",
+          "name": "sampleSyslog1",
+          "syslogName": "kern",
+          "syslogSeverities": [
+            {
+              "severity": "emerg"
+            },
+            {
+              "severity": "alert"
+            },
+            {
+              "severity": "crit"
+            },
+            {
+              "severity": "err"
+            },
+            {
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxSyslogCollection",
+          "name": "sampleSyslogCollection1",
+          "state": "Enabled"
+        },
+        {
+          "instanceName": "*",
+          "intervalSeconds": 10,
+          "kind": "LinuxPerformanceObject",
+          "name": "sampleLinuxPerf1",
+          "objectName": "Logical Disk",
+          "syslogSeverities": [
+            {
+              "counterName": "% Used Inodes"
+            },
+            {
+              "counterName": "Free Megabytes"
+            },
+            {
+              "counterName": "% Used Space"
+            },
+            {
+              "counterName": "Disk Transfers/sec"
+            },
+            {
+              "counterName": "Disk Reads/sec"
+            },
+            {
+              "counterName": "Disk Writes/sec"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxPerformanceCollection",
+          "name": "sampleLinuxPerfCollection1",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "features": {
+      "value": {
+        "disableLocalAuth": true,
+        "enableDataExport": true,
+        "enableLogAccessUsingOnlyResourcePermissions": true,
+        "immediatePurgeDataOn30Days": true
+      }
+    },
+    "gallerySolutions": {
+      "value": [
+        {
+          "name": "AzureAutomation(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        },
+        {
+          "name": "SecurityInsights(oiwmax001)",
+          "plan": {
+            "product": "OMSGallery/SecurityInsights",
+            "publisher": "Microsoft"
+          }
+        },
+        {
+          "name": "SQLAuditing(oiwmax001)",
+          "plan": {
+            "name": "SQLAuditing(oiwmax001)",
+            "product": "SQLAuditing",
+            "publisher": "Microsoft"
+          }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Automation",
+          "resourceId": "<resourceId>"
+        }
+      ]
+    },
+    "linkedStorageAccounts": {
+      "value": [
+        {
+          "name": "Query",
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "onboardWorkspaceToSentinel": {
+      "value": true
+    },
+    "publicNetworkAccessForIngestion": {
+      "value": "Disabled"
+    },
+    "publicNetworkAccessForQuery": {
+      "value": "Disabled"
+    },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "c3d53092-840c-4025-9c02-9bcb7895789c",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "savedSearches": {
+      "value": [
+        {
+          "category": "VDC Saved Searches",
+          "displayName": "VMSS Instance Count2",
+          "name": "VMSSQueries",
+          "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer",
+          "tags": [
+            {
+              "Name": "Environment",
+              "Value": "Non-Prod"
+            },
+            {
+              "Name": "Role",
+              "Value": "DeploymentValidation"
+            }
+          ]
+        }
+      ]
+    },
+    "storageInsightsConfigs": {
+      "value": [
+        {
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "tables": [
+            "LinuxsyslogVer2v0",
+            "WADETWEventTable",
+            "WADServiceFabric*EventTable",
+            "WADWindowsEventLogsTable"
+          ]
+        }
+      ]
+    },
+    "tables": {
+      "value": [
+        {
+          "name": "CustomTableBasic_CL",
+          "retentionInDays": 60,
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "dateTime"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
+            ],
+            "name": "CustomTableBasic_CL"
+          },
+          "totalRetentionInDays": 90
+        },
+        {
+          "name": "CustomTableAdvanced_CL",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+            }
+          ],
+          "schema": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "dateTime"
+              },
+              {
+                "name": "EventTime",
+                "type": "dateTime"
+              },
+              {
+                "name": "EventLevel",
+                "type": "string"
+              },
+              {
+                "name": "EventCode",
+                "type": "int"
+              },
+              {
+                "name": "Message",
+                "type": "string"
+              },
+              {
+                "name": "RawData",
+                "type": "string"
+              }
+            ],
+            "name": "CustomTableAdvanced_CL"
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwmax001'
+// Non-required parameters
+param dailyQuotaGb = '<dailyQuotaGb>'
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param features = {
+  disableLocalAuth: true
+  enableDataExport: true
+  enableLogAccessUsingOnlyResourcePermissions: true
+  immediatePurgeDataOn30Days: true
+}
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+  {
+    name: 'SecurityInsights(oiwmax001)'
+    plan: {
+      product: 'OMSGallery/SecurityInsights'
+      publisher: 'Microsoft'
+    }
+  }
+  {
+    name: 'SQLAuditing(oiwmax001)'
+    plan: {
+      name: 'SQLAuditing(oiwmax001)'
+      product: 'SQLAuditing'
+      publisher: 'Microsoft'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param onboardWorkspaceToSentinel = true
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
+param roleAssignments = [
+  {
+    name: 'c3d53092-840c-4025-9c02-9bcb7895789c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param savedSearches = [
+  {
+    category: 'VDC Saved Searches'
+    displayName: 'VMSS Instance Count2'
+    name: 'VMSSQueries'
+    query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+    tags: [
+      {
+        Name: 'Environment'
+        Value: 'Non-Prod'
+      }
+      {
+        Name: 'Role'
+        Value: 'DeploymentValidation'
+      }
+    ]
+  }
+]
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tables = [
+  {
+    name: 'CustomTableBasic_CL'
+    retentionInDays: 60
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'dateTime'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+      name: 'CustomTableBasic_CL'
+    }
+    totalRetentionInDays: 90
+  }
+  {
+    name: 'CustomTableAdvanced_CL'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    schema: {
+      columns: [
+        {
+          name: 'TimeGenerated'
+          type: 'dateTime'
+        }
+        {
+          name: 'EventTime'
+          type: 'dateTime'
+        }
+        {
+          name: 'EventLevel'
+          type: 'string'
+        }
+        {
+          name: 'EventCode'
+          type: 'int'
+        }
+        {
+          name: 'Message'
+          type: 'string'
+        }
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+      ]
+      name: 'CustomTableAdvanced_CL'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'oiwwaf001'
+    // Non-required parameters
+    dailyQuotaGb: '2'
+    dataSources: [
+      {
+        eventLogName: 'Application'
+        eventTypes: [
+          {
+            eventType: 'Error'
+          }
+          {
+            eventType: 'Warning'
+          }
+          {
+            eventType: 'Information'
+          }
+        ]
+        kind: 'WindowsEvent'
+        name: 'applicationEvent'
+      }
+      {
+        counterName: '% Processor Time'
+        instanceName: '*'
+        intervalSeconds: 60
+        kind: 'WindowsPerformanceCounter'
+        name: 'windowsPerfCounter1'
+        objectName: 'Processor'
+      }
+      {
+        kind: 'IISLogs'
+        name: 'sampleIISLog1'
+        state: 'OnPremiseEnabled'
+      }
+      {
+        kind: 'LinuxSyslog'
+        name: 'sampleSyslog1'
+        syslogName: 'kern'
+        syslogSeverities: [
+          {
+            severity: 'emerg'
+          }
+          {
+            severity: 'alert'
+          }
+          {
+            severity: 'crit'
+          }
+          {
+            severity: 'err'
+          }
+          {
+            severity: 'warning'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxSyslogCollection'
+        name: 'sampleSyslogCollection1'
+        state: 'Enabled'
+      }
+      {
+        instanceName: '*'
+        intervalSeconds: 10
+        kind: 'LinuxPerformanceObject'
+        name: 'sampleLinuxPerf1'
+        objectName: 'Logical Disk'
+        syslogSeverities: [
+          {
+            counterName: '% Used Inodes'
+          }
+          {
+            counterName: 'Free Megabytes'
+          }
+          {
+            counterName: '% Used Space'
+          }
+          {
+            counterName: 'Disk Transfers/sec'
+          }
+          {
+            counterName: 'Disk Reads/sec'
+          }
+          {
+            counterName: 'Disk Writes/sec'
+          }
+        ]
+      }
+      {
+        kind: 'LinuxPerformanceCollection'
+        name: 'sampleLinuxPerfCollection1'
+        state: 'Enabled'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
+    gallerySolutions: [
+      {
+        name: 'AzureAutomation(oiwwaf001)'
+        plan: {
+          product: 'OMSGallery/AzureAutomation'
+        }
+      }
+    ]
+    linkedServices: [
+      {
+        name: 'Automation'
+        resourceId: '<resourceId>'
+      }
+    ]
+    linkedStorageAccounts: [
+      {
+        name: 'Query'
+        storageAccountIds: [
+          '<storageAccountResourceId>'
+        ]
+      }
+    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccessForIngestion: 'Disabled'
+    publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
+    storageInsightsConfigs: [
+      {
+        storageAccountResourceId: '<storageAccountResourceId>'
+        tables: [
+          'LinuxsyslogVer2v0'
+          'WADETWEventTable'
+          'WADServiceFabric*EventTable'
+          'WADWindowsEventLogsTable'
+        ]
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "oiwwaf001"
+    },
+    // Non-required parameters
+    "dailyQuotaGb": {
+      "value": "2"
+    },
+    "dataSources": {
+      "value": [
+        {
+          "eventLogName": "Application",
+          "eventTypes": [
+            {
+              "eventType": "Error"
+            },
+            {
+              "eventType": "Warning"
+            },
+            {
+              "eventType": "Information"
+            }
+          ],
+          "kind": "WindowsEvent",
+          "name": "applicationEvent"
+        },
+        {
+          "counterName": "% Processor Time",
+          "instanceName": "*",
+          "intervalSeconds": 60,
+          "kind": "WindowsPerformanceCounter",
+          "name": "windowsPerfCounter1",
+          "objectName": "Processor"
+        },
+        {
+          "kind": "IISLogs",
+          "name": "sampleIISLog1",
+          "state": "OnPremiseEnabled"
+        },
+        {
+          "kind": "LinuxSyslog",
+          "name": "sampleSyslog1",
+          "syslogName": "kern",
+          "syslogSeverities": [
+            {
+              "severity": "emerg"
+            },
+            {
+              "severity": "alert"
+            },
+            {
+              "severity": "crit"
+            },
+            {
+              "severity": "err"
+            },
+            {
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxSyslogCollection",
+          "name": "sampleSyslogCollection1",
+          "state": "Enabled"
+        },
+        {
+          "instanceName": "*",
+          "intervalSeconds": 10,
+          "kind": "LinuxPerformanceObject",
+          "name": "sampleLinuxPerf1",
+          "objectName": "Logical Disk",
+          "syslogSeverities": [
+            {
+              "counterName": "% Used Inodes"
+            },
+            {
+              "counterName": "Free Megabytes"
+            },
+            {
+              "counterName": "% Used Space"
+            },
+            {
+              "counterName": "Disk Transfers/sec"
+            },
+            {
+              "counterName": "Disk Reads/sec"
+            },
+            {
+              "counterName": "Disk Writes/sec"
+            }
+          ]
+        },
+        {
+          "kind": "LinuxPerformanceCollection",
+          "name": "sampleLinuxPerfCollection1",
+          "state": "Enabled"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "features": {
+      "value": {
+        "enableLogAccessUsingOnlyResourcePermissions": true
+      }
+    },
+    "gallerySolutions": {
+      "value": [
+        {
+          "name": "AzureAutomation(oiwwaf001)",
+          "plan": {
+            "product": "OMSGallery/AzureAutomation"
+          }
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Automation",
+          "resourceId": "<resourceId>"
+        }
+      ]
+    },
+    "linkedStorageAccounts": {
+      "value": [
+        {
+          "name": "Query",
+          "storageAccountIds": [
+            "<storageAccountResourceId>"
+          ]
+        }
+      ]
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "publicNetworkAccessForIngestion": {
+      "value": "Disabled"
+    },
+    "publicNetworkAccessForQuery": {
+      "value": "Disabled"
+    },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
+    "storageInsightsConfigs": {
+      "value": [
+        {
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "tables": [
+            "LinuxsyslogVer2v0",
+            "WADETWEventTable",
+            "WADServiceFabric*EventTable",
+            "WADWindowsEventLogsTable"
+          ]
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/operational-insights/workspace:<version>'
+
+// Required parameters
+param name = 'oiwwaf001'
+// Non-required parameters
+param dailyQuotaGb = '2'
+param dataSources = [
+  {
+    eventLogName: 'Application'
+    eventTypes: [
+      {
+        eventType: 'Error'
+      }
+      {
+        eventType: 'Warning'
+      }
+      {
+        eventType: 'Information'
+      }
+    ]
+    kind: 'WindowsEvent'
+    name: 'applicationEvent'
+  }
+  {
+    counterName: '% Processor Time'
+    instanceName: '*'
+    intervalSeconds: 60
+    kind: 'WindowsPerformanceCounter'
+    name: 'windowsPerfCounter1'
+    objectName: 'Processor'
+  }
+  {
+    kind: 'IISLogs'
+    name: 'sampleIISLog1'
+    state: 'OnPremiseEnabled'
+  }
+  {
+    kind: 'LinuxSyslog'
+    name: 'sampleSyslog1'
+    syslogName: 'kern'
+    syslogSeverities: [
+      {
+        severity: 'emerg'
+      }
+      {
+        severity: 'alert'
+      }
+      {
+        severity: 'crit'
+      }
+      {
+        severity: 'err'
+      }
+      {
+        severity: 'warning'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxSyslogCollection'
+    name: 'sampleSyslogCollection1'
+    state: 'Enabled'
+  }
+  {
+    instanceName: '*'
+    intervalSeconds: 10
+    kind: 'LinuxPerformanceObject'
+    name: 'sampleLinuxPerf1'
+    objectName: 'Logical Disk'
+    syslogSeverities: [
+      {
+        counterName: '% Used Inodes'
+      }
+      {
+        counterName: 'Free Megabytes'
+      }
+      {
+        counterName: '% Used Space'
+      }
+      {
+        counterName: 'Disk Transfers/sec'
+      }
+      {
+        counterName: 'Disk Reads/sec'
+      }
+      {
+        counterName: 'Disk Writes/sec'
+      }
+    ]
+  }
+  {
+    kind: 'LinuxPerformanceCollection'
+    name: 'sampleLinuxPerfCollection1'
+    state: 'Enabled'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param features = {
+  enableLogAccessUsingOnlyResourcePermissions: true
+}
+param gallerySolutions = [
+  {
+    name: 'AzureAutomation(oiwwaf001)'
+    plan: {
+      product: 'OMSGallery/AzureAutomation'
+    }
+  }
+]
+param linkedServices = [
+  {
+    name: 'Automation'
+    resourceId: '<resourceId>'
+  }
+]
+param linkedStorageAccounts = [
+  {
+    name: 'Query'
+    storageAccountIds: [
+      '<storageAccountResourceId>'
+    ]
+  }
+]
+param managedIdentities = {
+  systemAssigned: true
+}
+param publicNetworkAccessForIngestion = 'Disabled'
+param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
+param storageInsightsConfigs = [
+  {
+    storageAccountResourceId: '<storageAccountResourceId>'
+    tables: [
+      'LinuxsyslogVer2v0'
+      'WADETWEventTable'
+      'WADServiceFabric*EventTable'
+      'WADWindowsEventLogsTable'
+    ]
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
