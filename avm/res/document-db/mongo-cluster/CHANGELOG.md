@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/mongo-cluster/CHANGELOG.md).
 
+## 0.4.4
+
+### Changes
+
+- Expanded on parameter description of `diagnosticSettings` parameter to better explain the module's default behavior
+
+### Breaking Changes
+
+- None
+
 ## 0.4.3
 
 ### Changes
