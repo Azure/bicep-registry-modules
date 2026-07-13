@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/kusto/cluster/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.1
 
 ### Changes
