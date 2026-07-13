@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- For child-module `iotconnector`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+- For child-modules `iotconnector`, `fhirservice` & `dicomservice`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ### Breaking Changes
 
