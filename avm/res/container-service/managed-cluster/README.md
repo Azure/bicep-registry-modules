@@ -608,7 +608,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ]
         }
         revisions: [
-          'asm-1-27'
+          'asm-1-30'
         ]
       }
       mode: 'Istio'
@@ -685,7 +685,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             ]
           },
           "revisions": [
-            "asm-1-27"
+            "asm-1-30"
           ]
         },
         "mode": "Istio"
@@ -746,7 +746,7 @@ param serviceMeshProfile = {
       ]
     }
     revisions: [
-      'asm-1-27'
+      'asm-1-30'
     ]
   }
   mode: 'Istio'

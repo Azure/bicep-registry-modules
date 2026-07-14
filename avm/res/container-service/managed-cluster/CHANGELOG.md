@@ -7,15 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
-
-### Breaking Changes
-
-- None
-
-## 0.13.2
-
-### Changes
-
 - Added `VirtualMachines` as an allowed agent pool type to support AKS static egress gateway private IP scenarios.
 
 ### Breaking Changes
