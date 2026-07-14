@@ -7,15 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
-
-### Breaking Changes
-
-- None
-
-## 0.19.1
-
-### Changes
-
 - Added support for `vectorEmbeddingPolicy` and `fullTextPolicy` on SQL containers, and `fullTextIndexes` within `indexingPolicy`
 
 ### Breaking Changes
