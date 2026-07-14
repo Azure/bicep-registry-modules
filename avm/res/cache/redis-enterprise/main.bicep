@@ -291,6 +291,7 @@ module redisCluster_database 'database/main.bicep' = {
     port: database.?port
     persistence: database.?persistence
     diagnosticSettings: database.?diagnosticSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
