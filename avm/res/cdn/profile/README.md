@@ -433,8 +433,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         cipherSuiteSetType: 'Customized'
         customizedCipherSuiteSet: {
           cipherSuiteSetForTls12: [
-            'DHE_RSA_AES128_GCM_SHA256'
-            'DHE_RSA_AES256_GCM_SHA384'
+            'ECDHE_RSA_AES128_GCM_SHA256'
+            'ECDHE_RSA_AES256_GCM_SHA384'
           ]
           cipherSuiteSetForTls13: [
             'TLS_AES_128_GCM_SHA256'
@@ -550,8 +550,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "cipherSuiteSetType": "Customized",
           "customizedCipherSuiteSet": {
             "cipherSuiteSetForTls12": [
-              "DHE_RSA_AES128_GCM_SHA256",
-              "DHE_RSA_AES256_GCM_SHA384"
+              "ECDHE_RSA_AES128_GCM_SHA256",
+              "ECDHE_RSA_AES256_GCM_SHA384"
             ],
             "cipherSuiteSetForTls13": [
               "TLS_AES_128_GCM_SHA256",
@@ -669,8 +669,8 @@ param customDomains = [
     cipherSuiteSetType: 'Customized'
     customizedCipherSuiteSet: {
       cipherSuiteSetForTls12: [
-        'DHE_RSA_AES128_GCM_SHA256'
-        'DHE_RSA_AES256_GCM_SHA384'
+        'ECDHE_RSA_AES128_GCM_SHA256'
+        'ECDHE_RSA_AES256_GCM_SHA384'
       ]
       cipherSuiteSetForTls13: [
         'TLS_AES_128_GCM_SHA256'
