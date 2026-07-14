@@ -394,7 +394,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         status: 'enabled'
       }
     ]
-    trustPolicyStatus: 'enabled'
+    trustPolicyStatus: 'disabled'
     webhooks: [
       {
         name: 'acrx001webhook'
@@ -1040,7 +1040,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: 'enabled'
+    trustPolicyStatus: 'disabled'
   }
 }
 ```
