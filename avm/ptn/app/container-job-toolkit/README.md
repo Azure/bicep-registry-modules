@@ -1494,8 +1494,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/virtual-network:0.9.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.15.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.32.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
 

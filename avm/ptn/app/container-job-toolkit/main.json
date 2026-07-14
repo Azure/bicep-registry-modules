@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "8642203295046815926"
+      "version": "0.45.6.27763",
+      "templateHash": "15004429482964192905"
     },
     "name": "Container job toolkit",
     "description": "This module deploys a container to run as a job."
@@ -709,8 +709,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "9385009466344021422"
+              "version": "0.45.6.27763",
+              "templateHash": "710309864718905313"
             }
           },
           "definitions": {
