@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "8956288048631771620"
+      "version": "0.43.8.12551",
+      "templateHash": "12424832050811640377"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -548,6 +548,46 @@
         "description": "The type for the container app's authentication configuration."
       }
     },
+    "runtimeType": {
+      "type": "object",
+      "properties": {
+        "java": {
+          "type": "object",
+          "properties": {
+            "enableMetrics": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable jmx core metrics for the java app."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Java app configuration."
+          }
+        },
+        "dotnet": {
+          "type": "object",
+          "properties": {
+            "autoConfigureDataProtection": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. .NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the Container App runtime configuration. Supports both Java and .NET stacks."
+      }
+    },
     "diagnosticSettingMetricsOnlyType": {
       "type": "object",
       "properties": {
@@ -1055,14 +1095,11 @@
       }
     },
     "runtime": {
-      "type": "object",
+      "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/containerApps@2026-01-01#properties/properties/properties/configuration/properties/runtime"
-        },
-        "description": "Optional. Runtime configuration for the Container App."
-      },
-      "nullable": true
+        "description": "Optional. Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema."
+      }
     },
     "containers": {
       "type": "array",
@@ -1327,8 +1364,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5091965340897189324"
+              "version": "0.43.8.12551",
+              "templateHash": "497603915896913778"
             },
             "name": "Container App Auth Configs",
             "description": "This module deploys Container App Auth Configs."

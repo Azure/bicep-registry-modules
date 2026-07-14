@@ -7,212 +7,212 @@ disabled: false
 configuration:
   resourceManagementConfiguration:
     scheduledSearches:
-      - description: "ITA01BCP.1 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
-        frequencies:
-          - weekday:
-              day: Monday
-              time: 12:00
-          - weekday:
-              day: Tuesday
-              time: 12:00
-          - weekday:
-              day: Wednesday
-              time: 12:00
-        filters:
-          - isIssue
-          - isOpen
-          - hasLabel:
-              label: "Needs: Triage :mag:"
-          - hasLabel:
-              label: "Type: AVM :a: :v: :m:"
-          - isNotLabeledWith:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
-          - noActivitySince:
-              days: 5
-        actions:
-          - mentionUsers:
-              mentionees:
-                - Azure/avm-core-team-technical-bicep
-              replyTemplate: |
-                > [!WARNING]
-                > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
+      # - description: "ITA01BCP.1 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
+      #   frequencies:
+      #     - weekday:
+      #         day: Monday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Tuesday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Wednesday
+      #         time: 12:00
+      #   filters:
+      #     - isIssue
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Needs: Triage :mag:"
+      #     - hasLabel:
+      #         label: "Type: AVM :a: :v: :m:"
+      #     - isNotLabeledWith:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
+      #     - noActivitySince:
+      #         days: 5
+      #   actions:
+      #     - mentionUsers:
+      #         mentionees:
+      #           - Azure/avm-core-team-technical-bicep
+      #         replyTemplate: |
+      #           > [!WARNING]
+      #           > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
 
-                > [!TIP]
-                > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
-                > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
-          - addLabel:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
+      #           > [!TIP]
+      #           > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
+      #           > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
+      #     - addLabel:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
 
-      - description: "ITA01BCP.2 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
-        frequencies:
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
-        filters:
-          - isIssue
-          - isOpen
-          - hasLabel:
-              label: "Needs: Triage :mag:"
-          - hasLabel:
-              label: "Type: AVM :a: :v: :m:"
-          - isNotLabeledWith:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
-          - noActivitySince:
-              days: 3
-        actions:
-          - mentionUsers:
-              mentionees:
-                - Azure/avm-core-team-technical-bicep
-              replyTemplate: |
-                > [!WARNING]
-                > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
+      # - description: "ITA01BCP.2 - Label and comment AVM issues that have been marked as requiring triage and have not had any activity for 3 business days."
+      #   frequencies:
+      #     - weekday:
+      #         day: Thursday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Friday
+      #         time: 12:00
+      #   filters:
+      #     - isIssue
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Needs: Triage :mag:"
+      #     - hasLabel:
+      #         label: "Type: AVM :a: :v: :m:"
+      #     - isNotLabeledWith:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
+      #     - noActivitySince:
+      #         days: 3
+      #   actions:
+      #     - mentionUsers:
+      #         mentionees:
+      #           - Azure/avm-core-team-technical-bicep
+      #         replyTemplate: |
+      #           > [!WARNING]
+      #           > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
 
-                > [!TIP]
-                > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
-                > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
-          - addLabel:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
+      #           > [!TIP]
+      #           > - To prevent further actions to take effect, the "Status: Response Overdue 🚩" label must be removed, once this issue has been responded to.
+      #           > - To avoid this rule being (re)triggered, the ""Needs: Triage :mag:" label must be removed as part of the triage process (when the issue is first responded to)!
+      #     - addLabel:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
 
-      - description: "ITA02BCP.1 - Label and comment issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue."
-        frequencies:
-          - weekday:
-              day: Monday
-              time: 12:00
-          - weekday:
-              day: Tuesday
-              time: 12:00
-          - weekday:
-              day: Wednesday
-              time: 12:00
-        filters:
-          - isIssue
-          - isOpen
-          - hasLabel:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
-          - hasLabel:
-              label: "Type: AVM :a: :v: :m:"
-          - isNotLabeledWith:
-              label: "Needs: Immediate Attention :bangbang:"
-          - noActivitySince:
-              days: 5
-        actions:
-          - mentionUsers:
-              mentionees:
-                - Azure/avm-core-team-technical-bicep
-              replyTemplate: |
-                > [!CAUTION]
-                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
+      # - description: "ITA02BCP.1 - Label and comment issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue."
+      #   frequencies:
+      #     - weekday:
+      #         day: Monday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Tuesday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Wednesday
+      #         time: 12:00
+      #   filters:
+      #     - isIssue
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
+      #     - hasLabel:
+      #         label: "Type: AVM :a: :v: :m:"
+      #     - isNotLabeledWith:
+      #         label: "Needs: Immediate Attention :bangbang:"
+      #     - noActivitySince:
+      #         days: 5
+      #   actions:
+      #     - mentionUsers:
+      #         mentionees:
+      #           - Azure/avm-core-team-technical-bicep
+      #         replyTemplate: |
+      #           > [!CAUTION]
+      #           > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
 
-                > [!TIP]
-                > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
-                > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
-          - addLabel:
-              label: "Needs: Immediate Attention :bangbang:"
+      #           > [!TIP]
+      #           > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
+      #           > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
+      #     - addLabel:
+      #         label: "Needs: Immediate Attention :bangbang:"
 
-      - description: "ITA02BCP.2 - Label and comment issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue."
-        frequencies:
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
-        filters:
-          - isIssue
-          - isOpen
-          - hasLabel:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
-          - hasLabel:
-              label: "Type: AVM :a: :v: :m:"
-          - isNotLabeledWith:
-              label: "Needs: Immediate Attention :bangbang:"
-          - noActivitySince:
-              days: 3
-        actions:
-          - mentionUsers:
-              mentionees:
-                - Azure/avm-core-team-technical-bicep
-              replyTemplate: |
-                > [!CAUTION]
-                > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
+      # - description: "ITA02BCP.2 - Label and comment issues as Needs Immediate Attention and leave comment if after an additional 3 business days there's still no update to the issue."
+      #   frequencies:
+      #     - weekday:
+      #         day: Thursday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Friday
+      #         time: 12:00
+      #   filters:
+      #     - isIssue
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
+      #     - hasLabel:
+      #         label: "Type: AVM :a: :v: :m:"
+      #     - isNotLabeledWith:
+      #         label: "Needs: Immediate Attention :bangbang:"
+      #     - noActivitySince:
+      #         days: 3
+      #   actions:
+      #     - mentionUsers:
+      #         mentionees:
+      #           - Azure/avm-core-team-technical-bicep
+      #         replyTemplate: |
+      #           > [!CAUTION]
+      #           > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
 
-                > [!TIP]
-                > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
-                > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
-          - addLabel:
-              label: "Needs: Immediate Attention :bangbang:"
+      #           > [!TIP]
+      #           > - To avoid this rule being (re)triggered, the "Needs: Triage :mag:" and "Status: Response Overdue :triangular_flag_on_post:" labels must be removed when the issue is first responded to!
+      #           > - Remove the "Needs: Immediate Attention :bangbang:" label once the issue has been responded to.
+      #     - addLabel:
+      #         label: "Needs: Immediate Attention :bangbang:"
 
-      - description: "ITA03BCP - Label and mention Bicep PG to security issues that have not had any activity for 5 business days."
-        frequencies:
-          - weekday:
-              day: Monday
-              time: 12:00
-          - weekday:
-              day: Tuesday
-              time: 12:00
-          - weekday:
-              day: Wednesday
-              time: 12:00
-          - weekday:
-              day: Thursday
-              time: 12:00
-          - weekday:
-              day: Friday
-              time: 12:00
-        filters:
-          - isIssue
-          - isOpen
-          - hasLabel:
-              label: "Needs: Triage :mag:"
-          - hasLabel:
-              label: "Type: Security Bug :lock:"
-          - hasLabel:
-              label: "Status: Response Overdue :triangular_flag_on_post:"
-          - hasLabel:
-              label: "Type: AVM :a: :v: :m:"
-          - noActivitySince:
-              days: 7
-          - isNotLabeledWith:
-              label: "Needs: Immediate Attention :bangbang:"
-        actions:
-          - addReply:
-              reply: |
-                > [!CAUTION]
-                > Adding the "Needs: Immediate Attention :bangbang:" label due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.
+      # - description: "ITA03BCP - Label and mention Bicep PG to security issues that have not had any activity for 5 business days."
+      #   frequencies:
+      #     - weekday:
+      #         day: Monday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Tuesday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Wednesday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Thursday
+      #         time: 12:00
+      #     - weekday:
+      #         day: Friday
+      #         time: 12:00
+      #   filters:
+      #     - isIssue
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Needs: Triage :mag:"
+      #     - hasLabel:
+      #         label: "Type: Security Bug :lock:"
+      #     - hasLabel:
+      #         label: "Status: Response Overdue :triangular_flag_on_post:"
+      #     - hasLabel:
+      #         label: "Type: AVM :a: :v: :m:"
+      #     - noActivitySince:
+      #         days: 7
+      #     - isNotLabeledWith:
+      #         label: "Needs: Immediate Attention :bangbang:"
+      #   actions:
+      #     - addReply:
+      #         reply: |
+      #           > [!CAUTION]
+      #           > Adding the "Needs: Immediate Attention :bangbang:" label due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.
 
-                > [!TIP]
-                > - Remove the "Status: Response Overdue :triangular_flag_on_post:" and "Needs: Immediate Attention :bangbang:" labels once the issue has been responded to.
-          - addLabel:
-              label: "Needs: Immediate Attention :bangbang:"
+      #           > [!TIP]
+      #           > - Remove the "Status: Response Overdue :triangular_flag_on_post:" and "Needs: Immediate Attention :bangbang:" labels once the issue has been responded to.
+      #     - addLabel:
+      #         label: "Needs: Immediate Attention :bangbang:"
 
-      - description: "ITA04 - Label issues and PRs that have been marked as requiring author feedback but have not had any activity for 4 days."
-        frequencies:
-          - hourly:
-              hour: 3
-        filters:
-          - isOpen
-          - hasLabel:
-              label: "Needs: Author Feedback :ear:"
-          - noActivitySince:
-              days: 4
-          - isNotLabeledWith:
-              label: "Status: No Recent Activity :zzz:"
-        actions:
-          - addLabel:
-              label: "Status: No Recent Activity :zzz:"
-          - addReply:
-              reply: |
-                > [!IMPORTANT]
-                > ${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**.
+      # - description: "ITA04 - Label issues and PRs that have been marked as requiring author feedback but have not had any activity for 4 days."
+      #   frequencies:
+      #     - hourly:
+      #         hour: 3
+      #   filters:
+      #     - isOpen
+      #     - hasLabel:
+      #         label: "Needs: Author Feedback :ear:"
+      #     - noActivitySince:
+      #         days: 4
+      #     - isNotLabeledWith:
+      #         label: "Status: No Recent Activity :zzz:"
+      #   actions:
+      #     - addLabel:
+      #         label: "Status: No Recent Activity :zzz:"
+      #     - addReply:
+      #         reply: |
+      #           > [!IMPORTANT]
+      #           > ${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**.
 
-                > [!TIP]
-                > To prevent further actions to take effect, one of the following conditions must be met:
-                >   - The author must respond in a comment within 3 days of this comment.
-                >   - The "Status: No Recent Activity :zzz:" label must be removed.
-                >   - If applicable, the "Status: Long Term :hourglass_flowing_sand:" or the "Needs: Module Owner :mega:" label must be added.
+      #           > [!TIP]
+      #           > To prevent further actions to take effect, one of the following conditions must be met:
+      #           >   - The author must respond in a comment within 3 days of this comment.
+      #           >   - The "Status: No Recent Activity :zzz:" label must be removed.
+      #           >   - If applicable, the "Status: Long Term :hourglass_flowing_sand:" or the "Needs: Module Owner :mega:" label must be added.
 
       # - description: 'ITA05A - Close issues that have been marked as requiring author feedback but have not had any activity for 3 days, unless it''s been marked with the "Status long term" label.'
       #   frequencies:

@@ -505,6 +505,10 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      cognitiveService_deployments // Ensure model deployments finish so the account is in a 'Succeeded' (not 'Accepted') provisioning state before creating private endpoints
+      cognitiveService_commitmentPlans // Ensure commitment plans finish so the account is in a 'Succeeded' (not 'Accepted') provisioning state before creating private endpoints
+    ]
   }
 ]
 
