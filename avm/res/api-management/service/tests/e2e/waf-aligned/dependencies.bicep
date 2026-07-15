@@ -16,6 +16,9 @@ param virtualNetworkName string
 @description('Required. The name of the Application insights instance to create.')
 param applicationInsightsName string
 
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 var addressPrefix = '10.0.0.0/16'
 
 #disable-next-line use-recent-api-versions
@@ -99,6 +102,29 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enableRbacAuthorization: true
+  }
+}
+
+#disable-next-line use-recent-api-versions
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'apimNamedValueSecret'
+  properties: {
+    value: 'dummySecretValue'
+  }
+}
+
 @description('The principal ID of the created managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
@@ -116,3 +142,9 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
+
+@description('The URI of the created Key Vault secret.')
+output keyVaultSecretUri string = keyVaultSecret.properties.secretUri
