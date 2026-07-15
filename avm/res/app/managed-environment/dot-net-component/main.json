@@ -1,0 +1,170 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "10082624388876426735"
+    },
+    "name": "App ManagedEnvironments DotNetComponents",
+    "description": "This module deploys an App Managed Environment .NET Component."
+  },
+  "definitions": {
+    "dotNetComponentConfigurationPropertyType": {
+      "type": "object",
+      "properties": {
+        "propertyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the property."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value of the property."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a .NET Component configuration property."
+      }
+    },
+    "dotNetComponentServiceBindType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the service bind."
+          }
+        },
+        "serviceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource id of the target service."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a .NET Component service bind."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the .NET Component."
+      }
+    },
+    "managedEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
+      }
+    },
+    "componentType": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Type of the .NET Component."
+      }
+    },
+    "configurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dotNetComponentConfigurationPropertyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of .NET Components configuration properties."
+      }
+    },
+    "serviceBinds": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dotNetComponentServiceBindType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of .NET Components that are bound to the .NET component."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.app-managedenvironment-dotnetcomp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "managedEnvironment": {
+      "existing": true,
+      "type": "Microsoft.App/managedEnvironments",
+      "apiVersion": "2025-10-02-preview",
+      "name": "[parameters('managedEnvironmentName')]"
+    },
+    "dotNetComponent": {
+      "type": "Microsoft.App/managedEnvironments/dotNetComponents",
+      "apiVersion": "2025-10-02-preview",
+      "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
+      "properties": {
+        "componentType": "[parameters('componentType')]",
+        "configurations": "[parameters('configurations')]",
+        "serviceBinds": "[parameters('serviceBinds')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the .NET Component."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the .NET Component."
+      },
+      "value": "[resourceId('Microsoft.App/managedEnvironments/dotNetComponents', parameters('managedEnvironmentName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the .NET Component was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

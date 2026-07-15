@@ -39,6 +39,7 @@
     "avm/res/api-management/service/workspace/subscription",
     "avm/res/app/container-app/auth-config",
     "avm/res/app/managed-environment/certificate",
+    "avm/res/app/managed-environment/dot-net-component",
     "avm/res/app/managed-environment/storage",
     "avm/res/app-configuration/configuration-store/key-value",
     "avm/res/app-configuration/configuration-store/replica",
