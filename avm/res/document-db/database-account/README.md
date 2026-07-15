@@ -52,111 +52,23 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
-- [Using analytical storage](#example-1-using-analytical-storage)
-- [Using bounded consistency](#example-2-using-bounded-consistency)
-- [Cassandra Keyspaces - WAF-aligned](#example-3-cassandra-keyspaces---waf-aligned)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using encryption with Customer-Managed-Key](#example-5-using-encryption-with-customer-managed-key)
-- [Using only defaults](#example-6-using-only-defaults)
-- [Gremlin Database](#example-7-gremlin-database)
-- [Deploying with Managed identities](#example-8-deploying-with-managed-identities)
-- [Mongo Database](#example-9-mongo-database)
-- [Deploying multiple regions](#example-10-deploying-multiple-regions)
-- [Plain](#example-11-plain)
-- [Public network restricted access with ACL](#example-12-public-network-restricted-access-with-acl)
-- [SQL Database](#example-13-sql-database)
-- [Deploying with a sql role definition and assignment](#example-14-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-15-api-for-table)
-- [WAF-aligned](#example-16-waf-aligned)
+- [Using bounded consistency](#example-1-using-bounded-consistency)
+- [Cassandrakeyspaces-Waf](#example-2-cassandrakeyspaces-waf)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-3-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using encryption with Customer-Managed-Key](#example-4-using-encryption-with-customer-managed-key)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Gremlin Database](#example-6-gremlin-database)
+- [Deploying with Managed identities](#example-7-deploying-with-managed-identities)
+- [Mongo Database](#example-8-mongo-database)
+- [Deploying multiple regions](#example-9-deploying-multiple-regions)
+- [Plain](#example-10-plain)
+- [Public network restricted access with ACL](#example-11-public-network-restricted-access-with-acl)
+- [SQL Database](#example-12-sql-database)
+- [Deploying with a sql role definition and assignment](#example-13-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-14-api-for-table)
+- [WAF-aligned](#example-15-waf-aligned)
 
-### Example 1: _Using analytical storage_
-
-This instance deploys the module with analytical storage enabled.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/analytical]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  params: {
-    // Required parameters
-    name: 'analytical'
-    // Non-required parameters
-    enableAnalyticalStorage: true
-    sqlDatabases: [
-      {
-        name: 'no-containers-specified'
-      }
-    ]
-    zoneRedundant: false
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "analytical"
-    },
-    // Non-required parameters
-    "enableAnalyticalStorage": {
-      "value": true
-    },
-    "sqlDatabases": {
-      "value": [
-        {
-          "name": "no-containers-specified"
-        }
-      ]
-    },
-    "zoneRedundant": {
-      "value": false
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'analytical'
-// Non-required parameters
-param enableAnalyticalStorage = true
-param sqlDatabases = [
-  {
-    name: 'no-containers-specified'
-  }
-]
-param zoneRedundant = false
-```
-
-</details>
-<p>
-
-### Example 2: _Using bounded consistency_
+### Example 1: _Using bounded consistency_
 
 This instance deploys the module specifying a default consistency level.
 
@@ -253,10 +165,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 3: _Cassandra Keyspaces - WAF-aligned_
-
-This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 2: _Cassandrakeyspaces-Waf_
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
 
 
@@ -759,7 +668,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
@@ -873,7 +782,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _Using encryption with Customer-Managed-Key_
+### Example 4: _Using encryption with Customer-Managed-Key_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -983,7 +892,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 6: _Using only defaults_
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1037,7 +946,7 @@ param name = 'dddamin001'
 </details>
 <p>
 
-### Example 7: _Gremlin Database_
+### Example 6: _Gremlin Database_
 
 This instance deploys the module with a Gremlin Database.
 
@@ -1262,7 +1171,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 8: _Deploying with Managed identities_
+### Example 7: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -1403,7 +1312,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 9: _Mongo Database_
+### Example 8: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -2028,7 +1937,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _Deploying multiple regions_
+### Example 9: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -2173,7 +2082,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 11: _Plain_
+### Example 10: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -2299,7 +2208,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _Public network restricted access with ACL_
+### Example 11: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -2422,7 +2331,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _SQL Database_
+### Example 12: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2439,7 +2348,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddasql001'
     // Non-required parameters
-    enableAnalyticalStorage: true
     sqlDatabases: [
       {
         containers: [
@@ -2712,9 +2620,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddasql001"
     },
     // Non-required parameters
-    "enableAnalyticalStorage": {
-      "value": true
-    },
     "sqlDatabases": {
       "value": [
         {
@@ -2987,7 +2892,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddasql001'
 // Non-required parameters
-param enableAnalyticalStorage = true
 param sqlDatabases = [
   {
     containers: [
@@ -3244,7 +3148,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 14: _Deploying with a sql role definition and assignment_
+### Example 13: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -3513,7 +3417,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 15: _API for Table_
+### Example 14: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -3621,7 +3525,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 16: _WAF-aligned_
+### Example 15: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3889,7 +3793,6 @@ param zoneRedundant = true
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
 | [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts. |
 | [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account. |
@@ -4680,14 +4583,6 @@ Opt-out of local authentication and ensure that only Microsoft Entra can be used
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `enableAnalyticalStorage`
-
-Flag to indicate whether to enable storage analytics. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableAutomaticFailover`
 
