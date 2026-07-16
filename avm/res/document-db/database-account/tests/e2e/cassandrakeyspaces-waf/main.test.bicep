@@ -124,7 +124,6 @@ module testDeployment '../../../main.bicep' = [
           tables: [
             {
               name: 'secure_orders'
-              analyticalStorageTtl: 86400
               defaultTtl: 7200
               schema: {
                 columns: [
@@ -174,7 +173,6 @@ module testDeployment '../../../main.bicep' = [
           tables: [
             {
               name: 'secure_users'
-              analyticalStorageTtl: -1
               schema: {
                 columns: [
                   {

@@ -191,7 +191,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'cks-dddacswaf-001'
         tables: [
           {
-            analyticalStorageTtl: 86400
             defaultTtl: 7200
             name: 'secure_orders'
             schema: {
@@ -242,7 +241,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'cks-dddacswaf-002'
         tables: [
           {
-            analyticalStorageTtl: -1
             name: 'secure_users'
             schema: {
               clusterKeys: [
@@ -356,7 +354,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "cks-dddacswaf-001",
           "tables": [
             {
-              "analyticalStorageTtl": 86400,
               "defaultTtl": 7200,
               "name": "secure_orders",
               "schema": {
@@ -407,7 +404,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "cks-dddacswaf-002",
           "tables": [
             {
-              "analyticalStorageTtl": -1,
               "name": "secure_users",
               "schema": {
                 "clusterKeys": [
@@ -531,7 +527,6 @@ param cassandraKeyspaces = [
     name: 'cks-dddacswaf-001'
     tables: [
       {
-        analyticalStorageTtl: 86400
         defaultTtl: 7200
         name: 'secure_orders'
         schema: {
@@ -582,7 +577,6 @@ param cassandraKeyspaces = [
     name: 'cks-dddacswaf-002'
     tables: [
       {
-        analyticalStorageTtl: -1
         name: 'secure_users'
         schema: {
           clusterKeys: [
