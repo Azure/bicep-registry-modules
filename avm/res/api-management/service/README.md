@@ -3011,7 +3011,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     authorizationServers: [
       {
         authorizationEndpoint: '<authorizationEndpoint>'
-        clientId: 'apimClientid'
+        clientId: '<clientId>'
         clientRegistrationEndpoint: 'https://localhost'
         clientSecret: '<clientSecret>'
         displayName: 'AuthServer1'
@@ -3076,7 +3076,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           'mytenant.onmicrosoft.com'
         ]
         authority: '<authority>'
-        clientId: 'apimClientid'
+        clientId: '<clientId>'
         clientLibrary: 'MSAL-2'
         clientSecret: '<clientSecret>'
         name: 'aad'
@@ -3104,6 +3104,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     namedValues: [
       {
         displayName: 'apimkey'
+        keyVault: {
+          secretIdentifier: '<secretIdentifier>'
+        }
         name: 'apimkey'
         secret: true
       }
@@ -3248,7 +3251,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "authorizationEndpoint": "<authorizationEndpoint>",
-          "clientId": "apimClientid",
+          "clientId": "<clientId>",
           "clientRegistrationEndpoint": "https://localhost",
           "clientSecret": "<clientSecret>",
           "displayName": "AuthServer1",
@@ -3323,7 +3326,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "mytenant.onmicrosoft.com"
           ],
           "authority": "<authority>",
-          "clientId": "apimClientid",
+          "clientId": "<clientId>",
           "clientLibrary": "MSAL-2",
           "clientSecret": "<clientSecret>",
           "name": "aad",
@@ -3357,6 +3360,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": [
         {
           "displayName": "apimkey",
+          "keyVault": {
+            "secretIdentifier": "<secretIdentifier>"
+          },
           "name": "apimkey",
           "secret": true
         }
@@ -3503,7 +3509,7 @@ param apiVersionSets = [
 param authorizationServers = [
   {
     authorizationEndpoint: '<authorizationEndpoint>'
-    clientId: 'apimClientid'
+    clientId: '<clientId>'
     clientRegistrationEndpoint: 'https://localhost'
     clientSecret: '<clientSecret>'
     displayName: 'AuthServer1'
@@ -3568,7 +3574,7 @@ param identityProviders = [
       'mytenant.onmicrosoft.com'
     ]
     authority: '<authority>'
-    clientId: 'apimClientid'
+    clientId: '<clientId>'
     clientLibrary: 'MSAL-2'
     clientSecret: '<clientSecret>'
     name: 'aad'
@@ -3596,6 +3602,9 @@ param managedIdentities = {
 param namedValues = [
   {
     displayName: 'apimkey'
+    keyVault: {
+      secretIdentifier: '<secretIdentifier>'
+    }
     name: 'apimkey'
     secret: true
   }
