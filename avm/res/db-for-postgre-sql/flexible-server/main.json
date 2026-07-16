@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "12143182456645871571"
+      "version": "0.43.8.12551",
+      "templateHash": "6756717472608088003"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -1374,8 +1374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12874567617505041196"
+              "version": "0.43.8.12551",
+              "templateHash": "7269419402260886159"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1518,8 +1518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "951400284297326688"
+              "version": "0.43.8.12551",
+              "templateHash": "6189967960673354373"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1657,8 +1657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "3107087452356992763"
+              "version": "0.43.8.12551",
+              "templateHash": "12400211958691070222"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1804,8 +1804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15504014633642653310"
+              "version": "0.43.8.12551",
+              "templateHash": "5173199586870670834"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1945,8 +1945,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10241785853990137728"
+              "version": "0.43.8.12551",
+              "templateHash": "973369074153293967"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -2000,7 +2000,7 @@
             {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
               "apiVersion": "2026-01-01-preview",
-              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
               "properties": {
                 "state": "[parameters('serverThreatProtection')]"
               }
@@ -2012,21 +2012,21 @@
               "metadata": {
                 "description": "The resource id of the advanced threat protection state for the flexible server."
               },
-              "value": "PostgreSQL-advancedThreatProtection"
+              "value": "Default"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource id of the advanced threat protection state for the flexible server."
               },
-              "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]"
+              "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
             },
             "advancedTreatProtectionState": {
               "type": "string",
               "metadata": {
                 "description": "The advanced threat protection state for the flexible server."
               },
-              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2026-01-01-preview').state]"
+              "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default'), '2026-01-01-preview').state]"
             },
             "resourceGroupName": {
               "type": "string",
