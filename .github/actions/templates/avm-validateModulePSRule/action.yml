@@ -161,16 +161,18 @@ runs:
           return ''
         } else {
           $fileSizeKB = (Get-Item $mdPSRuleOutputFilePath).Length / 1KB
-          $maxSizeKB = 1000 # Leave headroom below the 1024KB GitHub limit
+          # GitHub step summary limit is 1024KB total. Use 900KB to leave headroom for other steps.
+          $maxSizeKB = 900
 
           if ($fileSizeKB -gt $maxSizeKB) {
             Write-Warning ('PSRule output [{0}] is [{1:N0}] KB which exceeds the [{2}] KB limit. Truncating.' -f $mdPSRuleOutputFilePath, $fileSizeKB, $maxSizeKB)
             $content = Get-Content $mdPSRuleOutputFilePath -Raw
-            $truncated = $content.Substring(0, [Math]::Min($content.Length, $maxSizeKB * 1024))
+            $maxChars = $maxSizeKB * 1024
+            $truncated = $content.Substring(0, [Math]::Min($content.Length, $maxChars))
             $truncated += "`n`n> **:warning: Output truncated** to fit the GitHub step summary size limit. Review the full PSRule output in the workflow logs.`n"
-            $truncated >> $env:GITHUB_STEP_SUMMARY
+            $truncated | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
           } else {
-            Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+            Get-Content $mdPSRuleOutputFilePath -Raw | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
           }
           Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose
         }
