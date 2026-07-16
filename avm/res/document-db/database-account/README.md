@@ -53,7 +53,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
 - [Using bounded consistency](#example-1-using-bounded-consistency)
-- [Cassandrakeyspaces-Waf](#example-2-cassandrakeyspaces-waf)
+- [Cassandra Keyspaces - WAF-aligned](#example-2-cassandra-keyspaces---waf-aligned)
 - [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-3-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using encryption with Customer-Managed-Key](#example-4-using-encryption-with-customer-managed-key)
 - [Using only defaults](#example-5-using-only-defaults)
@@ -165,7 +165,10 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 2: _Cassandrakeyspaces-Waf_
+### Example 2: _Cassandra Keyspaces - WAF-aligned_
+
+This instance deploys the module with Cassandra Keyspaces in alignment with the best-practices of the Azure Well-Architected Framework.
+
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cassandrakeyspaces-waf]
 
 
