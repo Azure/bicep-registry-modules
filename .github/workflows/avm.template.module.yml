@@ -19,11 +19,6 @@ on:
         type: string
         description: "Relative path to the module folder"
         required: true
-      skipPassedRulesReport:
-        type: boolean
-        description: "Show only failed rules in PSRule job summary"
-        required: false
-        default: false
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
@@ -79,7 +74,6 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
-          skipPassedRulesReport: ${{ inputs.skipPassedRulesReport }}
           softFailure: false
 
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
@@ -107,7 +101,6 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
-          skipPassedRulesReport: ${{ inputs.skipPassedRulesReport }}
           softFailure: true
 
   #############################

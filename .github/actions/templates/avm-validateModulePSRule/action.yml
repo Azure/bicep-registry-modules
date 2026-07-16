@@ -137,7 +137,7 @@ runs:
           $ParameterInput = @{
             inputFilePath         = '${{ inputs.templateFilePath}}-PSRule-output.csv'
             outputFilePath        = '${{ inputs.templateFilePath}}-PSRule-output.md'
-            skipPassedRulesReport = [System.Convert]::ToBoolean('${{ inputs.skipPassedRulesReport}}')
+            skipPassedRulesReport = ${{ inputs.skipPassedRulesReport}}
           }
 
           Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
@@ -160,7 +160,18 @@ runs:
           Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPSRuleOutputFilePath)
           return ''
         } else {
-          Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          $fileSizeKB = (Get-Item $mdPSRuleOutputFilePath).Length / 1KB
+          $maxSizeKB = 1000 # Leave headroom below the 1024KB GitHub limit
+
+          if ($fileSizeKB -gt $maxSizeKB) {
+            Write-Warning ('PSRule output [{0}] is [{1:N0}] KB which exceeds the [{2}] KB limit. Truncating.' -f $mdPSRuleOutputFilePath, $fileSizeKB, $maxSizeKB)
+            $content = Get-Content $mdPSRuleOutputFilePath -Raw
+            $truncated = $content.Substring(0, [Math]::Min($content.Length, $maxSizeKB * 1024))
+            $truncated += "`n`n> **:warning: Output truncated** to fit the GitHub step summary size limit. Review the full PSRule output in the workflow logs.`n"
+            $truncated >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          }
           Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose
         }
 
