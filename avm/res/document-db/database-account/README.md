@@ -282,7 +282,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
-    enableAnalyticalStorage: true
     enableAutomaticFailover: true
     failoverLocations: [
       {
@@ -455,9 +454,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "disableLocalAuthentication": {
       "value": true
     },
-    "enableAnalyticalStorage": {
-      "value": true
-    },
     "enableAutomaticFailover": {
       "value": true
     },
@@ -626,7 +622,6 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuthentication = true
-param enableAnalyticalStorage = true
 param enableAutomaticFailover = true
 param failoverLocations = [
   {
