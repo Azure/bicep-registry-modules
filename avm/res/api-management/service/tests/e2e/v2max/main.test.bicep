@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 param customSecret string = newGuid()
 
 // Enforcing test locations due to limited availability of the APIM PremiumV2 SKU in certain regions.
-var enforcedLocation = 'germanywestcentral'
+var enforcedLocation = 'francecentral'
 var enforcedLocationRegion2 = 'northeurope'
 
 // ============ //
