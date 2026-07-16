@@ -3105,6 +3105,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         displayName: 'apimkey'
         keyVault: {
+          identityClientId: '<identityClientId>'
           secretIdentifier: '<secretIdentifier>'
         }
         name: 'apimkey'
@@ -3361,6 +3362,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "displayName": "apimkey",
           "keyVault": {
+            "identityClientId": "<identityClientId>",
             "secretIdentifier": "<secretIdentifier>"
           },
           "name": "apimkey",
@@ -3603,6 +3605,7 @@ param namedValues = [
   {
     displayName: 'apimkey'
     keyVault: {
+      identityClientId: '<identityClientId>'
       secretIdentifier: '<secretIdentifier>'
     }
     name: 'apimkey'

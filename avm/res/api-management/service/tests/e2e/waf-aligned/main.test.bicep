@@ -219,6 +219,7 @@ module testDeployment '../../../main.bicep' = [
           secret: true
           keyVault: {
             secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
+            identityClientId: nestedDependencies.outputs.managedIdentityClientId
           }
         }
       ]
