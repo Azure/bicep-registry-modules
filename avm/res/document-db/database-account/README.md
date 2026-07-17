@@ -2407,7 +2407,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         containers: [
           {
-            analyticalStorageTtl: 1000
             name: 'container-001'
             paths: [
               '/myPartitionKey'
@@ -2415,18 +2414,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'fixed-analytical-ttl'
-      }
-      {
-        containers: [
-          {
-            analyticalStorageTtl: -1
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'infinite-analytical-ttl'
       }
       {
         containers: [
@@ -2680,7 +2667,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "containers": [
             {
-              "analyticalStorageTtl": 1000,
               "name": "container-001",
               "paths": [
                 "/myPartitionKey"
@@ -2688,18 +2674,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             }
           ],
           "name": "fixed-analytical-ttl"
-        },
-        {
-          "containers": [
-            {
-              "analyticalStorageTtl": -1,
-              "name": "container-001",
-              "paths": [
-                "/myPartitionKey"
-              ]
-            }
-          ],
-          "name": "infinite-analytical-ttl"
         },
         {
           "containers": [
@@ -2951,7 +2925,6 @@ param sqlDatabases = [
   {
     containers: [
       {
-        analyticalStorageTtl: 1000
         name: 'container-001'
         paths: [
           '/myPartitionKey'
@@ -2959,18 +2932,6 @@ param sqlDatabases = [
       }
     ]
     name: 'fixed-analytical-ttl'
-  }
-  {
-    containers: [
-      {
-        analyticalStorageTtl: -1
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'infinite-analytical-ttl'
   }
   {
     containers: [
