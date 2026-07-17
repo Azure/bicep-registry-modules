@@ -23,7 +23,7 @@ param customSecret string = newGuid()
 
 // Enforcing test locations due to limited availability of the APIM PremiumV2 SKU in certain regions.
 var enforcedLocation = 'norwayeast'
-var enforcedLocationRegion2 = 'northeurope'
+var enforcedLocationRegion2 = 'canadacentral'
 
 // ============ //
 // Dependencies //
