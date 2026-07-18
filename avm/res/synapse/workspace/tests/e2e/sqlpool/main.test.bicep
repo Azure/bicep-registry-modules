@@ -18,7 +18,7 @@ param serviceShort string = 'swsqlp'
 param namePrefix string = '#_namePrefix_#'
 
 #disable-next-line no-hardcoded-location // Accounting for capacity constraints
-var enforcedLocation = 'polandcentral'
+var enforcedLocation = 'germanywestcentral'
 
 // ============ //
 // Dependencies //
