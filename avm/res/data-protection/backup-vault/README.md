@@ -344,6 +344,14 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
           resourceType: 'Microsoft.Storage/storageAccounts'
           resourceUri: '<resourceUri>'
         }
+        dataSourceSetInfo: {
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: '<resourceUri>'
+        }
         name: '<name>'
         policyInfo: {
           policyName: '<policyName>'
@@ -604,6 +612,14 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       "value": [
         {
           "dataSourceInfo": {
+            "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "resourceUri": "<resourceUri>"
+          },
+          "dataSourceSetInfo": {
             "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
             "resourceID": "<resourceID>",
             "resourceLocation": "<resourceLocation>",
@@ -877,6 +893,14 @@ param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
 param backupInstances = [
   {
     dataSourceInfo: {
+      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+      resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Storage/storageAccounts'
+      resourceUri: '<resourceUri>'
+    }
+    dataSourceSetInfo: {
       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
       resourceID: '<resourceID>'
       resourceLocation: '<resourceLocation>'
