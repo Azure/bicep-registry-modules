@@ -38,7 +38,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-pr
 }
 
 resource flexibleServer_advancedThreatProtection 'Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings@2026-01-01-preview' = {
-  name: 'Default'
+  name: 'PostgreSQL-advancedThreatProtection'
   parent: flexibleServer
   properties: {
     state: serverThreatProtection

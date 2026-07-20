@@ -2,11 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
-## 0.15.5
+## 0.16.0
 
 ### Changes
 
-- Fixed `advancedThreatProtectionSettings` child module resource name from `PostgreSQL-advancedThreatProtection` to `Default` to comply with the ARM schema constraint
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ### Breaking Changes
 
