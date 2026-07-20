@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "7841261511244347673"
+      "version": "0.44.1.10279",
+      "templateHash": "3214024072601398892"
     },
     "name": "Network Interface",
     "description": "This module deploys a Network Interface."
@@ -434,47 +434,14 @@
         "description": "The type for the network interface IP configuration output."
       }
     },
-    "diagnosticSettingFullType": {
+    "diagnosticSettingMetricsOnlyType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the diagnostic setting."
-          }
-        },
-        "logCategoriesAndGroups": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "category": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                }
-              },
-              "categoryGroup": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                }
-              },
-              "enabled": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+            "description": "Optional. The name of diagnostic setting."
           }
         },
         "metricCategories": {
@@ -550,9 +517,9 @@
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -793,7 +760,7 @@
     "diagnosticSettings": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/diagnosticSettingFullType"
+        "$ref": "#/definitions/diagnosticSettingMetricsOnlyType"
       },
       "nullable": true,
       "metadata": {
