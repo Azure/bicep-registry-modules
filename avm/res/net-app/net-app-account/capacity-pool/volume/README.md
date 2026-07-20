@@ -66,6 +66,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`tags`](#parameter-tags) | object | Tags for volumes. |
 | [`throughputMibps`](#parameter-throughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
@@ -719,6 +720,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `tags`
+
+Tags for volumes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `throughputMibps`
 

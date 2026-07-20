@@ -271,6 +271,9 @@ type volumeType = {
 
   @description('Optional. The throughput in MiBps for the NetApp account.')
   throughputMibps: int?
+
+  @description('Optional. Tags for the volume.')
+  tags: object?
 }
 
 // ================ //
