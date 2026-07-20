@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
-## 0.21.0
+## 0.20.0
 
 ### Changes
 
@@ -13,7 +13,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
-## 0.20.0
+## 0.19.1
 
 ### Changes
 
