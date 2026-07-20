@@ -489,6 +489,7 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
       throughput: sqlDatabase.?throughput
       databaseAccountName: databaseAccount.name
       autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -537,6 +538,7 @@ module databaseAccount_cassandraRoleDefinitions 'cassandra-role-definition/main.
       notDataActions: cassandraRoleDefinition.?notDataActions
       assignableScopes: cassandraRoleDefinition.?assignableScopes
       cassandraRoleAssignments: cassandraRoleDefinition.?assignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -550,6 +552,7 @@ module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.
       principalId: cassandraRoleAssignment.principalId
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       databaseAccount_cassandraKeyspaces
@@ -568,6 +571,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
       collections: mongodbDatabase.?collections
       throughput: mongodbDatabase.?throughput
       autoscaleSettings: mongodbDatabase.?autoscaleSettings
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -582,6 +586,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
       graphs: gremlinDatabase.?graphs
       maxThroughput: gremlinDatabase.?maxThroughput
       throughput: gremlinDatabase.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -595,6 +600,7 @@ module databaseAccount_tables 'table/main.bicep' = [
       tags: table.?tags ?? tags
       maxThroughput: table.?maxThroughput
       throughput: table.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -610,6 +616,7 @@ module databaseAccount_cassandraKeyspaces 'cassandra-keyspace/main.bicep' = [
       views: cassandraKeyspace.?views
       autoscaleSettingsMaxThroughput: cassandraKeyspace.?autoscaleSettingsMaxThroughput
       throughput: cassandraKeyspace.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

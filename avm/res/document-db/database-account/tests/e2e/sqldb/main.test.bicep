@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = {
             paths: [
               '/myPartitionKey'
             ]
-            analyticalStorageTtl: 0
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
@@ -101,17 +100,6 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         name: 'last-writer-conflict-resolution-policy'
-      }
-      {
-        containers: [
-          {
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'fixed-analytical-ttl'
       }
       {
         containers: [

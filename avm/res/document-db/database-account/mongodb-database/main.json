@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17505607059027429258"
+      "version": "0.42.1.51946",
+      "templateHash": "6032045188179745266"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -102,9 +102,39 @@
         "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
       },
       "nullable": true
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-mongodbdatabase.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -157,6 +187,9 @@
           },
           "throughput": {
             "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -165,8 +198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5033392186259758794"
+              "version": "0.42.1.51946",
+              "templateHash": "13403332174585688243"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection."
@@ -214,9 +247,36 @@
                 },
                 "description": "Required. ShardKey for the collection."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-mongodbdbcollection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
               "apiVersion": "2025-04-15",

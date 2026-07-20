@@ -2344,7 +2344,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       {
         containers: [
           {
-            analyticalStorageTtl: 0
             conflictResolutionPolicy: {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
@@ -2403,17 +2402,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'last-writer-conflict-resolution-policy'
-      }
-      {
-        containers: [
-          {
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-          }
-        ]
-        name: 'fixed-analytical-ttl'
       }
       {
         containers: [
@@ -2604,7 +2592,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         {
           "containers": [
             {
-              "analyticalStorageTtl": 0,
               "conflictResolutionPolicy": {
                 "conflictResolutionPath": "/myCustomId",
                 "mode": "LastWriterWins"
@@ -2663,17 +2650,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             }
           ],
           "name": "last-writer-conflict-resolution-policy"
-        },
-        {
-          "containers": [
-            {
-              "name": "container-001",
-              "paths": [
-                "/myPartitionKey"
-              ]
-            }
-          ],
-          "name": "fixed-analytical-ttl"
         },
         {
           "containers": [
@@ -2862,7 +2838,6 @@ param sqlDatabases = [
   {
     containers: [
       {
-        analyticalStorageTtl: 0
         conflictResolutionPolicy: {
           conflictResolutionPath: '/myCustomId'
           mode: 'LastWriterWins'
@@ -2921,17 +2896,6 @@ param sqlDatabases = [
       }
     ]
     name: 'last-writer-conflict-resolution-policy'
-  }
-  {
-    containers: [
-      {
-        name: 'container-001'
-        paths: [
-          '/myPartitionKey'
-        ]
-      }
-    ]
-    name: 'fixed-analytical-ttl'
   }
   {
     containers: [

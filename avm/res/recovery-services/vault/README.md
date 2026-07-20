@@ -2953,7 +2953,7 @@ param tags = {
 | [`backupConfig`](#parameter-backupconfig) | object | The backup configuration. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`immutabilitySettingState`](#parameter-immutabilitysettingstate) | string | The immmutability setting state of the recovery services vault resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -3185,7 +3185,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

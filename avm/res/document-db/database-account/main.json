@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "1699692742557764856"
+      "version": "0.45.6.27763",
+      "templateHash": "11541042280862096999"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -2242,6 +2242,9 @@
           },
           "autoscaleSettingsMaxThroughput": {
             "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2251,8 +2254,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "15610927742004583023"
+              "version": "0.45.6.27763",
+              "templateHash": "10546458929205007699"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2444,9 +2447,39 @@
                 "description": "Optional. Tags of the SQL database resource."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.documentdb-databaseaccountsqldb.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -2524,6 +2557,9 @@
                   },
                   "fullTextPolicy": {
                     "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'fullTextPolicy')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2533,8 +2569,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "16757000647019651565"
+                      "version": "0.45.6.27763",
+                      "templateHash": "10798114094554724749"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2681,6 +2717,13 @@
                       "metadata": {
                         "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -2698,6 +2741,26 @@
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
                       "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqldbcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "databaseAccount": {
                       "existing": true,
@@ -2821,8 +2884,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "6387628321009103491"
+              "version": "0.45.6.27763",
+              "templateHash": "15261156206010101935"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -2998,8 +3061,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "14993323342732559240"
+                      "version": "0.45.6.27763",
+                      "templateHash": "6888227775618882747"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3197,8 +3260,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "14993323342732559240"
+              "version": "0.45.6.27763",
+              "templateHash": "6888227775618882747"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3355,6 +3418,9 @@
           },
           "cassandraRoleAssignments": {
             "value": "[tryGet(coalesce(parameters('cassandraRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3364,8 +3430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "4340219562908526910"
+              "version": "0.45.6.27763",
+              "templateHash": "5256449433887049543"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -3459,9 +3525,39 @@
               "metadata": {
                 "description": "Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrroledefinition.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3512,6 +3608,9 @@
                   },
                   "scope": {
                     "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3521,8 +3620,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "18149485302567644572"
+                      "version": "0.45.6.27763",
+                      "templateHash": "3857346542987828100"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3559,9 +3658,36 @@
                       "metadata": {
                         "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3666,6 +3792,9 @@
           },
           "scope": {
             "value": "[tryGet(coalesce(parameters('cassandraRoleAssignments'), createArray())[copyIndex()], 'scope')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3675,8 +3804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "18149485302567644572"
+              "version": "0.45.6.27763",
+              "templateHash": "3857346542987828100"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3713,9 +3842,36 @@
               "metadata": {
                 "description": "Optional. The data plane resource path for which access is being granted through this Cassandra Role Assignment. Defaults to the current account."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3795,6 +3951,9 @@
           },
           "autoscaleSettings": {
             "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'autoscaleSettings')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -3804,8 +3963,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "12749582992213272384"
+              "version": "0.45.6.27763",
+              "templateHash": "3905727614572809629"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -3901,9 +4060,39 @@
                 "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
               },
               "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-mongodbdatabase.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -3956,6 +4145,9 @@
                   },
                   "throughput": {
                     "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3964,8 +4156,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "6334458984889808273"
+                      "version": "0.45.6.27763",
+                      "templateHash": "1017277944267898240"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -4013,9 +4205,36 @@
                         },
                         "description": "Required. ShardKey for the collection."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-mongodbdbcollection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
                       "apiVersion": "2025-04-15",
@@ -4120,6 +4339,9 @@
           },
           "throughput": {
             "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'throughput')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4129,8 +4351,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "3442051153847603443"
+              "version": "0.45.6.27763",
+              "templateHash": "406886380752210924"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -4228,9 +4450,39 @@
               "metadata": {
                 "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-gremlindb.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -4280,6 +4532,9 @@
                   },
                   "partitionKeyPaths": {
                     "value": "[tryGet(coalesce(parameters('graphs'), createArray())[copyIndex()], 'partitionKeyPaths')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4289,8 +4544,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "1260737609358137028"
+                      "version": "0.45.6.27763",
+                      "templateHash": "642584768183974305"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -4343,6 +4598,13 @@
                         "description": "Optional. List of paths using which data within the container can be partitioned."
                       },
                       "nullable": true
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -4351,6 +4613,26 @@
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
                       "apiVersion": "2025-04-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-gremlindbgraph.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "databaseAccount": {
                       "existing": true,
@@ -4461,6 +4743,9 @@
           },
           "throughput": {
             "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'throughput')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4470,8 +4755,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "8855474197438157781"
+              "version": "0.45.6.27763",
+              "templateHash": "8557783754630531002"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -4512,9 +4797,36 @@
               "metadata": {
                 "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.documentdb-databaseaccounttable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -4600,6 +4912,9 @@
           },
           "throughput": {
             "value": "[tryGet(coalesce(parameters('cassandraKeyspaces'), createArray())[copyIndex()], 'throughput')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4609,8 +4924,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "11296329825487405374"
+              "version": "0.45.6.27763",
+              "templateHash": "16566324621165527357"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -4780,9 +5095,39 @@
               "metadata": {
                 "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -4844,6 +5189,9 @@
                   },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4853,8 +5201,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "18280959395216802235"
+                      "version": "0.45.6.27763",
+                      "templateHash": "13465300561579778240"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -4924,6 +5272,13 @@
                       "metadata": {
                         "description": "Optional. Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -4932,6 +5287,26 @@
                       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
                       "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspacetable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "databaseAccount": {
                       "existing": true,
@@ -5021,6 +5396,9 @@
                   },
                   "tags": {
                     "value": "[coalesce(tryGet(parameters('views')[copyIndex()], 'tags'), parameters('tags'))]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -5030,8 +5408,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "10207017123851453672"
+                      "version": "0.45.6.27763",
+                      "templateHash": "13497368008808493726"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -5091,6 +5469,13 @@
                       "metadata": {
                         "description": "Optional. Location for all resources."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -5099,6 +5484,26 @@
                       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
                       "apiVersion": "2025-05-01-preview",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "databaseAccount": {
                       "existing": true,
