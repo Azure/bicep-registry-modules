@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14977557883968327582"
+      "version": "0.44.1.10279",
+      "templateHash": "1699692742557764856"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -1697,13 +1697,6 @@
         "description": "Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true."
       }
     },
-    "enableAnalyticalStorage": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Flag to indicate whether to enable storage analytics. Defaults to false."
-      }
-    },
     "enableAutomaticFailover": {
       "type": "bool",
       "defaultValue": true,
@@ -1894,7 +1887,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings for the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "capabilitiesToAdd": {
@@ -2139,7 +2132,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB')]",
-      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'keyVaultKeyUri', if(not(empty(parameters('customerManagedKey'))), if(not(variables('isHSMManagedCMK')), format('{0}', reference('cMKKeyVault::cMKKey').keyUri), format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), null()), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant'))))), if(or(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), not(empty(parameters('cassandraKeyspaces')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('cassandraKeyspaces')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('enableBurstCapacity', if(not(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableServerless')), parameters('enableBurstCapacity'), false()), 'databaseAccountOfferType', parameters('databaseAccountOfferType'), 'analyticalStorageConfiguration', parameters('analyticalStorageConfiguration'), 'defaultIdentity', if(and(not(empty(parameters('defaultIdentity'))), not(equals(tryGet(parameters('defaultIdentity'), 'name'), 'UserAssignedIdentity'))), parameters('defaultIdentity').name, format('UserAssignedIdentity={0}', tryGet(parameters('defaultIdentity'), 'resourceId'))), 'keyVaultKeyUri', if(not(empty(parameters('customerManagedKey'))), if(not(variables('isHSMManagedCMK')), format('{0}', reference('cMKKeyVault::cMKKey').keyUri), format('https://{0}.managedhsm.azure.net/keys/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)), null()), 'enablePartitionMerge', parameters('enablePartitionMerge'), 'enablePerRegionPerPartitionAutoscale', parameters('enablePerRegionPerPartitionAutoscale'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability'))))), if(not(empty(parameters('cors'))), createObject('cors', parameters('cors')), createObject()), if(contains(coalesce(parameters('capabilitiesToAdd'), createArray()), 'EnableCassandra'), createObject('connectorOffer', if(parameters('enableCassandraConnector'), 'Small', null()), 'enableCassandraConnector', parameters('enableCassandraConnector')), createObject()), createObject('minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', parameters('zoneRedundant'))))), if(or(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), not(empty(parameters('cassandraKeyspaces')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'networkAclBypassResourceIds', tryGet(parameters('networkRestrictions'), 'networkAclBypassResourceIds'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('enableAutomaticFailover')), createObject()), if(or(or(not(empty(parameters('mongodbDatabases'))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('cassandraKeyspaces')))), createObject('disableLocalAuth', false(), 'disableKeyBasedMetadataWriteAccess', false()), createObject('disableLocalAuth', parameters('disableLocalAuthentication'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess'))), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]",
       "dependsOn": [
         "cMKKeyVault::cMKKey"
       ]
@@ -2171,20 +2164,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -2258,8 +2251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1123980432021397139"
+              "version": "0.44.1.10279",
+              "templateHash": "15610927742004583023"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2540,8 +2533,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "16468576643921480623"
+                      "version": "0.44.1.10279",
+                      "templateHash": "16757000647019651565"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2828,8 +2821,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1608998438097401179"
+              "version": "0.44.1.10279",
+              "templateHash": "6387628321009103491"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -3005,8 +2998,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "16849125625989667544"
+                      "version": "0.44.1.10279",
+                      "templateHash": "14993323342732559240"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3204,8 +3197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "16849125625989667544"
+              "version": "0.44.1.10279",
+              "templateHash": "14993323342732559240"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3371,8 +3364,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6669863455348508511"
+              "version": "0.44.1.10279",
+              "templateHash": "4340219562908526910"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -3528,8 +3521,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "10018553115278082779"
+                      "version": "0.44.1.10279",
+                      "templateHash": "18149485302567644572"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3682,8 +3675,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10018553115278082779"
+              "version": "0.44.1.10279",
+              "templateHash": "18149485302567644572"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3811,8 +3804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17505607059027429258"
+              "version": "0.44.1.10279",
+              "templateHash": "12749582992213272384"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -3971,8 +3964,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "5033392186259758794"
+                      "version": "0.44.1.10279",
+                      "templateHash": "6334458984889808273"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -4136,8 +4129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3137281519184390558"
+              "version": "0.44.1.10279",
+              "templateHash": "3442051153847603443"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -4296,8 +4289,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "7568522973479705658"
+                      "version": "0.44.1.10279",
+                      "templateHash": "1260737609358137028"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -4477,8 +4470,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6645342504161409231"
+              "version": "0.44.1.10279",
+              "templateHash": "8855474197438157781"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -4616,8 +4609,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5300058143660875831"
+              "version": "0.44.1.10279",
+              "templateHash": "11296329825487405374"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -4860,8 +4853,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "2894172885713339707"
+                      "version": "0.44.1.10279",
+                      "templateHash": "18280959395216802235"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -5037,8 +5030,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "18206948355945720821"
+                      "version": "0.44.1.10279",
+                      "templateHash": "10207017123851453672"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."

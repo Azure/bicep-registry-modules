@@ -37,7 +37,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    enableAnalyticalStorage: true
     name: '${namePrefix}${serviceShort}001'
     sqlDatabases: [
       {
@@ -110,22 +109,9 @@ module testDeployment '../../../main.bicep' = {
             paths: [
               '/myPartitionKey'
             ]
-            analyticalStorageTtl: 1000
           }
         ]
         name: 'fixed-analytical-ttl'
-      }
-      {
-        containers: [
-          {
-            name: 'container-001'
-            paths: [
-              '/myPartitionKey'
-            ]
-            analyticalStorageTtl: -1
-          }
-        ]
-        name: 'infinite-analytical-ttl'
       }
       {
         containers: [

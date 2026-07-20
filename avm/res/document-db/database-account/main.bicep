@@ -39,9 +39,6 @@ param defaultConsistencyLevel string = 'Session'
 @description('Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.')
 param disableLocalAuthentication bool = true
 
-@description('Optional. Flag to indicate whether to enable storage analytics. Defaults to false.')
-param enableAnalyticalStorage bool = false
-
 @description('Optional. Enable automatic failover for regions. Defaults to true.')
 param enableAutomaticFailover bool = true
 
@@ -118,7 +115,7 @@ param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
 param cassandraRoleAssignments cassandraStandaloneRoleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings for the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @allowed([
@@ -399,7 +396,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
           isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
           enableFreeTier: enableFreeTier
           enableAutomaticFailover: enableAutomaticFailover
-          enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
     ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))
@@ -444,14 +440,18 @@ resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettin
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

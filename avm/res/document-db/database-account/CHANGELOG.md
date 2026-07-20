@@ -2,11 +2,13 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
-## 0.19.1
+## 0.20.0
 
 ### Changes
 
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified
 - Added support for `vectorEmbeddingPolicy` and `fullTextPolicy` on SQL containers, and `fullTextIndexes` within `indexingPolicy`
+- Deprecated `enableAnalyticalStorage` parameter as it has been deprecated in favor of Azure Cosmos DB Mirroring for Microsoft Fabric [ref](https://learn.microsoft.com/en-us/azure/cosmos-db/configure-synapse-link)
 
 ### Breaking Changes
 
