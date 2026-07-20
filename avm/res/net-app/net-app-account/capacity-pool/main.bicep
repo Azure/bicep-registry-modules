@@ -151,6 +151,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       unixPermissions: volume.?unixPermissions
       throughputMibps: volume.?throughputMibps
       enableTelemetry: enableReferencedModulesTelemetry
+      tags: volume.?tags
     }
   }
 ]
