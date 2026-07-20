@@ -12,6 +12,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
+## 0.15.5
+
+### Changes
+
+- Fixed `advancedThreatProtectionSettings` child module resource name from `PostgreSQL-advancedThreatProtection` to `Default` to comply with the ARM schema constraint
+
+### Breaking Changes
+
+- None
+
 ## 0.15.4
 
 ### Changes
