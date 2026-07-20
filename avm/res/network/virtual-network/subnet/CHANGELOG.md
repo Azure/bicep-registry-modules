@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/subnet/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- Added support for `ipAllocations` & `serviceGateway`
+- Added diverse types
+
+### Breaking Changes
+
+- None
+
 ## 0.1.3
 
 ### Changes

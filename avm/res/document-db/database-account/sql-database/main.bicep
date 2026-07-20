@@ -19,6 +19,28 @@ param autoscaleSettingsMaxThroughput int?
 @description('Optional. Tags of the SQL database resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.documentdb-databaseaccountsqldb.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 }
@@ -44,6 +66,8 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module container 'container/main.bicep' = [
   for container in (containers ?? []): {
     name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
@@ -63,6 +87,9 @@ module container 'container/main.bicep' = [
         ? -1
         : container.?throughput
       uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
+      vectorEmbeddingPolicy: container.?vectorEmbeddingPolicy
+      fullTextPolicy: container.?fullTextPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -117,6 +144,12 @@ type containerType = {
 
   @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
+
+  @description('Optional. The vector embedding policy for the container.')
+  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+
+  @description('Optional. The full text policy for the container.')
+  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
 
   @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
   kind: ('Hash' | 'MultiHash')?

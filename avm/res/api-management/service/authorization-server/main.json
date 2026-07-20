@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.41.2.15936",
-      "templateHash": "16640928470427151934"
+      "templateHash": "67184448709483431"
     },
     "name": "API Management Service Authorization Servers",
     "description": "This module deploys an API Management Service Authorization Server."
@@ -22,7 +22,7 @@
       "type": "string",
       "maxLength": 50,
       "metadata": {
-        "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
+        "description": "Required. API Management Service Authorization Server name. Must be 1 to 50 characters long."
       }
     },
     "apiManagementServiceName": {

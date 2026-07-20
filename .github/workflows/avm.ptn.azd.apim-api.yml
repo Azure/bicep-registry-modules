@@ -26,13 +26,8 @@ on:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.azd.apim-api.yml"
       - "avm/ptn/azd/apim-api/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:
@@ -49,6 +44,7 @@ jobs:
     job_initialize_pipeline:
       runs-on: ubuntu-latest
       name: "Initialize pipeline"
+      if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
       steps:
         - name: "Checkout"
           uses: actions/checkout@v5

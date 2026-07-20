@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-protection/backup-vault/CHANGELOG.md).
 
+## 0.13.1
+
+### Changes
+
+- Publishing child module `avm/res/data-protection/backup-vault/backup-instance`
+- Publishing child module `avm/res/data-protection/backup-vault/backup-policy`
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes

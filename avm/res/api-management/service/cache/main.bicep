@@ -13,7 +13,7 @@ param connectionString string
 @sys.description('Optional. Cache description.')
 param description string?
 
-@sys.description('Optional. Original uri of entity in external system cache points to.')
+@sys.description('Optional. Original URI of entity in external system cache points to.')
 param resourceId string?
 
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')

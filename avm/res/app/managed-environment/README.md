@@ -1,10 +1,5 @@
 # App ManagedEnvironments `[Microsoft.App/managedEnvironments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys an App Managed Environment (also known as a Container App Environment).
 
 You can reference the module as follows:
@@ -1738,7 +1733,7 @@ Whether or not this Managed Environment is zone-redundant.
 | `name` | string | The name of the Managed Environment. |
 | `resourceGroupName` | string | The name of the resource group the Managed Environment was deployed into. |
 | `resourceId` | string | The resource ID of the Managed Environment. |
-| `staticIp` | string | The IP address of the Managed Environment. |
+| `staticIp` | string | The IP address of the Managed Environment. Only populated for internal Managed Environments deployed into a VNet. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

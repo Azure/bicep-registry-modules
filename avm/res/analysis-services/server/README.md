@@ -396,19 +396,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            category: 'Engine'
-          }
-          {
-            category: 'Service'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
@@ -425,10 +412,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
       ]
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     skuCapacity: 1
     skuName: 'S0'
     tags: {
@@ -462,19 +445,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "category": "Engine"
-            },
-            {
-              "category": "Service"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
@@ -495,12 +465,6 @@ module server 'br/public:avm/res/analysis-services/server:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "skuCapacity": {
       "value": 1
@@ -536,19 +500,6 @@ param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
-    logCategoriesAndGroups: [
-      {
-        category: 'Engine'
-      }
-      {
-        category: 'Service'
-      }
-    ]
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
     name: 'customSetting'
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'
@@ -565,10 +516,6 @@ param firewallSettings = {
   ]
 }
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param skuCapacity = 1
 param skuName = 'S0'
 param tags = {
@@ -593,7 +540,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallSettings`](#parameter-firewallsettings) | object | The inbound firewall rules to define on the server. If not specified, firewall is disabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -612,7 +559,7 @@ The name of the Azure Analysis Services server to create.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

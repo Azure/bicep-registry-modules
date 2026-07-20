@@ -10,7 +10,7 @@ param apiName string
 @description('Optional. The name of the policy.')
 param name string = 'policy'
 
-@description('Optional. Format of the policyContent.')
+@description('Optional. Format of the policy content.')
 @allowed([
   'rawxml'
   'rawxml-link'

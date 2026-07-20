@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14703901962876517060"
+      "version": "0.42.1.51946",
+      "templateHash": "14311979749125952310"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -112,6 +112,26 @@
       },
       "nullable": true
     },
+    "vectorEmbeddingPolicy": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
+        },
+        "description": "Optional. The vector embedding policy for the container."
+      },
+      "nullable": true
+    },
+    "fullTextPolicy": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/fullTextPolicy"
+        },
+        "description": "Optional. The full text policy for the container."
+      },
+      "nullable": true
+    },
     "kind": {
       "type": "string",
       "defaultValue": "Hash",
@@ -133,6 +153,13 @@
       "metadata": {
         "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "variables": {
@@ -151,6 +178,26 @@
       "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
     },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqldbcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -163,7 +210,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
+        "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
         "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
       },
       "dependsOn": [

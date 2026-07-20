@@ -18,6 +18,9 @@ param publicIPResourceID string = ''
 @description('Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.')
 param additionalPublicIpConfigurations resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>.properties.ipConfigurations = []
 
+@description('Optional. Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.')
+param firewallPrivateIpAddress string = ''
+
 @description('Optional. Specifies the properties of the Public IP to create and be used by the Firewall, if no existing public IP was provided.')
 param publicIPAddressObject object = {
   name: '${name}-pip'
@@ -56,7 +59,7 @@ param autoscaleMaxCapacity resourceInput<'Microsoft.Network/azureFirewalls@2025-
 @description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
 param autoscaleMinCapacity resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>.properties.autoscaleConfiguration.minCapacity?
 
-@description('Optional. The list of Availability zones to use for the zone-redundant resources.')
+@description('Optional. The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones.')
 @allowed([
   1
   2
@@ -68,7 +71,7 @@ param availabilityZones int[] = [1, 2, 3]
 param enableManagementNic bool = false
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Location for all resources.')
@@ -126,6 +129,11 @@ var ipConfigurations = concat(
               publicIPAddress: {
                 id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.?outputs.resourceId
               }
+            }
+          : {},
+        (azureSkuName == 'AZFW_VNet' && !empty(firewallPrivateIpAddress))
+          ? {
+              privateIPAddress: firewallPrivateIpAddress
             }
           : {}
       )
@@ -275,7 +283,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' 
 resource azureFirewall 'Microsoft.Network/azureFirewalls@2025-05-01' = {
   name: name
   location: location
-  zones: map(availabilityZones, zone => '${zone}')
+  zones: !empty(availabilityZones) ? map(availabilityZones, zone => '${zone}') : null
   tags: tags
   extendedLocation: extendedLocation
   properties: azureSkuName == 'AZFW_VNet'
@@ -356,14 +364,18 @@ resource azureFirewall_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

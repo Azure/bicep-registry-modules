@@ -54,7 +54,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
+        "description": "Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub."
       }
     },
     "credentials": {

@@ -119,11 +119,6 @@ param vpnGatewayGeneration string = 'None'
 @description('Optional. The SKU of the Gateway.')
 @allowed([
   'Basic'
-  'VpnGw1'
-  'VpnGw2'
-  'VpnGw3'
-  'VpnGw4'
-  'VpnGw5'
   'VpnGw1AZ'
   'VpnGw2AZ'
   'VpnGw3AZ'
@@ -179,7 +174,7 @@ param natRules natRuleType[]?
 @description('Optional. EnableBgpRouteTranslationForNat flag. Can only be used when "natRules" are enabled on the Virtual Network Gateway.')
 param enableBgpRouteTranslationForNat bool = false
 
-@description('Optional. Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided.')
+@description('Optional. Client root certificate data used to authenticate VPN clients. Can be combined with vpnClientAadConfiguration to support both certificate and Entra ID authentication.')
 param clientRootCertData string = ''
 
 @description('Optional. Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.')
@@ -189,7 +184,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the Public IP.')
 param publicIpDiagnosticSettings diagnosticSettingFullType[]?
 
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
@@ -207,7 +202,7 @@ param tags resourceInput<'Microsoft.Network/virtualNetworkGateways@2024-07-01'>.
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
+@description('Optional. Configuration for Entra ID (AAD) authentication for P2S tunnel type. Can be combined with clientRootCertData to support both certificate and Entra ID authentication.')
 param vpnClientAadConfiguration vpnClientAadConfigurationType?
 
 @description('Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities.')
@@ -274,7 +269,6 @@ var arrayPipNameVar = isExpressRoute
             )
           : concat(!empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName])
 
-
 // Potential BGP configurations (Active-Active vs Active-Passive)
 var bgpSettingsVar = isActiveActive
   ? {
@@ -311,11 +305,13 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           }
           // Use existing Public IP, new Public IP created in this module
           // For ExpressRoute gateways, Azure manages the Public IP automatically, so set to null
-          publicIPAddress: isExpressRoute ? null : {
-            id: !empty(existingPrimaryPublicIPResourceId)
-              ? existingPrimaryPublicIPResourceId
-              : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
-          }
+          publicIPAddress: isExpressRoute
+            ? null
+            : {
+                id: !empty(existingPrimaryPublicIPResourceId)
+                  ? existingPrimaryPublicIPResourceId
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+              }
         }
         name: 'vNetGatewayConfig1'
       }
@@ -325,15 +321,17 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           subnet: {
             id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
           }
-          publicIPAddress: isExpressRoute ? null : {
-            id: isActiveActive
-              ? !empty(existingSecondaryPublicIPResourceIdVar)
-                  ? existingSecondaryPublicIPResourceIdVar
-                  : az.resourceId('Microsoft.Network/publicIPAddresses', secondaryPublicIPNameVar)
-              : !empty(existingPrimaryPublicIPResourceId)
-                  ? existingPrimaryPublicIPResourceId
-                  : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
-          }
+          publicIPAddress: isExpressRoute
+            ? null
+            : {
+                id: isActiveActive
+                  ? !empty(existingSecondaryPublicIPResourceIdVar)
+                      ? existingSecondaryPublicIPResourceIdVar
+                      : az.resourceId('Microsoft.Network/publicIPAddresses', secondaryPublicIPNameVar)
+                  : !empty(existingPrimaryPublicIPResourceId)
+                      ? existingPrimaryPublicIPResourceId
+                      : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+              }
         }
         name: 'vNetGatewayConfig2'
       }
@@ -343,11 +341,13 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
           subnet: {
             id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
           }
-          publicIPAddress: isExpressRoute ? null : {
-            id: !empty(existingTertiaryPublicIPResourceIdVar)
-              ? existingTertiaryPublicIPResourceIdVar
-              : az.resourceId('Microsoft.Network/publicIPAddresses', tertiaryPublicIPNameVar!)
-          }
+          publicIPAddress: isExpressRoute
+            ? null
+            : {
+                id: !empty(existingTertiaryPublicIPResourceIdVar)
+                  ? existingTertiaryPublicIPResourceIdVar
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', tertiaryPublicIPNameVar!)
+              }
         }
         name: 'vNetGatewayConfig3'
       }
@@ -360,11 +360,13 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: isExpressRoute ? null : {
-                id: !empty(existingPrimaryPublicIPResourceId)
-                  ? existingPrimaryPublicIPResourceId
-                  : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
-              }
+              publicIPAddress: isExpressRoute
+                ? null
+                : {
+                    id: !empty(existingPrimaryPublicIPResourceId)
+                      ? existingPrimaryPublicIPResourceId
+                      : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+                  }
             }
             name: 'vNetGatewayConfig1'
           }
@@ -374,15 +376,17 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: isExpressRoute ? null : {
-                id: isActiveActive
-                  ? !empty(existingSecondaryPublicIPResourceIdVar)
-                      ? existingSecondaryPublicIPResourceIdVar
-                      : az.resourceId('Microsoft.Network/publicIPAddresses', secondaryPublicIPNameVar)
-                  : !empty(existingPrimaryPublicIPResourceId)
-                      ? existingPrimaryPublicIPResourceId
-                      : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
-              }
+              publicIPAddress: isExpressRoute
+                ? null
+                : {
+                    id: isActiveActive
+                      ? !empty(existingSecondaryPublicIPResourceIdVar)
+                          ? existingSecondaryPublicIPResourceIdVar
+                          : az.resourceId('Microsoft.Network/publicIPAddresses', secondaryPublicIPNameVar)
+                      : !empty(existingPrimaryPublicIPResourceId)
+                          ? existingPrimaryPublicIPResourceId
+                          : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+                  }
             }
             name: 'vNetGatewayConfig2'
           }
@@ -394,32 +398,38 @@ var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
               subnet: {
                 id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
               }
-              publicIPAddress: isExpressRoute ? null : {
-                id: !empty(existingPrimaryPublicIPResourceId)
-                  ? existingPrimaryPublicIPResourceId
-                  : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
-              }
+              publicIPAddress: isExpressRoute
+                ? null
+                : {
+                    id: !empty(existingPrimaryPublicIPResourceId)
+                      ? existingPrimaryPublicIPResourceId
+                      : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+                  }
             }
             name: 'vNetGatewayConfig1'
           }
         ]
 
-var vpnClientConfiguration = !empty(clientRootCertData)
+var hasClientRootCertificate = !empty(clientRootCertData)
+var hasVpnClientAadConfiguration = !empty(vpnClientAadConfiguration)
+var vpnClientConfiguration = hasClientRootCertificate || hasVpnClientAadConfiguration
   ? {
       vpnClientAddressPool: {
         addressPrefixes: [
           vpnClientAddressPoolPrefix
         ]
       }
-      vpnClientRootCertificates: [
-        {
-          name: 'RootCert1'
-          properties: {
-            publicCertData: clientRootCertData
-          }
-        }
-      ]
-      vpnClientRevokedCertificates: !empty(clientRevokedCertThumbprint)
+      vpnClientRootCertificates: hasClientRootCertificate
+        ? [
+            {
+              name: 'RootCert1'
+              properties: {
+                publicCertData: clientRootCertData
+              }
+            }
+          ]
+        : null
+      vpnClientRevokedCertificates: hasClientRootCertificate && !empty(clientRevokedCertThumbprint)
         ? [
             {
               name: 'RevokedCert1'
@@ -429,21 +439,17 @@ var vpnClientConfiguration = !empty(clientRootCertData)
             }
           ]
         : null
+      aadTenant: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadTenant : null
+      aadAudience: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadAudience : null
+      aadIssuer: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.aadIssuer : null
+      vpnAuthenticationTypes: hasVpnClientAadConfiguration
+        ? (hasClientRootCertificate && !contains(vpnClientAadConfiguration!.vpnAuthenticationTypes, 'Certificate')
+            ? concat(vpnClientAadConfiguration!.vpnAuthenticationTypes, ['Certificate'])
+            : vpnClientAadConfiguration!.vpnAuthenticationTypes)
+        : null
+      vpnClientProtocols: hasVpnClientAadConfiguration ? vpnClientAadConfiguration!.vpnClientProtocols : null
     }
-  : !empty(vpnClientAadConfiguration)
-      ? {
-          vpnClientAddressPool: {
-            addressPrefixes: [
-              vpnClientAddressPoolPrefix
-            ]
-          }
-          aadTenant: vpnClientAadConfiguration!.aadTenant
-          aadAudience: vpnClientAadConfiguration!.aadAudience
-          aadIssuer: vpnClientAadConfiguration!.aadIssuer
-          vpnAuthenticationTypes: vpnClientAadConfiguration!.vpnAuthenticationTypes
-          vpnClientProtocols: vpnClientAadConfiguration!.vpnClientProtocols
-        }
-      : null
+  : null
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -474,7 +480,7 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01'existing = if (!empty(existingPrimaryPublicIPResourceId)) {
+resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' existing = if (!empty(existingPrimaryPublicIPResourceId)) {
   name: last(split(existingPrimaryPublicIPResourceId, '/'))
   scope: resourceGroup(
     split(existingPrimaryPublicIPResourceId, '/')[2],
@@ -627,6 +633,7 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
       ipConfigurationResourceId: natRule.?ipConfigurationResourceId
       mode: natRule.?mode
       type: natRule.?type
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -642,7 +649,6 @@ resource virtualNetworkGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
   scope: virtualNetworkGateway
 }
 
-
 resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
@@ -652,14 +658,18 @@ resource virtualNetworkGateway_diagnosticSettings 'Microsoft.Insights/diagnostic
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

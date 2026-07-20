@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10571458988938758763"
+      "version": "0.44.1.10279",
+      "templateHash": "15201989127235081097"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -103,8 +103,9 @@
             },
             "version": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The version of Cognitive Services account deployment model."
+                "description": "Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version."
               }
             }
           },
@@ -332,6 +333,80 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Type for network configuration in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network."
+      }
+    },
+    "networkAclsType": {
+      "type": "object",
+      "properties": {
+        "bypass": {
+          "type": "string",
+          "allowedValues": [
+            "AzureServices",
+            "None"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall."
+          }
+        },
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78)."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of IP address rules."
+          }
+        },
+        "virtualNetworkRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'."
+                }
+              },
+              "ignoreMissingVnetServiceEndpoint": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Ignore missing vnet service endpoint or not."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of virtual network rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type for the network rule set (firewall) governing the accessibility of the Cognitive Services account from specific network locations."
       }
     },
     "_1.secretSetOutputType": {
@@ -1147,7 +1222,7 @@
       }
     },
     "networkAcls": {
-      "type": "object",
+      "$ref": "#/definitions/networkAclsType",
       "nullable": true,
       "metadata": {
         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
@@ -1367,7 +1442,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1416,7 +1491,7 @@
       "properties": {
         "allowProjectManagement": "[parameters('allowProjectManagement')]",
         "customSubDomainName": "[parameters('customSubDomainName')]",
-        "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+        "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
         "networkInjections": "[if(not(empty(parameters('networkInjections'))), createArray(createObject('scenario', tryGet(parameters('networkInjections'), 'scenario'), 'subnetArmId', tryGet(parameters('networkInjections'), 'subnetResourceId'), 'useMicrosoftManagedNetwork', coalesce(tryGet(parameters('networkInjections'), 'useMicrosoftManagedNetwork'), false()))), null())]",
         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
@@ -1450,7 +1525,7 @@
         "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
         "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
       },
-      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku'), 'capacity', tryGet(parameters('sku'), 'capacity'), 'tier', tryGet(parameters('sku'), 'tier'), 'size', tryGet(parameters('sku'), 'size'), 'family', tryGet(parameters('sku'), 'family')))]",
+      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]",
       "dependsOn": [
         "cognitiveService"
       ]
@@ -2202,7 +2277,9 @@
         }
       },
       "dependsOn": [
-        "cognitiveService"
+        "cognitiveService",
+        "cognitiveService_commitmentPlans",
+        "cognitiveService_deployments"
       ]
     },
     "secretsExport": {
@@ -2232,8 +2309,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "13968722110082077308"
+              "version": "0.44.1.10279",
+              "templateHash": "2580543474029344729"
             }
           },
           "definitions": {

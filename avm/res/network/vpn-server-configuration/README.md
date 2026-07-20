@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Network/vpnServerConfigurations` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnserverconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/vpnServerConfigurations)</li></ul> |
+| `Microsoft.Network/vpnServerConfigurations` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_vpnserverconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/vpnServerConfigurations)</li></ul> |
 
 ## Usage examples
 
@@ -251,12 +251,12 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     radiusServers: [
       {
         radiusServerAddress: '10.150.1.50'
-        radiusServerScore: '10'
+        radiusServerScore: 10
         radiusServerSecret: 'TestSecret'
       }
       {
         radiusServerAddress: '10.150.1.150'
-        radiusServerScore: '20'
+        radiusServerScore: 20
         radiusServerSecret: 'TestSecret2'
       }
     ]
@@ -391,12 +391,12 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
       "value": [
         {
           "radiusServerAddress": "10.150.1.50",
-          "radiusServerScore": "10",
+          "radiusServerScore": 10,
           "radiusServerSecret": "TestSecret"
         },
         {
           "radiusServerAddress": "10.150.1.150",
-          "radiusServerScore": "20",
+          "radiusServerScore": 20,
           "radiusServerSecret": "TestSecret2"
         }
       ]
@@ -523,12 +523,12 @@ param radiusServerRootCertificates = [
 param radiusServers = [
   {
     radiusServerAddress: '10.150.1.50'
-    radiusServerScore: '10'
+    radiusServerScore: 10
     radiusServerSecret: 'TestSecret'
   }
   {
     radiusServerAddress: '10.150.1.150'
-    radiusServerScore: '20'
+    radiusServerScore: 20
     radiusServerSecret: 'TestSecret2'
   }
 ]
@@ -937,7 +937,7 @@ The IPsec policies for the configuration.
 | [`ipsecIntegrity`](#parameter-vpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
 | [`pfsGroup`](#parameter-vpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
 | [`saDataSizeKilobytes`](#parameter-vpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
-| [`salfetimeSeconds`](#parameter-vpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
+| [`saLifeTimeSeconds`](#parameter-vpnclientipsecpoliciessalifetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
 
 ### Parameter: `vpnClientIpsecPolicies.dhGroup`
 
@@ -988,7 +988,7 @@ The size of the SA data in kilobytes. Required if using IKEv2.
 - Required: No
 - Type: int
 
-### Parameter: `vpnClientIpsecPolicies.salfetimeSeconds`
+### Parameter: `vpnClientIpsecPolicies.saLifeTimeSeconds`
 
 The lifetime of the SA in seconds. Required if using IKEv2.
 

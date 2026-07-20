@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18243610617829490140"
+      "version": "0.42.1.51946",
+      "templateHash": "16627142491817351366"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group."
@@ -459,7 +459,8 @@
       "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
       "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
       "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]"
-    }
+    },
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
@@ -622,6 +623,9 @@
           },
           "msixPackageFamilyName": {
             "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'msixPackageFamilyName')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -631,8 +635,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "15823712854568820369"
+              "version": "0.42.1.51946",
+              "templateHash": "11109607389669637586"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application."
@@ -733,9 +737,36 @@
               "metadata": {
                 "description": "Optional. Specifies the package family name for MSIX applications."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.desktopvirtualization-appgroup-app.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "appGroup": {
               "existing": true,
               "type": "Microsoft.DesktopVirtualization/applicationGroups",

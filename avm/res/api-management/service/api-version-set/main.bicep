@@ -12,7 +12,7 @@ param name string = 'default'
 @maxLength(100)
 param displayName string
 
-@sys.description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
+@sys.description('Required. A value that determines where the API Version identifier will be located in an HTTP request.')
 @allowed([
   'Header'
   'Query'

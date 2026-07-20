@@ -22,7 +22,7 @@ param isBuffered bool = true
 ])
 param type string
 
-@sys.description('Conditional. Azure Resource Id of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
+@sys.description('Conditional. Azure Resource ID of a log target (either Azure Event Hub resource or Azure Application Insights resource). Required if loggerType = applicationInsights or azureEventHub.')
 param targetResourceId string?
 
 @secure()

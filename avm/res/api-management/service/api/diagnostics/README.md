@@ -1,6 +1,6 @@
-# API Management Service APIs Diagnostics. `[Microsoft.ApiManagement/service/apis/diagnostics]`
+# API Management Service API Diagnostics `[Microsoft.ApiManagement/service/apis/diagnostics]`
 
-This module deploys an API Management Service API Diagnostics.
+This module deploys an API Management Service API Diagnostic.
 
 You can reference the module as follows:
 ```bicep

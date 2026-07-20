@@ -46,7 +46,7 @@ param principalId string
 param principalType string = 'User'
 
 @description('Optional. Kubernetes Version.')
-param kubernetesVersion string = '1.31'
+param kubernetesVersion string = '1.33'
 
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
@@ -121,7 +121,7 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
-import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
+import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.11.0'
 @description('Optional. Custom configuration of system node pool.')
 param systemPoolConfig agentPoolType[]?
 
@@ -177,7 +177,7 @@ param enableVaultForTemplateDeployment bool = false
 @description('Optional. Enable RBAC using AAD.')
 param enableAzureRbac bool = false
 
-import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.11.0'
 @description('Optional. Enable Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
@@ -261,7 +261,7 @@ var roleAssignments = (enableAzureRbac || disableLocalAccounts)
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.azd-aks.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -279,7 +279,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.9.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.11.0' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -345,7 +345,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.9.0
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.11.0' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -386,7 +386,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.13.3' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName

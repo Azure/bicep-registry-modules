@@ -84,6 +84,8 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   'Azure Service Bus Data Owner': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -175,6 +177,7 @@ module queue_authorizationRules 'authorization-rule/main.bicep' = [
       queueName: queue.name
       name: authorizationRule.name
       rights: authorizationRule.?rights ?? []
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

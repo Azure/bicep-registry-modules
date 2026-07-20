@@ -2,6 +2,39 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
+## 0.11.3
+
+### Changes
+
+- Publishing child modules `backup-config`, `backup-fabric/protection-container/protected-item`, `backup-policy`, `replication-alert-setting`, `replication-fabric`, `replication-fabric/replication-protection-container`, `replication-fabric/replication-protection-container/replication-protection-container-mapping`, and `replication-policy`.
+
+### Breaking Changes
+
+- None
+
+## 0.11.2
+
+### Changes
+
+- Updated all API versions to `2025-08-01` for Recovery Services vault and child resources
+- Added `sourceScanConfiguration` parameter and type for security settings
+- Added `resourceGuardOperationRequests` parameter
+- Made backup-config `enhancedSecurityState` and `softDeleteFeatureState` nullable to avoid conflicts with vault-level `softDeleteSettings`
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

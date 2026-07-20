@@ -4,7 +4,7 @@ metadata description = 'This module deploys an API Management Service Authorizat
 @description('Required. Identifier of the authorization server.')
 param name string
 
-@description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+@description('Required. API Management Service Authorization Server name. Must be 1 to 50 characters long.')
 @maxLength(50)
 param displayName string
 

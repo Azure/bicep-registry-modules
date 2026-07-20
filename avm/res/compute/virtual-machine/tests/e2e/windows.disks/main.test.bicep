@@ -13,10 +13,10 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 
 // Capacity constraints for VM type
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'germanywestcentral'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwindisk'
+param serviceShort string = 'vmwindisk'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -63,8 +63,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}02'
       securityType: nestedDependencies.outputs.?securityType
       osType: nestedDependencies.outputs.osType
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_E2s_v3'
       availabilityZone: 1
+      diskControllerType: 'SCSI'
       nicConfigurations: [
         {
           ipConfigurations: [
@@ -79,6 +80,7 @@ module testDeployment '../../../main.bicep' = [
       osDisk: {
         managedDisk: {
           resourceId: nestedDependencies.outputs.osDiskResourceId
+          diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
         }
       }
       dataDisks: [
@@ -87,7 +89,8 @@ module testDeployment '../../../main.bicep' = [
           createOption: 'Empty'
           caching: 'None'
           managedDisk: {
-            storageAccountType: 'PremiumV2_LRS'
+            storageAccountType: 'Premium_LRS'
+            diskEncryptionSetResourceId: nestedDependencies.outputs.diskEncryptionSetResourceId
           }
           diskIOPSReadWrite: 3000
           diskMBpsReadWrite: 125

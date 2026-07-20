@@ -26,20 +26,22 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Automation/automationAccounts` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts)</li></ul> |
-| `Microsoft.Automation/automationAccounts/credentials` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/credentials` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_credentials.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/credentials)</li></ul> |
+| `Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_hybridrunbookworkergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/hybridRunbookWorkerGroups)</li></ul> |
+| `Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_hybridrunbookworkergroups_hybridrunbookworkers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers)</li></ul> |
 | `Microsoft.Automation/automationAccounts/jobSchedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_jobschedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/jobSchedules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/modules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/modules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/powerShell72Modules` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_powershell72modules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/powerShell72Modules)</li></ul> |
-| `Microsoft.Automation/automationAccounts/python2Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python2Packages)</li></ul> |
-| `Microsoft.Automation/automationAccounts/python3Packages` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages)</li></ul> |
-| `Microsoft.Automation/automationAccounts/runbooks` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python2Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python2packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python2Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/python3Packages` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_python3packages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/python3Packages)</li></ul> |
+| `Microsoft.Automation/automationAccounts/runbooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_runbooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/runbooks)</li></ul> |
 | `Microsoft.Automation/automationAccounts/schedules` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/schedules)</li></ul> |
 | `Microsoft.Automation/automationAccounts/sourceControls` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_sourcecontrols.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/sourceControls)</li></ul> |
 | `Microsoft.Automation/automationAccounts/variables` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_variables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/variables)</li></ul> |
 | `Microsoft.Automation/automationAccounts/webhooks` | 2024-10-23 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automation_automationaccounts_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2024-10-23/automationAccounts/webhooks)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints)</li></ul> |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-02-01/workspaces/linkedServices)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 
@@ -250,6 +252,12 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
           product: 'OMSGallery/Updates'
           publisher: 'Microsoft'
         }
+      }
+    ]
+    hybridRunbookWorkerGroups: [
+      {
+        credentialName: 'Credential01'
+        name: 'myGroup'
       }
     ]
     jobSchedules: [
@@ -488,6 +496,14 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
             "product": "OMSGallery/Updates",
             "publisher": "Microsoft"
           }
+        }
+      ]
+    },
+    "hybridRunbookWorkerGroups": {
+      "value": [
+        {
+          "credentialName": "Credential01",
+          "name": "myGroup"
         }
       ]
     },
@@ -750,6 +766,12 @@ param gallerySolutions = [
     }
   }
 ]
+param hybridRunbookWorkerGroups = [
+  {
+    credentialName: 'Credential01'
+    name: 'myGroup'
+  }
+]
 param jobSchedules = [
   {
     runbookName: 'TestRunbook'
@@ -980,10 +1002,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
+      systemAssigned: false
     }
     modules: [
       {
@@ -1141,10 +1160,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "systemAssigned": false
       }
     },
     "modules": {
@@ -1298,10 +1314,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
+  systemAssigned: false
 }
 param modules = [
   {
@@ -1415,10 +1428,11 @@ param variables = [
 | :-- | :-- | :-- |
 | [`credentials`](#parameter-credentials) | array | List of credentials to be created in the automation account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication profile used within the resource. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the linked log analytics workspace. |
+| [`hybridRunbookWorkerGroups`](#parameter-hybridrunbookworkergroups) | array | The Hybrid Runbook Worker Groups to be created in the automation account. |
 | [`jobSchedules`](#parameter-jobschedules) | array | List of jobSchedules to be created in the automation account. |
 | [`linkedWorkspaceResourceId`](#parameter-linkedworkspaceresourceid) | string | ID of the log analytics workspace to be linked to the deployed automation account. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -1546,7 +1560,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -1766,6 +1780,60 @@ Name of the solution to be created.<p>For solutions authored by Microsoft, the n
 The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`, which is the default value.
 
 - Required: No
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups`
+
+The Hybrid Runbook Worker Groups to be created in the automation account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-hybridrunbookworkergroupsname) | string | Name of the Hybrid Runbook Worker Group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`credentialName`](#parameter-hybridrunbookworkergroupscredentialname) | string | Gets or sets the name of the credential. |
+| [`hybridRunbookWorkerGroupWorkers`](#parameter-hybridrunbookworkergroupshybridrunbookworkergroupworkers) | array | An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group. |
+
+### Parameter: `hybridRunbookWorkerGroups.name`
+
+Name of the Hybrid Runbook Worker Group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups.credentialName`
+
+Gets or sets the name of the credential.
+
+- Required: No
+- Type: string
+
+### Parameter: `hybridRunbookWorkerGroups.hybridRunbookWorkerGroupWorkers`
+
+An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`vmResourceId`](#parameter-hybridrunbookworkergroupshybridrunbookworkergroupworkersvmresourceid) | string | Azure Resource Manager Id for a virtual machine. |
+
+### Parameter: `hybridRunbookWorkerGroups.hybridRunbookWorkerGroupWorkers.vmResourceId`
+
+Azure Resource Manager Id for a virtual machine.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `jobSchedules`
@@ -2729,12 +2797,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

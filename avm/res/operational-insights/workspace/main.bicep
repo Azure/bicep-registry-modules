@@ -89,7 +89,7 @@ param features workspaceFeaturesType?
 @description('Optional. The workspace replication properties.')
 param replication workspaceReplicationType?
 
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingType[]?
 
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
@@ -234,14 +234,18 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -262,6 +266,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
       containers: storageInsightsConfig.?containers
       tables: storageInsightsConfig.?tables
       storageAccountResourceId: storageInsightsConfig.storageAccountResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -274,6 +279,7 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
       name: linkedService.name
       resourceId: linkedService.?resourceId
       writeAccessResourceId: linkedService.?writeAccessResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -285,6 +291,7 @@ module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
       storageAccountIds: linkedStorageAccount.storageAccountIds
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -303,6 +310,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
       functionParameters: savedSearch.?functionParameters
       tags: savedSearch.?tags
       version: savedSearch.?version
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       logAnalyticsWorkspace_linkedStorageAccounts
@@ -319,6 +327,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
       destination: dataExport.?destination
       enable: dataExport.?enable
       tableNames: dataExport.?tableNames
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -342,6 +351,7 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
       syslogSeverities: dataSource.?syslogSeverities
       performanceCounters: dataSource.?performanceCounters
       tags: dataSource.?tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -359,6 +369,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
       restoredLogs: table.?restoredLogs
       searchResults: table.?searchResults
       roleAssignments: table.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2136418770001162146"
+      "version": "0.40.2.10011",
+      "templateHash": "8945760398046657421"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -84,6 +84,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. The VM size for the nodes."
+          }
+        },
+        "gpuCountPerNode": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The number of GPUs per node in the pool."
           }
         }
       },
@@ -281,6 +288,37 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for storage profile configuration."
+      }
+    },
+    "hciSecurityProfileType": {
+      "type": "object",
+      "properties": {
+        "customCATrustCertificates": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom CA trust certificates for the cluster."
+          }
+        },
+        "fipsImage": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether FIPS-compliant images are enabled."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FIPS image configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for HCI provisioned cluster security profile configuration."
       }
     },
     "_1.systemComponentType": {
@@ -599,6 +637,20 @@
         "description": "Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster."
       }
     },
+    "hciSecurityProfile": {
+      "$ref": "#/definitions/hciSecurityProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Security profile for the provisioned cluster instance (FIPS, custom CA certificates)."
+      }
+    },
+    "authorizedIPRanges": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Authorized IP ranges for cluster VM access profile."
+      }
+    },
     "connectClustersTags": {
       "type": "object",
       "defaultValue": {},
@@ -675,7 +727,7 @@
     },
     "provisionedCluster": {
       "type": "Microsoft.HybridContainerService/provisionedClusterInstances",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2026-04-01-preview",
       "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]",
       "name": "default",
       "extendedLocation": {
@@ -685,12 +737,15 @@
       "properties": {
         "agentPoolProfiles": "[parameters('agentPoolProfiles')]",
         "cloudProviderProfile": "[parameters('cloudProviderProfile')]",
-        "clusterVMAccessProfile": {},
+        "clusterVMAccessProfile": {
+          "authorizedIPRanges": "[parameters('authorizedIPRanges')]"
+        },
         "controlPlane": "[parameters('controlPlane')]",
         "kubernetesVersion": "[coalesce(parameters('kubernetesVersion'), '')]",
         "licenseProfile": "[parameters('licenseProfile')]",
         "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('secrets').outputs.sshPublicKeyPemValue.value)))))]",
         "networkProfile": "[parameters('networkProfile')]",
+        "securityProfile": "[parameters('hciSecurityProfile')]",
         "storageProfile": "[parameters('storageProfile')]"
       },
       "dependsOn": [
@@ -737,8 +792,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6691991715268938969"
+              "version": "0.40.2.10011",
+              "templateHash": "15347258537711376038"
             }
           },
           "parameters": {
@@ -788,9 +843,9 @@
             "$fxv#1": "@secure()\nparam input string\n\n#disable-next-line outputs-should-not-contain-secrets\noutput output string = input\n",
             "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
             "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
-            "readJsonRaw": "{\r\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\r\n    \"contentVersion\": \"1.0.0.0\",\r\n    \"parameters\": {\r\n        \"keyVaultName\": {\r\n            \"value\": \"{{keyVaultName}}\"\r\n        },\r\n        \"publicKeySecretName\": {\r\n            \"value\": \"{{publicKeySecretName}}\"\r\n        },\r\n        \"privateKeySecretName\": {\r\n            \"value\": \"{{privateKeySecretName}}\"\r\n        }\r\n    }\r\n}",
+            "readJsonRaw": "{\n  \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {\n    \"keyVaultName\": {\n      \"value\": \"{{keyVaultName}}\"\n    },\n    \"publicKeySecretName\": {\n      \"value\": \"{{publicKeySecretName}}\"\n    },\n    \"privateKeySecretName\": {\n      \"value\": \"{{privateKeySecretName}}\"\n    }\n  }\n}",
             "readJson": "[replace(replace(replace(variables('readJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]",
-            "writeJsonRaw": "{\r\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\r\n    \"contentVersion\": \"1.0.0.0\",\r\n    \"parameters\": {\r\n        \"keyVaultName\": {\r\n            \"value\": \"{{keyVaultName}}\"\r\n        },\r\n        \"publicKeySecretName\": {\r\n            \"value\": \"{{publicKeySecretName}}\"\r\n        },\r\n        \"publicKeySecretValueBase64\": {\r\n            \"value\": \"{{publicKeySecretValueBase64}}\"\r\n        },\r\n        \"privateKeySecretName\": {\r\n            \"value\": \"{{privateKeySecretName}}\"\r\n        },\r\n        \"privateKeySecretValueBase64\": {\r\n            \"value\": \"{{privateKeySecretValueBase64}}\"\r\n        }\r\n    }\r\n}",
+            "writeJsonRaw": "{\n  \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {\n    \"keyVaultName\": {\n      \"value\": \"{{keyVaultName}}\"\n    },\n    \"publicKeySecretName\": {\n      \"value\": \"{{publicKeySecretName}}\"\n    },\n    \"publicKeySecretValueBase64\": {\n      \"value\": \"{{publicKeySecretValueBase64}}\"\n    },\n    \"privateKeySecretName\": {\n      \"value\": \"{{privateKeySecretName}}\"\n    },\n    \"privateKeySecretValueBase64\": {\n      \"value\": \"{{privateKeySecretValueBase64}}\"\n    }\n  }\n}",
             "writeJson": "[replace(replace(replace(variables('writeJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]"
           },
           "resources": {

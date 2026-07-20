@@ -49,13 +49,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: take('${namePrefix}${serviceShort}001', 16)
+      solutionName: take('${namePrefix}${serviceShort}${uniqueString(deployment().name, enforcedLocation)}', 16)
       location: enforcedLocation
       enableMonitoring: true
       enableRedundancy: true
       enableScaling: true
       enablePrivateNetworking: true
       azureAiServiceLocation: enforcedLocation
+      gptModelVersion: '2024-11-20'
       vmAdminUsername: 'adminuser'
       vmAdminPassword: vmAdminPassword
     }

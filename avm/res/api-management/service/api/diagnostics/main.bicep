@@ -1,5 +1,5 @@
-metadata name = 'API Management Service APIs Diagnostics.'
-metadata description = 'This module deploys an API Management Service API Diagnostics.'
+metadata name = 'API Management Service API Diagnostics'
+metadata description = 'This module deploys an API Management Service API Diagnostic.'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string

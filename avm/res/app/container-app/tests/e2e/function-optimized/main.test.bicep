@@ -58,8 +58,12 @@ module testDeployment '../../../main.bicep' = [
       ingressTransport:'auto'
       ingressAllowInsecure: false
       exposedPort: 0
-      trafficWeight: 100
-      trafficLatestRevision: true
+      traffic: [
+        {
+          weight: 100
+          latestRevision: true
+        }
+      ]
       maxInactiveRevisions: 100
       containers: [
         {

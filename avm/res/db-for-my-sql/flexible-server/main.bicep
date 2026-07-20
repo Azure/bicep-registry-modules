@@ -249,7 +249,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.dbformysql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -415,6 +415,7 @@ module flexibleServer_databases 'database/main.bicep' = [
       flexibleServerName: flexibleServer.name
       collation: database.?collation ?? ''
       charset: database.?charset ?? ''
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -427,6 +428,7 @@ module flexibleServer_firewallRules 'firewall-rule/main.bicep' = [
       flexibleServerName: flexibleServer.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -440,6 +442,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       sid: administrator.sid
       identityResourceId: administrator.identityResourceId
       tenantId: administrator.?tenantId ?? tenant().tenantId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -452,6 +455,7 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
       flexibleServerName: flexibleServer.name
       source: configuration.?source
       value: configuration.?value
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -461,6 +465,7 @@ module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.
   params: {
     flexibleServerName: flexibleServer.name
     advancedThreatProtection: advancedThreatProtection
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -494,7 +499,7 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
-module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module flexibleServer_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
     name: '${uniqueString(deployment().name, location)}-MySQL-Flex-PrivateEndpoint-${index}'
     scope: resourceGroup(

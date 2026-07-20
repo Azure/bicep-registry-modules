@@ -49,7 +49,7 @@ param stickySessionsAffinity string = 'none'
 param ingressTransport string = 'auto'
 
 @description('Optional. Dev ContainerApp service type.')
-param service resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.service?
+param service resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.service?
 
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
@@ -62,9 +62,6 @@ param ingressAllowInsecure bool = true
 
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
-
-@description('Optional. Whether an http app listens on http or https.')
-param targetPortHttpScheme resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.ingress.targetPortHttpScheme?
 
 @description('Optional. The scaling settings of the service.')
 param scaleSettings scaleType = {
@@ -90,10 +87,10 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/containerApps@2026-01-01'>.tags?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
-param registries resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.registries?
+param registries resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.registries?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -107,46 +104,37 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Custom domain bindings for Container App hostnames.')
-param customDomains resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.ingress.customDomains?
+param customDomains resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.customDomains?
 
 @description('Optional. Exposed Port in containers for TCP traffic from ingress.')
 param exposedPort int = 0
 
 @description('Optional. Rules to restrict incoming IP address.')
-param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.ingress.ipSecurityRestrictions?
+param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.ipSecurityRestrictions?
 
-@description('Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes.')
-param trafficLabel string = 'label-1'
-
-@description('Optional. Indicates that the traffic weight belongs to a latest stable revision.')
-param trafficLatestRevision bool = true
-
-@description('Optional. Name of a revision.')
-param trafficRevisionName string?
-
-@description('Optional. Traffic weight assigned to a revision.')
-param trafficWeight int = 100
+@description('Optional. Traffic weight configuration for routing traffic across revisions. Each entry specifies a revision (or latest) and its traffic percentage. Supports blue-green and canary deployment patterns.')
+param traffic resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.ingress.traffic?
 
 @description('Optional. Dapr configuration for the Container App.')
-param dapr resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.dapr?
+param dapr resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.dapr?
 
 @description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
-param identitySettings resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.identitySettings?
+param identitySettings resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.configuration.identitySettings?
 
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
-@description('Optional. Runtime configuration for the Container App.')
-param runtime resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.configuration.runtime?
+@description('Optional. Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema.')
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
-param containers resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.template.containers
+param containers resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.containers
 
 @description('Optional. The termination grace period for the container app.')
 param terminationGracePeriodSeconds int?
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.template.initContainers?
+param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.initContainers?
 
 @description('Optional. The secrets of the Container App.')
 param secrets secretType[]?
@@ -155,7 +143,7 @@ param secrets secretType[]?
 param revisionSuffix string?
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes resourceInput<'Microsoft.App/containerApps@2025-10-02-preview'>.properties.template.volumes?
+param volumes resourceInput<'Microsoft.App/containerApps@2026-01-01'>.properties.template.volumes?
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string?
@@ -211,8 +199,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -230,7 +220,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2026-01-01' = {
   name: name
   tags: tags
   kind: kind
@@ -273,26 +263,17 @@ resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' = {
             external: ingressExternal
             ipSecurityRestrictions: ipSecurityRestrictions
             targetPort: ingressTargetPort
-            targetPortHttpScheme: targetPortHttpScheme
             stickySessions: {
               affinity: stickySessionsAffinity
             }
-            traffic: ingressTransport != 'tcp'
-              ? [
-                  {
-                    label: trafficLabel
-                    latestRevision: trafficLatestRevision
-                    revisionName: trafficRevisionName
-                    weight: trafficWeight
-                  }
-                ]
-              : null
+            traffic: ingressTransport != 'tcp' ? traffic : null
             transport: ingressTransport
           }
       service: includeAddOns ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: registries
       secrets: secrets
+      #disable-next-line BCP037 // The 'dotnet' property of 'runtime' is supported by the API but is not yet part of the GA `2026-01-01` Bicep type definition. Required to preserve .NET stack settings (e.g., set via the Azure Portal) across deployments.
       runtime: runtime
     }
   }
@@ -329,6 +310,7 @@ module containerAppAuthConfigs 'auth-config/main.bicep' = if (!empty(authConfig)
   name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
+    enableTelemetry: enableReferencedModulesTelemetry
     encryptionSettings: authConfig.?encryptionSettings
     globalValidation: authConfig.?globalValidation
     httpSettings: authConfig.?httpSettings
@@ -587,20 +569,35 @@ type secretType = {
 @description('The type for the container app\'s authentication configuration.')
 type authConfigType = {
   @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
-  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.encryptionSettings?
+  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.encryptionSettings?
 
   @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
-  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.globalValidation?
+  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.globalValidation?
 
   @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
-  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.httpSettings?
+  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.httpSettings?
 
   @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
-  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.identityProviders?
+  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.identityProviders?
 
   @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
-  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.login?
+  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.login?
 
   @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
-  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.platform?
+  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.platform?
+}
+
+@description('The type for the Container App runtime configuration. Supports both Java and .NET stacks.')
+type runtimeType = {
+  @description('Optional. Java app configuration.')
+  java: {
+    @description('Optional. Enable jmx core metrics for the java app.')
+    enableMetrics: bool?
+  }?
+
+  @description('Optional. .NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments.')
+  dotnet: {
+    @description('Optional. Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment.')
+    autoConfigureDataProtection: bool?
+  }?
 }

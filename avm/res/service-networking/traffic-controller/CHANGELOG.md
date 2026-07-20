@@ -2,6 +2,28 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/service-networking/traffic-controller/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
+## 0.2.1
+
+### Changes
+
+- Publishing child module `avm/res/service-networking/traffic-controller/association`
+- Publishing child module `avm/res/service-networking/traffic-controller/frontend`
+- Publishing child module `avm/res/service-networking/traffic-controller/security-policy`
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes

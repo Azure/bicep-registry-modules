@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleservers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-var enforcedLocation = 'uksouth' // Enforcing location with available zones
+var enforcedLocation = 'brazilsouth' // Enforcing location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dfpfmax'
@@ -84,7 +84,11 @@ module testDeployment '../../../main.bicep' = [
         systemAssigned: true
       }
       serverThreatProtection: 'Enabled'
-      autoGrow: 'Enabled'
+      storageSizeGB: 64
+      autoGrow: 'Disabled'
+      storageType: 'PremiumV2_LRS'
+      storageIops: 3000
+      storageThroughput: 125
     }
   }
 ]

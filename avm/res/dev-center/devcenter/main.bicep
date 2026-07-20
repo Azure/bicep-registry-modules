@@ -64,8 +64,6 @@ param devboxDefinitions devboxDefinitionType[]?
 @description('Optional. The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically.')
 param projects projectType[]?
 
-var enableReferencedModulesTelemetry = false
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -130,6 +128,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -172,6 +172,7 @@ module project_catalog 'catalog/main.bicep' = [
     params: {
       name: catalog.name
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       gitHub: catalog.?gitHub
       adoGit: catalog.?adoGit
       syncType: catalog.?syncType
@@ -186,6 +187,7 @@ module devcenter_environmentType 'environment-type/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Devcenter-EnvironmentType-${index}'
     params: {
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: environmentType.name
       tags: environmentType.?tags
       displayName: environmentType.?displayName
@@ -198,6 +200,7 @@ module devcenter_gallery 'gallery/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Devcenter-Gallery-${index}'
     params: {
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: gallery.name
       galleryResourceId: gallery.galleryResourceId
       devCenterIdentityPrincipalId: gallery.?devCenterIdentityPrincipalId
@@ -210,6 +213,7 @@ module devcenter_attachedNetwork 'attachednetwork/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Devcenter-AttachedNetwork-${index}'
     params: {
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: attachedNetwork.name
       networkConnectionResourceId: attachedNetwork.networkConnectionResourceId
     }
@@ -221,6 +225,7 @@ module devcenter_devboxDefinition 'devboxdefinition/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Devcenter-DevboxDefinition-${index}'
     params: {
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: devboxDefinition.name
       imageResourceId: devboxDefinition.imageResourceId
       sku: devboxDefinition.sku
@@ -296,6 +301,7 @@ module devCenter_projectPolicy 'project-policy/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Devcenter-ProjectPolicy-${index}'
     params: {
       devcenterName: devcenter.name
+      enableTelemetry: enableReferencedModulesTelemetry
       name: projectPolicy.name
       resourcePolicies: projectPolicy.?resourcePolicies
       projectsResourceIdOrName: projectPolicy.?projectsResourceIdOrName

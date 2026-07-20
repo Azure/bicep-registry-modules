@@ -81,20 +81,29 @@ param computeIsolationEnabled bool = false
 @description('Optional. The Spark events folder.')
 param sparkEventsFolder string?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. Library version requirements.')
+param libraryRequirements libraryRequirementsType?
+
+@description('Optional. List of custom libraries/packages associated with the spark pool.')
+param customLibraries customLibraryType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -121,54 +130,116 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
-  name: workspaceName
+var enableReferencedModulesTelemetry bool = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.synapse-workspace-bigdatapool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
 }
 
-resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' = {
-  name: name
-  parent: workspace
-  location: location
-  tags: tags
-  properties: {
+// Initial pool creation - libraries must not be included on first deployment.
+module bigDataPool_create '../modules/bigDataPool.bicep' = {
+  name: '${deployment().name}-create'
+  params: {
+    workspaceName: workspaceName
+    name: name
+    location: location
+    tags: tags
     nodeSizeFamily: nodeSizeFamily
     nodeSize: nodeSize
-    autoScale: !empty(autoScale)
-      ? {
-          enabled: true
-          minNodeCount: autoScale.?minNodeCount
-          maxNodeCount: autoScale.?maxNodeCount
-        }
-      : {
-          enabled: false
-        }
-    nodeCount: empty(autoScale) ? nodeCount : null
-    dynamicExecutorAllocation: !empty(dynamicExecutorAllocation)
-      ? {
-          enabled: true
-          minExecutors: dynamicExecutorAllocation.?minExecutors
-          maxExecutors: dynamicExecutorAllocation.?maxExecutors
-        }
-      : {
-          enabled: false
-        }
-    autoPause: autoPauseDelayInMinutes != -1
-      ? {
-          enabled: true
-          delayInMinutes: autoPauseDelayInMinutes < 5 ? 5 : autoPauseDelayInMinutes // Minimum 5 minutes
-        }
-      : {
-          enabled: false
-        }
+    autoScale: autoScale
+    nodeCount: nodeCount
+    dynamicExecutorAllocation: dynamicExecutorAllocation
+    autoPauseDelayInMinutes: autoPauseDelayInMinutes
     sparkVersion: sparkVersion
     sparkConfigProperties: sparkConfigProperties
     sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
     cacheSize: cacheSize
-    defaultSparkLogFolder: !empty(defaultSparkLogFolder) ? defaultSparkLogFolder : null
-    isAutotuneEnabled: autotuneEnabled
-    isComputeIsolationEnabled: computeIsolationEnabled
-    sparkEventsFolder: !empty(sparkEventsFolder) ? sparkEventsFolder : null
+    defaultSparkLogFolder: defaultSparkLogFolder
+    autotuneEnabled: autotuneEnabled
+    computeIsolationEnabled: computeIsolationEnabled
+    sparkEventsFolder: sparkEventsFolder
   }
+}
+
+// Azure does not allow setting libraryRequirements or customLibraries during initial pool creation.
+// Synapse's internal library management pool (systemreservedpool-librarymanagement) also needs
+// time to initialize after a new Big Data Pool is created. Without this wait, the library
+// installation Spark job fails with a transient WASB 500 error.
+module bigDataPool_libraryWait 'br/public:avm/res/resources/deployment-script:0.5.2' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+  name: '${deployment().name}-libraryWait'
+  params: {
+    name: '${deployment().name}-libraryWait'
+    location: resourceGroup().location
+    tags: tags
+    kind: 'AzurePowerShell'
+    enableTelemetry: enableReferencedModulesTelemetry
+    scriptContent: 'Start-Sleep -Seconds 300'
+    azPowerShellVersion: '11.0'
+    timeout: 'PT15M'
+    cleanupPreference: 'Always'
+    retentionInterval: 'PT1H'
+  }
+  dependsOn: [
+    bigDataPool_create
+  ]
+}
+
+// Second-pass deployment that adds the library configuration to the already-created pool.
+module bigDataPool_libraries '../modules/bigDataPool.bicep' = if (libraryRequirements != null || !empty(customLibraries ?? [])) {
+  name: '${deployment().name}-libraries'
+  params: {
+    workspaceName: workspaceName
+    name: name
+    location: location
+    tags: tags
+    nodeSizeFamily: nodeSizeFamily
+    nodeSize: nodeSize
+    autoScale: autoScale
+    nodeCount: nodeCount
+    dynamicExecutorAllocation: dynamicExecutorAllocation
+    autoPauseDelayInMinutes: autoPauseDelayInMinutes
+    sparkVersion: sparkVersion
+    sparkConfigProperties: sparkConfigProperties
+    sessionLevelPackagesEnabled: sessionLevelPackagesEnabled
+    cacheSize: cacheSize
+    defaultSparkLogFolder: defaultSparkLogFolder
+    autotuneEnabled: autotuneEnabled
+    computeIsolationEnabled: computeIsolationEnabled
+    sparkEventsFolder: sparkEventsFolder
+    libraryRequirements: libraryRequirements
+    customLibraries: customLibraries
+  }
+  dependsOn: [
+    bigDataPool_libraryWait
+  ]
+}
+
+// Reference to the deployed pool for use by locks, diagnostics and role assignments.
+resource workspace 'Microsoft.Synapse/workspaces@2021-06-01' existing = {
+  name: workspaceName
+}
+
+resource bigDataPool 'Microsoft.Synapse/workspaces/bigDataPools@2021-06-01' existing = {
+  name: name
+  parent: workspace
+  dependsOn: [
+    bigDataPool_create
+  ]
 }
 
 resource bigDataPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -191,14 +262,18 @@ resource bigDataPool_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -228,10 +303,10 @@ resource bigDataPool_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 ]
 
 @description('The name of the deployed Big Data Pool.')
-output name string = bigDataPool.name
+output name string = bigDataPool_create.outputs.name
 
 @description('The resource ID of the deployed Big Data Pool.')
-output resourceId string = bigDataPool.id
+output resourceId string = bigDataPool_create.outputs.resourceId
 
 @description('The resource group of the deployed Big Data Pool.')
 output resourceGroupName string = resourceGroup().name
@@ -240,43 +315,25 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The synapse workspace Big Data Pools Auto-scaling properties.')
-type autoScaleType = {
-  @description('Required. Synapse workspace Big Data Pools Auto-scaling maximum node count.')
-  @minValue(3)
-  @maxValue(200)
-  maxNodeCount: int
-
-  @description('Required. Synapse workspace Big Data Pools Auto-scaling minimum node count.')
-  @minValue(3)
-  @maxValue(200)
-  minNodeCount: int
-}
+import {
+  autoScaleType as bigDataPoolAutoScaleType
+  dynamicExecutorAllocationType as bigDataPoolDynamicExecutorAllocationType
+  sparkConfigPropertiesType as bigDataPoolSparkConfigPropertiesType
+  libraryRequirementsType as bigDataPoolLibraryRequirementsType
+  customLibraryType as bigDataPoolCustomLibraryType
+} from '../modules/bigDataPool.bicep'
 
 @export()
-@description('The synapse workspace Big Data Pools Dynamic Executor Allocation properties.')
-type dynamicExecutorAllocationType = {
-  @description('Required. Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors.')
-  @minValue(1)
-  @maxValue(10)
-  minExecutors: int
-
-  @description('Required. Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1).')
-  @minValue(1)
-  @maxValue(10)
-  maxExecutors: int
-}
+type autoScaleType = bigDataPoolAutoScaleType
 
 @export()
-@description('The synapse workspace Big Data Pools Spark configuration file properties.')
-type sparkConfigPropertiesType = {
-  @description('Required. The configuration type.')
-  configurationType: ('Artifact' | 'File')
+type dynamicExecutorAllocationType = bigDataPoolDynamicExecutorAllocationType
 
-  @description('Required. The configuration content.')
-  content: string
+@export()
+type sparkConfigPropertiesType = bigDataPoolSparkConfigPropertiesType
 
-  @description('Required. The configuration filename.')
-  filename: string
-}
+@export()
+type libraryRequirementsType = bigDataPoolLibraryRequirementsType
+
+@export()
+type customLibraryType = bigDataPoolCustomLibraryType

@@ -28,6 +28,9 @@ param vmAdminPassword string = newGuid()
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedLocation = 'australiaeast'
 
+#disable-next-line no-hardcoded-location // Zone-redundant SQL requires a region that supports it
+var enforcedSecondaryLocation = 'swedencentral'
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
@@ -45,10 +48,10 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: take('${namePrefix}${serviceShort}001', 16)
+      solutionName: take('${namePrefix}${serviceShort}${uniqueString(deployment().name, enforcedLocation)}', 16)
       location: enforcedLocation
       aiServiceLocation: enforcedLocation
-      secondaryLocation: enforcedLocation
+      secondaryLocation: enforcedSecondaryLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true

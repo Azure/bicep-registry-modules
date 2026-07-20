@@ -1,8 +1,5 @@
-@description('Optional. The location to deploy the Redis cache service.')
+@description('Required. The location for deployment resources.')
 param location string
-
-@description('Default value is OK. Sets how the deployment script should be forced to execute even if the script resource has not changed. Can be current time stamp')
-param utcValue string = utcNow()
 
 @description('Optional. The name of the user-assigned identity to be used to auto-approve the private endpoint connection of the AFD. Changing this forces a new resource to be created.')
 param idAfdPeAutoApproverName string = guid(resourceGroup().id, 'userAssignedIdentity')
@@ -13,17 +10,15 @@ param tags object = {}
 @description('Required. Whether to enable deployment telemetry.')
 param enableTelemetry bool
 
-var roleAssignmentName = guid(resourceGroup().id, 'contributor')
+var roleAssignmentName = guid(resourceGroup().id, 'contributor', 'afdPeApproval')
 var contributorRoleDefinitionId = resourceId(
   'Microsoft.Authorization/roleDefinitions',
   'b24988ac-6180-42a0-ab88-20f7382dd24c'
 )
 var deploymentScriptName = 'runAfdApproval'
 
-var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', idAfdPeAutoApproverName)
-
 @description('The User Assigned Managed Identity that will be given Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-uami'
   params: {
     name: idAfdPeAutoApproverName
@@ -34,7 +29,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 }
 
 @description('The role assignment that will be created to give the User Assigned Managed Identity Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: roleAssignmentName
   scope: resourceGroup()
   properties: {
@@ -45,21 +40,19 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-prev
 }
 
 @description('The deployment script that will be used to auto-approve the Private Endpoint Connection of the AFD.')
-resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: deploymentScriptName
-
-  location: location
-  tags: tags
-  kind: 'AzureCLI'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${uami}': {}
+#disable-next-line BCP081
+module runAfdApproval 'br/public:avm/res/resources/deployment-script:0.5.2' = {
+  name: '${uniqueString(deployment().name, location)}-afd-approval'
+  params: {
+    name: deploymentScriptName
+    location: location
+    enableTelemetry: enableTelemetry
+    tags: tags
+    kind: 'AzureCLI'
+    managedIdentities: {
+      userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
     }
-  }
-  properties: {
-    forceUpdateTag: utcValue
-    azCliVersion: '2.47.0'
+    azCliVersion: '2.67.0'
     timeout: 'PT30M'
     environmentVariables: [
       {
@@ -76,11 +69,5 @@ resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   ]
 }
 
-@description('The logs of the deployment script that will be used to auto-approve the Private Endpoint Connection of the AFD.')
-resource log 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing = {
-  parent: runAfdApproval
-  name: 'default'
-}
-
 @description('The output of the deployment script that will be used to auto-approve the Private Endpoint Connection of the AFD.')
-output logs string = log.properties.log
+output logs string = join(runAfdApproval.outputs.deploymentScriptLogs, '\n')

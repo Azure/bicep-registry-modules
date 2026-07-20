@@ -47,6 +47,9 @@ Mandatory. The resource identifier to search for.
 .PARAMETER SpecsFilePath
 Optional. The path to the specs file that contains all available provider namespaces & resource types. Defaults to 'utilities/src/apiSpecsList.json'.
 
+.PARAMETER ForceCacheRefresh
+Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
+
 .EXAMPLE
 Get-SpecsAlignedResourceName -ResourceIdentifier 'virtual-machine-images/image-template'.
 
@@ -60,15 +63,64 @@ function Get-SpecsAlignedResourceName {
         [string] $ResourceIdentifier,
 
         [Parameter(Mandatory = $false)]
-        [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
+        [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json',
+
+        [Parameter()]
+        [switch] $ForceCacheRefresh
     )
 
-    try {
-        $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
-        $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-    } catch {
-        Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
-        $specs = @{}
+    $cacheFolderPath = $IsWindows ? $env:TEMP : [System.IO.Path]::GetTempPath()
+    $cacheFilePath = Join-Path $cacheFolderPath 'avm-apiSpecs.json'
+    $cacheExists = Test-Path $cacheFilePath
+
+    if (-not $cacheExists) {
+        try {
+            $null = New-Item $cacheFilePath -ItemType 'File' -ErrorAction 'Stop'
+        } catch {
+            if ($_.Exception.Message -notlike '*already exists*') {
+                throw $_
+            }
+        }
+    }
+
+    if ($ForceCacheRefresh) {
+        $fetchNewData = $true
+    } else {
+        $fileInfo = Get-Item $cacheFilePath
+        $cacheExpired = ((Get-Date) - $fileInfo.LastWriteTime) -gt [System.TimeSpan]::FromDays(1)
+        $cacheContent = Get-Content -Path $cacheFilePath -Raw
+
+        if (-not $cacheExpired -and $cacheContent.count -gt 0) {
+            try {
+                $specs = ($cacheContent | ConvertFrom-Json -AsHashtable -ErrorAction Stop)
+                Write-Verbose 'Fetch api specs from cache'
+                $fetchNewData = $false
+            } catch {
+                Write-Warning "Cached api specs file is corrupt; refreshing. ($($_.Exception.Message))"
+                $fetchNewData = $true
+            }
+        } else {
+            $fetchNewData = $true
+        }
+    }
+
+    if ($fetchNewData) {
+        try {
+            $apiSpecs = (Invoke-WebRequest -Uri $ApiSpecsFileUri).Content
+            $specs = ConvertFrom-Json $apiSpecs -AsHashtable
+        } catch {
+            Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
+            $specs = @{}
+        }
+
+        Write-Verbose 'Caching api specs references'
+        try {
+            $null = Set-Content -Path $cacheFilePath -Value $apiSpecs
+        } catch {
+            if ($_.Exception.Message -notmatch 'used by another process|sharing violation|Stream was not readable') {
+                throw
+            }
+        }
     }
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'

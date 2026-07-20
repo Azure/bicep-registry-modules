@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.19.1
+
+### Changes
+
+- Publishing child modules: `cassandra-keyspace`, `cassandra-keyspace/table`, `cassandra-keyspace/view`, `cassandra-role-assignment`, `cassandra-role-definition`, `gremlin-database`, `gremlin-database/graph`, `mongodb-database`, `mongodb-database/collection`, `sql-database`, `sql-database/container`, `table`
+- Added support for `vectorEmbeddingPolicy` and `fullTextPolicy` on SQL containers, and `fullTextIndexes` within `indexingPolicy`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes

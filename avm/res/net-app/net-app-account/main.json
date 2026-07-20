@@ -5,8 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
+<<<<<<< HEAD
       "version": "0.41.2.15936",
       "templateHash": "8662869752099180220"
+=======
+      "version": "0.42.1.51946",
+      "templateHash": "4503424678842499651"
+>>>>>>> origin/main
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1369,7 +1374,8 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -1504,6 +1510,9 @@
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1512,8 +1521,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12514820119133331762"
+              "version": "0.42.1.51946",
+              "templateHash": "184037223586394239"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1572,9 +1581,36 @@
               "metadata": {
                 "description": "Optional. Indicates whether the backup policy is enabled."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.netapp-netappaccount-backuppolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
               "apiVersion": "2025-01-01",
@@ -1654,6 +1690,9 @@
           },
           "weeklySchedule": {
             "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'weeklySchedule')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1663,8 +1702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1419096139907846605"
+              "version": "0.42.1.51946",
+              "templateHash": "10494004739943739336"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1899,9 +1938,36 @@
               "metadata": {
                 "description": "Optional. Indicates whether the snapshot policy is enabled."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.netapp-netappaccount-snapshotpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
@@ -1970,6 +2036,9 @@
           },
           "location": {
             "value": "[coalesce(tryGet(parameters('backupVault'), 'location'), parameters('location'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1979,8 +2048,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "4638391921034842014"
+              "version": "0.42.1.51946",
+              "templateHash": "11230557391605073788"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2059,9 +2128,39 @@
               "metadata": {
                 "description": "Optional. The list of backups to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.netapp-netappaccount-backupvault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
@@ -2109,6 +2208,9 @@
                   },
                   "capacityPoolName": {
                     "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].capacityPoolName]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2118,8 +2220,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "1118662498814857052"
+                      "version": "0.42.1.51946",
+                      "templateHash": "8944427053144847794"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2169,6 +2271,13 @@
                       "metadata": {
                         "description": "Required. The name of the capacity pool containing the volume."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -2189,6 +2298,26 @@
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
                       "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.netapp-netappaccount-backupvaultbckp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "netAppAccount": {
                       "existing": true,
@@ -2319,6 +2448,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2328,8 +2460,13 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
+<<<<<<< HEAD
               "version": "0.41.2.15936",
               "templateHash": "1868425064467731724"
+=======
+              "version": "0.42.1.51946",
+              "templateHash": "6507019057705966012"
+>>>>>>> origin/main
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3009,6 +3146,13 @@
               "metadata": {
                 "description": "Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -3025,9 +3169,30 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.netapp-netappaccount-capacitypool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
@@ -3170,8 +3335,13 @@
                   "throughputMibps": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'throughputMibps')]"
                   },
+<<<<<<< HEAD
                   "isLargeVolume": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'isLargeVolume')]"
+=======
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+>>>>>>> origin/main
                   }
                 },
                 "template": {
@@ -3181,8 +3351,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
+<<<<<<< HEAD
                       "version": "0.41.2.15936",
                       "templateHash": "11377497829434119976"
+=======
+                      "version": "0.42.1.51946",
+                      "templateHash": "14589455478287977431"
+>>>>>>> origin/main
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3761,6 +3936,13 @@
                       "metadata": {
                         "description": "Optional. The throughput in MiBps for the NetApp account."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "variables": {
@@ -3834,6 +4016,26 @@
                       "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/')))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.netapp-netappaccount-capacitypoolvol.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "netAppAccount": {
                       "existing": true,
@@ -4009,6 +4211,9 @@
           },
           "location": {
             "value": "[coalesce(tryGet(parameters('backupVault'), 'location'), parameters('location'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -4018,8 +4223,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "4638391921034842014"
+              "version": "0.42.1.51946",
+              "templateHash": "11230557391605073788"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4098,9 +4303,39 @@
               "metadata": {
                 "description": "Optional. The list of backups to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.netapp-netappaccount-backupvault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
@@ -4148,6 +4383,9 @@
                   },
                   "capacityPoolName": {
                     "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].capacityPoolName]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -4157,8 +4395,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "1118662498814857052"
+                      "version": "0.42.1.51946",
+                      "templateHash": "8944427053144847794"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -4208,6 +4446,13 @@
                       "metadata": {
                         "description": "Required. The name of the capacity pool containing the volume."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -4228,6 +4473,26 @@
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
                       "apiVersion": "2025-01-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.netapp-netappaccount-backupvaultbckp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "netAppAccount": {
                       "existing": true,

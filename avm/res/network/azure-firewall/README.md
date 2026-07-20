@@ -960,6 +960,7 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    firewallPrivateIpAddress: '10.0.0.4'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1137,6 +1138,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "firewallPrivateIpAddress": {
+      "value": "10.0.0.4"
     },
     "location": {
       "value": "<location>"
@@ -1322,6 +1326,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param firewallPrivateIpAddress = '10.0.0.4'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1958,13 +1963,14 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
 | [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
-| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableManagementNic`](#parameter-enablemanagementnic) | bool | Enable/Disable to support Forced Tunneling and Packet capture scenarios. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of type local virtual network gateway. |
 | [`firewallPolicyId`](#parameter-firewallpolicyid) | string | Resource ID of the Firewall Policy that should be attached. |
+| [`firewallPrivateIpAddress`](#parameter-firewallprivateipaddress) | string | Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceConfiguration`](#parameter-maintenanceconfiguration) | object | The maintenance configuration to assign to the Azure Firewall. |
@@ -2046,7 +2052,7 @@ The minimum number of capacity units for this azure firewall. Use null to reset 
 
 ### Parameter: `availabilityZones`
 
-The list of Availability zones to use for the zone-redundant resources.
+The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones.
 
 - Required: No
 - Type: array
@@ -2077,7 +2083,7 @@ Tier of an Azure Firewall.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -2247,6 +2253,14 @@ The extended location of type local virtual network gateway.
 ### Parameter: `firewallPolicyId`
 
 Resource ID of the Firewall Policy that should be attached.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `firewallPrivateIpAddress`
+
+Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.
 
 - Required: No
 - Type: string

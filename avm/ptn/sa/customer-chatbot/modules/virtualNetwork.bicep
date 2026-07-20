@@ -2,7 +2,7 @@
 // Networking - NSGs, VNET and Subnets. Each subnet has its own NSG
 /****************************************************************************************************************************/
 @description('Name of the virtual network.')
-param name string 
+param name string
 
 @description('Azure region to deploy resources.')
 param location string = resourceGroup().location
@@ -12,32 +12,30 @@ param addressPrefixes array
 
 @description('An array of subnets to be created within the virtual network. Each subnet can have its own configuration and associated Network Security Group (NSG).')
 param subnets subnetType[] = [
-
-
   {
-   name:'backend'
-   addressPrefixes: ['10.0.0.0/27']
-   networkSecurityGroup: {
-     name: 'nsg-backend'
-     securityRules: [
-            {
-        name: 'deny-hop-outbound'
-        properties: {
-          access: 'Deny'
-          destinationAddressPrefix: '*'
-          destinationPortRanges: [
-            '22'
-            '3389'
-          ]
-          direction: 'Outbound'
-          priority: 200
-          protocol: 'Tcp'
-          sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRange: '*'
+    name: 'backend'
+    addressPrefixes: ['10.0.0.0/27']
+    networkSecurityGroup: {
+      name: 'nsg-backend'
+      securityRules: [
+        {
+          name: 'deny-hop-outbound'
+          properties: {
+            access: 'Deny'
+            destinationAddressPrefix: '*'
+            destinationPortRanges: [
+              '22'
+              '3389'
+            ]
+            direction: 'Outbound'
+            priority: 200
+            protocol: 'Tcp'
+            sourceAddressPrefix: 'VirtualNetwork'
+            sourcePortRange: '*'
+          }
         }
-      }
-     ]
-   }
+      ]
+    }
   }
   {
     name: 'containers'
@@ -48,22 +46,22 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-containers'
       securityRules: [
-              {
-        name: 'deny-hop-outbound'
-        properties: {
-          access: 'Deny'
-          destinationAddressPrefix: '*'
-          destinationPortRanges: [
-            '22'
-            '3389'
-          ]
-          direction: 'Outbound'
-          priority: 200
-          protocol: 'Tcp'
-          sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRange: '*'
+        {
+          name: 'deny-hop-outbound'
+          properties: {
+            access: 'Deny'
+            destinationAddressPrefix: '*'
+            destinationPortRanges: [
+              '22'
+              '3389'
+            ]
+            direction: 'Outbound'
+            priority: 200
+            protocol: 'Tcp'
+            sourceAddressPrefix: 'VirtualNetwork'
+            sourcePortRange: '*'
+          }
         }
-      }
       ]
     }
   }
@@ -76,22 +74,22 @@ param subnets subnetType[] = [
     networkSecurityGroup: {
       name: 'nsg-webserverfarm'
       securityRules: [
-             {
-        name: 'deny-hop-outbound'
-        properties: {
-          access: 'Deny'
-          destinationAddressPrefix: '*'
-          destinationPortRanges: [
-            '22'
-            '3389'
-          ]
-          direction: 'Outbound'
-          priority: 200
-          protocol: 'Tcp'
-          sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRange: '*'
+        {
+          name: 'deny-hop-outbound'
+          properties: {
+            access: 'Deny'
+            destinationAddressPrefix: '*'
+            destinationPortRanges: [
+              '22'
+              '3389'
+            ]
+            direction: 'Outbound'
+            priority: 200
+            protocol: 'Tcp'
+            sourceAddressPrefix: 'VirtualNetwork'
+            sourcePortRange: '*'
+          }
         }
-      }
       ]
     }
   }
@@ -202,7 +200,6 @@ param resourceSuffix string
 //     Standard_D2s_v3 (2 vCPU, 8 GiB RAM, Premium SSD) //  next most common
 //     Standard_D2s_v4 (2 vCPU, 8 GiB RAM, Premium SSD)  // Newest, so fewer regions availabl
 
-
 // Subnet Classless Inter-Doman Routing (CIDR)  Sizing Reference Table (Best Practices)
 // | CIDR      | # of Addresses | # of /24s | Notes                                 |
 // |-----------|---------------|-----------|----------------------------------------|
@@ -232,12 +229,12 @@ param resourceSuffix string
 // - Document subnet usage and purpose in code comments.
 // - For AVM modules, ensure only one delegation per subnet and leave delegations empty if not required.
 
-// 1. Create NSGs for subnets 
+// 1. Create NSGs for subnets
 // using AVM Network Security Group module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/network-security-group
 
 @batchSize(1)
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
   for (subnet, i) in subnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
@@ -254,7 +251,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
 // using AVM Virtual Network module
 // https://github.com/Azure/bicep-registry-modules/tree/main/avm/res/network/virtual-network
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.0' = {
   name: take('avm.res.network.virtual-network.${name}', 64)
   params: {
     name: name
@@ -307,11 +304,21 @@ output subnets subnetOutputType[] = [
 ]
 
 // Dynamic outputs for individual subnets for backward compatibility
-output backendSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'backend') ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'backend')] : ''
-output containerSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'containers') ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'containers')] : ''
-output administrationSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'administration') ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'administration')] : ''
-output webserverfarmSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'webserverfarm') ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'webserverfarm')] : ''
-output bastionSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'AzureBastionSubnet') ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')] : ''
+output backendSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'backend')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'backend')]
+  : ''
+output containerSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'containers')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'containers')]
+  : ''
+output administrationSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'administration')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'administration')]
+  : ''
+output webserverfarmSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'webserverfarm')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'webserverfarm')]
+  : ''
+output bastionSubnetResourceId string = contains(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')
+  ? virtualNetwork.outputs.subnetResourceIds[indexOf(map(subnets, subnet => subnet.name), 'AzureBastionSubnet')]
+  : ''
 
 @export()
 @description('Custom type definition for subnet resource information as output')
@@ -335,8 +342,8 @@ type subnetType = {
   @description('Required. The Name of the subnet resource.')
   name: string
 
-  @description('Required. Prefixes for the subnet.')  // Required to ensure at least one prefix is provided
-  addressPrefixes: string[]   
+  @description('Required. Prefixes for the subnet.') // Required to ensure at least one prefix is provided
+  addressPrefixes: string[]
 
   @description('Optional. The delegation to enable on the subnet.')
   delegation: string?

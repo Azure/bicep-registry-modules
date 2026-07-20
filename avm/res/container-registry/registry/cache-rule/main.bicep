@@ -1,5 +1,5 @@
-metadata name = 'Container Registries Cache'
-metadata description = 'Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).'
+metadata name = 'Container Registry Cache'
+metadata description = 'The cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).'
 
 @description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string
@@ -13,14 +13,36 @@ param sourceRepository string
 @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
 param targetRepository string = sourceRepository
 
-@description('Optional. The resource ID of the credential store which is associated with the cache rule.')
+@description('Optional. The resource ID of the credential store which is associated with the cache rule. Required only when pulling from authenticated upstream registries (e.g., Docker Hub). Omit for anonymous public registries such as MCR (mcr.microsoft.com).')
 param credentialSetResourceId string?
 
-resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerregistry-registry-cacherule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: registryName
 }
 
-resource cacheRule 'Microsoft.ContainerRegistry/registries/cacheRules@2023-06-01-preview' = {
+resource cacheRule 'Microsoft.ContainerRegistry/registries/cacheRules@2025-11-01' = {
   name: name
   parent: registry
   properties: {

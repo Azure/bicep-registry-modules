@@ -34,15 +34,37 @@ param policyName string
 @description('Required. Resource ID of the resource to back up.')
 param sourceResourceId string
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.recsvcs-vault-bckpfabprotcontprotitm.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
   name: recoveryVaultName
 
-  resource backupPolicy 'backupPolicies@2024-10-01' existing = {
+  resource backupPolicy 'backupPolicies@2025-08-01' existing = {
     name: policyName
   }
 }
 
-resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2024-10-01' = {
+resource protectedItem 'Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems@2025-08-01' = {
   name: '${recoveryVaultName}/Azure/${protectionContainerName}/${name}'
   location: location
   properties: {

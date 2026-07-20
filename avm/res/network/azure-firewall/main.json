@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2739166780360013518"
+      "version": "0.44.1.10279",
+      "templateHash": "16836117220088586528"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -311,6 +311,13 @@
       },
       "defaultValue": []
     },
+    "firewallPrivateIpAddress": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically."
+      }
+    },
     "publicIPAddressObject": {
       "type": "object",
       "defaultValue": {
@@ -434,7 +441,7 @@
         3
       ],
       "metadata": {
-        "description": "Optional. The list of Availability zones to use for the zone-redundant resources."
+        "description": "Optional. The list of Availability zones to use for the zone-redundant resources. Pass an empty array to disable zone-redundancy for regions that do not support availability zones."
       }
     },
     "enableManagementNic": {
@@ -451,7 +458,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
       }
     },
     "location": {
@@ -569,10 +576,10 @@
       "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "zones": "[map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
+      "zones": "[if(not(empty(parameters('availabilityZones'))), map(parameters('availabilityZones'), lambda('zone', format('{0}', lambdaVariables('zone')))), null())]",
       "tags": "[parameters('tags')]",
       "extendedLocation": "[parameters('extendedLocation')]",
-      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject())))), parameters('additionalPublicIpConfigurations')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
+      "properties": "[if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'threatIntelMode', parameters('threatIntelMode'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'ipConfigurations', concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject()), if(and(equals(variables('azureSkuName'), 'AZFW_VNet'), not(empty(parameters('firewallPrivateIpAddress')))), createObject('privateIPAddress', parameters('firewallPrivateIpAddress')), createObject())))), parameters('additionalPublicIpConfigurations')), 'managementIpConfiguration', if(variables('requiresManagementIp'), createObject('name', if(not(empty(parameters('managementIPResourceID'))), last(split(parameters('managementIPResourceID'), '/')), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallManagementSubnet', parameters('virtualNetworkResourceId'))), 'publicIPAddress', createObject('id', if(not(empty(parameters('managementIPResourceID'))), parameters('managementIPResourceID'), tryGet(if(and(variables('isCreateDefaultManagementIP'), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('managementIPAddress'), null()), 'outputs', 'resourceId', 'value'))))), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'applicationRuleCollections', coalesce(parameters('applicationRuleCollections'), createArray()), 'natRuleCollections', coalesce(parameters('natRuleCollections'), createArray()), 'networkRuleCollections', coalesce(parameters('networkRuleCollections'), createArray())), createObject('additionalProperties', parameters('additionalProperties'), 'autoscaleConfiguration', createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), 'firewallPolicy', if(not(empty(parameters('firewallPolicyId'))), createObject('id', parameters('firewallPolicyId')), null()), 'sku', createObject('name', variables('azureSkuName'), 'tier', parameters('azureSkuTier')), 'ipConfigurations', if(not(empty(parameters('publicIPResourceID'))), concat(createArray(createObject('name', if(not(empty(parameters('publicIPResourceID'))), last(split(parameters('publicIPResourceID'), '/')), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'name', 'value')), 'properties', union(if(equals(variables('azureSkuName'), 'AZFW_VNet'), createObject('subnet', createObject('id', format('{0}/subnets/AzureFirewallSubnet', parameters('virtualNetworkResourceId')))), createObject()), if(or(not(empty(parameters('publicIPResourceID'))), not(empty(parameters('publicIPAddressObject')))), createObject('publicIPAddress', createObject('id', if(not(empty(parameters('publicIPResourceID'))), parameters('publicIPResourceID'), tryGet(if(and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet')), reference('publicIPAddress'), null()), 'outputs', 'resourceId', 'value')))), createObject()), if(and(equals(variables('azureSkuName'), 'AZFW_VNet'), not(empty(parameters('firewallPrivateIpAddress')))), createObject('privateIPAddress', parameters('firewallPrivateIpAddress')), createObject())))), parameters('additionalPublicIpConfigurations')), null()), 'hubIPAddresses', if(not(empty(parameters('publicIPResourceID'))), null(), if(not(empty(parameters('hubIPAddresses'))), parameters('hubIPAddresses'), null())), 'virtualHub', if(not(empty(parameters('virtualHubResourceId'))), createObject('id', parameters('virtualHubResourceId')), null())))]",
       "dependsOn": [
         "managementIPAddress",
         "publicIPAddress"
@@ -619,20 +626,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],

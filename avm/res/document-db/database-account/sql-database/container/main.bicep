@@ -42,6 +42,12 @@ param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDat
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
 param uniqueKeyPolicyKeys resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
+@description('Optional. The vector embedding policy for the container.')
+param vectorEmbeddingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+
+@description('Optional. The full text policy for the container.')
+param fullTextPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
+
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
   'Hash'
@@ -52,6 +58,28 @@ param kind string = 'Hash'
 @description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
 @allowed([1, 2])
 param version int = 1
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-sqldbcontainer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 var partitionKeyPaths = [for path in paths: startsWith(path, '/') ? path : '/${path}']
 
@@ -82,6 +110,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
             uniqueKeys: uniqueKeyPolicyKeys
           }
         : null
+      ...(vectorEmbeddingPolicy != null ? { vectorEmbeddingPolicy: vectorEmbeddingPolicy } : {})
+      ...(fullTextPolicy != null ? { fullTextPolicy: fullTextPolicy } : {})
       ...(analyticalStorageTtl != 0
         ? {
             analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent

@@ -5,32 +5,54 @@ metadata description = 'This module deploys Container App Auth Configs.'
 param containerAppName string
 
 @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
-param encryptionSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.encryptionSettings?
+param encryptionSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.encryptionSettings?
 
 @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
-param globalValidation resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.globalValidation?
+param globalValidation resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.globalValidation?
 
 @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
-param httpSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.httpSettings?
+param httpSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.httpSettings?
 
 @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
-param identityProviders resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.identityProviders?
+param identityProviders resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.identityProviders?
 
 @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
-param login resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.login?
+param login resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.login?
 
 @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
-param platform resourceInput<'Microsoft.App/containerApps/authConfigs@2025-10-02-preview'>.properties.platform?
+param platform resourceInput<'Microsoft.App/containerApps/authConfigs@2026-01-01'>.properties.platform?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 // =============== //
 //    Resources    //
 // =============== //
 
-resource containerApp 'Microsoft.App/containerApps@2025-10-02-preview' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-containerapp-authconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource containerApp 'Microsoft.App/containerApps@2026-01-01' existing = {
   name: containerAppName
 }
 
-resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2025-10-02-preview' = {
+resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2026-01-01' = {
   name: 'current'
   parent: containerApp
   properties: {

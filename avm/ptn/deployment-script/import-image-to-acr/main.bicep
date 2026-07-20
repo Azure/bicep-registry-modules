@@ -21,7 +21,7 @@ param runOnce bool = false
 @description('Optional. If set, the `Contributor` role will be granted to the managed identity (passed by the `managedIdentities` parameter or create with the name specified in parameter `managedIdentityName`), which is needed to import images into the Azure Container Registry. Defaults to `true`.')
 param assignRbacRole bool = true
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -97,7 +97,7 @@ var useExistingManagedIdentity = length(managedIdentities.?userAssignedResourceI
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.deploymentscript-importimagetoacr.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -115,7 +115,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
+resource acr 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: acrName
 }
 
@@ -139,7 +139,7 @@ resource acrRoleAssignmentExistingManagedIdentities 'Microsoft.Authorization/rol
     name: guid('roleAssignment-acr-${existingManagedIdentities[i].name}')
     scope: acr
     properties: {
-      principalId: existingManagedIdentities[i].properties.principalId
+      principalId: existingManagedIdentities[i]!.properties.principalId
       roleDefinitionId: subscriptionResourceId(
         'Microsoft.Authorization/roleDefinitions',
         'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -152,7 +152,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   name: guid('roleAssignment-acr-${newManagedIdentity.id}')
   scope: acr
   properties: {
-    principalId: newManagedIdentity.properties.principalId
+    principalId: newManagedIdentity!.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -161,7 +161,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.5.2' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
@@ -174,7 +174,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.5.1' = {
       : { userAssignedResourceIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
-    azCliVersion: '2.69.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
+    azCliVersion: '2.84.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
     timeout: 'PT30M' // set timeout to 30m
     retentionInterval: 'PT1H' // cleanup after 1h
     environmentVariables: [
