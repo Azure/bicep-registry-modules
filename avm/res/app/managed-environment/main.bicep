@@ -316,8 +316,8 @@ output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?princ
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
 
-@description('The IP address of the Managed Environment.')
-output staticIp string = managedEnvironment.properties.staticIp
+@description('The IP address of the Managed Environment. Only populated for internal Managed Environments deployed into a VNet.')
+output staticIp string? = managedEnvironment.properties.?staticIp
 
 @description('The domain verification id for custom domains.')
 output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId

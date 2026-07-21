@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "6125086988827125765"
+      "version": "0.44.1.10279",
+      "templateHash": "1894076085845317974"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -760,8 +760,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "2030354432908272164"
+              "version": "0.44.1.10279",
+              "templateHash": "9286430289758242661"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -921,8 +921,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "7145592441049491126"
+              "version": "0.44.1.10279",
+              "templateHash": "17966238704278572892"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1137,10 +1137,11 @@
     },
     "staticIp": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "The IP address of the Managed Environment."
+        "description": "The IP address of the Managed Environment. Only populated for internal Managed Environments deployed into a VNet."
       },
-      "value": "[reference('managedEnvironment').staticIp]"
+      "value": "[tryGet(reference('managedEnvironment'), 'staticIp')]"
     },
     "domainVerificationId": {
       "type": "string",
