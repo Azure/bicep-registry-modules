@@ -69,6 +69,9 @@ param lock lockType?
 @description('Optional. A server Root certificate is required of ldapOverTLS is enabled.')
 param serverRootCACertificate string = ''
 
+@description('Optional. The Active Directory site (as configured in Active Directory Sites and Services) the service will limit Domain Controller discovery to.')
+param activeDirectorySite string = ''
+
 @description('Optional. Tags for all resources.')
 param tags resourceInput<'Microsoft.NetApp/netAppAccounts@2025-01-01'>.tags?
 
@@ -97,6 +100,7 @@ var activeDirectoryConnectionProperties = [
     ldapOverTLS: !empty(domainName) ? ldapOverTLS : false
     ldapSigning: !empty(domainName) ? ldapSigning : false
     serverRootCACertificate: !empty(domainName) ? serverRootCACertificate : null
+    site: !empty(domainName) && !empty(activeDirectorySite) ? activeDirectorySite : null
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
     allowLocalNfsUsersWithLdap: !empty(domainName) ? allowLocalNfsUsersWithLdap : false
