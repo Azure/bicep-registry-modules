@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Version bump for module publishing
+- Adding tags support for volumes to assist in better identifying the contents of the volume
 
 ### Breaking Changes
 

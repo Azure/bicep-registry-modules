@@ -6,7 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Add changelog entry for 0.12.2
+- Adding tags test on an NFS test volume
+- Adding tags support for volumes to assist in better identifying the contents of the volume
 
 ### Breaking Changes
 
