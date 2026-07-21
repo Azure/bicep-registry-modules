@@ -1,4 +1,4 @@
-# Azure NetApp Files Volume Backup Vault `[Microsoft.netapp/netappaccount/backupvault]`
+# Azure NetApp Files Volume Backup Vault `[Microsoft.NetApp/netAppAccounts/backupVaults]`
 
 This module deploys a NetApp Files Backup Vault.
 

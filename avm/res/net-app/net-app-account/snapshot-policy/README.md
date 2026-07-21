@@ -1,4 +1,4 @@
-# Azure NetApp Files Snapshot Policy `[Microsoft.netapp/netappaccount/snapshotpolicy]`
+# Azure NetApp Files Snapshot Policy `[Microsoft.NetApp/netAppAccounts/snapshotPolicies]`
 
 This module deploys a Snapshot Policy for an Azure NetApp File.
 
