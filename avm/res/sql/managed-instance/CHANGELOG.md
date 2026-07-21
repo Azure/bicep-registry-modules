@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/managed-instance/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Corrected type for `diagnosticSettings` from `diagnosticSettingFullType` to `diagnosticSettingLogsOnlyType` as the resource only supports diagnostic logs
+
 ## 0.4.1
 
 ### Changes

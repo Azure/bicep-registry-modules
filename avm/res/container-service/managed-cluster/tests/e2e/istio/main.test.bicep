@@ -71,7 +71,7 @@ module testDeployment '../../../main.bicep' = [
         mode: 'Istio'
         istio: {
           revisions: [
-            'asm-1-27'
+            'asm-1-29'
           ]
           components: {
             ingressGateways: [

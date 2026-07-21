@@ -394,7 +394,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         status: 'enabled'
       }
     ]
-    trustPolicyStatus: 'enabled'
+    trustPolicyStatus: '<trustPolicyStatus>'
     webhooks: [
       {
         name: 'acrx001webhook'
@@ -613,7 +613,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       ]
     },
     "trustPolicyStatus": {
-      "value": "enabled"
+      "value": "<trustPolicyStatus>"
     },
     "webhooks": {
       "value": [
@@ -786,7 +786,7 @@ param tokens = [
     status: 'enabled'
   }
 ]
-param trustPolicyStatus = 'enabled'
+param trustPolicyStatus = '<trustPolicyStatus>'
 param webhooks = [
   {
     name: 'acrx001webhook'
@@ -1040,7 +1040,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: 'enabled'
+    trustPolicyStatus: '<trustPolicyStatus>'
   }
 }
 ```
@@ -1132,7 +1132,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       }
     },
     "trustPolicyStatus": {
-      "value": "enabled"
+      "value": "<trustPolicyStatus>"
     }
   }
 }
@@ -1192,7 +1192,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param trustPolicyStatus = 'enabled'
+param trustPolicyStatus = '<trustPolicyStatus>'
 ```
 
 </details>

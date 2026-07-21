@@ -23,6 +23,7 @@ param resourceGuardOperationRequests array = []
   'AlwaysON'
   'Disabled'
   'Enabled'
+  'Invalid'
 ])
 param softDeleteFeatureState string?
 
@@ -54,6 +55,9 @@ param storageTypeState string = 'Locked'
 @description('Optional. Is soft delete feature state editable.')
 param isSoftDeleteFeatureStateEditable bool = true
 
+@description('Optional. Soft delete retention period in days.')
+param softDeleteRetentionPeriodInDays int?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -76,11 +80,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource rsv 'Microsoft.RecoveryServices/vaults@2025-08-01' existing = {
+resource rsv 'Microsoft.RecoveryServices/vaults@2026-01-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01' = {
+resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2026-01-01' = {
   name: name
   parent: rsv
   properties: {
@@ -91,6 +95,7 @@ resource backupConfig 'Microsoft.RecoveryServices/vaults/backupconfig@2025-08-01
     storageType: storageType
     storageTypeState: storageTypeState
     isSoftDeleteFeatureStateEditable: isSoftDeleteFeatureStateEditable
+    softDeleteRetentionPeriodInDays: softDeleteRetentionPeriodInDays
   }
 }
 
