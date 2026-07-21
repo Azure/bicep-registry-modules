@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "17099512732795640640"
+      "version": "0.45.6.27763",
+      "templateHash": "220046558025066618"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -215,7 +215,8 @@
           "allowedValues": [
             "AlwaysON",
             "Disabled",
-            "Enabled"
+            "Enabled",
+            "Invalid"
           ],
           "nullable": true,
           "metadata": {
@@ -264,6 +265,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Is soft delete feature state editable."
+          }
+        },
+        "softDeleteRetentionPeriodInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Soft delete retention period in days."
           }
         }
       },
@@ -1538,7 +1546,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.recoveryservices-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1697,8 +1705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "1668004296683076643"
+              "version": "0.45.6.27763",
+              "templateHash": "16156952054359373168"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -1900,8 +1908,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "16367545160094178890"
+                      "version": "0.45.6.27763",
+                      "templateHash": "8736444571877131181"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2096,8 +2104,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.44.1.10279",
-                              "templateHash": "9348932338917238781"
+                              "version": "0.45.6.27763",
+                              "templateHash": "6594901912927952880"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2360,8 +2368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "4183326342950065258"
+              "version": "0.45.6.27763",
+              "templateHash": "6356275547804494974"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2529,8 +2537,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "17692292338139633105"
+              "version": "0.45.6.27763",
+              "templateHash": "3711233916359961813"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -2695,8 +2703,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "1674899850586105572"
+              "version": "0.45.6.27763",
+              "templateHash": "27240770409910105"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -2821,6 +2829,9 @@
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "softDeleteRetentionPeriodInDays": {
+            "value": "[tryGet(parameters('backupConfig'), 'softDeleteRetentionPeriodInDays')]"
           }
         },
         "template": {
@@ -2830,8 +2841,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "4005823294524084854"
+              "version": "0.45.6.27763",
+              "templateHash": "2431393405068255158"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2875,7 +2886,8 @@
               "allowedValues": [
                 "AlwaysON",
                 "Disabled",
-                "Enabled"
+                "Enabled",
+                "Invalid"
               ],
               "metadata": {
                 "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
@@ -2925,6 +2937,13 @@
                 "description": "Optional. Is soft delete feature state editable."
               }
             },
+            "softDeleteRetentionPeriodInDays": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Soft delete retention period in days."
+              }
+            },
             "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
@@ -2957,12 +2976,12 @@
             "rsv": {
               "existing": true,
               "type": "Microsoft.RecoveryServices/vaults",
-              "apiVersion": "2025-08-01",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('recoveryVaultName')]"
             },
             "backupConfig": {
               "type": "Microsoft.RecoveryServices/vaults/backupconfig",
-              "apiVersion": "2025-08-01",
+              "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
                 "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
@@ -2971,7 +2990,8 @@
                 "storageModelType": "[parameters('storageModelType')]",
                 "storageType": "[parameters('storageType')]",
                 "storageTypeState": "[parameters('storageTypeState')]",
-                "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
+                "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]",
+                "softDeleteRetentionPeriodInDays": "[parameters('softDeleteRetentionPeriodInDays')]"
               }
             }
           },
@@ -3041,8 +3061,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "13580201807375041251"
+              "version": "0.45.6.27763",
+              "templateHash": "3580637060467830058"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -3226,8 +3246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18436885663402767850"
+              "version": "0.43.8.12551",
+              "templateHash": "4295240387232557710"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -3543,14 +3563,15 @@
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "enableReferencedModulesTelemetry": false
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3648,6 +3669,9 @@
                   },
                   "privateDnsZoneConfigs": {
                     "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3657,8 +3681,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "9935179114830442414"
+                      "version": "0.43.8.12551",
+                      "templateHash": "15830984844857508530"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -3711,6 +3735,13 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": {
@@ -3719,6 +3750,26 @@
                       "type": "Microsoft.Network/privateEndpoints",
                       "apiVersion": "2025-05-01",
                       "name": "[parameters('privateEndpointName')]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-privendpoint-privdnszonegrp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
