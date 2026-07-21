@@ -1,4 +1,4 @@
-# Azure NetApp Files Backup Policy `[Microsoft.NetApp/netAppAccounts/backupPolicies]`
+# Azure NetApp Files Backup Policy `[Microsoft.netapp/netappaccount/backuppolicy]`
 
 This module deploys a Backup Policy for Azure NetApp File.
 

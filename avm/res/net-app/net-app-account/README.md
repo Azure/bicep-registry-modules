@@ -1,4 +1,4 @@
-# Azure NetApp Files `[Microsoft.NetApp/netAppAccounts]`
+# Azure NetApp Files `[Microsoft.netapp/netappaccount]`
 
 This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.
 
