@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      enableAnalyticalStorage: true
       backupPolicyType: 'Periodic'
       capabilitiesToAdd: [
         'EnableCassandra'
@@ -124,6 +125,7 @@ module testDeployment '../../../main.bicep' = [
           tables: [
             {
               name: 'secure_orders'
+              analyticalStorageTtl: 86400
               defaultTtl: 7200
               schema: {
                 columns: [
@@ -173,6 +175,7 @@ module testDeployment '../../../main.bicep' = [
           tables: [
             {
               name: 'secure_users'
+              analyticalStorageTtl: -1
               schema: {
                 columns: [
                   {

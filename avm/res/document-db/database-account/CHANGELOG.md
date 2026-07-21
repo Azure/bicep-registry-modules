@@ -7,7 +7,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified
-- Deprecated `enableAnalyticalStorage` parameter as it has been deprecated in favor of Azure Cosmos DB Mirroring for Microsoft Fabric [ref](https://learn.microsoft.com/en-us/azure/cosmos-db/configure-synapse-link)
 
 ### Breaking Changes
 

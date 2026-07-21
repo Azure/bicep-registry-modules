@@ -39,6 +39,9 @@ param defaultConsistencyLevel string = 'Session'
 @description('Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.')
 param disableLocalAuthentication bool = true
 
+@description('Optional. Flag to indicate whether to enable storage analytics. Defaults to false.')
+param enableAnalyticalStorage bool = false
+
 @description('Optional. Enable automatic failover for regions. Defaults to true.')
 param enableAutomaticFailover bool = true
 
@@ -396,6 +399,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
           isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
           enableFreeTier: enableFreeTier
           enableAutomaticFailover: enableAutomaticFailover
+          enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
     ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(cassandraKeyspaces))

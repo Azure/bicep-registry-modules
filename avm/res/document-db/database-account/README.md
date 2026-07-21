@@ -191,6 +191,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'cks-dddacswaf-001'
         tables: [
           {
+            analyticalStorageTtl: 86400
             defaultTtl: 7200
             name: 'secure_orders'
             schema: {
@@ -241,6 +242,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'cks-dddacswaf-002'
         tables: [
           {
+            analyticalStorageTtl: -1
             name: 'secure_users'
             schema: {
               clusterKeys: [
@@ -283,6 +285,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
+    enableAnalyticalStorage: true
     enableAutomaticFailover: true
     failoverLocations: [
       {
@@ -354,6 +357,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "cks-dddacswaf-001",
           "tables": [
             {
+              "analyticalStorageTtl": 86400,
               "defaultTtl": 7200,
               "name": "secure_orders",
               "schema": {
@@ -404,6 +408,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "cks-dddacswaf-002",
           "tables": [
             {
+              "analyticalStorageTtl": -1,
               "name": "secure_users",
               "schema": {
                 "clusterKeys": [
@@ -451,6 +456,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": true
     },
     "disableLocalAuthentication": {
+      "value": true
+    },
+    "enableAnalyticalStorage": {
       "value": true
     },
     "enableAutomaticFailover": {
@@ -527,6 +535,7 @@ param cassandraKeyspaces = [
     name: 'cks-dddacswaf-001'
     tables: [
       {
+        analyticalStorageTtl: 86400
         defaultTtl: 7200
         name: 'secure_orders'
         schema: {
@@ -577,6 +586,7 @@ param cassandraKeyspaces = [
     name: 'cks-dddacswaf-002'
     tables: [
       {
+        analyticalStorageTtl: -1
         name: 'secure_users'
         schema: {
           clusterKeys: [
@@ -619,6 +629,7 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuthentication = true
+param enableAnalyticalStorage = true
 param enableAutomaticFailover = true
 param failoverLocations = [
   {
@@ -3710,6 +3721,7 @@ param zoneRedundant = true
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableAutomaticFailover`](#parameter-enableautomaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
 | [`enableBurstCapacity`](#parameter-enableburstcapacity) | bool | Flag to indicate enabling/disabling of Burst Capacity feature on the account. Cannot be enabled for serverless accounts. |
 | [`enableCassandraConnector`](#parameter-enablecassandraconnector) | bool | Enables the cassandra connector on the Cosmos DB C* account. |
@@ -4500,6 +4512,14 @@ Opt-out of local authentication and ensure that only Microsoft Entra can be used
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enableAnalyticalStorage`
+
+Flag to indicate whether to enable storage analytics. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableAutomaticFailover`
 
