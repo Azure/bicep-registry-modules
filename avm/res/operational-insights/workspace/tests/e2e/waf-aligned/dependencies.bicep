@@ -20,6 +20,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+  properties: {
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+    }
+  }
 }
 
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' = {
