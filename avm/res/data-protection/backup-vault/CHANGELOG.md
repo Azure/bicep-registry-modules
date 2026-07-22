@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-protection/backup-vault/CHANGELOG.md).
 
+## 0.13.2
+
+### Changes
+
+- Added optional `dataSourceSetInfo` to `backupInstanceType` to support data source types that require a DatasourceSet (e.g., AKS).
+
+### Breaking Changes
+
+- None
+
 ## 0.13.1
 
 ### Changes
