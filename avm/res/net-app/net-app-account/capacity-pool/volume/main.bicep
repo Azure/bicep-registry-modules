@@ -118,7 +118,7 @@ param throughputMibps int?
 param enableTelemetry bool = true
 
 @description('Optional. Tags for volumes.')
-param tags object?
+param tags resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools/volumes'>.tags?
 
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
   ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
