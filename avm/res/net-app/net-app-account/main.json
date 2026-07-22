@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.15.27210",
-      "templateHash": "9127328488664718066"
+      "templateHash": "215560915965218947"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
@@ -1054,10 +1054,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Tags for the volume."
-          }
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01#properties/tags"
+            },
+            "description": "Optional. Tags for volumes."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -2445,7 +2448,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "219831823042179037"
+              "templateHash": "11176434668545277872"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2637,10 +2640,13 @@
                 },
                 "tags": {
                   "type": "object",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Tags for the volume."
-                  }
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01#properties/tags"
+                    },
+                    "description": "Optional. Tags for volumes."
+                  },
+                  "nullable": true
                 }
               },
               "metadata": {
@@ -3315,7 +3321,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.45.15.27210",
-                      "templateHash": "13126836427400706792"
+                      "templateHash": "15644934465613629292"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3886,10 +3892,13 @@
                     },
                     "tags": {
                       "type": "object",
-                      "nullable": true,
                       "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01#properties/tags"
+                        },
                         "description": "Optional. Tags for volumes."
-                      }
+                      },
+                      "nullable": true
                     }
                   },
                   "variables": {
