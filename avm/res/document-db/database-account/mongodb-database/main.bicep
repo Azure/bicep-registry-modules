@@ -19,6 +19,28 @@ param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
 @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
 param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-mongodbdatabase.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 }
@@ -40,6 +62,8 @@ resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module mongodbDatabase_collections 'collection/main.bicep' = [
   for collection in (collections ?? []): {
     name: '${uniqueString(deployment().name, mongodbDatabase.name)}-collection-${collection.name}'
@@ -50,6 +74,7 @@ module mongodbDatabase_collections 'collection/main.bicep' = [
       indexes: collection.indexes
       shardKey: collection.shardKey
       throughput: collection.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
