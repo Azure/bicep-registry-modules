@@ -272,8 +272,8 @@ type volumeType = {
   @description('Optional. The throughput in MiBps for the NetApp account.')
   throughputMibps: int?
 
-  @description('Optional. Tags for the volume.')
-  tags: resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools/volumes'>.tags?
+  @description('Optional. Tags for volumes.')
+  tags: resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01'>.tags?
 }
 
 // ================ //
