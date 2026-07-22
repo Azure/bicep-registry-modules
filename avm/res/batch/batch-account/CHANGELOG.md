@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/batch/batch-account/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
 ## 0.11.2
 
 ### Changes
