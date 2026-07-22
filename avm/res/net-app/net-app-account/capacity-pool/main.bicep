@@ -273,7 +273,7 @@ type volumeType = {
   throughputMibps: int?
 
   @description('Optional. Tags for the volume.')
-  tags: object?
+  tags: resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools/volumes'>.tags?
 }
 
 // ================ //
