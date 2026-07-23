@@ -14,6 +14,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None.
 
+## 0.15.1
+
+### Changes
+
+- Fixed intermittent private endpoint deployment failures (`AccountProvisioningStateInvalid` - account in state `Accepted`) by making private endpoints depend on the account's model deployments and commitment plans, so they are only created once the account has returned to a `Succeeded` provisioning state (fixes [#5957](https://github.com/Azure/bicep-registry-modules/issues/5957))
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes

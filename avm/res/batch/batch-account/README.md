@@ -923,7 +923,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`allowedAuthenticationModes`](#parameter-allowedauthenticationmodes) | array | List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1032,7 +1032,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

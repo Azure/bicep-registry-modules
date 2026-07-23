@@ -1051,7 +1051,7 @@ param tier = 'Standard'
 | [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`databases`](#parameter-databases) | array | The Kusto Cluster databases. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableAutoScale`](#parameter-enableautoscale) | bool | Enable/disable auto-scale. |
 | [`enableAutoStop`](#parameter-enableautostop) | bool | Enable/disable auto-stop. |
 | [`enableDiskEncryption`](#parameter-enablediskencryption) | bool | Enable/disable disk encryption. |
@@ -1477,7 +1477,7 @@ The tenant id of the principal.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "9451806107229217327"
+      "version": "0.44.1.10279",
+      "templateHash": "436461538479625229"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1131,7 +1131,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored."
+        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored."
       }
     }
   },
@@ -1242,20 +1242,20 @@
         "copy": [
           {
             "name": "metrics",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
             "input": {
-              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
           },
           {
             "name": "logs",
-            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
             "input": {
-              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
             }
           }
         ],
@@ -1307,8 +1307,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "11436902781078853668"
+              "version": "0.44.1.10279",
+              "templateHash": "11016090835736438769"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1462,8 +1462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "1490754851041638567"
+                      "version": "0.44.1.10279",
+                      "templateHash": "16470776846188750338"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1738,8 +1738,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "9350005169817405811"
+              "version": "0.44.1.10279",
+              "templateHash": "9777123357277410143"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1932,8 +1932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "6883060219010743162"
+              "version": "0.44.1.10279",
+              "templateHash": "14386319285172444511"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -2211,8 +2211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "6506136652954900600"
+              "version": "0.44.1.10279",
+              "templateHash": "14608606343366103965"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2555,8 +2555,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "15384076797375871606"
+                      "version": "0.44.1.10279",
+                      "templateHash": "41618841965577191"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2807,8 +2807,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "8966266643094712937"
+              "version": "0.44.1.10279",
+              "templateHash": "9482948142118913102"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2979,8 +2979,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "12930386980400641349"
+                      "version": "0.44.1.10279",
+                      "templateHash": "5359385489051792165"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -3197,8 +3197,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "3470267530732764401"
+              "version": "0.44.1.10279",
+              "templateHash": "12811017819200064875"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3505,8 +3505,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.1.21952",
-                      "templateHash": "16338982868678591577"
+                      "version": "0.44.1.10279",
+                      "templateHash": "13573342663343304022"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3864,8 +3864,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "15741706543761130014"
+              "version": "0.44.1.10279",
+              "templateHash": "3045180053939070769"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."

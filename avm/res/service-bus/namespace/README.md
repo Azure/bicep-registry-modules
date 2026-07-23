@@ -1711,7 +1711,7 @@ param topics = [
 | [`alternateName`](#parameter-alternatename) | string | Alternate name for namespace. |
 | [`authorizationRules`](#parameter-authorizationrules) | array | Authorization Rules for the Service Bus namespace. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | This property disables SAS authentication for the Service Bus namespace. |
 | [`disasterRecoveryConfig`](#parameter-disasterrecoveryconfig) | object | The disaster recovery configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1859,7 +1859,7 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

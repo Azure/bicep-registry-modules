@@ -151,6 +151,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       unixPermissions: volume.?unixPermissions
       throughputMibps: volume.?throughputMibps
       enableTelemetry: enableReferencedModulesTelemetry
+      tags: volume.?tags
     }
   }
 ]
@@ -270,6 +271,9 @@ type volumeType = {
 
   @description('Optional. The throughput in MiBps for the NetApp account.')
   throughputMibps: int?
+
+  @description('Optional. Tags for volumes.')
+  tags: resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01'>.tags?
 }
 
 // ================ //

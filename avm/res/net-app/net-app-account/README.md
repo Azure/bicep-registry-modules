@@ -944,6 +944,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               'NFSv3'
             ]
             subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Description: 'This is a Test Tag for the volume'
+            }
             usageThreshold: 107374182400
           }
         ]
@@ -1072,6 +1075,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Description": "This is a Test Tag for the volume"
+              },
               "usageThreshold": 107374182400
             }
           ]
@@ -1202,6 +1208,9 @@ param capacityPools = [
           'NFSv3'
         ]
         subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Description: 'This is a Test Tag for the volume'
+        }
         usageThreshold: 107374182400
       }
     ]
@@ -1795,6 +1804,7 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`tags`](#parameter-capacitypoolsvolumestags) | object | Tags for volumes. |
 | [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
@@ -2388,6 +2398,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.tags`
+
+Tags for volumes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `capacityPools.volumes.throughputMibps`
 

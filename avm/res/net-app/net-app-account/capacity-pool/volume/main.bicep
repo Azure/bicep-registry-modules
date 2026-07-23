@@ -117,6 +117,9 @@ param throughputMibps int?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Tags for volumes.')
+param tags resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01'>.tags?
+
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
   ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
@@ -299,6 +302,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-0
       : {})
   }
   zones: availabilityZone != 0 ? array(string(availabilityZone)) : null
+  tags: tags
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

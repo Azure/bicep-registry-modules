@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.6.27763",
-      "templateHash": "14025880660082037703"
+      "templateHash": "17173659257185688888"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -2516,7 +2516,9 @@
         }
       },
       "dependsOn": [
-        "cognitiveService"
+        "cognitiveService",
+        "cognitiveService_commitmentPlans",
+        "cognitiveService_deployments"
       ]
     },
     "secretsExport": {
