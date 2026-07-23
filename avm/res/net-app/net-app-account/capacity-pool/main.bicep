@@ -153,6 +153,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       throughputMibps: volume.?throughputMibps
       isLargeVolume: volume.?isLargeVolume
       enableTelemetry: enableReferencedModulesTelemetry
+      tags: volume.?tags
     }
   }
 ]
@@ -278,6 +279,9 @@ type volumeType = {
 
   @description('Optional. Specifies whether volume is a Large Volume or Regular Volume.')
   isLargeVolume: bool?
+
+  @description('Optional. Tags for volumes.')
+  tags: resourceInput<'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01'>.tags?
 }
 
 // ================ //

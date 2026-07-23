@@ -7,11 +7,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added optional `firewallPrivateIpAddress` parameter to allow consumers to define a static private IP for the primary Azure Firewall IP configuration in `AZFW_VNet` deployments.
-- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+- None
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.10.1
 

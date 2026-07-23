@@ -2,12 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/CHANGELOG.md).
 
-## 0.12.2
+## 0.12.3
 
 ### Changes
 
 - Added `isLargeVolume` parameter to `capacity-pool/volume` to specify whether a volume is a Large Volume or Regular Volume
 - Added `smbAccessBasedEnumeration` parameter to `capacity-pool/volume` to enable access-based enumeration for SMB Shares
+
+### Breaking Changes
+
+- None
+
+## 0.12.2
+
+### Changes
+
+- Adding tags test on an NFS test volume
+- Adding tags support for volumes to assist in better identifying the contents of the volume
 
 ### Breaking Changes
 

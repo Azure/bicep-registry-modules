@@ -6,12 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 - Corrected Kusto database name length constraints to match Azure naming rules (1-260 characters). Removed the invalid `@minLength(4)` and `@maxLength(22)` constraints on the `kustoDatabaseName` parameter of the `database/principal-assignment` child module, which previously prevented deploying principal assignments for databases with short names (e.g. "Hub"). Added `@maxLength(260)` to the `name` parameter of the `database` child module and to `kustoDatabaseName` in `database/principal-assignment` to enforce the correct upper bound.
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.10.0
 
