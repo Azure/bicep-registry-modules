@@ -400,7 +400,6 @@ module cognitiveService_deployments 'deployment/main.bicep' = [
       raiPolicyName: deploymentConfiguration.?raiPolicyName
       versionUpgradeOption: deploymentConfiguration.?versionUpgradeOption
       modelProviderData: deploymentConfiguration.?modelProviderData
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
