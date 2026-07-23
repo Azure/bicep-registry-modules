@@ -22,14 +22,16 @@ param raiPolicyName string?
 @description('Optional. The version upgrade option.')
 param versionUpgradeOption string?
 
-@description('Optional. Model-provider attestation required for GA partner models such as Anthropic Claude.')
+@description('Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider\'s Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.')
 param modelProviderData modelProviderDataType?
 
 resource cognitiveServiceAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
 }
 
-// 2026-05-01 is the minimum GA API version that supports modelProviderData.
+// modelProviderData is required by the RP for Anthropic Claude deployments and is documented at
+// https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use,
+// but is still absent from the OpenAPI spec - see https://github.com/Azure/azure-rest-api-specs/issues/43610
 #disable-next-line BCP081
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2026-05-01' = {
   parent: cognitiveServiceAccount
@@ -66,27 +68,14 @@ type modelProviderDataType = {
   countryCode: string
 
   @description('Required. The organization industry accepted by the resource provider.')
-  industry: string
-}
-
-@export()
-@description('The type for a Cognitive Services account deployment.')
-type deploymentType = {
-  @description('Optional. The name of the Cognitive Services account deployment.')
-  name: string?
-
-  @description('Required. Properties of the deployment model.')
-  model: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.properties.model
-
-  @description('Optional. The resource model definition representing the SKU.')
-  sku: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.sku?
-
-  @description('Optional. The name of the RAI policy.')
-  raiPolicyName: string?
-
-  @description('Optional. The version upgrade option.')
-  versionUpgradeOption: string?
-
-  @description('Optional. Model-provider attestation required for GA partner models.')
-  modelProviderData: modelProviderDataType?
+  industry:
+    | 'technology'
+    | 'finance'
+    | 'healthcare'
+    | 'education'
+    | 'retail'
+    | 'manufacturing'
+    | 'government'
+    | 'media'
+    | 'other'
 }

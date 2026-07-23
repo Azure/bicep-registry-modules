@@ -28,7 +28,7 @@ This module deploys a Cognitive Services account model deployment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`modelProviderData`](#parameter-modelproviderdata) | object | Model-provider attestation required for GA partner models such as Anthropic Claude. |
+| [`modelProviderData`](#parameter-modelproviderdata) | object | Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated. |
 | [`raiPolicyName`](#parameter-raipolicyname) | string | The name of the RAI policy. |
 | [`sku`](#parameter-sku) | object | The resource model definition representing the SKU. |
 | [`versionUpgradeOption`](#parameter-versionupgradeoption) | string | The version upgrade option. |
@@ -56,7 +56,7 @@ The name of the Cognitive Services account deployment.
 
 ### Parameter: `modelProviderData`
 
-Model-provider attestation required for GA partner models such as Anthropic Claude.
+Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.
 
 - Required: No
 - Type: object
@@ -82,6 +82,20 @@ The organization industry accepted by the resource provider.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'education'
+    'finance'
+    'government'
+    'healthcare'
+    'manufacturing'
+    'media'
+    'other'
+    'retail'
+    'technology'
+  ]
+  ```
 
 ### Parameter: `modelProviderData.organizationName`
 

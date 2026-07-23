@@ -2433,7 +2433,7 @@ Array of deployments about cognitive service accounts to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation required for GA partner models. |
+| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated. |
 | [`name`](#parameter-deploymentsname) | string | The name of the Cognitive Services account deployment. |
 | [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of the RAI policy. |
 | [`sku`](#parameter-deploymentssku) | object | The resource model definition representing the SKU. |
@@ -2448,7 +2448,7 @@ Properties of the deployment model.
 
 ### Parameter: `deployments.modelProviderData`
 
-Model-provider attestation required for GA partner models.
+Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.
 
 - Required: No
 - Type: object
@@ -2474,6 +2474,20 @@ The organization industry accepted by the resource provider.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'education'
+    'finance'
+    'government'
+    'healthcare'
+    'manufacturing'
+    'media'
+    'other'
+    'retail'
+    'technology'
+  ]
+  ```
 
 ### Parameter: `deployments.modelProviderData.organizationName`
 

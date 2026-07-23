@@ -130,7 +130,6 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { deploymentType } from 'deployment/main.bicep'
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentType[]?
 
@@ -607,6 +606,30 @@ output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().ke
 // ================ //
 // Definitions      //
 // ================ //
+
+import { modelProviderDataType } from 'deployment/main.bicep'
+
+@export()
+@description('The type for a Cognitive Services account deployment.')
+type deploymentType = {
+  @description('Optional. The name of the Cognitive Services account deployment.')
+  name: string?
+
+  @description('Required. Properties of the deployment model.')
+  model: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.properties.model
+
+  @description('Optional. The resource model definition representing the SKU.')
+  sku: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.sku?
+
+  @description('Optional. The name of the RAI policy.')
+  raiPolicyName: string?
+
+  @description('Optional. The version upgrade option.')
+  versionUpgradeOption: string?
+
+  @description('Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.')
+  modelProviderData: modelProviderDataType?
+}
 
 @export()
 @description('The type for the private endpoint output.')

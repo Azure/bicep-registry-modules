@@ -6,12 +6,68 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.6.27763",
-      "templateHash": "11736045764441159765"
+      "templateHash": "12265037837704295136"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
   },
   "definitions": {
+    "deploymentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Cognitive Services account deployment."
+          }
+        },
+        "model": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/properties/properties/model"
+            },
+            "description": "Required. Properties of the deployment model."
+          }
+        },
+        "sku": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/sku"
+            },
+            "description": "Optional. The resource model definition representing the SKU."
+          },
+          "nullable": true
+        },
+        "raiPolicyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the RAI policy."
+          }
+        },
+        "versionUpgradeOption": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version upgrade option."
+          }
+        },
+        "modelProviderData": {
+          "$ref": "#/definitions/modelProviderDataType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Cognitive Services account deployment."
+      }
+    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -559,35 +615,6 @@
         }
       }
     },
-    "_3.modelProviderDataType": {
-      "type": "object",
-      "properties": {
-        "organizationName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Legal entity name of the organization deploying the model."
-          }
-        },
-        "countryCode": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
-          }
-        },
-        "industry": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The organization industry accepted by the resource provider."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Model-provider attestation information.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "deployment/main.bicep"
-        }
-      }
-    },
     "customerManagedKeyType": {
       "type": "object",
       "properties": {
@@ -622,64 +649,6 @@
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
-        }
-      }
-    },
-    "deploymentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the Cognitive Services account deployment."
-          }
-        },
-        "model": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/properties/properties/model"
-            },
-            "description": "Required. Properties of the deployment model."
-          }
-        },
-        "sku": {
-          "type": "object",
-          "metadata": {
-            "__bicep_resource_derived_type!": {
-              "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/sku"
-            },
-            "description": "Optional. The resource model definition representing the SKU."
-          },
-          "nullable": true
-        },
-        "raiPolicyName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the RAI policy."
-          }
-        },
-        "versionUpgradeOption": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version upgrade option."
-          }
-        },
-        "modelProviderData": {
-          "$ref": "#/definitions/_3.modelProviderDataType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Model-provider attestation required for GA partner models."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a Cognitive Services account deployment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "deployment/main.bicep"
         }
       }
     },
@@ -867,6 +836,46 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+        }
+      }
+    },
+    "modelProviderDataType": {
+      "type": "object",
+      "properties": {
+        "organizationName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Legal entity name of the organization deploying the model."
+          }
+        },
+        "countryCode": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+          }
+        },
+        "industry": {
+          "type": "string",
+          "allowedValues": [
+            "education",
+            "finance",
+            "government",
+            "healthcare",
+            "manufacturing",
+            "media",
+            "other",
+            "retail",
+            "technology"
+          ],
+          "metadata": {
+            "description": "Required. The organization industry accepted by the resource provider."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Model-provider attestation information.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "deployment/main.bicep"
         }
       }
     },
@@ -1633,7 +1642,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.6.27763",
-              "templateHash": "3210164373561016561"
+              "templateHash": "18368837161370393114"
             },
             "name": "Cognitive Services Account Deployment",
             "description": "This module deploys a Cognitive Services account model deployment."
@@ -1656,6 +1665,17 @@
                 },
                 "industry": {
                   "type": "string",
+                  "allowedValues": [
+                    "education",
+                    "finance",
+                    "government",
+                    "healthcare",
+                    "manufacturing",
+                    "media",
+                    "other",
+                    "retail",
+                    "technology"
+                  ],
                   "metadata": {
                     "description": "Required. The organization industry accepted by the resource provider."
                   }
@@ -1664,62 +1684,6 @@
               "metadata": {
                 "__bicep_export!": true,
                 "description": "Model-provider attestation information."
-              }
-            },
-            "deploymentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the Cognitive Services account deployment."
-                  }
-                },
-                "model": {
-                  "type": "object",
-                  "metadata": {
-                    "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/properties/properties/model"
-                    },
-                    "description": "Required. Properties of the deployment model."
-                  }
-                },
-                "sku": {
-                  "type": "object",
-                  "metadata": {
-                    "__bicep_resource_derived_type!": {
-                      "source": "Microsoft.CognitiveServices/accounts/deployments@2025-06-01#properties/sku"
-                    },
-                    "description": "Optional. The resource model definition representing the SKU."
-                  },
-                  "nullable": true
-                },
-                "raiPolicyName": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name of the RAI policy."
-                  }
-                },
-                "versionUpgradeOption": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The version upgrade option."
-                  }
-                },
-                "modelProviderData": {
-                  "$ref": "#/definitions/modelProviderDataType",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Model-provider attestation required for GA partner models."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for a Cognitive Services account deployment."
               }
             }
           },
@@ -1776,7 +1740,7 @@
               "$ref": "#/definitions/modelProviderDataType",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Model-provider attestation required for GA partner models such as Anthropic Claude."
+                "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
               }
             }
           },
