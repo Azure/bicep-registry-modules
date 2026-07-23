@@ -396,10 +396,7 @@ module cognitiveService_deployments 'deployment/main.bicep' = [
       accountName: cognitiveService.name
       name: deploymentConfiguration.?name ?? '${name}-deployments'
       model: deploymentConfiguration.model
-      sku: deploymentConfiguration.?sku ?? {
-        name: 'Standard'
-        capacity: 1
-      }
+      sku: deploymentConfiguration.?sku
       raiPolicyName: deploymentConfiguration.?raiPolicyName
       versionUpgradeOption: deploymentConfiguration.?versionUpgradeOption
       modelProviderData: deploymentConfiguration.?modelProviderData

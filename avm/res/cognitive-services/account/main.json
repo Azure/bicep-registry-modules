@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.6.27763",
-      "templateHash": "17173659257185688888"
+      "templateHash": "11855747980448277132"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1613,7 +1613,7 @@
             "value": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]"
           },
           "sku": {
-            "value": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', 'Standard', 'capacity', 1))]"
+            "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku')]"
           },
           "raiPolicyName": {
             "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]"
