@@ -2039,7 +2039,7 @@ param tags = {
 | [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -2429,7 +2429,7 @@ The version upgrade option.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
