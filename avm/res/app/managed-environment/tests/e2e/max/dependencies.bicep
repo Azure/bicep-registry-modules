@@ -31,18 +31,9 @@ param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
+// Reusing diagnostic dependency
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' existing = {
   name: logAnalyticsWorkspaceName
-  location: location
-  properties: any({
-    retentionInDays: 30
-    features: {
-      searchVersion: 1
-    }
-    sku: {
-      name: 'PerGB2018'
-    }
-  })
 }
 
 resource appInsightsComponent 'Microsoft.Insights/components@2020-02-02' = {
@@ -184,11 +175,21 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
   }
 }
 
-@description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: 'privatelink.${location}.azurecontainerapps.io'
+  location: 'global'
 
-@description('The name of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.properties.customerId
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
+    name: '${virtualNetwork.name}-vnetlink'
+    location: 'global'
+    properties: {
+      virtualNetwork: {
+        id: virtualNetwork.id
+      }
+      registrationEnabled: false
+    }
+  }
+}
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
@@ -219,3 +220,6 @@ output appInsightsConnectionString string = appInsightsComponent.properties.Conn
 
 @description('The name of the created Storage Account.')
 output storageAccountName string = storageAccount.name
+
+@description('The resource ID of the created Private DNS Zone.')
+output privateDNSZoneResourceId string = privateDNSZone.id
