@@ -390,7 +390,8 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
 @batchSize(1)
 module cognitiveService_deployments 'deployment/main.bicep' = [
   for (deploymentConfiguration, index) in (deployments ?? []): {
-    name: '${uniqueString(deploymentConfiguration.?name ?? name, string(index))}-CognitiveService-Deployment'
+    // name: '${uniqueString(deploymentConfiguration.?name ?? name, string(index))}-CognitiveService-Deployment'
+    name: '${uniqueString(deployment().name, location)}-cognitiveservice-deployment-${index}'
     params: {
       accountName: cognitiveService.name
       name: deploymentConfiguration.?name ?? '${name}-deployments'
