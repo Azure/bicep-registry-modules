@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17123978751328741531"
+      "version": "0.43.8.12551",
+      "templateHash": "10317736383736702635"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -312,8 +312,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9828819107314984499"
+              "version": "0.43.8.12551",
+              "templateHash": "17975932592949602031"
             }
           },
           "parameters": {
@@ -994,8 +994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "320614762924830950"
+              "version": "0.43.8.12551",
+              "templateHash": "10144670979077232415"
             }
           },
           "parameters": {
@@ -1178,7 +1178,19 @@
             }
           },
           "variables": {
-            "locationVar": "[if(equals(parameters('location'), 'francecentral'), 'centralfrance', parameters('location'))]"
+            "serviceTagLocationMap": {
+              "francecentral": "centralfrance",
+              "francesouth": "southfrance",
+              "brazilsoutheast": "brazilse",
+              "germanynorth": "germanyn",
+              "germanywestcentral": "germanywc",
+              "norwayeast": "norwaye",
+              "norwaywest": "norwayw",
+              "switzerlandnorth": "switzerlandn",
+              "switzerlandwest": "switzerlandw",
+              "chilecentral": "chilec"
+            },
+            "serviceTagLocation": "[coalesce(tryGet(variables('serviceTagLocationMap'), parameters('location')), parameters('location'))]"
           },
           "resources": [
             {
@@ -2779,8 +2791,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "2103145240007587145"
+                      "version": "0.43.8.12551",
+                      "templateHash": "6325643624647084486"
                     }
                   },
                   "parameters": {
@@ -2921,7 +2933,7 @@
                           "protocol": "Udp",
                           "sourceAddressPrefix": "VirtualNetwork",
                           "sourcePortRange": "*",
-                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('serviceTagLocation'))]",
                           "destinationPortRange": "1194",
                           "access": "Allow",
                           "priority": 100,
@@ -2935,7 +2947,7 @@
                           "protocol": "Tcp",
                           "sourceAddressPrefix": "VirtualNetwork",
                           "sourcePortRange": "*",
-                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('serviceTagLocation'))]",
                           "destinationPortRange": "9000",
                           "access": "Allow",
                           "priority": 110,
@@ -2949,7 +2961,7 @@
                           "protocol": "Tcp",
                           "sourceAddressPrefix": "VirtualNetwork",
                           "sourcePortRange": "*",
-                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('locationVar'))]",
+                          "destinationAddressPrefix": "[format('AzureCloud.{0}', variables('serviceTagLocation'))]",
                           "destinationPortRange": "443",
                           "access": "Allow",
                           "priority": 120,
@@ -6153,8 +6165,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "18227509533810432744"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10235252465567608848"
                     }
                   },
                   "parameters": {
@@ -12787,8 +12799,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "16664277332651868130"
+                      "version": "0.43.8.12551",
+                      "templateHash": "8011107749947583449"
                     }
                   },
                   "parameters": {
@@ -19422,8 +19434,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1729400602865495743"
+              "version": "0.43.8.12551",
+              "templateHash": "14081353700731089575"
             }
           },
           "parameters": {
@@ -19557,8 +19569,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "11942965411908589661"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12114700589648342604"
                     }
                   },
                   "parameters": {
@@ -26878,8 +26890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "12919773499510634946"
+                      "version": "0.43.8.12551",
+                      "templateHash": "8016562525658915835"
                     }
                   },
                   "parameters": {
@@ -33312,8 +33324,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "106572503830570535"
+                      "version": "0.43.8.12551",
+                      "templateHash": "18154156071036225234"
                     }
                   },
                   "parameters": {
@@ -42151,8 +42163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3912188672917340658"
+              "version": "0.43.8.12551",
+              "templateHash": "12620977545792229890"
             }
           },
           "parameters": {
@@ -46697,8 +46709,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1489268299725986800"
+              "version": "0.43.8.12551",
+              "templateHash": "12363572973537601598"
             }
           },
           "parameters": {
@@ -48034,8 +48046,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2707348367930281212"
+              "version": "0.43.8.12551",
+              "templateHash": "18343305704018965380"
             }
           },
           "parameters": {
@@ -48664,8 +48676,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "10951723060428281591"
+                      "version": "0.43.8.12551",
+                      "templateHash": "9768366615357270870"
                     }
                   },
                   "parameters": {
@@ -48720,7 +48732,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.DESCRIPTION\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.PARAMETER KeyVaultName\nMandatory. The name of the Key Vault to add a new certificate to, or fetch the secret reference it from\n\n.PARAMETER CertName\nMandatory. The name of the certificate to generate or fetch the secret reference from\n\n.PARAMETER CertSubjectName\nOptional. The subject distinguished name is the name of the user of the certificate. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate. Default name is \"CN=fabrikam.com\"\n\n.EXAMPLE\n./Set-CertificateInKeyVault.ps1 -KeyVaultName 'myVault' -CertName 'myCert' -CertSubjectName 'CN=fabrikam.com'\n\nGenerate a new Key Vault Certificate with the default or provided subject name, or fetch its secret reference if already existing as 'myCert' in Key Vault 'myVault'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $KeyVaultName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $CertName,\n\n    [Parameter(Mandatory = $false)]\n    [string] $CertSubjectName = 'CN=fabrikam.com'\n)\n\n$certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'SilentlyContinue'\n\nif (-not $certificate) {\n    $policyInputObject = @{\n        SecretContentType = 'application/x-pkcs12'\n        SubjectName       = $CertSubjectName\n        IssuerName        = 'Self'\n        ValidityInMonths  = 12\n        ReuseKeyOnRenewal = $true\n    }\n    $certPolicy = New-AzKeyVaultCertificatePolicy @policyInputObject\n\n    $null = Add-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -CertificatePolicy $certPolicy\n    Write-Verbose ('Initiated creation of certificate [{0}] in key vault [{1}]' -f $CertName, $KeyVaultName) -Verbose\n\n    while (-not (Get-AzKeyVaultCertificateOperation -VaultName $KeyVaultName -Name $CertName).Status -eq 'completed') {\n        Write-Verbose 'Waiting 10 seconds for certificate creation' -Verbose\n        Start-Sleep 10\n    }\n\n    Write-Verbose 'Certificate created' -Verbose\n}\n\n$secretId = $certificate.SecretId\nwhile ([String]::IsNullOrEmpty($secretId)) {\n    Write-Verbose 'Waiting 10 seconds until certificate can be fetched' -Verbose\n    Start-Sleep 10\n    $certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'Stop'\n    $secretId = $certificate.SecretId\n}\n\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    secretUrl = $secretId\n}\n",
+                    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.DESCRIPTION\nGenerate a new Key Vault Certificate or fetch its secret reference if already existing.\n\n.PARAMETER KeyVaultName\nMandatory. The name of the Key Vault to add a new certificate to, or fetch the secret reference it from\n\n.PARAMETER CertName\nMandatory. The name of the certificate to generate or fetch the secret reference from\n\n.PARAMETER CertSubjectName\nOptional. The subject distinguished name is the name of the user of the certificate. The distinguished name for the certificate is a textual representation of the subject or issuer of the certificate. Default name is \"CN=fabrikam.com\"\n\n.EXAMPLE\n./Set-CertificateInKeyVault.ps1 -KeyVaultName 'myVault' -CertName 'myCert' -CertSubjectName 'CN=fabrikam.com'\n\nGenerate a new Key Vault Certificate with the default or provided subject name, or fetch its secret reference if already existing as 'myCert' in Key Vault 'myVault'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $KeyVaultName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $CertName,\n\n    [Parameter(Mandatory = $false)]\n    [string] $CertSubjectName = 'CN=fabrikam.com'\n)\n\n$certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'SilentlyContinue'\n\nif (-not $certificate) {\n    $policyInputObject = @{\n        SecretContentType = 'application/x-pkcs12'\n        SubjectName       = $CertSubjectName\n        IssuerName        = 'Self'\n        ValidityInMonths  = 12\n        ReuseKeyOnRenewal = $true\n    }\n    $certPolicy = New-AzKeyVaultCertificatePolicy @policyInputObject\n\n    $null = Add-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -CertificatePolicy $certPolicy\n    Write-Verbose ('Initiated creation of certificate [{0}] in key vault [{1}]' -f $CertName, $KeyVaultName) -Verbose\n\n    $maxRetries = 10\n    $retryCount = 0\n    $WaitIntervalInSeconds = 10\n    while (-not (Get-AzKeyVaultCertificateOperation -VaultName $KeyVaultName -Name $CertName -Verbose).Status -eq 'completed' -and $retryCount -lt $maxRetries) {\n        Write-Verbose ('    [⏱️] Waiting {0} seconds for certificate creation to finish. [{1}/{2}]' -f $WaitIntervalInSeconds, $retryCount, $MaxRetries) -Verbose\n        Start-Sleep $WaitIntervalInSeconds\n        $retryCount++\n    }\n    if ($retryCount -eq $maxRetries) {\n        throw \"Certificate creation operation did not complete after [$maxRetries] attempts. Please review.\"\n    }\n\n    Write-Verbose 'Certificate created' -Verbose\n}\n\n$secretId = $certificate.SecretId\n\n$maxRetries = 10\n$retryCount = 0\n$WaitIntervalInSeconds = 10\nwhile ([String]::IsNullOrEmpty($secretId) -and $retryCount -lt $maxRetries) {\n    Write-Verbose ('    [⏱️] Waiting {0} seconds until certificate can be fetched. [{1}/{2}]' -f $WaitIntervalInSeconds, $retryCount, $MaxRetries) -Verbose\n\n    Start-Sleep $WaitIntervalInSeconds\n    $certificate = Get-AzKeyVaultCertificate -VaultName $KeyVaultName -Name $CertName -ErrorAction 'Stop'\n    $secretId = $certificate.SecretId\n    $retryCount++\n}\nif ($retryCount -eq $maxRetries -and [String]::IsNullOrEmpty($secretId)) {\n    throw \"Failed to fetch certificate secret reference after [$maxRetries] attempts. Please review.\"\n}\n\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    secretUrl = $secretId\n}\n",
                     "keyVaultSecretUserRoleGuid": "4633458b-17de-408a-b874-0445c86b69e6",
                     "selfSignedCertificateSubject": "CN=contoso.com",
                     "useSelfSignedCert": "[empty(parameters('appGatewayCertificateData'))]"
@@ -49606,8 +49618,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "10084160727009474190"
+                      "version": "0.43.8.12551",
+                      "templateHash": "6827790472862290383"
                     }
                   },
                   "parameters": {

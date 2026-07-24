@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "13429996626122286039"
+      "version": "0.43.8.12551",
+      "templateHash": "6533317515632033502"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -382,7 +382,17 @@
       "metadata": {
         "description": "Optional. Enumerates the possible values for the status of a messaging entity."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "namespace::topic": {
@@ -390,6 +400,26 @@
       "type": "Microsoft.ServiceBus/namespaces/topics",
       "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.servicebus-namespace-topicsub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
     },
     "namespace": {
       "existing": true,
@@ -455,6 +485,9 @@
           },
           "sqlFilter": {
             "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sqlFilter')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -464,8 +497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10852899782320525955"
+              "version": "0.43.8.12551",
+              "templateHash": "2116154237325061488"
             },
             "name": "Service Bus Namespace Topic Subscription Rule",
             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -716,6 +749,13 @@
               "metadata": {
                 "description": "Conditional. Properties of a SQL filter. Required if 'filterType' is set to 'SqlFilter'."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -730,6 +770,26 @@
               "type": "Microsoft.ServiceBus/namespaces/topics",
               "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.servicebus-namespace-topicsubrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "namespace": {
               "existing": true,

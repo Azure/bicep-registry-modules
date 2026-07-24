@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "10326278752828678676"
+      "version": "0.43.8.12551",
+      "templateHash": "1616731095060977926"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -105,6 +105,13 @@
         "description": "Required. Gets or sets the data source information."
       }
     },
+    "dataSourceSetInfo": {
+      "$ref": "#/definitions/dataSourceInfoType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Gets or sets the data source set information. Required for some data source types (e.g., AKS)."
+      }
+    },
     "policyInfo": {
       "$ref": "#/definitions/policyInfoType",
       "metadata": {
@@ -174,6 +181,7 @@
         "friendlyName": "[parameters('friendlyName')]",
         "objectType": "BackupInstance",
         "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
+        "dataSourceSetInfo": "[if(not(equals(parameters('dataSourceSetInfo'), null())), union(parameters('dataSourceSetInfo'), createObject('objectType', 'DatasourceSet')), null())]",
         "policyInfo": {
           "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
           "policyParameters": "[parameters('policyInfo').policyParameters]"
@@ -208,8 +216,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "10346840446937049444"
+              "version": "0.43.8.12551",
+              "templateHash": "17957143557599300715"
             }
           },
           "parameters": {

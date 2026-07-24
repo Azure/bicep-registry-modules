@@ -90,9 +90,9 @@ param restorePointInTime string?
 @description('Optional. The resource identifier of the source managed instance associated with create operation of this instance.')
 param sourceManagedInstanceResourceId string?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingFullType[]?
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
@@ -236,6 +236,8 @@ var maintenanceConfigurationId = maintenanceWindow == 'Custom1' || maintenanceWi
     )
   : null
 
+var enableReferencedModulesTelemetry bool = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -365,6 +367,7 @@ module managedInstance_databases 'database/main.bicep' = [
       tags: database.?tags ?? tags
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -380,6 +383,7 @@ module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = 
     emailAddresses: securityAlertPolicy!.?emailAddresses
     retentionDays: securityAlertPolicy!.?retentionDays
     storageAccountResourceId: securityAlertPolicy!.?storageAccountResourceId
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -392,6 +396,7 @@ module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bi
     storageAccountResourceId: vulnerabilityAssessment!.storageAccountResourceId
     useStorageAccountAccessKey: vulnerabilityAssessment!.?useStorageAccountAccessKey
     createStorageRoleAssignment: vulnerabilityAssessment!.?createStorageRoleAssignment
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     managedInstance_securityAlertPolicy
@@ -406,6 +411,7 @@ module managedInstance_keys 'key/main.bicep' = [
       managedInstanceName: managedInstance.name
       serverKeyType: key.?serverKeyType
       uri: key.?uri
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -417,6 +423,7 @@ module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = i
     serverKeyName: encryptionProtector!.serverKeyName
     serverKeyType: encryptionProtector.?serverKeyType
     autoRotationEnabled: encryptionProtector.?autoRotationEnabled ?? true
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     managedInstance_keys
@@ -442,7 +449,6 @@ output location string = managedInstance.location
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { managedInstanceShortTermRetentionPolicyType, managedInstanceLongTermRetentionPolicyType } from 'database/main.bicep'
 
 @export()

@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.11.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.10.3
+
+### Changes
+
+- Recompiled the template with latest Bicep version `0.43.8`
+
+### Breaking Changes
+
+- None
+
 ## 0.10.2
 
 ### Changes

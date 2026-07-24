@@ -34,11 +34,19 @@ function Get-AvailableResourceLocation {
 
         [Parameter(Mandatory = $false)]
         [array] $AllowedRegionsList = @(
+            # Refreshed to currently "green" regions from the Azure capacity list (https://aka.ms/azurecapacity)
+            # per the AVM PG + Core Team sync on 23 Jul 2026. Re-review this list quarterly against the capacity list.
+            'swedencentral',
+            'belgiumcentral',
+            'norwayeast',
+            'eastasia', # Including as Edge Region for services like static-site
+            'polandcentral',
+            'austriaeast',
+            'denmarkeast',
+            'koreacentral',
             'eastus',
-            'uksouth',
-            'northeurope',
-            'germanywestcentral',
-            'eastasia' # Including as Edge Region for services like static-site
+            'centralus',
+            'newzealandnorth'
         ),
 
         [Parameter(Mandatory = $true)]
@@ -53,7 +61,6 @@ function Get-AvailableResourceLocation {
             'brazilsouth',
             'eastus2',
             'japaneast',
-            'koreacentral',
             'qatercentral',
             'southcentralus',
             'switzerlandnorth',

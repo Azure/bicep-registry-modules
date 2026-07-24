@@ -2,6 +2,26 @@
 
 This module deploys a Redis Cache.
 
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).
+We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+
+**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**
+
+| Date | Description |
+| --- | --- |
+| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+
+**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**
+
+| Date | Description |
+| --- | --- |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+
+
 You can reference the module as follows:
 ```bicep
 module redis 'br/public:avm/res/cache/redis:<version>' = {
@@ -60,6 +80,10 @@ This instance deploys the module with clustering enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/clustering]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -150,6 +174,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -204,6 +232,10 @@ This instance deploys the module with EntraID authentication.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/entra-id]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -318,6 +350,10 @@ This instance deploys the module saving all its secrets in a key vault.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/kv-secrets]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -407,6 +443,10 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -956,6 +996,10 @@ This instance deploys the module with geo-replication enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/passive-geo-replication]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1078,6 +1122,10 @@ This instance deploys the module with data persistence enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/persistence]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1201,6 +1249,10 @@ This instance deploys the module with custom Redis configuration.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/redis-config]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1281,6 +1333,10 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The test is skipped because Azure Cache for Redis announced its retirement.
+```
 
 <details>
 
@@ -1518,7 +1574,7 @@ param zonalAllocationPolicy = 'UserDefined'
 | [`accessPolicyAssignments`](#parameter-accesspolicyassignments) | array | Array of access policy assignments. |
 | [`availabilityZones`](#parameter-availabilityzones) | array | Replicas will be provisioned in the availability zones specified here. Otherwise, the service will choose where replicas are deployed. |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
 | [`enableNonSslPort`](#parameter-enablenonsslport) | bool | Specifies whether the non-ssl Redis server port (6379) is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1673,7 +1729,7 @@ The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) fami
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

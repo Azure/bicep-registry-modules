@@ -24,11 +24,11 @@ param applications applicationType[]?
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -78,12 +78,14 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.compute-gallery.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -156,6 +158,7 @@ module galleries_applications 'application/main.bicep' = [
       roleAssignments: application.?roleAssignments
       customActions: application.?customActions
       tags: application.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -188,6 +191,7 @@ module galleries_images 'image/main.bicep' = [
       disallowed: { diskTypes: image.?excludedDiskTypes ?? [] }
       roleAssignments: image.?roleAssignments
       tags: image.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

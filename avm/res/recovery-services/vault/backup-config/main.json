@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14229554596120287728"
+      "version": "0.45.6.27763",
+      "templateHash": "2431393405068255158"
     },
     "name": "Recovery Services Vault Backup Config",
     "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -50,7 +50,8 @@
       "allowedValues": [
         "AlwaysON",
         "Disabled",
-        "Enabled"
+        "Enabled",
+        "Invalid"
       ],
       "metadata": {
         "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
@@ -99,18 +100,52 @@
       "metadata": {
         "description": "Optional. Is soft delete feature state editable."
       }
+    },
+    "softDeleteRetentionPeriodInDays": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Soft delete retention period in days."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.recsvcs-vault-backupconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "rsv": {
       "existing": true,
       "type": "Microsoft.RecoveryServices/vaults",
-      "apiVersion": "2025-08-01",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('recoveryVaultName')]"
     },
     "backupConfig": {
       "type": "Microsoft.RecoveryServices/vaults/backupconfig",
-      "apiVersion": "2025-08-01",
+      "apiVersion": "2026-01-01",
       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": {
         "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
@@ -119,7 +154,8 @@
         "storageModelType": "[parameters('storageModelType')]",
         "storageType": "[parameters('storageType')]",
         "storageTypeState": "[parameters('storageTypeState')]",
-        "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
+        "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]",
+        "softDeleteRetentionPeriodInDays": "[parameters('softDeleteRetentionPeriodInDays')]"
       }
     }
   },

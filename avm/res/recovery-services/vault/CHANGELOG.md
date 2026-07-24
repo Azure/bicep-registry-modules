@@ -2,6 +2,38 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Updated `backup-config` child module API version from `2023-01-01` to `2026-01-01`
+- Added `'AlwaysON'` and `'Invalid'` to the allowed values for `softDeleteFeatureState` in `backup-config`
+- Added new optional parameter `softDeleteRetentionPeriodInDays` to `backup-config`
+
+### Breaking Changes
+
+- None
+
+## 0.12.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.11.3
+
+### Changes
+
+- Publishing child modules `backup-config`, `backup-fabric/protection-container/protected-item`, `backup-policy`, `replication-alert-setting`, `replication-fabric`, `replication-fabric/replication-protection-container`, `replication-fabric/replication-protection-container/replication-protection-container-mapping`, and `replication-policy`.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.2
 
 ### Changes
