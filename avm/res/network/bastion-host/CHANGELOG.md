@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/bastion-host/CHANGELOG.md).
 
+## 0.9.0
+
+### Changes
+
+- Added support for managed identities (system-assigned and user-assigned) via the new `managedIdentities` parameter. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema.
+- Added support for the Session Recording feature via the new `sessionRecordingConfiguration` parameter, allowing recordings to be stored in a blob container using either a system-assigned or user-assigned managed identity. This parameter is required when `enableSessionRecording` is set to `true`.
+- Added the `systemAssignedMIPrincipalId` output.
+- Updated cross-module reference to `public-ip-address` to the newest version `0.12.0`.
+- Updated Bastion API version to `2025-07-01`.
+- Updated `avm-common-types` reference to version `0.7.0`.
+
+### Breaking Changes
+
+- None
+
 ## 0.8.2
 
 ### Changes

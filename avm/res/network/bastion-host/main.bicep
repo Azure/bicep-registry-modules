@@ -18,11 +18,11 @@ param publicIPAddressObject publicIPAddressObjectType = {
   name: '${name}-pip'
 }
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -53,18 +53,25 @@ param enableShareableLink bool = false
 @description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
 param enableSessionRecording bool = false
 
+@description('Conditional. The configuration for the Session Recording feature, specifying the blob container to store recordings in and the managed identity used to access it. Required if `enableSessionRecording` is set to `true`. Requires the Premium SKU.')
+param sessionRecordingConfiguration sessionRecordingConfigurationType?
+
 @description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
 param enablePrivateOnlyBastion bool = false
 
 @description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
 param scaleUnits int = 2
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The managed identity definition for this resource. Note: Managed identity support for Azure Bastion is currently in preview and not yet reflected in the published resource provider schema.')
+param managedIdentities managedIdentityAllType?
+
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Network/bastionHosts@2024-07-01'>.tags?
+param tags resourceInput<'Microsoft.Network/bastionHosts@2025-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -78,6 +85,21 @@ param enableTelemetry bool = true
 param availabilityZones int[] = [] // Availability Zones are currently in preview (August 2025, see https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#az) and only available in certain regions, therefore the default is an empty array.
 
 var enableReferencedModulesTelemetry = false
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -137,7 +159,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -155,7 +177,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -209,12 +231,30 @@ var bastionpropertiesVar = union(
         enableSessionRecording: enableSessionRecording
         enablePrivateOnlyBastion: enablePrivateOnlyBastion
       }
+    : {}),
+  ((skuName == 'Premium' && enableSessionRecording)
+    ? {
+        sessionRecordingConfiguration: {
+          blobContainerUri: sessionRecordingConfiguration!.blobContainerUri
+          identity: !empty(sessionRecordingConfiguration.?userAssignedIdentityResourceId)
+            ? {
+                type: 'UserAssigned'
+                userAssignedIdentityId: sessionRecordingConfiguration.?userAssignedIdentityResourceId
+              }
+            : {
+                type: 'SystemAssigned'
+              }
+        }
+      }
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2025-01-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2025-07-01' = {
   name: name
   location: location
+  // Managed identity support for Azure Bastion is currently in preview and not yet present in the published resource provider schema for this API version. The value is cast with any() and BCP187 is suppressed to allow setting the (functional) identity property.
+  #disable-next-line BCP187
+  identity: any(identity)
   tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
   sku: {
     name: skuName
@@ -287,12 +327,25 @@ output location string = azureBastion.location
 @description('The Public IPconfiguration object for the AzureBastionSubnet.')
 output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBastion.properties.ipConfigurations[0]
 
+@description('The principal ID of the system assigned identity.')
+#disable-next-line BCP187
+output systemAssignedMIPrincipalId string? = azureBastion.?identity.?principalId
+
 // ================ //
 // Definitions      //
 // ================ //
 
-import { dnsSettingsType, ipTagType, ddosSettingsType } from 'br/public:avm/res/network/public-ip-address:0.10.0'
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+
+@export()
+@description('The type for the Session Recording configuration of the Bastion Host.')
+type sessionRecordingConfigurationType = {
+  @description('Required. The URI of the blob container where session recordings are stored, e.g. `https://<storageAccountName>.blob.core.windows.net/<containerName>`.')
+  blobContainerUri: string
+
+  @description('Optional. The resource ID of the user-assigned managed identity used to write session recordings to the blob container. If omitted, the system-assigned managed identity of the Bastion Host is used.')
+  userAssignedIdentityResourceId: string?
+}
 
 @export()
 @description('The type for the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
@@ -313,10 +366,10 @@ type publicIPAddressObjectType = {
   publicIPAddressVersion: 'IPv4' | 'IPv6'?
 
   @description('Optional. The DNS settings of the public IP address.')
-  dnsSettings: dnsSettingsType?
+  dnsSettings: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.dnsSettings?
 
   @description('Optional. The list of tags associated with the public IP address.')
-  ipTags: ipTagType[]?
+  ipTags: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ipTags?
 
   @description('Optional. The lock settings of the service.')
   lock: lockType?
@@ -328,7 +381,7 @@ type publicIPAddressObjectType = {
   skuTier: 'Global' | 'Regional'?
 
   @description('Optional. The DDoS protection plan configuration associated with the public IP address.')
-  ddosSettings: ddosSettingsType?
+  ddosSettings: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.properties.ddosSettings?
 
   @description('Optional. Location for the Public IP resource.')
   location: string?
@@ -343,7 +396,7 @@ type publicIPAddressObjectType = {
   idleTimeoutInMinutes: int?
 
   @description('Optional. Tags to apply to the Public IP resource.')
-  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2024-07-01'>.tags?
+  tags: resourceInput<'Microsoft.Network/publicIPAddresses@2025-01-01'>.tags?
 
   @description('Optional. Diagnostic settings for the Public IP resource.')
   diagnosticSettings: diagnosticSettingFullType[]?
