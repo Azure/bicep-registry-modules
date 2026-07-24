@@ -27,8 +27,10 @@ param serviceShort string = 'csaan'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
-import { enforcedLocation } from '../../shared/constants.bicep'
+// The Anthropic `claude-sonnet-4-6` (version 1, Global Standard) model is only offered in
+// `eastus2` and `swedencentral`. It is NOT available in the shared `enforcedLocation`
+// (`australiaeast`), so this test pins its own supported region.
+var enforcedLocation = 'swedencentral'
 
 // ============ //
 // Dependencies //
