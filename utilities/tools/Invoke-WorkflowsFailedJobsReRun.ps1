@@ -161,6 +161,9 @@ Optional. The maximum number of attempts (GitHub 'run_attempt') a failed run may
 .PARAMETER NonInteractive
 Optional. Skips the interactive 'Should apply (y/n)?' confirmation that is shown after a -WhatIf preview, assuming 'n' (do not apply). Intended for automated / non-interactive contexts such as the scheduled re-run workflow's dry-run, so the run stays a pure simulation and never blocks on Read-Host.
 
+.PARAMETER LookbackDays
+Optional. Only consider workflows whose latest run on the target branch was created within this many days. Runs older than the window are skipped (never re-triggered), which protects an initial invocation from re-triggering a large backlog of stale failures that have been red on the branch for a long time. Defaults to 0, which disables the window and considers the latest run regardless of age.
+
 .EXAMPLE
 Invoke-WorkflowsFailedJobsReRun -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl)'
 
@@ -207,7 +210,10 @@ function Invoke-WorkflowsFailedJobsReRun {
         [int] $MaxAttempts = 3,
 
         [Parameter(Mandatory = $false)]
-        [switch] $NonInteractive
+        [switch] $NonInteractive,
+
+        [Parameter(Mandatory = $false)]
+        [int] $LookbackDays = 0
     )
 
     # Load helper functions
@@ -236,6 +242,10 @@ function Invoke-WorkflowsFailedJobsReRun {
     $currentCount = 1
     $runsToReTrigger = [System.Collections.ArrayList]@()
     $hardStoppedRuns = [System.Collections.ArrayList]@()
+    $staleRuns = [System.Collections.ArrayList]@()
+    # When [LookbackDays] > 0, only runs created on/after this cutoff are eligible; older
+    # runs are skipped so an initial invocation does not re-trigger a large stale backlog.
+    $lookbackCutoff = if ($LookbackDays -gt 0) { ([datetimeoffset]::UtcNow).AddDays(-$LookbackDays) } else { $null }
     foreach ($workflow in $workflows) {
 
         $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
@@ -244,10 +254,16 @@ function Invoke-WorkflowsFailedJobsReRun {
         $latestBranchRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id -TargetBranch $TargetBranch
 
         if ($latestBranchRun.status -eq 'completed' -and $latestBranchRun.conclusion -eq 'failure') {
-            # Hard stop: skip runs that have already been attempted [MaxAttempts] times or more.
-            # 'run_attempt' is the number of times the run has been started (1 on the first run),
-            # so a run still failing after [MaxAttempts] attempts is left alone for manual investigation.
-            if ($latestBranchRun.run_attempt -ge $MaxAttempts) {
+            # Lookback window: skip runs whose latest attempt is older than [LookbackDays] days.
+            # This protects an initial invocation from re-triggering a large backlog of stale
+            # failures that have been red on the branch for a long time.
+            if ($lookbackCutoff -and $latestBranchRun.created_at -and ([datetimeoffset]::Parse($latestBranchRun.created_at) -lt $lookbackCutoff)) {
+                Write-Verbose ('Skipping workflow [{0}]: latest run [{1}] created [{2}] is older than the [{3}]-day lookback window.' -f $workflow.name, $latestBranchRun.id, $latestBranchRun.created_at, $LookbackDays) -Verbose
+                $null = $staleRuns.Add($latestBranchRun)
+            } elseif ($latestBranchRun.run_attempt -ge $MaxAttempts) {
+                # Hard stop: skip runs that have already been attempted [MaxAttempts] times or more.
+                # 'run_attempt' is the number of times the run has been started (1 on the first run),
+                # so a run still failing after [MaxAttempts] attempts is left alone for manual investigation.
                 Write-Verbose ('Hard stop for workflow [{0}]: run [{1}] already at attempt [{2}] (>= [{3}]). Skipping re-run.' -f $workflow.name, $latestBranchRun.id, $latestBranchRun.run_attempt, $MaxAttempts) -Verbose
                 $null = $hardStoppedRuns.Add($latestBranchRun)
             } else {
@@ -309,6 +325,12 @@ function Invoke-WorkflowsFailedJobsReRun {
     Write-Verbose ('  Skipped by hard stop (>= [{0}] attempts): [{1}]' -f $MaxAttempts, $hardStoppedRuns.Count) -Verbose
     if ($hardStoppedRuns.Count -gt 0) {
         Write-Verbose ('  Hard-stopped workflows: {0}' -f (($hardStoppedRuns | ForEach-Object { $_.name }) -join ', ')) -Verbose
+    }
+    if ($LookbackDays -gt 0) {
+        Write-Verbose ('  Skipped as older than [{0}] day(s): [{1}]' -f $LookbackDays, $staleRuns.Count) -Verbose
+        if ($staleRuns.Count -gt 0) {
+            Write-Verbose ('  Stale (out-of-window) workflows: {0}' -f (($staleRuns | ForEach-Object { $_.name }) -join ', ')) -Verbose
+        }
     }
 
     Write-Verbose 'Re-triggering complete' -Verbose

@@ -73,6 +73,10 @@ jobs:
             RepositoryOwner = "${{ github.repository_owner }}"
             RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
+            # Only consider workflows whose latest 'main' run failed within the last 3 days.
+            # Protects an initial invocation from re-triggering a large backlog of stale failures
+            # that have been red on the branch for a long time. Set to 0 to consider all history.
+            LookbackDays    = 3
           }
 
           Write-Verbose "Invoke task with" -Verbose
