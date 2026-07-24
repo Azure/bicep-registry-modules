@@ -6,8 +6,6 @@ It focuses on the hard-stop logic of Invoke-WorkflowsFailedJobsReRun:
 - Only latest runs that are 'completed' + 'failure' are considered.
 - A failed run is re-triggered only while its 'run_attempt' is below [MaxAttempts].
 - A failed run that reached [MaxAttempts] (or more) is left alone (hard stop).
-- A failed run whose latest attempt is older than [LookbackDays] days is skipped
-  (lookback window); 0 (the default) disables the window.
 - Successful runs are never re-triggered.
 - With -WhatIf the re-run is only simulated; the user is then prompted to apply, and
   -NonInteractive skips that prompt (assuming 'n', so nothing is applied).
@@ -140,36 +138,6 @@ Describe 'Test Invoke-WorkflowsFailedJobsReRun' {
             Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 2
 
             Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 0 -Exactly
-        }
-
-        It 'Does NOT re-trigger a failed run older than the -LookbackDays window' {
-            Mock Get-GitHubModuleWorkflowLatestRun {
-                return @{ id = 1009; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1; created_at = ([datetimeoffset]::UtcNow.AddDays(-10)).ToString('o') }
-            }
-
-            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -LookbackDays 3
-
-            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 0 -Exactly
-        }
-
-        It 'Re-triggers a failed run within the -LookbackDays window' {
-            Mock Get-GitHubModuleWorkflowLatestRun {
-                return @{ id = 1010; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1; created_at = ([datetimeoffset]::UtcNow.AddDays(-1)).ToString('o') }
-            }
-
-            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -LookbackDays 3
-
-            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 1 -Exactly -ParameterFilter { $RunId -eq 1010 }
-        }
-
-        It '-LookbackDays 0 disables the window (an old failed run is still re-triggered)' {
-            Mock Get-GitHubModuleWorkflowLatestRun {
-                return @{ id = 1011; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1; created_at = ([datetimeoffset]::UtcNow.AddDays(-30)).ToString('o') }
-            }
-
-            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -LookbackDays 0
-
-            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 1 -Exactly -ParameterFilter { $RunId -eq 1011 }
         }
     }
 
