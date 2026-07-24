@@ -31,18 +31,9 @@ param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
+// Reusing diagnostic dependency
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' existing = {
   name: logAnalyticsWorkspaceName
-  location: location
-  properties: any({
-    retentionInDays: 30
-    features: {
-      searchVersion: 1
-    }
-    sku: {
-      name: 'PerGB2018'
-    }
-  })
 }
 
 resource appInsightsComponent 'Microsoft.Insights/components@2020-02-02' = {
@@ -199,12 +190,6 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
     }
   }
 }
-
-@description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
-
-@description('The name of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.properties.customerId
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
