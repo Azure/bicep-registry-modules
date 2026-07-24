@@ -15,6 +15,9 @@ Manadatory. The workflow runs to re-trigger.
 .PARAMETER TotalNumberOfWorkflows
 Mandatory. The total number of workflows to re-trigger.
 
+.PARAMETER TargetBranch
+Optional. The branch the runs belong to. Only used for logging. Defaults to 'main'.
+
 .EXAMPLE
 Invoke-ReRun -RestInputObject @{ RepositoryOwner = 'Azure'; RepositoryName = 'bicep-registry-modules' } -RunsToReTrigger @(@{ id = 123; name = 'keyvaultworkflow'}) -TotalNumberOfWorkflows 123
 
@@ -31,7 +34,10 @@ function Invoke-ReRun {
         [object[]] $RunsToReTrigger,
 
         [Parameter(Mandatory)]
-        [int] $TotalNumberOfWorkflows
+        [int] $TotalNumberOfWorkflows,
+
+        [Parameter(Mandatory = $false)]
+        [string] $TargetBranch = 'main'
     )
 
     $totalCount = $RunsToReTrigger.Count
@@ -149,6 +155,9 @@ Optional. The GitHub repository to run the workfows in.
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
 
+.PARAMETER MaxAttempts
+Optional. The maximum number of attempts (GitHub 'run_attempt') a failed run may have before it is no longer re-triggered (hard stop). Defaults to 3.
+
 .EXAMPLE
 Invoke-WorkflowsFailedJobsReRun -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl)'
 
@@ -189,7 +198,10 @@ function Invoke-WorkflowsFailedJobsReRun {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.FullName
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
+
+        [Parameter(Mandatory = $false)]
+        [int] $MaxAttempts = 3
     )
 
     # Load helper functions
@@ -201,9 +213,7 @@ function Invoke-WorkflowsFailedJobsReRun {
         RepositoryName  = $RepositoryName
     }
     if ($PersonalAccessToken) {
-        $baseInputObject['PersonalAccessToken'] = @{
-            PersonalAccessToken = $PersonalAccessToken
-        }
+        $baseInputObject['PersonalAccessToken'] = $PersonalAccessToken
     }
     #####################################
     #    Get all workflows for branch   #
@@ -219,6 +229,7 @@ function Invoke-WorkflowsFailedJobsReRun {
     $totalCount = $workflows.Count
     $currentCount = 1
     $runsToReTrigger = [System.Collections.ArrayList]@()
+    $hardStoppedRuns = [System.Collections.ArrayList]@()
     foreach ($workflow in $workflows) {
 
         $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
@@ -227,7 +238,15 @@ function Invoke-WorkflowsFailedJobsReRun {
         $latestBranchRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id -TargetBranch $TargetBranch
 
         if ($latestBranchRun.status -eq 'completed' -and $latestBranchRun.conclusion -eq 'failure') {
-            $runsToReTrigger += $latestBranchRun
+            # Hard stop: skip runs that have already been attempted [MaxAttempts] times or more.
+            # 'run_attempt' is the number of times the run has been started (1 on the first run),
+            # so a run still failing after [MaxAttempts] attempts is left alone for manual investigation.
+            if ($latestBranchRun.run_attempt -ge $MaxAttempts) {
+                Write-Verbose ('Hard stop for workflow [{0}]: run [{1}] already at attempt [{2}] (>= [{3}]). Skipping re-run.' -f $workflow.name, $latestBranchRun.id, $latestBranchRun.run_attempt, $MaxAttempts) -Verbose
+                $null = $hardStoppedRuns.Add($latestBranchRun)
+            } else {
+                $null = $runsToReTrigger.Add($latestBranchRun)
+            }
         }
         $currentCount++
     }
@@ -235,27 +254,37 @@ function Invoke-WorkflowsFailedJobsReRun {
     ##############################
     #   Re-trigger failed runs   #
     ##############################
-    $reRunInputObject = @{
-        RestInputObject        = $baseInputObject
-        RunsToReTrigger        = $runsToReTrigger
-        TotalNumberOfWorkflows = $workflows.Count
+    # Only invoke the re-run when there is at least one run to trigger. 'Invoke-ReRun'
+    # has a mandatory [object[]] parameter that rejects an empty array, and on a healthy
+    # branch (all runs green or already hard-stopped) there is frequently nothing to do.
+    if ($runsToReTrigger.Count -gt 0) {
+        $reRunInputObject = @{
+            RestInputObject        = $baseInputObject
+            RunsToReTrigger        = $runsToReTrigger
+            TotalNumberOfWorkflows = $workflows.Count
+            TargetBranch           = $TargetBranch
+        }
+        # Runs non-interactively: with -WhatIf the re-runs are only simulated (logged), without it they are executed.
+        $null = Invoke-ReRun @reRunInputObject -WhatIf:$WhatIfPreference
+    } else {
+        Write-Verbose 'No failed runs to re-trigger.' -Verbose
     }
-    $null = Invoke-ReRun @reRunInputObject -WhatIf:$WhatIfPreference
 
-    # Enable the user to execute the invocation if the whatif looked good
+    ##########################
+    #   Re-trigger summary    #
+    ##########################
     if ($WhatIfPreference) {
-        do {
-            $userInput = Read-Host -Prompt 'Should apply (y/n)?'
-        }
-        while ($userInput -notin @('y', 'n'))
-
-        switch ($userInput) {
-            'y' {
-                $null = Invoke-ReRun @reRunInputObject -WhatIf:$false
-            }
-            'n' { return }
-        }
+        $reRunState = 'that would be re-triggered'
+    } else {
+        $reRunState = 're-triggered'
+    }
+    Write-Verbose ('Re-run summary for branch [{0}]:' -f $TargetBranch) -Verbose
+    Write-Verbose ('  Workflows analyzed: [{0}]' -f $workflows.Count) -Verbose
+    Write-Verbose ('  Failed runs {0}: [{1}]' -f $reRunState, $runsToReTrigger.Count) -Verbose
+    Write-Verbose ('  Skipped by hard stop (>= [{0}] attempts): [{1}]' -f $MaxAttempts, $hardStoppedRuns.Count) -Verbose
+    if ($hardStoppedRuns.Count -gt 0) {
+        Write-Verbose ('  Hard-stopped workflows: {0}' -f (($hardStoppedRuns | ForEach-Object { $_.name }) -join ', ')) -Verbose
     }
 
-    Write-Verbose 'Re-triggerung complete' -Verbose
+    Write-Verbose 'Re-triggering complete' -Verbose
 }
