@@ -91,6 +91,13 @@ param smbEncryption bool = false
 @description('Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume.')
 param smbContinuouslyAvailable bool = false
 
+@description('Optional. Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param smbAccessBasedEnumeration string = 'Disabled'
+
 @description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
 @allowed([
   'Enabled'
@@ -100,6 +107,9 @@ param smbNonBrowsable string = 'Disabled'
 
 @description('Optional. Define if a volume is KerberosEnabled.')
 param kerberosEnabled bool = false
+
+@description('Optional. Specifies whether volume is a Large Volume or Regular Volume.')
+param isLargeVolume bool = false
 
 @allowed([
   'ntfs'
@@ -192,7 +202,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   }
 }
 
-resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
+resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2025-05-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
   name: last(split(keyVaultPrivateEndpointResourceId!, '/'))
   scope: resourceGroup(
     split(keyVaultPrivateEndpointResourceId!, '/')[2],
@@ -217,11 +227,11 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existi
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
+resource vnet 'Microsoft.Network/virtualNetworks@2025-05-01' existing = {
   name: split(subnetResourceId, '/')[8]
   scope: resourceGroup(split(subnetResourceId, '/')[2], split(subnetResourceId, '/')[4])
 
-  resource subnet 'subnets@2024-03-01' existing = {
+  resource subnet 'subnets@2025-05-01' existing = {
     name: last(split(subnetResourceId, '/'))
   }
 }
@@ -294,7 +304,9 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-0
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
+    smbAccessBasedEnumeration: smbAccessBasedEnumeration
     kerberosEnabled: kerberosEnabled
+    isLargeVolume: isLargeVolume
     ...(throughputMibps != null
       ? {
           throughputMibps: throughputMibps

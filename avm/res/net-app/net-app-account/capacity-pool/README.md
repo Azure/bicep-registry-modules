@@ -286,6 +286,7 @@ List of volumes to create in the capacity pool.
 | [`dataProtection`](#parameter-volumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`encryptionKeySource`](#parameter-volumesencryptionkeysource) | string | The source of the encryption key. |
 | [`exportPolicy`](#parameter-volumesexportpolicy) | object | Export policy rules. |
+| [`isLargeVolume`](#parameter-volumesislargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-volumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
@@ -293,6 +294,7 @@ List of volumes to create in the capacity pool.
 | [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbAccessBasedEnumeration`](#parameter-volumessmbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
@@ -692,6 +694,13 @@ Has root access to volume.
 - Required: No
 - Type: bool
 
+### Parameter: `volumes.isLargeVolume`
+
+Specifies whether volume is a Large Volume or Regular Volume.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `volumes.kerberosEnabled`
 
 Define if a volume is KerberosEnabled.
@@ -860,6 +869,20 @@ The pool service level. Must match the one of the parent capacity pool.
     'Standard'
     'StandardZRS'
     'Ultra'
+  ]
+  ```
+
+### Parameter: `volumes.smbAccessBasedEnumeration`
+
+Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
   ]
   ```
 
