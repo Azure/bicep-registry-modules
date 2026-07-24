@@ -26,6 +26,10 @@ env:
 concurrency:
   group: ${{ github.workflow }}
 
+# Restrict the default GITHUB_TOKEN to read-only; jobs request any elevated scopes they need.
+permissions:
+  contents: read
+
 jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
