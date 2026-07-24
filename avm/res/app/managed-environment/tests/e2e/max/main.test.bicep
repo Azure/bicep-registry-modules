@@ -96,7 +96,7 @@ module testDeployment '../../../main.bicep' = [
       peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
       managedIdentities: {
         systemAssigned: true
@@ -188,7 +188,7 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           service: 'managedEnvironments'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          subnetResourceId: nestedDependencies.outputs.peSubnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
@@ -237,7 +237,7 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           resourceGroupResourceId: resourceGroup.id
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          subnetResourceId: nestedDependencies.outputs.peSubnetResourceId
         }
       ]
     }

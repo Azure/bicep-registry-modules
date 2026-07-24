@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          subnetResourceId: nestedDependencies.outputs.peSubnetResourceId
         }
       ]
       diagnosticSettings: [

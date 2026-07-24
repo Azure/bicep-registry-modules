@@ -75,6 +75,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
           ]
         }
       }
+      {
+        name: 'pesubnet'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 23, 1)
+        }
+      }
     ]
   }
 }
@@ -191,8 +197,11 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   }
 }
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+@description('The resource ID of the delegated Virtual Network Subnet.')
+output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The resource ID of the Virtual Network Subnet for the private endpoint.')
+output peSubnetResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
