@@ -158,6 +158,9 @@ Optional. Path to the root of the repository.
 .PARAMETER MaxAttempts
 Optional. The maximum number of attempts (GitHub 'run_attempt') a failed run may have before it is no longer re-triggered (hard stop). Defaults to 3.
 
+.PARAMETER NonInteractive
+Optional. Skips the interactive 'Should apply (y/n)?' confirmation that is shown after a -WhatIf preview, assuming 'n' (do not apply). Intended for automated / non-interactive contexts such as the scheduled re-run workflow's dry-run, so the run stays a pure simulation and never blocks on Read-Host.
+
 .EXAMPLE
 Invoke-WorkflowsFailedJobsReRun -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm\.(?:res|ptn|utl)'
 
@@ -201,7 +204,10 @@ function Invoke-WorkflowsFailedJobsReRun {
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.FullName,
 
         [Parameter(Mandatory = $false)]
-        [int] $MaxAttempts = 3
+        [int] $MaxAttempts = 3,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $NonInteractive
     )
 
     # Load helper functions
@@ -264,8 +270,27 @@ function Invoke-WorkflowsFailedJobsReRun {
             TotalNumberOfWorkflows = $workflows.Count
             TargetBranch           = $TargetBranch
         }
-        # Runs non-interactively: with -WhatIf the re-runs are only simulated (logged), without it they are executed.
+        # With -WhatIf the re-runs are only simulated (logged); without it they are executed.
         $null = Invoke-ReRun @reRunInputObject -WhatIf:$WhatIfPreference
+
+        # After a -WhatIf preview, offer to apply the same (already analyzed) set of runs
+        # without repeating the (potentially slow) analysis. -NonInteractive skips the
+        # prompt for automated contexts (e.g. the scheduled workflow's dry-run), assuming
+        # 'n' so the run stays a pure simulation and never blocks on Read-Host.
+        if ($WhatIfPreference) {
+            if ($NonInteractive) {
+                $userInput = 'n'
+            } else {
+                do {
+                    $userInput = Read-Host -Prompt 'Should apply (y/n)?'
+                } while ($userInput -notin @('y', 'n'))
+            }
+
+            switch ($userInput) {
+                'y' { $null = Invoke-ReRun @reRunInputObject -WhatIf:$false }
+                'n' { return }
+            }
+        }
     } else {
         Write-Verbose 'No failed runs to re-trigger.' -Verbose
     }

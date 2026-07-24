@@ -7,7 +7,8 @@ It focuses on the hard-stop logic of Invoke-WorkflowsFailedJobsReRun:
 - A failed run is re-triggered only while its 'run_attempt' is below [MaxAttempts].
 - A failed run that reached [MaxAttempts] (or more) is left alone (hard stop).
 - Successful runs are never re-triggered.
-- With -WhatIf nothing is actually re-triggered.
+- With -WhatIf the re-run is only simulated; the user is then prompted to apply, and
+  -NonInteractive skips that prompt (assuming 'n', so nothing is applied).
 
 The upstream GitHub-querying helpers (Get-GitHubModuleWorkflowList &
 Get-GitHubModuleWorkflowLatestRun) and the re-run action
@@ -99,9 +100,34 @@ Describe 'Test Invoke-WorkflowsFailedJobsReRun' {
                 return @{ id = 1005; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1 }
             }
 
-            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -WhatIf
+            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -WhatIf -NonInteractive
 
             Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 0 -Exactly
+        }
+
+        It 'Applies the re-run when a -WhatIf preview is confirmed interactively (Read-Host y)' {
+            Mock Get-GitHubModuleWorkflowLatestRun {
+                return @{ id = 1007; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1 }
+            }
+            Mock Read-Host { return 'y' }
+
+            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -WhatIf
+
+            # The -WhatIf preview itself does not re-run; confirming with 'y' applies it exactly once.
+            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 1 -Exactly -ParameterFilter { $RunId -eq 1007 }
+            Should -Invoke Read-Host -Times 1 -Exactly
+        }
+
+        It 'Does NOT prompt or apply when -WhatIf is combined with -NonInteractive' {
+            Mock Get-GitHubModuleWorkflowLatestRun {
+                return @{ id = 1008; name = 'avm.res.kusto.cluster'; status = 'completed'; conclusion = 'failure'; run_attempt = 1 }
+            }
+            Mock Read-Host { throw 'Read-Host should not be called in non-interactive mode' }
+
+            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath -MaxAttempts 3 -WhatIf -NonInteractive
+
+            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 0 -Exactly
+            Should -Invoke Read-Host -Times 0 -Exactly
         }
 
         It 'Honors a custom -MaxAttempts (limit = 2 stops a run at run_attempt = 2)' {

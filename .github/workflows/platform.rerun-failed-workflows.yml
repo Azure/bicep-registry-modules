@@ -78,4 +78,7 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Invoke-WorkflowsFailedJobsReRun @functionInput -WhatIf:$whatIf
+          # -NonInteractive skips the post-preview 'apply?' prompt so a -WhatIf dry-run
+          # never blocks on Read-Host on the runner (a real scheduled run has WhatIf=$false
+          # and applies directly without reaching the prompt).
+          Invoke-WorkflowsFailedJobsReRun @functionInput -WhatIf:$whatIf -NonInteractive
