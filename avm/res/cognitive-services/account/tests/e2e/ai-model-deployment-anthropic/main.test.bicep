@@ -22,7 +22,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csaan'
+param serviceShort string = 'csada'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       kind: 'AIServices'
-      customSubDomainName: '${namePrefix}x${serviceShort}ai'
+      customSubDomainName: '${namePrefix}x${serviceShort}ai${substring(uniqueString(resourceGroup.id), 0, 4)}'
       deployments: [
         {
           name: 'claude-sonnet-4-6'
