@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       kind: 'AIServices'
-      customSubDomainName: '${namePrefix}x${serviceShort}ai${substring(uniqueString(resourceGroup.id), 0, 4)}'
+      customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
           name: 'claude-sonnet-4-6'
