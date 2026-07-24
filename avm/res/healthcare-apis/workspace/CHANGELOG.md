@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/healthcare-apis/workspace/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- For child-modules `iotconnector`, `fhirservice` & `dicomservice`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
 ## 0.4.5
 
 ### Changes

@@ -13,6 +13,9 @@ param friendlyName string?
 @description('Required. Gets or sets the data source information.')
 param dataSourceInfo dataSourceInfoType
 
+@description('Optional. Gets or sets the data source set information. Required for some data source types (e.g., AKS).')
+param dataSourceSetInfo dataSourceInfoType?
+
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
@@ -74,6 +77,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     friendlyName: friendlyName
     objectType: 'BackupInstance'
     dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
+    dataSourceSetInfo: dataSourceSetInfo != null ? union(dataSourceSetInfo!, { objectType: 'DatasourceSet' }) : null
     policyInfo: {
       policyId: backupVault::backupPolicy.id
       policyParameters: policyInfo.policyParameters

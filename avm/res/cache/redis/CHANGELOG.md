@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cache/redis/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.17.3
+
+### Changes
+
+- Adding additional description on Azure Cache for Redis announced its retirement
+- Disabling all tests as Azure Cache for Redis announced its retirement and creating new caches is blocked for new customers
+
+### Breaking Changes
+
+- None
+
 ## 0.17.2
 
 ### Changes

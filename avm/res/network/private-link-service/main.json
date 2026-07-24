@@ -5,13 +5,94 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "8136643863928396993"
+      "version": "0.45.15.27210",
+      "templateHash": "4984620659461320321"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
   },
   "definitions": {
+    "ipConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the private link service IP configuration."
+          }
+        },
+        "primary": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the IP configuration is primary or not."
+          }
+        },
+        "privateIPAddressVersion": {
+          "type": "string",
+          "allowedValues": [
+            "IPv4",
+            "IPv6"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether the specific IP configuration is IPv4 or IPv6. Default is IPv4."
+          }
+        },
+        "privateIPAllocationMethod": {
+          "type": "string",
+          "allowedValues": [
+            "Dynamic",
+            "Static"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private IP address allocation method."
+          }
+        },
+        "privateIPAddress": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private IP address of the IP configuration."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the subnet to attach the IP configuration to."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a private link service IP configuration."
+      }
+    },
+    "extendedLocationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the extended location."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "EdgeZone"
+          ],
+          "metadata": {
+            "description": "Required. The type of the extended location."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the extended location of the load balancer."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -45,7 +126,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     },
@@ -120,7 +201,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -150,7 +231,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Network/privateLinkServices@2024-10-01#properties/tags"
+          "source": "Microsoft.Network/privateLinkServices@2025-05-01#properties/tags"
         },
         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
       },
@@ -158,28 +239,39 @@
     },
     "ipConfigurations": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipConfigurationType"
+      },
+      "minLength": 1,
       "metadata": {
         "description": "Required. An array of private link service IP configurations. At least one IP configuration is required on the private link service."
       }
     },
-    "loadBalancerFrontendIpConfigurations": {
+    "loadBalancerFrontendIpConfigurationResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Required. An array of references to the load balancer IP configurations. The Private Link service is tied to the frontend IP address of a Standard Load Balancer. All traffic destined for the service will reach the frontend of the SLB. You can configure SLB rules to direct this traffic to appropriate backend pools where your applications are running. Load balancer frontend IP configurations are different than NAT IP configurations. At least one load balancer frontend IP configuration is required on the private link service."
+        "description": "Optional. Resource IDs of the Standard Load Balancer frontend IP configurations that the Private Link service is tied to. All traffic destined for the service reaches the load balancer frontend, where SLB rules direct it to backend pools. Mutually exclusive with `destinationIPAddress`."
       }
     },
     "extendedLocation": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/extendedLocationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The extended location of the load balancer."
       }
     },
-    "autoApproval": {
-      "type": "object",
-      "defaultValue": {},
+    "autoApprovalSubscriptionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The auto-approval list of the private link service."
+        "description": "Optional. The list of subscription IDs allowed to automatically approve a connection to the private link service. Use `*` to auto-approve all subscriptions."
       }
     },
     "enableProxyProtocol": {
@@ -191,16 +283,40 @@
     },
     "fqdns": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of Fqdn."
       }
     },
-    "visibility": {
-      "type": "object",
-      "defaultValue": {},
+    "visibilitySubscriptionIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions."
+        "description": "Optional. The list of subscription IDs the private link service is visible to. Service providers can limit exposure to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions by using `*`."
+      }
+    },
+    "accessMode": {
+      "type": "string",
+      "allowedValues": [
+        "Default",
+        "Restricted"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The access mode of the private link service. Defaults to \"Default\" when not specified."
+      }
+    },
+    "destinationIPAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Privately routable destination IP for Private Link Service Direct Connect mode, used when consumers need direct IP routing instead of load-balancer forwarding (e.g. databases, legacy applications, on-premises endpoints). Mutually exclusive with `loadBalancerFrontendIpConfigurations`."
       }
     },
     "roleAssignments": {
@@ -243,7 +359,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-privatelinkservice.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -262,18 +378,37 @@
     },
     "privateLinkService": {
       "type": "Microsoft.Network/privateLinkServices",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "extendedLocation": "[if(not(empty(parameters('extendedLocation'))), parameters('extendedLocation'), null())]",
+      "extendedLocation": "[parameters('extendedLocation')]",
       "properties": {
-        "autoApproval": "[parameters('autoApproval')]",
+        "copy": [
+          {
+            "name": "ipConfigurations",
+            "count": "[length(parameters('ipConfigurations'))]",
+            "input": {
+              "name": "[parameters('ipConfigurations')[copyIndex('ipConfigurations')].name]",
+              "properties": {
+                "primary": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'primary')]",
+                "privateIPAddressVersion": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'privateIPAddressVersion')]",
+                "privateIPAllocationMethod": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'privateIPAllocationMethod')]",
+                "privateIPAddress": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'privateIPAddress')]",
+                "subnet": {
+                  "id": "[parameters('ipConfigurations')[copyIndex('ipConfigurations')].subnetResourceId]"
+                }
+              }
+            }
+          }
+        ],
+        "accessMode": "[parameters('accessMode')]",
+        "autoApproval": "[if(not(empty(parameters('autoApprovalSubscriptionIds'))), createObject('subscriptions', parameters('autoApprovalSubscriptionIds')), null())]",
+        "destinationIPAddress": "[parameters('destinationIPAddress')]",
         "enableProxyProtocol": "[parameters('enableProxyProtocol')]",
         "fqdns": "[parameters('fqdns')]",
-        "ipConfigurations": "[parameters('ipConfigurations')]",
-        "loadBalancerFrontendIpConfigurations": "[parameters('loadBalancerFrontendIpConfigurations')]",
-        "visibility": "[parameters('visibility')]"
+        "loadBalancerFrontendIpConfigurations": "[if(not(empty(parameters('loadBalancerFrontendIpConfigurationResourceIds'))), map(coalesce(parameters('loadBalancerFrontendIpConfigurationResourceIds'), createArray()), lambda('resourceId', createObject('id', lambdaVariables('resourceId')))), null())]",
+        "visibility": "[if(not(empty(parameters('visibilitySubscriptionIds'))), createObject('subscriptions', parameters('visibilitySubscriptionIds')), null())]"
       }
     },
     "privateLinkService_lock": {
@@ -340,7 +475,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateLinkService', '2024-05-01', 'full').location]"
+      "value": "[reference('privateLinkService', '2025-05-01', 'full').location]"
     }
   }
 }

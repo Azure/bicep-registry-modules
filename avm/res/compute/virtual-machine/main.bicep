@@ -28,6 +28,13 @@ param imageReference resourceInput<'Microsoft.Compute/virtualMachines@2025-04-01
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
 param plan planType?
 
+@description('Optional. Specifies the disk controller type.')
+@allowed([
+  'NVMe'
+  'SCSI'
+])
+param diskControllerType string?
+
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
 
@@ -233,7 +240,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Compute/virtualMachines@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.Compute/virtualMachines@2025-11-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -544,7 +551,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2025-01-02' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
   name: name
   location: location
   identity: identity
@@ -567,6 +574,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     }
     storageProfile: {
       imageReference: imageReference
+      diskControllerType: diskControllerType ?? 'SCSI'
       osDisk: {
         name: !empty(osDisk.managedDisk.?resourceId)
           ? last(split(osDisk.managedDisk.resourceId!, '/'))

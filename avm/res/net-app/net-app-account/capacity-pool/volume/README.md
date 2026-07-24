@@ -55,6 +55,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exportPolicy`](#parameter-exportpolicy) | object | The export policy rules. |
+| [`isLargeVolume`](#parameter-islargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-kerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
@@ -63,9 +64,11 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityStyle`](#parameter-securitystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbAccessBasedEnumeration`](#parameter-smbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`tags`](#parameter-tags) | object | Tags for volumes. |
 | [`throughputMibps`](#parameter-throughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
@@ -494,6 +497,14 @@ Has root access to volume.
 - Required: No
 - Type: bool
 
+### Parameter: `isLargeVolume`
+
+Specifies whether volume is a Large Volume or Regular Volume.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `kerberosEnabled`
 
 Define if a volume is KerberosEnabled.
@@ -689,6 +700,21 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
+### Parameter: `smbAccessBasedEnumeration`
+
+Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `smbContinuouslyAvailable`
 
 Enables continuously available share property for SMB volume. Only applicable for SMB volume.
@@ -719,6 +745,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `tags`
+
+Tags for volumes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `throughputMibps`
 
