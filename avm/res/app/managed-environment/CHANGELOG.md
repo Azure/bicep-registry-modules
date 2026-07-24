@@ -6,6 +6,17 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Added support for Diagnostic Settings & Private Endpoints
+- Upgraded all `avm-common-types` module references to use version `0.7.0`
+
+### Breaking Changes
+
+- None
+
+## 0.14.0
+
+### Changes
+
 - Fixed `staticIp` output failing to deploy for Managed Environments that do not expose a static IP (e.g., external/non-VNet environments). The output is now nullable and uses safe-dereference (`.?staticIp`).
 
 ### Breaking Changes
