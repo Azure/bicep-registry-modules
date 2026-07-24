@@ -337,12 +337,13 @@ param contactEmails = [
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
 | [`filter`](#parameter-filter) | object | The filter to use for restricting which resources are considered within the budget. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
+| [`notifications`](#parameter-notifications) | array | The list of notifications to configure, each with independent operator and threshold type. |
 | [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
 | [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array | The list of resource groups that contain the resources that are to be considered within the budget. |
 | [`startDate`](#parameter-startdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
-| [`thresholds`](#parameter-thresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
-| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+| [`thresholds`](#parameter-thresholds) | array | Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`thresholdType`](#parameter-thresholdtype) | string | Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 
 ### Parameter: `amount`
 
@@ -425,6 +426,59 @@ Location deployment metadata.
 - Type: string
 - Default: `[deployment().location]`
 
+### Parameter: `notifications`
+
+The list of notifications to configure, each with independent operator and threshold type.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`operator`](#parameter-notificationsoperator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
+| [`threshold`](#parameter-notificationsthreshold) | int | Percent threshold of budget for when to get a notification. Must be between 1 and 1000. |
+| [`thresholdType`](#parameter-notificationsthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+
+### Parameter: `notifications.operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
+### Parameter: `notifications.threshold`
+
+Percent threshold of budget for when to get a notification. Must be between 1 and 1000.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 1000
+
+### Parameter: `notifications.thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecasted'
+  ]
+  ```
+
 ### Parameter: `operator`
 
 The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
@@ -478,7 +532,7 @@ The start date for the budget. Start date should be the first day of the month a
 
 ### Parameter: `thresholds`
 
-Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
+Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
 
 - Required: No
 - Type: array
@@ -495,7 +549,7 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
 
 ### Parameter: `thresholdType`
 
-The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
 
 - Required: No
 - Type: string
