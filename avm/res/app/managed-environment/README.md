@@ -378,7 +378,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           {
             fqdn: 'abc.managedEnvironments.com'
             ipAddresses: [
-              '10.0.0.10'
+              '10.0.2.10'
             ]
           }
         ]
@@ -388,7 +388,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
             properties: {
               groupId: 'managedEnvironments'
               memberName: 'managedEnvironments'
-              privateIPAddress: '10.0.0.10'
+              privateIPAddress: '10.0.2.10'
             }
           }
         ]
@@ -600,7 +600,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
             {
               "fqdn": "abc.managedEnvironments.com",
               "ipAddresses": [
-                "10.0.0.10"
+                "10.0.2.10"
               ]
             }
           ],
@@ -610,7 +610,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
               "properties": {
                 "groupId": "managedEnvironments",
                 "memberName": "managedEnvironments",
-                "privateIPAddress": "10.0.0.10"
+                "privateIPAddress": "10.0.2.10"
               }
             }
           ],
@@ -794,7 +794,7 @@ param privateEndpoints = [
       {
         fqdn: 'abc.managedEnvironments.com'
         ipAddresses: [
-          '10.0.0.10'
+          '10.0.2.10'
         ]
       }
     ]
@@ -804,7 +804,7 @@ param privateEndpoints = [
         properties: {
           groupId: 'managedEnvironments'
           memberName: 'managedEnvironments'
-          privateIPAddress: '10.0.0.10'
+          privateIPAddress: '10.0.2.10'
         }
       }
     ]
