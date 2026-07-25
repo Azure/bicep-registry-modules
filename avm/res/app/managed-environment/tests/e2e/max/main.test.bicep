@@ -214,7 +214,7 @@ module testDeployment '../../../main.bicep' = [
               name: 'myIPconfig'
               properties: {
                 groupId: 'managedEnvironments'
-                memberName: 'default'
+                memberName: 'managedEnvironments'
                 privateIPAddress: '10.0.0.10'
               }
             }

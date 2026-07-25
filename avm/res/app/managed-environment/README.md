@@ -387,7 +387,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
             name: 'myIPconfig'
             properties: {
               groupId: 'managedEnvironments'
-              memberName: 'default'
+              memberName: 'managedEnvironments'
               privateIPAddress: '10.0.0.10'
             }
           }
@@ -609,7 +609,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
               "name": "myIPconfig",
               "properties": {
                 "groupId": "managedEnvironments",
-                "memberName": "default",
+                "memberName": "managedEnvironments",
                 "privateIPAddress": "10.0.0.10"
               }
             }
@@ -803,7 +803,7 @@ param privateEndpoints = [
         name: 'myIPconfig'
         properties: {
           groupId: 'managedEnvironments'
-          memberName: 'default'
+          memberName: 'managedEnvironments'
           privateIPAddress: '10.0.0.10'
         }
       }
