@@ -29,7 +29,7 @@ param replicationPolicies replicationPolicyType[]?
 param replicationAlertSettings replicationAlertSettingsType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
@@ -177,7 +177,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.recoveryservices-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -342,6 +342,7 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
     storageTypeState: backupConfig.?storageTypeState
     isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable
     enableTelemetry: enableReferencedModulesTelemetry
+    softDeleteRetentionPeriodInDays: backupConfig.?softDeleteRetentionPeriodInDays
   }
 }
 
@@ -378,14 +379,18 @@ resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -398,7 +403,7 @@ resource rsv_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   }
 ]
 
-module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-rsv-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -578,7 +583,7 @@ type backupConfigType = {
   resourceGuardOperationRequests: object[]?
 
   @description('Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes.')
-  softDeleteFeatureState: ('AlwaysON' | 'Disabled' | 'Enabled')?
+  softDeleteFeatureState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')?
 
   @description('Optional. Storage type.')
   storageModelType: ('GeoRedundant' | 'LocallyRedundant' | 'ReadAccessGeoZoneRedundant' | 'ZoneRedundant')?
@@ -591,6 +596,9 @@ type backupConfigType = {
 
   @description('Optional. Is soft delete feature state editable.')
   isSoftDeleteFeatureStateEditable: bool?
+
+  @description('Optional. Soft delete retention period in days.')
+  softDeleteRetentionPeriodInDays: int?
 }
 
 @export()

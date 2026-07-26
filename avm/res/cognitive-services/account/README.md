@@ -77,10 +77,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -140,10 +140,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -201,10 +201,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -260,10 +260,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -318,10 +318,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -372,10 +372,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -426,9 +426,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'GlobalStandard'
@@ -467,9 +468,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "GlobalStandard"
@@ -500,9 +502,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'GlobalStandard'
@@ -1525,10 +1528,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1580,10 +1583,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1631,10 +1634,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'

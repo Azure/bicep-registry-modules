@@ -54,7 +54,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | [`computeIsolationEnabled`](#parameter-computeisolationenabled) | bool | Whether Compute Isolation is enabled or not. Disabled if value not provided. |
 | [`customLibraries`](#parameter-customlibraries) | array | List of custom libraries/packages associated with the spark pool. |
 | [`defaultSparkLogFolder`](#parameter-defaultsparklogfolder) | string | The default folder where Spark logs will be written. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`dynamicExecutorAllocation`](#parameter-dynamicexecutorallocation) |  | Dynamic Executor Allocation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`libraryRequirements`](#parameter-libraryrequirements) |  | Library version requirements. |
@@ -161,7 +161,7 @@ The default folder where Spark logs will be written.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -55,17 +55,11 @@ module testDeployment '../../../main.bicep' = [
       ipConfigurations: [
         {
           name: '${serviceShort}01'
-          properties: {
-            subnet: {
-              id: nestedDependencies.outputs.subnetResourceId
-            }
-          }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      loadBalancerFrontendIpConfigurations: [
-        {
-          id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-        }
+      loadBalancerFrontendIpConfigurationResourceIds: [
+        nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
       ]
     }
   }

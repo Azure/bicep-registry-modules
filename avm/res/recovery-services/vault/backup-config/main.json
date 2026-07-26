@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "1287028176609138498"
+      "version": "0.45.6.27763",
+      "templateHash": "2431393405068255158"
     },
     "name": "Recovery Services Vault Backup Config",
     "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -50,7 +50,8 @@
       "allowedValues": [
         "AlwaysON",
         "Disabled",
-        "Enabled"
+        "Enabled",
+        "Invalid"
       ],
       "metadata": {
         "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
@@ -100,6 +101,13 @@
         "description": "Optional. Is soft delete feature state editable."
       }
     },
+    "softDeleteRetentionPeriodInDays": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Soft delete retention period in days."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -132,12 +140,12 @@
     "rsv": {
       "existing": true,
       "type": "Microsoft.RecoveryServices/vaults",
-      "apiVersion": "2025-08-01",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('recoveryVaultName')]"
     },
     "backupConfig": {
       "type": "Microsoft.RecoveryServices/vaults/backupconfig",
-      "apiVersion": "2025-08-01",
+      "apiVersion": "2026-01-01",
       "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
       "properties": {
         "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
@@ -146,7 +154,8 @@
         "storageModelType": "[parameters('storageModelType')]",
         "storageType": "[parameters('storageType')]",
         "storageTypeState": "[parameters('storageTypeState')]",
-        "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]"
+        "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]",
+        "softDeleteRetentionPeriodInDays": "[parameters('softDeleteRetentionPeriodInDays')]"
       }
     }
   },

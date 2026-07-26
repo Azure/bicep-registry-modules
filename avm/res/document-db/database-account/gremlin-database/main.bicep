@@ -19,6 +19,28 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. Setting throughput at the database level is only recommended for development/test or when workload across all graphs in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the graph level and not at the database level.')
 param throughput int?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-gremlindb.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
   name: databaseAccountName
 }
@@ -46,6 +68,8 @@ resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [
   for graph in (graphs ?? []): {
     name: '${uniqueString(deployment().name, gremlinDatabase.name)}-gremlindb-${graph.name}'
@@ -55,6 +79,7 @@ module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [
       databaseAccountName: databaseAccountName
       indexingPolicy: graph.?indexingPolicy
       partitionKeyPaths: graph.?partitionKeyPaths
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

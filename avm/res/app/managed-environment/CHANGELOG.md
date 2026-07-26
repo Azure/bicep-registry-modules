@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- Fixed `staticIp` output failing to deploy for Managed Environments that do not expose a static IP (e.g., external/non-VNet environments). The output is now nullable and uses safe-dereference (`.?staticIp`).
+
+### Breaking Changes
+
+- `staticIp` output type changed from `string` to `string?` (nullable). Consumers assigning this output to a non-nullable `string` parameter must update to accept `string?`.
+
 ## 0.13.3
 
 ### Changes

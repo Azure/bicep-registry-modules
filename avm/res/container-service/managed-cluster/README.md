@@ -608,7 +608,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           ]
         }
         revisions: [
-          'asm-1-27'
+          'asm-1-29'
         ]
       }
       mode: 'Istio'
@@ -685,7 +685,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             ]
           },
           "revisions": [
-            "asm-1-27"
+            "asm-1-29"
           ]
         },
         "mode": "Istio"
@@ -746,7 +746,7 @@ param serviceMeshProfile = {
       ]
     }
     revisions: [
-      'asm-1-27'
+      'asm-1-29'
     ]
   }
   mode: 'Istio'
@@ -3183,7 +3183,7 @@ param tags = {
 | [`bootstrapProfile`](#parameter-bootstrapprofile) | object | Profile of the cluster bootstrap configuration. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
 | [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
 | [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | The Resource ID of the disk encryption set to use for enabling encryption at rest. For security reasons, this value should be provided. |
 | [`dnsPrefix`](#parameter-dnsprefix) | string | Specifies the DNS prefix specified when creating the managed cluster. |
@@ -4285,7 +4285,7 @@ Ingress type for the default NginxIngressController custom resource. It will be 
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
