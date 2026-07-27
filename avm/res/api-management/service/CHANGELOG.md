@@ -2,20 +2,11 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/api-management/service/CHANGELOG.md).
 
-## 0.15.1
-
-### Changes
-
-- Disabled additional insecure TLS ciphers by default in `customProperties`: `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384`, `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384`, `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256`, `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA`, `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA`, `TLS_RSA_WITH_AES_256_GCM_SHA384`.
-
-### Breaking Changes
-
-- None
 ## 0.15.0
 
 ### Changes
 
-- None
+- Disabled additional insecure TLS ciphers by default in `customProperties`: `TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384`, `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384`, `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256`, `TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA`, `TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA`, `TLS_RSA_WITH_AES_256_GCM_SHA384`.
 
 ### Breaking Changes
 
