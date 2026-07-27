@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -55,30 +55,20 @@ module testDeployment '../../../main.bicep' = [
       ipConfigurations: [
         {
           name: '${serviceShort}01'
-          properties: {
-            primary: true
-            privateIPAllocationMethod: 'Dynamic'
-            subnet: {
-              id: nestedDependencies.outputs.subnetResourceId
-            }
-          }
+          primary: true
+          privateIPAllocationMethod: 'Dynamic'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      loadBalancerFrontendIpConfigurations: [
-        {
-          id: nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
-        }
+      loadBalancerFrontendIpConfigurationResourceIds: [
+        nestedDependencies.outputs.loadBalancerFrontendIpConfigurationResourceId
       ]
-      autoApproval: {
-        subscriptions: [
-          '*'
-        ]
-      }
-      visibility: {
-        subscriptions: [
-          subscription().subscriptionId
-        ]
-      }
+      autoApprovalSubscriptionIds: [
+        '*'
+      ]
+      visibilitySubscriptionIds: [
+        subscription().subscriptionId
+      ]
       enableProxyProtocol: true
       fqdns: [
         '${serviceShort}.plsfqdn01.azure.privatelinkservice'

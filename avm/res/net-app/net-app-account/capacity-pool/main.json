@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6507019057705966012"
+      "version": "0.45.15.27210",
+      "templateHash": "493722665638581986"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -175,6 +175,17 @@
             "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
           }
         },
+        "smbAccessBasedEnumeration": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+          }
+        },
         "kerberosEnabled": {
           "type": "bool",
           "nullable": true,
@@ -195,6 +206,23 @@
           "metadata": {
             "description": "Optional. The throughput in MiBps for the NetApp account."
           }
+        },
+        "isLargeVolume": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether volume is a Large Volume or Regular Volume."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01#properties/tags"
+            },
+            "description": "Optional. Tags for volumes."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -842,6 +870,9 @@
           "smbNonBrowsable": {
             "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbNonBrowsable')]"
           },
+          "smbAccessBasedEnumeration": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbAccessBasedEnumeration')]"
+          },
           "volumeType": {
             "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'volumeType')]"
           },
@@ -854,8 +885,14 @@
           "throughputMibps": {
             "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'throughputMibps')]"
           },
+          "isLargeVolume": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'isLargeVolume')]"
+          },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'tags')]"
           }
         },
         "template": {
@@ -865,8 +902,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14589455478287977431"
+              "version": "0.45.15.27210",
+              "templateHash": "16474657887557932255"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -1385,6 +1422,17 @@
                 "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
               }
             },
+            "smbAccessBasedEnumeration": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+              }
+            },
             "smbNonBrowsable": {
               "type": "string",
               "defaultValue": "Disabled",
@@ -1401,6 +1449,13 @@
               "defaultValue": false,
               "metadata": {
                 "description": "Optional. Define if a volume is KerberosEnabled."
+              }
+            },
+            "isLargeVolume": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether volume is a Large Volume or Regular Volume."
               }
             },
             "securityStyle": {
@@ -1434,6 +1489,16 @@
               "metadata": {
                 "description": "Optional. Enable/Disable usage telemetry for module."
               }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01#properties/tags"
+                },
+                "description": "Optional. Tags for volumes."
+              },
+              "nullable": true
             }
           },
           "variables": {
@@ -1503,7 +1568,7 @@
             "vnet::subnet": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-05-01",
               "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/')))]"
@@ -1538,7 +1603,7 @@
               "condition": "[not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp'))]",
               "existing": true,
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-05-01",
               "subscriptionId": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]]",
               "name": "[last(split(parameters('keyVaultPrivateEndpointResourceId'), '/'))]"
@@ -1555,7 +1620,7 @@
             "vnet": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworks",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-05-01",
               "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
               "name": "[split(parameters('subnetResourceId'), '/')[8]]"
@@ -1565,8 +1630,9 @@
               "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
               "location": "[parameters('location')]",
-              "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), shallowMerge(createArray(createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId')), if(equals(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'endpointType'), 'dst'), createObject('replicationSchedule', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'replicationSchedule')), createObject()), if(equals(parameters('volumeType'), 'Migration'), createObject('remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()))), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', coalesce(parameters('exportPolicy'), createObject('rules', createArray())), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled')), if(not(equals(parameters('throughputMibps'), null())), createObject('throughputMibps', parameters('throughputMibps')), createObject())))]",
-              "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]"
+              "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), shallowMerge(createArray(createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId')), if(equals(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'endpointType'), 'dst'), createObject('replicationSchedule', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'replicationSchedule')), createObject()), if(equals(parameters('volumeType'), 'Migration'), createObject('remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()))), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', coalesce(parameters('exportPolicy'), createObject('rules', createArray())), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'smbAccessBasedEnumeration', parameters('smbAccessBasedEnumeration'), 'kerberosEnabled', parameters('kerberosEnabled'), 'isLargeVolume', parameters('isLargeVolume')), if(not(equals(parameters('throughputMibps'), null())), createObject('throughputMibps', parameters('throughputMibps')), createObject())))]",
+              "zones": "[if(not(equals(parameters('availabilityZone'), 0)), array(string(parameters('availabilityZone'))), null())]",
+              "tags": "[parameters('tags')]"
             },
             "volume_roleAssignments": {
               "copy": {

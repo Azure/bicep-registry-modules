@@ -944,6 +944,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               'NFSv3'
             ]
             subnetResourceId: '<subnetResourceId>'
+            tags: {
+              Description: 'This is a Test Tag for the volume'
+            }
             usageThreshold: 107374182400
           }
         ]
@@ -1072,6 +1075,9 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 "NFSv3"
               ],
               "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "Description": "This is a Test Tag for the volume"
+              },
               "usageThreshold": 107374182400
             }
           ]
@@ -1202,6 +1208,9 @@ param capacityPools = [
           'NFSv3'
         ]
         subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Description: 'This is a Test Tag for the volume'
+        }
         usageThreshold: 107374182400
       }
     ]
@@ -1785,6 +1794,7 @@ List of volumes to create in the capacity pool.
 | [`dataProtection`](#parameter-capacitypoolsvolumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`encryptionKeySource`](#parameter-capacitypoolsvolumesencryptionkeysource) | string | The source of the encryption key. |
 | [`exportPolicy`](#parameter-capacitypoolsvolumesexportpolicy) | object | Export policy rules. |
+| [`isLargeVolume`](#parameter-capacitypoolsvolumesislargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-capacitypoolsvolumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
@@ -1792,9 +1802,11 @@ List of volumes to create in the capacity pool.
 | [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-capacitypoolsvolumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-capacitypoolsvolumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbAccessBasedEnumeration`](#parameter-capacitypoolsvolumessmbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`tags`](#parameter-capacitypoolsvolumestags) | object | Tags for volumes. |
 | [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
@@ -2190,6 +2202,13 @@ Has root access to volume.
 - Required: No
 - Type: bool
 
+### Parameter: `capacityPools.volumes.isLargeVolume`
+
+Specifies whether volume is a Large Volume or Regular Volume.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `capacityPools.volumes.kerberosEnabled`
 
 Define if a volume is KerberosEnabled.
@@ -2361,6 +2380,20 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
+### Parameter: `capacityPools.volumes.smbAccessBasedEnumeration`
+
+Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `capacityPools.volumes.smbContinuouslyAvailable`
 
 Enables continuously available share property for SMB volume. Only applicable for SMB volume.
@@ -2388,6 +2421,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.tags`
+
+Tags for volumes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `capacityPools.volumes.throughputMibps`
 

@@ -29,7 +29,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.RecoveryServices/vaults` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults)</li></ul> |
-| `Microsoft.RecoveryServices/vaults/backupconfig` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupconfig)</li></ul> |
+| `Microsoft.RecoveryServices/vaults/backupconfig` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupconfig.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2026-01-01/vaults/backupconfig)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupPolicies` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backuppolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/backupPolicies)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/replicationAlertSettings` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_replicationalertsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-08-01/vaults/replicationAlertSettings)</li></ul> |
@@ -1807,7 +1807,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     name: 'rsvwaf001'
     // Non-required parameters
     backupConfig: {
-      enhancedSecurityState: 'AlwaysON'
+      enhancedSecurityState: 'Enabled'
       softDeleteFeatureState: 'AlwaysON'
     }
     backupPolicies: [
@@ -2184,7 +2184,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     "backupConfig": {
       "value": {
-        "enhancedSecurityState": "AlwaysON",
+        "enhancedSecurityState": "Enabled",
         "softDeleteFeatureState": "AlwaysON"
       }
     },
@@ -2579,7 +2579,7 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 param name = 'rsvwaf001'
 // Non-required parameters
 param backupConfig = {
-  enhancedSecurityState: 'AlwaysON'
+  enhancedSecurityState: 'Enabled'
   softDeleteFeatureState: 'AlwaysON'
 }
 param backupPolicies = [
@@ -2997,6 +2997,7 @@ The backup configuration.
 | [`name`](#parameter-backupconfigname) | string | Name of the Azure Recovery Service Vault Backup Policy. |
 | [`resourceGuardOperationRequests`](#parameter-backupconfigresourceguardoperationrequests) | array | ResourceGuard Operation Requests. |
 | [`softDeleteFeatureState`](#parameter-backupconfigsoftdeletefeaturestate) | string | Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes. |
+| [`softDeleteRetentionPeriodInDays`](#parameter-backupconfigsoftdeleteretentionperiodindays) | int | Soft delete retention period in days. |
 | [`storageModelType`](#parameter-backupconfigstoragemodeltype) | string | Storage type. |
 | [`storageType`](#parameter-backupconfigstoragetype) | string | Storage type. |
 | [`storageTypeState`](#parameter-backupconfigstoragetypestate) | string | Once a machine is registered against a resource, the storageTypeState is always Locked. |
@@ -3049,8 +3050,16 @@ Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM 
     'AlwaysON'
     'Disabled'
     'Enabled'
+    'Invalid'
   ]
   ```
+
+### Parameter: `backupConfig.softDeleteRetentionPeriodInDays`
+
+Soft delete retention period in days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `backupConfig.storageModelType`
 
@@ -4698,7 +4707,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection

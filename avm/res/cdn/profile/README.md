@@ -433,8 +433,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
         cipherSuiteSetType: 'Customized'
         customizedCipherSuiteSet: {
           cipherSuiteSetForTls12: [
-            'DHE_RSA_AES128_GCM_SHA256'
-            'DHE_RSA_AES256_GCM_SHA384'
+            'ECDHE_RSA_AES128_GCM_SHA256'
+            'ECDHE_RSA_AES256_GCM_SHA384'
           ]
           cipherSuiteSetForTls13: [
             'TLS_AES_128_GCM_SHA256'
@@ -550,8 +550,8 @@ module profile 'br/public:avm/res/cdn/profile:<version>' = {
           "cipherSuiteSetType": "Customized",
           "customizedCipherSuiteSet": {
             "cipherSuiteSetForTls12": [
-              "DHE_RSA_AES128_GCM_SHA256",
-              "DHE_RSA_AES256_GCM_SHA384"
+              "ECDHE_RSA_AES128_GCM_SHA256",
+              "ECDHE_RSA_AES256_GCM_SHA384"
             ],
             "cipherSuiteSetForTls13": [
               "TLS_AES_128_GCM_SHA256",
@@ -669,8 +669,8 @@ param customDomains = [
     cipherSuiteSetType: 'Customized'
     customizedCipherSuiteSet: {
       cipherSuiteSetForTls12: [
-        'DHE_RSA_AES128_GCM_SHA256'
-        'DHE_RSA_AES256_GCM_SHA384'
+        'ECDHE_RSA_AES128_GCM_SHA256'
+        'ECDHE_RSA_AES256_GCM_SHA384'
       ]
       cipherSuiteSetForTls13: [
         'TLS_AES_128_GCM_SHA256'
@@ -2528,7 +2528,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`afdEndpoints`](#parameter-afdendpoints) | array | Array of AFD endpoint objects. |
 | [`customDomains`](#parameter-customdomains) | array | Array of custom domain objects. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`endpoint`](#parameter-endpoint) | object | Endpoint properties (see [ref](https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/endpoints?pivots=deployment-language-bicep#endpointproperties) for details). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -3069,7 +3069,7 @@ The name of the secret.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. Note: the `logAnalyticsDestinationType` property is not supported for CDN profiles, as Azure CDN only emits resource logs in Azure Diagnostics mode (see https://learn.microsoft.com/azure/azure-monitor/reference/tables/azurediagnostics#resources-using-azure-diagnostics-mode). Any value provided for this property is ignored.
 
 - Required: No
 - Type: array

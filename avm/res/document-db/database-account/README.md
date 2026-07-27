@@ -3718,7 +3718,7 @@ param zoneRedundant = true
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`defaultIdentity`](#parameter-defaultidentity) | object | The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
@@ -4353,7 +4353,7 @@ The resource ID of the user assigned identity to use as the default identity.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings for the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
