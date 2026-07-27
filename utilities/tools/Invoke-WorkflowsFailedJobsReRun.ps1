@@ -47,8 +47,12 @@ function Invoke-ReRun {
         $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
         Write-Progress -Activity ('Re-running failed jobs for workflow [{0}]' -f $run.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
 
-        if ($PSCmdlet.ShouldProcess(("Re-run of failed jobs for GitHub workflow [{0}] for branch [$TargetBranch]" -f $run.name), 'Invoke')) {
-            $null = Invoke-GitHubWorkflowRunFailedJobsReRun @RestInputObject -RunId $run.id
+        try {
+            if ($PSCmdlet.ShouldProcess(("Re-run of failed jobs for GitHub workflow [{0}] for branch [$TargetBranch]" -f $run.name), 'Invoke')) {
+                $null = Invoke-GitHubWorkflowRunFailedJobsReRun @RestInputObject -RunId $run.id
+            }
+        } catch {
+            Write-Warning ('Failed to re-run failed jobs for workflow [{0}] for branch [{1}]. Error: {2}' -f $run.name, $TargetBranch, $_.Exception.Message)
         }
         $currentCount++
     }
@@ -306,6 +310,7 @@ function Invoke-WorkflowsFailedJobsReRun {
     Write-Verbose ('Re-run summary for branch [{0}]:' -f $TargetBranch) -Verbose
     Write-Verbose ('  Workflows analyzed: [{0}]' -f $workflows.Count) -Verbose
     Write-Verbose ('  Failed runs {0}: [{1}]' -f $reRunState, $runsToReTrigger.Count) -Verbose
+    $runsToReTrigger | ForEach-Object { Write-Verbose ('    - [{0}]' -f $_.name) -Verbose }
     Write-Verbose ('  Skipped by hard stop (>= [{0}] attempts): [{1}]' -f $MaxAttempts, $hardStoppedRuns.Count) -Verbose
     if ($hardStoppedRuns.Count -gt 0) {
         Write-Verbose ('  Hard-stopped workflows: {0}' -f (($hardStoppedRuns | ForEach-Object { $_.name }) -join ', ')) -Verbose
