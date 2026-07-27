@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.44.1.10279",
-      "templateHash": "15201989127235081097"
+      "templateHash": "13459132619001493579"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1382,6 +1382,13 @@
       "metadata": {
         "description": "Optional. Commitment plans to deploy for the cognitive services account."
       }
+    },
+    "enableDefenderForAI": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module."
+      }
     }
   },
   "variables": {
@@ -1553,6 +1560,18 @@
       "apiVersion": "2025-06-01",
       "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}', coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].hostingModel, coalesce(parameters('commitmentPlans'), createArray())[copyIndex()].planType))]",
       "properties": "[coalesce(parameters('commitmentPlans'), createArray())[copyIndex()]]",
+      "dependsOn": [
+        "cognitiveService"
+      ]
+    },
+    "cognitiveService_defenderForAISettings": {
+      "condition": "[not(equals(parameters('enableDefenderForAI'), null()))]",
+      "type": "Microsoft.CognitiveServices/accounts/defenderForAISettings",
+      "apiVersion": "2025-06-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'Default')]",
+      "properties": {
+        "state": "[if(parameters('enableDefenderForAI'), 'Enabled', 'Disabled')]"
+      },
       "dependsOn": [
         "cognitiveService"
       ]
