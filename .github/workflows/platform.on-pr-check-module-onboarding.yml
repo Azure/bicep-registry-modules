@@ -1,0 +1,82 @@
+# Workflow to verify that new modules are registered in the official allowlist
+name: .Platform - Verify New Module Registration
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    paths:
+      - "avm/**/main.bicep"
+
+jobs:
+  verify-new-module:
+    name: Verify New Module Registration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            avm/**/main.bicep
+
+      - name: Detect changed modules
+        id: detect-modules
+        shell: pwsh
+        run: |
+          $result = ./utilities/platform/onboarding/Get-ChangedModules.ps1 `
+            -ChangedFiles '${{ steps.changed-files.outputs.all_changed_files }}' | ConvertFrom-Json
+
+          # Set outputs for GitHub Actions
+          "has_changed_modules=$($result.hasChangedModules.ToString().ToLower())" >> $env:GITHUB_OUTPUT
+          "changed_modules=$($result.changedModules | ConvertTo-Json -Compress)" >> $env:GITHUB_OUTPUT
+
+      - name: Fetch registered modules list
+        id: fetch-list
+        if: steps.detect-modules.outputs.has_changed_modules == 'true'
+        shell: pwsh
+        run: |
+          ./utilities/platform/onboarding/Get-RegisteredModulesList.ps1 -OutputFile 'allowlist.json'
+
+      - name: Verify modules are registered
+        if: steps.detect-modules.outputs.has_changed_modules == 'true'
+        shell: pwsh
+        run: |
+          ./utilities/platform/onboarding/Test-ModulesRegistered.ps1 `
+            -ModulesJson '${{ steps.detect-modules.outputs.changed_modules }}' `
+            -AllowlistFile 'allowlist.json'
+
+      # - name: Post comment on failure
+      #   if: failure() && steps.detect-modules.outputs.has_changed_modules == 'true'
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const modules = JSON.parse('${{ steps.detect-modules.outputs.changed_modules }}');
+      #       const body = `## ⚠️ Module Registration Required
+
+      #       This PR modifies module(s) that are not yet registered in the official AVM index.
+
+      #       **Modules detected:**
+      #       ${modules.map(m => `- \`${m}\``).join('\n')}
+
+      #       **Action required:**
+      #       Please ensure the module(s) are registered in the [AVM Bicep Resource Modules index](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/) before this PR can be merged.
+
+      #       For more information on registering new modules, please refer to the [AVM contribution guidelines](https://azure.github.io/Azure-Verified-Modules/contributing/bicep/).`;
+
+      #       github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: body
+      #       });
