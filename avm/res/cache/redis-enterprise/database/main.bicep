@@ -75,9 +75,33 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @description('Optional. The database-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // ============== //
 // Resources      //
 // ============== //
+
+var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.cache-redisenterprise-database.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource redisCluster 'Microsoft.Cache/redisEnterprise@2025-07-01' existing = {
   name: redisClusterName
@@ -121,6 +145,7 @@ module database_accessPolicyAssignments 'access-policy-assignment/main.bicep' = 
       databaseName: redisDatabase.name
       accessPolicyName: assignment.?accessPolicyName
       userObjectId: assignment.userObjectId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -171,9 +196,7 @@ output endpoint string = '${redisCluster.properties.hostName}:${redisDatabase.pr
 
 @secure()
 @description('The primary access key.')
-output primaryAccessKey string? = accessKeysAuthentication == 'Enabled'
-  ? redisDatabase.listKeys().primaryKey
-  : null
+output primaryAccessKey string? = accessKeysAuthentication == 'Enabled' ? redisDatabase.listKeys().primaryKey : null
 
 @secure()
 @description('The primary connection string.')
@@ -189,9 +212,7 @@ output primaryStackExchangeRedisConnectionString string? = accessKeysAuthenticat
 
 @secure()
 @description('The secondary access key.')
-output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled'
-  ? redisDatabase.listKeys().secondaryKey
-  : null
+output secondaryAccessKey string? = accessKeysAuthentication == 'Enabled' ? redisDatabase.listKeys().secondaryKey : null
 
 @secure()
 @description('The secondary connection string.')
