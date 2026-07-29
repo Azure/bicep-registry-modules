@@ -1,0 +1,84 @@
+# Workflow for automatically re-running failed module pipelines on the target branch.
+# Transient / capacity deployment failures on 'main' otherwise require manual re-kicking,
+# which blocks a module's publish tag from ever being created.
+# This scheduled workflow re-runs only the failed jobs of the latest failed run of each
+# module workflow (as a new attempt of the same run, so it stays tied to the original commit),
+# up to a bounded number of attempts (hard stop).
+name: .Platform - Rerun failed workflows
+
+on:
+  schedule:
+    # Every 90 minutes (two crons combine to a 90-minute cadence across the day)
+    - cron: "0 0,3,6,9,12,15,18,21 * * *" # 00:00, 03:00, 06:00, 09:00, 12:00, 15:00, 18:00, 21:00
+    - cron: "30 1,4,7,10,13,16,19,22 * * *" # 01:30, 04:30, 07:30, 10:30, 13:30, 16:30, 19:30, 22:30
+  workflow_dispatch:
+    inputs:
+      whatIf:
+        type: boolean
+        description: "Simulate execution (no re-runs are triggered)"
+        required: false
+        default: false
+
+env:
+  workflowPath: ".github/workflows/platform.rerun-failed-workflows.yml"
+
+# Avoid overlapping scheduled scans re-triggering the same runs concurrently.
+concurrency:
+  group: ${{ github.workflow }}
+
+# Restrict the default GITHUB_TOKEN to read-only; jobs request any elevated scopes they need.
+permissions:
+  contents: read
+
+jobs:
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+  rerun-failed-workflows:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write # Required to re-run failed jobs via the 'rerun-failed-jobs' REST endpoint
+      contents: read
+    needs:
+      - job_initialize_pipeline
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Re-run failed workflows
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tools' 'Invoke-WorkflowsFailedJobsReRun.ps1')
+
+          $whatIf = [System.Convert]::ToBoolean((('${{ needs.job_initialize_pipeline.outputs.workflowInput }}') | ConvertFrom-Json).whatIf)
+
+          $functionInput = @{
+            RepositoryOwner = "${{ github.repository_owner }}"
+            RepositoryName  = "${{ github.event.repository.name }}"
+            RepoRoot        = $env:GITHUB_WORKSPACE
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          # -NonInteractive skips the post-preview 'apply?' prompt so a -WhatIf dry-run
+          # never blocks on Read-Host on the runner (a real scheduled run has WhatIf=$false
+          # and applies directly without reaching the prompt).
+          Invoke-WorkflowsFailedJobsReRun @functionInput -WhatIf:$whatIf -NonInteractive

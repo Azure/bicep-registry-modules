@@ -6,11 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+- None
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.5.4
 

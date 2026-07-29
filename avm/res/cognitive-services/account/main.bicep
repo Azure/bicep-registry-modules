@@ -142,6 +142,9 @@ param allowProjectManagement bool?
 @description('Optional. Commitment plans to deploy for the cognitive services account.')
 param commitmentPlans commitmentPlanType[]?
 
+@description('Optional. Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module.')
+param enableDefenderForAI bool?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -422,6 +425,14 @@ resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/
     properties: plan
   }
 ]
+
+resource cognitiveService_defenderForAISettings 'Microsoft.CognitiveServices/accounts/defenderForAISettings@2025-06-01' = if (enableDefenderForAI != null) {
+  parent: cognitiveService
+  name: 'Default'
+  properties: {
+    state: enableDefenderForAI! ? 'Enabled' : 'Disabled'
+  }
+}
 
 #disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
