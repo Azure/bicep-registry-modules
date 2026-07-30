@@ -65,7 +65,7 @@ param managedIdentities object = { systemAssigned: true }
 // ============================================================================
 // AI Services Account (AVM Module)
 // ============================================================================
-module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.16.0' = {
+module aiServicesAccount 'br/public:avm/res/cognitive-services/account:0.17.0' = {
   name: take('avm.res.cognitive-services.account.${name}', 64)
   params: {
     name: name

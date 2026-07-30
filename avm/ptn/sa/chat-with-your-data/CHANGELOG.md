@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/chat-with-your-data/CHANGELOG.md).
 
+## 1.0.0
+
+### Changes
+
+- Updated the AVM modules as per V2 Changes with modular upgradation
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

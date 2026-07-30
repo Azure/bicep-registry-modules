@@ -78,7 +78,7 @@ var effectiveSubDomain = !empty(customSubDomainName) ? customSubDomainName : nam
 // ============================================================================
 // AVM Module Deployment
 // ============================================================================
-module aiService 'br/public:avm/res/cognitive-services/account:0.16.0' = {
+module aiService 'br/public:avm/res/cognitive-services/account:0.17.0' = {
   name: take('avm.res.cognitive-services.${namePrefix}.${name}', 64)
   params: {
     name: name

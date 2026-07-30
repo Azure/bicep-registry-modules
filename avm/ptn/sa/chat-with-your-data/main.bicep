@@ -175,11 +175,11 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. VM admin username (AVM-WAF only, when private networking is enabled).')
-param vmAdminUsername string?
+param vmAdminUsername string = ''
 
 @secure()
 @description('Optional. VM admin password (AVM-WAF only, when private networking is enabled).')
-param vmAdminPassword string?
+param vmAdminPassword string = ''
 
 @description('Optional. VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5.')
 param vmSize string = 'Standard_D2s_v5'
@@ -530,8 +530,10 @@ module jumpboxVM './modules/compute/virtual-machine.bicep' = if (enablePrivateNe
     }
     vmSize: vmSize
     availabilityZone: virtualMachineAvailabilityZone
-    adminUsername: vmAdminUsername ?? 'testvmuser'
-    adminPassword: vmAdminPassword ?? 'Vm!${uniqueString(subscription().subscriptionId, solutionName)}${guid(subscription().subscriptionId, solutionName, 'vm-admin-password')}'
+    adminUsername: !empty(vmAdminUsername) ? vmAdminUsername : 'testvmuser'
+    adminPassword: !empty(vmAdminPassword)
+      ? vmAdminPassword
+      : 'Vm!${uniqueString(subscription().subscriptionId, solutionName)}${guid(subscription().subscriptionId, solutionName, 'vm-admin-password')}'
     subnetResourceId: virtualNetwork!.outputs.administrationSubnetResourceId
     deployingUserPrincipalId: deployingUserPrincipalId
     deployingUserPrincipalType: deployingUserPrincipalType
@@ -1278,58 +1280,6 @@ module functionContainerApp './modules/compute/container-app.bicep' = {
     ]
   }
 }
-
-// var functionName = 'func-${solutionSuffix}'
-// var hostingModel = 'container'
-// module functionApp './modules/compute/function-app.bicep' = {
-//   name: hostingModel == 'container' ? '${functionName}-docker' : functionName
-//   params: {
-//     name: hostingModel == 'container' ? '${functionName}-docker' : functionName
-//     location: location
-//     tags: union(allTags, { 'azd-service-name': 'function' })
-//     enableTelemetry: enableTelemetry
-//     kind: hostingModel == 'container' ? 'functionapp,linux,container' : 'functionapp,linux'
-//     serverFarmResourceId: appServicePlan.outputs.resourceId
-//     managedIdentities: {
-//       systemAssigned: true, userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
-//     }
-//     applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : ''
-//     storageAccountName: storageAccount.outputs.name
-//     userAssignedIdentityClientId: userAssignedIdentity.outputs.clientId
-//     runtimeStack: 'python'
-//     runtimeVersion: '3.11'
-//     dockerFullImageName: hostingModel == 'container' ? sampleContainerImage : ''
-//     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
-//     appSettings: concat(
-//       [
-//         { name: 'AZURE_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
-//         { name: 'AZURE_UAMI_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
-//         { name: 'AZURE_TENANT_ID', value: subscription().tenantId }
-//         { name: 'DOCKER_REGISTRY_SERVER_URL', value: 'https://${containerRegistry.outputs.loginServer}' }
-//         { name: 'AZURE_ENVIRONMENT', value: 'production' }
-//         { name: 'AZURE_AI_PROJECT_ENDPOINT', value: projectEndpoint }
-//         { name: 'AZURE_OPENAI_ENDPOINT', value: aiFoundryEndpoint }
-//         { name: 'AZURE_AI_SERVICES_ENDPOINT', value: aiCognitiveServicesEndpoint }
-//         { name: 'AZURE_OPENAI_API_VERSION', value: azureOpenAiApiVersion }
-//         { name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', value: embeddingModelName }
-//         { name: 'AZURE_DB_TYPE', value: databaseType }
-//         { name: 'AZURE_INDEX_STORE', value: indexStoreValue }
-//         { name: 'AZURE_COSMOS_ENDPOINT', value: isCosmos ? cosmosDb!.outputs.endpoint : '' }
-//         { name: 'AZURE_AI_SEARCH_ENDPOINT', value: isCosmos ? aiSearch!.outputs.endpoint : '' }
-//         { name: 'AZURE_POSTGRES_ENDPOINT', value: postgresLibpqUri }
-//         { name: 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', value: !isCosmos ? userAssignedIdentity.outputs.name : '' }
-//         { name: 'AZURE_STORAGE_ACCOUNT_NAME', value: storageAccount!.outputs.name }
-//         { name: 'AZURE_DOCUMENTS_CONTAINER', value: documentsContainerName }
-//         { name: 'AZURE_DOC_PROCESSING_QUEUE', value: docProcessingQueueName }
-//       ],
-//       enableMonitoring
-//         ? [
-//             { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: applicationInsights!.outputs.connectionString }
-//           ]
-//         : []
-//     )
-//   }
-// }
 
 module eventGridSystemTopic './modules/data/event-grid.bicep' = {
   name: take('modules.event-grid.system-topic.${solutionName}', 64)

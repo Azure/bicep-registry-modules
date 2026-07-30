@@ -1,12 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.45.15.27210",
-      "templateHash": "4545293876210544827"
+      "templateHash": "2495742306370374213"
     }
   },
   "parameters": {
@@ -272,14 +271,14 @@
     },
     "vmAdminUsername": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. VM admin username (AVM-WAF only, when private networking is enabled)."
       }
     },
     "vmAdminPassword": {
       "type": "securestring",
-      "nullable": true,
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. VM admin password (AVM-WAF only, when private networking is enabled)."
       }
@@ -420,8 +419,8 @@
     "aiFoundrySubscriptionId": "[subscription().subscriptionId]",
     "indexStoreValue": "[if(variables('isCosmos'), 'AzureSearch', 'pgvector')]"
   },
-  "resources": {
-    "resourceGroupTags": {
+  "resources": [
+    {
       "type": "Microsoft.Resources/tags",
       "apiVersion": "2025-04-01",
       "name": "default",
@@ -429,7 +428,7 @@
         "tags": "[union(coalesce(resourceGroup().tags, createObject()), variables('allTags'))]"
       }
     },
-    "avmTelemetry": {
+    {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-03-01",
@@ -449,7 +448,7 @@
         }
       }
     },
-    "userAssignedIdentity": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)]",
@@ -1087,7 +1086,7 @@
         }
       }
     },
-    "logAnalyticsWorkspace": {
+    {
       "condition": "[parameters('enableMonitoring')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -4610,7 +4609,7 @@
         }
       }
     },
-    "applicationInsights": {
+    {
       "condition": "[parameters('enableMonitoring')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -4633,7 +4632,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]"
+          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5556,10 +5555,10 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "virtualNetwork": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -5584,7 +5583,7 @@
               "10.0.0.0/20"
             ]
           },
-          "logAnalyticsWorkspaceId": "[if(parameters('enableMonitoring'), if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', '')), createObject('value', ''))]",
+          "logAnalyticsWorkspaceId": "[if(parameters('enableMonitoring'), if(parameters('enableMonitoring'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value), createObject('value', '')), createObject('value', ''))]",
           "resourceSuffix": {
             "value": "[variables('solutionSuffix')]"
           },
@@ -8539,10 +8538,10 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "bastionHost": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -8569,10 +8568,10 @@
             "value": "Standard"
           },
           "virtualNetworkResourceId": {
-            "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
-          "publicIPDiagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]"
+          "publicIPDiagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -10451,11 +10450,11 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "maintenanceConfiguration": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -10995,7 +10994,7 @@
         }
       }
     },
-    "windowsVmDataCollectionRules": {
+    {
       "condition": "[and(parameters('enablePrivateNetworking'), parameters('enableMonitoring'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -11009,14 +11008,14 @@
           "solutionName": {
             "value": "[variables('solutionSuffix')]"
           },
-          "location": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.location.value), createObject('value', parameters('location')))]",
+          "location": "[if(parameters('enableMonitoring'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.location.value), createObject('value', parameters('location')))]",
           "tags": {
             "value": "[parameters('tags')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "logAnalyticsWorkspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]"
+          "logAnalyticsWorkspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -12451,10 +12450,10 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "proximityPlacementGroup": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -12932,7 +12931,7 @@
         }
       }
     },
-    "jumpboxVM": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -12969,14 +12968,10 @@
           "availabilityZone": {
             "value": "[variables('virtualMachineAvailabilityZone')]"
           },
-          "adminUsername": {
-            "value": "[coalesce(parameters('vmAdminUsername'), 'testvmuser')]"
-          },
-          "adminPassword": {
-            "value": "[coalesce(parameters('vmAdminPassword'), format('Vm!{0}{1}', uniqueString(subscription().subscriptionId, parameters('solutionName')), guid(subscription().subscriptionId, parameters('solutionName'), 'vm-admin-password')))]"
-          },
+          "adminUsername": "[if(not(empty(parameters('vmAdminUsername'))), createObject('value', parameters('vmAdminUsername')), createObject('value', 'testvmuser'))]",
+          "adminPassword": "[if(not(empty(parameters('vmAdminPassword'))), createObject('value', parameters('vmAdminPassword')), createObject('value', format('Vm!{0}{1}', uniqueString(subscription().subscriptionId, parameters('solutionName')), guid(subscription().subscriptionId, parameters('solutionName'), 'vm-admin-password'))))]",
           "subnetResourceId": {
-            "value": "[reference('virtualNetwork').outputs.administrationSubnetResourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.administrationSubnetResourceId.value]"
           },
           "deployingUserPrincipalId": {
             "value": "[variables('deployingUserPrincipalId')]"
@@ -12993,14 +12988,14 @@
               }
             ]
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "maintenanceConfigurationResourceId": {
-            "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.maintenance-configuration.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
           "proximityPlacementGroupResourceId": {
-            "value": "[reference('proximityPlacementGroup').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.proximity-placement-group.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
-          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', if(parameters('enableMonitoring'), reference('logAnalyticsWorkspace').outputs.name.value, '')))), 'enabled', true(), 'tags', variables('allTags'))), createObject('value', null()))]"
+          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.data-collection-rule.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'name', format('send-{0}', if(parameters('enableMonitoring'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')))), 'enabled', true(), 'tags', variables('allTags'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -22678,14 +22673,14 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "maintenanceConfiguration",
-        "proximityPlacementGroup",
-        "virtualNetwork",
-        "windowsVmDataCollectionRules"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.maintenance-configuration.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.proximity-placement-group.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.data-collection-rule.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "privateDnsZoneDeployments": {
+    {
       "copy": {
         "name": "privateDnsZoneDeployments",
         "count": "[length(variables('privateDnsZones'))]",
@@ -22714,8 +22709,8 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[take(format('vnetlink-{0}-{1}', reference('virtualNetwork').outputs.name.value, split(variables('privateDnsZones')[copyIndex()], '.')[1]), 80)]",
-                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
+                "name": "[take(format('vnetlink-{0}-{1}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, split(variables('privateDnsZones')[copyIndex()], '.')[1]), 80)]",
+                "virtualNetworkResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               }
             ]
           }
@@ -26184,10 +26179,10 @@
         }
       },
       "dependsOn": [
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "aiProject": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)]",
@@ -26212,7 +26207,7 @@
           "disableLocalAuth": {
             "value": true
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]"
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -26222,7 +26217,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "13229879485908939095"
+              "templateHash": "5176696707231681607"
             }
           },
           "definitions": {
@@ -26807,7 +26802,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.45.15.27210",
-                      "templateHash": "5423597658800774849"
+                      "templateHash": "10626954379736714101"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -28001,7 +27996,7 @@
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The diagnostic settings of the service."
+                        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
                       }
                     },
                     "publicNetworkAccess": {
@@ -28251,7 +28246,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.16.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.17.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -28390,20 +28385,20 @@
                         "copy": [
                           {
                             "name": "metrics",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
                             "input": {
-                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
                               "timeGrain": null
                             }
                           },
                           {
                             "name": "logs",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
                             "input": {
-                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
                             }
                           }
                         ],
@@ -29423,10 +29418,10 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "model_deployments": {
+    {
       "copy": {
         "name": "model_deployments",
         "count": "[length(variables('aiModelDeployments'))]",
@@ -29445,7 +29440,7 @@
         "mode": "Incremental",
         "parameters": {
           "aiServicesAccountName": {
-            "value": "[reference('aiProject').outputs.name.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
           },
           "deploymentName": {
             "value": "[variables('aiModelDeployments')[copyIndex()].name]"
@@ -29567,10 +29562,10 @@
         }
       },
       "dependsOn": [
-        "aiProject"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "aiProjectPrivateEndpoint": {
+    {
       "condition": "[parameters('enablePrivateNetworking')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -29594,14 +29589,14 @@
             "value": "[format('nic-aif-{0}', variables('solutionSuffix'))]"
           },
           "subnetResourceId": {
-            "value": "[reference('virtualNetwork').outputs.backendSubnetResourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value]"
           },
           "privateLinkServiceConnections": {
             "value": [
               {
                 "name": "[format('pep-aif-{0}-connection', variables('solutionSuffix'))]",
                 "properties": {
-                  "privateLinkServiceId": "[reference('aiProject').outputs.resourceId.value]",
+                  "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]",
                   "groupIds": [
                     "account"
                   ]
@@ -29614,15 +29609,15 @@
               "privateDnsZoneGroupConfigs": [
                 {
                   "name": "cognitiveservices",
-                  "privateDnsZoneResourceId": "[reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value]"
+                  "privateDnsZoneResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cognitiveServices], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
                 },
                 {
                   "name": "openai",
-                  "privateDnsZoneResourceId": "[reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').openAI)).outputs.resourceId.value]"
+                  "privateDnsZoneResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').openAI], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
                 },
                 {
                   "name": "aiServicesProject",
-                  "privateDnsZoneResourceId": "[reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').aiServicesProject)).outputs.resourceId.value]"
+                  "privateDnsZoneResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').aiServicesProject], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
                 }
               ]
             }
@@ -30381,12 +30376,12 @@
         }
       },
       "dependsOn": [
-        "aiProject",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
         "privateDnsZoneDeployments",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "speechService": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)]",
@@ -30418,17 +30413,17 @@
             "value": "SpeechServices"
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "f2dc8367-1007-4938-bd23-fe263f013447"
               }
             ]
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-spch-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-spch-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'account', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cognitiveservices', 'privateDnsZoneResourceId', reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-spch-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-spch-{0}', variables('solutionSuffix')), 'subnetResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value, 'service', 'account', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cognitiveservices', 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cognitiveServices], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)))))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -30438,7 +30433,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "13447307880072244377"
+              "templateHash": "10402807943030573864"
             }
           },
           "definitions": {
@@ -31020,7 +31015,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.45.15.27210",
-                      "templateHash": "5423597658800774849"
+                      "templateHash": "10626954379736714101"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -32214,7 +32209,7 @@
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The diagnostic settings of the service."
+                        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
                       }
                     },
                     "publicNetworkAccess": {
@@ -32464,7 +32459,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.16.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.17.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -32603,20 +32598,20 @@
                         "copy": [
                           {
                             "name": "metrics",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
                             "input": {
-                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
                               "timeGrain": null
                             }
                           },
                           {
                             "name": "logs",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
                             "input": {
-                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
                             }
                           }
                         ],
@@ -33594,13 +33589,13 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cognitiveServices], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "contentSafety": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)]",
@@ -33635,17 +33630,17 @@
             "value": true
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "a97b65f3-24c7-4388-baec-2e87135dc908"
               }
             ]
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-cs-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-cs-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'account', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cognitiveservices', 'privateDnsZoneResourceId', reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cognitiveServices)).outputs.resourceId.value)))))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-cs-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-cs-{0}', variables('solutionSuffix')), 'subnetResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value, 'service', 'account', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cognitiveservices', 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cognitiveServices], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)))))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -33655,7 +33650,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "13447307880072244377"
+              "templateHash": "10402807943030573864"
             }
           },
           "definitions": {
@@ -34237,7 +34232,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.45.15.27210",
-                      "templateHash": "5423597658800774849"
+                      "templateHash": "10626954379736714101"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -35431,7 +35426,7 @@
                       },
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. The diagnostic settings of the service."
+                        "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
                       }
                     },
                     "publicNetworkAccess": {
@@ -35681,7 +35676,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.16.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.17.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -35820,20 +35815,20 @@
                         "copy": [
                           {
                             "name": "metrics",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
                             "input": {
-                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
                               "timeGrain": null
                             }
                           },
                           {
                             "name": "logs",
-                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
                             "input": {
-                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
                             }
                           }
                         ],
@@ -36811,13 +36806,13 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cognitiveServices], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "aiSearch": {
+    {
       "condition": "[variables('isCosmos')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -36845,46 +36840,46 @@
           "publicNetworkAccess": {
             "value": "Enabled"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "8ebe5a00-799e-43f5-93ac-243d3dce84a7"
               },
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "7ca78c08-252a-4471-8644-bb5ff32d4ba0"
               },
               {
-                "principalId": "[reference('aiProject').outputs.projectIdentityPrincipalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "1407120a-92aa-4202-b7e9-c0e197c71c8f"
               },
               {
-                "principalId": "[reference('aiProject').outputs.projectIdentityPrincipalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "8ebe5a00-799e-43f5-93ac-243d3dce84a7"
               },
               {
-                "principalId": "[reference('aiProject').outputs.projectIdentityPrincipalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectIdentityPrincipalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "7ca78c08-252a-4471-8644-bb5ff32d4ba0"
               },
               {
-                "principalId": "[reference('aiProject').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "8ebe5a00-799e-43f5-93ac-243d3dce84a7"
               },
               {
-                "principalId": "[reference('aiProject').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "1407120a-92aa-4202-b7e9-c0e197c71c8f"
               },
               {
-                "principalId": "[reference('aiProject').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "7ca78c08-252a-4471-8644-bb5ff32d4ba0"
               }
@@ -39225,12 +39220,12 @@
         }
       },
       "dependsOn": [
-        "aiProject",
-        "logAnalyticsWorkspace",
-        "userAssignedIdentity"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "aiProjectSearchConnection": {
+    {
       "condition": "[variables('isCosmos')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -39245,13 +39240,13 @@
             "value": "[variables('solutionSuffix')]"
           },
           "aiServicesAccountName": {
-            "value": "[reference('aiProject').outputs.name.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
           },
           "projectName": {
-            "value": "[reference('aiProject').outputs.projectName.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectName.value]"
           },
           "target": {
-            "value": "[reference('aiSearch').outputs.endpoint.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value]"
           },
           "category": {
             "value": "CognitiveSearch"
@@ -39265,7 +39260,7 @@
           "metadata": {
             "value": {
               "ApiType": "Azure",
-              "ResourceId": "[reference('aiSearch').outputs.resourceId.value]",
+              "ResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]",
               "knowledgeBaseName": "[parameters('searchKnowledgeBaseName')]"
             }
           }
@@ -39399,11 +39394,11 @@
         }
       },
       "dependsOn": [
-        "aiProject",
-        "aiSearch"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "storageAccount": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.storage-account.{0}', parameters('solutionName')), 64)]",
@@ -39439,7 +39434,7 @@
             "value": false
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "containers": {
             "value": [
               {
@@ -39483,23 +39478,23 @@
           "roleAssignments": {
             "value": [
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
               },
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
               },
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "principalType": "ServicePrincipal",
                 "roleDefinitionIdOrName": "17d1049b-9a84-46fb-8f53-869881c3d3ab"
               }
             ]
           },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-blob-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'blob', 'privateDnsZoneResourceId', reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').blob)).outputs.resourceId.value)))), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-queue-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'queue', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'queue', 'privateDnsZoneResourceId', reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').queue)).outputs.resourceId.value)))), createObject('name', format('pep-file-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-file-{0}', variables('solutionSuffix')), 'subnetResourceId', reference('virtualNetwork').outputs.backendSubnetResourceId.value, 'service', 'file', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'file', 'privateDnsZoneResourceId', reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').file)).outputs.resourceId.value)))))), createObject('value', createArray()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-blob-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-blob-{0}', variables('solutionSuffix')), 'subnetResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value, 'service', 'blob', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'blob', 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').blob], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)))), createObject('name', format('pep-queue-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-queue-{0}', variables('solutionSuffix')), 'subnetResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value, 'service', 'queue', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'queue', 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').queue], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)))), createObject('name', format('pep-file-{0}', variables('solutionSuffix')), 'customNetworkInterfaceName', format('nic-file-{0}', variables('solutionSuffix')), 'subnetResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value, 'service', 'file', 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'file', 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').file], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)))))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -48456,15 +48451,15 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').file)]",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').blob)]",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').queue)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').queue], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').file], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').blob], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "cosmosDb": {
+    {
       "condition": "[variables('isCosmos')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -48499,11 +48494,11 @@
           "zoneRedundant": {
             "value": "[parameters('enableRedundancy')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]",
           "sqlRoleAssignments": {
             "value": [
               {
-                "principalId": "[reference('userAssignedIdentity').outputs.principalId.value]",
+                "principalId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]",
                 "roleDefinitionId": "00000000-0000-0000-0000-000000000002"
               }
             ]
@@ -48512,8 +48507,8 @@
           "enablePrivateNetworking": {
             "value": "[parameters('enablePrivateNetworking')]"
           },
-          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
-          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cosmosDb)).outputs.resourceId.value)), createObject('value', createArray()))]"
+          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
+          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cosmosDb], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -55153,13 +55148,13 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').cosmosDb)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').cosmosDb], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "postgresServer": {
+    {
       "condition": "[not(variables('isCosmos'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -55188,7 +55183,7 @@
           "highAvailability": "[if(parameters('enableRedundancy'), createObject('value', 'ZoneRedundant'), createObject('value', 'Disabled'))]",
           "highAvailabilityZone": "[if(parameters('enableRedundancy'), createObject('value', 2), createObject('value', -1))]",
           "administrators": {
-            "value": "[union(createArray(createObject('objectId', reference('userAssignedIdentity').outputs.principalId.value, 'principalName', reference('userAssignedIdentity').outputs.name.value, 'principalType', 'ServicePrincipal')), if(contains(deployer(), 'userPrincipalName'), createArray(createObject('objectId', variables('deployingUserPrincipalId'), 'principalName', deployer().userPrincipalName, 'principalType', parameters('deployingUserPrincipalType'))), createArray()))]"
+            "value": "[union(createArray(createObject('objectId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'principalName', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, 'principalType', 'ServicePrincipal')), if(contains(deployer(), 'userPrincipalName'), createArray(createObject('objectId', variables('deployingUserPrincipalId'), 'principalName', deployer().userPrincipalName, 'principalType', parameters('deployingUserPrincipalType'))), createArray()))]"
           },
           "databases": {
             "value": [
@@ -55212,9 +55207,9 @@
           "enablePrivateNetworking": {
             "value": "[parameters('enablePrivateNetworking')]"
           },
-          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
-          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').postgres)).outputs.resourceId.value)), createObject('value', createArray()))]",
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference('logAnalyticsWorkspace').outputs.resourceId.value))), createObject('value', createArray()))]"
+          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
+          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').postgres], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)), createObject('value', createArray()))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -58299,13 +58294,13 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').postgres)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').postgres], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "containerRegistry": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.container-registry.{0}', parameters('solutionName')), 64)]",
@@ -58333,18 +58328,18 @@
           "enablePrivateNetworking": {
             "value": "[parameters('enablePrivateNetworking')]"
           },
-          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
-          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').containerRegistry)).outputs.resourceId.value)), createObject('value', createArray()))]",
+          "privateEndpointSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.backendSubnetResourceId.value), createObject('value', ''))]",
+          "privateDnsZoneResourceIds": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(reference(resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').containerRegistry], '.')[1], parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value)), createObject('value', createArray()))]",
           "managedIdentities": {
             "value": {
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               ]
             }
           },
           "acrPullPrincipalIds": {
             "value": [
-              "[reference('userAssignedIdentity').outputs.principalId.value]"
+              "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]"
             ]
           }
         },
@@ -62411,12 +62406,12 @@
         }
       },
       "dependsOn": [
-        "[format('privateDnsZoneDeployments[{0}]', variables('dnsZoneIndex').containerRegistry)]",
-        "userAssignedIdentity",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').containerRegistry], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "containerAppsEnv": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.container-app-environment.{0}', parameters('solutionName')), 64)]",
@@ -62444,8 +62439,8 @@
           "enableMonitoring": {
             "value": "[parameters('enableMonitoring')]"
           },
-          "logAnalyticsWorkspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', ''))]",
-          "infrastructureSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.containerSubnetResourceId.value), createObject('value', null()))]"
+          "logAnalyticsWorkspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value), createObject('value', ''))]",
+          "infrastructureSubnetId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.containerSubnetResourceId.value), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -64939,11 +64934,11 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace",
-        "virtualNetwork"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "backendContainerApp": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64)]",
@@ -64966,13 +64961,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "environmentResourceId": {
-            "value": "[reference('containerAppsEnv').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
           "registries": {
             "value": [
               {
-                "server": "[reference('containerRegistry').outputs.loginServer.value]",
-                "identity": "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "server": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.loginServer.value]",
+                "identity": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               }
             ]
           },
@@ -64980,7 +64975,7 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               ]
             }
           },
@@ -65005,7 +65000,7 @@
                   "cpu": "[if(parameters('enableScalability'), '1.0', '0.5')]",
                   "memory": "[if(parameters('enableScalability'), '2.0Gi', '1.0Gi')]"
                 },
-                "env": "[concat(createArray(createObject('name', 'AZURE_CLIENT_ID', 'value', reference('userAssignedIdentity').outputs.clientId.value), createObject('name', 'AZURE_UAMI_CLIENT_ID', 'value', reference('userAssignedIdentity').outputs.clientId.value), createObject('name', 'AZURE_TENANT_ID', 'value', subscription().tenantId), createObject('name', 'AZURE_ENVIRONMENT', 'value', 'production'), createObject('name', 'AZURE_AI_PROJECT_ENDPOINT', 'value', reference('aiProject').outputs.projectEndpoint.value), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference('aiProject').outputs.endpoint.value), createObject('name', 'AZURE_AI_SERVICES_ENDPOINT', 'value', reference('aiProject').outputs.cognitiveServicesEndpoint.value), createObject('name', 'AZURE_OPENAI_API_VERSION', 'value', parameters('azureOpenAiApiVersion')), createObject('name', 'AZURE_AI_AGENT_API_VERSION', 'value', parameters('azureAiAgentApiVersion')), createObject('name', 'AZURE_OPENAI_GPT_DEPLOYMENT', 'value', parameters('gptModelName')), createObject('name', 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', 'value', parameters('embeddingModelName')), createObject('name', 'AZURE_DB_TYPE', 'value', parameters('databaseType')), createObject('name', 'AZURE_INDEX_STORE', 'value', variables('indexStoreValue')), createObject('name', 'AZURE_COSMOS_ENDPOINT', 'value', if(variables('isCosmos'), reference('cosmosDb').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_ENDPOINT', 'value', if(variables('isCosmos'), reference('aiSearch').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_INDEX', 'value', if(variables('isCosmos'), parameters('searchIndexName'), '')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_BASE_NAME', 'value', parameters('searchKnowledgeBaseName')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_SOURCE_NAME', 'value', parameters('searchKnowledgeSourceName')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_BASE_API_VERSION', 'value', parameters('searchKnowledgeBaseApiVersion')), createObject('name', 'AZURE_AI_SEARCH_CONNECTION_NAME', 'value', if(variables('isCosmos'), reference('aiProjectSearchConnection').outputs.connectionName.value, '')), createObject('name', 'AZURE_POSTGRES_ENDPOINT', 'value', if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference('postgresServer').outputs.serverFqdn.value), '')), createObject('name', 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', 'value', if(not(variables('isCosmos')), reference('userAssignedIdentity').outputs.name.value, '')), createObject('name', 'AZURE_SPEECH_SERVICE_NAME', 'value', reference('speechService').outputs.name.value), createObject('name', 'AZURE_SPEECH_SERVICE_REGION', 'value', parameters('azureAiServiceLocation')), createObject('name', 'AZURE_SPEECH_ACCOUNT_RESOURCE_ID', 'value', reference('speechService').outputs.resourceId.value), createObject('name', 'AZURE_CONTENT_SAFETY_ENABLED', 'value', 'true'), createObject('name', 'AZURE_CONTENT_SAFETY_ENDPOINT', 'value', reference('contentSafety').outputs.endpoint.value), createObject('name', 'CWYD_ORCHESTRATOR_NAME', 'value', if(equals(parameters('databaseType'), 'postgresql'), 'langgraph', 'agent_framework')), createObject('name', 'AZURE_STORAGE_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_DOCUMENTS_CONTAINER', 'value', variables('documentsContainerName')), createObject('name', 'AZURE_DOC_PROCESSING_QUEUE', 'value', variables('docProcessingQueueName')), createObject('name', 'AZURE_INGESTION_TRIGGER', 'value', parameters('ingestionTrigger'))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]"
+                "env": "[concat(createArray(createObject('name', 'AZURE_CLIENT_ID', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value), createObject('name', 'AZURE_UAMI_CLIENT_ID', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value), createObject('name', 'AZURE_TENANT_ID', 'value', subscription().tenantId), createObject('name', 'AZURE_ENVIRONMENT', 'value', 'production'), createObject('name', 'AZURE_AI_PROJECT_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectEndpoint.value), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value), createObject('name', 'AZURE_AI_SERVICES_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.cognitiveServicesEndpoint.value), createObject('name', 'AZURE_OPENAI_API_VERSION', 'value', parameters('azureOpenAiApiVersion')), createObject('name', 'AZURE_AI_AGENT_API_VERSION', 'value', parameters('azureAiAgentApiVersion')), createObject('name', 'AZURE_OPENAI_GPT_DEPLOYMENT', 'value', parameters('gptModelName')), createObject('name', 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', 'value', parameters('embeddingModelName')), createObject('name', 'AZURE_DB_TYPE', 'value', parameters('databaseType')), createObject('name', 'AZURE_INDEX_STORE', 'value', variables('indexStoreValue')), createObject('name', 'AZURE_COSMOS_ENDPOINT', 'value', if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_ENDPOINT', 'value', if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_INDEX', 'value', if(variables('isCosmos'), parameters('searchIndexName'), '')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_BASE_NAME', 'value', parameters('searchKnowledgeBaseName')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_SOURCE_NAME', 'value', parameters('searchKnowledgeSourceName')), createObject('name', 'AZURE_AI_SEARCH_KNOWLEDGE_BASE_API_VERSION', 'value', parameters('searchKnowledgeBaseApiVersion')), createObject('name', 'AZURE_AI_SEARCH_CONNECTION_NAME', 'value', if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.foundry-search-conn.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionName.value, '')), createObject('name', 'AZURE_POSTGRES_ENDPOINT', 'value', if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value), '')), createObject('name', 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', 'value', if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')), createObject('name', 'AZURE_SPEECH_SERVICE_NAME', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value), createObject('name', 'AZURE_SPEECH_SERVICE_REGION', 'value', parameters('azureAiServiceLocation')), createObject('name', 'AZURE_SPEECH_ACCOUNT_RESOURCE_ID', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value), createObject('name', 'AZURE_CONTENT_SAFETY_ENABLED', 'value', 'true'), createObject('name', 'AZURE_CONTENT_SAFETY_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value), createObject('name', 'CWYD_ORCHESTRATOR_NAME', 'value', if(equals(parameters('databaseType'), 'postgresql'), 'langgraph', 'agent_framework')), createObject('name', 'AZURE_STORAGE_ACCOUNT_NAME', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value), createObject('name', 'AZURE_DOCUMENTS_CONTAINER', 'value', variables('documentsContainerName')), createObject('name', 'AZURE_DOC_PROCESSING_QUEUE', 'value', variables('docProcessingQueueName')), createObject('name', 'AZURE_INGESTION_TRIGGER', 'value', parameters('ingestionTrigger'))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionString.value)), createArray()))]"
               }
             ]
           }
@@ -66837,21 +66832,21 @@
         }
       },
       "dependsOn": [
-        "aiProject",
-        "aiProjectSearchConnection",
-        "aiSearch",
-        "applicationInsights",
-        "containerAppsEnv",
-        "containerRegistry",
-        "contentSafety",
-        "cosmosDb",
-        "postgresServer",
-        "speechService",
-        "storageAccount",
-        "userAssignedIdentity"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.foundry-search-conn.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "frontendContainerApp": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)]",
@@ -66874,13 +66869,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "environmentResourceId": {
-            "value": "[reference('containerAppsEnv').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
           "registries": {
             "value": [
               {
-                "server": "[reference('containerRegistry').outputs.loginServer.value]",
-                "identity": "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "server": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.loginServer.value]",
+                "identity": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               }
             ]
           },
@@ -66888,7 +66883,7 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               ]
             }
           },
@@ -66913,7 +66908,7 @@
                   "cpu": "0.5",
                   "memory": "1.0Gi"
                 },
-                "env": "[concat(createArray(createObject('name', 'VITE_BACKEND_URL', 'value', format('https://{0}', reference('backendContainerApp').outputs.fqdn.value)), createObject('name', 'BACKEND_API_URL', 'value', format('https://{0}', reference('backendContainerApp').outputs.fqdn.value))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]"
+                "env": "[concat(createArray(createObject('name', 'VITE_BACKEND_URL', 'value', format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64)), '2025-04-01').outputs.fqdn.value)), createObject('name', 'BACKEND_API_URL', 'value', format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64)), '2025-04-01').outputs.fqdn.value))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionString.value)), createArray()))]"
               }
             ]
           }
@@ -68745,14 +68740,14 @@
         }
       },
       "dependsOn": [
-        "applicationInsights",
-        "backendContainerApp",
-        "containerAppsEnv",
-        "containerRegistry",
-        "userAssignedIdentity"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "functionContainerApp": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('module.container-app-function.{0}', parameters('solutionName')), 64)]",
@@ -68778,13 +68773,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "environmentResourceId": {
-            "value": "[reference('containerAppsEnv').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
           "registries": {
             "value": [
               {
-                "server": "[reference('containerRegistry').outputs.loginServer.value]",
-                "identity": "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "server": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.loginServer.value]",
+                "identity": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               }
             ]
           },
@@ -68792,7 +68787,7 @@
             "value": {
               "systemAssigned": true,
               "userAssignedResourceIds": [
-                "[reference('userAssignedIdentity').outputs.resourceId.value]"
+                "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
               ]
             }
           },
@@ -68817,7 +68812,7 @@
                   "cpu": "[json(if(parameters('enableScalability'), '1.0', '0.5'))]",
                   "memory": "[if(parameters('enableScalability'), '2.0Gi', '1.0Gi')]"
                 },
-                "env": "[concat(createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__credential', 'value', 'managedidentity'), createObject('name', 'AzureWebJobsStorage__clientId', 'value', reference('userAssignedIdentity').outputs.clientId.value), createObject('name', 'WEBSITES_ENABLE_APP_SERVICE_STORAGE', 'value', 'false'), createObject('name', 'FUNCTIONS_WORKER_RUNTIME', 'value', 'python'), createObject('name', 'FUNCTIONS_EXTENSION_VERSION', 'value', '~4'), createObject('name', 'AZURE_CLIENT_ID', 'value', reference('userAssignedIdentity').outputs.clientId.value), createObject('name', 'AZURE_UAMI_CLIENT_ID', 'value', reference('userAssignedIdentity').outputs.clientId.value), createObject('name', 'AZURE_TENANT_ID', 'value', subscription().tenantId), createObject('name', 'AZURE_ENVIRONMENT', 'value', 'production'), createObject('name', 'AZURE_AI_PROJECT_ENDPOINT', 'value', reference('aiProject').outputs.projectEndpoint.value), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference('aiProject').outputs.endpoint.value), createObject('name', 'AZURE_AI_SERVICES_ENDPOINT', 'value', reference('aiProject').outputs.cognitiveServicesEndpoint.value), createObject('name', 'AZURE_OPENAI_API_VERSION', 'value', parameters('azureOpenAiApiVersion')), createObject('name', 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', 'value', parameters('embeddingModelName')), createObject('name', 'AZURE_DB_TYPE', 'value', parameters('databaseType')), createObject('name', 'AZURE_INDEX_STORE', 'value', variables('indexStoreValue')), createObject('name', 'AZURE_COSMOS_ENDPOINT', 'value', if(variables('isCosmos'), reference('cosmosDb').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_ENDPOINT', 'value', if(variables('isCosmos'), reference('aiSearch').outputs.endpoint.value, '')), createObject('name', 'AZURE_POSTGRES_ENDPOINT', 'value', if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference('postgresServer').outputs.serverFqdn.value), '')), createObject('name', 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', 'value', if(not(variables('isCosmos')), reference('userAssignedIdentity').outputs.name.value, '')), createObject('name', 'AZURE_STORAGE_ACCOUNT_NAME', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AZURE_DOCUMENTS_CONTAINER', 'value', variables('documentsContainerName')), createObject('name', 'AZURE_DOC_PROCESSING_QUEUE', 'value', variables('docProcessingQueueName'))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), createArray()))]"
+                "env": "[concat(createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value), createObject('name', 'AzureWebJobsStorage__credential', 'value', 'managedidentity'), createObject('name', 'AzureWebJobsStorage__clientId', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value), createObject('name', 'WEBSITES_ENABLE_APP_SERVICE_STORAGE', 'value', 'false'), createObject('name', 'FUNCTIONS_WORKER_RUNTIME', 'value', 'python'), createObject('name', 'FUNCTIONS_EXTENSION_VERSION', 'value', '~4'), createObject('name', 'AZURE_CLIENT_ID', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value), createObject('name', 'AZURE_UAMI_CLIENT_ID', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value), createObject('name', 'AZURE_TENANT_ID', 'value', subscription().tenantId), createObject('name', 'AZURE_ENVIRONMENT', 'value', 'production'), createObject('name', 'AZURE_AI_PROJECT_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectEndpoint.value), createObject('name', 'AZURE_OPENAI_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value), createObject('name', 'AZURE_AI_SERVICES_ENDPOINT', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.cognitiveServicesEndpoint.value), createObject('name', 'AZURE_OPENAI_API_VERSION', 'value', parameters('azureOpenAiApiVersion')), createObject('name', 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', 'value', parameters('embeddingModelName')), createObject('name', 'AZURE_DB_TYPE', 'value', parameters('databaseType')), createObject('name', 'AZURE_INDEX_STORE', 'value', variables('indexStoreValue')), createObject('name', 'AZURE_COSMOS_ENDPOINT', 'value', if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')), createObject('name', 'AZURE_AI_SEARCH_ENDPOINT', 'value', if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')), createObject('name', 'AZURE_POSTGRES_ENDPOINT', 'value', if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value), '')), createObject('name', 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', 'value', if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')), createObject('name', 'AZURE_STORAGE_ACCOUNT_NAME', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value), createObject('name', 'AZURE_DOCUMENTS_CONTAINER', 'value', variables('documentsContainerName')), createObject('name', 'AZURE_DOC_PROCESSING_QUEUE', 'value', variables('docProcessingQueueName'))), if(parameters('enableMonitoring'), createArray(createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference(resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionString.value)), createArray()))]"
               }
             ]
           }
@@ -70649,18 +70644,18 @@
         }
       },
       "dependsOn": [
-        "aiProject",
-        "aiSearch",
-        "applicationInsights",
-        "containerAppsEnv",
-        "containerRegistry",
-        "cosmosDb",
-        "postgresServer",
-        "storageAccount",
-        "userAssignedIdentity"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-app-environment.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "eventGridSystemTopic": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take(format('modules.event-grid.system-topic.{0}', parameters('solutionName')), 64)]",
@@ -70683,13 +70678,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "source": {
-            "value": "[reference('storageAccount').outputs.resourceId.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
           },
           "topicType": {
             "value": "Microsoft.Storage.StorageAccounts"
           },
           "storageAccountName": {
-            "value": "[reference('storageAccount').outputs.name.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
           },
           "eventSubscriptions": {
             "value": [
@@ -70702,7 +70697,7 @@
                   "destination": {
                     "endpointType": "StorageQueue",
                     "properties": {
-                      "resourceId": "[reference('storageAccount').outputs.resourceId.value]",
+                      "resourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]",
                       "queueName": "[variables('blobEventsQueueName')]"
                     }
                   }
@@ -73579,10 +73574,10 @@
         }
       },
       "dependsOn": [
-        "storageAccount"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64))]"
       ]
     },
-    "systemAssignedIdentityRoleAssignments": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
       "name": "[take('module.resource-role-assignment.system-assigned', 64)]",
@@ -73593,7 +73588,7 @@
         "mode": "Incremental",
         "parameters": {
           "roleAssignments": {
-            "value": "[union(if(variables('isCosmos'), createArray(createObject('principalId', tryGet(if(variables('isCosmos'), reference('aiSearch'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference('storageAccount').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal'), createObject('principalId', tryGet(if(variables('isCosmos'), reference('aiSearch'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference('aiProject').outputs.resourceId.value, 'roleName', 'Cognitive Services User', 'roleDefinitionId', 'a97b65f3-24c7-4388-baec-2e87135dc908', 'principalType', 'ServicePrincipal'), createObject('principalId', tryGet(if(variables('isCosmos'), reference('aiSearch'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference('aiProject').outputs.resourceId.value, 'roleName', 'Cognitive Services OpenAI User', 'roleDefinitionId', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', 'principalType', 'ServicePrincipal')), createArray()), createArray(createObject('principalId', reference('aiProject').outputs.projectIdentityPrincipalId.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('frontendContainerApp').outputs.principalId.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'roleName', 'Storage Blob Data Owner', 'roleDefinitionId', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('frontendContainerApp').outputs.principalId.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'roleName', 'Storage Queue Data Contributor', 'roleDefinitionId', '974c5e8b-45b9-4653-ba55-5f855dd0fb88', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('frontendContainerApp').outputs.principalId.value, 'resourceId', reference('storageAccount').outputs.resourceId.value, 'roleName', 'Storage Account Contributor', 'roleDefinitionId', '17d1049b-9a84-46fb-8f53-869881c3d3ab', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').outputs.principalId.value, 'resourceId', reference('aiProject').outputs.resourceId.value, 'roleName', 'Cognitive Services OpenAI User', 'roleDefinitionId', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').outputs.principalId.value, 'resourceId', reference('aiProject').outputs.resourceId.value, 'roleName', 'Cognitive Services User', 'roleDefinitionId', 'a97b65f3-24c7-4388-baec-2e87135dc908', 'principalType', 'ServicePrincipal'), createObject('principalId', reference('userAssignedIdentity').outputs.principalId.value, 'resourceId', reference('aiProject').outputs.resourceId.value, 'roleName', 'Azure AI User', 'roleDefinitionId', '53ca6127-db72-4b80-b1b0-d745d6d5456d', 'principalType', 'ServicePrincipal')))]"
+            "value": "[union(if(variables('isCosmos'), createArray(createObject('principalId', tryGet(if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal'), createObject('principalId', tryGet(if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Cognitive Services User', 'roleDefinitionId', 'a97b65f3-24c7-4388-baec-2e87135dc908', 'principalType', 'ServicePrincipal'), createObject('principalId', tryGet(if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01'), null()), 'outputs', 'identityPrincipalId', 'value'), 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Cognitive Services OpenAI User', 'roleDefinitionId', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', 'principalType', 'ServicePrincipal')), createArray()), createArray(createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectIdentityPrincipalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Storage Blob Data Contributor', 'roleDefinitionId', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Storage Blob Data Owner', 'roleDefinitionId', 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Storage Queue Data Contributor', 'roleDefinitionId', '974c5e8b-45b9-4653-ba55-5f855dd0fb88', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Storage Account Contributor', 'roleDefinitionId', '17d1049b-9a84-46fb-8f53-869881c3d3ab', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Cognitive Services OpenAI User', 'roleDefinitionId', '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Cognitive Services User', 'roleDefinitionId', 'a97b65f3-24c7-4388-baec-2e87135dc908', 'principalType', 'ServicePrincipal'), createObject('principalId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value, 'resourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, 'roleName', 'Azure AI User', 'roleDefinitionId', '53ca6127-db72-4b80-b1b0-d745d6d5456d', 'principalType', 'ServicePrincipal')))]"
           }
         },
         "template": {
@@ -73873,17 +73868,17 @@
         }
       },
       "dependsOn": [
-        "aiProject",
-        "aiSearch",
-        "frontendContainerApp",
-        "storageAccount",
-        "userAssignedIdentity"
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]"
       ],
       "metadata": {
         "description": "Role assignments applied to system-assigned identities via AVM resource-role-assignment pattern. Objects: { principalId, resourceId, roleName, roleDefinitionId, principalType }."
       }
     }
-  },
+  ],
   "outputs": {
     "AZURE_SOLUTION_SUFFIX": {
       "type": "string",
@@ -73925,21 +73920,21 @@
       "metadata": {
         "description": "Client ID of the user-assigned managed identity shared by all v2 workloads."
       },
-      "value": "[reference('userAssignedIdentity').outputs.clientId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value]"
     },
     "AZURE_UAMI_PRINCIPAL_ID": {
       "type": "string",
       "metadata": {
         "description": "Principal (object) ID of the user-assigned managed identity."
       },
-      "value": "[reference('userAssignedIdentity').outputs.principalId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]"
     },
     "AZURE_UAMI_RESOURCE_ID": {
       "type": "string",
       "metadata": {
         "description": "Resource ID of the user-assigned managed identity."
       },
-      "value": "[reference('userAssignedIdentity').outputs.resourceId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
     },
     "AZURE_DB_TYPE": {
       "type": "string",
@@ -73960,21 +73955,21 @@
       "metadata": {
         "description": "Unified AI Services (Cognitive Services) endpoint. Used by Document Intelligence and other non-OpenAI AI Services APIs."
       },
-      "value": "[reference('aiProject').outputs.cognitiveServicesEndpoint.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.cognitiveServicesEndpoint.value]"
     },
     "AZURE_OPENAI_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Effective Azure OpenAI endpoint backends call for chat + reasoning + embedding deployments. When `existingOpenAiName` is set this points at the reused v1 OpenAI account; otherwise it equals AZURE_AI_SERVICES_ENDPOINT (deployments live on the v2 Foundry account)."
       },
-      "value": "[reference('aiProject').outputs.endpoint.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value]"
     },
     "AZURE_AI_PROJECT_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Foundry Project endpoint (https://<account>.services.ai.azure.com/api/projects/<project>). Required by the Microsoft Agent Framework SDK."
       },
-      "value": "[reference('aiProject').outputs.projectEndpoint.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectEndpoint.value]"
     },
     "AZURE_OPENAI_API_VERSION": {
       "type": "string",
@@ -74016,7 +74011,7 @@
       "metadata": {
         "description": "Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK."
       },
-      "value": "[reference('speechService').outputs.name.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
     "AZURE_SPEECH_SERVICE_REGION": {
       "type": "string",
@@ -74030,35 +74025,35 @@
       "metadata": {
         "description": "Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST."
       },
-      "value": "[reference('speechService').outputs.resourceId.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
     },
     "AZURE_CONTENT_SAFETY_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED."
       },
-      "value": "[reference('contentSafety').outputs.endpoint.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value]"
     },
     "AZURE_CONTENT_SAFETY_NAME": {
       "type": "string",
       "metadata": {
         "description": "Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint."
       },
-      "value": "[reference('contentSafety').outputs.name.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
     "AZURE_AI_SEARCH_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "AI Search service endpoint. Empty in PostgreSQL mode."
       },
-      "value": "[if(variables('isCosmos'), reference('aiSearch').outputs.endpoint.value, '')]"
+      "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')]"
     },
     "AZURE_AI_SEARCH_NAME": {
       "type": "string",
       "metadata": {
         "description": "AI Search service name. Empty in PostgreSQL mode."
       },
-      "value": "[if(variables('isCosmos'), reference('aiSearch').outputs.name.value, '')]"
+      "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
     "AZURE_AI_SEARCH_INDEX": {
       "type": "string",
@@ -74072,42 +74067,42 @@
       "metadata": {
         "description": "Cosmos DB account endpoint (DocumentEndpoint). Empty in PostgreSQL mode."
       },
-      "value": "[if(variables('isCosmos'), reference('cosmosDb').outputs.endpoint.value, '')]"
+      "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')]"
     },
     "AZURE_COSMOS_ACCOUNT_NAME": {
       "type": "string",
       "metadata": {
         "description": "Cosmos DB account name. Empty in PostgreSQL mode."
       },
-      "value": "[if(variables('isCosmos'), reference('cosmosDb').outputs.name.value, '')]"
+      "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
     "AZURE_POSTGRES_HOST": {
       "type": "string",
       "metadata": {
         "description": "PostgreSQL Flexible Server FQDN (clients add :5432 themselves). Empty in CosmosDB mode."
       },
-      "value": "[if(not(variables('isCosmos')), reference('postgresServer').outputs.serverFqdn.value, '')]"
+      "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value, '')]"
     },
     "AZURE_POSTGRES_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Full libpq connection URI for the PostgreSQL Flexible Server (no credentials — the workload supplies an Entra token; the user comes from AZURE_UAMI_CLIENT_ID). Mirrors AZURE_COSMOS_ENDPOINT shape so AzurePostgresSettings reads one var. Empty in CosmosDB mode."
       },
-      "value": "[if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference('postgresServer').outputs.serverFqdn.value), '')]"
+      "value": "[if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value), '')]"
     },
     "AZURE_POSTGRES_NAME": {
       "type": "string",
       "metadata": {
         "description": "PostgreSQL Flexible Server resource name. Empty in CosmosDB mode."
       },
-      "value": "[if(not(variables('isCosmos')), reference('postgresServer').outputs.name.value, '')]"
+      "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
     "AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME": {
       "type": "string",
       "metadata": {
         "description": "UAMI principal name used by the runtime apps to connect to Postgres. Empty in CosmosDB mode."
       },
-      "value": "[if(not(variables('isCosmos')), reference('userAssignedIdentity').outputs.name.value, '')]"
+      "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
     "AZURE_POSTGRES_DEPLOYER_PRINCIPAL_NAME": {
       "type": "string",
@@ -74121,14 +74116,14 @@
       "metadata": {
         "description": "Storage account name (shared by RAG document store, indexing queues, and the Function App deployment package)."
       },
-      "value": "[reference('storageAccount').outputs.name.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
     "AZURE_STORAGE_BLOB_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Primary blob endpoint of the shared storage account (https URL ending in /). Hostname follows the storage cloud-specific suffix."
       },
-      "value": "[reference('storageAccount').outputs.blobEndpoint.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.blobEndpoint.value]"
     },
     "AZURE_DOCUMENTS_CONTAINER": {
       "type": "string",
@@ -74156,70 +74151,70 @@
       "metadata": {
         "description": "Public URL of the backend Container App (FastAPI + LangGraph/Agent Framework)."
       },
-      "value": "[format('https://{0}', reference('backendContainerApp').outputs.fqdn.value)]"
+      "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
     "AZURE_FRONTEND_URL": {
       "type": "string",
       "metadata": {
         "description": "Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin."
       },
-      "value": "[format('https://{0}', reference('frontendContainerApp').outputs.fqdn.value)]"
+      "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
     "AZURE_FUNCTION_APP_URL": {
       "type": "string",
       "metadata": {
         "description": "Public URL of the Function App hosting the indexing pipeline."
       },
-      "value": "[format('https://{0}', reference('functionContainerApp').outputs.fqdn.value)]"
+      "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-function.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
     "AZURE_FUNCTION_APP_NAME": {
       "type": "string",
       "metadata": {
         "description": "Function App resource name (used by azd to deploy the function package)."
       },
-      "value": "[reference('functionContainerApp').outputs.name.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-function.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
     "AZURE_CONTAINER_REGISTRY_ENDPOINT": {
       "type": "string",
       "metadata": {
         "description": "Container Registry login server."
       },
-      "value": "[reference('containerRegistry').outputs.loginServer.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.loginServer.value]"
     },
     "AZURE_CONTAINER_REGISTRY_NAME": {
       "type": "string",
       "metadata": {
         "description": "Container Registry resource name."
       },
-      "value": "[reference('containerRegistry').outputs.name.value]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
     "AZURE_APP_INSIGHTS_CONNECTION_STRING": {
       "type": "string",
       "metadata": {
         "description": "Application Insights connection string. Empty when enableMonitoring=false."
       },
-      "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]"
+      "value": "[if(parameters('enableMonitoring'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionString.value, '')]"
     },
     "AZURE_VNET_NAME": {
       "type": "string",
       "metadata": {
         "description": "VNet name. Empty when enablePrivateNetworking=false."
       },
-      "value": "[if(parameters('enablePrivateNetworking'), reference('virtualNetwork').outputs.name.value, '')]"
+      "value": "[if(parameters('enablePrivateNetworking'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
     "AZURE_VNET_RESOURCE_ID": {
       "type": "string",
       "metadata": {
         "description": "VNet resource ID. Empty when enablePrivateNetworking=false."
       },
-      "value": "[if(parameters('enablePrivateNetworking'), reference('virtualNetwork').outputs.resourceId.value, '')]"
+      "value": "[if(parameters('enablePrivateNetworking'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, '')]"
     },
     "AZURE_BASTION_NAME": {
       "type": "string",
       "metadata": {
         "description": "Bastion host name (for `az network bastion tunnel`). Empty when enablePrivateNetworking=false."
       },
-      "value": "[if(parameters('enablePrivateNetworking'), reference('bastionHost').outputs.name.value, '')]"
+      "value": "[if(parameters('enablePrivateNetworking'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.bastion-host.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     }
   }
 }
