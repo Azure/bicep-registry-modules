@@ -570,7 +570,7 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           gateway: {
-            name: '${apimName}-${workspace1Name}-gw'
+            name: '${apimName}-${workspace1Name}01-gw'
             capacity: 1
             virtualNetworkType: 'None'
           }
@@ -616,7 +616,7 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'Test Workspace 2'
           description: 'A test workspace with a gateway using External VNet'
           gateway: {
-            name: '${apimName}-workspace2-gw'
+            name: '${apimName}-workspace02-gw'
             capacity: 1
             virtualNetworkType: 'External'
             subnetResourceId: nestedDependencies.outputs.workspaceGatewaySubnetResourceId
