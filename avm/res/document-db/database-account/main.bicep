@@ -118,7 +118,7 @@ param cassandraRoleDefinitions cassandraRoleDefinitionType[]?
 param cassandraRoleAssignments cassandraStandaloneRoleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings for the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @allowed([
@@ -444,14 +444,18 @@ resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettin
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -489,6 +493,7 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
       throughput: sqlDatabase.?throughput
       databaseAccountName: databaseAccount.name
       autoscaleSettingsMaxThroughput: sqlDatabase.?autoscaleSettingsMaxThroughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -537,6 +542,7 @@ module databaseAccount_cassandraRoleDefinitions 'cassandra-role-definition/main.
       notDataActions: cassandraRoleDefinition.?notDataActions
       assignableScopes: cassandraRoleDefinition.?assignableScopes
       cassandraRoleAssignments: cassandraRoleDefinition.?assignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -550,6 +556,7 @@ module databaseAccount_cassandraRoleAssignments 'cassandra-role-assignment/main.
       principalId: cassandraRoleAssignment.principalId
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       databaseAccount_cassandraKeyspaces
@@ -568,6 +575,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
       collections: mongodbDatabase.?collections
       throughput: mongodbDatabase.?throughput
       autoscaleSettings: mongodbDatabase.?autoscaleSettings
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -582,6 +590,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
       graphs: gremlinDatabase.?graphs
       maxThroughput: gremlinDatabase.?maxThroughput
       throughput: gremlinDatabase.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -595,6 +604,7 @@ module databaseAccount_tables 'table/main.bicep' = [
       tags: table.?tags ?? tags
       maxThroughput: table.?maxThroughput
       throughput: table.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -610,6 +620,7 @@ module databaseAccount_cassandraKeyspaces 'cassandra-keyspace/main.bicep' = [
       views: cassandraKeyspace.?views
       autoscaleSettingsMaxThroughput: cassandraKeyspace.?autoscaleSettingsMaxThroughput
       throughput: cassandraKeyspace.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

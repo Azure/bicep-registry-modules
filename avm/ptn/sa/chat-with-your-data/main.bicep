@@ -940,8 +940,8 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
 
     logAnalyticsWorkspaceId: enableMonitoring ? monitoring!.outputs.logAnalyticsWorkspaceId : null
 
-    // align with AVM conventions
-    privateDnsZoneResourceId: enablePrivateNetworking ? avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId : ''
+    // Private endpoints are created separately below to avoid race condition with model deployment creation.
+    privateDnsZoneResourceId: ''
     roleAssignments: concat(
       [
         {
@@ -970,6 +970,43 @@ module openai 'modules/core/ai/cognitiveservices.bicep' = {
     )
   }
   dependsOn: enablePrivateNetworking ? avmPrivateDnsZones : []
+}
+
+// ========== OpenAI: Private Endpoint (Separate Deployment) ========== //
+// The private endpoint is deployed as a separate resource (instead of inline via the
+// cognitive-services account module) to decouple its creation from the account
+// provisioning and the inline model deployments. This avoids a race condition where the
+// account remains in the "Accepted" state while model deployments are still being created,
+// which can cause the private endpoint creation to fail with AccountProvisioningStateInvalid.
+module openaiPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.1' = if (enablePrivateNetworking) {
+  name: take('pep-${azureOpenAIResourceName}-deployment', 64)
+  params: {
+    name: 'pep-${azureOpenAIResourceName}'
+    location: location
+    tags: allTags
+    enableTelemetry: enableTelemetry
+    customNetworkInterfaceName: 'nic-${azureOpenAIResourceName}'
+    subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${azureOpenAIResourceName}-connection'
+        properties: {
+          privateLinkServiceId: openai.outputs.resourceId
+          groupIds: [
+            'account'
+          ]
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'openai-dns-zone'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
+        }
+      ]
+    }
+  }
 }
 
 module computerVision 'modules/core/ai/cognitiveservices.bicep' = if (useAdvancedImageProcessing) {

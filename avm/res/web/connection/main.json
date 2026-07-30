@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5948115056236741957"
+      "version": "0.43.8.12551",
+      "templateHash": "8187225253329345234"
     },
     "name": "API Connections",
     "description": "This module deploys an Azure API Connection."
@@ -194,6 +194,20 @@
       },
       "nullable": true
     },
+    "kind": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The kind of the connection. Use `V2` for managed identity authentication."
+      }
+    },
+    "alternativeParameterValues": {
+      "type": "secureObject",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Alternative parameter values for single-authentication (MSI). When provided, `parameterValueType` is automatically set to `Alternative`."
+      }
+    },
     "parameterValueSet": {
       "type": "object",
       "nullable": true,
@@ -294,6 +308,7 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
       "properties": {
         "displayName": "[parameters('displayName')]",
         "customParameterValues": "[parameters('customParameterValues')]",
@@ -302,6 +317,8 @@
         "nonSecretParameterValues": "[parameters('nonSecretParameterValues')]",
         "testLinks": "[parameters('testLinks')]",
         "statuses": "[parameters('statuses')]",
+        "parameterValueType": "[if(not(empty(parameters('alternativeParameterValues'))), 'Alternative', null())]",
+        "alternativeParameterValues": "[parameters('alternativeParameterValues')]",
         "parameterValueSet": "[parameters('parameterValueSet')]"
       }
     },

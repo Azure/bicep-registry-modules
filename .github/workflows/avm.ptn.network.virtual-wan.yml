@@ -25,14 +25,9 @@ on:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.network.virtual-wan.yml"
       - "avm/ptn/network/virtual-wan/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
-      - "!*/**/child-module-publish-allowed-list.json"
 
 env:
   modulePath: "avm/ptn/network/virtual-wan"

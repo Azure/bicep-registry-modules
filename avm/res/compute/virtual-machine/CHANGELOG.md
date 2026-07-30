@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/virtual-machine/CHANGELOG.md).
 
+## 0.22.2
+
+### Changes
+
+- Adding new parameter `diskControllerType` to specify the disk controller type to allow to deploy NVME enabled virtual machines.
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

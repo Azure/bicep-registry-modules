@@ -1,0 +1,218 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.43.8.12551",
+      "templateHash": "10692998070425916305"
+    },
+    "name": "API Center Service Workspace API Sources",
+    "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
+  },
+  "definitions": {
+    "azureApiManagementSourceType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Azure API Management instance."
+          }
+        },
+        "msiResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the managed identity that has access to the API Management instance. If not provided, system-assigned identity is used and granted Api Management Service Reader role."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "serviceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Center service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 90,
+      "metadata": {
+        "description": "Required. The name of the API source."
+      }
+    },
+    "importSpecification": {
+      "type": "string",
+      "allowedValues": [
+        "always",
+        "never",
+        "ondemand"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Indicates if the specification should be imported along with metadata."
+      }
+    },
+    "targetEnvironment": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The target environment name. If not provided a new environment will be created."
+      }
+    },
+    "targetLifecycleStage": {
+      "type": "string",
+      "allowedValues": [
+        "deprecated",
+        "design",
+        "development",
+        "preview",
+        "production",
+        "retired",
+        "testing"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The target lifecycle stage for imported APIs."
+      }
+    },
+    "azureApiManagementSource": {
+      "$ref": "#/definitions/azureApiManagementSourceType",
+      "metadata": {
+        "description": "Required. Configuration for importing APIs from an Azure API Management instance."
+      }
+    }
+  },
+  "variables": {
+    "useSystemAssignedIdentity": "[empty(coalesce(tryGet(parameters('azureApiManagementSource'), 'msiResourceId'), ''))]",
+    "apimResourceIdSegments": "[split(parameters('azureApiManagementSource').resourceId, '/')]"
+  },
+  "resources": {
+    "service::workspace": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services/workspaces",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[format('{0}/{1}', parameters('serviceName'), parameters('workspaceName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiCenter/services",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[parameters('serviceName')]"
+    },
+    "apiSource": {
+      "type": "Microsoft.ApiCenter/services/workspaces/apiSources",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "importSpecification": "[parameters('importSpecification')]",
+        "targetEnvironmentId": "[if(not(empty(parameters('targetEnvironment'))), format('/workspaces/{0}/environments/{1}', parameters('workspaceName'), parameters('targetEnvironment')), null())]",
+        "targetLifecycleStage": "[parameters('targetLifecycleStage')]",
+        "azureApiManagementSource": "[parameters('azureApiManagementSource')]"
+      },
+      "dependsOn": [
+        "apimRoleAssignment"
+      ]
+    },
+    "apimRoleAssignment": {
+      "condition": "[variables('useSystemAssignedIdentity')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-ApiSource-ApimRbac', uniqueString(deployment().name))]",
+      "subscriptionId": "[variables('apimResourceIdSegments')[2]]",
+      "resourceGroup": "[variables('apimResourceIdSegments')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apimServiceName": {
+            "value": "[last(variables('apimResourceIdSegments'))]"
+          },
+          "principalId": {
+            "value": "[tryGet(tryGet(reference('service', '2024-06-01-preview', 'full'), 'identity'), 'principalId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "17538220331800953571"
+            }
+          },
+          "parameters": {
+            "apimServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the API Management service to assign the role on."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the identity to grant the API Management Service Reader role to."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName'))]",
+              "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('apimServiceName')), parameters('principalId'), resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d'))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API source."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API source."
+      },
+      "value": "[resourceId('Microsoft.ApiCenter/services/workspaces/apiSources', parameters('serviceName'), parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the API source was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

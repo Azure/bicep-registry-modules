@@ -27,6 +27,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/defenderForAISettings` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_defenderforaisettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/defenderForAISettings)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
@@ -77,10 +78,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -140,10 +141,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -201,10 +202,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -260,10 +261,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -318,10 +319,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -372,10 +373,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -426,9 +427,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'GlobalStandard'
@@ -467,9 +469,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "GlobalStandard"
@@ -500,9 +503,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'GlobalStandard'
@@ -1045,6 +1049,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableDefenderForAI: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1057,6 +1062,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       ]
     }
     networkAcls: {
+      bypass: 'AzureServices'
       defaultAction: 'Deny'
       ipRules: [
         {
@@ -1210,6 +1216,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
+    "enableDefenderForAI": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -1229,6 +1238,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "networkAcls": {
       "value": {
+        "bypass": "AzureServices",
         "defaultAction": "Deny",
         "ipRules": [
           {
@@ -1383,6 +1393,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableDefenderForAI = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1395,6 +1406,7 @@ param managedIdentities = {
   ]
 }
 param networkAcls = {
+  bypass: 'AzureServices'
   defaultAction: 'Deny'
   ipRules: [
     {
@@ -1522,10 +1534,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1577,10 +1589,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1628,10 +1640,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -2033,9 +2045,10 @@ param tags = {
 | [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
+| [`enableDefenderForAI`](#parameter-enabledefenderforai) | bool | Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2423,7 +2436,7 @@ The version upgrade option.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -2583,6 +2596,13 @@ The flag to enable dynamic throttling.
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableDefenderForAI`
+
+Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2684,6 +2704,96 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkaclsbypass) | string | Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall. |
+| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated. |
+| [`ipRules`](#parameter-networkaclsiprules) | array | The list of IP address rules. |
+| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | The list of virtual network rules. |
+
+### Parameter: `networkAcls.bypass`
+
+Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureServices'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkAcls.defaultAction`
+
+The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkAcls.ipRules`
+
+The list of IP address rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78). |
+
+### Parameter: `networkAcls.ipRules.value`
+
+An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules`
+
+The list of virtual network rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-networkaclsvirtualnetworkrulesid) | string | Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-networkaclsvirtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Ignore missing vnet service endpoint or not. |
+
+### Parameter: `networkAcls.virtualNetworkRules.id`
+
+Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Ignore missing vnet service endpoint or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `networkInjections`
 

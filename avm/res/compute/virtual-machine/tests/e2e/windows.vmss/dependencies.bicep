@@ -47,6 +47,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2025-04-01' = {
     platformFaultDomainCount: 1
     virtualMachineProfile: {
       osProfile: {
+        #disable-next-line adminusername-should-not-be-literal // Just here as a testing resource which isn't actually used
         adminUsername: 'localAdminUser'
         adminPassword: password
         computerNamePrefix: 'vmssvm'

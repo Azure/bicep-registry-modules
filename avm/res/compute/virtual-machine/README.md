@@ -28,7 +28,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
 | `Microsoft.Compute/disks` | 2025-01-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-01-02/disks)</li></ul> |
-| `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
+| `Microsoft.Compute/virtualMachines` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-11-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
@@ -108,6 +108,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminUsername: 'localAdminUser'
     configurationProfile: '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -189,6 +190,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -256,6 +260,7 @@ param vmSize = 'Standard_D2s_v6'
 param adminUsername = 'localAdminUser'
 param configurationProfile = '/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction'
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -314,6 +319,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminUsername: 'localAdminUser'
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -384,6 +390,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -440,6 +449,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -614,6 +624,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -936,6 +947,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1268,6 +1282,7 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -1539,6 +1554,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -1841,6 +1857,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -2149,6 +2168,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -2339,6 +2359,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2403,6 +2424,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2451,6 +2475,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2492,6 +2517,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     ]
     osDisk: {
       managedDisk: {
+        diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
         resourceId: '<resourceId>'
       }
     }
@@ -2506,7 +2532,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         diskMBpsReadWrite: 125
         diskSizeGB: 1024
         managedDisk: {
-          storageAccountType: 'PremiumV2_LRS'
+          diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+          storageAccountType: 'Premium_LRS'
         }
       }
       {
@@ -2516,6 +2543,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     extensionAntiMalwareConfig: {
       enabled: false
     }
@@ -2559,6 +2587,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "osDisk": {
       "value": {
         "managedDisk": {
+          "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
           "resourceId": "<resourceId>"
         }
       }
@@ -2579,7 +2608,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "diskMBpsReadWrite": 125,
           "diskSizeGB": 1024,
           "managedDisk": {
-            "storageAccountType": "PremiumV2_LRS"
+            "diskEncryptionSetResourceId": "<diskEncryptionSetResourceId>",
+            "storageAccountType": "Premium_LRS"
           }
         },
         {
@@ -2589,6 +2619,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "extensionAntiMalwareConfig": {
       "value": {
@@ -2628,6 +2661,7 @@ param nicConfigurations = [
 ]
 param osDisk = {
   managedDisk: {
+    diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     resourceId: '<resourceId>'
   }
 }
@@ -2642,7 +2676,8 @@ param dataDisks = [
     diskMBpsReadWrite: 125
     diskSizeGB: 1024
     managedDisk: {
-      storageAccountType: 'PremiumV2_LRS'
+      diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
+      storageAccountType: 'Premium_LRS'
     }
   }
   {
@@ -2652,6 +2687,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param extensionAntiMalwareConfig = {
   enabled: false
 }
@@ -2705,6 +2741,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionGuestConfigurationExtension: {
       enabled: true
     }
@@ -2802,6 +2839,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "extensionGuestConfigurationExtension": {
       "value": {
         "enabled": true
@@ -2889,6 +2929,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionGuestConfigurationExtension = {
   enabled: true
 }
@@ -2969,6 +3010,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionAadJoinConfig: {
       enabled: false
       settings: {
@@ -3059,6 +3101,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "extensionAadJoinConfig": {
       "value": {
         "enabled": false,
@@ -3139,6 +3184,7 @@ param vmSize = 'Standard_D4s_v3'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionAadJoinConfig = {
   enabled: false
   settings: {
@@ -3354,6 +3400,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -3723,6 +3770,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
+    },
+    "diskControllerType": {
+      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -4100,6 +4150,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -4305,6 +4356,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     extensionNvidiaGpuDriverWindows: {
       enabled: true
     }
@@ -4374,6 +4426,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "extensionNvidiaGpuDriverWindows": {
       "value": {
         "enabled": true
@@ -4433,6 +4488,7 @@ param vmSize = 'Standard_NV6ads_A10_v5'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param extensionNvidiaGpuDriverWindows = {
   enabled: true
 }
@@ -4489,6 +4545,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4554,6 +4611,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -4605,6 +4665,7 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4666,6 +4727,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4741,6 +4803,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -4798,6 +4863,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -4853,6 +4919,7 @@ param imageReference = {
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostResourceId`](#parameter-dedicatedhostresourceid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | Specifies the disk controller type. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -7179,6 +7246,20 @@ Specifies whether password authentication should be disabled.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `diskControllerType`
+
+Specifies the disk controller type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe'
+    'SCSI'
+  ]
+  ```
 
 ### Parameter: `enableAutomaticUpdates`
 

@@ -60,7 +60,7 @@ param sku string = 'S0'
 param location string = resourceGroup().location
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
@@ -74,7 +74,7 @@ param publicNetworkAccess string?
 param customSubDomainName string?
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
-param networkAcls object?
+param networkAcls networkAclsType?
 
 @description('Optional. Specifies in AI Foundry where virtual network injection occurs to secure scenarios like Agents entirely within a private network.')
 param networkInjections networkInjectionType?
@@ -141,6 +141,9 @@ param allowProjectManagement bool?
 
 @description('Optional. Commitment plans to deploy for the cognitive services account.')
 param commitmentPlans commitmentPlanType[]?
+
+@description('Optional. Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module.')
+param enableDefenderForAI bool?
 
 var enableReferencedModulesTelemetry = false
 
@@ -284,7 +287,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -338,6 +341,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
+          bypass: networkAcls.?bypass
           defaultAction: networkAcls.?defaultAction
           virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
           ipRules: networkAcls.?ipRules ?? []
@@ -397,11 +401,8 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
       versionUpgradeOption: deployment.?versionUpgradeOption
     }
     sku: deployment.?sku ?? {
-      name: sku
-      capacity: sku.?capacity
-      tier: sku.?tier
-      size: sku.?size
-      family: sku.?family
+      name: 'Standard'
+      capacity: 1
     }
   }
 ]
@@ -425,6 +426,14 @@ resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/
   }
 ]
 
+resource cognitiveService_defenderForAISettings 'Microsoft.CognitiveServices/accounts/defenderForAISettings@2025-06-01' = if (enableDefenderForAI != null) {
+  parent: cognitiveService
+  name: 'Default'
+  properties: {
+    state: enableDefenderForAI! ? 'Enabled' : 'Disabled'
+  }
+}
+
 #disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -435,14 +444,18 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -507,6 +520,10 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      cognitiveService_deployments // Ensure model deployments finish so the account is in a 'Succeeded' (not 'Accepted') provisioning state before creating private endpoints
+      cognitiveService_commitmentPlans // Ensure commitment plans finish so the account is in a 'Succeeded' (not 'Accepted') provisioning state before creating private endpoints
+    ]
   }
 ]
 
@@ -741,4 +758,29 @@ type networkInjectionType = {
 
   @description('Optional. Whether to use Microsoft Managed Network. Defaults to false.')
   useMicrosoftManagedNetwork: bool?
+}
+
+@export()
+@description('Type for the network rule set (firewall) governing the accessibility of the Cognitive Services account from specific network locations.')
+type networkAclsType = {
+  @description('Optional. Setting for trusted services. Use \'AzureServices\' to allow trusted Microsoft services to bypass the firewall.')
+  bypass: ('None' | 'AzureServices')?
+
+  @description('Optional. The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. The list of IP address rules.')
+  ipRules: {
+    @description('Required. An IPv4 address range in CIDR notation, such as \'124.56.78.91\' (simple IP address) or \'124.56.78.0/24\' (all addresses that start with 124.56.78).')
+    value: string
+  }[]?
+
+  @description('Optional. The list of virtual network rules.')
+  virtualNetworkRules: {
+    @description('Required. Full resource id of a vnet subnet, such as \'/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1\'.')
+    id: string
+
+    @description('Optional. Ignore missing vnet service endpoint or not.')
+    ignoreMissingVnetServiceEndpoint: bool?
+  }[]?
 }

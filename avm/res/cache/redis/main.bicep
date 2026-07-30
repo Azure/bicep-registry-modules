@@ -1,5 +1,25 @@
 metadata name = 'Redis Cache'
-metadata description = 'This module deploys a Redis Cache.'
+metadata description = '''This module deploys a Redis Cache.
+
+Please note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).
+We recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.
+
+**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**
+
+| Date | Description |
+| --- | --- |
+| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+
+**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**
+
+| Date | Description |
+| --- | --- |
+| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |
+| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |
+| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |
+'''
 
 @description('Optional. The location to deploy the Redis cache service.')
 param location string = resourceGroup().location
@@ -114,7 +134,7 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param geoReplicationObject geoReplicationType?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -236,7 +256,6 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
       redisCacheName: redis.name
       name: policy.name
       permissions: policy.permissions
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -252,7 +271,6 @@ module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
-      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       redis_accessPolicies // Ensure policies exist before assigning them
@@ -280,14 +298,18 @@ resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -379,7 +401,6 @@ module redis_firewallRules 'firewall-rule/main.bicep' = [
       redisCacheName: redis.name
       startIP: firewallRule.startIP
       endIP: firewallRule.endIP
-      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -391,7 +412,6 @@ module redis_geoReplication 'linked-server/main.bicep' = if (!empty(geoReplicati
     name: geoReplicationObject!.?name
     linkedRedisCacheResourceId: geoReplicationObject!.linkedRedisCacheResourceId
     linkedRedisCacheLocation: geoReplicationObject!.?linkedRedisCacheLocation
-    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: redis_privateEndpoints
 }

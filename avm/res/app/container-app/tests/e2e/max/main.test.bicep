@@ -166,8 +166,11 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       runtime: {
-        java:{
+        java: {
           enableMetrics: true
+        }
+        dotnet: {
+          autoConfigureDataProtection: false
         }
       }
       scaleSettings: {

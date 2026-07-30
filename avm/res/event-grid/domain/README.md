@@ -722,7 +722,7 @@ param topics = [
 | :-- | :-- | :-- |
 | [`autoCreateTopicWithFirstSubscription`](#parameter-autocreatetopicwithfirstsubscription) | bool | Location for all Resources. |
 | [`autoDeleteTopicWithLastSubscription`](#parameter-autodeletetopicwithlastsubscription) | bool | Location for all Resources. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
@@ -762,7 +762,7 @@ Location for all Resources.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array

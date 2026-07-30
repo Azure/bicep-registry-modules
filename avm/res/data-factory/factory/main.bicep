@@ -64,7 +64,7 @@ param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01
 param purviewResourceId string?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -103,7 +103,8 @@ var formattedUserAssignedIdentities = reduce(
 // https://learn.microsoft.com/en-us/azure/data-factory/create-shared-self-hosted-integration-runtime-powershell#known-limitations-of-self-hosted-ir-sharing
 var sharedSelfHostedIntegrationRuntimes = filter(
   integrationRuntimes ?? [],
-  integrationRuntime => integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
+  integrationRuntime =>
+    integrationRuntime.type == 'SelfHosted' && !empty(integrationRuntime.?typeProperties.?linkedInfo.?resourceId ?? '') && (integrationRuntime.?typeProperties.?linkedInfo.?authorizationType ?? '') == 'RBAC'
 )
 
 // Validate that a system-assigned managed identity is enabled when one or more shared Self-Hosted Integration Runtimes with RBAC authorization are configured, since the Data Factory's system-assigned identity is required to perform the role assignment on the linked resource.
@@ -264,7 +265,11 @@ module dataFactory_managedVirtualNetwork 'managed-virtual-network/main.bicep' = 
 // The role assignment module is used instead of a direct role assignment resource to take advantage of the module's ability to scope to the linked resource, which allows for proper role assignment even if the linked resource is in a different subscription.
 module dataFactory_roleAssignmentsSharedSHIR 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
   for (sharedSelfHostedIntegrationRuntime, index) in sharedSelfHostedIntegrationRuntimes: {
-    name: guid(dataFactory.id, sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+    name: guid(
+      dataFactory.id,
+      sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId,
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    )
     scope: resourceGroup(
       split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[2],
       split(sharedSelfHostedIntegrationRuntime.?typeProperties.?linkedInfo.?resourceId, '/')[4]
@@ -337,14 +342,18 @@ resource dataFactory_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
