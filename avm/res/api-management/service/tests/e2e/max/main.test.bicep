@@ -614,12 +614,11 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'workspace2'
           displayName: 'Test Workspace 2'
-          description: 'A test workspace with a gateway using External VNet'
+          description: 'A test workspace with a minimal gateway (no VNet integration)'
           gateway: {
             name: '${apimName}-workspace2-gw'
             capacity: 1
-            virtualNetworkType: 'External'
-            subnetResourceId: nestedDependencies.outputs.workspaceGatewaySubnetResourceId
+            virtualNetworkType: 'None'
           }
         }
       ]
