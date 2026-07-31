@@ -42,6 +42,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: '${namePrefix}${serviceShort}'
       aiServiceLocation: enforcedLocation
+      gptModelName: 'gpt-5.1'
+      gptModelVersion: '2025-11-13'
       gptDeploymentCapacity: 10
       enablePrivateNetworking: false
       enableMonitoring: false

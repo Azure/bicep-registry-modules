@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/content-processing/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Updated the default model to GPT-5.1 version `2025-11-13` with a capacity of 300
+- Configured Container Apps to authenticate to the provisioned Azure Container Registry using managed identity
+- Switched initial Container App deployments to a placeholder image for post-deployment image publishing
+- Updated Container App, managed environment, Container Registry, Storage, Cosmos DB, managed identity, private DNS, and common type AVM dependencies
+
+### Breaking Changes
+
+- Removed the public container image endpoint, image name, and image tag parameters
+
 ## 0.2.0
 
 ### Changes
