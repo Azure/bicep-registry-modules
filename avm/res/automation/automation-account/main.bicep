@@ -653,7 +653,7 @@ type credentialType = {
   description: string?
 }
 
-import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.1'
 
 @export()
 type gallerySolutionType = {

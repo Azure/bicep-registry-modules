@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "5698301730660321661"
+      "templateHash": "8622409109340379792"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -903,7 +903,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/operations-management/solution:0.3.1"
         }
       }
     }
