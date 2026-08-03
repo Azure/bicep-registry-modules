@@ -137,7 +137,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -155,8 +155,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.10.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Bastion-PIP'
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.13.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
     enableTelemetry: enableReferencedModulesTelemetry

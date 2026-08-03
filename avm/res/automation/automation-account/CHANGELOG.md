@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.2
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Automation Accounts are deployed in the same resource group at the same time.
+- Updated cross-module reference to the `br/public:avm/res/network/private-endpoint` module to use the latest version `0.12.1`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes
