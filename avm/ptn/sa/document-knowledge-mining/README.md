@@ -516,11 +516,11 @@ Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
-- Default: `'gpt-4.1-mini'`
+- Default: `'gpt-5-mini'`
 - Allowed:
   ```Bicep
   [
-    'gpt-4.1-mini'
+    'gpt-5-mini'
   ]
   ```
 
@@ -530,7 +530,7 @@ Version of the GPT model to deploy.
 
 - Required: No
 - Type: string
-- Default: `'2025-04-14'`
+- Default: `'2025-08-07'`
 
 ### Parameter: `location`
 
@@ -584,7 +584,7 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 - Required: No
 - Type: string
-- Default: `'Standard_DS2_v2'`
+- Default: `'Standard_D2s_v6'`
 
 ## Outputs
 
