@@ -71,6 +71,9 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
   }
+  tags: {
+    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+  }
   dependsOn: [
     roleAssignment
   ]
