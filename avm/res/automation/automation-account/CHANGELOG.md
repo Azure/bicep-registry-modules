@@ -8,6 +8,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Fixed child module deployment names creation to prevent conflicts when two Automation Accounts are deployed in the same resource group at the same time.
 - Updated cross-module reference to the `br/public:avm/res/network/private-endpoint` module to use the latest version `0.12.1`
+- Updated cross-module reference to the `br/public:avm/res/operations-management/solution` module to use the latest version `0.3.1`
 
 ### Breaking Changes
 
