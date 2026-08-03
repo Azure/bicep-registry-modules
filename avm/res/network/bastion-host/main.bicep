@@ -178,7 +178,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 }
 
 module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Bastion-PIP'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
     enableTelemetry: enableReferencedModulesTelemetry
