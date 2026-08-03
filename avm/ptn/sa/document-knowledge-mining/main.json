@@ -57,9 +57,9 @@
     },
     "gptModelName": {
       "type": "string",
-      "defaultValue": "gpt-4.1-mini",
+      "defaultValue": "gpt-5-mini",
       "allowedValues": [
-        "gpt-4.1-mini"
+        "gpt-5-mini"
       ],
       "minLength": 1,
       "metadata": {
@@ -68,7 +68,7 @@
     },
     "gptModelVersion": {
       "type": "string",
-      "defaultValue": "2025-04-14",
+      "defaultValue": "2025-08-07",
       "metadata": {
         "description": "Optional. Version of the GPT model to deploy."
       }
@@ -123,7 +123,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_DS2_v2",
+      "defaultValue": "Standard_D2s_v6",
       "metadata": {
         "description": "Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true."
       }
@@ -11888,7 +11888,7 @@
             "value": "[take(variables('jumpboxVmName'), 15)]"
           },
           "vmSize": {
-            "value": "[coalesce(parameters('vmSize'), 'Standard_DS2_v2')]"
+            "value": "[coalesce(parameters('vmSize'), 'Standard_D2s_v6')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -11903,7 +11903,7 @@
             "value": "[parameters('tags')]"
           },
           "availabilityZone": {
-            "value": 1
+            "value": -1
           },
           "maintenanceConfigurationResourceId": {
             "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
@@ -11912,7 +11912,7 @@
             "value": {
               "offer": "WindowsServer",
               "publisher": "MicrosoftWindowsServer",
-              "sku": "2019-datacenter",
+              "sku": "2019-datacenter-gensecond",
               "version": "latest"
             }
           },
@@ -49577,7 +49577,8 @@
                 }
               },
               "dependsOn": [
-                "cognitiveService"
+                "cognitiveService",
+                "cognitiveService_deployments"
               ]
             },
             "secretsExport": {
@@ -52089,7 +52090,8 @@
                 }
               },
               "dependsOn": [
-                "cognitiveService"
+                "cognitiveService",
+                "cognitiveService_deployments"
               ]
             },
             "secretsExport": {
@@ -52408,6 +52410,7 @@
                 "name": "agentpool",
                 "vmSize": "Standard_D4ds_v5",
                 "count": 3,
+                "availabilityZones": [],
                 "osType": "Linux",
                 "mode": "System",
                 "type": "VirtualMachineScaleSets",
