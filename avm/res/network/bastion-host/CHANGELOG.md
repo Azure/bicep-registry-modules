@@ -2,18 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/bastion-host/CHANGELOG.md).
 
-## 0.8.3
-
-### Changes
-
-- Fixed child module deployment names creation to prevent conflicts when two Bastion Hosts are deployed in the same resource group at the same time.
-- Updated cross-module reference to the `br/public:avm/res/network/public-ip-address` module to use the latest version `0.13.0`
-- Updated API version for `Microsoft.Resources/deployments` to `2025-04-01` for telemetry deployment resource.
-
-### Breaking Changes
-
-- None
-
 ## 0.8.2
 
 ### Changes
