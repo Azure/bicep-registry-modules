@@ -13,7 +13,7 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   name: storageAccountName
   location: location
   sku: {
