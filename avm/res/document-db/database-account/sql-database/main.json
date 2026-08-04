@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "307874269403215833"
+      "version": "0.46.1.21595",
+      "templateHash": "434268487196271677"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -32,7 +32,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/conflictResolutionPolicy"
             },
             "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
           },
@@ -66,7 +66,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/tags"
             },
             "description": "Optional. Tags of the SQL Database resource."
           },
@@ -87,7 +87,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/indexingPolicy"
             },
             "description": "Optional. Indexing policy of the container."
           },
@@ -97,7 +97,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
             },
             "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
           },
@@ -107,7 +107,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
             },
             "description": "Optional. The vector embedding policy for the container."
           },
@@ -117,7 +117,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/fullTextPolicy"
+              "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/fullTextPolicy"
             },
             "description": "Optional. The full text policy for the container."
           },
@@ -193,7 +193,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the SQL database resource."
       },
@@ -234,12 +234,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "sqlDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -290,6 +290,9 @@
           "indexingPolicy": {
             "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'indexingPolicy')]"
           },
+          "dataMaskingPolicy": {
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'dataMaskingPolicy')]"
+          },
           "kind": {
             "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'kind')]"
           },
@@ -320,8 +323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "14311979749125952310"
+              "version": "0.46.1.21595",
+              "templateHash": "4306456502326436628"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -356,7 +359,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/conflictResolutionPolicy"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/conflictResolutionPolicy"
                 },
                 "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
               },
@@ -390,7 +393,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/tags"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the SQL Database resource."
               },
@@ -411,9 +414,19 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/indexingPolicy"
                 },
                 "description": "Optional. Indexing policy of the container."
+              },
+              "nullable": true
+            },
+            "dataMaskingPolicy": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/dataMaskingPolicy"
+                },
+                "description": "Optional. Data masking policy of the container."
               },
               "nullable": true
             },
@@ -421,7 +434,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/uniqueKeyPolicy/properties/uniqueKeys"
                 },
                 "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
               },
@@ -431,7 +444,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/vectorEmbeddingPolicy"
                 },
                 "description": "Optional. The vector embedding policy for the container."
               },
@@ -441,7 +454,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15#properties/properties/properties/resource/properties/fullTextPolicy"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview#properties/properties/properties/resource/properties/fullTextPolicy"
                 },
                 "description": "Optional. The full text policy for the container."
               },
@@ -490,7 +503,7 @@
             "databaseAccount::sqlDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
             },
             "avmTelemetry": {
@@ -516,16 +529,16 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[parameters('databaseAccountName')]"
             },
             "container": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
+                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'dataMaskingPolicy', parameters('dataMaskingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
                 "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [

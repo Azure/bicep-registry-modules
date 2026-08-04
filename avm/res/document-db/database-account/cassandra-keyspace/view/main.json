@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "8321121417261099455"
+      "version": "0.46.1.21595",
+      "templateHash": "6233014309616959860"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -22,7 +22,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the Cassandra view resource."
       },
@@ -79,7 +79,7 @@
     "databaseAccount::cassandraKeyspace": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-      "apiVersion": "2025-05-01-preview",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
     },
     "avmTelemetry": {
@@ -105,12 +105,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-05-01-preview",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "cassandraView": {
       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views",
-      "apiVersion": "2025-05-01-preview",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",

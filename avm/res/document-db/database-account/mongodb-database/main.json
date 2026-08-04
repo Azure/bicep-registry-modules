@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "6032045188179745266"
+      "version": "0.46.1.21595",
+      "templateHash": "167262926030434136"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -32,7 +32,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview#properties/properties/properties/resource/properties/indexes"
             },
             "description": "Required. Indexes for the collection."
           }
@@ -41,7 +41,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+              "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview#properties/properties/properties/resource/properties/shardKey"
             },
             "description": "Required. ShardKey for the collection."
           }
@@ -87,7 +87,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -97,7 +97,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15#properties/properties/properties/options/properties/autoscaleSettings"
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview#properties/properties/properties/options/properties/autoscaleSettings"
         },
         "description": "Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both."
       },
@@ -138,12 +138,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "mongodbDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -198,8 +198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "13403332174585688243"
+              "version": "0.46.1.21595",
+              "templateHash": "5763774621975072276"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection."
@@ -234,7 +234,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/indexes"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview#properties/properties/properties/resource/properties/indexes"
                 },
                 "description": "Required. Indexes for the collection."
               }
@@ -243,7 +243,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15#properties/properties/properties/resource/properties/shardKey"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview#properties/properties/properties/resource/properties/shardKey"
                 },
                 "description": "Required. ShardKey for the collection."
               }
@@ -279,10 +279,10 @@
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
               "properties": {
-                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2025-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2026-04-01-preview').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
                 "resource": {
                   "id": "[parameters('name')]",
                   "indexes": "[parameters('indexes')]",
