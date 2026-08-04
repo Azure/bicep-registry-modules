@@ -132,6 +132,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   'EnableNoSQLFullTextSearch'
   'EnableMaterializedViews'
   'DeleteAllItemsByPartitionKey'
+  'EnableDynamicDataMasking'
 ])
 @description('Optional. A list of Azure Cosmos DB specific capabilities for the account.')
 param capabilitiesToAdd string[]?
