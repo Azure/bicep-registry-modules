@@ -79,6 +79,14 @@ param serverVersion string = '4.2'
 @description('Optional. Configuration for databases when using Azure Cosmos DB for NoSQL.')
 param sqlDatabases sqlDatabaseType[]?
 
+@description('Optional. Indicates the capacityMode of the Cosmos DB account.')
+@allowed([
+  'None'
+  'Provisioned'
+  'Serverless'
+])
+param capacityMode string = 'Provisioned'
+
 @description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
 param mongodbDatabases mongoDbType[]?
 
@@ -127,7 +135,6 @@ param diagnosticSettings diagnosticSettingFullType[]?
   'EnableGremlin'
   'EnableMongo'
   'DisableRateLimitingResponses'
-  'EnableServerless'
   'EnableNoSQLVectorSearch'
   'EnableNoSQLFullTextSearch'
   'EnableMaterializedViews'
@@ -327,6 +334,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-previ
       : null
     enablePartitionMerge: enablePartitionMerge
     enablePerRegionPerPartitionAutoscale: enablePerRegionPerPartitionAutoscale
+    capacityMode: capacityMode
     backupPolicy: {
       #disable-next-line BCP225 // Value has a default
       type: backupPolicyType
