@@ -39,6 +39,7 @@ param paths string[]
 @description('Optional. Indexing policy of the container.')
 param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.indexingPolicy?
 
+@description('Optional. Data masking policy of the container.')
 param dataMaskingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.dataMaskingPolicy?
 
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
@@ -102,6 +103,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       conflictResolutionPolicy: conflictResolutionPolicy
       id: name
       indexingPolicy: indexingPolicy
+      dataMaskingPolicy: dataMaskingPolicy
       partitionKey: {
         paths: partitionKeyPaths
         kind: kind
