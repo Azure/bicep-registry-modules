@@ -2102,9 +2102,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddapln001'
     // Non-required parameters
-    capabilitiesToAdd: [
-      'EnableServerless'
-    ]
+    capacityMode: 'Serverless'
     databaseAccountOfferType: 'Standard'
     failoverLocations: [
       {
@@ -2141,10 +2139,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddapln001"
     },
     // Non-required parameters
-    "capabilitiesToAdd": {
-      "value": [
-        "EnableServerless"
-      ]
+    "capacityMode": {
+      "value": "Serverless"
     },
     "databaseAccountOfferType": {
       "value": "Standard"
@@ -2188,9 +2184,7 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddapln001'
 // Non-required parameters
-param capabilitiesToAdd = [
-  'EnableServerless'
-]
+param capacityMode = 'Serverless'
 param databaseAccountOfferType = 'Standard'
 param failoverLocations = [
   {
@@ -3710,6 +3704,7 @@ param zoneRedundant = true
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`capacityMode`](#parameter-capacitymode) | string | Indicates the capacityMode of the Cosmos DB account. |
 | [`cassandraKeyspaces`](#parameter-cassandrakeyspaces) | array | Configuration for keyspaces when using Azure Cosmos DB for Apache Cassandra. |
 | [`cassandraRoleAssignments`](#parameter-cassandraroleassignments) | array | Azure Cosmos DB for Apache Cassandra native data plane role-based access control assignments. Each assignment references a role definition unique identifier and a principal identifier. |
 | [`cassandraRoleDefinitions`](#parameter-cassandraroledefinitions) | array | Configurations for Azure Cosmos DB for Apache Cassandra native role-based access control definitions. Allows the creations of custom role definitions. |
@@ -3849,8 +3844,23 @@ A list of Azure Cosmos DB specific capabilities for the account.
     'EnableMongo'
     'EnableNoSQLFullTextSearch'
     'EnableNoSQLVectorSearch'
-    'EnableServerless'
     'EnableTable'
+  ]
+  ```
+
+### Parameter: `capacityMode`
+
+Indicates the capacityMode of the Cosmos DB account.
+
+- Required: No
+- Type: string
+- Default: `'Provisioned'`
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'Provisioned'
+    'Serverless'
   ]
   ```
 
