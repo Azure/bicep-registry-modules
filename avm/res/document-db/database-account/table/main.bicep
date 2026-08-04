@@ -5,7 +5,7 @@ metadata description = 'This module deploys a table within an Azure Cosmos DB Ac
 param name string
 
 @description('Optional. Tags for the table.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -38,11 +38,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15' = {
+resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview' = {
   name: name
   tags: tags
   parent: databaseAccount

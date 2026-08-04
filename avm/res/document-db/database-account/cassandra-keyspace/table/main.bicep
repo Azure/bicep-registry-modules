@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra Table within a Cassandra
 param name string
 
 @description('Optional. Tags of the Cassandra table resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -14,7 +14,7 @@ param databaseAccountName string
 param cassandraKeyspaceName string
 
 @description('Required. Schema definition for the Cassandra table.')
-param schema resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.properties.resource.schema
+param schema resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview'>.properties.resource.schema
 
 @description('Optional. Analytical TTL for the table. Default to 0 (disabled). Analytical store is enabled when set to a value other than 0. If set to -1, analytical store retains all historical data.')
 param analyticalStorageTtl int = 0
@@ -50,10 +50,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 
-  resource cassandraKeyspace 'cassandraKeyspaces@2024-11-15' existing = {
+  resource cassandraKeyspace 'cassandraKeyspaces@2026-04-01-preview' existing = {
     name: cassandraKeyspaceName
   }
 }
@@ -69,7 +69,7 @@ var tableOptions = contains(databaseAccount.properties.capabilities, { name: 'En
       throughput: throughput
     }
 
-resource cassandraTable 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15' = {
+resource cassandraTable 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview' = {
   name: name
   tags: tags
   parent: databaseAccount::cassandraKeyspace

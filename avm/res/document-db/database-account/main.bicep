@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags for the resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2024-11-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
@@ -199,10 +199,10 @@ param enablePartitionMerge bool = false
 param enablePerRegionPerPartitionAutoscale bool = false
 
 @description('Optional. Analytical storage specific properties.')
-param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.analyticalStorageConfiguration?
+param analyticalStorageConfiguration resourceInput<'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview'>.properties.analyticalStorageConfiguration?
 
 @description('Optional. The CORS policy for the Cosmos DB database account.')
-param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2025-04-15'>.properties.cors?
+param cors resourceInput<'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview'>.properties.cors?
 
 @description('Optional. The default identity for accessing key vault used in features like customer managed keys. Use `FirstPartyIdentity` to use the tenant-level CosmosDB enterprise application. The default identity needs to be explicitly set by the users.')
 param defaultIdentity defaultIdentityType = {
@@ -307,7 +307,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empt
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -853,7 +853,7 @@ type gremlinDatabaseType = {
   name: string
 
   @description('Optional. Tags of the Gremlin database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-04-01-preview'>.tags?
 
   @description('Optional. Array of graphs to deploy in the Gremlin database.')
   graphs: graphType[]?
@@ -879,10 +879,10 @@ type mongoDbType = {
   collections: collectionType[]?
 
   @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
-  autoscaleSettings: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
+  autoscaleSettings: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.properties.options.autoscaleSettings?
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.tags?
 }
 
 import { containerType } from 'sql-database/main.bicep'
@@ -902,7 +902,7 @@ type sqlDatabaseType = {
   autoscaleSettingsMaxThroughput: int?
 
   @description('Optional. Tags of the SQL database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview'>.tags?
 }
 
 @export()
@@ -912,7 +912,7 @@ type tableType = {
   name: string
 
   @description('Optional. Tags for the table.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview'>.tags?
 
   @description('Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.')
   maxThroughput: int?
@@ -947,10 +947,10 @@ type cassandraRoleDefinitionType = {
   @description('Required. A user-friendly name for the role-based access control definition. Must be unique for the database account.')
   roleName: string
 
-  @description('Optional. An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2025-05-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft.')
+  @description('Optional. An array of data actions that are allowed. Note: Valid data action strings are currently undocumented (API version 2026-04-01-preview). Expected to follow format similar to SQL RBAC once documented by Microsoft.')
   dataActions: string[]?
 
-  @description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2025-05-01-preview).')
+  @description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra supports deny rules for granular access control. Valid data action strings are currently undocumented (API version 2026-04-01-preview).')
   notDataActions: string[]?
 
   @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition.')
@@ -979,7 +979,7 @@ type cassandraKeyspaceType = {
   throughput: int?
 
   @description('Optional. Tags of the Cassandra keyspace resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2026-04-01-preview'>.tags?
 }
 
 @export()
