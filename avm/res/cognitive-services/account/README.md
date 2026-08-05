@@ -55,6 +55,8 @@ The following section provides usage examples for the module, which were used to
 - [WAF-aligned](#example-11-waf-aligned)
 - [Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set](#example-12-using-aiservices-with-a-ga-partner-anthropic-deployments-in-parameter-set)
 - [Using `AIServices` with `deployments` in parameter set](#example-13-using-aiservices-with-deployments-in-parameter-set)
+- [Using only defaults](#example-14-using-only-defaults)
+- [WAF-aligned](#example-15-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
 
@@ -2145,6 +2147,130 @@ param deployments = [
     }
   }
 ]
+```
+
+</details>
+<p>
+
+### Example 14: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'csamin001'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csamin001"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param name = 'csamin001'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 15: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'csawaf001'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "csawaf001"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param name = 'csawaf001'
+param location = '<location>'
 ```
 
 </details>
