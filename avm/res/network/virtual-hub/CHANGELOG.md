@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-hub/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Virtual Hubs are deployed in the same resource group at the same time.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

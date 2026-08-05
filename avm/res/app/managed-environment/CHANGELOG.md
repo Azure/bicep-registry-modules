@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Added support for Diagnostic Settings & Private Endpoints
+- Upgraded all `avm-common-types` module references to use version `0.7.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes
