@@ -17,7 +17,7 @@ param throughput int?
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL database resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-03-15'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 }
 
-resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview' = {
+resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-03-15' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -118,7 +118,7 @@ type containerType = {
   analyticalStorageTtl: int?
 
   @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
-  conflictResolutionPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.conflictResolutionPolicy?
+  conflictResolutionPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.properties.resource.conflictResolutionPolicy?
 
   @maxValue(2147483647)
   @minValue(-1)
@@ -133,7 +133,7 @@ type containerType = {
   autoscaleSettingsMaxThroughput: int?
 
   @description('Optional. Tags of the SQL Database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.tags?
 
   @maxLength(3)
   @minLength(1)
@@ -141,16 +141,19 @@ type containerType = {
   paths: string[]
 
   @description('Optional. Indexing policy of the container.')
-  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.indexingPolicy?
+  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.properties.resource.indexingPolicy?
+
+  @description('Optional. The Data Masking policy for the container.')
+  dataMaskingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.dataMaskingPolicy?
 
   @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-  uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
+  uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
   @description('Optional. The vector embedding policy for the container.')
-  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.vectorEmbeddingPolicy?
+  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.properties.resource.vectorEmbeddingPolicy?
 
   @description('Optional. The full text policy for the container.')
-  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.fullTextPolicy?
+  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-03-15'>.properties.resource.fullTextPolicy?
 
   @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
   kind: ('Hash' | 'MultiHash')?

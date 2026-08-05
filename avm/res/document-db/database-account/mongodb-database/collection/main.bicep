@@ -14,10 +14,10 @@ param name string
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')
-param indexes resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.indexes
+param indexes resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-03-15'>.properties.resource.indexes
 
 @description('Required. ShardKey for the collection.')
-param shardKey resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.shardKey
+param shardKey resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-03-15'>.properties.resource.shardKey
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,15 +41,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 
-  resource mongodbDatabase 'mongodbDatabases@2026-04-01-preview' existing = {
+  resource mongodbDatabase 'mongodbDatabases@2026-03-15' existing = {
     name: mongodbDatabaseName
   }
 }
 
-resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview' = {
+resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-03-15' = {
   name: name
   parent: databaseAccount::mongodbDatabase
   properties: {

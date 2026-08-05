@@ -5,7 +5,7 @@ metadata description = 'This module deploys a DocumentDB Database Accounts Greml
 param name string
 
 @description('Optional. Tags of the Gremlin graph resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -14,10 +14,10 @@ param databaseAccountName string
 param gremlinDatabaseName string
 
 @description('Optional. Indexing policy of the graph.')
-param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.properties.resource.indexingPolicy?
+param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.properties.resource.indexingPolicy?
 
 @description('Optional. List of paths using which data within the container can be partitioned.')
-param partitionKeyPaths resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.properties.resource.partitionKey.paths?
+param partitionKeyPaths resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.properties.resource.partitionKey.paths?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,15 +41,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 
-  resource gremlinDatabase 'gremlinDatabases@2026-04-01-preview' existing = {
+  resource gremlinDatabase 'gremlinDatabases@2026-03-15' existing = {
     name: gremlinDatabaseName
   }
 }
 
-resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview' = {
+resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15' = {
   name: name
   tags: tags
   parent: databaseAccount::gremlinDatabase

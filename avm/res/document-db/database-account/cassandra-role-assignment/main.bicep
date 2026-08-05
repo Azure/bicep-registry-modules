@@ -42,11 +42,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 }
 
-resource cassandraRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments@2026-04-01-preview' = {
+resource cassandraRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments@2026-03-15' = {
   parent: databaseAccount
   name: name ?? guid(roleDefinitionId, principalId, databaseAccount.id)
   properties: {

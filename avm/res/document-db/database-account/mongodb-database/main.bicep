@@ -14,10 +14,10 @@ param throughput int = 400
 param collections collectionType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-03-15'>.tags?
 
 @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
-param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.properties.options.autoscaleSettings?
+param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-03-15'>.properties.options.autoscaleSettings?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 }
 
-resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview' = {
+resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-03-15' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -102,8 +102,8 @@ type collectionType = {
   throughput: int?
 
   @description('Required. Indexes for the collection.')
-  indexes: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.indexes
+  indexes: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-03-15'>.properties.resource.indexes
 
   @description('Required. ShardKey for the collection.')
-  shardKey: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.shardKey
+  shardKey: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-03-15'>.properties.resource.shardKey
 }

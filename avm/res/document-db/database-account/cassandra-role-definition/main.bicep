@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Cassandra Role Definition in a Cos
 // ============================================================================ //
 // IMPORTANT: Cassandra RBAC Data Actions Documentation                        //
 // ============================================================================ //
-// As of API version 2026-04-01-preview, valid data action strings for         //
+// As of API version 2026-03-15, valid data action strings for         //
 // Cassandra API are not yet documented by Microsoft. This module is designed  //
 // to support the full Cassandra RBAC feature set once documentation becomes   //
 // available.                                                                   //
@@ -36,10 +36,10 @@ param name string?
 @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
 param roleName string
 
-@description('Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-04-01-preview). Please refer to official Azure documentation once available.')
+@description('Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-03-15). Please refer to official Azure documentation once available.')
 param dataActions string[] = []
 
-@description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-04-01-preview).')
+@description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-03-15).')
 param notDataActions string[] = []
 
 @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Keyspace. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
@@ -74,11 +74,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
   name: databaseAccountName
 }
 
-resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions@2026-04-01-preview' = {
+resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions@2026-03-15' = {
   parent: databaseAccount
   name: name ?? guid(databaseAccount.id, databaseAccountName, roleName)
   properties: {
