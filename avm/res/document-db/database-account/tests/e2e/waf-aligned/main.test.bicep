@@ -19,9 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+var enforcedLocation = 'centralus'
 #disable-next-line no-hardcoded-location
-var enforcedSecondLocation = 'westeurope'
+var enforcedSecondLocation = 'southcentralus'
 
 // ============ //
 // Dependencies //
