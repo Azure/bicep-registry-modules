@@ -22,16 +22,10 @@ param raiPolicyName string?
 @description('Optional. The version upgrade option.')
 param versionUpgradeOption string?
 
-@description('Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider\'s Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.')
-param modelProviderData modelProviderDataType?
-
 resource cognitiveServiceAccount 'Microsoft.CognitiveServices/accounts@2025-06-01' existing = {
   name: accountName
 }
 
-// modelProviderData is required by the RP for Anthropic Claude deployments and is documented at
-// https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use,
-// but is still absent from the OpenAPI spec - see https://github.com/Azure/azure-rest-api-specs/issues/43610
 #disable-next-line BCP081
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2026-05-01' = {
   parent: cognitiveServiceAccount
@@ -40,7 +34,6 @@ resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deploy
     model: model
     raiPolicyName: raiPolicyName
     versionUpgradeOption: versionUpgradeOption
-    modelProviderData: modelProviderData
   }
   sku: sku
 }
@@ -53,29 +46,3 @@ output resourceId string = cognitiveServiceDeployment.id
 
 @description('The name of the resource group in which the deployment was created.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('Model-provider attestation information.')
-type modelProviderDataType = {
-  @description('Required. Legal entity name of the organization deploying the model.')
-  organizationName: string
-
-  @description('Required. Two-letter ISO 3166-1 alpha-2 country or region code.')
-  countryCode: string
-
-  @description('Required. The organization industry accepted by the resource provider.')
-  industry:
-    | 'technology'
-    | 'finance'
-    | 'healthcare'
-    | 'education'
-    | 'retail'
-    | 'manufacturing'
-    | 'government'
-    | 'media'
-    | 'other'
-}

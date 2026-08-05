@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "5807980009467654620"
+      "templateHash": "63783040534586890"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -53,13 +53,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The version upgrade option."
-          }
-        },
-        "modelProviderData": {
-          "$ref": "#/definitions/modelProviderDataType",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
           }
         }
       },
@@ -839,46 +832,6 @@
         }
       }
     },
-    "modelProviderDataType": {
-      "type": "object",
-      "properties": {
-        "organizationName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Legal entity name of the organization deploying the model."
-          }
-        },
-        "countryCode": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
-          }
-        },
-        "industry": {
-          "type": "string",
-          "allowedValues": [
-            "education",
-            "finance",
-            "government",
-            "healthcare",
-            "manufacturing",
-            "media",
-            "other",
-            "retail",
-            "technology"
-          ],
-          "metadata": {
-            "description": "Required. The organization industry accepted by the resource provider."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Model-provider attestation information.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "deployment/main.bicep"
-        }
-      }
-    },
     "privateEndpointSingleServiceType": {
       "type": "object",
       "properties": {
@@ -1648,9 +1601,6 @@
           },
           "versionUpgradeOption": {
             "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
-          },
-          "modelProviderData": {
-            "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'modelProviderData')]"
           }
         },
         "template": {
@@ -1661,50 +1611,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "14977457587260829280"
+              "templateHash": "7586312923556688142"
             },
             "name": "Cognitive Services Account Deployment",
             "description": "This module deploys a Cognitive Services account model deployment."
-          },
-          "definitions": {
-            "modelProviderDataType": {
-              "type": "object",
-              "properties": {
-                "organizationName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Legal entity name of the organization deploying the model."
-                  }
-                },
-                "countryCode": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
-                  }
-                },
-                "industry": {
-                  "type": "string",
-                  "allowedValues": [
-                    "education",
-                    "finance",
-                    "government",
-                    "healthcare",
-                    "manufacturing",
-                    "media",
-                    "other",
-                    "retail",
-                    "technology"
-                  ],
-                  "metadata": {
-                    "description": "Required. The organization industry accepted by the resource provider."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "Model-provider attestation information."
-              }
-            }
           },
           "parameters": {
             "name": {
@@ -1754,13 +1664,6 @@
               "metadata": {
                 "description": "Optional. The version upgrade option."
               }
-            },
-            "modelProviderData": {
-              "$ref": "#/definitions/modelProviderDataType",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
-              }
             }
           },
           "resources": {
@@ -1777,8 +1680,7 @@
               "properties": {
                 "model": "[parameters('model')]",
                 "raiPolicyName": "[parameters('raiPolicyName')]",
-                "versionUpgradeOption": "[parameters('versionUpgradeOption')]",
-                "modelProviderData": "[parameters('modelProviderData')]"
+                "versionUpgradeOption": "[parameters('versionUpgradeOption')]"
               },
               "sku": "[parameters('sku')]"
             }
