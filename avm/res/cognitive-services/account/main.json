@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "1357405483832616867"
+      "version": "0.46.1.21595",
+      "templateHash": "5807980009467654620"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1660,8 +1660,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "17053158857832072805"
+              "version": "0.46.1.21595",
+              "templateHash": "14977457587260829280"
             },
             "name": "Cognitive Services Account Deployment",
             "description": "This module deploys a Cognitive Services account model deployment."
@@ -2501,8 +2501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "5801666867026778267"
+              "version": "0.46.1.21595",
+              "templateHash": "4536627717192413281"
             }
           },
           "definitions": {

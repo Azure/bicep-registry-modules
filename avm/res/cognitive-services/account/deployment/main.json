@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "17053158857832072805"
+      "version": "0.46.1.21595",
+      "templateHash": "14977457587260829280"
     },
     "name": "Cognitive Services Account Deployment",
     "description": "This module deploys a Cognitive Services account model deployment."
