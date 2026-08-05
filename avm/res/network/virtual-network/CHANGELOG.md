@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.10.1
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Virtual Networks are deployed in the same resource group at the same time.
+
+### Breaking Changes
+
+- None
+
+## 0.10.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
 ## 0.9.0
 
 ### Changes

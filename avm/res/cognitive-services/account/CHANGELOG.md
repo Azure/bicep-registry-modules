@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.17.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.16.0
+
+### Changes
+
+- Added the `enableDefenderForAI` parameter to enable or disable Microsoft Defender for AI (`Microsoft.CognitiveServices/accounts/defenderForAISettings`) on the account. When not set, the Defender for AI settings are left unmanaged by the module (fixes [#6603](https://github.com/Azure/bicep-registry-modules/issues/6603))
+
+### Breaking Changes
+
+- None
+
 ## 0.15.1
 
 ### Changes

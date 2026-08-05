@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.22.0
+
+### Changes
+
+- For child-module `database`, updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+### Breaking Changes
+
+- None
+
 ## 0.21.4
 
 ### Changes

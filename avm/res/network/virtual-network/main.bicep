@@ -43,7 +43,7 @@ param vnetEncryptionEnforcement string = 'AllowUnencrypted'
 param flowTimeoutInMinutes int = 0
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
@@ -178,7 +178,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
 @batchSize(1)
 module virtualNetwork_subnets 'subnet/main.bicep' = [
   for (subnet, index) in (subnets ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-subnet-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-subnet-${index}'
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
@@ -207,7 +207,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
 // Local to Remote peering
 module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-local-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-virtualNetworkPeering-local-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [
@@ -231,7 +231,7 @@ module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
 // Remote to local peering (reverse)
 module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): if (peering.?remotePeeringEnabled ?? false) {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-remote-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-virtualNetworkPeering-remote-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [
@@ -276,14 +276,18 @@ resource virtualNetwork_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

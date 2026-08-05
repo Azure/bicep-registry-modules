@@ -128,7 +128,7 @@ var formattedRoleAssignments = [
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-firewallpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -206,7 +206,7 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-10-01' = {
 @batchSize(1)
 module firewallPolicy_ruleCollectionGroups 'rule-collection-group/main.bicep' = [
   for (ruleCollectionGroup, index) in (ruleCollectionGroups ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-firewallPolicy_ruleCollectionGroups-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-firewallPolicy_ruleCollectionGroups-${index}'
     params: {
       firewallPolicyName: firewallPolicy.name
       name: ruleCollectionGroup.name
