@@ -44,19 +44,16 @@ The following section provides usage examples for the module, which were used to
 
 - [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
 - [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-3-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [Storing keys of service in key vault](#example-6-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-7-using-only-defaults)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-9-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-10-as-speech-service)
-- [WAF-aligned](#example-11-waf-aligned)
-- [Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set](#example-12-using-aiservices-with-a-ga-partner-anthropic-deployments-in-parameter-set)
-- [Using `AIServices` with `deployments` in parameter set](#example-13-using-aiservices-with-deployments-in-parameter-set)
-- [Using only defaults](#example-14-using-only-defaults)
-- [WAF-aligned](#example-15-waf-aligned)
+- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
+- [Storing keys of service in key vault](#example-7-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-8-using-only-defaults)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-10-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-11-as-speech-service)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
 
@@ -407,7 +404,121 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 3: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 3: _Using `AIServices` with `deployments` in parameter set_
+
+This instance deploys the module with the AI model deployment feature.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csad002'
+    // Non-required parameters
+    customSubDomainName: 'xcsadai'
+    deployments: [
+      {
+        model: {
+          format: 'OpenAI'
+          name: 'text-embedding-3-large'
+          version: '1'
+        }
+        name: 'text-embedding-3-large'
+        sku: {
+          capacity: 10
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csad002"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "OpenAI",
+            "name": "text-embedding-3-large",
+            "version": "1"
+          },
+          "name": "text-embedding-3-large",
+          "sku": {
+            "capacity": 10,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csad002'
+// Non-required parameters
+param customSubDomainName = 'xcsadai'
+param deployments = [
+  {
+    model: {
+      format: 'OpenAI'
+      name: 'text-embedding-3-large'
+      version: '1'
+    }
+    name: 'text-embedding-3-large'
+    sku: {
+      capacity: 10
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
@@ -528,7 +639,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -633,7 +744,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -747,7 +858,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 6: _Storing keys of service in key vault_
+### Example 7: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -834,7 +945,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using only defaults_
+### Example 8: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -896,7 +1007,7 @@ param name = 'csamin001'
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1400,7 +1511,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 10: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1557,7 +1668,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 10: _As Speech Service_
+### Example 11: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1727,7 +1838,7 @@ param tags = {
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1904,373 +2015,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-```
-
-</details>
-<p>
-
-### Example 12: _Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set_
-
-This instance deploys the module with a GA partner model deployment that carries the required `modelProviderData` attestation.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-anthropic]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  params: {
-    // Required parameters
-    kind: 'AIServices'
-    name: 'csada001'
-    // Non-required parameters
-    customSubDomainName: 'xcsadaai'
-    deployments: [
-      {
-        model: {
-          format: 'Anthropic'
-          name: 'claude-sonnet-4-6'
-          version: '1'
-        }
-        modelProviderData: {
-          countryCode: 'US'
-          industry: 'technology'
-          organizationName: 'Contoso'
-        }
-        name: 'claude-sonnet-4-6'
-        sku: {
-          capacity: 25
-          name: 'GlobalStandard'
-        }
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "AIServices"
-    },
-    "name": {
-      "value": "csada001"
-    },
-    // Non-required parameters
-    "customSubDomainName": {
-      "value": "xcsadaai"
-    },
-    "deployments": {
-      "value": [
-        {
-          "model": {
-            "format": "Anthropic",
-            "name": "claude-sonnet-4-6",
-            "version": "1"
-          },
-          "modelProviderData": {
-            "countryCode": "US",
-            "industry": "technology",
-            "organizationName": "Contoso"
-          },
-          "name": "claude-sonnet-4-6",
-          "sku": {
-            "capacity": 25,
-            "name": "GlobalStandard"
-          }
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param kind = 'AIServices'
-param name = 'csada001'
-// Non-required parameters
-param customSubDomainName = 'xcsadaai'
-param deployments = [
-  {
-    model: {
-      format: 'Anthropic'
-      name: 'claude-sonnet-4-6'
-      version: '1'
-    }
-    modelProviderData: {
-      countryCode: 'US'
-      industry: 'technology'
-      organizationName: 'Contoso'
-    }
-    name: 'claude-sonnet-4-6'
-    sku: {
-      capacity: 25
-      name: 'GlobalStandard'
-    }
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 13: _Using `AIServices` with `deployments` in parameter set_
-
-This instance deploys the module with the AI model deployment feature.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  params: {
-    // Required parameters
-    kind: 'AIServices'
-    name: 'csad002'
-    // Non-required parameters
-    customSubDomainName: 'xcsadai'
-    deployments: [
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'text-embedding-3-large'
-          version: '1'
-        }
-        name: 'text-embedding-3-large'
-        sku: {
-          capacity: 10
-          name: 'GlobalStandard'
-        }
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "AIServices"
-    },
-    "name": {
-      "value": "csad002"
-    },
-    // Non-required parameters
-    "customSubDomainName": {
-      "value": "xcsadai"
-    },
-    "deployments": {
-      "value": [
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "text-embedding-3-large",
-            "version": "1"
-          },
-          "name": "text-embedding-3-large",
-          "sku": {
-            "capacity": 10,
-            "name": "GlobalStandard"
-          }
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param kind = 'AIServices'
-param name = 'csad002'
-// Non-required parameters
-param customSubDomainName = 'xcsadai'
-param deployments = [
-  {
-    model: {
-      format: 'OpenAI'
-      name: 'text-embedding-3-large'
-      version: '1'
-    }
-    name: 'text-embedding-3-large'
-    sku: {
-      capacity: 10
-      name: 'GlobalStandard'
-    }
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 14: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  params: {
-    // Required parameters
-    name: 'csamin001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "csamin001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param name = 'csamin001'
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 15: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm/res/cognitive-services/account:<version>' = {
-  params: {
-    // Required parameters
-    name: 'csawaf001'
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "csawaf001"
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/cognitive-services/account:<version>'
-
-// Required parameters
-param name = 'csawaf001'
-param location = '<location>'
 ```
 
 </details>
