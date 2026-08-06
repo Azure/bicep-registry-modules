@@ -8,6 +8,10 @@ on:
 jobs:
   SetAvmGitHubPrLabels:
     name: Set-AvmGitHubPrLabels
+    # Skip on forks: this job needs the TEAM_LINTER_APP_ID / TEAM_LINTER_PRIVATE_KEY GitHub-App secrets,
+    # which only exist on the upstream Azure/bicep-registry-modules repo. Without them
+    # actions/create-github-app-token fails. Guard mirrors the per-module workflows' fork pattern.
+    if: github.repository == 'Azure/bicep-registry-modules'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
