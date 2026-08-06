@@ -5,6 +5,15 @@
 //              This file only calls modules; no inline resource definitions.
 //              Supports WAF-aligned deployment via feature flags.
 // ============================================================================
+metadata name = 'Chat-with-your-data-Solution-Accelerator'
+metadata description = '''This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.
+
+|**Post-Deployment Step** |
+|-------------|
+| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |
+
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+'''
 targetScope = 'resourceGroup'
 
 // ============================================================================
@@ -666,6 +675,9 @@ module aiProjectPrivateEndpoint './modules/networking/private-endpoint.bicep' = 
   }
 }
 
+// The Web socket from front end application connects to Speech service over a public internet and it does not work over a Private endpoint.
+// So public access is enabled even if AVM WAF is enabled.
+var enablePrivateNetworkingSpeech = false
 module speechService './modules/ai/ai-services.bicep' = {
   name: take('module.ai-services.SpeechServices.${solutionName}', 64)
   params: {
@@ -676,7 +688,7 @@ module speechService './modules/ai/ai-services.bicep' = {
     tags: allTags
     enableTelemetry: enableTelemetry
     kind: 'SpeechServices'
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: enablePrivateNetworkingSpeech ? 'Disabled' : 'Enabled'
     diagnosticSettings: monitoringDiagnosticSettings
     roleAssignments: [
       {
@@ -686,7 +698,7 @@ module speechService './modules/ai/ai-services.bicep' = {
         roleDefinitionIdOrName: 'f2dc8367-1007-4938-bd23-fe263f013447'
       }
     ]
-    privateEndpoints: enablePrivateNetworking
+    privateEndpoints: enablePrivateNetworkingSpeech
       ? [
           {
             name: 'pep-spch-${solutionSuffix}'
