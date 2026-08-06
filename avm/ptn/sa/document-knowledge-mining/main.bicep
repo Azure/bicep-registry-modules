@@ -46,12 +46,12 @@ param gptModelDeploymentType string = 'GlobalStandard'
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
 @allowed([
-  'gpt-4.1-mini'
+  'gpt-5-mini'
 ])
-param gptModelName string = 'gpt-4.1-mini'
+param gptModelName string = 'gpt-5-mini'
 
 @description('Optional. Version of the GPT model to deploy.')
-param gptModelVersion string = '2025-04-14'
+param gptModelVersion string = '2025-08-07'
 
 @description('Optional. Capacity of the GPT model deployment.')
 @minValue(10)
@@ -80,7 +80,7 @@ param vmAdminUsername string?
 param vmAdminPassword string?
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
-param vmSize string = 'Standard_DS2_v2'
+param vmSize string = 'Standard_D2s_v6'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -362,17 +362,17 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.1' = if (enable
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: vmSize ?? 'Standard_DS2_v2'
+    vmSize: vmSize ?? 'Standard_D2s_v6'
     location: solutionLocation
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: tags
-    availabilityZone: 1
+    availabilityZone: -1
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     osType: 'Windows'
@@ -1004,6 +1004,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.
         name: 'agentpool'
         vmSize: 'Standard_D4ds_v5'
         count: 3
+        availabilityZones: []
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'

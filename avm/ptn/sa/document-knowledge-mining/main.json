@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "10257728759991762492"
+      "version": "0.44.1.10279",
+      "templateHash": "15472167044043655747"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -57,9 +57,9 @@
     },
     "gptModelName": {
       "type": "string",
-      "defaultValue": "gpt-4.1-mini",
+      "defaultValue": "gpt-5-mini",
       "allowedValues": [
-        "gpt-4.1-mini"
+        "gpt-5-mini"
       ],
       "minLength": 1,
       "metadata": {
@@ -68,7 +68,7 @@
     },
     "gptModelVersion": {
       "type": "string",
-      "defaultValue": "2025-04-14",
+      "defaultValue": "2025-08-07",
       "metadata": {
         "description": "Optional. Version of the GPT model to deploy."
       }
@@ -123,7 +123,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_DS2_v2",
+      "defaultValue": "Standard_D2s_v6",
       "metadata": {
         "description": "Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true."
       }
@@ -7162,8 +7162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "5581323545890539491"
+              "version": "0.44.1.10279",
+              "templateHash": "9977062242126100831"
             }
           },
           "definitions": {
@@ -11888,7 +11888,7 @@
             "value": "[take(variables('jumpboxVmName'), 15)]"
           },
           "vmSize": {
-            "value": "[coalesce(parameters('vmSize'), 'Standard_DS2_v2')]"
+            "value": "[coalesce(parameters('vmSize'), 'Standard_D2s_v6')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -11903,7 +11903,7 @@
             "value": "[parameters('tags')]"
           },
           "availabilityZone": {
-            "value": 1
+            "value": -1
           },
           "maintenanceConfigurationResourceId": {
             "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
@@ -11912,7 +11912,7 @@
             "value": {
               "offer": "WindowsServer",
               "publisher": "MicrosoftWindowsServer",
-              "sku": "2019-datacenter",
+              "sku": "2019-datacenter-gensecond",
               "version": "latest"
             }
           },
@@ -22329,8 +22329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "5182253300933540303"
+              "version": "0.44.1.10279",
+              "templateHash": "14127094433929988855"
             },
             "name": "Container Registry Module"
           },
@@ -45196,8 +45196,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -52408,6 +52408,7 @@
                 "name": "agentpool",
                 "vmSize": "Standard_D4ds_v5",
                 "count": 3,
+                "availabilityZones": [],
                 "osType": "Linux",
                 "mode": "System",
                 "type": "VirtualMachineScaleSets",
