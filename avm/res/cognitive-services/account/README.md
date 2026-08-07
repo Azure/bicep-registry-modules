@@ -72,9 +72,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   params: {
     // Required parameters
     kind: 'AIServices'
-    name: 'csada001'
+    name: 'csadan001'
     // Non-required parameters
-    customSubDomainName: 'xcsadaai'
+    customSubDomainName: 'xcsadanai'
     deployments: [
       {
         model: {
@@ -115,11 +115,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "AIServices"
     },
     "name": {
-      "value": "csada001"
+      "value": "csadan001"
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xcsadaai"
+      "value": "xcsadanai"
     },
     "deployments": {
       "value": [
@@ -158,9 +158,9 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 
 // Required parameters
 param kind = 'AIServices'
-param name = 'csada001'
+param name = 'csadan001'
 // Non-required parameters
-param customSubDomainName = 'xcsadaai'
+param customSubDomainName = 'xcsadanai'
 param deployments = [
   {
     model: {
