@@ -103,17 +103,19 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       conflictResolutionPolicy: conflictResolutionPolicy
       id: name
       indexingPolicy: indexingPolicy
-      dataMaskingPolicy: !contains(databaseAccount.properties.capabilities, 'EnableDynamicDataMasking')
-        ? null
-        : dataMaskingPolicy ?? {
-            includedPaths: []
-            excludedPaths: []
-          }
       partitionKey: {
         paths: partitionKeyPaths
         kind: kind
         version: kind == 'MultiHash' ? 2 : version
       }
+      ...contains(databaseAccount.properties.capabilities, 'EnableDynamicDataMasking')
+        ? {
+            dataMaskingPolicy: dataMaskingPolicy ?? {
+              includedPaths: []
+              excludedPaths: []
+            }
+          }
+        : {}
       uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
         ? {
             uniqueKeys: uniqueKeyPolicyKeys
