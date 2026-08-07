@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "4887271758213547259"
+      "templateHash": "16311742136567641063"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -130,7 +130,7 @@
           "defaultTtl": "[parameters('defaultTtl')]",
           "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]"
         },
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
       },
       "dependsOn": [
         "databaseAccount"

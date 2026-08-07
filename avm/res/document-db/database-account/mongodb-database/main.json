@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "167262926030434136"
+      "templateHash": "14083682077354645612"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -150,7 +150,7 @@
         "resource": {
           "id": "[parameters('name')]"
         },
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput'), 'autoscaleSettings', parameters('autoscaleSettings')))]"
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), null(), createObject('throughput', parameters('throughput'), 'autoscaleSettings', parameters('autoscaleSettings')))]"
       },
       "dependsOn": [
         "databaseAccount"
@@ -199,7 +199,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "5763774621975072276"
+              "templateHash": "9337233891881353251"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection."
@@ -282,7 +282,7 @@
               "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
               "properties": {
-                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2026-04-01-preview').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                "options": "[if(equals(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2026-04-01-preview').capacityMode, 'Serverless'), null(), createObject('throughput', parameters('throughput')))]",
                 "resource": {
                   "id": "[parameters('name')]",
                   "indexes": "[parameters('indexes')]",
