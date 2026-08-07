@@ -61,12 +61,13 @@ The following section provides usage examples for the module, which were used to
 - [Deploying with Managed identities](#example-7-deploying-with-managed-identities)
 - [Mongo Database](#example-8-mongo-database)
 - [Deploying multiple regions](#example-9-deploying-multiple-regions)
-- [Plain](#example-10-plain)
-- [Public network restricted access with ACL](#example-11-public-network-restricted-access-with-acl)
-- [SQL Database](#example-12-sql-database)
-- [Deploying with a sql role definition and assignment](#example-13-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-14-api-for-table)
-- [WAF-aligned](#example-15-waf-aligned)
+- [Using network perimeter](#example-10-using-network-perimeter)
+- [Plain](#example-11-plain)
+- [Public network restricted access with ACL](#example-12-public-network-restricted-access-with-acl)
+- [SQL Database](#example-13-sql-database)
+- [Deploying with a sql role definition and assignment](#example-14-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-15-api-for-table)
+- [WAF-aligned](#example-16-waf-aligned)
 
 ### Example 1: _Using bounded consistency_
 
@@ -2085,7 +2086,78 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 10: _Plain_
+### Example 10: _Using network perimeter_
+
+This instance deploys the module with network perimeter.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/perimeter]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dddansp001'
+    // Non-required parameters
+    networkRestrictions: {
+      publicNetworkAccess: 'SecuredByPerimeter'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dddansp001"
+    },
+    // Non-required parameters
+    "networkRestrictions": {
+      "value": {
+        "publicNetworkAccess": "SecuredByPerimeter"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/database-account:<version>'
+
+// Required parameters
+param name = 'dddansp001'
+// Non-required parameters
+param networkRestrictions = {
+  publicNetworkAccess: 'SecuredByPerimeter'
+}
+```
+
+</details>
+<p>
+
+### Example 11: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -2211,7 +2283,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _Public network restricted access with ACL_
+### Example 12: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -2334,7 +2406,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _SQL Database_
+### Example 13: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -3076,7 +3148,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _Deploying with a sql role definition and assignment_
+### Example 14: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -3345,7 +3417,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 14: _API for Table_
+### Example 15: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -3453,7 +3525,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 15: _WAF-aligned_
+### Example 16: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -5002,6 +5074,7 @@ Whether requests from the public network are allowed. Default to "Disabled".
   [
     'Disabled'
     'Enabled'
+    'SecuredByPerimeter'
   ]
   ```
 
