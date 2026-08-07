@@ -1,4 +1,4 @@
-#region Helper functions
+﻿#region Helper functions
 <#
 .SYNOPSIS
 Get the name of the current checked out branch.

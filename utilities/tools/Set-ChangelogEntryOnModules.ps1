@@ -127,7 +127,7 @@ function Set-ChangelogEntryOnModules {
     }
 
     process {
-        $modifiedModules = Get-GitDiff -PathOnly -IncludeNonCommitted | Where-Object { $_ -match 'avm[\/|\\](res|ptn|utl)[\/|\\].*' } | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique
+        $modifiedModules = Get-GitDiff -PathOnly | Where-Object { $_ -match 'avm[\/|\\](res|ptn|utl)[\/|\\].*' } | ForEach-Object { Split-Path $_ -Parent } | Sort-Object -Unique
 
         foreach ($moduleFolderPath in $modifiedModules) {
             Set-ChangelogEntry -Changes $Changes -BreakingChanges $BreakingChanges -RepoRoot $RepoRoot -moduleFolderPath $moduleFolderPath

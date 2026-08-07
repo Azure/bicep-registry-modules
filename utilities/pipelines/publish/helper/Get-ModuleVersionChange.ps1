@@ -41,7 +41,7 @@ function Get-ModuleVersionChange {
     )
 
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-GitDiff.ps1')
-    $diff = Get-GitDiff -PathFilter $VersionFilePath -Verbose -IncludeNonCommitted | Out-String
+    $diff = Get-GitDiff -PathFilter $VersionFilePath -Verbose | Out-String
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {
         $oldVersion = (New-Object System.Version($matches[1], $matches[2]))

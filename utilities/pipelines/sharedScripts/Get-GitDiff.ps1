@@ -42,7 +42,7 @@ Optional. If specified, filters the modified files by the provided path pattern.
 Optional. Skip the output of statistics
 
 .PARAMETER IncludeNonCommitted
-Optional. If specified, includes non-committed changes in the diff.
+Optional. If specified, includes only committed changes in the diff.
 
 .EXAMPLE
 Get-GitDiff -PathOnly
@@ -80,7 +80,7 @@ Mode                 LastWriteTime         Length Name
 Get only the paths of modified files in path 'C:\utilities\pipelines\publish\helper'.
 
 .EXAMPLE
-Get-GitDiff -PathOnly -SkipStats -IncludeNonCommitted
+Get-GitDiff -PathOnly -SkipStats -OnlyCommitted
 
     Directory: .utilities\pipelines\publish
 
@@ -107,7 +107,7 @@ function Get-GitDiff {
         [switch] $SkipStats,
 
         [Parameter()]
-        [switch] $IncludeNonCommitted
+        [switch] $OnlyCommitted
     )
 
     $currentBranch = Get-GitBranchName
@@ -128,8 +128,8 @@ function Get-GitDiff {
         Start-Sleep 5 # Wait for git to finish adding the remote
 
         $compareFromCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
-        $compareWithCommit = $IncludeNonCommitted ? $null : (git log -1 --format=%H).Substring(0, 7) # Provided no commit = includes non-committed changes, otherwise get the current commit
-        Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
+        $compareWithCommit = $OnlyCommitted ? (git log -1 --format=%H).Substring(0, 7) : $null # If only committed, get the current commit, otherwise get the current working tree changes
+        Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current {0}.' -f ($OnlyCommitted ? "commit [$compareFromCommit]" : 'changes'), $compareWithCommit) -Verbose
     }
 
     if (-not $SkipStats) {

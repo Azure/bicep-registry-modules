@@ -1,4 +1,4 @@
-metadata name = 'Analysis Services Servers'
+metadata name = 'Analysis Services Server'
 metadata description = 'This module deploys an Analysis Services Server.'
 
 @description('Required. The name of the Azure Analysis Services server to create.')
