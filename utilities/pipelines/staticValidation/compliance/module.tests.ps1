@@ -900,7 +900,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $templateFileContent.metadata.description | Should -Not -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] referencing multiple version of the same module should be avoided.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] referencing multiple versions of the same module or resource type should be avoided.' -TestCases $moduleFolderTestCases {
 
                 param(
                     [string] $moduleFolderPath,
@@ -909,18 +909,29 @@ Describe 'Module tests' -Tag 'Module' {
                     [hashtable] $templateFileContent
                 )
 
-                # Check if the template references multiple versions of the same module
-                $sourceTemplateReferences = $templateFileContent.definitions.Values | ForEach-Object {
-                    $sourceTemplate = $_.metadata.'__bicep_imported_from!'.sourceTemplate
-                    if ($sourceTemplate -match '^(?<name>.+):(?<tag>[^:]+)$') {
-                        [PSCustomObject]@{
-                            Name = $Matches.name
-                            Tag  = $Matches.tag
+                # Check if the template references multiple versions of the same module or resource type
+                $templateReferences = @(
+                    $templateFileContent.definitions.Values | ForEach-Object {
+                        $sourceTemplate = $_.metadata.'__bicep_imported_from!'.sourceTemplate
+                        if ($sourceTemplate -match '^(?<name>.+):(?<tag>[^:]+)$') {
+                            [PSCustomObject]@{
+                                Name = $Matches.name
+                                Tag  = $Matches.tag
+                            }
                         }
                     }
-                }
+                    $templateFileContent.parameters.Values | ForEach-Object {
+                        $resourceDerivedTypeSource = $_.metadata.'__bicep_resource_derived_type!'.source
+                        if ($resourceDerivedTypeSource -match '^(?<name>[^@]+)@(?<tag>[^#]+)#') {
+                            [PSCustomObject]@{
+                                Name = $Matches.name
+                                Tag  = $Matches.tag
+                            }
+                        }
+                    }
+                )
 
-                $incorrectReferenceAndVersions = $sourceTemplateReferences |
+                $incorrectReferenceAndVersions = $templateReferences |
                     Group-Object -Property Name |
                     ForEach-Object {
                         [PSCustomObject]@{
@@ -932,7 +943,7 @@ Describe 'Module tests' -Tag 'Module' {
                     ForEach-Object { '{0}: {1}' -f $_.Name, ($_.Tags -join ', ') }
 
                 if ($incorrectReferenceAndVersions.Count -gt 0) {
-                    $warningMessage = 'The template file references multiple versions of the same module, which is not recommended. Found modules with multiple versions: '
+                    $warningMessage = 'The template file references multiple versions of the same module or resource type, which is not recommended. Found references with multiple versions: '
                     Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectReferenceAndVersions -join '; '))
 
                     Write-Output @{
