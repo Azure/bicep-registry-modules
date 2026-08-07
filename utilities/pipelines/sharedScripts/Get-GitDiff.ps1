@@ -41,6 +41,9 @@ Optional. If specified, filters the modified files by the provided path pattern.
 .PARAMETER SkipStats
 Optional. Skip the output of statistics
 
+.PARAMETER IncludeNonCommitted
+Optional. If specified, includes only committed changes in the diff.
+
 .EXAMPLE
 Get-GitDiff -PathOnly
 
@@ -75,6 +78,20 @@ Mode                 LastWriteTime         Length Name
 -a---          12/08/2025    09:51           7106 fileB.ps1
 
 Get only the paths of modified files in path 'C:\utilities\pipelines\publish\helper'.
+
+.EXAMPLE
+Get-GitDiff -PathOnly -SkipStats -OnlyCommitted
+
+    Directory: .utilities\pipelines\publish
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12/08/2025    09:50           3364 fileA.ps1
+-a---          12/08/2025    09:51           7106 fileB.ps1
+-a---          12/08/2025    09:51           7106 fileC.ps1
+
+Get only the paths of modified files - including any that may not have been committed yet
+
 #>
 function Get-GitDiff {
 
@@ -87,8 +104,10 @@ function Get-GitDiff {
         [string] $PathFilter,
 
         [Parameter()]
-        [switch] $SkipStats
+        [switch] $SkipStats,
 
+        [Parameter()]
+        [switch] $OnlyCommitted
     )
 
     $currentBranch = Get-GitBranchName
@@ -109,9 +128,8 @@ function Get-GitDiff {
         Start-Sleep 5 # Wait for git to finish adding the remote
 
         $compareFromCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
-        $compareWithCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
-
-        Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
+        $compareWithCommit = $OnlyCommitted ? (git log -1 --format=%H).Substring(0, 7) : $null # If only committed, get the current commit, otherwise get the current working tree changes
+        Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current {0}.' -f ($OnlyCommitted ? "commit [$compareFromCommit]" : 'changes'), $compareWithCommit) -Verbose
     }
 
     if (-not $SkipStats) {
