@@ -11,7 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- None
+- Serverless ability has moved from `capabilitiesToAdd` to a new property `capacityMode`. Capability `EnableServerless` is not allowed in API version beyond 2024-05-15-preview.
 
 ## 0.20.1
 
@@ -31,7 +31,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Serverless ability has moved from `capabilitiesToAdd` to a new property `capacityMode`. Capability `EnableServerless` is not allowed in API version beyond 2024-05-15-preview.
+- None
 
 ## 0.19.1
 
