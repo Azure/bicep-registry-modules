@@ -87,8 +87,10 @@ function Get-GitDiff {
         [string] $PathFilter,
 
         [Parameter()]
-        [switch] $SkipStats
+        [switch] $SkipStats,
 
+        [Parameter()]
+        [switch] $IncludeNonCommitted
     )
 
     $currentBranch = Get-GitBranchName
@@ -109,8 +111,7 @@ function Get-GitDiff {
         Start-Sleep 5 # Wait for git to finish adding the remote
 
         $compareFromCommit = git rev-parse --short=7 'upstream/main' # Get main's latest commit in upstream
-        $compareWithCommit = (git log -1 --format=%H).Substring(0, 7) # Get the current commit
-
+        $compareWithCommit = $IncludeNonCommitted ? $null : (git log -1 --format=%H).Substring(0, 7) # Provided no commit = includes non-committed changes, otherwise get the current commit
         Write-Verbose ('Fetching changes of latest upstream [main] commit [{0}] against current commit [{1}].' -f $compareFromCommit, $compareWithCommit) -Verbose
     }
 
