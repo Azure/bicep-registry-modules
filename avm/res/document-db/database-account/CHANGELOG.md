@@ -13,6 +13,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None
 
+## 0.20.1
+
+### Changes
+
+- Added support to specify `SecuredByPerimeter` for `publicNetworkAccess` in `networkRestrictions`
+
+### Breaking Changes
+
+- None
+
 ## 0.20.0
 
 ### Changes

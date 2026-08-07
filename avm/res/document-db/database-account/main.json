@@ -219,7 +219,8 @@
           "type": "string",
           "allowedValues": [
             "Disabled",
-            "Enabled"
+            "Enabled",
+            "SecuredByPerimeter"
           ],
           "nullable": true,
           "metadata": {
