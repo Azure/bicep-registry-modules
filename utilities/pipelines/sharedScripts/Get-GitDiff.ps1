@@ -41,6 +41,9 @@ Optional. If specified, filters the modified files by the provided path pattern.
 .PARAMETER SkipStats
 Optional. Skip the output of statistics
 
+.PARAMETER IncludeNonCommitted
+Optional. If specified, includes non-committed changes in the diff.
+
 .EXAMPLE
 Get-GitDiff -PathOnly
 
@@ -75,6 +78,20 @@ Mode                 LastWriteTime         Length Name
 -a---          12/08/2025    09:51           7106 fileB.ps1
 
 Get only the paths of modified files in path 'C:\utilities\pipelines\publish\helper'.
+
+.EXAMPLE
+Get-GitDiff -PathOnly -SkipStats -IncludeNonCommitted
+
+    Directory: .utilities\pipelines\publish
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a---          12/08/2025    09:50           3364 fileA.ps1
+-a---          12/08/2025    09:51           7106 fileB.ps1
+-a---          12/08/2025    09:51           7106 fileC.ps1
+
+Get only the paths of modified files - including any that may not have been committed yet
+
 #>
 function Get-GitDiff {
 
