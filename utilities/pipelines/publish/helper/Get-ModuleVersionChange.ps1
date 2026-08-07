@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Get current and previous major and minor version, if different.
 
