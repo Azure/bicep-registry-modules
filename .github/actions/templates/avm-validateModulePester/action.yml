@@ -120,7 +120,20 @@ runs:
         if (-not (Test-Path $mdPesterOutputFilePath)) {
           Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)
         } else {
-          Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          $fileSizeKB = (Get-Item $mdPesterOutputFilePath).Length / 1KB
+          # GitHub step summary limit is 1024KB total. Use 900KB to leave headroom.
+          $maxSizeKB = 900
+
+          if ($fileSizeKB -gt $maxSizeKB) {
+            Write-Warning ('Pester output [{0}] is [{1:N0}] KB which exceeds the [{2}] KB limit. Truncating.' -f $mdPesterOutputFilePath, $fileSizeKB, $maxSizeKB)
+            $content = Get-Content $mdPesterOutputFilePath -Raw
+            $maxChars = $maxSizeKB * 1024
+            $truncated = $content.Substring(0, [Math]::Min($content.Length, $maxChars))
+            $truncated += "`n`n> **:warning: Output truncated** to fit the GitHub step summary size limit. Review the full Pester output in the uploaded artifacts.`n"
+            $truncated | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          } else {
+            Get-Content $mdPesterOutputFilePath -Raw | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          }
           Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
         }
 
