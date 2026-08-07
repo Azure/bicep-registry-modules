@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Gremlin Database within a CosmosDB
 param name string
 
 @description('Optional. Tags of the Gremlin database resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-03-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Gremlin database. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -41,11 +41,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+var databaseOptions = databaseAccount.properties.capacityMode == 'Serverless'
   ? {}
   : {
       autoscaleSettings: throughput == null
@@ -56,7 +56,7 @@ var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 
       throughput: throughput
     }
 
-resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-03-15' = {
+resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-04-01-preview' = {
   name: name
   tags: tags
   parent: databaseAccount
@@ -104,11 +104,11 @@ type graphType = {
   name: string
 
   @description('Optional. Tags of the Gremlin graph resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.tags?
 
   @description('Optional. Indexing policy of the graph.')
-  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.properties.resource.indexingPolicy?
+  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.properties.resource.indexingPolicy?
 
   @description('Optional. List of paths using which data within the container can be partitioned.')
-  partitionKeyPaths: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-03-15'>.properties.resource.partitionKey.paths?
+  partitionKeyPaths: resourceInput<'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview'>.properties.resource.partitionKey.paths?
 }

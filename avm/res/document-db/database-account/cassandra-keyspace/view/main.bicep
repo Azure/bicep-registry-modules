@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra View (Materialized View)
 param name string
 
 @description('Optional. Tags of the Cassandra view resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-03-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -47,15 +47,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-03-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 
-  resource cassandraKeyspace 'cassandraKeyspaces@2026-03-15' existing = {
+  resource cassandraKeyspace 'cassandraKeyspaces@2026-04-01-preview' existing = {
     name: cassandraKeyspaceName
   }
 }
 
-var viewOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+var viewOptions = databaseAccount.properties.capacityMode == 'Serverless'
   ? {}
   : {
       autoscaleSettings: throughput == null && autoscaleSettingsMaxThroughput != null
@@ -66,7 +66,7 @@ var viewOptions = contains(databaseAccount.properties.capabilities, { name: 'Ena
       throughput: throughput
     }
 
-resource cassandraView 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-03-15' = {
+resource cassandraView 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview' = {
   name: name
   tags: tags
   location: location
