@@ -54,7 +54,7 @@ param defaultOutboundAccess bool?
 param sharingScope ('DelegatedServices' | 'Tenant')?
 
 @description('Optional. Application gateway IP configurations of virtual network resource.')
-param applicationGatewayIPConfigurations resourceInput<'Microsoft.Network/virtualNetworks/subnets@2025-07-01'>.properties.applicationGatewayIPConfigurations?
+param applicationGatewayIPConfigurations resourceInput<'Microsoft.Network/virtualNetworks/subnets@2025-05-01'>.properties.applicationGatewayIPConfigurations?
 
 @description('Optional. An array of service endpoint policies.')
 param serviceEndpointPolicies resourceInput<'Microsoft.Network/virtualNetworks/subnets@2025-05-01'>.properties.serviceEndpointPolicies?

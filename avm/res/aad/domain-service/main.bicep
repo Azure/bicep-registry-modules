@@ -93,7 +93,7 @@ param syncScope ('All' | 'CloudOnly') = 'All'
 @description('Optional. When enabled, the samAccountName attribute in Entra Domain Services is synchronized from the onPremisesSamAccountName attribute in Entra ID.')
 param syncOnPremSamAccountName ('Disabled' | 'Enabled')?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -108,7 +108,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.AAD/domainServices@2025-06-01'>.tags?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 

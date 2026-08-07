@@ -2,14 +2,6 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
-## 0.10.2
-
-### Changes
-
-- subnet testing
-
-### Breaking Changes
-
 ## 0.10.1
 
 ### Changes
