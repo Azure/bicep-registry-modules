@@ -95,6 +95,7 @@ body:
         - "avm/res/api-center/service"
         - "avm/res/api-management/service"
         - "avm/res/app-configuration/configuration-store"
+        - "avm/res/app/agent"
         - "avm/res/app/container-app"
         - "avm/res/app/job"
         - "avm/res/app/managed-environment"
