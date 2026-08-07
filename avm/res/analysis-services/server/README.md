@@ -1,4 +1,4 @@
-# Analysis Services Server `[Microsoft.AnalysisServices/servers]`
+# Analysis Services Servers `[Microsoft.AnalysisServices/servers]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
 >
