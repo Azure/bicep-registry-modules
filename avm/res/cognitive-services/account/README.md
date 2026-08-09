@@ -62,6 +62,10 @@ This instance deploys the module with a GA partner model deployment that carries
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-anthropic]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer (auto-accepted via `modelProviderData`). The shared AVM validation subscription is an internal/sandbox subscription, which Azure prevents from purchasing paid, non-test Marketplace offers ("This subscription is internal or sandbox. Only $0.00 products or test products can be purchased."). The deployment therefore cannot complete in CI and is skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.
+```
 
 <details>
 
