@@ -184,12 +184,12 @@ var formattedRoleAssignments = [
 
 var enableReferencedModulesTelemetry = false
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-07-01-preview' existing = {
   name: name
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-04-01-preview' = [
+resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-07-01-preview' = [
   for (deployment, index) in (deployments ?? []): {
     parent: cognitiveService
     name: deployment.?name ?? '${name}-deployments'
@@ -248,7 +248,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -349,7 +349,7 @@ module secretsExport './keyVaultExport.bicep' = if (secretsExportConfiguration !
   }
 }
 
-module aiProject 'project.bicep' = {
+module aiProject 'project.bicep' = if (!empty(projectName)) {
   name: take('${name}-ai-project-${projectName}-deployment', 64)
   params: {
     name: projectName
@@ -363,7 +363,7 @@ module aiProject 'project.bicep' = {
 import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  ? toObject(secretsExport!.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @description('The private endpoints of the congitive services account.')
@@ -378,7 +378,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 ]
 
 import { aiProjectOutputType } from 'project.bicep'
-output aiProjectInfo aiProjectOutputType = aiProject.outputs.aiProjectInfo
+output aiProjectInfo aiProjectOutputType = aiProject!.outputs.aiProjectInfo
 
 // ================ //
 // Definitions      //

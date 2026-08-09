@@ -175,14 +175,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
@@ -195,7 +195,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-07-01-preview' = {
   name: name
   kind: kind
   identity: identity
@@ -225,13 +225,13 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             identityClientId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-              ? cMKUserAssignedIdentity.properties.clientId
+              ? cMKUserAssignedIdentity.?properties.?clientId
               : null
-            keyVaultUri: cMKKeyVault.properties.vaultUri
+            keyVaultUri: cMKKeyVault!.properties.vaultUri
             keyName: customerManagedKey!.keyName
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
               ? customerManagedKey!.?keyVersion
-              : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+              : last(split(cMKKeyVault::cMKKey!.properties.keyUriWithVersion, '/'))
           }
         }
       : null
