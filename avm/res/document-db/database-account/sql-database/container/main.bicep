@@ -14,7 +14,7 @@ param name string
 param analyticalStorageTtl int = 0
 
 @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
-param conflictResolutionPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.conflictResolutionPolicy?
+param conflictResolutionPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.conflictResolutionPolicy?
 
 @maxValue(2147483647)
 @minValue(-1)
@@ -29,7 +29,7 @@ param throughput int = 400
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL Database resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.tags?
 
 @maxLength(3)
 @minLength(1)
@@ -37,16 +37,19 @@ param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/con
 param paths string[]
 
 @description('Optional. Indexing policy of the container.')
-param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.indexingPolicy?
+param indexingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.indexingPolicy?
+
+@description('Optional. Data masking policy of the container.')
+param dataMaskingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.dataMaskingPolicy?
 
 @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-param uniqueKeyPolicyKeys resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
+param uniqueKeyPolicyKeys resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
 @description('Optional. The vector embedding policy for the container.')
-param vectorEmbeddingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+param vectorEmbeddingPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.vectorEmbeddingPolicy?
 
 @description('Optional. The full text policy for the container.')
-param fullTextPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
+param fullTextPolicy resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.fullTextPolicy?
 
 @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
 @allowed([
@@ -83,15 +86,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 
 var partitionKeyPaths = [for path in paths: startsWith(path, '/') ? path : '/${path}']
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 
-  resource sqlDatabase 'sqlDatabases@2025-04-15' existing = {
+  resource sqlDatabase 'sqlDatabases@2026-04-01-preview' existing = {
     name: sqlDatabaseName
   }
 }
 
-resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15' = {
+resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview' = {
   name: name
   parent: databaseAccount::sqlDatabase
   tags: tags
@@ -105,6 +108,14 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         kind: kind
         version: kind == 'MultiHash' ? 2 : version
       }
+      ...contains(databaseAccount.properties.capabilities, 'EnableDynamicDataMasking')
+        ? {
+            dataMaskingPolicy: dataMaskingPolicy ?? {
+              includedPaths: []
+              excludedPaths: []
+            }
+          }
+        : {}
       uniqueKeyPolicy: !empty(uniqueKeyPolicyKeys)
         ? {
             uniqueKeys: uniqueKeyPolicyKeys
@@ -120,7 +131,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       ...(defaultTtl != null ? { defaultTtl: defaultTtl } : {}) // Not passing the value sets it to 'Off'. Setting it with any value sets it to 'On'
     }
 
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+    options: databaseAccount.properties.capacityMode == 'Serverless'
       ? null
       : {
           throughput: autoscaleSettingsMaxThroughput == null && throughput != -1 ? throughput : null
