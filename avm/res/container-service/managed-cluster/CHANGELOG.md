@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-service/managed-cluster/CHANGELOG.md).
 
+## 0.15.0
+
+### Changes
+
+- Updated the managed cluster and agent pool ARM API versions to `2026-03-01` to support agent pool VM size updates.
+- Added the `gatewayAPI` parameter to configure the Kubernetes Gateway API profile.
+- Updated Cilium network plugin mode handling to support agent pools that use pod subnets.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes

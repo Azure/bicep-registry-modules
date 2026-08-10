@@ -72,7 +72,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init', 'update', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
@@ -97,12 +97,13 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 128
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: iteration == 'init' ? 'Standard_D2s_v3' : 'Standard_D4s_v3'
           enableAutoScaling: true
           minCount: 1
           maxCount: 3
           maxPods: 50
           nodeTaints: ['CriticalAddonsOnly=true:NoSchedule']
+          podSubnetResourceId: nestedDependencies.outputs.podSubnetResourceId
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
           upgradeSettings: {
             maxSurge: '33%'
@@ -130,7 +131,7 @@ module testDeployment '../../../main.bicep' = [
           osType: 'Linux'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_D2s_v3'
+          vmSize: iteration == 'init' ? 'Standard_D2s_v3' : 'Standard_D4s_v3'
           vnetSubnetResourceId: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
           enableAutoScaling: true
           maxCount: 2
@@ -139,6 +140,7 @@ module testDeployment '../../../main.bicep' = [
           minPods: 0
           mode: 'User'
           nodeTaints: []
+          podSubnetResourceId: nestedDependencies.outputs.podSubnetResourceId
           scaleSetEvictionPolicy: 'Delete'
           upgradeSettings: {
             maxSurge: '50%'
@@ -200,13 +202,12 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       networkPlugin: 'azure'
-      networkPolicy: 'azure'
+      networkPolicy: 'cilium'
+      networkPluginMode: 'overlay'
       skuTier: 'Standard'
       dnsServiceIP: '10.10.200.10'
       serviceCidr: '10.10.200.0/24'
-      networkPluginMode: 'overlay'
-      networkDataplane: 'azure'
-      podCidr: '10.244.0.0/16'
+      networkDataplane: 'cilium'
       loadBalancerSku: 'standard'
       backendPoolType: 'NodeIPConfiguration'
       outboundType: 'loadBalancer'
@@ -249,6 +250,9 @@ module testDeployment '../../../main.bicep' = [
       costAnalysisEnabled: true
       httpApplicationRoutingEnabled: false
       webApplicationRoutingEnabled: true
+      gatewayAPI: {
+        installation: 'Standard'
+      }
       defaultIngressControllerType: 'Internal'
       enableDnsZoneContributorRoleAssignment: true
       ingressApplicationGatewayEnabled: true

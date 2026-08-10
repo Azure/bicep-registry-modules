@@ -186,11 +186,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' existing = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2026-03-01' existing = {
   name: managedClusterName
 }
 
-resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01' = {
+resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2026-03-01' = {
   name: name
   parent: managedCluster
   properties: {
