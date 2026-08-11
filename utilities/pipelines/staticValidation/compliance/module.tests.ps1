@@ -157,6 +157,31 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
+        It '[<moduleFolderName>] Module must only contain folders defined by BCPNFR23.' -TestCases $moduleFolderTestCases {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            $nestedModuleFolderPaths = @(Get-ChildItem -Path $moduleFolderPath -Recurse -File -Filter 'main.bicep' -Force | ForEach-Object { $_.Directory.FullName } | Where-Object { $_ -ne $moduleFolderPath })
+            $unexpectedFolderPaths = foreach ($folder in Get-ChildItem -Path $moduleFolderPath -Recurse -Directory -Force) {
+                $isNestedModuleFolder = $nestedModuleFolderPaths -contains $folder.FullName
+                $isWithinNestedModule = $nestedModuleFolderPaths | Where-Object { $folder.FullName.StartsWith("$_$([System.IO.Path]::DirectorySeparatorChar)", [System.StringComparison]::OrdinalIgnoreCase) }
+                $containsNestedModule = $nestedModuleFolderPaths | Where-Object { $_.StartsWith("$($folder.FullName)$([System.IO.Path]::DirectorySeparatorChar)", [System.StringComparison]::OrdinalIgnoreCase) }
+
+                if ($isNestedModuleFolder -or $isWithinNestedModule -or $containsNestedModule) {
+                    continue
+                }
+
+                $relativeFolderPath = [System.IO.Path]::GetRelativePath($moduleFolderPath, $folder.FullName) -replace '\\', '/'
+                if ($relativeFolderPath -notmatch '^(src|modules)(/|$)' -and $relativeFolderPath -notmatch '^tests/(unit|e2e)(/|$)' -and $relativeFolderPath -ne 'tests') {
+                    $relativeFolderPath
+                }
+            }
+
+            $unexpectedFolderPaths | Should -BeNullOrEmpty -Because ('BCPNFR23 only allows the [src], [modules], [tests/unit], and [tests/e2e] folder structures. Found unexpected folders: [{0}].' -f ($unexpectedFolderPaths -join ', '))
+        }
+
         It '[<moduleFolderName>] Resource module (folder) name must be singular, use ''-'' instead of camel-case and be lower-case (e.g., ''the-cake-is-a-lie'').' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
