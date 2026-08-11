@@ -1,11 +1,24 @@
-metadata name = 'Finops-hub'
-metadata description = 'This module deploys a Finops hub from the Finops toolkit.'
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+// FinOps Toolkit v14 source: https://github.com/microsoft/finops-toolkit/tree/f3b1b23f3ea6044bcd8cb767620cdd43704ce90a/src/templates/finops-hub
+
+metadata name = 'avm/ptn/finops-toolkit/finops-hub'
+metadata description = 'This module deploys a FinOps hub from the FinOps Toolkit.'
+
+//==============================================================================
+// Parameters
+//==============================================================================
+
+targetScope = 'resourceGroup'
 
 @description('Optional. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
-param hubName string
+param hubName string = 'finops-hub'
 
-@description('Optional. Location for all Resources.')
+@description('Optional. Azure location where all resources should be created. See https://aka.ms/azureregions. Default: Same as deployment.')
 param location string = resourceGroup().location
+
+// @description('Optional. Azure location to use for a temporary Event Grid namespace to register the Microsoft.EventGrid resource provider if the primary location is not supported. The namespace will be deleted and is not used for hub operation. Default: "" (same as location).')
+// param eventGridLocation string = ''
 
 @allowed([
   'Premium_LRS'
@@ -14,142 +27,155 @@ param location string = resourceGroup().location
 @description('Optional. Storage SKU to use. LRS = Lowest cost, ZRS = High availability. Note Standard SKUs are not available for Data Lake gen2 storage. Allowed: Premium_LRS, Premium_ZRS. Default: Premium_LRS.')
 param storageSku string = 'Premium_LRS'
 
+@description('Optional. Enable infrastructure encryption on the storage account. Default = false.')
+param enableInfrastructureEncryption bool = false
+
+@description('Optional. Enable purge protection for the Key Vault. Default: false.')
+param enablePurgeProtection bool = false
+
+@description('Optional. Storage account to push data to for ingestion into a remote hub.')
+param remoteHubStorageUri string = ''
+
+@description('Optional. Storage account key to use when pushing data to a remote hub.')
+@secure()
+param remoteHubStorageKey string = ''
+
+@description('Optional. Enable managed exports where your FinOps hub instance will create and run Cost Management exports on your behalf. Not supported for Microsoft Customer Agreement (MCA) billing profiles. Requires the ability to grant Role Based Access Control Administrator to FinOps hubs. Default: true.')
+param enableManagedExports bool = true
+
+@description('Optional. Enable recommendations ingested from Azure Resource Graph based on configurable queries. The Data Factory managed identity requires Reader role on management groups or subscriptions to execute Resource Graph queries. Default: false.')
+param enableRecommendations bool = false
+
+@description('Optional. Enable Azure Hybrid Benefit recommendations that flag VMs and SQL VMs without Azure Hybrid Benefit enabled. May generate noise if your organization does not have on-premises licenses. Requires enableRecommendations. Default: false.')
+param enableAHBRecommendations bool = false
+
+@description('Optional. Enable non-Spot AKS cluster recommendations that flag AKS clusters with autoscaling but not using Spot VMs. May generate noise since Spot VMs are only appropriate for interruptible workloads. Requires enableRecommendations. Default: false.')
+param enableSpotRecommendations bool = false
+
+@description('Optional. Name of the Azure Data Explorer cluster to use for advanced analytics. If empty, Azure Data Explorer will not be deployed. Required to use with Power BI if you have more than $2-5M/mo in costs being monitored. Default: "" (do not use).')
+param dataExplorerName string = ''
+
+// https://learn.microsoft.com/azure/templates/microsoft.kusto/clusters?pivots=deployment-language-bicep#azuresku
+@description('Optional. Name of the Azure Data Explorer SKU. Default: "Dev(No SLA)_Standard_D11_v2".')
+@allowed([
+  'Dev(No SLA)_Standard_E2a_v4' // 2 CPU, 16GB RAM, 24GB cache, $110/mo
+  'Dev(No SLA)_Standard_D11_v2' // 2 CPU, 14GB RAM, 78GB cache, $121/mo
+  'Standard_D11_v2'             // 2 CPU, 14GB RAM, 78GB cache, $245/mo
+  'Standard_D12_v2'
+  'Standard_D13_v2'
+  'Standard_D14_v2'
+  'Standard_D16d_v5'
+  'Standard_D32d_v4'
+  'Standard_D32d_v5'
+  'Standard_DS13_v2+1TB_PS'
+  'Standard_DS13_v2+2TB_PS'
+  'Standard_DS14_v2+3TB_PS'
+  'Standard_DS14_v2+4TB_PS'
+  'Standard_E2a_v4'            // 2 CPU, 14GB RAM, 78GB cache, $220/mo
+  'Standard_E2ads_v5'
+  'Standard_E2d_v4'
+  'Standard_E2d_v5'
+  'Standard_E4a_v4'
+  'Standard_E4ads_v5'
+  'Standard_E4d_v4'
+  'Standard_E4d_v5'
+  'Standard_E8a_v4'
+  'Standard_E8ads_v5'
+  'Standard_E8as_v4+1TB_PS'
+  'Standard_E8as_v4+2TB_PS'
+  'Standard_E8as_v5+1TB_PS'
+  'Standard_E8as_v5+2TB_PS'
+  'Standard_E8d_v4'
+  'Standard_E8d_v5'
+  'Standard_E8s_v4+1TB_PS'
+  'Standard_E8s_v4+2TB_PS'
+  'Standard_E8s_v5+1TB_PS'
+  'Standard_E8s_v5+2TB_PS'
+  'Standard_E16a_v4'
+  'Standard_E16ads_v5'
+  'Standard_E16as_v4+3TB_PS'
+  'Standard_E16as_v4+4TB_PS'
+  'Standard_E16as_v5+3TB_PS'
+  'Standard_E16as_v5+4TB_PS'
+  'Standard_E16d_v4'
+  'Standard_E16d_v5'
+  'Standard_E16s_v4+3TB_PS'
+  'Standard_E16s_v4+4TB_PS'
+  'Standard_E16s_v5+3TB_PS'
+  'Standard_E16s_v5+4TB_PS'
+  'Standard_E64i_v3'
+  'Standard_E80ids_v4'
+  'Standard_EC8ads_v5'
+  'Standard_EC8as_v5+1TB_PS'
+  'Standard_EC8as_v5+2TB_PS'
+  'Standard_EC16ads_v5'
+  'Standard_EC16as_v5+3TB_PS'
+  'Standard_EC16as_v5+4TB_PS'
+  'Standard_L4s'
+  'Standard_L8as_v3'
+  'Standard_L8s'
+  'Standard_L8s_v2'
+  'Standard_L8s_v3'
+  'Standard_L16as_v3'
+  'Standard_L16s'
+  'Standard_L16s_v2'
+  'Standard_L16s_v3'
+  'Standard_L32as_v3'
+  'Standard_L32s_v3'
+])
+param dataExplorerSku string = 'Dev(No SLA)_Standard_D11_v2'
+
+@description('Optional. Number of nodes to use in the cluster. Allowed values: 1 for dev/test SKUs and 2-1000 for standard SKUs. Default: 1 for dev/test SKUs, 2 for standard SKUs.')
+@minValue(1)
+@maxValue(1000)
+param dataExplorerCapacity int = startsWith(dataExplorerSku, 'Dev(No SLA)_') ? 1 : 2
+
+// cSpell:ignore eventhouse
+@description('Optional. Microsoft Fabric eventhouse query URI. Default: "" (do not use).')
+param fabricQueryUri string = ''
+
+@description('Optional. Number of capacity units for the Microsoft Fabric capacity. This is the number in your Fabric SKU (e.g., Trial = 1, F2 = 2, F64 = 64). This is used to manage parallelization in data pipelines. If you change capacity, please redeploy the template. Allowed values: 1 for the Fabric trial and 2-2048 based on the assigned Fabric capacity (e.g., F2-F2048). Default: 2.')
+@minValue(1)
+@maxValue(2048)
+param fabricCapacityUnits int = 2
+
 @description('Optional. Tags to apply to all resources. We will also add the cm-resource-parent tag for improved cost roll-ups in Cost Management.')
-param tags object?
+param tags object = {}
 
 @description('Optional. Tags to apply to resources based on their resource type. Resource type specific tags will be merged with tags for all resources.')
 param tagsByResource object = {}
 
-@description('Optional. List of scope IDs to create exports for.')
+@description('Optional. List of scope IDs to monitor and ingest cost for.')
+param scopesToMonitor array = []
+
+@description('Optional. Deprecated. List of scope IDs to monitor and ingest cost for. Use scopesToMonitor instead.')
 param exportScopes array = []
 
-@description('Optional. The name of the container used for configuration settings.')
-param configContainer string = 'config'
+@description('Optional. Number of days of data to retain in the msexports container. Default: 0.')
+param exportRetentionInDays int = 0
 
-@description('Optional. The name of the container used for Cost Management exports.')
-param exportContainer string = 'exports'
+@description('Optional. Number of months of data to retain in the ingestion container. Default: 13.')
+param ingestionRetentionInMonths int = 13
 
-@description('Optional. The name of the container used for normalized data ingestion.')
-param ingestionContainer string = 'ingestion'
+@description('Optional. Number of days of data to retain in the Data Explorer *_raw tables. Default: 0.')
+param dataExplorerRawRetentionInDays int = 0
 
-@description('Optional. Indicates whether ingested data should be converted to Parquet. Default: true.')
-param convertToParquet bool = true
+@description('Optional. Number of months of data to retain in the Data Explorer *_final_v* tables. Default: 13.')
+param dataExplorerFinalRetentionInMonths int = 13
+
+@description('Optional. Enable public access to FinOps hubs resources.  Default: true.')
+param enablePublicAccess bool = true
+
+@description('Optional. Address space for the workload. Minimum /26 subnet size is required for the workload. Default: "10.20.30.0/26".')
+param virtualNetworkAddressPrefix string = '10.20.30.0/26'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-//------------------------------------------------------------------------------
-// Variables
-//------------------------------------------------------------------------------
-
-// Generate globally unique storage account name: 3-24 chars; lowercase letters/numbers only
-var safeHubName = replace(replace(toLower(hubName), '-', ''), '_', '')
-var storageAccountSuffix = uniqueSuffix
-var storageAccountName = '${take(safeHubName, 24 - length(storageAccountSuffix))}${storageAccountSuffix}'
-var ftkVersion = '0.3'
-
-// Add cm-resource-parent to group resources in Cost Management
-var resourceTags = union(tags ?? {}, {
-  'cm-resource-parent': '${resourceGroup().id}/providers/Microsoft.Cloud/hubs/${hubName}'
-  'ftk-version': ftkVersion
-  'ftk-tool': 'FinOps hubs'
-})
-
-// Generate globally unique Data Factory name: 3-63 chars; letters, numbers, non-repeating dashes
-var uniqueSuffix = uniqueString(hubName, resourceGroup().id)
-var dataFactoryPrefix = '${replace(hubName, '_', '-')}-engine'
-var dataFactorySuffix = '-${uniqueSuffix}'
-var dataFactoryName = replace(
-  '${take(dataFactoryPrefix, 63 - length(dataFactorySuffix))}${dataFactorySuffix}',
-  '--',
-  '-'
-)
-
-// The last segment of the telemetryId is used to identify this module
-var telemetryId = '00f120b5-2007-6120-0000-40b000000000'
 
 //==============================================================================
 // Resources
 //==============================================================================
-
-//------------------------------------------------------------------------------
-// ADLSv2 storage account for staging and archive
-//------------------------------------------------------------------------------
-
-module storage 'modules/storage.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-storage'
-  params: {
-    storageAccountName: storageAccountName
-    sku: storageSku
-    location: location
-    tags: resourceTags
-    tagsByResource: tagsByResource
-    exportScopes: exportScopes
-    configContainer: configContainer
-    exportContainer: exportContainer
-    ingestionContainer: ingestionContainer
-    ftkVersion: ftkVersion
-  }
-}
-
-//------------------------------------------------------------------------------
-// Data Factory and pipelines
-//------------------------------------------------------------------------------
-resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
-  name: dataFactoryName
-  location: location
-  tags: union(resourceTags, tagsByResource[?'Microsoft.DataFactory/factories'] ?? {})
-  identity: { type: 'SystemAssigned' }
-  properties: any(
-    // Using any() to hide the error that gets surfaced because globalConfigurations is not in the ADF schema yet.
-    {
-      globalConfigurations: {
-        PipelineBillingEnabled: 'true'
-      }
-    }
-  )
-}
-module dataFactoryResources 'modules/dataFactory.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-dataFactoryResources'
-  params: {
-    dataFactoryName: dataFactoryName
-    convertToParquet: convertToParquet
-    keyVaultName: keyVault.outputs.name
-    storageAccountName: storage.outputs.name
-    exportContainerName: exportContainer
-    ingestionContainerName: ingestionContainer
-    location: location
-    tags: resourceTags
-    tagsByResource: tagsByResource
-  }
-}
-
-//------------------------------------------------------------------------------
-// Key Vault for storing secrets
-//------------------------------------------------------------------------------
-
-module keyVault 'modules/keyVault.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-keyVault'
-  params: {
-    hubName: hubName
-    uniqueSuffix: uniqueSuffix
-    location: location
-    tags: resourceTags
-    tagsByResource: tagsByResource
-    storageAccountName: storage.outputs.name
-    accessPolicies: [
-      {
-        objectId: dataFactory.identity.principalId
-        tenantId: subscription().tenantId
-        permissions: {
-          secrets: [
-            'get'
-          ]
-        }
-      }
-    ]
-  }
-}
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -170,22 +196,36 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-#disable-next-line no-deployments-resources
-resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: 'pid-${telemetryId}-${uniqueString(deployment().name, location)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      metadata: {
-        _generator: {
-          name: 'FinOps toolkit'
-          version: '0.3'
-        }
-      }
-      resources: []
-    }
+module hub 'modules/hub.bicep' = {
+  name: '${uniqueString(deployment().name, location, hubName)}-hub'
+  params: {
+    hubName: hubName
+    location: location
+    // eventGridLocation: eventGridLocation
+    storageSku: storageSku
+    enableInfrastructureEncryption: enableInfrastructureEncryption
+    enablePurgeProtection: enablePurgeProtection
+    enableManagedExports: enableManagedExports
+    enableRecommendations: enableRecommendations
+    enableAHBRecommendations: enableAHBRecommendations
+    enableSpotRecommendations: enableSpotRecommendations
+    dataExplorerName: dataExplorerName
+    dataExplorerSku: dataExplorerSku
+    dataExplorerCapacity: dataExplorerCapacity
+    fabricQueryUri: fabricQueryUri
+    fabricCapacityUnits: fabricCapacityUnits
+    tags: tags
+    tagsByResource: tagsByResource
+    scopesToMonitor: union(scopesToMonitor, exportScopes)
+    exportRetentionInDays: exportRetentionInDays
+    ingestionRetentionInMonths: ingestionRetentionInMonths
+    dataExplorerRawRetentionInDays: dataExplorerRawRetentionInDays
+    dataExplorerFinalRetentionInMonths: dataExplorerFinalRetentionInMonths
+    remoteHubStorageUri: remoteHubStorageUri
+    remoteHubStorageKey: remoteHubStorageKey
+    enablePublicAccess: enablePublicAccess
+    virtualNetworkAddressPrefix: virtualNetworkAddressPrefix
+    enableDefaultTelemetry: enableTelemetry
   }
 }
 
@@ -193,23 +233,41 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (ena
 // Outputs
 //==============================================================================
 
-@description('The name of the resource group.')
+@description('Name of the resource group.')
 output name string = hubName
 
-@description('The location the resources wer deployed to.')
-output location string = location
-
-@description('Name of the Data Factory.')
-output dataFactoryName string = dataFactoryName
-
-@description('The resource group the finops hub was deployed into.')
+@description('The resource group the FinOps hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The resource ID of the deployed storage account.')
-output storageAccountId string = storage.outputs.resourceId
+@description('Azure resource location resources were deployed to.')
+output location string = location
+
+@description('Name of the Data Factory instance.')
+output dataFactoryName string = hub.outputs.dataFactoryName
+
+@description('Resource ID of the deployed storage account.')
+output storageAccountId string = hub.outputs.storageAccountId
 
 @description('Name of the storage account created for the hub instance. This must be used when connecting FinOps toolkit Power BI reports to your data.')
-output storageAccountName string = storage.outputs.name
+output storageAccountName string = hub.outputs.storageAccountName
 
 @description('URL to use when connecting custom Power BI reports to your data.')
-output storageUrlForPowerBi string = 'https://${storage.outputs.name}.dfs.${environment().suffixes.storage}/${ingestionContainer}'
+output storageUrlForPowerBi string = hub.outputs.storageUrlForPowerBI
+
+@description('Resource ID of the Data Explorer cluster.')
+output clusterId string = hub.outputs.clusterId
+
+@description('URI of the Data Explorer cluster.')
+output clusterUri string = hub.outputs.clusterUri
+
+@description('Name of the Data Explorer database used for ingesting data.')
+output ingestionDbName string = hub.outputs.ingestionDbName
+
+@description('Name of the Data Explorer database used for querying data.')
+output hubDbName string = hub.outputs.hubDbName
+
+@description('Object ID of the Data Factory managed identity. This will be needed when configuring managed exports.')
+output managedIdentityId string = hub.outputs.managedIdentityId
+
+@description('Azure AD tenant ID. This will be needed when configuring managed exports.')
+output managedIdentityTenantId string = hub.outputs.managedIdentityTenantId
