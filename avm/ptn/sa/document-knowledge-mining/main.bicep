@@ -46,12 +46,12 @@ param gptModelDeploymentType string = 'GlobalStandard'
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
 @allowed([
-  'gpt-4.1-mini'
+  'gpt-5-mini'
 ])
-param gptModelName string = 'gpt-4.1-mini'
+param gptModelName string = 'gpt-5-mini'
 
 @description('Optional. Version of the GPT model to deploy.')
-param gptModelVersion string = '2025-04-14'
+param gptModelVersion string = '2025-08-07'
 
 @description('Optional. Capacity of the GPT model deployment.')
 @minValue(10)
@@ -80,7 +80,7 @@ param vmAdminUsername string?
 param vmAdminPassword string?
 
 @description('Optional. Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.')
-param vmSize string = 'Standard_DS2_v2'
+param vmSize string = 'Standard_D2s_v6'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -252,7 +252,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -358,21 +358,21 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.1' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.2' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: vmSize ?? 'Standard_DS2_v2'
+    vmSize: vmSize ?? 'Standard_D2s_v6'
     location: solutionLocation
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
     tags: tags
-    availabilityZone: 1
+    availabilityZone: -1
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
-      sku: '2019-datacenter'
+      sku: '2019-datacenter-gensecond'
       version: 'latest'
     }
     osType: 'Windows'
@@ -464,7 +464,7 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
 // ========== User Assigned Identity ========== //
 // WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -495,7 +495,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.0' = {
   name: take('avm.res.cosmos-${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -567,7 +567,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
 
 // ========== App Configuration store ========== //
 var appConfigName = 'appcs-${solutionSuffix}'
-module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.3' = {
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.10.0' = {
   name: take('avm.res.app-configuration.configuration-store.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -695,7 +695,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
   }
 }
 
-module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.9.3' = if (enablePrivateNetworking) {
+module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-store:0.10.0' = if (enablePrivateNetworking) {
   name: take('avm.res.app-configuration.configuration-store-update.${appConfigName}', 64)
   params: {
     name: appConfigName
@@ -739,7 +739,7 @@ module avmAppConfigUpdated 'br/public:avm/res/app-configuration/configuration-st
 
 // ========== Storage account module ========== //
 var storageAccountName = 'st${solutionSuffix}'
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -816,7 +816,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
 
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
-module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.12.1' = {
+module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.13.0' = {
   name: take('avm.res.cognitive-search-services.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -862,7 +862,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.12.1' 
 
 // ========== Cognitive Services - OpenAI module ========== //
 var openAiAccountName = 'oai-${solutionSuffix}'
-module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.2' = {
+module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.18.0' = {
   name: take('avm.res.cognitiveservices.account.${openAiAccountName}', 64)
   params: {
     name: openAiAccountName
@@ -922,7 +922,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.14.2' = {
 
 // ========== Cognitive Services - Document Intellignece module ========== //
 var docIntelAccountName = 'di-${solutionSuffix}'
-module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.2' = {
+module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.18.0' = {
   name: take('avm.res.cognitiveservices.account.${docIntelAccountName}', 64)
   params: {
     name: docIntelAccountName
@@ -974,7 +974,7 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.14.2
 }
 
 // ========== Azure Kubernetes Service (AKS) ========== //
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.1' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.14.0' = {
   name: take('avm.res.container-service.managed-cluster.aks-${solutionSuffix}', 64)
   params: {
     name: 'aks-${solutionSuffix}'
@@ -1004,6 +1004,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.13.
         name: 'agentpool'
         vmSize: 'Standard_D4ds_v5'
         count: 3
+        availabilityZones: []
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'
@@ -1119,7 +1120,7 @@ resource aksManagedNodeOSUpgradeSchedule 'Microsoft.ContainerService/managedClus
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
