@@ -583,6 +583,7 @@ var privateDnsZones = [
   'privatelink.services.ai.azure.com'
   'privatelink.documents.azure.com'
   'privatelink.search.windows.net'
+  'privatelink.azurecr.io'
 ]
 
 // DNS Zone Index Constants
@@ -592,6 +593,7 @@ var dnsZoneIndex = {
   aiServices: 2
   cosmosDb: 3
   search: 4
+  acr: 5
 }
 
 // ===================================================
@@ -989,22 +991,28 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
 }
 
 // ========== Azure Container Registry ========== //
+// WAF best practices for Container Registry: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-registry
 var containerRegistryResourceName = 'cr${solutionSuffix}'
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
   name: containerRegistryResourceName
   location: location
   tags: tags
   sku: {
-    name: enablePrivateNetworking ? 'Premium' : 'Standard'
+    name: enablePrivateNetworking || enableRedundancy ? 'Premium' : 'Standard'
   }
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
     adminUserEnabled: false
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     dataEndpointEnabled: false
     networkRuleBypassOptions: 'AzureServices'
+    networkRuleSet: enablePrivateNetworking
+      ? {
+          defaultAction: 'Deny'
+        }
+      : null
     policies: {
       exportPolicy: {
         status: 'enabled'
@@ -1018,7 +1026,48 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
         type: 'Notary'
       }
     }
-    zoneRedundancy: 'Disabled'
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+  }
+}
+
+// WAF aligned configuration for Redundancy - ACR Geo-Replication
+resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@2025-04-01' = if (enableRedundancy) {
+  parent: containerRegistry
+  name: replicaLocation
+  location: replicaLocation
+  tags: tags
+  properties: {
+    zoneRedundancy: 'Enabled'
+  }
+}
+
+// WAF aligned configuration for Private Networking - ACR Private Endpoint
+module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+  name: take('pep-${containerRegistryResourceName}-deployment', 64)
+  params: {
+    name: 'pep-${containerRegistryResourceName}'
+    customNetworkInterfaceName: 'nic-${containerRegistryResourceName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${containerRegistryResourceName}-connection'
+        properties: {
+          privateLinkServiceId: containerRegistry.id
+          groupIds: ['registry']
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'acr-dns-zone'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.acr]!.outputs.resourceId
+        }
+      ]
+    }
+    subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
   }
 }
 
