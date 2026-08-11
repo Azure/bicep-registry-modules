@@ -851,6 +851,10 @@ module storageAccount './modules/data/storage-account.bicep' = {
     allowBlobPublicAccess: false
     allowSharedKeyAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    networkAcls: {
+      defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
+      bypass: 'AzureServices'
+    }
     diagnosticSettings: monitoringDiagnosticSettings
     containers: [
       {
