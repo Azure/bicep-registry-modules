@@ -1068,6 +1068,7 @@ module containerRegistry './modules/compute/container-registry.bicep' = {
     replications: (enableRedundancy && enablePrivateNetworking)
       ? [
           {
+            name: replicaLocation
             location: replicaLocation
           }
         ]
