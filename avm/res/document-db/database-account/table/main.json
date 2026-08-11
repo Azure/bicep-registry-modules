@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "11875063967182198117"
+      "version": "0.46.1.21595",
+      "templateHash": "6947738326636712431"
     },
     "name": "Azure Cosmos DB account tables",
     "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -22,7 +22,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags for the table."
       },
@@ -80,16 +80,16 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "table": {
       "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]"
         }
