@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.15.27210",
-      "templateHash": "1354112844331764944"
+      "templateHash": "2070578324471304701"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -39505,7 +39505,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "14051852801599911594"
+              "templateHash": "8346416426391407255"
             }
           },
           "definitions": {
@@ -40087,6 +40087,10 @@
                           }
                         }
                       ],
+                      "containerDeleteRetentionPolicyEnabled": true,
+                      "containerDeleteRetentionPolicyDays": 7,
+                      "deleteRetentionPolicyEnabled": true,
+                      "deleteRetentionPolicyDays": 7,
                       "diagnosticSettings": "[if(not(empty(parameters('diagnosticSettings'))), parameters('diagnosticSettings'), createArray())]"
                     }
                   },
@@ -58342,7 +58346,8 @@
             "value": [
               "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]"
             ]
-          }
+          },
+          "replications": "[if(and(parameters('enableRedundancy'), parameters('enablePrivateNetworking')), createObject('value', createArray(createObject('location', variables('replicaLocation')))), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -58351,7 +58356,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.45.15.27210",
-              "templateHash": "12026204306075110528"
+              "templateHash": "13826052121434652045"
             }
           },
           "parameters": {
@@ -58491,6 +58496,13 @@
               "metadata": {
                 "description": "Optional. Managed identities for the resource."
               }
+            },
+            "replications": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Geo-replication locations for the registry. Requires the Premium SKU."
+              }
             }
           },
           "variables": {
@@ -58571,7 +58583,8 @@
                   },
                   "managedIdentities": {
                     "value": "[parameters('managedIdentities')]"
-                  }
+                  },
+                  "replications": "[if(not(empty(parameters('replications'))), createObject('value', parameters('replications')), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -64988,7 +65001,7 @@
           },
           "scaleSettings": {
             "value": {
-              "minReplicas": 1,
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]",
               "maxReplicas": "[if(parameters('enableScalability'), 10, 3)]"
             }
           },
@@ -66896,7 +66909,7 @@
           },
           "scaleSettings": {
             "value": {
-              "minReplicas": 1,
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]",
               "maxReplicas": "[if(parameters('enableScalability'), 5, 3)]"
             }
           },
@@ -68800,7 +68813,7 @@
           },
           "scaleSettings": {
             "value": {
-              "minReplicas": 1,
+              "minReplicas": "[if(parameters('enableRedundancy'), 2, 1)]",
               "maxReplicas": "[if(parameters('enableScalability'), 5, 3)]"
             }
           },

@@ -1065,6 +1065,13 @@ module containerRegistry './modules/compute/container-registry.bicep' = {
     acrPullPrincipalIds: [
       userAssignedIdentity.outputs.principalId
     ]
+    replications: (enableRedundancy && enablePrivateNetworking)
+      ? [
+          {
+            location: replicaLocation
+          }
+        ]
+      : []
   }
 }
 
@@ -1106,7 +1113,7 @@ module backendContainerApp './modules/compute/container-app.bicep' = {
     workloadProfileName: 'Consumption'
     ingressTargetPort: 8000
     scaleSettings: {
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
       maxReplicas: enableScalability ? 10 : 3
     }
     containers: [
@@ -1188,7 +1195,7 @@ module frontendContainerApp './modules/compute/container-app.bicep' = {
     workloadProfileName: 'Consumption'
     ingressTargetPort: 80
     scaleSettings: {
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
       maxReplicas: enableScalability ? 5 : 3
     }
     containers: [
@@ -1238,7 +1245,7 @@ module functionContainerApp './modules/compute/container-app.bicep' = {
     workloadProfileName: 'Consumption'
     ingressTargetPort: 80
     scaleSettings: {
-      minReplicas: 1
+      minReplicas: enableRedundancy ? 2 : 1
       maxReplicas: enableScalability ? 5 : 3
     }
     containers: [

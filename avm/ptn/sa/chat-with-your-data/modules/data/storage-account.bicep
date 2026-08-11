@@ -104,6 +104,10 @@ module storage 'br/public:avm/res/storage/storage-account:0.33.0' = {
           publicAccess: container.publicAccess
         }
       ]
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
       diagnosticSettings: !empty(diagnosticSettings) ? diagnosticSettings : []
     }
     queueServices: queueServices

@@ -59,23 +59,30 @@ param enableTelemetry bool = true
 @description('Optional. Managed identities for the resource.')
 param managedIdentities object = { systemAssigned: true }
 
+@description('Optional. Geo-replication locations for the registry. Requires the Premium SKU.')
+param replications array = []
+
 // ============================================================================
 // Role Assignments
 // ============================================================================
 var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var acrPushRoleId = '8311e382-0749-4cb8-b61a-304f252e45ec'
 
-var pullRoleAssignments = [for principalId in acrPullPrincipalIds: {
-  principalId: principalId
-  roleDefinitionIdOrName: acrPullRoleId
-  principalType: 'ServicePrincipal'
-}]
+var pullRoleAssignments = [
+  for principalId in acrPullPrincipalIds: {
+    principalId: principalId
+    roleDefinitionIdOrName: acrPullRoleId
+    principalType: 'ServicePrincipal'
+  }
+]
 
-var pushRoleAssignments = [for principalId in acrPushPrincipalIds: {
-  principalId: principalId
-  roleDefinitionIdOrName: acrPushRoleId
-  principalType: acrPushPrincipalType
-}]
+var pushRoleAssignments = [
+  for principalId in acrPushPrincipalIds: {
+    principalId: principalId
+    roleDefinitionIdOrName: acrPushRoleId
+    principalType: acrPushPrincipalType
+  }
+]
 
 var roleAssignments = concat(
   !empty(acrPullPrincipalIds) ? pullRoleAssignments : [],
@@ -85,19 +92,25 @@ var roleAssignments = concat(
 // ============================================================================
 // Private Endpoint Config
 // ============================================================================
-var dnsZoneConfigs = [for (zoneId, i) in privateDnsZoneResourceIds: {
-  name: 'config${i}'
-  privateDnsZoneResourceId: zoneId
-}]
-
-var privateEndpointConfig = enablePrivateNetworking && !empty(privateEndpointSubnetId) ? [
-  {
-    subnetResourceId: privateEndpointSubnetId
-    privateDnsZoneGroup: !empty(privateDnsZoneResourceIds) ? {
-      privateDnsZoneGroupConfigs: dnsZoneConfigs
-    } : null
+var dnsZoneConfigs = [
+  for (zoneId, i) in privateDnsZoneResourceIds: {
+    name: 'config${i}'
+    privateDnsZoneResourceId: zoneId
   }
-] : []
+]
+
+var privateEndpointConfig = enablePrivateNetworking && !empty(privateEndpointSubnetId)
+  ? [
+      {
+        subnetResourceId: privateEndpointSubnetId
+        privateDnsZoneGroup: !empty(privateDnsZoneResourceIds)
+          ? {
+              privateDnsZoneGroupConfigs: dnsZoneConfigs
+            }
+          : null
+      }
+    ]
+  : []
 
 // ============================================================================
 // Container Registry (AVM)
@@ -117,6 +130,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
     privateEndpoints: privateEndpointConfig
     networkRuleSetDefaultAction: networkRuleSetDefaultAction
     managedIdentities: managedIdentities
+    replications: !empty(replications) ? replications : null
   }
 }
 
