@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "16835940252418546128"
+      "version": "0.46.1.21595",
+      "templateHash": "2227205006573569893"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
     "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -25,7 +25,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/tags"
             },
             "description": "Optional. Tags of the Gremlin graph resource."
           },
@@ -35,7 +35,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/properties/properties/resource/properties/indexingPolicy"
             },
             "description": "Optional. Indexing policy of the graph."
           },
@@ -45,7 +45,7 @@
           "type": "array",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+              "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/properties/properties/resource/properties/partitionKey/properties/paths"
             },
             "description": "Optional. List of paths using which data within the container can be partitioned."
           },
@@ -69,7 +69,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2024-11-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the Gremlin database resource."
       },
@@ -140,16 +140,16 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "gremlinDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]"
         }
@@ -198,8 +198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6381013973851287260"
+              "version": "0.46.1.21595",
+              "templateHash": "10789722211756623291"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
             "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -215,7 +215,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/tags"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the Gremlin graph resource."
               },
@@ -237,7 +237,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/indexingPolicy"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/properties/properties/resource/properties/indexingPolicy"
                 },
                 "description": "Optional. Indexing policy of the graph."
               },
@@ -247,7 +247,7 @@
               "type": "array",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2025-04-15#properties/properties/properties/resource/properties/partitionKey/properties/paths"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2026-04-01-preview#properties/properties/properties/resource/properties/partitionKey/properties/paths"
                 },
                 "description": "Optional. List of paths using which data within the container can be partitioned."
               },
@@ -265,7 +265,7 @@
             "databaseAccount::gremlinDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
             },
             "avmTelemetry": {
@@ -291,12 +291,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinGraph": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-              "apiVersion": "2025-04-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
