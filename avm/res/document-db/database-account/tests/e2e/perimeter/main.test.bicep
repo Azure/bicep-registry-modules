@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Plain'
-metadata description = 'This instance deploys the module without a Database.'
+metadata name = 'Using network perimeter'
+metadata description = 'This instance deploys the module with network perimeter.'
 
 // ========== //
 // Parameters //
@@ -12,14 +12,15 @@ metadata description = 'This instance deploys the module without a Database.'
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddapln'
+param serviceShort string = 'dddansp'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+// Using a single zone region for NSP e2e tests.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'westus3'
+var enforcedLocation = 'francecentral'
 
 // ============== //
 // General resources
@@ -40,22 +41,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      databaseAccountOfferType: 'Standard'
-      totalThroughputLimit: 4000
-      capacityMode: 'Serverless'
-      failoverLocations: [
-        {
-          failoverPriority: 0
-          isZoneRedundant: false
-          locationName: enforcedLocation
-        }
-      ]
-      sqlDatabases: [
-        {
-          name: 'no-containers-specified'
-        }
-      ]
-      zoneRedundant: false
+      networkRestrictions: {
+        publicNetworkAccess: 'SecuredByPerimeter'
+      }
     }
   }
 ]
