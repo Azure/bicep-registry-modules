@@ -15,13 +15,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Breaking Changes
 
-- Removed `containerRegistryHost` parameter (ACR is now deployed within the module)
-- Renamed output `acrName` to `azureContainerRegistryName`
-- Added new output `azureContainerRegistryEndpoint`
-- Renamed output `apiAppName` to `chatApiAppName`
-- Renamed output `apiAppUrl` to `chatApiAppUrl`
-- Removed output `webAppUrl` (replaced by `chatWebAppUrl` and `scenarioWebAppUrl`)
-- Added new outputs: `chatWebAppName`, `scenarioApiAppName`, `scenarioWebAppName`, `scenarioApiAppUrl`, `scenarioWebAppUrl`
+-
 
 ## 0.2.0
 
