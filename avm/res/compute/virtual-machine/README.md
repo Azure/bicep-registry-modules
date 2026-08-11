@@ -624,7 +624,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
-    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -947,9 +946,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1282,7 +1278,6 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
-param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
