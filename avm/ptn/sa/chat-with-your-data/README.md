@@ -171,11 +171,11 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     databaseType: 'cosmosdb'
     embeddingModelCapacity: 10
     gptModelCapacity: 10
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -197,9 +197,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "databaseType": {
       "value": "cosmosdb"
@@ -209,6 +206,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     },
     "gptModelCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -229,11 +229,11 @@ using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param databaseType = 'cosmosdb'
 param embeddingModelCapacity = 10
 param gptModelCapacity = 10
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -256,11 +256,11 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     databaseType: 'postgresql'
     embeddingModelCapacity: 10
     gptModelCapacity: 10
+    location: '<location>'
     solutionName: '<solutionName>'
   }
 }
@@ -282,9 +282,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "databaseType": {
       "value": "postgresql"
@@ -294,6 +291,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     },
     "gptModelCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -314,11 +314,11 @@ using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param databaseType = 'postgresql'
 param embeddingModelCapacity = 10
 param gptModelCapacity = 10
+param location = '<location>'
 param solutionName = '<solutionName>'
 ```
 
@@ -341,7 +341,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
-    location: '<location>'
     // Non-required parameters
     embeddingModelCapacity: 10
     enableMonitoring: true
@@ -350,6 +349,7 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     enableScalability: true
     enableTelemetry: true
     gptModelCapacity: 10
+    location: '<location>'
     solutionName: '<solutionName>'
     vmAdminPassword: '<vmAdminPassword>'
     vmAdminUsername: 'adminuser'
@@ -373,9 +373,6 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     "azureAiServiceLocation": {
       "value": "<azureAiServiceLocation>"
     },
-    "location": {
-      "value": "<location>"
-    },
     // Non-required parameters
     "embeddingModelCapacity": {
       "value": 10
@@ -397,6 +394,9 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     },
     "gptModelCapacity": {
       "value": 10
+    },
+    "location": {
+      "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
@@ -423,7 +423,6 @@ using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
-param location = '<location>'
 // Non-required parameters
 param embeddingModelCapacity = 10
 param enableMonitoring = true
@@ -432,6 +431,7 @@ param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param gptModelCapacity = 10
+param location = '<location>'
 param solutionName = '<solutionName>'
 param vmAdminPassword = '<vmAdminPassword>'
 param vmAdminUsername = 'adminuser'
@@ -447,9 +447,6 @@ param vmAdminUsername = 'adminuser'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1 GlobalStandard availability. |
-| [`databaseType`](#parameter-databasetype) | string | Selects BOTH the chat-history backend AND the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is NOT deployed). Locked at deploy time. |
-| [`location`](#parameter-location) | string | Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where ALL three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions |
-| [`solutionName`](#parameter-solutionname) | string | Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits. |
 
 **Optional parameters**
 
@@ -458,6 +455,7 @@ param vmAdminUsername = 'adminuser'
 | [`azureAiAgentApiVersion`](#parameter-azureaiagentapiversion) | string | Azure AI Agent API version (used by the Agent Framework orchestrator). |
 | [`azureOpenAiApiVersion`](#parameter-azureopenaiapiversion) | string | Azure OpenAI API version exposed via the OpenAI-compatible endpoint (used by the LangGraph orchestrator). |
 | [`createdBy`](#parameter-createdby) | string | Identifier of the user creating the deployment, recorded in the resource group tags. |
+| [`databaseType`](#parameter-databasetype) | string | Selects both the chat-history backend and the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is not deployed). Locked at deploy time. |
 | [`deployingUserPrincipalType`](#parameter-deployinguserprincipaltype) | string | Principal type of the deploying user. Use ServicePrincipal for CI/CD pipelines with OIDC. |
 | [`embeddingModelCapacity`](#parameter-embeddingmodelcapacity) | int | Token capacity for the embedding model. |
 | [`embeddingModelDeploymentType`](#parameter-embeddingmodeldeploymenttype) | string | SKU for the embedding model deployment. |
@@ -473,6 +471,7 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelName`](#parameter-gptmodelname) | string | Primary chat model deployment name. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Primary chat model version. |
 | [`ingestionTrigger`](#parameter-ingestiontrigger) | string | How an uploaded document is picked up for indexing. direct_enqueue: the backend admin upload enqueues the doc-processing message itself (works without an Event Grid subscription). event_grid: a storage Event Grid subscription fans BlobCreated/BlobDeleted to the blob-events queue and the blob_event Function translates each (create -> ingest, delete -> de-index), so the backend writes the blob only (no double-ingest). Flip to event_grid only after the blob_event Function blueprint is deployed. |
+| [`location`](#parameter-location) | string | Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where all three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions. |
 | [`reasoningModelCapacity`](#parameter-reasoningmodelcapacity) | int | Token capacity for the reasoning model. |
 | [`reasoningModelDeploymentType`](#parameter-reasoningmodeldeploymenttype) | string | SKU for the reasoning model deployment. |
 | [`reasoningModelName`](#parameter-reasoningmodelname) | string | Reasoning model deployment name (surfaced via the SSE reasoning channel). |
@@ -481,6 +480,7 @@ param vmAdminUsername = 'adminuser'
 | [`searchKnowledgeBaseApiVersion`](#parameter-searchknowledgebaseapiversion) | string | Foundry IQ knowledge base / knowledge source REST API version (operator-tunable so the KB protocol can advance without a new image). |
 | [`searchKnowledgeBaseName`](#parameter-searchknowledgebasename) | string | Foundry IQ knowledge base name the agent_framework orchestrator grounds on (cosmosdb mode). Must match the name seeded by post_provision.py and resolved through the Project-Search connection. |
 | [`searchKnowledgeSourceName`](#parameter-searchknowledgesourcename) | string | Foundry IQ knowledge source name backing the knowledge base (the search-index knowledge source seeded by post_provision.py). |
+| [`solutionName`](#parameter-solutionname) | string | Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | Short unique suffix appended to global resource names. Defaults to a 5-char hash of subscription + RG + solution name. |
 | [`tags`](#parameter-tags) | object | Tags applied to every deployed resource. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | VM admin password (AVM-WAF only, when private networking is enabled). |
@@ -510,45 +510,6 @@ Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1
   ]
   ```
 
-### Parameter: `databaseType`
-
-Selects BOTH the chat-history backend AND the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is NOT deployed). Locked at deploy time.
-
-- Required: No
-- Type: string
-- Default: `'cosmosdb'`
-- Allowed:
-  ```Bicep
-  [
-    'cosmosdb'
-    'postgresql'
-  ]
-  ```
-
-### Parameter: `location`
-
-Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where ALL three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'eastus2'
-    'japaneast'
-    'uksouth'
-  ]
-  ```
-
-### Parameter: `solutionName`
-
-Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits.
-
-- Required: No
-- Type: string
-- Default: `'cwyd'`
-
 ### Parameter: `azureAiAgentApiVersion`
 
 Azure AI Agent API version (used by the Agent Framework orchestrator).
@@ -572,6 +533,21 @@ Identifier of the user creating the deployment, recorded in the resource group t
 - Required: No
 - Type: string
 - Default: `[if(contains(deployer(), 'userPrincipalName'), split(deployer().userPrincipalName, '@')[0], deployer().objectId)]`
+
+### Parameter: `databaseType`
+
+Selects both the chat-history backend and the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is not deployed). Locked at deploy time.
+
+- Required: No
+- Type: string
+- Default: `'cosmosdb'`
+- Allowed:
+  ```Bicep
+  [
+    'cosmosdb'
+    'postgresql'
+  ]
+  ```
 
 ### Parameter: `deployingUserPrincipalType`
 
@@ -723,6 +699,14 @@ How an uploaded document is picked up for indexing. direct_enqueue: the backend 
   ]
   ```
 
+### Parameter: `location`
+
+Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where all three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `reasoningModelCapacity`
 
 Token capacity for the reasoning model.
@@ -795,6 +779,14 @@ Foundry IQ knowledge source name backing the knowledge base (the search-index kn
 - Type: string
 - Default: `'cwyd-index-ks'`
 
+### Parameter: `solutionName`
+
+Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits.
+
+- Required: No
+- Type: string
+- Default: `'cwyd'`
+
 ### Parameter: `solutionUniqueText`
 
 Short unique suffix appended to global resource names. Defaults to a 5-char hash of subscription + RG + solution name.
@@ -839,54 +831,54 @@ VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `AZURE_AI_AGENT_API_VERSION` | string | Azure AI Agents API version pinned for the Foundry Project endpoint. |
-| `AZURE_AI_PROJECT_ENDPOINT` | string | Foundry Project endpoint (https://<account>.services.ai.azure.com/api/projects/<project>). Required by the Microsoft Agent Framework SDK. |
-| `AZURE_AI_SEARCH_ENDPOINT` | string | AI Search service endpoint. Empty in PostgreSQL mode. |
-| `AZURE_AI_SEARCH_INDEX` | string | Chat index name. Exported so the postdeploy seed hook can run its index-population self-check; empty in postgresql mode (no AI Search). |
-| `AZURE_AI_SEARCH_NAME` | string | AI Search service name. Empty in PostgreSQL mode. |
-| `AZURE_AI_SERVICE_LOCATION` | string | Location of the AI Services account + model deployments (independent of AZURE_LOCATION). |
-| `AZURE_AI_SERVICES_ENDPOINT` | string | Unified AI Services (Cognitive Services) endpoint. Used by Document Intelligence and other non-OpenAI AI Services APIs. |
-| `AZURE_APP_INSIGHTS_CONNECTION_STRING` | string | Application Insights connection string. Empty when enableMonitoring=false. |
-| `AZURE_BACKEND_URL` | string | Public URL of the backend Container App (FastAPI + LangGraph/Agent Framework). |
-| `AZURE_BASTION_NAME` | string | Bastion host name (for `az network bastion tunnel`). Empty when enablePrivateNetworking=false. |
-| `AZURE_CONTAINER_REGISTRY_ENDPOINT` | string | Container Registry login server. |
-| `AZURE_CONTAINER_REGISTRY_NAME` | string | Container Registry resource name. |
-| `AZURE_CONTENT_SAFETY_ENDPOINT` | string | Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED. |
-| `AZURE_CONTENT_SAFETY_NAME` | string | Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint. |
-| `AZURE_COSMOS_ACCOUNT_NAME` | string | Cosmos DB account name. Empty in PostgreSQL mode. |
-| `AZURE_COSMOS_ENDPOINT` | string | Cosmos DB account endpoint (DocumentEndpoint). Empty in PostgreSQL mode. |
-| `AZURE_DB_TYPE` | string | Selected database engine for chat history + vector index (locked at deploy). |
-| `AZURE_DOC_PROCESSING_QUEUE` | string | Storage Queue name fed by Event Grid BlobCreated and consumed by the batch_push Function blueprint. |
-| `AZURE_DOCUMENTS_CONTAINER` | string | Container holding documents to be indexed (Event Grid filter + batch_start source). |
-| `AZURE_FRONTEND_URL` | string | Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin. |
-| `AZURE_FUNCTION_APP_NAME` | string | Function App resource name (used by azd to deploy the function package). |
-| `AZURE_FUNCTION_APP_URL` | string | Public URL of the Function App hosting the indexing pipeline. |
-| `AZURE_INDEX_STORE` | string | Logical name of the configured vector index store: "AzureSearch" (CosmosDB mode) or "pgvector" (PostgreSQL mode). |
-| `AZURE_INGESTION_TRIGGER` | string | Ingestion trigger mode for the backend admin upload path: direct_enqueue (backend enqueues) or event_grid (Event Grid + blob_event Function own the push). |
-| `AZURE_LOCATION` | string | Location of the non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). |
-| `AZURE_OPENAI_API_VERSION` | string | OpenAI-compatible API version pinned for the GPT + reasoning deployments. |
-| `AZURE_OPENAI_EMBEDDING_DEPLOYMENT` | string | Deployment name of the embedding model used by the indexing pipeline. |
-| `AZURE_OPENAI_ENDPOINT` | string | Effective Azure OpenAI endpoint backends call for chat + reasoning + embedding deployments. When `existingOpenAiName` is set this points at the reused v1 OpenAI account; otherwise it equals AZURE_AI_SERVICES_ENDPOINT (deployments live on the v2 Foundry account). |
-| `AZURE_OPENAI_GPT_DEPLOYMENT` | string | Deployment name of the chat-completions GPT model. |
-| `AZURE_OPENAI_REASONING_DEPLOYMENT` | string | Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel). |
-| `AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME` | string | UAMI principal name used by the runtime apps to connect to Postgres. Empty in CosmosDB mode. |
-| `AZURE_POSTGRES_DEPLOYER_PRINCIPAL_NAME` | string | Deployer principal name registered as Postgres Entra admin (for post_provision.py). Empty in CosmosDB mode or when deployer has no UPN. |
-| `AZURE_POSTGRES_ENDPOINT` | string | Full libpq connection URI for the PostgreSQL Flexible Server (no credentials — the workload supplies an Entra token; the user comes from AZURE_UAMI_CLIENT_ID). Mirrors AZURE_COSMOS_ENDPOINT shape so AzurePostgresSettings reads one var. Empty in CosmosDB mode. |
-| `AZURE_POSTGRES_HOST` | string | PostgreSQL Flexible Server FQDN (clients add :5432 themselves). Empty in CosmosDB mode. |
-| `AZURE_POSTGRES_NAME` | string | PostgreSQL Flexible Server resource name. Empty in CosmosDB mode. |
-| `AZURE_RESOURCE_GROUP` | string | Resource group containing the deployment. |
-| `AZURE_SOLUTION_SUFFIX` | string | Lower-cased solution suffix used in every downstream resource name. |
-| `AZURE_SPEECH_ACCOUNT_RESOURCE_ID` | string | Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST. |
-| `AZURE_SPEECH_SERVICE_NAME` | string | Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK. |
-| `AZURE_SPEECH_SERVICE_REGION` | string | Speech account region. Browser SDK passes this to SpeechConfig.fromAuthorizationToken(token, region) and the backend uses it to build the regional sts/v1.0/issueToken URL. |
-| `AZURE_STORAGE_ACCOUNT_NAME` | string | Storage account name (shared by RAG document store, indexing queues, and the Function App deployment package). |
-| `AZURE_STORAGE_BLOB_ENDPOINT` | string | Primary blob endpoint of the shared storage account (https URL ending in /). Hostname follows the storage cloud-specific suffix. |
-| `AZURE_TENANT_ID` | string | Tenant ID for the deployment subscription. |
-| `AZURE_UAMI_CLIENT_ID` | string | Client ID of the user-assigned managed identity shared by all v2 workloads. |
-| `AZURE_UAMI_PRINCIPAL_ID` | string | Principal (object) ID of the user-assigned managed identity. |
-| `AZURE_UAMI_RESOURCE_ID` | string | Resource ID of the user-assigned managed identity. |
-| `AZURE_VNET_NAME` | string | VNet name. Empty when enablePrivateNetworking=false. |
-| `AZURE_VNET_RESOURCE_ID` | string | VNet resource ID. Empty when enablePrivateNetworking=false. |
+| `azureAiAgentApiVersion` | string | Azure AI Agents API version pinned for the Foundry Project endpoint. |
+| `azureAiProjectEndpoint` | string | Foundry Project endpoint (https://<account>.services.ai.azure.com/api/projects/<project>). Required by the Microsoft Agent Framework SDK. |
+| `azureAiSearchEndpoint` | string | AI Search service endpoint. Empty in PostgreSQL mode. |
+| `azureAiSearchIndex` | string | Chat index name. Exported so the postdeploy seed hook can run its index-population self-check; empty in postgresql mode (no AI Search). |
+| `azureAiSearchName` | string | AI Search service name. Empty in PostgreSQL mode. |
+| `azureAiServiceLocation` | string | Location of the AI Services account + model deployments (independent of AZURE_LOCATION). |
+| `azureAiServicesEndpoint` | string | Unified AI Services (Cognitive Services) endpoint. Used by Document Intelligence and other non-OpenAI AI Services APIs. |
+| `azureAppInsightsConnectionString` | string | Application Insights connection string. Empty when enableMonitoring=false. |
+| `azureBackendUrl` | string | Public URL of the backend Container App (FastAPI + LangGraph/Agent Framework). |
+| `azureBastionName` | string | Bastion host name (for `az network bastion tunnel`). Empty when enablePrivateNetworking=false. |
+| `azureContainerRegistryEndpoint` | string | Container Registry login server. |
+| `azureContainerRegistryName` | string | Container Registry resource name. |
+| `azureContentSafetyEndpoint` | string | Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED. |
+| `azureContentSafetyName` | string | Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint. |
+| `azureCosmosAccountName` | string | Cosmos DB account name. Empty in PostgreSQL mode. |
+| `azureCosmosEndpoint` | string | Cosmos DB account endpoint (DocumentEndpoint). Empty in PostgreSQL mode. |
+| `azureDbType` | string | Selected database engine for chat history + vector index (locked at deploy). |
+| `azureDocProcessingQueue` | string | Storage Queue name fed by Event Grid BlobCreated and consumed by the batch_push Function blueprint. |
+| `azureDocumentsContainer` | string | Container holding documents to be indexed (Event Grid filter + batch_start source). |
+| `azureFrontendUrl` | string | Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin. |
+| `azureFunctionAppName` | string | Function App resource name (used by azd to deploy the function package). |
+| `azureFunctionAppUrl` | string | Public URL of the Function App hosting the indexing pipeline. |
+| `azureIndexStore` | string | Logical name of the configured vector index store: "AzureSearch" (CosmosDB mode) or "pgvector" (PostgreSQL mode). |
+| `azureIngestionTrigger` | string | Ingestion trigger mode for the backend admin upload path: direct_enqueue (backend enqueues) or event_grid (Event Grid + blob_event Function own the push). |
+| `azureLocation` | string | Location of the non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). |
+| `azureOpenAiApiVersion` | string | OpenAI-compatible API version pinned for the GPT + reasoning deployments. |
+| `azureOpenAiEmbeddingDeployment` | string | Deployment name of the embedding model used by the indexing pipeline. |
+| `azureOpenAiEndpoint` | string | Effective Azure OpenAI endpoint backends call for chat + reasoning + embedding deployments. When `existingOpenAiName` is set this points at the reused v1 OpenAI account; otherwise it equals AZURE_AI_SERVICES_ENDPOINT (deployments live on the v2 Foundry account). |
+| `azureOpenAiGptDeployment` | string | Deployment name of the chat-completions GPT model. |
+| `azureOpenAiReasoningDeployment` | string | Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel). |
+| `azurePostgresAdminPrincipalName` | string | UAMI principal name used by the runtime apps to connect to Postgres. Empty in CosmosDB mode. |
+| `azurePostgresDeployerPrincipalName` | string | Deployer principal name registered as Postgres Entra admin (for post_provision.py). Empty in CosmosDB mode or when deployer has no UPN. |
+| `azurePostgresEndpoint` | string | Full libpq connection URI for the PostgreSQL Flexible Server (no credentials — the workload supplies an Entra token; the user comes from AZURE_UAMI_CLIENT_ID). Mirrors AZURE_COSMOS_ENDPOINT shape so AzurePostgresSettings reads one var. Empty in CosmosDB mode. |
+| `azurePostgresHost` | string | PostgreSQL Flexible Server FQDN (clients add :5432 themselves). Empty in CosmosDB mode. |
+| `azurePostgresName` | string | PostgreSQL Flexible Server resource name. Empty in CosmosDB mode. |
+| `azureSolutionSuffix` | string | Lower-cased solution suffix used in every downstream resource name. |
+| `azureSpeechAccountResourceId` | string | Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST. |
+| `azureSpeechServiceName` | string | Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK. |
+| `azureSpeechServiceRegion` | string | Speech account region. Browser SDK passes this to SpeechConfig.fromAuthorizationToken(token, region) and the backend uses it to build the regional sts/v1.0/issueToken URL. |
+| `azureStorageAccountName` | string | Storage account name (shared by RAG document store, indexing queues, and the Function App deployment package). |
+| `azureStorageBlobEndpoint` | string | Primary blob endpoint of the shared storage account (https URL ending in /). Hostname follows the storage cloud-specific suffix. |
+| `azureTenantId` | string | Tenant ID for the deployment subscription. |
+| `azureUamiClientId` | string | Client ID of the user-assigned managed identity shared by all v2 workloads. |
+| `azureUamiPrincipalId` | string | Principal (object) ID of the user-assigned managed identity. |
+| `azureUamiResourceId` | string | Resource ID of the user-assigned managed identity. |
+| `azureVnetName` | string | VNet name. Empty when enablePrivateNetworking=false. |
+| `azureVnetResourceId` | string | VNet resource ID. Empty when enablePrivateNetworking=false. |
+| `resourceGroupName` | string | Resource group containing the deployment. |
 
 ## Cross-referenced modules
 

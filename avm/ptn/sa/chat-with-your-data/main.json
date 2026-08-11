@@ -4,9 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "8533315409020602510"
-    }
+      "version": "0.45.15.27210",
+      "templateHash": "1354112844331764944"
+    },
+    "name": "Chat-with-your-data-Solution-Accelerator",
+    "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "parameters": {
     "solutionName": {
@@ -15,7 +17,7 @@
       "minLength": 3,
       "maxLength": 15,
       "metadata": {
-        "description": "Required. Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits."
+        "description": "Optional. Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits."
       }
     },
     "solutionUniqueText": {
@@ -28,17 +30,12 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "eastus2",
-        "japaneast",
-        "uksouth"
-      ],
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Required. Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where ALL three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions"
+        "description": "Optional. Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where all three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions."
       }
     },
     "azureAiServiceLocation": {
@@ -76,7 +73,7 @@
         "postgresql"
       ],
       "metadata": {
-        "description": "Required. Selects BOTH the chat-history backend AND the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is NOT deployed). Locked at deploy time."
+        "description": "Optional. Selects both the chat-history backend and the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is not deployed). Locked at deploy time."
       }
     },
     "ingestionTrigger": {
@@ -292,10 +289,13 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Resources/resourceGroups@2025-04-01#properties/tags"
+        },
         "description": "Optional. Tags applied to every deployed resource."
-      }
+      },
+      "defaultValue": {}
     },
     "createdBy": {
       "type": "string",
@@ -478,8 +478,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "15341291052493426127"
+              "version": "0.45.15.27210",
+              "templateHash": "10836722712645179740"
             }
           },
           "parameters": {
@@ -1129,8 +1129,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "5953162987390950088"
+              "version": "0.45.15.27210",
+              "templateHash": "9789603731648838013"
             }
           },
           "parameters": {
@@ -4641,8 +4641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "496651556005220637"
+              "version": "0.45.15.27210",
+              "templateHash": "15871160667850237893"
             }
           },
           "parameters": {
@@ -5599,8 +5599,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "458387636602479375"
+              "version": "0.45.15.27210",
+              "templateHash": "6410726025094935394"
             }
           },
           "definitions": {
@@ -8581,8 +8581,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "4613446280405157854"
+              "version": "0.45.15.27210",
+              "templateHash": "5843178535659210113"
             }
           },
           "parameters": {
@@ -10485,8 +10485,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "8420279536133240728"
+              "version": "0.45.15.27210",
+              "templateHash": "1089854782656841223"
             }
           },
           "parameters": {
@@ -11024,8 +11024,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14701803776432038764"
+              "version": "0.45.15.27210",
+              "templateHash": "8930408375182742451"
             }
           },
           "parameters": {
@@ -12492,8 +12492,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "13006336383696924611"
+              "version": "0.45.15.27210",
+              "templateHash": "9515837065104451474"
             }
           },
           "parameters": {
@@ -13005,8 +13005,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "13391480932995037167"
+              "version": "0.45.15.27210",
+              "templateHash": "14535901924567620902"
             }
           },
           "parameters": {
@@ -22722,8 +22722,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "11076758087490966511"
+              "version": "0.45.15.27210",
+              "templateHash": "6776150673571028467"
             }
           },
           "parameters": {
@@ -26217,8 +26217,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "15572584135356662891"
+              "version": "0.45.15.27210",
+              "templateHash": "5176696707231681607"
             }
           },
           "definitions": {
@@ -29468,8 +29468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "5315493943580072668"
+              "version": "0.45.15.27210",
+              "templateHash": "3303748358923315881"
             }
           },
           "parameters": {
@@ -29631,8 +29631,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "10656454868333161121"
+              "version": "0.45.15.27210",
+              "templateHash": "13277227272046220930"
             }
           },
           "parameters": {
@@ -30433,8 +30433,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "15755659146288676427"
+              "version": "0.45.15.27210",
+              "templateHash": "10402807943030573864"
             }
           },
           "definitions": {
@@ -33650,8 +33650,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "15755659146288676427"
+              "version": "0.45.15.27210",
+              "templateHash": "10402807943030573864"
             }
           },
           "definitions": {
@@ -36894,8 +36894,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "17684322083529359136"
+              "version": "0.45.15.27210",
+              "templateHash": "6094761688156642105"
             }
           },
           "parameters": {
@@ -39272,8 +39272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14116608463414189185"
+              "version": "0.45.15.27210",
+              "templateHash": "3215519417659672748"
             }
           },
           "parameters": {
@@ -39504,8 +39504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "10233670287954699783"
+              "version": "0.45.15.27210",
+              "templateHash": "14051852801599911594"
             }
           },
           "definitions": {
@@ -48518,8 +48518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "8849915601741886143"
+              "version": "0.45.15.27210",
+              "templateHash": "4972844472154224059"
             }
           },
           "parameters": {
@@ -55218,8 +55218,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "6807428784669947639"
+              "version": "0.45.15.27210",
+              "templateHash": "6997103116101552779"
             }
           },
           "parameters": {
@@ -58350,8 +58350,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "15985718666368677061"
+              "version": "0.45.15.27210",
+              "templateHash": "12026204306075110528"
             }
           },
           "parameters": {
@@ -62449,8 +62449,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "611775030187519358"
+              "version": "0.45.15.27210",
+              "templateHash": "2286950277372645584"
             }
           },
           "parameters": {
@@ -65013,8 +65013,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "18202408490628744374"
+              "version": "0.45.15.27210",
+              "templateHash": "8851518255562442293"
             }
           },
           "parameters": {
@@ -66921,8 +66921,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "18202408490628744374"
+              "version": "0.45.15.27210",
+              "templateHash": "8851518255562442293"
             }
           },
           "parameters": {
@@ -68825,8 +68825,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "18202408490628744374"
+              "version": "0.45.15.27210",
+              "templateHash": "8851518255562442293"
             }
           },
           "parameters": {
@@ -70726,8 +70726,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "12647444175954209927"
+              "version": "0.45.15.27210",
+              "templateHash": "9285177822996575101"
             }
           },
           "parameters": {
@@ -73598,8 +73598,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "7584327137625838503"
+              "version": "0.45.15.27210",
+              "templateHash": "15297330273700012534"
             }
           },
           "parameters": {
@@ -73881,336 +73881,336 @@
     }
   ],
   "outputs": {
-    "AZURE_SOLUTION_SUFFIX": {
+    "azureSolutionSuffix": {
       "type": "string",
       "metadata": {
         "description": "Lower-cased solution suffix used in every downstream resource name."
       },
       "value": "[variables('solutionSuffix')]"
     },
-    "AZURE_RESOURCE_GROUP": {
+    "resourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "Resource group containing the deployment."
       },
       "value": "[resourceGroup().name]"
     },
-    "AZURE_LOCATION": {
+    "azureLocation": {
       "type": "string",
       "metadata": {
         "description": "Location of the non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres)."
       },
       "value": "[parameters('location')]"
     },
-    "AZURE_AI_SERVICE_LOCATION": {
+    "azureAiServiceLocation": {
       "type": "string",
       "metadata": {
         "description": "Location of the AI Services account + model deployments (independent of AZURE_LOCATION)."
       },
       "value": "[parameters('azureAiServiceLocation')]"
     },
-    "AZURE_TENANT_ID": {
+    "azureTenantId": {
       "type": "string",
       "metadata": {
         "description": "Tenant ID for the deployment subscription."
       },
       "value": "[subscription().tenantId]"
     },
-    "AZURE_UAMI_CLIENT_ID": {
+    "azureUamiClientId": {
       "type": "string",
       "metadata": {
         "description": "Client ID of the user-assigned managed identity shared by all v2 workloads."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.clientId.value]"
     },
-    "AZURE_UAMI_PRINCIPAL_ID": {
+    "azureUamiPrincipalId": {
       "type": "string",
       "metadata": {
         "description": "Principal (object) ID of the user-assigned managed identity."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.principalId.value]"
     },
-    "AZURE_UAMI_RESOURCE_ID": {
+    "azureUamiResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource ID of the user-assigned managed identity."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
     },
-    "AZURE_DB_TYPE": {
+    "azureDbType": {
       "type": "string",
       "metadata": {
         "description": "Selected database engine for chat history + vector index (locked at deploy)."
       },
       "value": "[parameters('databaseType')]"
     },
-    "AZURE_INDEX_STORE": {
+    "azureIndexStore": {
       "type": "string",
       "metadata": {
         "description": "Logical name of the configured vector index store: \"AzureSearch\" (CosmosDB mode) or \"pgvector\" (PostgreSQL mode)."
       },
       "value": "[variables('indexStoreValue')]"
     },
-    "AZURE_AI_SERVICES_ENDPOINT": {
+    "azureAiServicesEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Unified AI Services (Cognitive Services) endpoint. Used by Document Intelligence and other non-OpenAI AI Services APIs."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.cognitiveServicesEndpoint.value]"
     },
-    "AZURE_OPENAI_ENDPOINT": {
+    "azureOpenAiEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Effective Azure OpenAI endpoint backends call for chat + reasoning + embedding deployments. When `existingOpenAiName` is set this points at the reused v1 OpenAI account; otherwise it equals AZURE_AI_SERVICES_ENDPOINT (deployments live on the v2 Foundry account)."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value]"
     },
-    "AZURE_AI_PROJECT_ENDPOINT": {
+    "azureAiProjectEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Foundry Project endpoint (https://<account>.services.ai.azure.com/api/projects/<project>). Required by the Microsoft Agent Framework SDK."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-foundry-project.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.projectEndpoint.value]"
     },
-    "AZURE_OPENAI_API_VERSION": {
+    "azureOpenAiApiVersion": {
       "type": "string",
       "metadata": {
         "description": "OpenAI-compatible API version pinned for the GPT + reasoning deployments."
       },
       "value": "[parameters('azureOpenAiApiVersion')]"
     },
-    "AZURE_AI_AGENT_API_VERSION": {
+    "azureAiAgentApiVersion": {
       "type": "string",
       "metadata": {
         "description": "Azure AI Agents API version pinned for the Foundry Project endpoint."
       },
       "value": "[parameters('azureAiAgentApiVersion')]"
     },
-    "AZURE_OPENAI_GPT_DEPLOYMENT": {
+    "azureOpenAiGptDeployment": {
       "type": "string",
       "metadata": {
         "description": "Deployment name of the chat-completions GPT model."
       },
       "value": "[parameters('gptModelName')]"
     },
-    "AZURE_OPENAI_REASONING_DEPLOYMENT": {
+    "azureOpenAiReasoningDeployment": {
       "type": "string",
       "metadata": {
         "description": "Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel)."
       },
       "value": "[parameters('reasoningModelName')]"
     },
-    "AZURE_OPENAI_EMBEDDING_DEPLOYMENT": {
+    "azureOpenAiEmbeddingDeployment": {
       "type": "string",
       "metadata": {
         "description": "Deployment name of the embedding model used by the indexing pipeline."
       },
       "value": "[parameters('embeddingModelName')]"
     },
-    "AZURE_SPEECH_SERVICE_NAME": {
+    "azureSpeechServiceName": {
       "type": "string",
       "metadata": {
         "description": "Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
-    "AZURE_SPEECH_SERVICE_REGION": {
+    "azureSpeechServiceRegion": {
       "type": "string",
       "metadata": {
         "description": "Speech account region. Browser SDK passes this to SpeechConfig.fromAuthorizationToken(token, region) and the backend uses it to build the regional sts/v1.0/issueToken URL."
       },
       "value": "[parameters('azureAiServiceLocation')]"
     },
-    "AZURE_SPEECH_ACCOUNT_RESOURCE_ID": {
+    "azureSpeechAccountResourceId": {
       "type": "string",
       "metadata": {
         "description": "Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.SpeechServices.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value]"
     },
-    "AZURE_CONTENT_SAFETY_ENDPOINT": {
+    "azureContentSafetyEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value]"
     },
-    "AZURE_CONTENT_SAFETY_NAME": {
+    "azureContentSafetyName": {
       "type": "string",
       "metadata": {
         "description": "Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-services.ContentSafety.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
-    "AZURE_AI_SEARCH_ENDPOINT": {
+    "azureAiSearchEndpoint": {
       "type": "string",
       "metadata": {
         "description": "AI Search service endpoint. Empty in PostgreSQL mode."
       },
       "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')]"
     },
-    "AZURE_AI_SEARCH_NAME": {
+    "azureAiSearchName": {
       "type": "string",
       "metadata": {
         "description": "AI Search service name. Empty in PostgreSQL mode."
       },
       "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.ai-search.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
-    "AZURE_AI_SEARCH_INDEX": {
+    "azureAiSearchIndex": {
       "type": "string",
       "metadata": {
         "description": "Chat index name. Exported so the postdeploy seed hook can run its index-population self-check; empty in postgresql mode (no AI Search)."
       },
       "value": "[if(equals(parameters('databaseType'), 'cosmosdb'), parameters('searchIndexName'), '')]"
     },
-    "AZURE_COSMOS_ENDPOINT": {
+    "azureCosmosEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Cosmos DB account endpoint (DocumentEndpoint). Empty in PostgreSQL mode."
       },
       "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.endpoint.value, '')]"
     },
-    "AZURE_COSMOS_ACCOUNT_NAME": {
+    "azureCosmosAccountName": {
       "type": "string",
       "metadata": {
         "description": "Cosmos DB account name. Empty in PostgreSQL mode."
       },
       "value": "[if(variables('isCosmos'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.cosmos-db-nosql.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
-    "AZURE_POSTGRES_HOST": {
+    "azurePostgresHost": {
       "type": "string",
       "metadata": {
         "description": "PostgreSQL Flexible Server FQDN (clients add :5432 themselves). Empty in CosmosDB mode."
       },
       "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value, '')]"
     },
-    "AZURE_POSTGRES_ENDPOINT": {
+    "azurePostgresEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Full libpq connection URI for the PostgreSQL Flexible Server (no credentials — the workload supplies an Entra token; the user comes from AZURE_UAMI_CLIENT_ID). Mirrors AZURE_COSMOS_ENDPOINT shape so AzurePostgresSettings reads one var. Empty in CosmosDB mode."
       },
       "value": "[if(not(variables('isCosmos')), format('postgresql://{0}:5432/cwyd?sslmode=require', reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.serverFqdn.value), '')]"
     },
-    "AZURE_POSTGRES_NAME": {
+    "azurePostgresName": {
       "type": "string",
       "metadata": {
         "description": "PostgreSQL Flexible Server resource name. Empty in CosmosDB mode."
       },
       "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.postgre-sql.flexible-server.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
-    "AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME": {
+    "azurePostgresAdminPrincipalName": {
       "type": "string",
       "metadata": {
         "description": "UAMI principal name used by the runtime apps to connect to Postgres. Empty in CosmosDB mode."
       },
       "value": "[if(not(variables('isCosmos')), reference(resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
-    "AZURE_POSTGRES_DEPLOYER_PRINCIPAL_NAME": {
+    "azurePostgresDeployerPrincipalName": {
       "type": "string",
       "metadata": {
         "description": "Deployer principal name registered as Postgres Entra admin (for post_provision.py). Empty in CosmosDB mode or when deployer has no UPN."
       },
       "value": "[if(and(not(variables('isCosmos')), contains(deployer(), 'userPrincipalName')), deployer().userPrincipalName, '')]"
     },
-    "AZURE_STORAGE_ACCOUNT_NAME": {
+    "azureStorageAccountName": {
       "type": "string",
       "metadata": {
         "description": "Storage account name (shared by RAG document store, indexing queues, and the Function App deployment package)."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
-    "AZURE_STORAGE_BLOB_ENDPOINT": {
+    "azureStorageBlobEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Primary blob endpoint of the shared storage account (https URL ending in /). Hostname follows the storage cloud-specific suffix."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.storage-account.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.blobEndpoint.value]"
     },
-    "AZURE_DOCUMENTS_CONTAINER": {
+    "azureDocumentsContainer": {
       "type": "string",
       "metadata": {
         "description": "Container holding documents to be indexed (Event Grid filter + batch_start source)."
       },
       "value": "[variables('documentsContainerName')]"
     },
-    "AZURE_DOC_PROCESSING_QUEUE": {
+    "azureDocProcessingQueue": {
       "type": "string",
       "metadata": {
         "description": "Storage Queue name fed by Event Grid BlobCreated and consumed by the batch_push Function blueprint."
       },
       "value": "[variables('docProcessingQueueName')]"
     },
-    "AZURE_INGESTION_TRIGGER": {
+    "azureIngestionTrigger": {
       "type": "string",
       "metadata": {
         "description": "Ingestion trigger mode for the backend admin upload path: direct_enqueue (backend enqueues) or event_grid (Event Grid + blob_event Function own the push)."
       },
       "value": "[parameters('ingestionTrigger')]"
     },
-    "AZURE_BACKEND_URL": {
+    "azureBackendUrl": {
       "type": "string",
       "metadata": {
         "description": "Public URL of the backend Container App (FastAPI + LangGraph/Agent Framework)."
       },
       "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-api.{0}', variables('solutionSuffix')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
-    "AZURE_FRONTEND_URL": {
+    "azureFrontendUrl": {
       "type": "string",
       "metadata": {
         "description": "Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin."
       },
       "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-frontend.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
-    "AZURE_FUNCTION_APP_URL": {
+    "azureFunctionAppUrl": {
       "type": "string",
       "metadata": {
         "description": "Public URL of the Function App hosting the indexing pipeline."
       },
       "value": "[format('https://{0}', reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-function.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.fqdn.value)]"
     },
-    "AZURE_FUNCTION_APP_NAME": {
+    "azureFunctionAppName": {
       "type": "string",
       "metadata": {
         "description": "Function App resource name (used by azd to deploy the function package)."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-app-function.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
-    "AZURE_CONTAINER_REGISTRY_ENDPOINT": {
+    "azureContainerRegistryEndpoint": {
       "type": "string",
       "metadata": {
         "description": "Container Registry login server."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.loginServer.value]"
     },
-    "AZURE_CONTAINER_REGISTRY_NAME": {
+    "azureContainerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "Container Registry resource name."
       },
       "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('module.container-registry.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value]"
     },
-    "AZURE_APP_INSIGHTS_CONNECTION_STRING": {
+    "azureAppInsightsConnectionString": {
       "type": "string",
       "metadata": {
         "description": "Application Insights connection string. Empty when enableMonitoring=false."
       },
       "value": "[if(parameters('enableMonitoring'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.app-insights.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.connectionString.value, '')]"
     },
-    "AZURE_VNET_NAME": {
+    "azureVnetName": {
       "type": "string",
       "metadata": {
         "description": "VNet name. Empty when enablePrivateNetworking=false."
       },
       "value": "[if(parameters('enablePrivateNetworking'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.name.value, '')]"
     },
-    "AZURE_VNET_RESOURCE_ID": {
+    "azureVnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "VNet resource ID. Empty when enablePrivateNetworking=false."
       },
       "value": "[if(parameters('enablePrivateNetworking'), reference(resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64)), '2025-04-01').outputs.resourceId.value, '')]"
     },
-    "AZURE_BASTION_NAME": {
+    "azureBastionName": {
       "type": "string",
       "metadata": {
         "description": "Bastion host name (for `az network bastion tunnel`). Empty when enablePrivateNetworking=false."
