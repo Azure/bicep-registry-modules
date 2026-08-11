@@ -886,15 +886,29 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/virtual-machine:0.22.0` | Remote reference |
-| `br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.3` | Remote reference |
-| `br/public:avm/res/event-grid/system-topic:0.6.4` | Remote reference |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
+| `br/public:avm/res/app/container-app:0.23.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.17.0` | Remote reference |
+| `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.22.2` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
+| `br/public:avm/res/db-for-postgre-sql/flexible-server:0.16.0` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.20.0` | Remote reference |
+| `br/public:avm/res/event-grid/system-topic:0.7.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
+| `br/public:avm/res/insights/data-collection-rule:0.11.0` | Remote reference |
 | `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
-| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
-| `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.10.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.0` | Remote reference |
+| `br/public:avm/res/search/search-service:0.13.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
