@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "13630607735860133857"
+      "templateHash": "13917018782411515499"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -549,8 +549,9 @@
       "items": {
         "type": "string"
       },
+      "nullable": true,
       "metadata": {
-        "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`."
+        "description": "Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Can be combined with `ipamPoolPrefixAllocations`. Required if `ipamPoolPrefixAllocations` is empty."
       }
     },
     "ipamPoolNumberOfIpAddresses": {
@@ -559,6 +560,16 @@
       "metadata": {
         "description": "Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool."
       }
+    },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/properties/properties/addressSpace/properties/ipamPoolPrefixAllocations"
+        },
+        "description": "Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Can be combined with `addressPrefixes` to mix explicit prefixes with IPAM-allocated prefixes. Required if `addressPrefixes` is empty."
+      },
+      "nullable": true
     },
     "virtualNetworkBgpCommunity": {
       "type": "string",
@@ -712,6 +723,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "addressPrefixIsIpamPoolResourceId": "[and(not(empty(coalesce(parameters('addressPrefixes'), createArray()))), contains(coalesce(parameters('addressPrefixes'), createArray(''))[0], '/Microsoft.Network/networkManagers/'))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -750,7 +762,10 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "ipAllocations": "[parameters('ipAllocations')]",
-        "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
+        "addressSpace": {
+          "addressPrefixes": "[if(or(variables('addressPrefixIsIpamPoolResourceId'), empty(coalesce(parameters('addressPrefixes'), createArray()))), null(), parameters('addressPrefixes'))]",
+          "ipamPoolPrefixAllocations": "[if(variables('addressPrefixIsIpamPoolResourceId'), createArray(createObject('pool', createObject('id', coalesce(parameters('addressPrefixes'), createArray(''))[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses'))), parameters('ipamPoolPrefixAllocations'))]"
+        },
         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
