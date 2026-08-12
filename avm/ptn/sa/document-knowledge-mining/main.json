@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "16814644485266566343"
+      "templateHash": "12736935935078813223"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -22302,12 +22302,14 @@
           "location": {
             "value": "[variables('solutionLocation')]"
           },
-          "acrSku": "[if(parameters('enableRedundancy'), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
+          "acrSku": "[if(or(parameters('enableRedundancy'), parameters('enablePrivateNetworking')), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
           "publicNetworkAccess": {
             "value": "Enabled"
           },
+          "networkRuleSetDefaultAction": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
           "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
           "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', variables('acrGeoReplicaLocation'), 'location', variables('acrGeoReplicaLocation'), 'regionEndpointEnabled', true(), 'zoneRedundancy', 'Disabled'))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)).outputs.resourceId.value))), 'service', 'registry', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
@@ -22329,7 +22331,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "4469837868049915824"
+              "templateHash": "3330420429040615968"
             },
             "name": "Container Registry Module"
           },
@@ -22437,6 +22439,13 @@
                 "description": "Public network access setting for the Azure Container Registry"
               }
             },
+            "networkRuleSetDefaultAction": {
+              "type": "string",
+              "defaultValue": "Allow",
+              "metadata": {
+                "description": "The default action of the network rule set. Note: [Deny] requires the Premium SKU."
+              }
+            },
             "zoneRedundancy": {
               "type": "string",
               "defaultValue": "Disabled",
@@ -22449,6 +22458,13 @@
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. Geo-replications to create for the Azure Container Registry. Requires the Premium SKU."
+              }
+            },
+            "privateEndpoints": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Private endpoints to create for the Azure Container Registry. Requires the Premium SKU."
               }
             },
             "roleAssignments": {
@@ -22493,13 +22509,16 @@
                     "value": "[parameters('publicNetworkAccess')]"
                   },
                   "networkRuleSetDefaultAction": {
-                    "value": "Allow"
+                    "value": "[parameters('networkRuleSetDefaultAction')]"
                   },
                   "zoneRedundancy": {
                     "value": "[parameters('zoneRedundancy')]"
                   },
                   "replications": {
                     "value": "[parameters('replications')]"
+                  },
+                  "privateEndpoints": {
+                    "value": "[parameters('privateEndpoints')]"
                   },
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
@@ -26333,7 +26352,9 @@
         }
       },
       "dependsOn": [
-        "managedCluster"
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)]",
+        "managedCluster",
+        "virtualNetwork"
       ]
     },
     "avmCosmosDB": {
@@ -45933,8 +45954,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]

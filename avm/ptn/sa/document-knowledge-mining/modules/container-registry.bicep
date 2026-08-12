@@ -13,11 +13,17 @@ param acrSku string = 'Basic'
 @description('Public network access setting for the Azure Container Registry')
 param publicNetworkAccess string = 'Enabled'
 
+@description('The default action of the network rule set. Note: [Deny] requires the Premium SKU.')
+param networkRuleSetDefaultAction string = 'Allow'
+
 @description('Zone redundancy setting for the Azure Container Registry')
 param zoneRedundancy string = 'Disabled'
 
 @description('Optional. Geo-replications to create for the Azure Container Registry. Requires the Premium SKU.')
 param replications array = []
+
+@description('Optional. Private endpoints to create for the Azure Container Registry. Requires the Premium SKU.')
+param privateEndpoints array = []
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
@@ -33,10 +39,11 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     location: location
     acrSku: acrSku
     publicNetworkAccess: publicNetworkAccess
-    // Required for non-Premium SKU: v0.12.x emits networkRuleSet when default action is 'Deny', which Standard SKU rejects (NetworkRuleNotSupported).
-    networkRuleSetDefaultAction: 'Allow'
+    // v0.12.x emits networkRuleSet when default action is 'Deny', which the Standard SKU rejects (NetworkRuleNotSupported); callers must pass 'Deny' only with the Premium SKU.
+    networkRuleSetDefaultAction: networkRuleSetDefaultAction
     zoneRedundancy: zoneRedundancy
     replications: replications
+    privateEndpoints: privateEndpoints
     roleAssignments: roleAssignments
     tags: tags
   }

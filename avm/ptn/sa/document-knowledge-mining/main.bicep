@@ -483,9 +483,11 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
-    // WAF aligned configuration for Reliability: Premium enables zone redundancy and geo-replication
-    acrSku: enableRedundancy ? 'Premium' : 'Standard'
+    // WAF aligned configuration for Reliability & Security: Premium enables zone redundancy, geo-replication, and the network firewall
+    acrSku: (enableRedundancy || enablePrivateNetworking) ? 'Premium' : 'Standard'
+    // Keep public access enabled; restrict it with a firewall (default Deny) to satisfy Azure.ACR.Firewall without disabling public access
     publicNetworkAccess: 'Enabled'
+    networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
     replications: enableRedundancy
       ? [
@@ -494,6 +496,22 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
             location: acrGeoReplicaLocation
             regionEndpointEnabled: true
             zoneRedundancy: 'Disabled'
+          }
+        ]
+      : []
+    // Private endpoint keeps the Deny'd registry reachable from the VNet (e.g. AKS image pulls)
+    privateEndpoints: enablePrivateNetworking
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
+                }
+              ]
+            }
+            service: 'registry'
+            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
           }
         ]
       : []
