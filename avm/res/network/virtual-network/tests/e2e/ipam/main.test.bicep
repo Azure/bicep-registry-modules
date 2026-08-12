@@ -53,21 +53,22 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      // Combining explicit address prefixes with IPAM Pool Prefix Allocations
       addressPrefixes: [
-        nestedDependencies.outputs.networkManagerIpamPoolId
+        '10.0.0.0/24'
       ]
-      ipamPoolNumberOfIpAddresses: '254'
+      ipamPoolPrefixAllocations: [
+        {
+          pool: {
+            id: nestedDependencies.outputs.networkManagerIpamPoolId
+          }
+          numberOfIpAddresses: '254'
+        }
+      ]
       subnets: [
         {
           name: 'subnet-1'
-          ipamPoolPrefixAllocations: [
-            {
-              pool: {
-                id: nestedDependencies.outputs.networkManagerIpamPoolId
-              }
-              numberOfIpAddresses: '64'
-            }
-          ]
+          addressPrefix: '10.0.0.0/26'
         }
         {
           name: 'subnet-2'
