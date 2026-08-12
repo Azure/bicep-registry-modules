@@ -28,12 +28,12 @@ param location string = resourceGroup().location
 })
 param contentUnderstandingLocation string = 'WestUS'
 
-@description('Required. Location for the Azure AI Services deployment.')
+@description('Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead.')
 @metadata({
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-4o,100'
+      'OpenAI.GlobalStandard.gpt-5.1,30'
     ]
   }
 })
@@ -47,15 +47,15 @@ param aiServiceLocation string
 ])
 param deploymentType string = 'GlobalStandard'
 
-@description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4.')
-param gptModelName string = 'gpt-4o'
+@description('Optional. Name of the GPT model to deploy: gpt-5.1.')
+param gptModelName string = 'gpt-5.1'
 
 @minLength(1)
 @description('Optional. Version of the GPT model to deploy:.')
 @allowed([
-  '2024-08-06'
+  '2025-11-13'
 ])
-param gptModelVersion string = '2024-08-06'
+param gptModelVersion string = '2025-11-13'
 
 @minValue(1)
 @description('Optional. Capacity of the GPT deployment: (minimum 10).')
@@ -185,7 +185,7 @@ module virtualNetwork './modules/virtualNetwork.bicep' = if (enablePrivateNetwor
 
 // Azure Bastion Host
 var bastionHostName = 'bas-${solutionSuffix}'
-module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePrivateNetworking) {
+module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePrivateNetworking) {
   name: take('avm.res.network.bastion-host.${bastionHostName}', 64)
   params: {
     name: bastionHostName
@@ -218,7 +218,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.0' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -284,7 +284,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.20.0' = if (enable
   }
 }
 
-module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.2' = if (enablePrivateNetworking) {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.4.0' = if (enablePrivateNetworking) {
   name: take('${jumpboxVmName}-jumpbox-maintenance-config', 64)
   params: {
     name: 'mc-${jumpboxVmName}'
@@ -347,7 +347,7 @@ var dnsZoneIndex = {
 }
 
 @batchSize(5)
-module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
+module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
     name: take('avm.res.network.private-dns-zone.${split(zone, '.')[1]}', 64)
     params: {
@@ -365,7 +365,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.0' = [
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.12.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -377,7 +377,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     features: { enableLogAccessUsingOnlyResourcePermissions: true }
     diagnosticSettings: [{ useThisWorkspace: true }]
     // WAF aligned configuration for Redundancy
-    dailyQuotaGb: enableRedundancy ? 150 : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
+    dailyQuotaGb: enableRedundancy ? '150' : null //WAF recommendation: 150 GB per day is a good starting point for most workloads
     replication: enableRedundancy
       ? {
           enabled: true
@@ -424,7 +424,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.6.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${solutionSuffix}', 64)
   params: {
     name: 'appi-${solutionSuffix}'
@@ -499,7 +499,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
 }
 
 // // ========== Storage Account ========== //
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
   name: take('module.storage-account.${solutionSuffix}', 64)
   params: {
     name: 'st${replace(solutionSuffix, '-', '')}'
@@ -531,6 +531,16 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.28.0' = {
       {
         roleDefinitionIdOrName: 'Storage Queue Data Contributor'
         principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalId: avmContainerApp_Workflow.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        principalId: avmContainerApp_Workflow.outputs.systemAssignedMIPrincipalId!
         principalType: 'ServicePrincipal'
       }
     ]
@@ -601,13 +611,33 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId }] : null
     roleAssignments: [
       {
-        principalId: avmManagedIdentity.outputs.principalId
-        roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
         principalType: 'ServicePrincipal'
       }
       {
         principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Azure AI Developer'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: avmContainerApp_Workflow.outputs.systemAssignedMIPrincipalId!
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: avmContainerApp_Workflow.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Azure AI Developer'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Cognitive Services User'
+        principalType: 'ServicePrincipal'
+      }
+      {
+        principalId: avmContainerApp_Workflow.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Cognitive Services User'
         principalType: 'ServicePrincipal'
       }
     ]
@@ -668,67 +698,13 @@ module avmAiServices 'modules/account/aifoundry.bicep' = {
   }
 }
 
-module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.13.2' = {
-  name: take('avm.res.cognitive-services.account.content-understanding.${solutionSuffix}', 64)
-
-  params: {
-    name: 'aicu-${solutionSuffix}'
-    location: contentUnderstandingLocation
-    sku: 'S0'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        avmManagedIdentity.outputs.resourceId // Use the managed identity created above
-      ]
-    }
-    kind: 'AIServices'
-    tags: {
-      app: solutionSuffix
-      location: location
-    }
-    customSubDomainName: 'aicu-${solutionSuffix}'
-    disableLocalAuth: true
-    enableTelemetry: enableTelemetry
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Allow' // Always allow for AI Services
-    }
-    roleAssignments: [
-      {
-        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
-        roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
-    privateEndpoints: (enablePrivateNetworking)
-      ? [
-          {
-            name: 'pep-aicu-${solutionSuffix}'
-            customNetworkInterfaceName: 'nic-aicu-${solutionSuffix}'
-            privateEndpointResourceId: virtualNetwork!.outputs.resourceId
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'aicu-dns-zone-cognitiveservices'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-                {
-                  name: 'aicu-dns-zone-contentunderstanding'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.contentUnderstanding]!.outputs.resourceId
-                }
-              ]
-            }
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId // Use the backend subnet
-          }
-        ]
-      : []
-  }
-}
+// NOTE: Content Understanding is served from the same avmAiServices ('aif-') AIServices-kind
+// account as Azure OpenAI (see APP_CONTENT_UNDERSTANDING_ENDPOINT below) - a separate
+// 'aicu-' account is not required and was removed here because it was not being created/
+// reachable reliably, causing PDF extraction to fail with a DNS resolution error.
 
 // ========== Container App Environment ========== //
-module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
+module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.15.0' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   params: {
     name: 'cae-${solutionSuffix}'
@@ -741,10 +717,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
-          logAnalyticsConfiguration: {
-            customerId: logAnalyticsWorkspace!.outputs.logAnalyticsWorkspaceId
-            sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
-          }
+          logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace!.outputs.resourceId
         }
       : null
     workloadProfiles: [
@@ -768,7 +741,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.3' = {
 }
 
 // //=========== Managed Identity for Container Registry ========== //
-module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.2' = {
+module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${solutionSuffix}', 64)
   params: {
     name: 'id-acr-${solutionSuffix}'
@@ -779,7 +752,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
 }
 
 // ========== Container App  ========== //
-module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
+module avmContainerApp 'br/public:avm/res/app/container-app:0.23.0' = {
   name: take('avm.res.app.container-app.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
@@ -787,7 +760,12 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: null
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -798,7 +776,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}'
-        image: '${publicContainerImageEndpoint}/${appContainerImageName}:${containerImageTag}'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
         resources: {
           cpu: 4
@@ -828,7 +806,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.19.0' = {
 }
 
 // ========== Container App API ========== //
-module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
+module avmContainerApp_API 'br/public:avm/res/app/container-app:0.23.0' = {
   name: take('avm.res.app.container-app-api.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
@@ -836,7 +814,12 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: null
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -847,7 +830,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: '${publicContainerImageEndpoint}/${apiContainerImageName}:${containerImageTag}'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -939,7 +922,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.19.0' = {
 }
 
 //========== Container App Web ========== //
-module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
+module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.23.0' = {
   name: take('avm.res.app.container-app-web.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-web'
@@ -947,7 +930,12 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     enableTelemetry: enableTelemetry
-    registries: null
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -956,6 +944,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
       ]
     }
     ingressExternal: true
+    ingressTargetPort: 3000
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
     scaleSettings: {
@@ -975,7 +964,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}-web'
-        image: '${publicContainerImageEndpoint}/${webContainerImageName}:${containerImageTag}'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -991,7 +980,11 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
           }
           {
             name: 'APP_WEB_AUTHORITY'
-            value: '${environment().authentication.loginEndpoint}/${tenant().tenantId}'
+            // environment().authentication.loginEndpoint already ends with a trailing slash;
+            // appending another '/' here produced a malformed double-slash authority URL
+            // (e.g. https://login.microsoftonline.com//<tenantId>) which broke MSAL.js
+            // initialization in the web frontend, resulting in a blank page after sign-in.
+            value: '${environment().authentication.loginEndpoint}${tenant().tenantId}'
           }
           {
             name: 'APP_WEB_SCOPE'
@@ -1000,6 +993,14 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
           {
             name: 'APP_API_SCOPE'
             value: '<BACKEND_API_SCOPE>'
+          }
+          {
+            name: 'APP_REDIRECT_URL'
+            value: '/'
+          }
+          {
+            name: 'APP_POST_REDIRECT_URL'
+            value: '/'
           }
           {
             name: 'APP_CONSOLE_LOG_ENABLED'
@@ -1011,8 +1012,80 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.19.0' = {
   }
 }
 
+// ========== Container App Workflow ========== //
+module avmContainerApp_Workflow 'br/public:avm/res/app/container-app:0.23.0' = {
+  name: take('avm.res.app.container-app-wkfl.${solutionSuffix}', 64)
+  params: {
+    name: 'ca-${solutionSuffix}-wkfl'
+    location: location
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
+    containers: [
+      {
+        name: 'ca-${solutionSuffix}-wkfl'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        resources: {
+          cpu: 4
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_CONFIG_ENDPOINT'
+            value: ''
+          }
+          {
+            name: 'APP_ENV'
+            value: 'prod'
+          }
+          {
+            name: 'APP_LOGGING_LEVEL'
+            value: 'INFO'
+          }
+          {
+            name: 'AZURE_PACKAGE_LOGGING_LEVEL'
+            value: 'WARNING'
+          }
+          {
+            name: 'AZURE_LOGGING_PACKAGES'
+            value: ''
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+          }
+          {
+            name: 'OTEL_SERVICE_NAME'
+            value: 'ContentProcessorWorkflow'
+          }
+        ]
+      }
+    ]
+    activeRevisionsMode: 'Single'
+    ingressExternal: false
+    disableIngress: true
+    scaleSettings: {
+      maxReplicas: enableScalability ? 3 : 2
+      minReplicas: enableScalability ? 2 : 1
+    }
+  }
+}
+
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.1' = {
   name: take('avm.res.document-db.database-account.${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -1020,7 +1093,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
     mongodbDatabases: [
       {
         name: 'default'
-        tag: 'default database'
       }
     ]
     tags: tags
@@ -1067,7 +1139,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.18.0' = {
 }
 
 // ========== App Configuration ========== //
-module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = {
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.10.0' = {
   name: take('avm.res.app.configuration-store.${solutionSuffix}', 64)
   params: {
     name: 'appcs-${solutionSuffix}'
@@ -1111,6 +1183,11 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
         roleDefinitionIdOrName: 'App Configuration Data Reader'
         principalType: 'ServicePrincipal'
       }
+      {
+        principalId: avmContainerApp_Workflow.outputs.?systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'App Configuration Data Reader'
+        principalType: 'ServicePrincipal'
+      }
     ]
     keyValues: [
       {
@@ -1123,7 +1200,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
       }
       {
         name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+        value: avmAiServices.outputs.endpoint // Content Understanding is served from the same AIServices account as Azure OpenAI
       }
       {
         name: 'APP_COSMOS_CONTAINER_PROCESS'
@@ -1132,6 +1209,18 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
       {
         name: 'APP_COSMOS_CONTAINER_SCHEMA'
         value: 'Schemas'
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_SCHEMASET'
+        value: 'SchemaSets'
+      }
+      {
+        name: 'AZURE_PACKAGE_LOGGING_LEVEL'
+        value: 'WARNING'
+      }
+      {
+        name: 'AZURE_LOGGING_PACKAGES'
+        value: ''
       }
       {
         name: 'APP_COSMOS_DATABASE'
@@ -1193,13 +1282,105 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.9
         name: 'APP_COSMOS_CONNSTR'
         value: avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
+      // ===== v2 Workflow Keys ===== //
+      {
+        name: 'APP_COSMOS_CONTAINER_BATCH_PROCESS'
+        value: 'claimprocesses'
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_BATCHES'
+        value: 'batches'
+      }
+      {
+        name: 'APP_CPS_PROCESS_BATCH'
+        value: 'process-batch'
+      }
+      {
+        name: 'APP_CPS_CONTENT_PROCESS_ENDPOINT'
+        value: 'http://${avmContainerApp_API.outputs.name}/'
+      }
+      {
+        name: 'APP_CPS_POLL_INTERVAL_SECONDS'
+        value: '3'
+      }
+      {
+        name: 'APP_STORAGE_ACCOUNT_NAME'
+        value: avmStorageAccount.outputs.name
+      }
+      {
+        name: 'CLAIM_PROCESS_QUEUE_NAME'
+        value: 'claim-process-queue'
+      }
+      {
+        name: 'DEAD_LETTER_QUEUE_NAME'
+        value: 'claim-process-dead-letter-queue'
+      }
+      {
+        name: 'AZURE_OPENAI_ENDPOINT'
+        value: avmAiServices.outputs.endpoint
+      }
+      {
+        name: 'AZURE_OPENAI_CHAT_DEPLOYMENT_NAME'
+        value: gptModelName
+      }
+      {
+        name: 'AZURE_OPENAI_API_VERSION'
+        value: '2025-03-01-preview'
+      }
+      {
+        name: 'AZURE_OPENAI_ENDPOINT_BASE'
+        value: avmAiServices.outputs.endpoint
+      }
+      // ===== Agent Framework Keys ===== //
+      {
+        name: 'AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME'
+        value: ''
+      }
+      {
+        name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
+        value: ''
+      }
+      {
+        name: 'AZURE_TRACING_ENABLED'
+        value: 'True'
+      }
+      {
+        name: 'GLOBAL_LLM_SERVICE'
+        value: 'AzureOpenAI'
+      }
+      // ===== GPT-5 Service Prefix Keys ===== //
+      {
+        name: 'GPT5_API_VERSION'
+        value: '2025-03-01-preview'
+      }
+      {
+        name: 'GPT5_CHAT_DEPLOYMENT_NAME'
+        value: 'gpt-5'
+      }
+      {
+        name: 'GPT5_ENDPOINT'
+        value: avmAiServices.outputs.endpoint
+      }
+      // ===== PHI-4 Service Prefix Keys ===== //
+      {
+        name: 'PHI4_API_VERSION'
+        value: '2024-05-01-preview'
+      }
+      {
+        name: 'PHI4_CHAT_DEPLOYMENT_NAME'
+        value: 'phi-4'
+      }
+      {
+        name: 'PHI4_ENDPOINT'
+        value: avmAiServices.outputs.endpoint
+      }
     ]
 
     publicNetworkAccess: 'Enabled'
   }
 }
 
-module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.9.2' = if (enablePrivateNetworking) {
+module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.10.0' = if (enablePrivateNetworking) {
   name: take('avm.res.app.configuration-store.update.${solutionSuffix}', 64)
   params: {
     name: 'appcs-${solutionSuffix}'
@@ -1231,7 +1412,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
 }
 
 // ========== Container App Update Modules ========== //
-module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
+module avmContainerApp_update 'br/public:avm/res/app/container-app:0.23.0' = {
   name: take('avm.res.app.container-app-update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-app'
@@ -1239,7 +1420,12 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
-    registries: null
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -1251,7 +1437,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
     containers: [
       {
         name: 'ca-${solutionSuffix}'
-        image: '${publicContainerImageEndpoint}/${appContainerImageName}:${containerImageTag}'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
         resources: {
           cpu: 4
@@ -1291,7 +1477,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.19.0' = {
   }
 }
 
-module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' = {
+module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.23.0' = {
   name: take('avm.res.app.container-app-api.update.${solutionSuffix}', 64)
   params: {
     name: 'ca-${solutionSuffix}-api'
@@ -1299,7 +1485,12 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
-    registries: null
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
     tags: tags
     managedIdentities: {
       systemAssigned: true
@@ -1311,7 +1502,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
     containers: [
       {
         name: 'ca-${solutionSuffix}-api'
-        image: '${publicContainerImageEndpoint}/${apiContainerImageName}:${containerImageTag}'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
         resources: {
           cpu: 4
           memory: '8.0Gi'
@@ -1402,17 +1593,105 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.19.0' =
   }
 }
 
+// ========== Container App Workflow (update) ========== //
+// NOTE: this module is required to patch the Workflow container app with its
+// real APP_CONFIG_ENDPOINT (and other settings) once App Configuration exists.
+// Without it, the workflow container is stuck with an empty APP_CONFIG_ENDPOINT
+// from its bootstrap deployment and crash-loops with:
+//   AttributeError: 'NoneType' object has no attribute 'endpoint'
+// because it cannot resolve AZURE_OPENAI settings from App Configuration.
+module avmContainerApp_Workflow_update 'br/public:avm/res/app/container-app:0.23.0' = {
+  name: take('avm.res.app.container-app-wkfl.update.${solutionSuffix}', 64)
+  params: {
+    name: 'ca-${solutionSuffix}-wkfl'
+    location: location
+    enableTelemetry: enableTelemetry
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    registries: [
+      {
+        server: avmContainerRegistry.outputs.loginServer
+        identity: avmContainerRegistryReader.outputs.resourceId
+      }
+    ]
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
+    containers: [
+      {
+        name: 'ca-${solutionSuffix}-wkfl'
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        resources: {
+          cpu: 4
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_CONFIG_ENDPOINT'
+            value: avmAppConfig.outputs.endpoint
+          }
+          {
+            name: 'APP_ENV'
+            value: 'prod'
+          }
+          {
+            name: 'APP_LOGGING_LEVEL'
+            value: 'INFO'
+          }
+          {
+            name: 'AZURE_PACKAGE_LOGGING_LEVEL'
+            value: 'WARNING'
+          }
+          {
+            name: 'AZURE_LOGGING_PACKAGES'
+            value: ''
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+          }
+          {
+            name: 'OTEL_SERVICE_NAME'
+            value: 'ContentProcessorWorkflow'
+          }
+        ]
+      }
+    ]
+    activeRevisionsMode: 'Single'
+    ingressExternal: false
+    disableIngress: true
+    scaleSettings: {
+      maxReplicas: enableScalability ? 3 : 2
+      minReplicas: enableScalability ? 2 : 1
+    }
+  }
+}
+
 // ============ //
 // Outputs      //
 // ============ //
 
-@description('The resource ID of the Container App Environment.')
+@description('The name of the Container App web application.')
 output containerWebAppName string = avmContainerApp_Web.outputs.name
-@description('The resource ID of the Container App API.')
+
+@description('The name of the Container App API application.')
 output containerApiAppName string = avmContainerApp_API.outputs.name
-@description('The resource ID of the Container App Environment.')
+
+@description('The FQDN of the Container App web application.')
 output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
-@description('The resource ID of the Container App API.')
+
+@description('The FQDN of the Container App API application.')
 output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
+
+@description('The name of the Container App workflow application.')
+output containerWorkflowAppName string = avmContainerApp_Workflow.outputs.name
+
+@description('The FQDN of the Container App workflow application.')
+output containerWorkflowAppFqdn string = avmContainerApp_Workflow.outputs.fqdn
+
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name
