@@ -766,6 +766,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/managed-environment:0.13.2` | Remote reference |
 | `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.22.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.12.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
 | `br/public:avm/res/insights/data-collection-rule:0.11.0` | Remote reference |
