@@ -1107,7 +1107,17 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.1' = {
     defaultConsistencyLevel: 'Session'
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
-    zoneRedundant: false
+    // WAF aligned configuration for Reliability: zone-redundant Cosmos DB when redundancy is enabled
+    zoneRedundant: enableRedundancy
+    failoverLocations: enableRedundancy
+      ? [
+          {
+            failoverPriority: 0
+            isZoneRedundant: true
+            locationName: location
+          }
+        ]
+      : null
 
     // WAF related parameters
     networkRestrictions: {

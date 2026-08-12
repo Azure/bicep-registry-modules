@@ -11,6 +11,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added a Content Processor Workflow container app (`ca-<suffix>-wkfl`) with its system-assigned identity, storage (Blob/Queue) and AI Services role assignments.
 - Configured the container apps to pull images from the solution's Container Registry via a dedicated registry reader identity.
 - Fixed the web app `APP_WEB_AUTHORITY` double-slash URL (MSAL.js sign-in), set `ingressTargetPort` to `3000`, and added `APP_REDIRECT_URL` and `APP_POST_REDIRECT_URL` settings.
+- Enabled zone-redundant Cosmos DB (WAF reliability) when `enableRedundancy` is `true`.
 - Updated the Container Registry module to `container-registry/registry` 0.12.1 with refined public-access, export-policy, and network-rule handling.
 - Refreshed all referenced AVM module versions.
 
