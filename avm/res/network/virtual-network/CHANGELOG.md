@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.10.2
+
+### Changes
+
+- Added support for the Virtual Network-level `ipamPoolPrefixAllocations` parameter, enabling IPAM Pool prefix allocations and allowing them to be combined with explicit `addressPrefixes`.
+
+### Breaking Changes
+
+- None
+
 ## 0.10.1
 
 ### Changes
