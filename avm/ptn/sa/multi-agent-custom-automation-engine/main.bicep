@@ -66,10 +66,10 @@ param gptModelVersion string = '2026-03-17'
 
 @minLength(1)
 @description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4.')
-param gpt5_4ModelName string = 'gpt-5.4'
+param gpt54ModelName string = 'gpt-5.4'
 
 @description('Optional. Version of the larger GPT model to deploy. Defaults to 2026-03-05.')
-param gpt5_4ModelVersion string = '2026-03-05'
+param gpt54ModelVersion string = '2026-03-05'
 
 @minLength(1)
 @description('Optional. Name of the image-generation model to deploy. Defaults to gpt-image-1.5.')
@@ -95,7 +95,7 @@ param gptModelDeploymentType string = 'GlobalStandard'
   'GlobalStandard'
 ])
 @description('Optional. GPT-5.4 model deployment type. Defaults to GlobalStandard.')
-param gpt5_4ModelDeploymentType string = 'GlobalStandard'
+param gpt54ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
 @allowed([
@@ -109,7 +109,7 @@ param gptImageModelDeploymentType string = 'GlobalStandard'
 param gptModelCapacity int = 100
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
-param gpt5_4ModelCapacity int = 150
+param gpt54ModelCapacity int = 150
 
 @description('Optional. gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions.')
 param gptImageModelCapacity int = 5
@@ -701,13 +701,13 @@ var aiFoundryAiServicesModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
-var aiFoundryAiServices5_4ModelDeployment = {
+var aiFoundryAiServicesGpt54ModelDeployment = {
   format: 'OpenAI'
-  name: gpt5_4ModelName
-  version: gpt5_4ModelVersion
+  name: gpt54ModelName
+  version: gpt54ModelVersion
   sku: {
-    name: gpt5_4ModelDeploymentType
-    capacity: gpt5_4ModelCapacity
+    name: gpt54ModelDeploymentType
+    capacity: gpt54ModelCapacity
   }
   raiPolicyName: 'Microsoft.Default'
 }
@@ -752,16 +752,16 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         }
       }
       {
-        name: aiFoundryAiServices5_4ModelDeployment.name
+        name: aiFoundryAiServicesGpt54ModelDeployment.name
         model: {
-          format: aiFoundryAiServices5_4ModelDeployment.format
-          name: aiFoundryAiServices5_4ModelDeployment.name
-          version: aiFoundryAiServices5_4ModelDeployment.version
+          format: aiFoundryAiServicesGpt54ModelDeployment.format
+          name: aiFoundryAiServicesGpt54ModelDeployment.name
+          version: aiFoundryAiServicesGpt54ModelDeployment.version
         }
-        raiPolicyName: aiFoundryAiServices5_4ModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServicesGpt54ModelDeployment.raiPolicyName
         sku: {
-          name: aiFoundryAiServices5_4ModelDeployment.sku.name
-          capacity: aiFoundryAiServices5_4ModelDeployment.sku.capacity
+          name: aiFoundryAiServicesGpt54ModelDeployment.sku.name
+          capacity: aiFoundryAiServicesGpt54ModelDeployment.sku.capacity
         }
       }
       {
@@ -985,7 +985,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.0' 
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    acrSku: enablePrivateNetworking ? 'Premium' : 'Basic'
+    acrSku: enablePrivateNetworking || enableRedundancy ? 'Premium' : 'Basic'
     acrAdminUserEnabled: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
@@ -994,6 +994,17 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.0' 
     softDeletePolicyDays: 7
     azureADAuthenticationAsArmPolicyStatus: 'enabled'
     networkRuleBypassOptions: 'AzureServices'
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+    // WAF aligned configuration for Redundancy - ACR Geo-Replication
+    replications: enableRedundancy
+      ? [
+          {
+            name: replicaLocation
+            location: replicaLocation
+            zoneRedundancy: 'Enabled'
+          }
+        ]
+      : []
     roleAssignments: [
       {
         roleDefinitionIdOrName: '7f951dda-4ed3-4680-a7ca-43fe172d538d' // AcrPull
@@ -1150,7 +1161,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
           }
           {
             name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
-            value: aiFoundryAiServices5_4ModelDeployment.name
+            value: aiFoundryAiServicesGpt54ModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -1787,7 +1798,7 @@ output azureAiSearchConnectionName string = aiSearchConnectionName
 output azureCognitiveServices string = 'https://cognitiveservices.azure.com/.default'
 
 @description('The name of the reasoning model.')
-output reasoningModelName string = gpt5_4ModelName
+output reasoningModelName string = gpt54ModelName
 
 @description('The name of the MCP server.')
 output mcpServerName string = 'MacaeMcpServer'

@@ -347,10 +347,10 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gpt5_4ModelCapacity`](#parameter-gpt5_4modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
-| [`gpt5_4ModelDeploymentType`](#parameter-gpt5_4modeldeploymenttype) | string | GPT-5.4 model deployment type. Defaults to GlobalStandard. |
-| [`gpt5_4ModelName`](#parameter-gpt5_4modelname) | string | Name of the larger GPT model to deploy. Defaults to gpt-5.4. |
-| [`gpt5_4ModelVersion`](#parameter-gpt5_4modelversion) | string | Version of the larger GPT model to deploy. Defaults to 2026-03-05. |
+| [`gpt54ModelCapacity`](#parameter-gpt54modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
+| [`gpt54ModelDeploymentType`](#parameter-gpt54modeldeploymenttype) | string | GPT-5.4 model deployment type. Defaults to GlobalStandard. |
+| [`gpt54ModelName`](#parameter-gpt54modelname) | string | Name of the larger GPT model to deploy. Defaults to gpt-5.4. |
+| [`gpt54ModelVersion`](#parameter-gpt54modelversion) | string | Version of the larger GPT model to deploy. Defaults to 2026-03-05. |
 | [`gptImageModelCapacity`](#parameter-gptimagemodelcapacity) | int | gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions. |
 | [`gptImageModelDeploymentType`](#parameter-gptimagemodeldeploymenttype) | string | GPT image model deployment type. Defaults to GlobalStandard. |
 | [`gptImageModelName`](#parameter-gptimagemodelname) | string | Name of the image-generation model to deploy. Defaults to gpt-image-1.5. |
@@ -504,7 +504,7 @@ The Container Registry hostname where the docker images for the frontend are loc
 - Type: string
 - Default: `'mcr.microsoft.com'`
 
-### Parameter: `gpt5_4ModelCapacity`
+### Parameter: `gpt54ModelCapacity`
 
 AI model deployment token capacity. Defaults to 150 for optimal performance.
 
@@ -512,7 +512,7 @@ AI model deployment token capacity. Defaults to 150 for optimal performance.
 - Type: int
 - Default: `150`
 
-### Parameter: `gpt5_4ModelDeploymentType`
+### Parameter: `gpt54ModelDeploymentType`
 
 GPT-5.4 model deployment type. Defaults to GlobalStandard.
 
@@ -527,7 +527,7 @@ GPT-5.4 model deployment type. Defaults to GlobalStandard.
   ]
   ```
 
-### Parameter: `gpt5_4ModelName`
+### Parameter: `gpt54ModelName`
 
 Name of the larger GPT model to deploy. Defaults to gpt-5.4.
 
@@ -535,7 +535,7 @@ Name of the larger GPT model to deploy. Defaults to gpt-5.4.
 - Type: string
 - Default: `'gpt-5.4'`
 
-### Parameter: `gpt5_4ModelVersion`
+### Parameter: `gpt54ModelVersion`
 
 Version of the larger GPT model to deploy. Defaults to 2026-03-05.
 

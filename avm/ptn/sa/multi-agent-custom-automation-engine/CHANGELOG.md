@@ -13,8 +13,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added gpt-image-1.5 model deployment support
 - Updated container app configurations to use managed identity credentials for ACR access
 
-### Breaking Changes
-
+### Breaking Changes-
 -
 
 ## 0.2.4

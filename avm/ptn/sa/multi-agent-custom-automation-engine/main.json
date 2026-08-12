@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "9550945926179568020"
+      "templateHash": "7446663158362298618"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -88,7 +88,7 @@
         "description": "Optional. Version of the GPT model to deploy. Defaults to 2026-03-17."
       }
     },
-    "gpt5_4ModelName": {
+    "gpt54ModelName": {
       "type": "string",
       "defaultValue": "gpt-5.4",
       "minLength": 1,
@@ -96,7 +96,7 @@
         "description": "Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4."
       }
     },
-    "gpt5_4ModelVersion": {
+    "gpt54ModelVersion": {
       "type": "string",
       "defaultValue": "2026-03-05",
       "metadata": {
@@ -137,7 +137,7 @@
         "description": "Optional. GPT model deployment type. Defaults to GlobalStandard."
       }
     },
-    "gpt5_4ModelDeploymentType": {
+    "gpt54ModelDeploymentType": {
       "type": "string",
       "defaultValue": "GlobalStandard",
       "allowedValues": [
@@ -168,7 +168,7 @@
         "description": "Optional. AI model deployment token capacity. Defaults to 100 for optimal performance."
       }
     },
-    "gpt5_4ModelCapacity": {
+    "gpt54ModelCapacity": {
       "type": "int",
       "defaultValue": 150,
       "metadata": {
@@ -373,13 +373,13 @@
       },
       "raiPolicyName": "Microsoft.Default"
     },
-    "aiFoundryAiServices5_4ModelDeployment": {
+    "aiFoundryAiServicesGpt54ModelDeployment": {
       "format": "OpenAI",
-      "name": "[parameters('gpt5_4ModelName')]",
-      "version": "[parameters('gpt5_4ModelVersion')]",
+      "name": "[parameters('gpt54ModelName')]",
+      "version": "[parameters('gpt54ModelVersion')]",
       "sku": {
-        "name": "[parameters('gpt5_4ModelDeploymentType')]",
-        "capacity": "[parameters('gpt5_4ModelCapacity')]"
+        "name": "[parameters('gpt54ModelDeploymentType')]",
+        "capacity": "[parameters('gpt54ModelCapacity')]"
       },
       "raiPolicyName": "Microsoft.Default"
     },
@@ -24246,16 +24246,16 @@
                 }
               },
               {
-                "name": "[variables('aiFoundryAiServices5_4ModelDeployment').name]",
+                "name": "[variables('aiFoundryAiServicesGpt54ModelDeployment').name]",
                 "model": {
-                  "format": "[variables('aiFoundryAiServices5_4ModelDeployment').format]",
-                  "name": "[variables('aiFoundryAiServices5_4ModelDeployment').name]",
-                  "version": "[variables('aiFoundryAiServices5_4ModelDeployment').version]"
+                  "format": "[variables('aiFoundryAiServicesGpt54ModelDeployment').format]",
+                  "name": "[variables('aiFoundryAiServicesGpt54ModelDeployment').name]",
+                  "version": "[variables('aiFoundryAiServicesGpt54ModelDeployment').version]"
                 },
-                "raiPolicyName": "[variables('aiFoundryAiServices5_4ModelDeployment').raiPolicyName]",
+                "raiPolicyName": "[variables('aiFoundryAiServicesGpt54ModelDeployment').raiPolicyName]",
                 "sku": {
-                  "name": "[variables('aiFoundryAiServices5_4ModelDeployment').sku.name]",
-                  "capacity": "[variables('aiFoundryAiServices5_4ModelDeployment').sku.capacity]"
+                  "name": "[variables('aiFoundryAiServicesGpt54ModelDeployment').sku.name]",
+                  "capacity": "[variables('aiFoundryAiServicesGpt54ModelDeployment').sku.capacity]"
                 }
               },
               {
@@ -33601,7 +33601,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "acrSku": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Premium'), createObject('value', 'Basic'))]",
+          "acrSku": "[if(or(parameters('enablePrivateNetworking'), parameters('enableRedundancy')), createObject('value', 'Premium'), createObject('value', 'Basic'))]",
           "acrAdminUserEnabled": {
             "value": false
           },
@@ -33622,6 +33622,8 @@
           "networkRuleBypassOptions": {
             "value": "AzureServices"
           },
+          "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
+          "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', variables('replicaLocation'), 'location', variables('replicaLocation'), 'zoneRedundancy', 'Enabled'))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
               {
@@ -38695,7 +38697,7 @@
                   },
                   {
                     "name": "AZURE_OPENAI_RAI_DEPLOYMENT_NAME",
-                    "value": "[variables('aiFoundryAiServices5_4ModelDeployment').name]"
+                    "value": "[variables('aiFoundryAiServicesGpt54ModelDeployment').name]"
                   },
                   {
                     "name": "AZURE_OPENAI_API_VERSION",
@@ -55379,7 +55381,7 @@
       "metadata": {
         "description": "The name of the reasoning model."
       },
-      "value": "[parameters('gpt5_4ModelName')]"
+      "value": "[parameters('gpt54ModelName')]"
     },
     "mcpServerName": {
       "type": "string",
