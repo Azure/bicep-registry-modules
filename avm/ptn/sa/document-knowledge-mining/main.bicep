@@ -152,6 +152,9 @@ var replicaRegionPairs = {
 }
 var replicaLocation = replicaRegionPairs[?solutionLocation]
 
+// Secondary region for Azure Container Registry geo-replication (WAF reliability). Falls back to the Cosmos replica region when the primary has no mapped pair.
+var acrGeoReplicaLocation = replicaLocation ?? cosmosReplicaLocation
+
 // Region abbreviations for creating shorter replica names
 var regionAbbreviations = {
   australiaeast: 'aue'
@@ -480,9 +483,20 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
   params: {
     acrName: 'cr${replace(solutionSuffix, '-', '')}'
     location: solutionLocation
-    acrSku: 'Standard'
+    // WAF aligned configuration for Reliability: Premium enables zone redundancy and geo-replication
+    acrSku: enableRedundancy ? 'Premium' : 'Standard'
     publicNetworkAccess: 'Enabled'
-    zoneRedundancy: 'Disabled'
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+    replications: enableRedundancy
+      ? [
+          {
+            name: acrGeoReplicaLocation
+            location: acrGeoReplicaLocation
+            regionEndpointEnabled: true
+            zoneRedundancy: 'Disabled'
+          }
+        ]
+      : []
     roleAssignments: [
       {
         principalId: managedCluster.outputs.systemAssignedMIPrincipalId!
@@ -1004,7 +1018,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.14.
         name: 'agentpool'
         vmSize: 'Standard_D4ds_v5'
         count: 3
-        availabilityZones: []
+        // WAF aligned configuration for Reliability: spread nodes across availability zones
+        availabilityZones: enableRedundancy ? [1, 2, 3] : []
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'

@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated default GPT model to `gpt-5-mini` (version `2025-08-07`) and default jumpbox VM size to `Standard_D2s_v6`.
+- Enabled WAF-aligned reliability for the Container Registry (Premium SKU, zone redundancy, and geo-replication) and the AKS agent pool (availability zones) when `enableRedundancy` is `true`.
 
 ### Breaking Changes
 

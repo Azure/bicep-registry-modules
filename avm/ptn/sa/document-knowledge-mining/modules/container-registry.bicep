@@ -16,6 +16,9 @@ param publicNetworkAccess string = 'Enabled'
 @description('Zone redundancy setting for the Azure Container Registry')
 param zoneRedundancy string = 'Disabled'
 
+@description('Optional. Geo-replications to create for the Azure Container Registry. Requires the Premium SKU.')
+param replications array = []
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -33,6 +36,7 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.12.
     // Required for non-Premium SKU: v0.12.x emits networkRuleSet when default action is 'Deny', which Standard SKU rejects (NetworkRuleNotSupported).
     networkRuleSetDefaultAction: 'Allow'
     zoneRedundancy: zoneRedundancy
+    replications: replications
     roleAssignments: roleAssignments
     tags: tags
   }
