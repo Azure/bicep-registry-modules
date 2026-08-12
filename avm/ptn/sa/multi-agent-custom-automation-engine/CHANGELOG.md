@@ -13,8 +13,13 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added gpt-image-1.5 model deployment support
 - Updated container app configurations to use managed identity credentials for ACR access
 
-### Breaking Changes-
--
+### Breaking Changes
+
+- Renamed parameter `gpt41ModelName` to `gpt54ModelName`
+- Renamed parameter `gpt41ModelVersion` to `gpt54ModelVersion`
+- Renamed parameter `gptReasoningModelVersion` to `gptImageModelVersion`
+- Changed default container registry hostnames from `biabcontainerreg.azurecr.io` to `mcr.microsoft.com`
+- Added new outputs: `azureContainerRegistryEndpoint`, `azureContainerRegistryName`
 
 ## 0.2.4
 
