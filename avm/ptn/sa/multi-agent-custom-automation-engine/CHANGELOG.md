@@ -2,6 +2,21 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/multi-agent-custom-automation-engine/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Added Azure Container Registry resource deployment with managed identity-based ACR Pull role assignments and private endpoint support
+- Updated default GPT models from gpt-4.1-mini/gpt-4.1 to gpt-5.4-mini/gpt-5.4 with updated model versions
+- Updated default container image references from custom registry to MCR placeholder images
+- Added ACR private DNS zone (`privatelink.azurecr.io`) and private endpoint for WAF-aligned deployments
+- Added gpt-image-1.5 model deployment support
+- Updated container app configurations to use managed identity credentials for ACR access
+
+### Breaking Changes
+
+-
+
 ## 0.2.4
 
 ### Changes
