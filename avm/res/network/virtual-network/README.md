@@ -132,14 +132,11 @@ You can find the full example and the setup of its dependencies in the deploymen
 module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   params: {
     // Required parameters
-    name: 'nvnipam001'
+    name: '<name>'
     // Non-required parameters
-    addressPrefixes: [
-      '10.0.0.0/24'
-    ]
     ipamPoolPrefixAllocations: [
       {
-        numberOfIpAddresses: '254'
+        numberOfIpAddresses: '256'
         pool: {
           id: '<id>'
         }
@@ -147,7 +144,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     subnets: [
       {
-        addressPrefix: '10.0.0.0/26'
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
         name: 'subnet-1'
       }
       {
@@ -191,18 +195,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nvnipam001"
+      "value": "<name>"
     },
     // Non-required parameters
-    "addressPrefixes": {
-      "value": [
-        "10.0.0.0/24"
-      ]
-    },
     "ipamPoolPrefixAllocations": {
       "value": [
         {
-          "numberOfIpAddresses": "254",
+          "numberOfIpAddresses": "256",
           "pool": {
             "id": "<id>"
           }
@@ -212,7 +211,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "subnets": {
       "value": [
         {
-          "addressPrefix": "10.0.0.0/26",
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
           "name": "subnet-1"
         },
         {
@@ -254,14 +260,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnipam001'
+param name = '<name>'
 // Non-required parameters
-param addressPrefixes = [
-  '10.0.0.0/24'
-]
 param ipamPoolPrefixAllocations = [
   {
-    numberOfIpAddresses: '254'
+    numberOfIpAddresses: '256'
     pool: {
       id: '<id>'
     }
@@ -269,7 +272,14 @@ param ipamPoolPrefixAllocations = [
 ]
 param subnets = [
   {
-    addressPrefix: '10.0.0.0/26'
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
     name: 'subnet-1'
   }
   {
@@ -1317,8 +1327,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Can be combined with `ipamPoolPrefixAllocations`. Required if `ipamPoolPrefixAllocations` is empty. |
-| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The IPAM pool prefix allocations to use for the Virtual Network address space. Can be combined with `addressPrefixes` to mix explicit prefixes with IPAM-allocated prefixes. Required if `addressPrefixes` is empty. |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space. |
 
 **Optional parameters**
 
@@ -1352,14 +1362,14 @@ The name of the Virtual Network (vNet).
 
 ### Parameter: `addressPrefixes`
 
-An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Can be combined with `ipamPoolPrefixAllocations`. Required if `ipamPoolPrefixAllocations` is empty.
+An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.
 
 - Required: No
 - Type: array
 
 ### Parameter: `ipamPoolPrefixAllocations`
 
-The IPAM pool prefix allocations to use for the Virtual Network address space. Can be combined with `addressPrefixes` to mix explicit prefixes with IPAM-allocated prefixes. Required if `addressPrefixes` is empty.
+The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.
 
 - Required: No
 - Type: array

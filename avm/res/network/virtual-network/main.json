@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "13917018782411515499"
+      "templateHash": "11440488347061703093"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -551,7 +551,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Can be combined with `ipamPoolPrefixAllocations`. Required if `ipamPoolPrefixAllocations` is empty."
+        "description": "Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space."
       }
     },
     "ipamPoolNumberOfIpAddresses": {
@@ -567,7 +567,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/properties/properties/addressSpace/properties/ipamPoolPrefixAllocations"
         },
-        "description": "Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Can be combined with `addressPrefixes` to mix explicit prefixes with IPAM-allocated prefixes. Required if `addressPrefixes` is empty."
+        "description": "Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space."
       },
       "nullable": true
     },
