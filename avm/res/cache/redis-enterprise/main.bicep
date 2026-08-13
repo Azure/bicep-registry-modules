@@ -352,7 +352,7 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -477,7 +477,7 @@ output secondaryStackExchangeRedisConnectionString string? = redisCluster_databa
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType } from 'database/main.bicep'
 
 @export()
