@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/elastic-san/elastic-san/CHANGELOG.md).
 
+## 0.5.2
+
+### Changes
+
+- Updated the customer-managed key's implementation in the `volume-group` child module.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes
