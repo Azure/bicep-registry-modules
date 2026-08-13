@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added support for the Virtual Network-level `ipamPoolPrefixAllocations` parameter, enabling IPAM Pool prefix allocations and allowing them to be combined with explicit `addressPrefixes`.
+- Added support for the Virtual Network-level `ipamPoolPrefixAllocations` parameter, enabling IPAM Pool prefix allocations for the Virtual Network address space as an alternative to explicit `addressPrefixes`.
 
 ### Breaking Changes
 

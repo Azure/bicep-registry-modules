@@ -39,6 +39,9 @@ module nestedDependencies 'dependencies.bicep' = {
     addressPrefixes: [
       '172.16.0.0/22'
     ]
+    // The Virtual Network is pre-deployed with a classical address prefix and later linked to the IPAM pool by the test below.
+    virtualNetworkName: '${namePrefix}${serviceShort}001'
+    virtualNetworkAddressPrefix: '10.0.0.0/24'
   }
 }
 
@@ -52,23 +55,27 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      // Combining explicit address prefixes with IPAM Pool Prefix Allocations
-      addressPrefixes: [
-        '10.0.0.0/24'
-      ]
+      name: nestedDependencies.outputs.virtualNetworkName
+      // Link the pre-existing Virtual Network (classical address prefix) to the IPAM Pool
       ipamPoolPrefixAllocations: [
         {
           pool: {
             id: nestedDependencies.outputs.networkManagerIpamPoolId
           }
-          numberOfIpAddresses: '254'
+          numberOfIpAddresses: '256'
         }
       ]
       subnets: [
         {
           name: 'subnet-1'
-          addressPrefix: '10.0.0.0/26'
+          ipamPoolPrefixAllocations: [
+            {
+              pool: {
+                id: nestedDependencies.outputs.networkManagerIpamPoolId
+              }
+              numberOfIpAddresses: '64'
+            }
+          ]
         }
         {
           name: 'subnet-2'

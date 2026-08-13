@@ -7,13 +7,13 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Can be combined with `ipamPoolPrefixAllocations`. Required if `ipamPoolPrefixAllocations` is empty.')
+@description('Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.')
 param addressPrefixes string[]?
 
 @description('Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.')
 param ipamPoolNumberOfIpAddresses string?
 
-@description('Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Can be combined with `addressPrefixes` to mix explicit prefixes with IPAM-allocated prefixes. Required if `addressPrefixes` is empty.')
+@description('Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.')
 param ipamPoolPrefixAllocations resourceInput<'Microsoft.Network/virtualNetworks@2025-05-01'>.properties.addressSpace.ipamPoolPrefixAllocations?
 
 @description('Optional. The BGP community associated with the virtual network.')
