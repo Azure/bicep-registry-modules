@@ -22,8 +22,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
 
 ## Parameters
 
@@ -45,10 +45,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-assignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Keyspace. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
 | [`cassandraRoleAssignments`](#parameter-cassandraroleassignments) | array | An array of Cassandra Role Assignments to be created for the Cassandra Role Definition. |
-| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2025-05-01-preview). Please refer to official Azure documentation once available. |
+| [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-04-01-preview). Please refer to official Azure documentation once available. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`name`](#parameter-name) | string | The unique identifier of the Role Definition. |
-| [`notDataActions`](#parameter-notdataactions) | array | An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2025-05-01-preview). |
+| [`notDataActions`](#parameter-notdataactions) | array | An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-04-01-preview). |
 
 ### Parameter: `roleName`
 
@@ -114,7 +114,7 @@ The data plane resource path for which access is being granted. Defaults to the 
 
 ### Parameter: `dataActions`
 
-An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2025-05-01-preview). Please refer to official Azure documentation once available.
+An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-04-01-preview). Please refer to official Azure documentation once available.
 
 - Required: No
 - Type: array
@@ -137,7 +137,7 @@ The unique identifier of the Role Definition.
 
 ### Parameter: `notDataActions`
 
-An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2025-05-01-preview).
+An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-04-01-preview).
 
 - Required: No
 - Type: array

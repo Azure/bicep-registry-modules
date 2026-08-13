@@ -79,7 +79,7 @@ var formattedRoleAssignments = [
 var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-dnsresolver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -137,7 +137,7 @@ resource dnsResolver_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 
 module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
   for (inboundEndpoint, index) in (inboundEndpoints ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-inbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-dnsResolver-inbound-${index}'
     params: {
       name: inboundEndpoint.name
       tags: inboundEndpoint.?tags ?? tags
@@ -153,7 +153,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [
 
 module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [
   for (outboundEndpoint, index) in (outboundEndpoints ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-dnsResolver-outbound-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-dnsResolver-outbound-${index}'
     params: {
       name: outboundEndpoint.name
       tags: outboundEndpoint.?tags ?? tags

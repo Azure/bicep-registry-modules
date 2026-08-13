@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.18.0
+
+### Changes
+
+- Bumped the `Microsoft.CognitiveServices/accounts/deployments` API version from `@2025-06-01` to `@2026-05-01`, the minimum version verified to accept `properties.modelProviderData`
+- Refactored `Microsoft.CognitiveServices/accounts/deployments` from an inline resource loop into a dedicated `deployment` child module while preserving the parent module's existing `deployments` parameter contract.
+
+### Breaking Changes
+
+- None.
+
 ## 0.17.0
 
 ### Changes
