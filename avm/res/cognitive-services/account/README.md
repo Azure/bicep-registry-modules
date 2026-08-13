@@ -64,7 +64,8 @@ You can find the full example and the setup of its dependencies in the deploymen
 
 > **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
 ```text
-The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer (auto-accepted via `modelProviderData`). The shared AVM validation subscription is an internal/sandbox subscription, which Azure prevents from purchasing paid, non-test Marketplace offers ("This subscription is internal or sandbox. Only $0.00 products or test products can be purchased."). The deployment therefore cannot complete in CI and is skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.
+The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer.
+The deployment validation cannot complete in AVM validation subscription and is therefore skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.
 ```
 
 <details>
