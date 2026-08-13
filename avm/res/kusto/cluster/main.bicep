@@ -141,16 +141,24 @@ var enableReferencedModulesTelemetry = false
 
 // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 )
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -195,15 +203,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey)) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey!.?keyName!
   }
 }
 

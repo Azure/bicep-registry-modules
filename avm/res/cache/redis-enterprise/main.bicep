@@ -14,22 +14,22 @@ param name string
 @description('Optional. Whether or not public network traffic can access the Redis cluster. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 param publicNetworkAccess string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Cache/redisEnterprise@2025-07-01'>.tags?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
@@ -132,11 +132,11 @@ param database databaseType?
 // Other params //
 // ============ //
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The cluster-level diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
@@ -152,17 +152,27 @@ var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptim
 var isEnterprise = startsWith(skuName, 'Enterprise') || startsWith(skuName, 'EnterpriseFlash')
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  map(
+    union(
+      (managedIdentities.?userAssignedResourceIds ?? []),
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : [])
+    ),
+    (id) => { '${id}': {} }
+  ),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var identity = !empty(managedIdentities)
+var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
   ? {
       type: !empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None'
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
+
+var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -216,24 +226,23 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
+  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
-    name: customerManagedKey.?keyName!
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
+    name: customerManagedKey!.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -343,7 +352,7 @@ resource redisCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -468,7 +477,7 @@ output secondaryStackExchangeRedisConnectionString string? = redisCluster_databa
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 import { geoReplicationType, moduleType, persistenceType, accessPolicyAssignmentType } from 'database/main.bicep'
 
 @export()
