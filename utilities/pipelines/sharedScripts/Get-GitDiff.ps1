@@ -41,7 +41,7 @@ Optional. If specified, filters the modified files by the provided path pattern.
 .PARAMETER SkipStats
 Optional. Skip the output of statistics
 
-.PARAMETER IncludeNonCommitted
+.PARAMETER OnlyCommitted
 Optional. If specified, includes only committed changes in the diff.
 
 .EXAMPLE
