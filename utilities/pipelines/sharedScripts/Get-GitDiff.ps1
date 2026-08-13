@@ -90,7 +90,7 @@ Mode                 LastWriteTime         Length Name
 -a---          12/08/2025    09:51           7106 fileB.ps1
 -a---          12/08/2025    09:51           7106 fileC.ps1
 
-Get only the paths of modified files - including any that may not have been committed yet
+Get the paths of modified files - excluding any that may not have been committed yet
 
 #>
 function Get-GitDiff {
