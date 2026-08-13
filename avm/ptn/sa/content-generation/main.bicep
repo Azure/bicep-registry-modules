@@ -324,6 +324,7 @@ module containerRegistry 'modules/container-registry.bicep' = {
     acrSku: 'Standard'
     enablePrivateNetworking: enablePrivateNetworking
     enableScalability: enableScalability
+    replicationLocation: replicaLocation
     privateEndpointSubnetResourceId: enablePrivateNetworking ? virtualNetwork!.outputs.pepsSubnetResourceId : ''
     privateDnsZoneResourceId: enablePrivateNetworking
       ? avmPrivateDnsZones[dnsZoneIndex.containerRegistry]!.outputs.resourceId
@@ -620,7 +621,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId }
+                {
+                  name: 'blob'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.storageBlob]!.outputs.resourceId
+                }
               ]
             }
           }
@@ -717,7 +721,10 @@ module cosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
             subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId }
+                {
+                  name: 'cosmos'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDB]!.outputs.resourceId
+                }
               ]
             }
           }
@@ -961,15 +968,6 @@ output containerInstanceFqdn string = enablePrivateNetworking ? '' : containerIn
 
 @description('The ACR name.')
 output acrName string = containerRegistry.outputs.name
-
-@description('The ACR name used by the Content Generation post-deployment scripts.')
-output AZURE_ENV_CONTAINER_REGISTRY_NAME string = containerRegistry.outputs.name
-
-@description('The App Service name used by the Content Generation post-deployment scripts.')
-output APP_SERVICE_NAME string = webSite.outputs.name
-
-@description('The Container Instance name used by the Content Generation post-deployment scripts.')
-output CONTAINER_INSTANCE_NAME string = containerInstance.outputs.name
 
 @description('The flag for Azure AI Foundry usage.')
 output useFoundry bool = useFoundryMode ? true : false

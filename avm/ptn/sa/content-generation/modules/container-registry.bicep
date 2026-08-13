@@ -33,12 +33,16 @@ param privateEndpointSubnetResourceId string = ''
 @description('Optional. Resource ID of the privatelink.azurecr.io private DNS zone. Required when enablePrivateNetworking is true.')
 param privateDnsZoneResourceId string = ''
 
+@description('Optional. Secondary region for geo-replication (WAF reliability). Applied only when the effective SKU is Premium and the region differs from the primary location.')
+param replicationLocation string = ''
+
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 var acrPullRoleDefinitionId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var effectiveAcrSku = (enablePrivateNetworking || enableScalability) ? 'Premium' : acrSku
+var enableGeoReplication = effectiveAcrSku == 'Premium' && !empty(replicationLocation) && toLower(replicationLocation) != toLower(location)
 var pullRoleAssignments = [
   for principalId in pullPrincipalIds: {
     principalId: principalId
@@ -66,6 +70,16 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     roleAssignments: pullRoleAssignments
     managedIdentities: managedIdentities
+    replications: enableGeoReplication
+      ? [
+          {
+            name: replace(replicationLocation, ' ', '')
+            location: replicationLocation
+            regionEndpointEnabled: true
+            zoneRedundancy: 'Disabled'
+          }
+        ]
+      : []
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -75,7 +89,10 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.1' 
             subnetResourceId: privateEndpointSubnetResourceId
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: privateDnsZoneResourceId }
+                {
+                  name: 'azurecr'
+                  privateDnsZoneResourceId: privateDnsZoneResourceId
+                }
               ]
             }
           }

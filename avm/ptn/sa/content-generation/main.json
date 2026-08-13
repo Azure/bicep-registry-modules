@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.45.15.27210",
-      "templateHash": "15140197143437883262"
+      "version": "0.46.1.21595",
+      "templateHash": "6031003060031049246"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -4778,6 +4778,9 @@
           "enableScalability": {
             "value": "[parameters('enableScalability')]"
           },
+          "replicationLocation": {
+            "value": "[variables('replicaLocation')]"
+          },
           "privateEndpointSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference('virtualNetwork').outputs.pepsSubnetResourceId.value), createObject('value', ''))]",
           "privateDnsZoneResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').containerRegistry)).outputs.resourceId.value), createObject('value', ''))]",
           "managedIdentities": {
@@ -4800,8 +4803,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "683509333306504563"
+              "version": "0.46.1.21595",
+              "templateHash": "7966638595216954280"
             }
           },
           "definitions": {
@@ -4912,6 +4915,13 @@
                 "description": "Optional. Resource ID of the privatelink.azurecr.io private DNS zone. Required when enablePrivateNetworking is true."
               }
             },
+            "replicationLocation": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Secondary region for geo-replication (WAF reliability). Applied only when the effective SKU is Premium and the region differs from the primary location."
+              }
+            },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentityAllType",
               "nullable": true,
@@ -4933,7 +4943,8 @@
               }
             ],
             "acrPullRoleDefinitionId": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
-            "effectiveAcrSku": "[if(or(parameters('enablePrivateNetworking'), parameters('enableScalability')), 'Premium', parameters('acrSku'))]"
+            "effectiveAcrSku": "[if(or(parameters('enablePrivateNetworking'), parameters('enableScalability')), 'Premium', parameters('acrSku'))]",
+            "enableGeoReplication": "[and(and(equals(variables('effectiveAcrSku'), 'Premium'), not(empty(parameters('replicationLocation')))), not(equals(toLower(parameters('replicationLocation')), toLower(parameters('location')))))]"
           },
           "resources": {
             "containerRegistry": {
@@ -4988,7 +4999,8 @@
                   "managedIdentities": {
                     "value": "[parameters('managedIdentities')]"
                   },
-                  "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', parameters('name')), 'customNetworkInterfaceName', format('nic-{0}', parameters('name')), 'service', 'registry', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', parameters('privateDnsZoneResourceId'))))))), createObject('value', createArray()))]"
+                  "replications": "[if(variables('enableGeoReplication'), createObject('value', createArray(createObject('name', replace(parameters('replicationLocation'), ' ', ''), 'location', parameters('replicationLocation'), 'regionEndpointEnabled', true(), 'zoneRedundancy', 'Disabled'))), createObject('value', createArray()))]",
+                  "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', parameters('name')), 'customNetworkInterfaceName', format('nic-{0}', parameters('name')), 'service', 'registry', 'subnetResourceId', parameters('privateEndpointSubnetResourceId'), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'azurecr', 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId'))))))), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -8872,8 +8884,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "2796476687029442899"
+              "version": "0.46.1.21595",
+              "templateHash": "7795848506863263975"
             }
           },
           "parameters": {
@@ -18152,8 +18164,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "4927990065100824306"
+              "version": "0.46.1.21595",
+              "templateHash": "8174995757186161556"
             }
           },
           "parameters": {
@@ -20433,7 +20445,7 @@
             "value": false
           },
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('service', 'blob', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value)))))), createObject('value', null()))]",
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('service', 'blob', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'blob', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)).outputs.resourceId.value)))))), createObject('value', null()))]",
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', if(parameters('enableMonitoring'), reference('logAnalyticsWorkspace').outputs.resourceId.value, '')))), createObject('value', null()))]"
         },
         "template": {
@@ -28632,7 +28644,7 @@
             "value": "[parameters('enableRedundancy')]"
           },
           "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('secondaryLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('cosmosDbReplicaLocation')))), createObject('value', createArray(createObject('locationName', parameters('secondaryLocation'), 'failoverPriority', 0, 'isZoneRedundant', false()))))]",
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('service', 'Sql', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)).outputs.resourceId.value)))))), createObject('value', null()))]"
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('service', 'Sql', 'subnetResourceId', reference('virtualNetwork').outputs.pepsSubnetResourceId.value, 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('name', 'cosmos', 'privateDnsZoneResourceId', reference(format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cosmosDB)).outputs.resourceId.value)))))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -35340,8 +35352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "6718650901090754549"
+              "version": "0.46.1.21595",
+              "templateHash": "13431680799545848424"
             }
           },
           "definitions": {
@@ -36379,8 +36391,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "11028295872393926954"
+                      "version": "0.46.1.21595",
+                      "templateHash": "15477346472279691349"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -37416,8 +37428,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "8918286457513559821"
+              "version": "0.46.1.21595",
+              "templateHash": "11257702604681551477"
             }
           },
           "parameters": {
@@ -37841,27 +37853,6 @@
         "description": "The ACR name."
       },
       "value": "[reference('containerRegistry').outputs.name.value]"
-    },
-    "AZURE_ENV_CONTAINER_REGISTRY_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The ACR name used by the Content Generation post-deployment scripts."
-      },
-      "value": "[reference('containerRegistry').outputs.name.value]"
-    },
-    "APP_SERVICE_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The App Service name used by the Content Generation post-deployment scripts."
-      },
-      "value": "[reference('webSite').outputs.name.value]"
-    },
-    "CONTAINER_INSTANCE_NAME": {
-      "type": "string",
-      "metadata": {
-        "description": "The Container Instance name used by the Content Generation post-deployment scripts."
-      },
-      "value": "[reference('containerInstance').outputs.name.value]"
     },
     "useFoundry": {
       "type": "bool",

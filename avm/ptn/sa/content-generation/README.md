@@ -632,9 +632,7 @@ Enable Azure AI Foundry mode for multi-agent orchestration.
 | `aiFoundryResourceId` | string | The AI Foundry Resource ID. |
 | `aiFoundryRgName` | string | The AI Foundry resource group name. |
 | `aiSearchServiceName` | string | The AI Search Service name. |
-| `APP_SERVICE_NAME` | string | The App Service name used by the Content Generation post-deployment scripts. |
 | `appServiceName` | string | The App Service name. |
-| `AZURE_ENV_CONTAINER_REGISTRY_NAME` | string | The ACR name used by the Content Generation post-deployment scripts. |
 | `azureAiAgentApiVersion` | string | The AI Agent API Version. |
 | `azureAiAgentEndpoint` | string | The AI Agent Endpoint URL. |
 | `azureAiImageModelDeployment` | string | The Azure AI Image Model Deployment name (empty if none selected). |
@@ -658,7 +656,6 @@ Enable Azure AI Foundry mode for multi-agent orchestration.
 | `azureOpenaiGptModel` | string | The GPT Model name. |
 | `azureOpenaiImageModel` | string | The Image Model name (empty if none selected). |
 | `azureOpenaiResource` | string | The OpenAI Resource name. |
-| `CONTAINER_INSTANCE_NAME` | string | The Container Instance name used by the Content Generation post-deployment scripts. |
 | `containerInstanceFqdn` | string | The Container Instance FQDN (only for non-private networking). |
 | `containerInstanceIp` | string | The Container Instance IP Address. |
 | `containerInstanceName` | string | The Container Instance name. |
