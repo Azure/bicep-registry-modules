@@ -41,6 +41,993 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kusto/cluster:<version>`.
 
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-1-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-3-using-only-defaults)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-5-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-6-waf-aligned)
+
+### Example 1: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-sami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: '<name>'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = '<name>'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-uami]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kcuencr0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcuencr0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcuencr0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kcmin0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    enableDiskEncryption: true
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcmin0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmin0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enableDiskEncryption = true
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kcmax0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    acceptedAudiences: [
+      {
+        value: 'https://contoso.com'
+      }
+    ]
+    allowedFqdnList: [
+      'contoso.com'
+    ]
+    allowedIpRangeList: [
+      '192.168.1.1'
+    ]
+    autoScaleMax: 6
+    autoScaleMin: 3
+    availabilityZones: [
+      1
+      2
+      3
+    ]
+    capacity: 3
+    clusterPrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'AllDatabasesViewer'
+      }
+    ]
+    databases: [
+      {
+        databasePrincipalAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'App'
+            role: 'Viewer'
+          }
+        ]
+        kind: 'ReadWrite'
+        name: 'myReadWriteDatabase'
+        readWriteProperties: {
+          hotCachePeriod: 'P1D'
+          softDeletePeriod: 'P7D'
+        }
+      }
+    ]
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: true
+    enablePurge: true
+    enableRestrictOutboundNetworkAccess: true
+    enableStreamingIngest: true
+    engineType: 'V3'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicIPType: 'DualStack'
+    roleAssignments: [
+      {
+        name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      'opt-out-of-soft-delete': 'true'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcmax0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "acceptedAudiences": {
+      "value": [
+        {
+          "value": "https://contoso.com"
+        }
+      ]
+    },
+    "allowedFqdnList": {
+      "value": [
+        "contoso.com"
+      ]
+    },
+    "allowedIpRangeList": {
+      "value": [
+        "192.168.1.1"
+      ]
+    },
+    "autoScaleMax": {
+      "value": 6
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "availabilityZones": {
+      "value": [
+        1,
+        2,
+        3
+      ]
+    },
+    "capacity": {
+      "value": 3
+    },
+    "clusterPrincipalAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "App",
+          "role": "AllDatabasesViewer"
+        }
+      ]
+    },
+    "databases": {
+      "value": [
+        {
+          "databasePrincipalAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "App",
+              "role": "Viewer"
+            }
+          ],
+          "kind": "ReadWrite",
+          "name": "myReadWriteDatabase",
+          "readWriteProperties": {
+            "hotCachePeriod": "P1D",
+            "softDeletePeriod": "P7D"
+          }
+        }
+      ]
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": true
+    },
+    "enablePurge": {
+      "value": true
+    },
+    "enableRestrictOutboundNetworkAccess": {
+      "value": true
+    },
+    "enableStreamingIngest": {
+      "value": true
+    },
+    "engineType": {
+      "value": "V3"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicIPType": {
+      "value": "DualStack"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "c2a4b728-c3d0-47f5-afbb-ea45c45859de",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "opt-out-of-soft-delete": "true"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcmax0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param acceptedAudiences = [
+  {
+    value: 'https://contoso.com'
+  }
+]
+param allowedFqdnList = [
+  'contoso.com'
+]
+param allowedIpRangeList = [
+  '192.168.1.1'
+]
+param autoScaleMax = 6
+param autoScaleMin = 3
+param availabilityZones = [
+  1
+  2
+  3
+]
+param capacity = 3
+param clusterPrincipalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'App'
+    role: 'AllDatabasesViewer'
+  }
+]
+param databases = [
+  {
+    databasePrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'Viewer'
+      }
+    ]
+    kind: 'ReadWrite'
+    name: 'myReadWriteDatabase'
+    readWriteProperties: {
+      hotCachePeriod: 'P1D'
+      softDeletePeriod: 'P7D'
+    }
+  }
+]
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = true
+param enablePurge = true
+param enableRestrictOutboundNetworkAccess = true
+param enableStreamingIngest = true
+param engineType = 'V3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicIPType = 'DualStack'
+param roleAssignments = [
+  {
+    name: 'c2a4b728-c3d0-47f5-afbb-ea45c45859de'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'opt-out-of-soft-delete': 'true'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+Note: The `opt-out-of-soft-delete` tag is only set for testing purposes ([ref](https://learn.microsoft.com/en-us/azure/data-explorer/delete-cluster#opt-out-of-soft-delete)).
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kcpe0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    enablePublicNetworkAccess: false
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'cluster'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'cluster'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicIPType: 'IPv4'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      'opt-out-of-soft-delete': 'true'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcpe0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "cluster",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "cluster",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicIPType": {
+      "value": "IPv4"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "opt-out-of-soft-delete": "true",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcpe0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param enablePublicNetworkAccess = false
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'cluster'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicIPType = 'IPv4'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  'opt-out-of-soft-delete': 'true'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
+  params: {
+    // Required parameters
+    name: 'kcwaf0001'
+    sku: 'Standard_E2ads_v5'
+    // Non-required parameters
+    autoScaleMax: 10
+    autoScaleMin: 3
+    capacity: 3
+    enableAutoScale: true
+    enableAutoStop: true
+    enableDiskEncryption: true
+    enableDoubleEncryption: true
+    enablePublicNetworkAccess: false
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
+    tier: 'Standard'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kcwaf0001"
+    },
+    "sku": {
+      "value": "Standard_E2ads_v5"
+    },
+    // Non-required parameters
+    "autoScaleMax": {
+      "value": 10
+    },
+    "autoScaleMin": {
+      "value": 3
+    },
+    "capacity": {
+      "value": 3
+    },
+    "enableAutoScale": {
+      "value": true
+    },
+    "enableAutoStop": {
+      "value": true
+    },
+    "enableDiskEncryption": {
+      "value": true
+    },
+    "enableDoubleEncryption": {
+      "value": true
+    },
+    "enablePublicNetworkAccess": {
+      "value": false
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
+    },
+    "tier": {
+      "value": "Standard"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kusto/cluster:<version>'
+
+// Required parameters
+param name = 'kcwaf0001'
+param sku = 'Standard_E2ads_v5'
+// Non-required parameters
+param autoScaleMax = 10
+param autoScaleMin = 3
+param capacity = 3
+param enableAutoScale = true
+param enableAutoStop = true
+param enableDiskEncryption = true
+param enableDoubleEncryption = true
+param enablePublicNetworkAccess = false
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param tier = 'Standard'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**

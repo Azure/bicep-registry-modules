@@ -45,6 +45,1159 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-registry/registry:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using restricted network access with empty IP ranges](#example-4-using-restricted-network-access-with-empty-ip-ranges)
+- [Using `scopeMaps` in parameter set](#example-5-using-scopemaps-in-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrmin001'
+    // Non-required parameters
+    acrSku: 'Standard'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrmin001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrmin001'
+// Non-required parameters
+param acrSku = 'Standard'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/encr]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrencr001'
+    // Non-required parameters
+    acrSku: 'Premium'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrencr001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Premium"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrencr001'
+// Non-required parameters
+param acrSku = 'Premium'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrmax001'
+    // Non-required parameters
+    acrAdminUserEnabled: false
+    acrSku: 'Premium'
+    autoGeneratedDomainNameLabelScope: 'SubscriptionReuse'
+    azureADAuthenticationAsArmPolicyStatus: 'disabled'
+    cacheRules: [
+      {
+        sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+      }
+      {
+        name: 'crrmaxCacheRule'
+        sourceRepository: 'mcr.microsoft.com/hello-world'
+        targetRepository: 'cached-hello-world'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    exportPolicyStatus: 'enabled'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkRuleSetIpRules: [
+      {
+        action: 'Allow'
+        value: '40.74.28.0/23'
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    quarantinePolicyStatus: 'enabled'
+    replications: [
+      {
+        location: '<location>'
+        name: '<name>'
+      }
+    ]
+    roleAssignmentMode: 'AbacRepositoryPermissions'
+    roleAssignments: [
+      {
+        name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/*/content/read'
+        ]
+        description: 'A test scope map'
+        name: 'crrmaxScopeMap'
+      }
+    ]
+    softDeletePolicyDays: 7
+    softDeletePolicyStatus: 'disabled'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    tasks: [
+      {
+        name: 'crrmaxTask1'
+        platform: {
+          architecture: 'amd64'
+          os: 'Linux'
+        }
+        status: 'Disabled'
+        step: {
+          encodedTaskContent: '<encodedTaskContent>'
+          type: 'EncodedTask'
+        }
+        trigger: {
+          timerTriggers: [
+            {
+              name: 'dailyTimer'
+              schedule: '0 12 * * *'
+              status: 'Disabled'
+            }
+          ]
+        }
+      }
+    ]
+    tokens: [
+      {
+        name: 'crrmaxToken'
+        scopeMapResourceId: '<scopeMapResourceId>'
+        status: 'enabled'
+      }
+    ]
+    trustPolicyStatus: '<trustPolicyStatus>'
+    webhooks: [
+      {
+        name: 'acrx001webhook'
+        serviceUri: 'https://www.contoso.com/webhook'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrmax001"
+    },
+    // Non-required parameters
+    "acrAdminUserEnabled": {
+      "value": false
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "autoGeneratedDomainNameLabelScope": {
+      "value": "SubscriptionReuse"
+    },
+    "azureADAuthenticationAsArmPolicyStatus": {
+      "value": "disabled"
+    },
+    "cacheRules": {
+      "value": [
+        {
+          "sourceRepository": "mcr.microsoft.com/azuredocs/aci-helloworld"
+        },
+        {
+          "name": "crrmaxCacheRule",
+          "sourceRepository": "mcr.microsoft.com/hello-world",
+          "targetRepository": "cached-hello-world"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "exportPolicyStatus": {
+      "value": "enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkRuleSetIpRules": {
+      "value": [
+        {
+          "action": "Allow",
+          "value": "40.74.28.0/23"
+        }
+      ]
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "quarantinePolicyStatus": {
+      "value": "enabled"
+    },
+    "replications": {
+      "value": [
+        {
+          "location": "<location>",
+          "name": "<name>"
+        }
+      ]
+    },
+    "roleAssignmentMode": {
+      "value": "AbacRepositoryPermissions"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "37c5bf75-c804-4607-94a9-e7485164f9f7",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/*/content/read"
+          ],
+          "description": "A test scope map",
+          "name": "crrmaxScopeMap"
+        }
+      ]
+    },
+    "softDeletePolicyDays": {
+      "value": 7
+    },
+    "softDeletePolicyStatus": {
+      "value": "disabled"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "tasks": {
+      "value": [
+        {
+          "name": "crrmaxTask1",
+          "platform": {
+            "architecture": "amd64",
+            "os": "Linux"
+          },
+          "status": "Disabled",
+          "step": {
+            "encodedTaskContent": "<encodedTaskContent>",
+            "type": "EncodedTask"
+          },
+          "trigger": {
+            "timerTriggers": [
+              {
+                "name": "dailyTimer",
+                "schedule": "0 12 * * *",
+                "status": "Disabled"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "tokens": {
+      "value": [
+        {
+          "name": "crrmaxToken",
+          "scopeMapResourceId": "<scopeMapResourceId>",
+          "status": "enabled"
+        }
+      ]
+    },
+    "trustPolicyStatus": {
+      "value": "<trustPolicyStatus>"
+    },
+    "webhooks": {
+      "value": [
+        {
+          "name": "acrx001webhook",
+          "serviceUri": "https://www.contoso.com/webhook"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrmax001'
+// Non-required parameters
+param acrAdminUserEnabled = false
+param acrSku = 'Premium'
+param autoGeneratedDomainNameLabelScope = 'SubscriptionReuse'
+param azureADAuthenticationAsArmPolicyStatus = 'disabled'
+param cacheRules = [
+  {
+    sourceRepository: 'mcr.microsoft.com/azuredocs/aci-helloworld'
+  }
+  {
+    name: 'crrmaxCacheRule'
+    sourceRepository: 'mcr.microsoft.com/hello-world'
+    targetRepository: 'cached-hello-world'
+  }
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param exportPolicyStatus = 'enabled'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkRuleSetIpRules = [
+  {
+    action: 'Allow'
+    value: '40.74.28.0/23'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param quarantinePolicyStatus = 'enabled'
+param replications = [
+  {
+    location: '<location>'
+    name: '<name>'
+  }
+]
+param roleAssignmentMode = 'AbacRepositoryPermissions'
+param roleAssignments = [
+  {
+    name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param scopeMaps = [
+  {
+    actions: [
+      'repositories/*/content/read'
+    ]
+    description: 'A test scope map'
+    name: 'crrmaxScopeMap'
+  }
+]
+param softDeletePolicyDays = 7
+param softDeletePolicyStatus = 'disabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param tasks = [
+  {
+    name: 'crrmaxTask1'
+    platform: {
+      architecture: 'amd64'
+      os: 'Linux'
+    }
+    status: 'Disabled'
+    step: {
+      encodedTaskContent: '<encodedTaskContent>'
+      type: 'EncodedTask'
+    }
+    trigger: {
+      timerTriggers: [
+        {
+          name: 'dailyTimer'
+          schedule: '0 12 * * *'
+          status: 'Disabled'
+        }
+      ]
+    }
+  }
+]
+param tokens = [
+  {
+    name: 'crrmaxToken'
+    scopeMapResourceId: '<scopeMapResourceId>'
+    status: 'enabled'
+  }
+]
+param trustPolicyStatus = '<trustPolicyStatus>'
+param webhooks = [
+  {
+    name: 'acrx001webhook'
+    serviceUri: 'https://www.contoso.com/webhook'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using restricted network access with empty IP ranges_
+
+This instance validates restricted network access with explicit empty IP ACL rules.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/restricted-empty-ip]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrempty001'
+    // Non-required parameters
+    acrSku: 'Premium'
+    location: '<location>'
+    networkRuleSetDefaultAction: 'Deny'
+    networkRuleSetIpRules: []
+    publicNetworkAccess: 'Disabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrempty001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Premium"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "networkRuleSetDefaultAction": {
+      "value": "Deny"
+    },
+    "networkRuleSetIpRules": {
+      "value": []
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrempty001'
+// Non-required parameters
+param acrSku = 'Premium'
+param location = '<location>'
+param networkRuleSetDefaultAction = 'Deny'
+param networkRuleSetIpRules = []
+param publicNetworkAccess = 'Disabled'
+```
+
+</details>
+<p>
+
+### Example 5: _Using `scopeMaps` in parameter set_
+
+This instance deploys the module with the scopeMaps feature.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/scope]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrs001'
+    // Non-required parameters
+    acrSku: 'Standard'
+    location: '<location>'
+    scopeMaps: [
+      {
+        actions: [
+          'repositories/*/content/read'
+        ]
+        description: 'This is a test for scopeMaps feature.'
+        name: 'testscopemap'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrs001"
+    },
+    // Non-required parameters
+    "acrSku": {
+      "value": "Standard"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "scopeMaps": {
+      "value": [
+        {
+          "actions": [
+            "repositories/*/content/read"
+          ],
+          "description": "This is a test for scopeMaps feature.",
+          "name": "testscopemap"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrs001'
+// Non-required parameters
+param acrSku = 'Standard'
+param location = '<location>'
+param scopeMaps = [
+  {
+    actions: [
+      'repositories/*/content/read'
+    ]
+    description: 'This is a test for scopeMaps feature.'
+    name: 'testscopemap'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/container-registry/registry:<version>' = {
+  params: {
+    // Required parameters
+    name: 'crrwaf001'
+    // Non-required parameters
+    acrAdminUserEnabled: false
+    acrSku: 'Premium'
+    autoGeneratedDomainNameLabelScope: 'NoReuse'
+    azureADAuthenticationAsArmPolicyStatus: 'disabled'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    exportPolicyStatus: 'enabled'
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    quarantinePolicyStatus: 'enabled'
+    replications: [
+      {
+        location: '<location>'
+        name: '<name>'
+      }
+    ]
+    roleAssignmentMode: 'AbacRepositoryPermissions'
+    softDeletePolicyDays: 7
+    softDeletePolicyStatus: 'disabled'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    trustPolicyStatus: '<trustPolicyStatus>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrwaf001"
+    },
+    // Non-required parameters
+    "acrAdminUserEnabled": {
+      "value": false
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "autoGeneratedDomainNameLabelScope": {
+      "value": "NoReuse"
+    },
+    "azureADAuthenticationAsArmPolicyStatus": {
+      "value": "disabled"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "exportPolicyStatus": {
+      "value": "enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "quarantinePolicyStatus": {
+      "value": "enabled"
+    },
+    "replications": {
+      "value": [
+        {
+          "location": "<location>",
+          "name": "<name>"
+        }
+      ]
+    },
+    "roleAssignmentMode": {
+      "value": "AbacRepositoryPermissions"
+    },
+    "softDeletePolicyDays": {
+      "value": 7
+    },
+    "softDeletePolicyStatus": {
+      "value": "disabled"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "trustPolicyStatus": {
+      "value": "<trustPolicyStatus>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/container-registry/registry:<version>'
+
+// Required parameters
+param name = 'crrwaf001'
+// Non-required parameters
+param acrAdminUserEnabled = false
+param acrSku = 'Premium'
+param autoGeneratedDomainNameLabelScope = 'NoReuse'
+param azureADAuthenticationAsArmPolicyStatus = 'disabled'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param exportPolicyStatus = 'enabled'
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param quarantinePolicyStatus = 'enabled'
+param replications = [
+  {
+    location: '<location>'
+    name: '<name>'
+  }
+]
+param roleAssignmentMode = 'AbacRepositoryPermissions'
+param softDeletePolicyDays = 7
+param softDeletePolicyStatus = 'disabled'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param trustPolicyStatus = '<trustPolicyStatus>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
