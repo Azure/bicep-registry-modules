@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
-## 0.18.1
+## 0.19.1
 
 ### Changes
 
@@ -12,6 +12,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.19.0
+
+### Changes
+
+- Added optional `modelProviderData` (`organizationName`, `countryCode`, `industry`) to `deploymentType`, and project it onto `Microsoft.CognitiveServices/accounts/deployments`. This carries the model-provider attestation that the Cognitive Services RP requires for partner models such as Anthropic Claude (`model.format == 'Anthropic'`), which it uses to auto-accept the partner's Azure Marketplace offer (fixes [#7197](https://github.com/Azure/bicep-registry-modules/issues/7197)). Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use); the `industry` enum values come from the same source. The property is not yet reflected in the resource's public OpenAPI spec ([Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec catches up
+
+### Breaking Changes
+
+- None.
 
 ## 0.18.0
 
