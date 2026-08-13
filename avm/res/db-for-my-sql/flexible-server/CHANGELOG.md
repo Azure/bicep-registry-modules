@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.11.1
+
+### Changes
+
+- Added the customer-managed key user-assigned identities (including the geo-backup key) to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
 ## 0.11.0
 
 ### Changes

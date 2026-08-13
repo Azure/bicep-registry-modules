@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/net-app/net-app-account/CHANGELOG.md).
 
+## 0.12.4
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.3
 
 ### Changes
