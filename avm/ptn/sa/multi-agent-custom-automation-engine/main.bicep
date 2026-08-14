@@ -47,7 +47,7 @@ var deployingUserPrincipalId = deployerInfo.objectId
     usageName: [
       'OpenAI.GlobalStandard.gpt-5.4, 10'
       'OpenAI.GlobalStandard.gpt-5.4-mini, 10'
-      'OpenAI.GlobalStandard.gpt-image-1.5, 5'
+      // 'OpenAI.GlobalStandard.gpt-image-1.5, 5' // Commented out: gpt-image-1.5 not available yet
     ]
   }
 })
@@ -764,19 +764,20 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
           capacity: aiFoundryAiServicesGpt54ModelDeployment.sku.capacity
         }
       }
-      {
-        name: aiFoundryAiServicesImageModelDeployment.name
-        model: {
-          format: aiFoundryAiServicesImageModelDeployment.format
-          name: aiFoundryAiServicesImageModelDeployment.name
-          version: aiFoundryAiServicesImageModelDeployment.version
-        }
-        raiPolicyName: aiFoundryAiServicesImageModelDeployment.raiPolicyName
-        sku: {
-          name: aiFoundryAiServicesImageModelDeployment.sku.name
-          capacity: aiFoundryAiServicesImageModelDeployment.sku.capacity
-        }
-      }
+      // Commented out: gpt-image-1.5 model not available yet
+      // {
+      //   name: aiFoundryAiServicesImageModelDeployment.name
+      //   model: {
+      //     format: aiFoundryAiServicesImageModelDeployment.format
+      //     name: aiFoundryAiServicesImageModelDeployment.name
+      //     version: aiFoundryAiServicesImageModelDeployment.version
+      //   }
+      //   raiPolicyName: aiFoundryAiServicesImageModelDeployment.raiPolicyName
+      //   sku: {
+      //     name: aiFoundryAiServicesImageModelDeployment.sku.name
+      //     capacity: aiFoundryAiServicesImageModelDeployment.sku.capacity
+      //   }
+      // }
     ]
     networkAcls: {
       defaultAction: 'Allow'
