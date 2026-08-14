@@ -45,8 +45,8 @@ var deployingUserPrincipalId = deployerInfo.objectId
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.4, 150'
-      'OpenAI.GlobalStandard.gpt-5.4-mini, 100'
+      'OpenAI.GlobalStandard.gpt-5.4, 10'
+      'OpenAI.GlobalStandard.gpt-5.4-mini, 10'
       'OpenAI.GlobalStandard.gpt-image-1.5, 5'
     ]
   }
@@ -106,10 +106,10 @@ param gpt54ModelDeploymentType string = 'GlobalStandard'
 param gptImageModelDeploymentType string = 'GlobalStandard'
 
 @description('Optional. AI model deployment token capacity. Defaults to 100 for optimal performance.')
-param gptModelCapacity int = 100
+param gptModelCapacity int = 10
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
-param gpt54ModelCapacity int = 150
+param gpt54ModelCapacity int = 10
 
 @description('Optional. gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions.')
 param gptImageModelCapacity int = 5
