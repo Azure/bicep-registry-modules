@@ -6,11 +6,11 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Added `networkRuleBypassAllowedForTasks` as parameter to enable or disable rule bypass for tasks
+- None
 
 ### Breaking Changes
 
-- None
+- Added `networkRuleBypassAllowedForTasks` as parameter to enable or disable rule bypass for tasks. Defaults to `false`
 
 ## 0.12.1
 
