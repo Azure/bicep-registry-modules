@@ -711,6 +711,7 @@ var aiFoundryAiServicesGpt54ModelDeployment = {
   }
   raiPolicyName: 'Microsoft.Default'
 }
+#disable-next-line no-unused-vars // Kept for when gpt-image-1.5 becomes available
 var aiFoundryAiServicesImageModelDeployment = {
   format: 'OpenAI'
   name: gptImageModelName

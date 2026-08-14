@@ -510,7 +510,7 @@ AI model deployment token capacity. Defaults to 150 for optimal performance.
 
 - Required: No
 - Type: int
-- Default: `150`
+- Default: `10`
 
 ### Parameter: `gpt54ModelDeploymentType`
 
@@ -588,7 +588,7 @@ AI model deployment token capacity. Defaults to 100 for optimal performance.
 
 - Required: No
 - Type: int
-- Default: `100`
+- Default: `10`
 
 ### Parameter: `gptModelDeploymentType`
 
