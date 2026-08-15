@@ -36,12 +36,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     networkManagerName: 'dep-${namePrefix}-vnm-${serviceShort}'
-    addressPrefixes: [
-      '172.16.0.0/22'
-    ]
     // The Virtual Network is pre-deployed with a classical address prefix (within the IPAM pool range) and later linked to the IPAM pool by the test below.
     virtualNetworkName: '${namePrefix}${serviceShort}001'
-    virtualNetworkAddressPrefix: '172.16.0.0/24'
   }
 }
 

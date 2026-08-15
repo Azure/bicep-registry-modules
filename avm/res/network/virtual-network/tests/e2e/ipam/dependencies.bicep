@@ -4,14 +4,11 @@ param location string = resourceGroup().location
 @description('Required. The name of the Network Manager to create.')
 param networkManagerName string
 
-@description('Required. List of IP address prefixes to be used for the IPAM pool.')
-param addressPrefixes array
-
 @description('Required. The name of the pre-existing Virtual Network to link to the IPAM pool.')
 param virtualNetworkName string
 
-@description('Required. The classical address prefix to assign to the pre-existing Virtual Network. Must fall within the IPAM pool range.')
-param virtualNetworkAddressPrefix string
+var addressPrefixVnet = '10.0.0.0/16'
+var addressPrefixNetworkManager = '172.16.0.0/22'
 
 resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' = {
   name: networkManagerName
@@ -31,7 +28,9 @@ resource networkManagerIpamPool 'Microsoft.Network/networkManagers/ipamPools@202
   location: location
   properties: {
     displayName: '${networkManagerName}-ipamPool'
-    addressPrefixes: addressPrefixes
+    addressPrefixes: [
+      addressPrefixNetworkManager
+    ]
   }
 }
 
@@ -42,7 +41,7 @@ resource existingVirtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' =
   properties: {
     addressSpace: {
       addressPrefixes: [
-        virtualNetworkAddressPrefix
+        addressPrefixVnet
       ]
     }
   }
