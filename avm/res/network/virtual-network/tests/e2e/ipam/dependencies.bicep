@@ -7,7 +7,7 @@ param networkManagerName string
 @description('Required. The name of the pre-existing Virtual Network to link to the IPAM pool.')
 param virtualNetworkName string
 
-var addressPrefixVnet = '10.0.0.0/16'
+var addressPrefixVnet = '172.16.0.0/24'
 var addressPrefixNetworkManager = '172.16.0.0/22'
 
 resource networkManager 'Microsoft.Network/networkManagers@2025-05-01' = {
