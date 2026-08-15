@@ -114,26 +114,14 @@ var enableReferencedModulesTelemetry = false
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
-var formattedUserAssignedIdentities = reduce(
-  map(
-    union(
-      (!empty(managedIdentities.?userAssignedResourceId) ? [managedIdentities.?userAssignedResourceId] : []),
-      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
-        ? [customerManagedKey.?userAssignedIdentityResourceId]
-        : [])
-    ),
-    (id) => { '${id}': {} }
-  ),
-  {},
-  (cur, next) => union(cur, next)
-) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
-var identity = !empty(managedIdentities) || !empty(formattedUserAssignedIdentities)
+var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(formattedUserAssignedIdentities) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(formattedUserAssignedIdentities) ? 'UserAssigned' : 'None')
-      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+        ? (!empty(managedIdentities.?userAssignedResourceId) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceId) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(managedIdentities.?userAssignedResourceId)
+        ? { '${managedIdentities.?userAssignedResourceId}': {} }
+        : null
     }
   : null
 
@@ -176,23 +164,23 @@ var formattedRoleAssignments = [
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
-  name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
-    split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
-    name: customerManagedKey!.?keyName!
+  resource cMKKey 'keys@2025-05-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey!.?userAssignedIdentityResourceId!, '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[2],
-    split(customerManagedKey!.?userAssignedIdentityResourceId!, '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
