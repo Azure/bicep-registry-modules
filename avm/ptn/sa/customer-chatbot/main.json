@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "10139966269686604620"
+      "templateHash": "2391877030750950881"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -50,7 +50,7 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt-5.4-mini,50",
+            "OpenAI.GlobalStandard.gpt-5.4-mini,5",
             "OpenAI.GlobalStandard.gpt-realtime-mini,1"
           ]
         },
@@ -107,7 +107,7 @@
     },
     "gptModelCapacity": {
       "type": "int",
-      "defaultValue": 50,
+      "defaultValue": 5,
       "metadata": {
         "description": "Optional. AI model deployment token capacity. Defaults to 50 for optimal performance."
       }

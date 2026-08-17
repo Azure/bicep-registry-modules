@@ -458,7 +458,7 @@ AI model deployment token capacity. Defaults to 50 for optimal performance.
 
 - Required: No
 - Type: int
-- Default: `50`
+- Default: `5`
 
 ### Parameter: `gptModelDeploymentType`
 
