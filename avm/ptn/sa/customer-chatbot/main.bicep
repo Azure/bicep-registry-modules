@@ -31,7 +31,7 @@ param location string = resourceGroup().location
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.4-mini,5'
+      'OpenAI.GlobalStandard.gpt-4.1-mini,5'
       'OpenAI.GlobalStandard.gpt-realtime-mini,1'
     ]
   }
@@ -44,10 +44,10 @@ param cosmosDbReplicaLocation string?
 
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
-param gptModelName string = 'gpt-5.4-mini'
+param gptModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Version of the GPT model to deploy. Defaults to 2026-03-17.')
-param gptModelVersion string = '2026-03-17'
+param gptModelVersion string = '2025-04-14'
 
 @description('Optional. Version of the OpenAI.')
 param azureOpenAIApiVersion string = '2025-01-01-preview'
@@ -165,7 +165,7 @@ var deployingUserPrincipalId = deployerInfo.objectId
 // ============== //
 
 // ========== Resource Group Tag ========== //
-resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
+resource resourceGroupTags 'Microsoft.Resources/tags@2024-11-01' = {
   name: 'default'
   properties: {
     tags: union(existingTags, allTags, {
@@ -178,7 +178,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2024-07-01' = {
 }
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-customerchatbot.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -198,7 +198,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableT
 
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -263,7 +263,7 @@ var logAnalyticsWorkspaceResourceId = logAnalyticsWorkspace!.outputs.resourceId
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
@@ -484,7 +484,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
@@ -657,7 +657,7 @@ var aiModelDeployments = [
 ]
 var aiFoundryAiProjectDescription = 'AI Foundry Project'
 
-module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.14.2' = {
+module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-services/account:0.19.0' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -736,7 +736,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
   }
 }
 
-module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.1' = if (enablePrivateNetworking) {
   name: take('pep-${aiFoundryAiServicesResourceName}-deployment', 64)
   params: {
     name: 'pep-${aiFoundryAiServicesResourceName}'
@@ -776,7 +776,7 @@ module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12
 // ========== Search Service ========== //
 var searchServiceName = 'srch-${solutionSuffix}'
 
-resource searchService 'Microsoft.Search/searchServices@2024-06-01-preview' = {
+resource searchService 'Microsoft.Search/searchServices@2025-05-01' = {
   name: searchServiceName
   location: location
   sku: {
@@ -785,7 +785,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-06-01-preview' = {
 }
 
 // Seperate search service module to enable managed identity and update other properties as it decreases deployment time for Search Service
-module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.1' = {
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.13.0' = {
   name: take('avm.res.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
@@ -887,7 +887,7 @@ var containers = [
     paths: ['/email']
   }
 ]
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.21.1' = {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -942,7 +942,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
       : []
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
-    capabilitiesToAdd: enableRedundancy ? null : ['EnableServerless']
+    capacityMode: enableRedundancy ? 'Provisioned' : 'Serverless'
     enableAutomaticFailover: enableRedundancy ? true : false
     failoverLocations: enableRedundancy
       ? [
@@ -1042,7 +1042,7 @@ resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@202
 }
 
 // WAF aligned configuration for Private Networking - ACR Private Endpoint
-module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.1' = if (enablePrivateNetworking) {
   name: take('pep-${containerRegistryResourceName}-deployment', 64)
   params: {
     name: 'pep-${containerRegistryResourceName}'
@@ -1167,7 +1167,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
 
 // ========== Additional Cosmos DB Role Assignment for Backend App Service ========== //
 // Add the backend App Service's system-assigned managed identity to Cosmos DB role
-resource cosmosDbBackendRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+resource cosmosDbBackendRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
   name: '${cosmosDbResourceName}/${guid(subscription().id, resourceGroup().id, backendWebSiteResourceName, 'CosmosDBDataContributor')}'
   properties: {
     principalId: webSiteBackend.outputs.systemAssignedMIPrincipalId!
@@ -1240,7 +1240,7 @@ resource searchToAiServicesOpenAIRole 'Microsoft.Authorization/roleAssignments@2
 }
 
 // ========== Additional Cosmos DB Role Assignment for Scenario Backend App Service ========== //
-resource cosmosDbScenarioBackendRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+resource cosmosDbScenarioBackendRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
   name: '${cosmosDbResourceName}/${guid(subscription().id, resourceGroup().id, scenarioBackendWebSiteResourceName, 'CosmosDBDataContributor')}'
   properties: {
     principalId: webSiteScenarioBackend.outputs.systemAssignedMIPrincipalId!

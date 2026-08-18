@@ -169,7 +169,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-resource app 'Microsoft.Web/sites@2024-04-01' = {
+resource app 'Microsoft.Web/sites@2025-03-01' = {
   name: name
   location: location
   kind: kind
@@ -203,9 +203,11 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) ? 'Disabled' : 'Enabled')
-    vnetContentShareEnabled: vnetContentShareEnabled
-    vnetImagePullEnabled: vnetImagePullEnabled
-    vnetRouteAllEnabled: vnetRouteAllEnabled
+    outboundVnetRouting: {
+      contentShareTraffic: vnetContentShareEnabled
+      imagePullTraffic: vnetImagePullEnabled
+      applicationTraffic: vnetRouteAllEnabled
+    }
     scmSiteAlsoStopped: scmSiteAlsoStopped
     // Always enforce end to end encryption
     endToEndEncryptionEnabled: e2eEncryptionEnabled
@@ -261,7 +263,7 @@ resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
     scope: resourceGroup(
