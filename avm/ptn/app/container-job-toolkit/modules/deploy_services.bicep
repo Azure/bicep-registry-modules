@@ -510,7 +510,7 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.9.0' = if (zoneRedundant) {
+module vnet 'br/public:avm/res/network/virtual-network:0.10.1' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -696,7 +696,7 @@ resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities
 
 // supporting resources
 // -----------------
-module vault 'br/public:avm/res/key-vault/vault:0.13.3' = {
+module vault 'br/public:avm/res/key-vault/vault:0.14.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName, subscription().subscriptionId)}-vault'
   params: {
     name: keyVaultName
@@ -773,7 +773,7 @@ module registry_rbac 'br/public:avm/ptn/authorization/resource-role-assignment:0
   }
 ]
 
-module storage 'br/public:avm/res/storage/storage-account:0.32.1' = if (deployInVnet) {
+module storage 'br/public:avm/res/storage/storage-account:0.33.0' = if (deployInVnet) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-storage'
   params: {
     name: uniqueString('sa', name, location, resourceGroupName, subscription().subscriptionId)
@@ -808,7 +808,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.32.1' = if (deployIn
   }
 }
 
-module law_new 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (empty(logAnalyticsWorkspaceResourceId)) {
+module law_new 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (empty(logAnalyticsWorkspaceResourceId)) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-law'
   params: {
     name: 'la-${name}'
@@ -827,7 +827,7 @@ resource law_existing 'Microsoft.OperationalInsights/workspaces@2025-02-01' exis
 
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.13.3' = {
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.15.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'
