@@ -20,7 +20,7 @@ param namePrefix string = '#_namePrefix_#'
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 // Using a single zone region for NSP e2e tests.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+var enforcedLocation = 'francecentral'
 
 // ============== //
 // General resources
