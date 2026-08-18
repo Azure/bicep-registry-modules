@@ -323,6 +323,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-previ
   properties: {
     enableBurstCapacity: capacityMode == 'Serverless' ? false : enableBurstCapacity
     databaseAccountOfferType: databaseAccountOfferType
+    analyticalStorageConfiguration: analyticalStorageConfiguration
     defaultIdentity: !empty(defaultIdentity) && defaultIdentity.?name != 'UserAssignedIdentity'
       ? defaultIdentity!.name
       : 'UserAssignedIdentity=${defaultIdentity!.?resourceId}'
