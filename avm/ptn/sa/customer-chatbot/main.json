@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "11537274591785559442"
+      "templateHash": "11551846991558830076"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -38418,7 +38418,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "16348687835839889386"
+              "templateHash": "4658497399147260407"
             }
           },
           "definitions": {
@@ -39433,7 +39433,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "927711739093301324"
+                      "templateHash": "75515494085491923"
                     }
                   },
                   "parameters": {
@@ -39519,7 +39519,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2026-04-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -39534,7 +39534,7 @@
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2026-04-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
@@ -40629,7 +40629,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "16348687835839889386"
+              "templateHash": "4658497399147260407"
             }
           },
           "definitions": {
@@ -41644,7 +41644,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "927711739093301324"
+                      "templateHash": "75515494085491923"
                     }
                   },
                   "parameters": {
@@ -41730,7 +41730,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2026-04-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -41745,7 +41745,7 @@
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2026-04-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
@@ -42662,7 +42662,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "16348687835839889386"
+              "templateHash": "4658497399147260407"
             }
           },
           "definitions": {
@@ -43677,7 +43677,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "927711739093301324"
+                      "templateHash": "75515494085491923"
                     }
                   },
                   "parameters": {
@@ -43763,7 +43763,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2026-04-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -43778,7 +43778,7 @@
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2026-04-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
@@ -44657,7 +44657,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "16348687835839889386"
+              "templateHash": "4658497399147260407"
             }
           },
           "definitions": {
@@ -45672,7 +45672,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "927711739093301324"
+                      "templateHash": "75515494085491923"
                     }
                   },
                   "parameters": {
@@ -45758,7 +45758,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2024-01-01",
+                      "apiVersion": "2026-04-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -45773,7 +45773,7 @@
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2025-03-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2026-04-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
