@@ -324,6 +324,9 @@ param networkAccessPolicy string = 'DenyAll'
 @description('Optional. Policy for controlling export on the disk.')
 param publicNetworkAccess string = 'Disabled'
 
+@description('Optional. Enables FIPS 140-3 compliant cryptography for protected settings used by Linux VM extensions. The guest OS must also be configured for FIPS 140-3 and use a FIPS 140-3 compliant Azure Linux Guest Agent.')
+param enableFips1403Encryption bool = false
+
 var enableReferencedModulesTelemetry = false
 
 var publicKeysFormatted = [
@@ -637,6 +640,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2025-11-01' = {
     additionalCapabilities: {
       ultraSSDEnabled: ultraSSDEnabled
       hibernationEnabled: hibernationEnabled
+      enableFips1403Encryption: enableFips1403Encryption
     }
     osProfile: empty(osDisk.managedDisk.?resourceId) // Not allowed
       ? {
