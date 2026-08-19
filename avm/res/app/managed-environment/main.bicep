@@ -286,7 +286,6 @@ module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(cert
     name: certificate.?name ?? 'cert-${name}'
     managedEnvironmentName: managedEnvironment.name
     certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
-    certificateType: certificate.?certificateType
     certificateValue: certificate.?certificateValue
     certificatePassword: certificate.?certificatePassword
     location: certificate.?location
@@ -418,9 +417,6 @@ import { certificateKeyVaultPropertiesType } from 'certificate/main.bicep'
 type certificateType = {
   @description('Optional. The name of the certificate.')
   name: string?
-
-  @description('Optional. The type of the certificate.')
-  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
 
   @description('Optional. The value of the certificate. PFX or PEM blob.')
   certificateValue: string?

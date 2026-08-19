@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "15014026825609329224"
+      "templateHash": "14989290710577039100"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."
@@ -78,12 +78,12 @@
     "managedEnvironment": {
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2025-10-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('managedEnvironmentName')]"
     },
     "storage": {
       "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2025-10-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
       "properties": {
         "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",

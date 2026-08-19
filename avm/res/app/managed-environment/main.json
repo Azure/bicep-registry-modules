@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "5961311162681773139"
+      "templateHash": "15024388074704080602"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -20,17 +20,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the certificate."
-          }
-        },
-        "certificateType": {
-          "type": "string",
-          "allowedValues": [
-            "ImagePullTrustedCA",
-            "ServerSSLCertificate"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The type of the certificate."
           }
         },
         "certificateValue": {
@@ -1177,7 +1166,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "15014026825609329224"
+              "templateHash": "14989290710577039100"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1249,12 +1238,12 @@
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "storage": {
               "type": "Microsoft.App/managedEnvironments/storages",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "properties": {
                 "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",
@@ -1311,9 +1300,6 @@
           "certificateKeyVaultProperties": {
             "value": "[tryGet(parameters('certificate'), 'certificateKeyVaultProperties')]"
           },
-          "certificateType": {
-            "value": "[tryGet(parameters('certificate'), 'certificateType')]"
-          },
           "certificateValue": {
             "value": "[tryGet(parameters('certificate'), 'certificateValue')]"
           },
@@ -1338,7 +1324,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "9486002416861232188"
+              "templateHash": "4830934724584315790"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1393,19 +1379,8 @@
                 "description": "Optional. A key vault reference to the certificate to use for the custom domain."
               }
             },
-            "certificateType": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "ServerSSLCertificate",
-                "ImagePullTrustedCA"
-              ],
-              "metadata": {
-                "description": "Optional. The type of the certificate."
-              }
-            },
             "certificateValue": {
-              "type": "string",
+              "type": "securestring",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The value of the certificate. PFX or PEM blob."
@@ -1422,7 +1397,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+                  "source": "Microsoft.App/managedEnvironments/certificates@2026-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -1460,17 +1435,16 @@
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "managedEnvironmentCertificate": {
               "type": "Microsoft.App/managedEnvironments/certificates",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
                 "certificateKeyVaultProperties": "[if(not(empty(parameters('certificateKeyVaultProperties'))), createObject('identity', parameters('certificateKeyVaultProperties').identityResourceId, 'keyVaultUrl', parameters('certificateKeyVaultProperties').keyVaultUrl), null())]",
-                "certificateType": "[parameters('certificateType')]",
                 "password": "[parameters('certificatePassword')]",
                 "value": "[parameters('certificateValue')]"
               },
