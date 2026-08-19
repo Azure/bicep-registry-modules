@@ -212,7 +212,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
-    enableRedundancy: false
+    enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
     location: '<location>'
@@ -250,7 +250,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
       "value": true
     },
     "enableRedundancy": {
-      "value": false
+      "value": true
     },
     "enableScalability": {
       "value": true
@@ -290,7 +290,7 @@ param azureAiServiceLocation = '<azureAiServiceLocation>'
 param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
-param enableRedundancy = false
+param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
 param location = '<location>'
