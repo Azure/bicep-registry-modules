@@ -33,7 +33,7 @@ var enforcedAiServiceLocation = 'swedencentral'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       enableMonitoring: true
       enablePrivateNetworking: true
-      enableRedundancy: false
+      enableRedundancy: true
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: virtualMachineAdminPassword
       cosmosDbReplicaLocation: 'canadacentral'
