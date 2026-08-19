@@ -209,7 +209,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
-    cosmosDbReplicaLocation: 'japaneast'
+    cosmosDbReplicaLocation: 'canadacentral'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -241,7 +241,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
-      "value": "japaneast"
+      "value": "canadacentral"
     },
     "enableMonitoring": {
       "value": true
@@ -287,7 +287,7 @@ using 'br/public:avm/ptn/sa/customer-chatbot:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
-param cosmosDbReplicaLocation = 'japaneast'
+param cosmosDbReplicaLocation = 'canadacentral'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
