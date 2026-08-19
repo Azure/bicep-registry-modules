@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "2030354432908272164"
+      "version": "0.46.1.21595",
+      "templateHash": "15014026825609329224"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."

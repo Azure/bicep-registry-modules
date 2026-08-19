@@ -68,6 +68,9 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "${certname}" -CertSubjectName "CN=*.contoso.com"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
   }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Key based access for Storage Accounts is otherwise denied
+  }
 }
 
 @description('The resource ID of the created Managed Identity.')
