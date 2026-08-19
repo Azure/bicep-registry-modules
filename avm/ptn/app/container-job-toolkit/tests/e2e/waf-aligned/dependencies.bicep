@@ -15,7 +15,7 @@ resource law 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   location: location
 }
 
-module appInsights 'br/public:avm/res/insights/component:0.7.2' = {
+module appInsights 'br/public:avm/res/insights/component:0.8.0' = {
   name: '${uniqueString(deployment().name, location)}-appInsights'
   params: {
     name: appInsightsName

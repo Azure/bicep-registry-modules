@@ -122,6 +122,9 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     location: '<location>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     overwriteExistingImage: true
+    tags: {
+      SecurityControl: 'Ignore'
+    }
   }
 }
 ```
@@ -154,6 +157,11 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "overwriteExistingImage": {
       "value": true
+    },
+    "tags": {
+      "value": {
+        "SecurityControl": "Ignore"
+      }
     }
   }
 }
@@ -176,6 +184,9 @@ param name = 'acjmin001'
 param location = '<location>'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param overwriteExistingImage = true
+param tags = {
+  SecurityControl: 'Ignore'
+}
 ```
 
 </details>
@@ -268,6 +279,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     ]
     tags: {
       environment: 'test'
+      SecurityControl: 'Ignore'
     }
     workloadProfileName: 'CAW01'
     workloadProfiles: [
@@ -413,7 +425,8 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     },
     "tags": {
       "value": {
-        "environment": "test"
+        "environment": "test",
+        "SecurityControl": "Ignore"
       }
     },
     "workloadProfileName": {
@@ -516,6 +529,7 @@ param secrets = [
 ]
 param tags = {
   environment: 'test'
+  SecurityControl: 'Ignore'
 }
 param workloadProfileName = 'CAW01'
 param workloadProfiles = [
@@ -558,6 +572,7 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
+      SecurityControl: 'Ignore'
     }
     workloadProfileName: 'CAW01'
     workloadProfiles: [
@@ -613,7 +628,8 @@ module containerJobToolkit 'br/public:avm/ptn/app/container-job-toolkit:<version
     "tags": {
       "value": {
         "Env": "test",
-        "hidden-title": "This is visible in the resource name"
+        "hidden-title": "This is visible in the resource name",
+        "SecurityControl": "Ignore"
       }
     },
     "workloadProfileName": {
@@ -656,6 +672,7 @@ param overwriteExistingImage = true
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
+  SecurityControl: 'Ignore'
 }
 param workloadProfileName = 'CAW01'
 param workloadProfiles = [
@@ -1486,7 +1503,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.5` | Remote reference |
 | `br/public:avm/res/app/job:0.7.2` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.13.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.14.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |

@@ -122,6 +122,7 @@ module testDeployment '../../../main.bicep' = [
       deployDnsZoneKeyVault: false
       tags: {
         environment: 'test'
+        SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions.
       }
       lock: { kind: 'None', name: 'No lock for testing' }
     }

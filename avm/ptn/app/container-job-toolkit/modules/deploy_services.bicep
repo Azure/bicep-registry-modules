@@ -736,7 +736,7 @@ module vault 'br/public:avm/res/key-vault/vault:0.14.0' = {
   }
 }
 
-module registry 'br/public:avm/res/container-registry/registry:0.12.1' = {
+module registry 'br/public:avm/res/container-registry/registry:0.13.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-registry'
   params: {
     #disable-next-line BCP334
@@ -744,7 +744,6 @@ module registry 'br/public:avm/res/container-registry/registry:0.12.1' = {
     location: location
     enableTelemetry: enableTelemetry
     acrSku: deployInVnet ? 'Premium' : 'Standard' // Private Endpoint needs Premium tier
-    trustPolicyStatus: deployInVnet ? 'enabled' : 'disabled' // Content Trust requires Premium tier
     retentionPolicyDays: 30
     retentionPolicyStatus: 'enabled'
     softDeletePolicyDays: 7
