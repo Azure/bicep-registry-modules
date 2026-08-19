@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       enableMonitoring: true
       enablePrivateNetworking: true
-      enableRedundancy: true
+      enableRedundancy: false
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: virtualMachineAdminPassword
       cosmosDbReplicaLocation: 'canadacentral'
