@@ -37,6 +37,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     enableRbacAuthorization: true
     accessPolicies: []
   }
+  tags: {
+    SecurityControl: 'Ignore' // Ignore security policies imposed on testing subscriptions. Public network access would otherwise be prevented.
+  }
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
