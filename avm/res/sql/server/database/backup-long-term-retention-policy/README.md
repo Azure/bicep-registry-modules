@@ -38,6 +38,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-monthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`timeBasedImmutability`](#parameter-timebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
+| [`timeBasedImmutabilityMode`](#parameter-timebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-weeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-weekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-yearlyretention) | string | Yearly retention in ISO 8601 duration format. |
@@ -70,6 +72,36 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+
+### Parameter: `timeBasedImmutability`
+
+The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.
+
+- Required: No
+- Type: string
+- Default: `'Disable'`
+- Allowed:
+  ```Bicep
+  [
+    'Disable'
+    'Enable'
+  ]
+  ```
+
+### Parameter: `timeBasedImmutabilityMode`
+
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+
+- Required: No
+- Type: string
+- Default: `'Locked'`
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `weeklyRetention`
 
