@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module in alignment with the b
 param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'chatbotwaf'
+param serviceShort string = 'cbotwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,7 @@ param virtualMachineAdminPassword string = newGuid()
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'westus3'
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedAiServiceLocation = 'swedencentral'
