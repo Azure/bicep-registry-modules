@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the [Customer Chat bot Solution Ac
 param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cbot'
+param serviceShort string = 'chbot'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
-var enforcedLocation = 'westus3'
+var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location // A value to avoid the allowed location list validation to unnecessarily fail
 var enforcedAiServiceLocation = 'swedencentral'
@@ -47,7 +47,7 @@ module testDeployment '../../../main.bicep' = [
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
       azureAiServiceLocation: enforcedAiServiceLocation
-      vmSize: 'Standard_D2s_v4'
+      vmSize: 'Standard_D2s_v3'
     }
   }
 ]
