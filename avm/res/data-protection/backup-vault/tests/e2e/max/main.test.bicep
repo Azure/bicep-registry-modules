@@ -64,6 +64,9 @@ module testDeployment '../../../main.bicep' = {
     immutabilitySettingState: 'Unlocked'
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
     backupPolicies: [
       {

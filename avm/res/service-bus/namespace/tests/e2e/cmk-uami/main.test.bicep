@@ -60,12 +60,6 @@ module testDeployment '../../../main.bicep' = [
         name: 'Premium'
         capacity: 1
       }
-      managedIdentities: {
-        systemAssigned: false
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
