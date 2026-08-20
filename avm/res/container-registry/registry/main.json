@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "17369168648066529835"
+      "templateHash": "10092673504075815598"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -1252,6 +1252,13 @@
         "description": "Optional. The default action of allow or deny when no other rules match."
       }
     },
+    "networkRuleBypassAllowedForTasks": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether if ACR Tasks can bypass the network rules."
+      }
+    },
     "networkRuleSetIpRules": {
       "type": "array",
       "nullable": true,
@@ -1517,6 +1524,7 @@
         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
         "publicNetworkAccess": "[variables('publicNetworkAccessMode')]",
         "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
+        "networkRuleBypassAllowedForTasks": "[parameters('networkRuleBypassAllowedForTasks')]",
         "networkRuleSet": "[if(variables('shouldConfigureNetworkRuleSet'), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', coalesce(parameters('networkRuleSetIpRules'), createArray())), null())]",
         "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
       },

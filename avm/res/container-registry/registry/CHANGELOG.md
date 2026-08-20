@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
-## 0.12.2
+## 0.13.1
 
 ### Changes
 
@@ -12,6 +12,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Breaking Changes
 
 - None
+
+## 0.13.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Added `networkRuleBypassAllowedForTasks` as parameter to enable or disable rule bypass for tasks. Defaults to `false`
 
 ## 0.12.1
 
