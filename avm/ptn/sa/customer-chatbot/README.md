@@ -141,6 +141,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     // Non-required parameters
     location: '<location>'
     solutionName: '<solutionName>'
+    vmSize: 'Standard_D2s_v4'
   }
 }
 ```
@@ -167,6 +168,9 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     },
     "solutionName": {
       "value": "<solutionName>"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v4"
     }
   }
 }
@@ -187,6 +191,7 @@ param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
 param location = '<location>'
 param solutionName = '<solutionName>'
+param vmSize = 'Standard_D2s_v4'
 ```
 
 </details>
@@ -219,6 +224,7 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     solutionName: '<solutionName>'
     virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
     virtualMachineAdminUsername: 'adminuser'
+    vmSize: 'Standard_D2s_v4'
   }
 }
 ```
@@ -269,6 +275,9 @@ module customerChatbot 'br/public:avm/ptn/sa/customer-chatbot:<version>' = {
     },
     "virtualMachineAdminUsername": {
       "value": "adminuser"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v4"
     }
   }
 }
@@ -297,6 +306,7 @@ param location = '<location>'
 param solutionName = '<solutionName>'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
+param vmSize = 'Standard_D2s_v4'
 ```
 
 </details>

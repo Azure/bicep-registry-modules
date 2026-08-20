@@ -29,7 +29,7 @@ var enforcedAiServiceLocation = 'swedencentral'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-07-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -47,6 +47,7 @@ module testDeployment '../../../main.bicep' = [
       solutionName: take('${namePrefix}${serviceShort}001', 16)
       location: enforcedLocation
       azureAiServiceLocation: enforcedAiServiceLocation
+      vmSize: 'Standard_D2s_v4'
     }
   }
 ]

@@ -59,6 +59,7 @@ module testDeployment '../../../main.bicep' = [
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: virtualMachineAdminPassword
       cosmosDbReplicaLocation: 'canadacentral'
+      vmSize: 'Standard_D2s_v4'
     }
   }
 ]
