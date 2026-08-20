@@ -210,14 +210,12 @@ var formattedUserAssignedIdentities = reduce(
   map(
     union(
       (managedIdentities.?userAssignedResourceIds ?? []),
-      union(
-        (!empty(customerManagedKey.?userAssignedIdentityResourceId)
-          ? [customerManagedKey.?userAssignedIdentityResourceId]
-          : []),
-        (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)
-          ? [customerManagedKeyGeo.?userAssignedIdentityResourceId]
-          : [])
-      )
+      (!empty(customerManagedKey.?userAssignedIdentityResourceId)
+        ? [customerManagedKey.?userAssignedIdentityResourceId]
+        : []),
+      (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)
+        ? [customerManagedKeyGeo.?userAssignedIdentityResourceId]
+        : [])
     ),
     (id) => { '${id}': {} }
   ),
