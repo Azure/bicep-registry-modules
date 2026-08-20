@@ -279,14 +279,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 }
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
   name: last(split((customerManagedKey!.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey!.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
     name: customerManagedKey!.?keyName!
   }
 }
@@ -300,14 +300,14 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 }
 
 var isGeoHSMManagedCMK = split(customerManagedKeyGeo.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
-resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKeyGeo)) {
+resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
   name: last(split(customerManagedKeyGeo!.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKeyGeo!.?keyVaultResourceId!, '/')[2],
     split(customerManagedKeyGeo!.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKeyGeo)) {
+  resource cMKKey 'keys@2026-02-01' existing = if (!empty(customerManagedKeyGeo) && !isGeoHSMManagedCMK) {
     name: customerManagedKeyGeo!.?keyName!
   }
 }
