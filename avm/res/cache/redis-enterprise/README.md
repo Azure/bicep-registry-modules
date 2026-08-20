@@ -348,11 +348,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         type: 'rdb'
       }
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -389,13 +384,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "type": "rdb"
         }
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -425,11 +413,6 @@ param database = {
     frequency: '6h'
     type: 'rdb'
   }
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 
@@ -675,6 +658,11 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     minimumTlsVersion: '1.2'
     privateEndpoints: [
       {
@@ -808,6 +796,13 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "minimumTlsVersion": {
       "value": "1.2"
     },
@@ -934,6 +929,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param minimumTlsVersion = '1.2'
 param privateEndpoints = [

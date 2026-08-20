@@ -346,12 +346,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     managedNetworkSettings: {
       firewallSku: 'Basic'
       isolationMode: 'AllowInternetOutbound'
@@ -410,14 +404,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "managedNetworkSettings": {
       "value": {
         "firewallSku": "Basic",
@@ -464,12 +450,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param location = '<location>'
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param managedNetworkSettings = {
   firewallSku: 'Basic'
   isolationMode: 'AllowInternetOutbound'

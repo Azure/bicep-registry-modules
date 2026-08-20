@@ -150,11 +150,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         value: 'valueName'
       }
     ]
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     softDeleteRetentionInDays: 1
   }
 }
@@ -209,13 +204,6 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
         }
       ]
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "softDeleteRetentionInDays": {
       "value": 1
     }
@@ -258,11 +246,6 @@ param keyValues = [
     value: 'valueName'
   }
 ]
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param softDeleteRetentionInDays = 1
 ```
 
