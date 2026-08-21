@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added @secure() decorator to osProfile parameter to prevent adminPassword exposure in ARM deployment history
+- Updated module metadata description for consistency
 
 ### Breaking Changes
 

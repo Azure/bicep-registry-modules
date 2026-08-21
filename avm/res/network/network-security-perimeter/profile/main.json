@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18431466622784980660"
+      "version": "0.43.8.12551",
+      "templateHash": "3553317493086313362"
     },
     "name": "Network Security Perimeter Profile",
     "description": "This module deploys a Network Security Perimeter Profile."
@@ -98,6 +98,13 @@
           "metadata": {
             "description": "Optional. List of subscription ids."
           }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
         }
       },
       "metadata": {
@@ -129,9 +136,39 @@
       "metadata": {
         "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.network-nwsecperim-profile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "networkSecurityPerimeter": {
       "existing": true,
       "type": "Microsoft.Network/networkSecurityPerimeters",
@@ -157,6 +194,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "networkPerimeterName": {
             "value": "[parameters('networkPerimeterName')]"
           },
@@ -195,8 +235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6200985394778207185"
+              "version": "0.43.8.12551",
+              "templateHash": "16129195655805229230"
             },
             "name": "Network Security Perimeter Access Rule",
             "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -297,6 +337,13 @@
               "metadata": {
                 "description": "Optional. List of subscription ids."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
@@ -305,6 +352,26 @@
               "type": "Microsoft.Network/networkSecurityPerimeters/profiles",
               "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('networkPerimeterName'), parameters('networkPerimeterProfileName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwsecperim-profileaccessrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "networkPerimeter": {
               "existing": true,

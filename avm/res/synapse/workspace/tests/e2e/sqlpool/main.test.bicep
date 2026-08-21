@@ -17,8 +17,8 @@ param serviceShort string = 'swsqlp'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+#disable-next-line no-hardcoded-location // Accounting for capacity constraints
+var enforcedLocation = 'germanywestcentral'
 
 // ============ //
 // Dependencies //
@@ -26,7 +26,7 @@ var enforcedLocation = 'northeurope'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }

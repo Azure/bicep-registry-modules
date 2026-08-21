@@ -10,13 +10,25 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointSingleServiceType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -84,10 +96,6 @@ param certificateValue string?
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. The lock settings of the service.')
-param lock lockType?
-
 @description('Optional. Open Telemetry configuration.')
 param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
 
@@ -145,6 +153,8 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
@@ -245,6 +255,7 @@ module managedEnvironment_storage 'storage/main.bicep' = [
       kind: storage.kind
       accessMode: storage.accessMode
       storageAccountName: storage.storageAccountName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -291,8 +302,97 @@ module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(cert
     certificatePassword: certificate.?certificatePassword
     location: certificate.?location
     tags: certificate.?tags
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
+
+module managedEnvironment_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-managedEnvironment-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+              properties: {
+                privateLinkServiceId: managedEnvironment.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'managedEnvironments'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+              properties: {
+                privateLinkServiceId: managedEnvironment.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'managedEnvironments'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+resource managedEnvironment_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: managedEnvironment
+  }
+]
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -312,8 +412,8 @@ output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?princ
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
 
-@description('The IP address of the Managed Environment.')
-output staticIp string = managedEnvironment.properties.staticIp
+@description('The IP address of the Managed Environment. Only populated for internal Managed Environments deployed into a VNet.')
+output staticIp string? = managedEnvironment.properties.?staticIp
 
 @description('The domain verification id for custom domains.')
 output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId

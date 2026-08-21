@@ -28,12 +28,12 @@ param copyVhdDeploymentScriptName string
 @description('Required. The name of the deployment script that waits for a role assignment to propagate.')
 param waitDeploymentScriptName string
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -43,9 +43,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {
     allowBlobPublicAccess: false
   }
-  resource blobServices 'blobServices@2022-09-01' = {
+  resource blobServices 'blobServices@2025-01-01' = {
     name: 'default'
-    resource container 'containers@2022-09-01' = {
+    resource container 'containers@2025-01-01' = {
       name: 'vhds'
       properties: {
         publicAccess: 'None'
@@ -68,7 +68,7 @@ resource resourceGroupContributorRole 'Microsoft.Authorization/roleAssignments@2
 }
 
 // Deploy image template
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2025-10-01' = {
   #disable-next-line use-stable-resource-identifiers
   name: '${imageTemplateNamePrefix}-${baseTime}'
   location: location
@@ -88,7 +88,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
       type: 'PlatformImage'
       publisher: 'MicrosoftWindowsDesktop'
       offer: 'Windows-11'
-      sku: 'win11-21h2-avd'
+      sku: 'win11-24h2-avd'
       version: 'latest'
     }
     distribute: [
@@ -108,7 +108,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2022-02-14
 }
 
 // Trigger VHD creation
-resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: triggerImageDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -132,7 +132,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
 }
 
 // Copy VHD to destination storage account
-resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: copyVhdDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -155,7 +155,7 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
   ]
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -173,7 +173,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2025-05-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'
@@ -195,7 +195,7 @@ resource keyVaultKeyCryptoRole 'Microsoft.Authorization/roleAssignments@2022-04-
 }
 
 // Waiting for the role assignment to propagate
-resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   dependsOn: [keyVaultKeyCryptoRole]
   name: waitDeploymentScriptName
   location: location
@@ -208,7 +208,7 @@ resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2023-10-02' = {
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2025-01-02' = {
   dependsOn: [waitForDeployment]
   name: diskEncryptionSetName
   location: location

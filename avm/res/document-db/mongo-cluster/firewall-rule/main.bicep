@@ -13,11 +13,11 @@ param startIpAddress string
 @description('Required. The end IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format.')
 param endIpAddress string
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-10-01-preview' existing = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-09-01' existing = {
   name: mongoClusterName
 }
 
-resource firewallRule 'Microsoft.DocumentDB/mongoClusters/firewallRules@2024-10-01-preview' = {
+resource firewallRule 'Microsoft.DocumentDB/mongoClusters/firewallRules@2025-09-01' = {
   name: !contains(name, '.') // Custom validation as documented regex is incorrect and does fail with an 'InternalServerError'
     ? name
     : fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')

@@ -63,7 +63,7 @@ resource cosmosDb 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = 
 var createProjectCapabilityHostInternal = createProjectCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 var createAccountCapabilityHostInternal = createAccountCapabilityHost && !empty(cosmosDbConnection) && !empty(aiSearchConnection) && !empty(storageAccountConnection)
 
-resource project 'Microsoft.CognitiveServices/accounts/projects@2025-07-01-preview' = {
+resource project 'Microsoft.CognitiveServices/accounts/projects@2025-12-01' = {
   name: name
   parent: foundryAccount
   location: location
@@ -86,7 +86,7 @@ module cosmosDbRoleAssignments 'role-assignments/cosmosDb.bicep' = if (!empty(co
   }
 }
 
-resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(cosmosDbConnection)) {
+resource cosmosDbConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-12-01' = if (!empty(cosmosDbConnection)) {
   name: cosmosDb.name
   parent: project
   dependsOn: [cosmosDbRoleAssignments]
@@ -111,7 +111,7 @@ module storageAccountRoleAssignments 'role-assignments/storageAccount.bicep' = i
   }
 }
 
-resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(storageAccountConnection)) {
+resource storageAccountConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-12-01' = if (!empty(storageAccountConnection)) {
   name: storageAccount.name
   parent: project
   dependsOn: [storageAccountRoleAssignments, cosmosDbConnectionResource]
@@ -136,7 +136,7 @@ module aiSearchRoleAssignments 'role-assignments/aiSearch.bicep' = if (!empty(ai
   }
 }
 
-resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-07-01-preview' = if (!empty(aiSearchConnection)) {
+resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projects/connections@2025-12-01' = if (!empty(aiSearchConnection)) {
   name: aiSearch.name
   parent: project
   dependsOn: [
@@ -156,7 +156,7 @@ resource aiSearchConnectionResource 'Microsoft.CognitiveServices/accounts/projec
   }
 }
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-07-01-preview' = if (createAccountCapabilityHostInternal) {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-12-01' = if (createAccountCapabilityHostInternal) {
   name: 'chagent${replace(accountName, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: foundryAccount
   dependsOn: [
@@ -171,7 +171,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-07-01-preview' = if (createProjectCapabilityHostInternal) {
+resource capabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-12-01' = if (createProjectCapabilityHostInternal) {
   name: 'chagent${replace(name, '-', '')}' // NOTE: the removal of dashes here may not be necessary
   parent: project
   // Using explicit dependsOn because of dynamic cap host creation

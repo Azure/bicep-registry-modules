@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "6971644227452167087"
+      "version": "0.42.1.51946",
+      "templateHash": "7002553992872566898"
     },
     "name": "Application Gateway for Containers Frontend",
     "description": "This module deploys an Application Gateway for Containers Frontend"
@@ -29,9 +29,36 @@
       "metadata": {
         "description": "Conditional. The name of the parent Application Gateway for Containers instance. Required if the template is used in a standalone deployment."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": [
+    {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.servicenetworking-traffctrlfrontend.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     {
       "type": "Microsoft.ServiceNetworking/trafficControllers/frontends",
       "apiVersion": "2025-01-01",

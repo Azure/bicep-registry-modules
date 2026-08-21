@@ -2,6 +2,43 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two workspaces are deployed in the same resource group at the same time.
+
+### Breaking Changes
+
+- None
+
+## 0.16.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.15.1
+
+### Changes
+
+- Published the following child modules for independent use:
+  - `data-export`
+  - `data-source`
+  - `linked-service`
+  - `linked-storage-account`
+  - `saved-search`
+  - `storage-insight-config`
+  - `table`
+
+### Breaking Changes
+
+- None
+
 ## 0.15.0
 
 ### Changes

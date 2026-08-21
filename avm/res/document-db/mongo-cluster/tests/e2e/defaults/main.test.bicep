@@ -30,7 +30,7 @@ param password string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -49,9 +49,8 @@ module testDeployment '../../../main.bicep' = [
       administratorLogin: 'Admin001'
       administratorLoginPassword: password
       nodeCount: 1
-      sku: 'M10'
+      sku: 'M30'
       storage: 32
-      highAvailabilityMode: 'Disabled'
     }
   }
 ]

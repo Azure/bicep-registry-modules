@@ -26,7 +26,7 @@ param solutionUniqueText string = take(uniqueString(subscription().id, resourceG
 param location string = resourceGroup().location
 
 // Restricting deployment to regions that support all deployed models: gpt-4o-mini, text-embedding-3-small, and gpt-realtime-mini (GlobalStandard)
-@allowed(['centralus', 'eastus2', 'francecentral', 'swedencentral'])
+@allowed(['eastus2', 'francecentral', 'swedencentral'])
 @metadata({
   azd: {
     type: 'location'
@@ -108,7 +108,7 @@ param vmSize string = 'Standard_D2s_v5'
 param containerRegistryHost string = 'ccbcontainerreg.azurecr.io'
 
 @description('Optional. The image tag to use for container images. Defaults to "latest_v2".')
-param imageTag string = 'latest_v2'
+param imageTag string = 'latest_v2_2026-05-04_449'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -147,8 +147,8 @@ var allTags = union(
   },
   tags
 )
-var existingTags = resourceGroup().tags ?? {}
-@description('Optional. Tag, Created by user name')
+var existingTags = resourceGroup().?tags ?? {}
+@description('Optional. Tag, Created by user name.')
 param createdBy string = contains(deployer(), 'userPrincipalName')
   ? split(deployer().userPrincipalName, '@')[0]
   : deployer().objectId
@@ -437,15 +437,6 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             streams: [
               'Microsoft-WindowsEvent'
             ]
-            eventLogName: 'Security'
-            eventTypes: [
-              {
-                eventType: 'Audit Success'
-              }
-              {
-                eventType: 'Audit Failure'
-              }
-            ]
             xPathQueries: [
               'Security!*[System[(EventID=4624 or EventID=4625)]]'
             ]
@@ -501,8 +492,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
     vmSize: vmSize
-    adminUsername: virtualMachineAdminUsername ?? 'JumpboxAdminUser'
-    adminPassword: virtualMachineAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
+    adminUsername: !empty(virtualMachineAdminUsername) ? virtualMachineAdminUsername : 'JumpboxAdminUser'
+    adminPassword: !empty(virtualMachineAdminPassword) ? virtualMachineAdminPassword : 'JumpboxAdminP@ssw0rd1234!'
     patchMode: 'AutomaticByPlatform'
     bypassPlatformSafetyChecksOnUserSchedule: true
     maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
@@ -584,15 +575,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
 }
 
 // ========== Private DNS Zones ========== //
-var keyVaultPrivateDNSZone = 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
 var privateDnsZones = [
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
   'privatelink.services.ai.azure.com'
   'privatelink.documents.azure.com'
-  'privatelink.blob.${environment().suffixes.storage}'
   'privatelink.search.windows.net'
-  keyVaultPrivateDNSZone
 ]
 
 // DNS Zone Index Constants
@@ -601,9 +589,7 @@ var dnsZoneIndex = {
   openAI: 1
   aiServices: 2
   cosmosDb: 3
-  blob: 4
-  search: 5
-  keyVault: 6
+  search: 4
 }
 
 // ===================================================
@@ -673,6 +659,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
     name: aiFoundryAiServicesResourceName
     location: azureAiServiceLocation
     tags: tags
+    enableTelemetry: enableTelemetry
     sku: 'S0'
     kind: 'AIServices'
     disableLocalAuth: true
@@ -752,6 +739,7 @@ module aiFoundryPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12
     customNetworkInterfaceName: 'nic-${aiFoundryAiServicesResourceName}'
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     privateLinkServiceConnections: [
       {
         name: 'pep-${aiFoundryAiServicesResourceName}-connection'
@@ -793,10 +781,12 @@ resource searchService 'Microsoft.Search/searchServices@2024-06-01-preview' = {
 }
 
 // Seperate search service module to enable managed identity and update other properties as it decreases deployment time for Search Service
-module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.0' = {
+module searchServiceUpdate 'br/public:avm/res/search/search-service:0.12.1' = {
   name: take('avm.res.search-service.${solutionSuffix}', 64)
   params: {
     name: searchServiceName
+    location: location
+    enableTelemetry: enableTelemetry
     authOptions: {
       aadOrApiKey: {
         aadAuthFailureMode: 'http401WithBearerChallenge'
@@ -935,7 +925,10 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.19.0' = {
             customNetworkInterfaceName: 'nic-${cosmosDbResourceName}'
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: [
-                { privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDb]!.outputs.resourceId }
+                {
+                  name: 'cosmos-db-dns-zone'
+                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cosmosDb]!.outputs.resourceId
+                }
               ]
             }
             service: 'Sql'
@@ -1045,6 +1038,9 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           USE_AI_PROJECT_CLIENT: 'True'
           DISPLAY_CHART_DEFAULT: 'False'
           APPLICATIONINSIGHTS_CONNECTION_STRING: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+          AZURE_BASIC_LOGGING_LEVEL: 'INFO'
+          AZURE_PACKAGE_LOGGING_LEVEL: 'WARNING'
+          AZURE_LOGGING_PACKAGES: ''
           DUMMY_TEST: 'True'
           SOLUTION_NAME: solutionSuffix
           APP_ENV: 'Prod'
@@ -1056,10 +1052,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           AZURE_SEARCH_PRODUCT_INDEX: 'products'
           COSMOS_DB_DATABASE_NAME: cosmosDbDatabaseName
           COSMOS_DB_ENDPOINT: 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
-          USE_FOUNDRY_AGENTS: 'True'
           AZURE_OPENAI_DEPLOYMENT_NAME: gptModelName
-          RATE_LIMIT_REQUESTS: '100'
-          RATE_LIMIT_WINDOW: '60'
           // Agent IDs will be set by post-deployment script
           FOUNDRY_CHAT_AGENT: ''
           FOUNDRY_PRODUCT_AGENT: ''

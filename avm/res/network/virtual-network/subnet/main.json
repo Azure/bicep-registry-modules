@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "13992200806189615656"
+      "version": "0.42.1.51946",
+      "templateHash": "9939044295143750810"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -83,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
         }
       }
     }
@@ -110,13 +110,13 @@
     },
     "ipamPoolPrefixAllocations": {
       "type": "array",
-      "items": {
-        "type": "object"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipamPoolPrefixAllocations"
+        },
         "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
-      }
+      },
+      "nullable": true
     },
     "networkSecurityGroupResourceId": {
       "type": "string",
@@ -210,17 +210,43 @@
     },
     "applicationGatewayIPConfigurations": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/applicationGatewayIPConfigurations"
+        },
         "description": "Optional. Application gateway IP configurations of virtual network resource."
-      }
+      },
+      "nullable": true
     },
     "serviceEndpointPolicies": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceEndpointPolicies"
+        },
         "description": "Optional. An array of service endpoint policies."
-      }
+      },
+      "nullable": true
+    },
+    "ipAllocations": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/ipAllocations"
+        },
+        "description": "Optional. Array of IpAllocation which reference this subnet."
+      },
+      "nullable": true
+    },
+    "serviceGateway": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworks/subnets@2025-05-01#properties/properties/properties/serviceGateway"
+        },
+        "description": "Optional. Reference to an existing service gateway."
+      },
+      "nullable": true
     },
     "roleAssignments": {
       "type": "array",
@@ -261,7 +287,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -281,12 +307,12 @@
     "virtualNetwork": {
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-05-01",
       "name": "[parameters('virtualNetworkName')]"
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2025-05-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
         "copy": [
@@ -301,6 +327,8 @@
         "addressPrefix": "[parameters('addressPrefix')]",
         "addressPrefixes": "[parameters('addressPrefixes')]",
         "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
+        "ipAllocations": "[parameters('ipAllocations')]",
+        "serviceGateway": "[parameters('serviceGateway')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",

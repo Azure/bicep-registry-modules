@@ -82,7 +82,7 @@ var appInsightsValues = !empty(applicationInsightResourceId)
 var expandedProperties = union(currentAppSettings, properties, azureWebJobsValues, appInsightsValues)
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.web-siteconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'

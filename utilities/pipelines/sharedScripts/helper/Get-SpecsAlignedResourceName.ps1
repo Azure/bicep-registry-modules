@@ -91,9 +91,14 @@ function Get-SpecsAlignedResourceName {
         $cacheContent = Get-Content -Path $cacheFilePath -Raw
 
         if (-not $cacheExpired -and $cacheContent.count -gt 0) {
-            Write-Verbose 'Fetch api specs from cache'
-            $specs = ($cacheContent | ConvertFrom-Json -AsHashtable)
-            $fetchNewData = $false
+            try {
+                $specs = ($cacheContent | ConvertFrom-Json -AsHashtable -ErrorAction Stop)
+                Write-Verbose 'Fetch api specs from cache'
+                $fetchNewData = $false
+            } catch {
+                Write-Warning "Cached api specs file is corrupt; refreshing. ($($_.Exception.Message))"
+                $fetchNewData = $true
+            }
         } else {
             $fetchNewData = $true
         }

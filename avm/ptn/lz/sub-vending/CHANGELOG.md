@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/lz/sub-vending/CHANGELOG.md).
 
+## 0.8.0
+
+### Changes
+
+- Hardened resource-provider registration deployment script to pass `resourceProviders` and `subscriptionId` as environment variables (`RESOURCE_PROVIDERS`, `SUBSCRIPTION_ID`) instead of constructing a command-line `arguments` string.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes

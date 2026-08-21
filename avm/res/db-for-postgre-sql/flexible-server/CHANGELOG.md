@@ -2,6 +2,39 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.16.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.15.5
+
+### Changes
+
+- Fixed `advancedThreatProtectionSettings` child module resource name from `PostgreSQL-advancedThreatProtection` to `Default` to comply with the ARM schema constraint
+
+### Breaking Changes
+
+- None
+
+## 0.15.4
+
+### Changes
+
+- Updated `Microsoft.DBforPostgreSQL/flexibleServers` API version from `2025-06-01-preview` to `2026-01-01-preview` in the parent module and all child modules
+- Added storage parameters `storageType`, `storageTier`, `storageIops`, and `storageThroughput` to expose all storage properties available in the API
+- Replaced the `@allowed` list constraint on `storageSizeGB` with `@minValue(32)` to support the larger sizes available with `PremiumV2_LRS` and `UltraSSD_LRS` storage types
+- Updated `avm/res/network/private-endpoint` module reference from `0.11.1` to `0.12.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.15.3
 
 ### Changes

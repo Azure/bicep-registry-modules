@@ -18,7 +18,7 @@ param keyVaultName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -43,7 +43,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-01-01' = {
   }
 }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2025-01-01' = {
+resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2025-05-01' = {
   name: applicationSecurityGroupName
   location: location
   properties: {}
@@ -65,7 +65,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' = {
   name: storageAccountName
   location: location
   sku: {

@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.40.2.10011",
-      "templateHash": "4963312133934804886"
+      "templateHash": "2762470320903869455"
     },
     "name": "Azure Stack HCI Virtual Machine Instance",
-    "description": "This module deploys an Azure Stack HCI virtual machine."
+    "description": "This module deploys an Azure Stack HCI Virtual Machine Instance."
   },
   "definitions": {
     "roleAssignmentType": {

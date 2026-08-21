@@ -18,6 +18,9 @@ param publicIPResourceID string = ''
 @description('Optional. This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration.')
 param additionalPublicIpConfigurations resourceInput<'Microsoft.Network/azureFirewalls@2025-05-01'>.properties.ipConfigurations = []
 
+@description('Optional. Static private IP address for the primary Azure Firewall IP configuration in AzureFirewallSubnet. If empty, Azure allocates dynamically.')
+param firewallPrivateIpAddress string = ''
+
 @description('Optional. Specifies the properties of the Public IP to create and be used by the Firewall, if no existing public IP was provided.')
 param publicIPAddressObject object = {
   name: '${name}-pip'
@@ -68,7 +71,7 @@ param availabilityZones int[] = [1, 2, 3]
 param enableManagementNic bool = false
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Location for all resources.')
@@ -127,6 +130,11 @@ var ipConfigurations = concat(
                 id: !empty(publicIPResourceID) ? publicIPResourceID : publicIPAddress.?outputs.resourceId
               }
             }
+          : {},
+        (azureSkuName == 'AZFW_VNet' && !empty(firewallPrivateIpAddress))
+          ? {
+              privateIPAddress: firewallPrivateIpAddress
+            }
           : {}
       )
     }
@@ -179,7 +187,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -197,8 +205,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Firewall-PIP'
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.13.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
     publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
@@ -233,8 +241,8 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Firewall-MIP'
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.13.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
       ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')
@@ -356,14 +364,18 @@ resource azureFirewall_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

@@ -58,6 +58,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 // ============== //
 // Resources      //
 // ============== //
@@ -94,6 +96,7 @@ module email_domains 'domain/main.bicep' = [
   for (domain, index) in (domains ?? []): {
     name: '${uniqueString(deployment().name, location)}-email-domain-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       emailServiceName: email.name
       name: domain.name
       location: location

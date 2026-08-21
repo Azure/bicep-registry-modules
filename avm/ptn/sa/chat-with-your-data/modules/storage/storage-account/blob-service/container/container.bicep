@@ -27,7 +27,7 @@ param enableNfsV3RootSquash bool = false
 param immutableStorageWithVersioningEnabled bool = false
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
-param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
+param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2025-08-01'>.properties.metadata = {}
 
 @allowed([
   'Container'
@@ -41,7 +41,7 @@ param publicAccess string = 'None'
 param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.storage-blobcontainer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -59,15 +59,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-08-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2024-01-01' existing = {
+  resource blobServices 'blobServices@2025-08-01' existing = {
     name: blobServiceName
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-08-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {

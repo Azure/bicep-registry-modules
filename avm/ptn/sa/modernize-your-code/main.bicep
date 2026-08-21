@@ -93,8 +93,8 @@ param gptModelDeploymentType string = 'GlobalStandard'
 param gptModelName string = 'gpt-4o'
 
 @minLength(1)
-@description('Optional. Set the Image tag. Defaults to latest_2026-04-13_905.')
-param imageVersion string = 'latest_2026-04-13_905'
+@description('Optional. Set the Image tag. Defaults to latest_2026-04-27_934.')
+param imageVersion string = 'latest_2026-04-27_934'
 
 @description('Optional. Azure Container Registry name. Defaults to cmsacontainerreg.azurecr.io.')
 param acrName string = 'cmsacontainerreg.azurecr.io'
@@ -918,7 +918,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = {
 
 var containerAppsEnvironmentName = 'cae-${solutionSuffix}'
 
-module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.1' = {
+module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.2' = {
   name: take('avm.res.app.managed-environment.${solutionSuffix}', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [applicationInsights, logAnalyticsWorkspace, virtualNetwork] // required due to optional flags that could change dependency
@@ -955,7 +955,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.13.
   }
 }
 
-module containerAppBackend 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerAppBackend 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.backend.${solutionSuffix}', 64)
   #disable-next-line no-unnecessary-dependson
   dependsOn: [applicationInsights] // required due to optional flags that could change dependency
@@ -1134,7 +1134,7 @@ module containerAppBackend 'br/public:avm/res/app/container-app:0.21.0' = {
   }
 }
 
-module containerAppFrontend 'br/public:avm/res/app/container-app:0.21.0' = {
+module containerAppFrontend 'br/public:avm/res/app/container-app:0.22.1' = {
   name: take('avm.res.app.container-app.frontend.${solutionSuffix}', 64)
   params: {
     name: take('ca-frontend-${solutionSuffix}', 32)

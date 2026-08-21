@@ -4,7 +4,7 @@ metadata description = 'This module deploys a Cassandra Role Definition in a Cos
 // ============================================================================ //
 // IMPORTANT: Cassandra RBAC Data Actions Documentation                        //
 // ============================================================================ //
-// As of API version 2025-05-01-preview, valid data action strings for         //
+// As of API version 2026-04-01-preview, valid data action strings for         //
 // Cassandra API are not yet documented by Microsoft. This module is designed  //
 // to support the full Cassandra RBAC feature set once documentation becomes   //
 // available.                                                                   //
@@ -36,10 +36,10 @@ param name string?
 @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
 param roleName string
 
-@description('Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2025-05-01-preview). Please refer to official Azure documentation once available.')
+@description('Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-04-01-preview). Please refer to official Azure documentation once available.')
 param dataActions string[] = []
 
-@description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2025-05-01-preview).')
+@description('Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-04-01-preview).')
 param notDataActions string[] = []
 
 @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Keyspace. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
@@ -48,15 +48,37 @@ param assignableScopes string[]?
 @description('Optional. An array of Cassandra Role Assignments to be created for the Cassandra Role Definition.')
 param cassandraRoleAssignments cassandraRoleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // ============== //
 // Resources      //
 // ============== //
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-cassandrroledefinition.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions@2025-05-01-preview' = {
+resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions@2026-04-01-preview' = {
   parent: databaseAccount
   name: name ?? guid(databaseAccount.id, databaseAccountName, roleName)
   properties: {
@@ -74,6 +96,8 @@ resource cassandraRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/cassandr
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module databaseAccount_cassandraRoleAssignments '../cassandra-role-assignment/main.bicep' = [
   for (cassandraRoleAssignment, index) in (cassandraRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-cassandra-ra-${index}'
@@ -83,6 +107,7 @@ module databaseAccount_cassandraRoleAssignments '../cassandra-role-assignment/ma
       principalId: cassandraRoleAssignment.principalId
       name: cassandraRoleAssignment.?name
       scope: cassandraRoleAssignment.?scope
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

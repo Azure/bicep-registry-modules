@@ -2,6 +2,54 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.12.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.11.3
+
+### Changes
+
+- Added support for deploying linked Self-Hosted Integration Runtime by providing:
+```
+  integrationRuntimes: [
+        {
+          name: '<Self-Hosted Integration Runtime name>'
+          type: 'SelfHosted'
+          linkedResourceRoleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Optional, Defaults to Contributor role for SHIR
+          typeProperties: {
+            linkedInfo: {
+              authorizationType: 'RBAC'
+              resourceId: '<Linked Self-Hosted Integration Runtime ResourceId>'
+            }
+          }
+        }
+      ]
+```
+
+### Breaking Changes
+
+- None
+
+## 0.11.2
+
+### Changes
+
+- Publishing child module `avm/res/data-factory/factory/integration-runtime`
+- Publishing child module `avm/res/data-factory/factory/linked-service`
+- Publishing child module `avm/res/data-factory/factory/managed-virtual-network`
+- Publishing child module `avm/res/data-factory/factory/managed-virtual-network/managed-private-endpoint`
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

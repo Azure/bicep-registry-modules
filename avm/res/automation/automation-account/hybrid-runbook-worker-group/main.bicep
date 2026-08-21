@@ -13,6 +13,30 @@ param credentialName string?
 @description('Optional. An array of Hybrid Runbook Worker Group Workers to deploy with the Hybrid Runbook Worker Group.')
 param hybridRunbookWorkerGroupWorkers hybridRunbookWorkerGroupWorkerType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+var enableReferencedModulesTelemetry = false
+
 resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
@@ -37,6 +61,7 @@ module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker/main.bicep' = [
       hybridRunbookWorkerGroupName: hybridRunbookWorkerGroup.name
       automationAccountName: automationAccount.name
       vmResourceId: worker.vmResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

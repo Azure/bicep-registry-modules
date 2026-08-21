@@ -2,12 +2,21 @@
 
 This module deploys an Azure NetApp Files Capacity Pool.
 
+You can reference the module as follows:
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account/capacity-pool:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -37,6 +46,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionType`](#parameter-encryptiontype) | string | Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`qosType`](#parameter-qostype) | string | The qos type of the pool. |
@@ -75,6 +85,14 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `encryptionType`
 
@@ -268,6 +286,7 @@ List of volumes to create in the capacity pool.
 | [`dataProtection`](#parameter-volumesdataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`encryptionKeySource`](#parameter-volumesencryptionkeysource) | string | The source of the encryption key. |
 | [`exportPolicy`](#parameter-volumesexportpolicy) | object | Export policy rules. |
+| [`isLargeVolume`](#parameter-volumesislargevolume) | bool | Specifies whether volume is a Large Volume or Regular Volume. |
 | [`kerberosEnabled`](#parameter-volumeskerberosenabled) | bool | Define if a volume is KerberosEnabled. |
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
@@ -275,9 +294,11 @@ List of volumes to create in the capacity pool.
 | [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
+| [`smbAccessBasedEnumeration`](#parameter-volumessmbaccessbasedenumeration) | string | Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`tags`](#parameter-volumestags) | object | Tags for volumes. |
 | [`throughputMibps`](#parameter-volumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
@@ -673,6 +694,13 @@ Has root access to volume.
 - Required: No
 - Type: bool
 
+### Parameter: `volumes.isLargeVolume`
+
+Specifies whether volume is a Large Volume or Regular Volume.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `volumes.kerberosEnabled`
 
 Define if a volume is KerberosEnabled.
@@ -844,6 +872,20 @@ The pool service level. Must match the one of the parent capacity pool.
   ]
   ```
 
+### Parameter: `volumes.smbAccessBasedEnumeration`
+
+Enables access-based enumeration share property for SMB Shares. Only applicable for SMB/DualProtocol volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `volumes.smbContinuouslyAvailable`
 
 Enables continuously available share property for SMB volume. Only applicable for SMB volume.
@@ -871,6 +913,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `volumes.tags`
+
+Tags for volumes.
+
+- Required: No
+- Type: object
 
 ### Parameter: `volumes.throughputMibps`
 
@@ -903,3 +952,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

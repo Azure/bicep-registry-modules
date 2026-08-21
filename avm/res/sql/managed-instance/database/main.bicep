@@ -65,6 +65,30 @@ param backupLongTermRetentionPolicy managedInstanceLongTermRetentionPolicyType?
 @description('Optional. Tags of the resource.')
 param tags resourceInput<'Microsoft.Sql/managedInstances/databases@2023-08-01'>.tags?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry bool = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-mi-database.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
@@ -128,6 +152,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
     databaseName: last(split(database.name, '/'))!
     name: backupShortTermRetentionPolicy.?name
     retentionDays: backupShortTermRetentionPolicy.?retentionDays
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -141,6 +166,7 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     database_backupShortTermRetentionPolicy

@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -35,11 +35,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   scope: resourceGroup
   params: {
-    location: resourceLocation
     networkManagerName: 'dep-${namePrefix}-vnm-${serviceShort}'
-    addressPrefixes: [
-      '172.16.0.0/22'
-    ]
+    // The Virtual Network is pre-deployed with a classical address prefix (within the IPAM pool range) and later linked to the IPAM pool by the test below.
+    virtualNetworkName: '${namePrefix}${serviceShort}001'
   }
 }
 
@@ -53,12 +51,16 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      addressPrefixes: [
-        nestedDependencies.outputs.networkManagerIpamPoolId
+      name: nestedDependencies.outputs.virtualNetworkName
+      // Link the pre-existing Virtual Network (classical address prefix) to the IPAM Pool
+      ipamPoolPrefixAllocations: [
+        {
+          pool: {
+            id: nestedDependencies.outputs.networkManagerIpamPoolId
+          }
+          numberOfIpAddresses: '256'
+        }
       ]
-      ipamPoolNumberOfIpAddresses: '254'
       subnets: [
         {
           name: 'subnet-1'

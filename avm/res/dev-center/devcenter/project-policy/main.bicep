@@ -19,6 +19,9 @@ param resourcePolicies resourcePolicyType[]
 @description('Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to "Unassigned".')
 param projectsResourceIdOrName string[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // Resolve project names to resource IDs
 var projectResourceIds = [
   for projectResourceIdOrName in (projectsResourceIdOrName ?? []): startsWith(
@@ -32,6 +35,25 @@ var projectResourceIds = [
 // ============== //
 // Resources      //
 // ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.devcenter-devcenter-projectpolicy.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devcenterName

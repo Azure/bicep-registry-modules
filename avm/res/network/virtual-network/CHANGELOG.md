@@ -2,6 +2,49 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/virtual-network/CHANGELOG.md).
 
+## 0.10.2
+
+### Changes
+
+- Added support for the Virtual Network-level `ipamPoolPrefixAllocations` parameter, enabling IPAM Pool prefix allocations for the Virtual Network address space as an alternative to explicit `addressPrefixes`.
+
+### Breaking Changes
+
+- None
+
+## 0.10.1
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Virtual Networks are deployed in the same resource group at the same time.
+
+### Breaking Changes
+
+- None
+
+## 0.10.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.9.0
+
+### Changes
+
+- Added support for `subnet.ipAllocations` & `subnet.serviceGateway`
+- Added support for `peering.enableOnlyIPv6Peering`
+- Added diverse types
+- Updated references of `avm-common-types` to `0.7.0`
+
+### Breaking Changes
+
+- None
+
 ## 0.8.1
 
 ### Changes

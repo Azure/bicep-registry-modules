@@ -10,19 +10,19 @@ param location string = resourceGroup().location
 @description('Required. The principal/identity to create as a user on the cluster.')
 param targetIdentity targetPrincipalPropertiesType
 
-@description('Optional. The roles to assign to the user per database. Defaults to the "dbOwner" role on the "admin" database.')
+@description('Optional. The roles to assign to the user per database. Defaults to the "root" role on the "admin" database.')
 param targetRoles rolePropertiesType[] = [
   {
     database: 'admin'
-    role: 'dbOwner'
+    role: 'root'
   }
 ]
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' existing = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-09-01' existing = {
   name: mongoClusterName
 }
 
-resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-04-01-preview' = {
+resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-09-01' = {
   name: targetIdentity.principalId
   parent: mongoCluster
   location: location
@@ -68,5 +68,5 @@ type rolePropertiesType = {
   database: 'admin'
 
   @description('Required. The role to assign to the user.')
-  role: 'dbOwner'
+  role: 'root'
 }

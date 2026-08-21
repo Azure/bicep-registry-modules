@@ -1,6 +1,9 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Cluster Agent Pools'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.'
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param managedClusterName string
 
@@ -164,6 +167,25 @@ param windowsProfile resourceInput<'Microsoft.ContainerService/managedClusters/a
 @description('Optional. Virtual Machines resource status.')
 param virtualMachinesProfile resourceInput<'Microsoft.ContainerService/managedClusters/agentPools@2025-10-01'>.properties.virtualMachinesProfile?
 
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.consvc-mgdcluster-agentpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' existing = {
   name: managedClusterName
 }
@@ -172,15 +194,18 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-1
   name: name
   parent: managedCluster
   properties: {
-    availabilityZones: map(availabilityZones ?? [], zone => '${zone}')
+    // availabilityZones can only be set for the 'VirtualMachineScaleSets' agent pool type; omit it for 'VirtualMachines'.
+    availabilityZones: type == 'VirtualMachines' ? null : map(availabilityZones ?? [], zone => '${zone}')
     capacityReservationGroupID: capacityReservationGroupResourceId
-    count: count
+    // count and vmSize cannot be set for the 'VirtualMachines' agent pool type; node sizing/scaling is defined via virtualMachinesProfile.
+    count: type == 'VirtualMachines' ? null : count
     creationData: !empty(sourceResourceId)
       ? {
           sourceResourceId: sourceResourceId
         }
       : null
-    enableAutoScaling: enableAutoScaling
+    // enableAutoScaling, minCount and maxCount are VMSS-specific and cannot be set for the 'VirtualMachines' agent pool type.
+    enableAutoScaling: type == 'VirtualMachines' ? null : enableAutoScaling
     enableEncryptionAtHost: enableEncryptionAtHost
     enableFIPS: enableFIPS
     enableNodePublicIP: enableNodePublicIP
@@ -193,10 +218,10 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-1
     kubeletDiskType: kubeletDiskType
     linuxOSConfig: linuxOSConfig
     localDNSProfile: localDNSProfile
-    maxCount: maxCount
+    maxCount: type == 'VirtualMachines' ? null : maxCount
     maxPods: maxPods
     messageOfTheDay: messageOfTheDay
-    minCount: minCount
+    minCount: type == 'VirtualMachines' ? null : minCount
     mode: mode
     networkProfile: networkProfile
     nodeLabels: nodeLabels
@@ -220,7 +245,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2025-1
     type: type
     upgradeSettings: upgradeSettings
     virtualMachinesProfile: virtualMachinesProfile
-    vmSize: vmSize
+    vmSize: type == 'VirtualMachines' ? null : vmSize
     vnetSubnetID: vnetSubnetResourceId
     workloadRuntime: workloadRuntime
     windowsProfile: windowsProfile

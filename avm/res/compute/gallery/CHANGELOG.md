@@ -2,6 +2,19 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/compute/gallery/CHANGELOG.md).
 
+## 0.9.5
+
+### Changes
+
+- Publishing child module `avm/res/compute/gallery/application`.
+- Publishing child module `avm/res/compute/gallery/image`.
+- Updated resource provider for telemetry.
+- Updated AVM common types.
+
+### Breaking Changes
+
+- None
+
 ## 0.9.4
 
 ### Changes

@@ -230,20 +230,21 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' 
 
 module automationAccount_credentials 'credential/main.bicep' = [
   for (credential, index) in (credentials ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutomationAccount-Credential-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutomationAccount-Credential-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: credential.name
       password: credential.password
       userName: credential.userName
       description: credential.?description
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_modules 'module/main.bicep' = [
   for (module, index) in modules: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Module-${index}'
     params: {
       name: module.name
       automationAccountName: automationAccount.name
@@ -251,13 +252,14 @@ module automationAccount_modules 'module/main.bicep' = [
       uri: module.uri
       location: location
       tags: module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_powershell72modules 'powershell72-module/main.bicep' = [
   for (pwsh72module, index) in (powershell72Modules ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Pwsh72Module-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Pwsh72Module-${index}'
     params: {
       name: pwsh72module.name
       automationAccountName: automationAccount.name
@@ -265,39 +267,42 @@ module automationAccount_powershell72modules 'powershell72-module/main.bicep' = 
       uri: pwsh72module.uri
       location: pwsh72module.?location
       tags: pwsh72module.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_python3packages 'python3-package/main.bicep' = [
   for (python3package, index) in (python3Packages ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python3Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Python3Package-${index}'
     params: {
       name: python3package.name
       automationAccountName: automationAccount.name
       version: python3package.version
       uri: python3package.uri
       tags: python3package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_python2packages 'python2-package/main.bicep' = [
   for (python2package, index) in (python2Packages ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Python2Package-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Python2Package-${index}'
     params: {
       name: python2package.name
       automationAccountName: automationAccount.name
       version: python2package.version
       uri: python2package.uri
       tags: python2package.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_schedules 'schedule/main.bicep' = [
   for (schedule, index) in schedules: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Schedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Schedule-${index}'
     params: {
       name: schedule.name
       automationAccountName: automationAccount.name
@@ -308,13 +313,14 @@ module automationAccount_schedules 'schedule/main.bicep' = [
       interval: schedule.?interval
       startTime: schedule.?startTime
       timeZone: schedule.?timeZone
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_runbooks 'runbook/main.bicep' = [
   for (runbook, index) in runbooks: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Runbook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Runbook-${index}'
     params: {
       name: runbook.name
       automationAccountName: automationAccount.name
@@ -326,19 +332,21 @@ module automationAccount_runbooks 'runbook/main.bicep' = [
       scriptStorageAccountResourceId: runbook.?scriptStorageAccountResourceId
       location: location
       tags: runbook.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
   for (jobSchedule, index) in jobSchedules: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-JobSchedule-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-JobSchedule-${index}'
     params: {
       automationAccountName: automationAccount.name
       runbookName: jobSchedule.runbookName
       scheduleName: jobSchedule.scheduleName
       parameters: jobSchedule.?parameters
       runOn: jobSchedule.?runOn
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_schedules
@@ -349,20 +357,21 @@ module automationAccount_jobSchedules 'job-schedule/main.bicep' = [
 
 module automationAccount_variables 'variable/main.bicep' = [
   for (variable, index) in variables: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Variable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Variable-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: variable.name
       description: variable.?description
       value: variable.value
       isEncrypted: variable.?isEncrypted
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_webhook 'webhook/main.bicep' = [
   for (webhook, index) in webhooks: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Webhook-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Webhook-${index}'
     params: {
       automationAccountName: automationAccount.name
       name: webhook.name
@@ -370,13 +379,14 @@ module automationAccount_webhook 'webhook/main.bicep' = [
       runOn: webhook.?runOn
       expiryTime: webhook.?expiryTime
       parameters: webhook.?parameters
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_sourceControlConfigurations 'source-control/main.bicep' = [
   for (configuration, index) in (sourceControlConfigurations ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-SC-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-SC-${index}'
     params: {
       automationAccountName: automationAccount.name
       branch: configuration.branch
@@ -388,12 +398,13 @@ module automationAccount_sourceControlConfigurations 'source-control/main.bicep'
       securityToken: configuration.?securityToken
       autoSync: configuration.?autoSync
       publishRunbook: configuration.?publishRunbook
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
 module automationAccount_linkedService 'modules/linked-service.bicep' = if (!empty(linkedWorkspaceResourceId)) {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-LinkedService'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-LinkedService'
   params: {
     name: 'automation'
     logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
@@ -414,7 +425,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
 
 module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-AutoAccount-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
@@ -440,12 +451,13 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
 
 module hybridRunbookWorkerGroup_workers 'hybrid-runbook-worker-group/main.bicep' = [
   for (group, index) in (hybridRunbookWorkerGroups ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-AutoAccount-HybridWorkerGroup-Worker-${index}'
     params: {
       automationAccountName: automationAccount.name
       hybridRunbookWorkerGroupWorkers: group.?hybridRunbookWorkerGroupWorkers
       name: group.name
       credentialName: group.?credentialName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       automationAccount_credentials
@@ -497,9 +509,9 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.0' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-automationAccount-pe-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-automationAccount-pe-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -641,7 +653,7 @@ type credentialType = {
   description: string?
 }
 
-import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.0'
+import { solutionPlanType } from 'br/public:avm/res/operations-management/solution:0.3.1'
 
 @export()
 type gallerySolutionType = {

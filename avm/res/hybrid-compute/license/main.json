@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2072314613200815461"
+      "version": "0.40.2.10011",
+      "templateHash": "15229684677671932986"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -150,7 +150,7 @@
   "resources": {
     "license": {
       "type": "Microsoft.HybridCompute/licenses",
-      "apiVersion": "2024-11-10-preview",
+      "apiVersion": "2025-01-13",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -170,7 +170,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.hybridcompute-license.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -215,7 +215,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('license', '2024-11-10-preview', 'full').location]"
+      "value": "[reference('license', '2025-01-13', 'full').location]"
     }
   }
 }

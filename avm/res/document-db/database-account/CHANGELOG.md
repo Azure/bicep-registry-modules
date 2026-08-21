@@ -2,10 +2,52 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/document-db/database-account/CHANGELOG.md).
 
+## 0.21.1
+
+### Changes
+
+- Corrected the `dataMaskingPolicy` logic determining if the Data Masking capability is enabled.
+
+### Breaking Changes
+
+- None
+
+## 0.21.0
+
+### Changes
+
+- Added Dynamic Data Masking capability.
+- Updated `Microsoft.DocumentDB/*` references to `2026-04-01-preview`
+
+### Breaking Changes
+
+- Serverless ability has moved from `capabilitiesToAdd` to a new property `capacityMode`. Capability `EnableServerless` is not allowed in API version beyond 2024-05-15-preview.
+
+## 0.20.1
+
+### Changes
+
+- Added support to specify `SecuredByPerimeter` for `publicNetworkAccess` in `networkRestrictions`
+
+### Breaking Changes
+
+- None
+
+## 0.20.0
+
+### Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified
+
+### Breaking Changes
+
+- None
+
 ## 0.19.1
 
 ### Changes
 
+- Publishing child modules: `cassandra-keyspace`, `cassandra-keyspace/table`, `cassandra-keyspace/view`, `cassandra-role-assignment`, `cassandra-role-definition`, `gremlin-database`, `gremlin-database/graph`, `mongodb-database`, `mongodb-database/collection`, `sql-database`, `sql-database/container`, `table`
 - Added support for `vectorEmbeddingPolicy` and `fullTextPolicy` on SQL containers, and `fullTextIndexes` within `indexingPolicy`
 
 ### Breaking Changes

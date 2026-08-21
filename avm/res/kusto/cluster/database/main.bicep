@@ -2,6 +2,7 @@ metadata name = 'Kusto Cluster Databases'
 metadata description = 'This module deploys a Kusto Cluster Database.'
 
 @description('Required. The name of the Kusto Cluster database.')
+@maxLength(260)
 param name string
 
 @description('Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment.')

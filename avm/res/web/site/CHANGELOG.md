@@ -2,6 +2,44 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/site/CHANGELOG.md).
 
+## 0.24.0
+
+### Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified both for this and the `slot` child-module.
+
+### Breaking Changes
+
+- None
+
+## 0.23.1
+
+### Changes
+
+- Publishing child module `avm/res/web/site/basic-publishing-credentials-policy`
+- Publishing child module `avm/res/web/site/extension`
+- Publishing child module `avm/res/web/site/hybrid-connection-namespace/relay`
+- Publishing child module `avm/res/web/site/slot/basic-publishing-credentials-policy`
+- Publishing child module `avm/res/web/site/slot/config`
+- Publishing child module `avm/res/web/site/slot/extension`
+- Publishing child module `avm/res/web/site/slot/hybrid-connection-namespace/relay`
+
+### Breaking Changes
+
+- None
+
+## 0.23.0
+
+### Changes
+
+- Added support for [hostname bindings](https://learn.microsoft.com/en-us/azure/app-service/app-service-web-tutorial-custom-domain) with optional [certificate creation](https://learn.microsoft.com/en-us/azure/app-service/configure-ssl-certificate) (fixes [#5191](https://github.com/Azure/bicep-registry-modules/issues/5191)) both for the main site, as well as slots via parameter `hostNameBindings` in each interface
+- Updated diverse API versions & module references
+- Added output `hostNameBindings`
+
+### Breaking Changes
+
+- None
+
 ## 0.22.0
 
 ### Changes

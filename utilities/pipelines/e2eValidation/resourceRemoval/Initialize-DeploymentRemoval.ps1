@@ -80,6 +80,9 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Network/privateEndpoints',
             'Microsoft.Network/virtualHubs/routingIntent', # Must be deleted before e.g., an Azure Firewall that it is referencing
             'Microsoft.Network/azureFirewalls', # Must be deleted before e.g., a Virtual Hub that it is using.
+            'Microsoft.Network/expressRouteGateways', # Must be deleted before the Virtual Hub it is attached to
+            'Microsoft.Network/vpnGateways', # Must be deleted before the Virtual Hub it is attached to
+            'Microsoft.Network/p2sVpnGateways', # Must be deleted before the Virtual Hub it is attached to
             'Microsoft.Network/virtualHubs',
             'Microsoft.Network/virtualWans',
             'Microsoft.OperationsManagement/solutions',

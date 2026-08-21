@@ -2,6 +2,31 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/dev-center/devcenter/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.1.2
+
+### Changes
+
+- Publishing child module `avm/res/dev-center/devcenter/attachednetwork`
+- Publishing child module `avm/res/dev-center/devcenter/catalog`
+- Publishing child module `avm/res/dev-center/devcenter/devboxdefinition`
+- Publishing child module `avm/res/dev-center/devcenter/environment-type`
+- Publishing child module `avm/res/dev-center/devcenter/gallery`
+- Publishing child module `avm/res/dev-center/devcenter/project-policy`
+
+### Breaking Changes
+
+- None
+
 ## 0.1.1
 
 ### Changes

@@ -206,8 +206,8 @@ param resourceSuffix string
 
 // Create NSGs for subnets using AVM Network Security Group module
 @batchSize(1)
-#disable-next-line use-recent-module-versions // 0.5.2 is the latest available version
-module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
+#disable-next-line use-recent-module-versions // 0.5.3 is the latest available version
+module nsgs 'br/public:avm/res/network/network-security-group:0.5.3' = [
   for (subnet, i) in vnetSubnets: if (!empty(subnet.?networkSecurityGroup)) {
     name: take('avm.res.network.network-security-group.${subnet.?networkSecurityGroup.name}.${resourceSuffix}', 64)
     params: {
@@ -221,7 +221,7 @@ module nsgs 'br/public:avm/res/network/network-security-group:0.5.2' = [
 ]
 
 // Create VNet and subnets using AVM Virtual Network module
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.2' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.8.1' = {
   name: take('avm.res.network.virtual-network.${vnetName}', 64)
   params: {
     name: vnetName

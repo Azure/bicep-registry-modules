@@ -2,6 +2,20 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/desktop-virtualization/workspace/CHANGELOG.md).
 
+## 0.9.2
+
+### Changes
+
+- Updated all `avm-common-types` imports to `0.7.0` (aligning previously inconsistent `0.6.0`/`0.6.1` references)
+- Updated referenced `avm/res/network/private-endpoint` module to `0.12.1`
+- Updated API version of workspace resource to stable `2025-10-10`
+- Updated API version of the telemetry deployment resource to `2025-04-01`
+- Fixed copy/paste leftover in the private endpoint child deployment name (`keyVault-PrivateEndpoint` -> `workspace-PrivateEndpoint`)
+
+### Breaking Changes
+
+- None
+
 ## 0.9.1
 
 ### Changes

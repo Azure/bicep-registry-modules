@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Workspace to create.')
 param name string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: name
   location: location
 }
@@ -25,7 +25,7 @@ resource sentinel 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' 
 }
 
 // Onboard Sentinel after it has been created
-resource onboardingStates 'Microsoft.SecurityInsights/onboardingStates@2022-12-01-preview' = {
+resource onboardingStates 'Microsoft.SecurityInsights/onboardingStates@2025-09-01' = {
   scope: logAnalyticsWorkspace
   name: 'default'
 }

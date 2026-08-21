@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Pipeline is selecting random regions which don't have constraints when creating MySQL Flexible Servers
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+var enforcedLocation = 'southeastasia'
 
 // ============ //
 // Dependencies //

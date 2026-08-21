@@ -113,7 +113,7 @@ param workspaceHubConfig workspaceHubConfigType?
 
 // Diagnostic Settings
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@sys.description('Optional. The diagnostic settings of the service.')
+@sys.description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @sys.description('Optional. The description of this workspace.')
@@ -323,6 +323,7 @@ module workspace_computes 'compute/main.bicep' = [
       resourceId: compute.?resourceId
       computeType: compute.computeType
       properties: compute.?properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     dependsOn: [
       workspace_privateEndpoints
@@ -344,6 +345,7 @@ module workspace_connections 'connection/main.bicep' = [
       target: connection.target
       value: connection.?value
       connectionProperties: connection.connectionProperties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -355,6 +357,7 @@ module workspace_datastores 'datastore/main.bicep' = [
       machineLearningWorkspaceName: workspace.name
       name: datastore.name
       properties: datastore.properties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -379,14 +382,18 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true

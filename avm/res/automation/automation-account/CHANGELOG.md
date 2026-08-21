@@ -2,16 +2,50 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/automation/automation-account/CHANGELOG.md).
 
+## 0.19.2
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two Automation Accounts are deployed in the same resource group at the same time.
+- Updated cross-module reference to the `br/public:avm/res/network/private-endpoint` module to use the latest version `0.12.1`
+- Updated cross-module reference to the `br/public:avm/res/operations-management/solution` module to use the latest version `0.3.1`
+
+### Breaking Changes
+
+- None
+
+## 0.19.1
+
+### Changes
+
+- Publishing child module `avm/res/automation/automation-account/credential`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group`
+- Publishing child module `avm/res/automation/automation-account/hybrid-runbook-worker-group/hybrid-runbook-worker`
+- Publishing child module `avm/res/automation/automation-account/job-schedule`
+- Publishing child module `avm/res/automation/automation-account/module`
+- Publishing child module `avm/res/automation/automation-account/powershell72-module`
+- Publishing child module `avm/res/automation/automation-account/python2-package`
+- Publishing child module `avm/res/automation/automation-account/python3-package`
+- Publishing child module `avm/res/automation/automation-account/runbook`
+- Publishing child module `avm/res/automation/automation-account/schedule`
+- Publishing child module `avm/res/automation/automation-account/source-control`
+- Publishing child module `avm/res/automation/automation-account/variable`
+- Publishing child module `avm/res/automation/automation-account/webhook`
+
+### Breaking Changes
+
+- None
+
 ## 0.19.0
 
 ### Changes
 
 - Fixed bug of setting `managedIdentities` with `systemAssigned: false` lead to an error
-- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+- None
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.18.0
 

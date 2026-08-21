@@ -2,6 +2,26 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cdn/profile/Changelog.md).
 
+## 0.20.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.19.3
+
+### Changes
+
+- Documented that the `logAnalyticsDestinationType` property of `diagnosticSettings` is ignored by the platform for CDN profiles, since Azure CDN only emits resource logs in Azure Diagnostics mode.
+
+### Breaking Changes
+
+- None
+
 ## 0.19.2
 
 ### Changes

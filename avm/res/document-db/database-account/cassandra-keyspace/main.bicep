@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra Keyspace within a Cosmos
 param name string
 
 @description('Optional. Tags of the Cassandra keyspace resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Cosmos DB account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -22,11 +22,33 @@ param autoscaleSettingsMaxThroughput int = 4000
 @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level.')
 param throughput int?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-cassandrkeyspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-var keyspaceOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+var keyspaceOptions = databaseAccount.properties.capacityMode == 'Serverless'
   ? {}
   : {
       autoscaleSettings: throughput == null
@@ -37,7 +59,7 @@ var keyspaceOptions = contains(databaseAccount.properties.capabilities, { name: 
       throughput: throughput
     }
 
-resource cassandraKeyspace 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15' = {
+resource cassandraKeyspace 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2026-04-01-preview' = {
   name: name
   tags: tags
   parent: databaseAccount
@@ -48,6 +70,8 @@ resource cassandraKeyspace 'Microsoft.DocumentDB/databaseAccounts/cassandraKeysp
     }
   }
 }
+
+var enableReferencedModulesTelemetry = false
 
 module cassandraKeyspace_tables 'table/main.bicep' = [
   for table in tables: {
@@ -62,6 +86,7 @@ module cassandraKeyspace_tables 'table/main.bicep' = [
       autoscaleSettingsMaxThroughput: table.?autoscaleSettingsMaxThroughput
       defaultTtl: table.?defaultTtl
       tags: table.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -77,6 +102,7 @@ module cassandraKeyspace_views 'view/main.bicep' = [
       throughput: view.?throughput
       autoscaleSettingsMaxThroughput: view.?autoscaleSettingsMaxThroughput
       tags: view.?tags ?? tags
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -101,10 +127,10 @@ type tableType = {
   name: string
 
   @description('Required. Schema definition for the table.')
-  schema: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.properties.resource.schema
+  schema: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview'>.properties.resource.schema
 
   @description('Optional. Tags for the table.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview'>.tags?
 
   @description('Optional. Default TTL (Time To Live) in seconds for data in the table.')
   defaultTtl: int?
@@ -129,7 +155,7 @@ type viewType = {
   viewDefinition: string
 
   @description('Optional. Tags for the view.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview'>.tags?
 
   @description('Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput.')
   throughput: int?

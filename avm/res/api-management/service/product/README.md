@@ -185,7 +185,7 @@ Whether a product subscription is required for accessing APIs included in this p
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `subscriptionsLimit`
 

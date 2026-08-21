@@ -4,11 +4,20 @@ This module deploys a DevTest Lab Artifact Source.
 
 An artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services.
 
+You can reference the module as follows:
+```bicep
+module lab 'br/public:avm/res/dev-test-lab/lab/artifactsource:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -39,6 +48,7 @@ An artifact source allows you to create custom artifacts for the VMs in the lab,
 | :-- | :-- | :-- |
 | [`branchRef`](#parameter-branchref) | string | The artifact source's branch reference (e.g. main or master). |
 | [`displayName`](#parameter-displayname) | string | The artifact source's display name. Default is the name of the artifact source. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`securityToken`](#parameter-securitytoken) | securestring | The security token to authenticate to the artifact source. |
 | [`sourceType`](#parameter-sourcetype) | string | The artifact source's type. |
 | [`status`](#parameter-status) | string | Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is "Enabled". |
@@ -94,6 +104,14 @@ The artifact source's display name. Default is the name of the artifact source.
 - Type: string
 - Default: `[parameters('name')]`
 
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `securityToken`
 
 The security token to authenticate to the artifact source.
@@ -145,3 +163,7 @@ Tags of the resource.
 | `name` | string | The name of the artifact source. |
 | `resourceGroupName` | string | The name of the resource group the artifact source was created in. |
 | `resourceId` | string | The resource ID of the artifact source. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

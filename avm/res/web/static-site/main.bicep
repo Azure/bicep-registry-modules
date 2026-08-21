@@ -213,6 +213,7 @@ module staticSite_linkedBackend 'linked-backend/main.bicep' = if (!empty(linkedB
     staticSiteName: staticSite.name
     backendResourceId: linkedBackend.resourceId
     region: linkedBackend.?location ?? location
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -222,6 +223,7 @@ module staticSite_appSettings 'config/main.bicep' = if (!empty(appSettings)) {
     kind: 'appsettings'
     staticSiteName: staticSite.name
     properties: appSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -231,6 +233,7 @@ module staticSite_functionAppSettings 'config/main.bicep' = if (!empty(functionA
     kind: 'functionappsettings'
     staticSiteName: staticSite.name
     properties: functionAppSettings
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -243,6 +246,7 @@ module staticSite_customDomains 'custom-domain/main.bicep' = [
       validationMethod: validationMethod ?? (indexOf(customDomain, '.') == lastIndexOf(customDomain, '.')
         ? 'dns-txt-token'
         : 'cname-delegation')
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

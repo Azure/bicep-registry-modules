@@ -30,7 +30,7 @@ param secondaryLocation string = 'uksouth'
 
 // NOTE: Metadata must be compile-time constants. Update usageName manually if you change model parameters.
 // Format: 'OpenAI.<DeploymentType>.<ModelName>,<Capacity>'
-// Allowed regions: Union of GPT-5.1, gpt-image-1, and gpt-image-1.5 GlobalStandard availability
+// Allowed regions: Union of GPT-5.1, gpt-image-1-mini, and gpt-image-1.5 GlobalStandard availability
 @allowed([
   'australiaeast'
   'canadaeast'
@@ -49,7 +49,7 @@ param secondaryLocation string = 'uksouth'
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-5.1,150'
-      'OpenAI.GlobalStandard.gpt-image-1,1'
+      'OpenAI.GlobalStandard.gpt-image-1-mini,1'
     ]
   }
 })
@@ -71,13 +71,13 @@ param gptModelName string = 'gpt-5.1'
 @description('Optional. Version of the GPT model to deploy.')
 param gptModelVersion string = '2025-11-13'
 
-@description('Optional. Image model to deploy: gpt-image-1, gpt-image-1.5, or none to skip.')
+@description('Optional. Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip.')
 @allowed([
-  'gpt-image-1'
+  'gpt-image-1-mini'
   'gpt-image-1.5'
   'none'
 ])
-param imageModelChoice string = 'gpt-image-1'
+param imageModelChoice string = 'gpt-image-1-mini'
 
 @description('Optional. API version for Azure OpenAI service.')
 param azureOpenaiAPIVersion string = '2025-01-01-preview'
@@ -118,7 +118,7 @@ param enablePrivateNetworking bool = true
 param acrName string = 'contentgencontainerreg'
 
 @description('Optional. Image Tag.')
-param imageTag string = 'latest_2026-03-02_109'
+param imageTag string = 'latest_2026-04-28_257'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -188,9 +188,9 @@ var baseModelDeployments = [
 
 // Image model configuration based on choice
 var imageModelConfig = {
-  'gpt-image-1': {
-    name: 'gpt-image-1'
-    version: '2025-04-15'
+  'gpt-image-1-mini': {
+    name: 'gpt-image-1-mini'
+    version: '2025-10-06'
     sku: 'GlobalStandard'
   }
   'gpt-image-1.5': {
@@ -232,7 +232,7 @@ var aiFoundryAiProjectDescription = 'Content Generation AI Foundry Project'
 // ============== //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.sa-contentgeneration.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -375,7 +375,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.1' = {
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -525,7 +525,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = {
 }
 
 // ========== AI Search Connection to AI Services ========== //
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-09-01' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-01-15-preview' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'

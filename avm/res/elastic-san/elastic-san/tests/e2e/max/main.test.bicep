@@ -20,6 +20,8 @@ param serviceShort string = 'esanmax'
 @sys.description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+var metricCategoryName string = 'AllMetrics'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -197,7 +199,7 @@ module testDeployment '../../../main.bicep' = [
           name: 'customSetting'
           metricCategories: [
             {
-              category: 'AllMetrics'
+              category: metricCategoryName
             }
           ]
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -223,3 +225,4 @@ output managedIdentityResourceId string = nestedDependencies.outputs.managedIden
 output virtualNetworkRule string = nestedDependencies.outputs.subnetResourceId
 
 output logAnalyticsWorkspaceResourceId string = diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+output metricCategoryName string = metricCategoryName

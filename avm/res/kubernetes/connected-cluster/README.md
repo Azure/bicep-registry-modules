@@ -24,7 +24,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Kubernetes/connectedClusters` | 2024-07-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters)</li></ul> |
+| `Microsoft.Kubernetes/connectedClusters` | 2026-02-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2026-02-01-preview/connectedClusters)</li></ul> |
 
 ## Usage examples
 
@@ -425,8 +425,11 @@ param tags = {
 | [`aadProfile`](#parameter-aadprofile) | object | AAD profile for the connected cluster. |
 | [`arcAgentProfile`](#parameter-arcagentprofile) | object | Arc agentry configuration for the provisioned cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`gateway`](#parameter-gateway) | object | The gateway configuration for routing traffic through a gateway. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
+| [`privateLinkScopeResourceId`](#parameter-privatelinkscoperesourceid) | string | The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity. |
+| [`privateLinkState`](#parameter-privatelinkstate) | string | The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile for the connected cluster. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
@@ -573,6 +576,39 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `gateway`
+
+The gateway configuration for routing traffic through a gateway.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-gatewayresourceid) | string | The resource ID of the Arc gateway. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-gatewayenabled) | bool | Whether the gateway is enabled. |
+
+### Parameter: `gateway.resourceId`
+
+The resource ID of the Arc gateway.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gateway.enabled`
+
+Whether the gateway is enabled.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -619,6 +655,28 @@ The URL of the self-hosted OIDC issuer.
 
 - Required: No
 - Type: string
+
+### Parameter: `privateLinkScopeResourceId`
+
+The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `privateLinkState`
+
+The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

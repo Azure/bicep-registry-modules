@@ -253,6 +253,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       name: backupInstance.name
       friendlyName: backupInstance.?friendlyName
       dataSourceInfo: backupInstance.dataSourceInfo
+      dataSourceSetInfo: backupInstance.?dataSourceSetInfo
       policyInfo: backupInstance.policyInfo
       enableTelemetry: enableReferencedModulesTelemetry
     }
@@ -330,6 +331,9 @@ type backupInstanceType = {
 
   @description('Required. The data source info for the backup instance.')
   dataSourceInfo: dataSourceInfoType
+
+  @description('Optional. The data source set info for the backup instance. Required for some data source types (e.g., AKS).')
+  dataSourceSetInfo: dataSourceInfoType?
 
   @description('Required. The policy info for the backup instance.')
   policyInfo: policyInfoType

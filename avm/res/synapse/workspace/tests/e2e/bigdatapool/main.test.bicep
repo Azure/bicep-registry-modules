@@ -17,8 +17,8 @@ param serviceShort string = 'swbdp'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+#disable-next-line no-hardcoded-location // Accounting for capacity constraints
+var enforcedLocation = 'polandcentral'
 
 // ============ //
 // Dependencies //
@@ -26,7 +26,7 @@ var enforcedLocation = 'northeurope'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -71,6 +71,10 @@ module testDeployment '../../../main.bicep' = [
           sessionLevelPackagesEnabled: true
           cacheSize: 50
           autotuneEnabled: true
+          libraryRequirements: {
+            content: 'numpy==1.26.4\npandas==2.2.3'
+            filename: 'requirements.txt'
+          }
         }
         {
           name: 'dep${namePrefix}bdp02'
@@ -78,6 +82,9 @@ module testDeployment '../../../main.bicep' = [
           nodeSize: 'Small'
         }
       ]
+      tags: {
+        SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
+      }
     }
   }
 ]

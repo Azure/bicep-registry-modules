@@ -17,7 +17,7 @@ param aiSearchLocation string
 param aiSearchConnectionName string
 
 
-resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = {
+resource projectAISearchConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-03-01' = {
   name: '${existingAIFoundryName}/${existingAIProjectName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'

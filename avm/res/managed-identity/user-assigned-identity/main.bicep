@@ -64,8 +64,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.managedidentity-userassignedidentity.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -104,13 +106,14 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
 @batchSize(1)
 module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-UserMSI-FederatedIdentityCred-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, userAssignedIdentity.name)}-UserMSI-FederatedIdentityCred-${index}'
     params: {
       name: federatedIdentityCredential.name
       userAssignedIdentityName: userAssignedIdentity.name
       audiences: federatedIdentityCredential.audiences
       issuer: federatedIdentityCredential.issuer
       subject: federatedIdentityCredential.subject
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
