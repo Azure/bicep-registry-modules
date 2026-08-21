@@ -58,7 +58,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: true
       virtualMachineAdminUsername: 'adminuser'
       virtualMachineAdminPassword: virtualMachineAdminPassword
-      cosmosDbReplicaLocation: enforcedLocation
+      cosmosDbReplicaLocation: 'westus3'
       vmSize: 'Standard_D2s_v3'
     }
   }
