@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "9266488720705861337"
+      "templateHash": "12544756848158182740"
     },
     "name": "Customer Chat bot",
     "description": "This module contains the resources required to deploy the [Customer Chat bot solution accelerator](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Customer-Chat-bot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -232,6 +232,13 @@
       "westeurope": "northeurope"
     },
     "replicaLocation": "[variables('replicaRegionPairs')[parameters('location')]]",
+    "zoneRedundantReplicaRegions": [
+      "centralus",
+      "japaneast",
+      "westeurope",
+      "northeurope"
+    ],
+    "replicaSupportsZoneRedundancy": "[contains(variables('zoneRedundantReplicaRegions'), variables('replicaLocation'))]",
     "allTags": "[union(createObject('azd-env-name', parameters('solutionName')), parameters('tags'))]",
     "existingTags": "[coalesce(tryGet(resourceGroup(), 'tags'), createObject())]",
     "deployerPrincipalType": "[if(contains(deployer(), 'userPrincipalName'), 'User', 'ServicePrincipal')]",
@@ -425,7 +432,7 @@
       "location": "[variables('replicaLocation')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "zoneRedundancy": "Enabled"
+        "zoneRedundancy": "[if(variables('replicaSupportsZoneRedundancy'), 'Enabled', 'Disabled')]"
       },
       "dependsOn": [
         "containerRegistry"
@@ -28001,8 +28008,8 @@
       "dependsOn": [
         "aiFoundryAiServices",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "virtualNetwork"
       ]
     },

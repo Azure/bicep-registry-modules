@@ -143,6 +143,14 @@ var replicaRegionPairs = {
   westeurope: 'northeurope'
 }
 var replicaLocation = replicaRegionPairs[location]
+// Replica regions that support availability zones. Zone redundancy is only enabled on the ACR geo-replica when its region is listed here, as several paired secondary regions (e.g., australiasoutheast, westus, eastasia) do not support availability zones.
+var zoneRedundantReplicaRegions = [
+  'centralus'
+  'japaneast'
+  'westeurope'
+  'northeurope'
+]
+var replicaSupportsZoneRedundancy = contains(zoneRedundantReplicaRegions, replicaLocation)
 var allTags = union(
   {
     'azd-env-name': solutionName
@@ -1037,7 +1045,7 @@ resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@202
   location: replicaLocation
   tags: tags
   properties: {
-    zoneRedundancy: 'Enabled'
+    zoneRedundancy: replicaSupportsZoneRedundancy ? 'Enabled' : 'Disabled'
   }
 }
 
