@@ -25,10 +25,11 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
-| `Microsoft.Network/virtualHubs` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubRouteTables)</li></ul> |
-| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
-| `Microsoft.Network/virtualHubs/routingIntent` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/virtualHubs/routingIntent)</li></ul> |
+| `Microsoft.Network/virtualHubs` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubRouteTables` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubroutetables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/hubRouteTables)</li></ul> |
+| `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_hubvirtualnetworkconnections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/hubVirtualNetworkConnections)</li></ul> |
+| `Microsoft.Network/virtualHubs/routeMaps` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/routeMaps)</li></ul> |
+| `Microsoft.Network/virtualHubs/routingIntent` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualhubs_routingintent.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualHubs/routingIntent)</li></ul> |
 
 ## Usage examples
 
@@ -40,8 +41,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Routing Intent](#example-3-using-routing-intent)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using Route Maps](#example-3-using-route-maps)
+- [Using Routing Intent](#example-4-using-routing-intent)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -373,7 +375,166 @@ param virtualRouterAutoScaleConfiguration = {
 </details>
 <p>
 
-### Example 3: _Using Routing Intent_
+### Example 3: _Using Route Maps_
+
+This instance deploys the module with Route-maps enabled. Route-maps require the virtual hub to have a gateway-based connection (S2S VPN, P2S VPN, or ExpressRoute); a VPN gateway is deployed as a dependency to satisfy this prerequisite.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/route-map]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
+  params: {
+    // Required parameters
+    addressPrefix: '10.10.0.0/23'
+    name: 'nvhrmap'
+    virtualWanResourceId: '<virtualWanResourceId>'
+    // Non-required parameters
+    routeMaps: [
+      {
+        associatedInboundConnections: []
+        associatedOutboundConnections: []
+        name: 'routeMap1'
+        rules: [
+          {
+            actions: [
+              {
+                parameters: []
+                type: 'Drop'
+              }
+            ]
+            matchCriteria: [
+              {
+                asPath: []
+                community: []
+                matchCondition: 'Contains'
+                routePrefix: [
+                  '10.100.0.0/16'
+                ]
+              }
+            ]
+            name: 'rule1'
+            nextStepIfMatched: 'Terminate'
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefix": {
+      "value": "10.10.0.0/23"
+    },
+    "name": {
+      "value": "nvhrmap"
+    },
+    "virtualWanResourceId": {
+      "value": "<virtualWanResourceId>"
+    },
+    // Non-required parameters
+    "routeMaps": {
+      "value": [
+        {
+          "associatedInboundConnections": [],
+          "associatedOutboundConnections": [],
+          "name": "routeMap1",
+          "rules": [
+            {
+              "actions": [
+                {
+                  "parameters": [],
+                  "type": "Drop"
+                }
+              ],
+              "matchCriteria": [
+                {
+                  "asPath": [],
+                  "community": [],
+                  "matchCondition": "Contains",
+                  "routePrefix": [
+                    "10.100.0.0/16"
+                  ]
+                }
+              ],
+              "name": "rule1",
+              "nextStepIfMatched": "Terminate"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-hub:<version>'
+
+// Required parameters
+param addressPrefix = '10.10.0.0/23'
+param name = 'nvhrmap'
+param virtualWanResourceId = '<virtualWanResourceId>'
+// Non-required parameters
+param routeMaps = [
+  {
+    associatedInboundConnections: []
+    associatedOutboundConnections: []
+    name: 'routeMap1'
+    rules: [
+      {
+        actions: [
+          {
+            parameters: []
+            type: 'Drop'
+          }
+        ]
+        matchCriteria: [
+          {
+            asPath: []
+            community: []
+            matchCondition: 'Contains'
+            routePrefix: [
+              '10.100.0.0/16'
+            ]
+          }
+        ]
+        name: 'rule1'
+        nextStepIfMatched: 'Terminate'
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using Routing Intent_
 
 This instance deploys the module the Virtual WAN hub with Routing Intent enabled; requires an existing Virtual Hub, as well the firewall Resource ID.
 
@@ -487,7 +648,7 @@ param routingIntent = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -681,6 +842,7 @@ param tags = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`p2SVpnGatewayResourceId`](#parameter-p2svpngatewayresourceid) | string | Resource ID of the Point-to-Site VPN Gateway to link to. |
 | [`preferredRoutingGateway`](#parameter-preferredroutinggateway) | string | The preferred routing gateway types. |
+| [`routeMaps`](#parameter-routemaps) | array | Route maps to create for the virtual hub. |
 | [`routeTableRoutes`](#parameter-routetableroutes) | array | The VirtualHub route tables. |
 | [`routingIntent`](#parameter-routingintent) | object | The routing intent configuration to create for the virtual hub. |
 | [`securityPartnerProviderResourceId`](#parameter-securitypartnerproviderresourceid) | string | ID of the Security Partner Provider to link to. |
@@ -963,6 +1125,55 @@ The preferred routing gateway types.
 
 - Required: No
 - Type: string
+
+### Parameter: `routeMaps`
+
+Route maps to create for the virtual hub.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routemapsname) | string | The route map name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associatedInboundConnections`](#parameter-routemapsassociatedinboundconnections) | array | List of connections which have this route map associated for inbound traffic. |
+| [`associatedOutboundConnections`](#parameter-routemapsassociatedoutboundconnections) | array | List of connections which have this route map associated for outbound traffic. |
+| [`rules`](#parameter-routemapsrules) | array | List of route map rules. |
+
+### Parameter: `routeMaps.name`
+
+The route map name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeMaps.associatedInboundConnections`
+
+List of connections which have this route map associated for inbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.associatedOutboundConnections`
+
+List of connections which have this route map associated for outbound traffic.
+
+- Required: No
+- Type: array
+
+### Parameter: `routeMaps.rules`
+
+List of route map rules.
+
+- Required: No
+- Type: array
 
 ### Parameter: `routeTableRoutes`
 

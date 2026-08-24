@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/container-app/CHANGELOG.md).
 
+## 0.23.0
+
+### Changes
+
+- The `runtime` parameter now uses a custom user-defined type that exposes both the `java` and `dotnet` runtime configurations. This allows callers to set `runtime.dotnet.autoConfigureDataProtection`, which is supported by the underlying Azure API but not yet part of the GA `Microsoft.App/containerApps@2026-01-01` Bicep type definition. Resolves [#7129](https://github.com/Azure/bicep-registry-modules/issues/7129) by allowing the .NET stack configuration to be preserved across deployments (e.g., when the .NET Development Stack has been enabled via the Azure Portal).
+
+### Breaking Changes
+
+- None
+
 ## 0.22.1
 
 ### Changes

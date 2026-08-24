@@ -24,10 +24,11 @@ param location string = resourceGroup().location
   'australiaeast'
   'eastus'
   'eastus2'
-  'francecentral'
   'japaneast'
+  'southcentralus'
   'swedencentral'
   'uksouth'
+  'westeurope'
   'westus'
   'westus3'
 ])
@@ -50,16 +51,6 @@ param aiServiceLocation string
   'IT_helpdesk'
 ])
 param usecase string
-
-@minLength(1)
-@description('Optional. Location for the Content Understanding service deployment.')
-@allowed(['swedencentral', 'australiaeast'])
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
-param contentUnderstandingLocation string = 'swedencentral'
 
 @minLength(1)
 @description('Optional. Secondary location for databases creation (example: eastus2).')
@@ -89,7 +80,7 @@ param azureOpenAIApiVersion string = '2025-01-01-preview'
 param azureAiAgentApiVersion string = '2025-05-01'
 
 @description('Optional. Version of Content Understanding API.')
-param azureContentUnderstandingApiVersion string = '2024-12-01-preview'
+param azureContentUnderstandingApiVersion string = '2025-11-01'
 
 // You can increase this, but capacity is limited per model/region, so you will get errors if you go over
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
@@ -115,7 +106,7 @@ param backendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
 param backendContainerImageName string = 'km-api'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_afv2_2026-04-27_1539'
+param backendContainerImageTag string = 'latest_afv2_2026-05-18_1589'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
@@ -124,7 +115,7 @@ param frontendContainerRegistryHostname string = 'kmcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'km-app'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_afv2_2026-04-27_1539'
+param frontendContainerImageTag string = 'latest_afv2_2026-05-18_1589'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {}
@@ -408,6 +399,122 @@ module jumpboxPPG 'br/public:avm/res/compute/proximity-placement-group:0.4.1' = 
   }
 }
 
+// ========== Data Collection Rule (Windows VM monitoring) ========== //
+var dataCollectionRulesResourceName = 'dcr-${solutionSuffix}'
+var dataCollectionRulesLogAnalyticsDestinationName = 'la-${solutionSuffix}-destination'
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.11.0' = if (enablePrivateNetworking && enableMonitoring) {
+  name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
+  params: {
+    name: dataCollectionRulesResourceName
+    tags: tags
+    enableTelemetry: enableTelemetry
+    location: logAnalyticsWorkspace!.outputs.location
+    dataCollectionRuleProperties: {
+      kind: 'Windows'
+      dataSources: {
+        performanceCounters: [
+          {
+            streams: [
+              'Microsoft-Perf'
+            ]
+            samplingFrequencyInSeconds: 60
+            counterSpecifiers: [
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Processes'
+              '\\Process(_Total)\\Thread Count'
+              '\\Process(_Total)\\Handle Count'
+              '\\System\\System Up Time'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processor Queue Length'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Memory\\Available Bytes'
+              '\\Memory\\Committed Bytes'
+              '\\Memory\\Cache Bytes'
+              '\\Memory\\Pool Paged Bytes'
+              '\\Memory\\Pool Nonpaged Bytes'
+              '\\Memory\\Pages/sec'
+              '\\Memory\\Page Faults/sec'
+              '\\Process(_Total)\\Working Set'
+              '\\Process(_Total)\\Working Set - Private'
+              '\\LogicalDisk(_Total)\\% Disk Time'
+              '\\LogicalDisk(_Total)\\% Disk Read Time'
+              '\\LogicalDisk(_Total)\\% Disk Write Time'
+              '\\LogicalDisk(_Total)\\% Idle Time'
+              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+              '\\LogicalDisk(_Total)\\Disk Reads/sec'
+              '\\LogicalDisk(_Total)\\Disk Writes/sec'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\LogicalDisk(_Total)\\Free Megabytes'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Network Interface(*)\\Bytes Sent/sec'
+              '\\Network Interface(*)\\Bytes Received/sec'
+              '\\Network Interface(*)\\Packets/sec'
+              '\\Network Interface(*)\\Packets Sent/sec'
+              '\\Network Interface(*)\\Packets Received/sec'
+              '\\Network Interface(*)\\Packets Outbound Errors'
+              '\\Network Interface(*)\\Packets Received Errors'
+            ]
+            name: 'perfCounterDataSource60'
+          }
+        ]
+        windowsEventLogs: [
+          {
+            name: 'SecurityAuditEvents'
+            streams: [
+              'Microsoft-Event'
+            ]
+            xPathQueries: [
+              'Security!*[System[(band(Keywords,13510798882111488)) and (EventID != 4624)]]'
+            ]
+          }
+        ]
+      }
+      destinations: {
+        logAnalytics: [
+          {
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            name: dataCollectionRulesLogAnalyticsDestinationName
+          }
+        ]
+      }
+      dataFlows: [
+        {
+          streams: [
+            'Microsoft-Perf'
+          ]
+          destinations: [
+            dataCollectionRulesLogAnalyticsDestinationName
+          ]
+          transformKql: 'source'
+          outputStream: 'Microsoft-Perf'
+        }
+        {
+          streams: [
+            'Microsoft-Event'
+          ]
+          destinations: [
+            dataCollectionRulesLogAnalyticsDestinationName
+          ]
+          transformKql: 'source'
+          outputStream: 'Microsoft-Event'
+        }
+      ]
+    }
+  }
+}
+
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
 module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
@@ -471,6 +578,18 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enable
       }
     ]
     enableTelemetry: enableTelemetry
+    extensionMonitoringAgentConfig: enableMonitoring
+      ? {
+          dataCollectionRuleAssociations: [
+            {
+              dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
+              name: 'send-${logAnalyticsWorkspaceResourceName}'
+            }
+          ]
+          enabled: true
+          tags: tags
+        }
+      : null
   }
 }
 
@@ -690,67 +809,6 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
   }
 }
 
-// AI Foundry: AI Services Content Understanding
-var aiFoundryAiServicesCUResourceName = 'aif-${solutionSuffix}-cu'
-var aiServicesNameCu = 'aisa-${solutionSuffix}-cu'
-// NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
-module cognitiveServicesCu 'br/public:avm/res/cognitive-services/account:0.14.2' = {
-  name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesCUResourceName}', 64)
-  params: {
-    name: aiServicesNameCu
-    location: contentUnderstandingLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
-    sku: 'S0'
-    kind: 'AIServices'
-    networkAcls: {
-      defaultAction: 'Allow'
-      virtualNetworkRules: []
-      ipRules: []
-    }
-    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [userAssignedIdentity!.outputs.resourceId] } //To create accounts or projects, you must enable a managed identity on your resource
-    disableLocalAuth: true
-    customSubDomainName: aiServicesNameCu
-    apiProperties: {
-      // staticsEnabled: false
-    }
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    privateEndpoints: (enablePrivateNetworking)
-      ? ([
-          {
-            name: 'pep-${aiFoundryAiServicesCUResourceName}'
-            customNetworkInterfaceName: 'nic-${aiFoundryAiServicesCUResourceName}'
-            subnetResourceId: virtualNetwork!.outputs.pepsSubnetResourceId
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'ai-services-cu-dns-zone-cognitiveservices'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-                {
-                  name: 'ai-services-cu-dns-zone-openai'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.openAI]!.outputs.resourceId
-                }
-                {
-                  name: 'ai-services-cu-dns-zone-aiservices'
-                  privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.aiServices]!.outputs.resourceId
-                }
-              ]
-            }
-          }
-        ])
-      : []
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: '53ca6127-db72-4b80-b1b0-d745d6d5456d' // Azure AI User
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-  }
-}
-
 // ========== AVM WAF ========== //
 // ========== AI Foundry: AI Search ========== //
 var aiSearchName = 'srch-${solutionSuffix}'
@@ -925,6 +983,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     allowSharedKeyAccess: true
     allowBlobPublicAccess: false
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    requireInfrastructureEncryption: true
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -1402,6 +1461,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }
     ]
+    e2eEncryptionEnabled: true
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
     // WAF aligned configuration for Private Networking
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
@@ -1454,6 +1514,7 @@ module webSiteFrontend 'modules/web-sites.bicep' = {
         applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
       }
     ]
+    e2eEncryptionEnabled: true
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webSubnetResourceId : null
@@ -1471,9 +1532,6 @@ output resourceGroupName string = resourceGroup().name
 
 @description('Contains Resource Group Location.')
 output resourceGroupLocation string = location
-
-@description('Contains Azure Content Understanding Location.')
-output azureContentUnderstandingLocation string = contentUnderstandingLocation
 
 @description('Contains Application Insights Instrumentation Key.')
 output appInsightsInstrumentationKey string = enableMonitoring ? applicationInsights!.outputs.instrumentationKey : ''
@@ -1594,11 +1652,8 @@ output storageContainerName string = 'data'
 @description('Resource ID of the AI Foundry Project.')
 output aiFoundryResourceId string = aiFoundryAiServices.outputs.resourceId
 
-@description('Resource ID of the Content Understanding AI Foundry.')
-output cuFoundryResourceId string = cognitiveServicesCu.outputs.resourceId
-
 @description('Azure OpenAI Content Understanding endpoint URL.')
-output azureOpenAICuEndpoint string = cognitiveServicesCu.outputs.endpoint
+output azureOpenAICuEndpoint string = aiFoundryAiServices.outputs.endpoints['Content Understanding']
 
 @description('Contains API application name.')
 output apiAppName string = 'api-${solutionSuffix}'

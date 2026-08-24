@@ -505,6 +505,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       }
     ]
     runtime: {
+      dotnet: {
+        autoConfigureDataProtection: false
+      }
       java: {
         enableMetrics: true
       }
@@ -671,6 +674,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "runtime": {
       "value": {
+        "dotnet": {
+          "autoConfigureDataProtection": false
+        },
         "java": {
           "enableMetrics": true
         }
@@ -821,6 +827,9 @@ param roleAssignments = [
   }
 ]
 param runtime = {
+  dotnet: {
+    autoConfigureDataProtection: false
+  }
   java: {
     enableMetrics: true
   }
@@ -1265,7 +1274,7 @@ param tags = {
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
+| [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema. |
 | [`scaleSettings`](#parameter-scalesettings) | object | The scaling settings of the service. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
@@ -1931,10 +1940,57 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `runtime`
 
-Runtime configuration for the Container App.
+Runtime configuration for the Container App. Supports both Java and .NET runtime configuration. Note: The `dotnet` property is accepted by the Azure backend even though it is not part of the GA `2026-01-01` schema.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dotnet`](#parameter-runtimedotnet) | object | .NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments. |
+| [`java`](#parameter-runtimejava) | object | Java app configuration. |
+
+### Parameter: `runtime.dotnet`
+
+.NET app configuration. Setting this allows preserving .NET stack settings (e.g., when the .NET Development Stack has been enabled via the Azure Portal) across subsequent deployments.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoConfigureDataProtection`](#parameter-runtimedotnetautoconfiguredataprotection) | bool | Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment. |
+
+### Parameter: `runtime.dotnet.autoConfigureDataProtection`
+
+Auto configure the ASP.NET Core Data Protection feature. When enabled, the data protection keys will be persisted in the Container Apps environment.
+
+- Required: No
+- Type: bool
+
+### Parameter: `runtime.java`
+
+Java app configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable jmx core metrics for the java app. |
+
+### Parameter: `runtime.java.enableMetrics`
+
+Enable jmx core metrics for the java app.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `scaleSettings`
 

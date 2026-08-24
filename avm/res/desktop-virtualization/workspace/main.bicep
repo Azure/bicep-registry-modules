@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DesktopVirtualization/workspaces@2025-03-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DesktopVirtualization/workspaces@2025-10-10'>.tags?
 
 @sys.description('Optional. Array of application group references.')
 param applicationGroupReferences string[]?
@@ -22,22 +22,22 @@ param friendlyName string = name
 @sys.description('Optional. Public network access for the workspace.')
 param publicNetworkAccess string?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Configuration details for private endpoints.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
@@ -125,7 +125,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -146,7 +146,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2025-03-01-preview' = {
+resource workspace 'Microsoft.DesktopVirtualization/workspaces@2025-10-10' = {
   name: name
   location: location
   tags: tags
@@ -160,9 +160,9 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2025-03-01-previe
   }
 }
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

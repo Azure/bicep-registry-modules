@@ -198,7 +198,7 @@ module testDeployment '../../../main.bicep' = [
           targetRepository: 'cached-hello-world'
         }
       ]
-      trustPolicyStatus: 'enabled'
+      trustPolicyStatus: 'disabled' // Deprecated in 2028. Ref: https://learn.microsoft.com/en-us/azure/container-registry/container-registry-content-trust-deprecation
       tasks: [
         {
           name: '${namePrefix}${serviceShort}Task1'

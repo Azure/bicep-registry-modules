@@ -14,16 +14,38 @@ param throughput int = 400
 param collections collectionType[]?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.tags?
 
 @description('Optional. Specifies the Autoscale settings. Note: Either throughput or autoscaleSettings is required, but not both.')
-param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15'>.properties.options.autoscaleSettings?
+param autoscaleSettings resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview'>.properties.options.autoscaleSettings?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-mongodbdatabase.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2025-04-15' = {
+resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2026-04-01-preview' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -31,7 +53,7 @@ resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
     resource: {
       id: name
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+    options: databaseAccount.properties.capacityMode == 'Serverless'
       ? null
       : {
           throughput: throughput
@@ -39,6 +61,8 @@ resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
         }
   }
 }
+
+var enableReferencedModulesTelemetry = false
 
 module mongodbDatabase_collections 'collection/main.bicep' = [
   for collection in (collections ?? []): {
@@ -50,6 +74,7 @@ module mongodbDatabase_collections 'collection/main.bicep' = [
       indexes: collection.indexes
       shardKey: collection.shardKey
       throughput: collection.?throughput
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -77,8 +102,8 @@ type collectionType = {
   throughput: int?
 
   @description('Required. Indexes for the collection.')
-  indexes: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.indexes
+  indexes: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.indexes
 
   @description('Required. ShardKey for the collection.')
-  shardKey: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.shardKey
+  shardKey: resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.shardKey
 }

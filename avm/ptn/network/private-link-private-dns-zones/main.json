@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4922596151235128991"
+      "version": "0.43.8.12551",
+      "templateHash": "14333535471210987387"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -305,7 +305,7 @@
       "francesouth": "frs",
       "germanynorth": "gn",
       "germanywestcentral": "gwc",
-      "indiasouthcentral": "insc",
+      "indiasouthcentral": "isc",
       "indonesiacentral": "idc",
       "israelcentral": "ilc",
       "israelnorthwest": "iln",
@@ -327,11 +327,13 @@
       "norwaywest": "nww",
       "polandcentral": "plc",
       "qatarcentral": "qac",
+      "saudiarabiaeast": "sae",
       "southafricanorth": "san",
       "southafricawest": "saw",
       "southcentralus": "scus",
       "southcentralus2": "usc2",
       "southeastasia": "sea",
+      "southeastasia3": "sg3",
       "southeastus": "use",
       "southeastus3": "use3",
       "southeastus5": "use5",
@@ -349,6 +351,7 @@
       "uksouth": "uks",
       "ukwest": "ukw",
       "westcentralus": "wcus",
+      "westcentralusfre": "wfre",
       "westeurope": "we",
       "westindia": "inw",
       "westus": "wus",
@@ -407,12 +410,14 @@
       "norway west": "norwaywest",
       "poland central": "polandcentral",
       "qatar central": "qatarcentral",
+      "saudi arabia east": "saudiarabiaeast",
       "south africa north": "southafricanorth",
       "south africa west": "southafricawest",
       "south central us": "southcentralus",
       "south central us 2": "southcentralus2",
       "south india": "southindia",
       "southeast asia": "southeastasia",
+      "southeast asia 3": "southeastasia3",
       "southeast us": "southeastus",
       "southeast us 3": "southeastus3",
       "southeast us 5": "southeastus5",
@@ -429,6 +434,7 @@
       "uk south": "uksouth",
       "uk west": "ukwest",
       "west central us": "westcentralus",
+      "west central us fre": "westcentralusfre",
       "west europe": "westeurope",
       "west india": "westindia",
       "west us": "westus",
@@ -525,8 +531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9329543374083640528"
+              "version": "0.43.8.12551",
+              "templateHash": "9461497029042285615"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

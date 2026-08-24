@@ -5,7 +5,7 @@ metadata description = 'This module deploys a table within an Azure Cosmos DB Ac
 param name string
 
 @description('Optional. Tags for the table.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Azure Cosmos DB account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -16,16 +16,38 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
 param throughput int?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.documentdb-databaseaccounttable.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15' = {
+resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview' = {
   name: name
   tags: tags
   parent: databaseAccount
   properties: {
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+    options: databaseAccount.properties.capacityMode == 'Serverless'
       ? {}
       : {
           autoscaleSettings: throughput == null

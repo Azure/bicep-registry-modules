@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5300058143660875831"
+      "version": "0.46.1.21595",
+      "templateHash": "8090577224272530137"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces",
     "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -25,7 +25,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview#properties/properties/properties/resource/properties/schema"
             },
             "description": "Required. Schema definition for the table."
           }
@@ -34,7 +34,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview#properties/tags"
             },
             "description": "Optional. Tags for the table."
           },
@@ -93,7 +93,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+              "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview#properties/tags"
             },
             "description": "Optional. Tags for the view."
           },
@@ -131,7 +131,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2024-11-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags of the Cassandra keyspace resource."
       },
@@ -176,22 +176,52 @@
       "metadata": {
         "description": "Optional. Request units per second. Cannot be used with autoscaleSettingsMaxThroughput. Setting throughput at the keyspace level is only recommended for development/test or when workload across all tables in the shared throughput keyspace is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the table level."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "cassandraKeyspace": {
       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]"
         }
@@ -240,6 +270,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -249,8 +282,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2894172885713339707"
+              "version": "0.46.1.21595",
+              "templateHash": "16311742136567641063"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
             "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -266,7 +299,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/tags"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the Cassandra table resource."
               },
@@ -288,7 +321,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2024-11-15#properties/properties/properties/resource/properties/schema"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables@2026-04-01-preview#properties/properties/properties/resource/properties/schema"
                 },
                 "description": "Required. Schema definition for the Cassandra table."
               }
@@ -320,24 +353,51 @@
               "metadata": {
                 "description": "Optional. Default time to live in seconds. Default to 0 (disabled). If set to -1, items do not expire."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "databaseAccount::cassandraKeyspace": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspacetable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[parameters('databaseAccountName')]"
             },
             "cassandraTable": {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -347,7 +407,7 @@
                   "defaultTtl": "[parameters('defaultTtl')]",
                   "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]"
                 },
-                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+                "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
               },
               "dependsOn": [
                 "databaseAccount"
@@ -417,6 +477,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('views')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -426,8 +489,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18206948355945720821"
+              "version": "0.46.1.21595",
+              "templateHash": "8118529642876441843"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Views",
             "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -443,7 +506,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview#properties/tags"
+                  "source": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the Cassandra view resource."
               },
@@ -487,24 +550,51 @@
               "metadata": {
                 "description": "Optional. Location for all resources."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
             "databaseAccount::cassandraKeyspace": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-              "apiVersion": "2025-05-01-preview",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'))]"
+            },
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2025-05-01-preview",
+              "apiVersion": "2026-04-01-preview",
               "name": "[parameters('databaseAccountName')]"
             },
             "cassandraView": {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views",
-              "apiVersion": "2025-05-01-preview",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('cassandraKeyspaceName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
@@ -513,7 +603,7 @@
                   "id": "[parameters('name')]",
                   "viewDefinition": "[parameters('viewDefinition')]"
                 },
-                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
+                "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(and(equals(parameters('throughput'), null()), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null()), 'throughput', parameters('throughput')))]"
               },
               "dependsOn": [
                 "databaseAccount"

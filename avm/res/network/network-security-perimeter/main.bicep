@@ -60,6 +60,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-nwsecurityperimeter.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -89,6 +91,7 @@ module networkSecurityPerimeter_profiles 'profile/main.bicep' = [
   for (profile, index) in (profiles ?? []): {
     name: '${uniqueString(deployment().name, location)}-nsp-profile-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       networkPerimeterName: name
       name: profile.name
       accessRules: profile.?accessRules
@@ -196,6 +199,9 @@ type profileType = {
 
   @description('Optional. Whether network traffic is allowed or denied.')
   accessRules: accessRuleType[]?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }
 
 @export()

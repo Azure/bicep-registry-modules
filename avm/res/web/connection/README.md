@@ -37,7 +37,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Multi-Authentication (MSI)](#example-3-multi-authentication-msi)
+- [Single-Authentication (MSI)](#example-4-single-authentication-msi)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -291,7 +293,188 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Multi-Authentication (MSI)_
+
+This instance deploys the module with multi-authentication managed identity configuration using parameterValueSet.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/multi-auth]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  params: {
+    // Required parameters
+    displayName: 'azureblob'
+    name: 'azureblob-wcma'
+    // Non-required parameters
+    api: {
+      id: '<id>'
+    }
+    kind: 'V2'
+    parameterValueSet: {
+      name: 'managedIdentityAuth'
+      values: {}
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "displayName": {
+      "value": "azureblob"
+    },
+    "name": {
+      "value": "azureblob-wcma"
+    },
+    // Non-required parameters
+    "api": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "kind": {
+      "value": "V2"
+    },
+    "parameterValueSet": {
+      "value": {
+        "name": "managedIdentityAuth",
+        "values": {}
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/connection:<version>'
+
+// Required parameters
+param displayName = 'azureblob'
+param name = 'azureblob-wcma'
+// Non-required parameters
+param api = {
+  id: '<id>'
+}
+param kind = 'V2'
+param parameterValueSet = {
+  name: 'managedIdentityAuth'
+  values: {}
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Single-Authentication (MSI)_
+
+This instance deploys the module with single-authentication managed identity configuration.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/single-auth]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/web/connection:<version>' = {
+  params: {
+    // Required parameters
+    displayName: 'azureblob'
+    name: 'azureblob-wcsa'
+    // Non-required parameters
+    alternativeParameterValues: {}
+    api: {
+      id: '<id>'
+    }
+    kind: 'V2'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "displayName": {
+      "value": "azureblob"
+    },
+    "name": {
+      "value": "azureblob-wcsa"
+    },
+    // Non-required parameters
+    "alternativeParameterValues": {
+      "value": {}
+    },
+    "api": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "kind": {
+      "value": "V2"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/connection:<version>'
+
+// Required parameters
+param displayName = 'azureblob'
+param name = 'azureblob-wcsa'
+// Non-required parameters
+param alternativeParameterValues = {}
+param api = {
+  id: '<id>'
+}
+param kind = 'V2'
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -402,9 +585,11 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`alternativeParameterValues`](#parameter-alternativeparametervalues) | secureObject | Alternative parameter values for single-authentication (MSI). When provided, `parameterValueType` is automatically set to `Alternative`. |
 | [`api`](#parameter-api) | object | Specific values for some API connections. |
 | [`customParameterValues`](#parameter-customparametervalues) | object | Dictionary of custom parameter values for specific connections. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`kind`](#parameter-kind) | string | The kind of the connection. Use `V2` for managed identity authentication. |
 | [`location`](#parameter-location) | string | Location of the deployment. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`nonSecretParameterValues`](#parameter-nonsecretparametervalues) | object | Dictionary of nonsecret parameter values. |
@@ -428,6 +613,13 @@ Connection name for connection. It can change depending on the resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `alternativeParameterValues`
+
+Alternative parameter values for single-authentication (MSI). When provided, `parameterValueType` is automatically set to `Alternative`.
+
+- Required: No
+- Type: secureObject
 
 ### Parameter: `api`
 
@@ -458,6 +650,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `kind`
+
+The kind of the connection. Use `V2` for managed identity authentication.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 

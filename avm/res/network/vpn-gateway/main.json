@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "17586558840544227106"
+      "version": "0.43.8.12551",
+      "templateHash": "5094911030868713882"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -340,7 +340,8 @@
     }
   },
   "variables": {
-    "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]"
+    "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
@@ -427,6 +428,9 @@
           },
           "type": {
             "value": "[tryGet(coalesce(parameters('natRules'), createArray())[copyIndex()], 'type')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -436,8 +440,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10981811082187228460"
+              "version": "0.43.8.12551",
+              "templateHash": "4013426704939609421"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -503,9 +507,36 @@
               "metadata": {
                 "description": "Optional. The type of NAT rule for VPN NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-vpngateway-natrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "vpnGateway": {
               "existing": true,
               "type": "Microsoft.Network/vpnGateways",
@@ -615,6 +646,9 @@
           },
           "vpnLinkConnections": {
             "value": "[tryGet(coalesce(parameters('vpnConnections'), createArray())[copyIndex()], 'vpnLinkConnections')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -624,8 +658,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17621696698860337633"
+              "version": "0.43.8.12551",
+              "templateHash": "10146357056750221331"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
@@ -756,9 +790,36 @@
               "metadata": {
                 "description": "Optional. Reference to a VPN site to link to."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-vpngateway-vpnconnection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "vpnGateway": {
               "existing": true,
               "type": "Microsoft.Network/vpnGateways",

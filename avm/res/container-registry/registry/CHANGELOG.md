@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/container-registry/registry/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Added `networkRuleBypassAllowedForTasks` as parameter to enable or disable rule bypass for tasks. Defaults to `false`
+
 ## 0.12.1
 
 ### Changes
@@ -21,11 +31,10 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added new `task` child module (`registries/tasks`) to support ACR Tasks for automating container image builds and workflows. Supports Docker build, encoded task, and file task step types, along with timer, source, and base image triggers. ([#3156](https://github.com/Azure/bicep-registry-modules/issues/3156))
 - Added new `token` and `webhook` child modules (`registries/tokens` and `registries/webhooks`) and wired them into the parent registry module deployment flow.
 - Added independent child-module packaging metadata (`version.json`, `CHANGELOG.md`) for `cache-rule`, `credential-set`, `replication`, `scope-map`, `task`, `token`, and `webhook`.
-- Update the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ### Breaking Changes
 
-- None
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
 
 ## 0.11.0
 

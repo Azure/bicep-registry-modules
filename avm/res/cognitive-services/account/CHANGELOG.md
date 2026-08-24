@@ -2,6 +2,78 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.19.0
+
+### Changes
+
+- Added optional `modelProviderData` (`organizationName`, `countryCode`, `industry`) to `deploymentType`, and project it onto `Microsoft.CognitiveServices/accounts/deployments`. This carries the model-provider attestation that the Cognitive Services RP requires for partner models such as Anthropic Claude (`model.format == 'Anthropic'`), which it uses to auto-accept the partner's Azure Marketplace offer (fixes [#7197](https://github.com/Azure/bicep-registry-modules/issues/7197)). Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use); the `industry` enum values come from the same source. The property is not yet reflected in the resource's public OpenAPI spec ([Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec catches up
+
+### Breaking Changes
+
+- None.
+
+## 0.18.0
+
+### Changes
+
+- Bumped the `Microsoft.CognitiveServices/accounts/deployments` API version from `@2025-06-01` to `@2026-05-01`, the minimum version verified to accept `properties.modelProviderData`
+- Refactored `Microsoft.CognitiveServices/accounts/deployments` from an inline resource loop into a dedicated `deployment` child module while preserving the parent module's existing `deployments` parameter contract.
+
+### Breaking Changes
+
+- None.
+
+## 0.17.0
+
+### Changes
+
+- None
+
+### Breaking Changes
+
+- Updated the diagnostic implementation to avoid automatically enabling both metrics and logs when only one is specified.
+
+## 0.16.0
+
+### Changes
+
+- Added the `enableDefenderForAI` parameter to enable or disable Microsoft Defender for AI (`Microsoft.CognitiveServices/accounts/defenderForAISettings`) on the account. When not set, the Defender for AI settings are left unmanaged by the module (fixes [#6603](https://github.com/Azure/bicep-registry-modules/issues/6603))
+
+### Breaking Changes
+
+- None
+
+## 0.15.1
+
+### Changes
+
+- Fixed intermittent private endpoint deployment failures (`AccountProvisioningStateInvalid` - account in state `Accepted`) by making private endpoints depend on the account's model deployments and commitment plans, so they are only created once the account has returned to a `Succeeded` provisioning state (fixes [#5957](https://github.com/Azure/bicep-registry-modules/issues/5957))
+
+### Breaking Changes
+
+- None
+
+## 0.15.0
+
+### Changes
+
+- Added `bypass` property to `networkAcls` so callers can allow trusted Microsoft services (`AzureServices`) through the Cognitive Services firewall (fixes [#7062](https://github.com/Azure/bicep-registry-modules/issues/7062))
+- Replaced the untyped `networkAcls object?` parameter with the strongly-typed `networkAclsType` user-defined type, exposing `bypass`, `defaultAction`, `ipRules` and `virtualNetworkRules`
+- Bumped the AVM telemetry deployment API version from `Microsoft.Resources/deployments@2024-03-01` to `@2025-04-01` to satisfy the `use-recent-api-versions` linter
+
+### Breaking Changes
+
+- The `networkAcls` parameter is now strongly typed via `networkAclsType`. Consumers passing properties outside of `bypass`, `defaultAction`, `ipRules` or `virtualNetworkRules` (which were previously silently dropped) will now receive a validation error.
+## 0.14.3
+
+### Changes
+
+- Fixed invalid default `sku` for model deployments. The fallback previously used the account-level SKU name (e.g. `S0`), which is not a valid deployment SKU and caused `The deployment sku name 'S0' is invalid.` errors. The default is now `{ name: 'Standard', capacity: 1 }`.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.2
 
 ### Changes

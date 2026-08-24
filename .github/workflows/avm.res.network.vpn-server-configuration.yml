@@ -26,13 +26,8 @@ on:
     branches:
       - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.network.vpn-server-configuration.yml"
       - "avm/res/network/vpn-server-configuration/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/child-module-publish-allowed-list.json"
       - "!*/**/README.md"
 
 env:

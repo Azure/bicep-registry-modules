@@ -43,9 +43,31 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 // ============== //
 // Variables      //
 // ============== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.elsan-elsan-volumegroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 var enableReferencedModulesTelemetry = false
 
@@ -145,6 +167,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
       location: location
       sizeGiB: volume.sizeGiB
       snapshots: volume.?snapshots
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

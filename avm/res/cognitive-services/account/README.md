@@ -27,7 +27,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/defenderForAISettings` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_defenderforaisettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/defenderForAISettings)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2026-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-05-01/accounts/deployments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
@@ -41,20 +42,155 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
-- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
-- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
-- [Storing keys of service in key vault](#example-7-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-8-using-only-defaults)
-- [Using large parameter set](#example-9-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-10-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-11-as-speech-service)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set](#example-1-using-aiservices-with-a-ga-partner-anthropic-deployments-in-parameter-set)
+- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-2-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-3-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-4-using-aiservices-with-deployments-in-parameter-set)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-5-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-6-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
+- [Storing keys of service in key vault](#example-8-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-9-using-only-defaults)
+- [Using large parameter set](#example-10-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-11-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-12-as-speech-service)
+- [WAF-aligned](#example-13-waf-aligned)
 
-### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
+### Example 1: _Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set_
+
+This instance deploys the module with a GA partner model deployment that carries the required `modelProviderData` attestation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-anthropic]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer.
+The deployment validation cannot complete in AVM validation subscription and is therefore skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadan001'
+    // Non-required parameters
+    customSubDomainName: 'xcsadanai'
+    deployments: [
+      {
+        model: {
+          format: 'Anthropic'
+          name: 'claude-sonnet-4-6'
+          version: '1'
+        }
+        modelProviderData: {
+          countryCode: 'US'
+          industry: 'technology'
+          organizationName: 'Contoso'
+        }
+        name: 'claude-sonnet-4-6'
+        sku: {
+          capacity: 25
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadan001"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadanai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "Anthropic",
+            "name": "claude-sonnet-4-6",
+            "version": "1"
+          },
+          "modelProviderData": {
+            "countryCode": "US",
+            "industry": "technology",
+            "organizationName": "Contoso"
+          },
+          "name": "claude-sonnet-4-6",
+          "sku": {
+            "capacity": 25,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadan001'
+// Non-required parameters
+param customSubDomainName = 'xcsadanai'
+param deployments = [
+  {
+    model: {
+      format: 'Anthropic'
+      name: 'claude-sonnet-4-6'
+      version: '1'
+    }
+    modelProviderData: {
+      countryCode: 'US'
+      industry: 'technology'
+      organizationName: 'Contoso'
+    }
+    name: 'claude-sonnet-4-6'
+    sku: {
+      capacity: 25
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
 
 This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
 
@@ -77,10 +213,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -140,10 +276,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -201,10 +337,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -237,7 +373,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+### Example 3: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -260,10 +396,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -318,10 +454,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -372,10 +508,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -403,7 +539,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 3: _Using `AIServices` with `deployments` in parameter set_
+### Example 4: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.
 
@@ -426,9 +562,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'GlobalStandard'
@@ -467,9 +604,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "GlobalStandard"
@@ -500,9 +638,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'GlobalStandard'
@@ -514,7 +653,7 @@ param deployments = [
 </details>
 <p>
 
-### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 5: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
@@ -635,7 +774,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -740,7 +879,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -854,7 +993,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 7: _Storing keys of service in key vault_
+### Example 8: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -941,7 +1080,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using only defaults_
+### Example 9: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1003,7 +1142,7 @@ param name = 'csamin001'
 </details>
 <p>
 
-### Example 9: _Using large parameter set_
+### Example 10: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1045,6 +1184,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableDefenderForAI: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1057,6 +1197,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       ]
     }
     networkAcls: {
+      bypass: 'AzureServices'
       defaultAction: 'Deny'
       ipRules: [
         {
@@ -1210,6 +1351,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
+    "enableDefenderForAI": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -1229,6 +1373,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     },
     "networkAcls": {
       "value": {
+        "bypass": "AzureServices",
         "defaultAction": "Deny",
         "ipRules": [
           {
@@ -1383,6 +1528,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableDefenderForAI = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1395,6 +1541,7 @@ param managedIdentities = {
   ]
 }
 param networkAcls = {
+  bypass: 'AzureServices'
   defaultAction: 'Deny'
   ipRules: [
     {
@@ -1499,7 +1646,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 11: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1522,10 +1669,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-11-20'
+          name: 'text-embedding-3-large'
+          version: '1'
         }
-        name: 'gpt-4o'
+        name: 'text-embedding-3-large'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1577,10 +1724,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-11-20"
+            "name": "text-embedding-3-large",
+            "version": "1"
           },
-          "name": "gpt-4o",
+          "name": "text-embedding-3-large",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1628,10 +1775,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-11-20'
+      name: 'text-embedding-3-large'
+      version: '1'
     }
-    name: 'gpt-4o'
+    name: 'text-embedding-3-large'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -1656,7 +1803,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 11: _As Speech Service_
+### Example 12: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1826,7 +1973,7 @@ param tags = {
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2033,9 +2180,10 @@ param tags = {
 | [`commitmentPlans`](#parameter-commitmentplans) | array | Commitment plans to deploy for the cognitive services account. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
+| [`enableDefenderForAI`](#parameter-enabledefenderforai) | bool | Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2291,128 +2439,95 @@ Array of deployments about cognitive service accounts to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`model`](#parameter-deploymentsmodel) | object | Properties of Cognitive Services account deployment model. |
+| [`model`](#parameter-deploymentsmodel) | object | Properties of the deployment model. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
-| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
-| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated. |
+| [`name`](#parameter-deploymentsname) | string | The name of the Cognitive Services account deployment. |
+| [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of the RAI policy. |
+| [`sku`](#parameter-deploymentssku) | object | The resource model definition representing the SKU. |
 | [`versionUpgradeOption`](#parameter-deploymentsversionupgradeoption) | string | The version upgrade option. |
 
 ### Parameter: `deployments.model`
 
-Properties of Cognitive Services account deployment model.
+Properties of the deployment model.
 
 - Required: Yes
+- Type: object
+
+### Parameter: `deployments.modelProviderData`
+
+Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.
+
+- Required: No
 - Type: object
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`format`](#parameter-deploymentsmodelformat) | string | The format of Cognitive Services account deployment model. |
-| [`name`](#parameter-deploymentsmodelname) | string | The name of Cognitive Services account deployment model. |
+| [`countryCode`](#parameter-deploymentsmodelproviderdatacountrycode) | string | Two-letter ISO 3166-1 alpha-2 country or region code. |
+| [`industry`](#parameter-deploymentsmodelproviderdataindustry) | string | The organization industry accepted by the resource provider. |
+| [`organizationName`](#parameter-deploymentsmodelproviderdataorganizationname) | string | Legal entity name of the organization deploying the model. |
 
-**Conditional parameters**
+### Parameter: `deployments.modelProviderData.countryCode`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`version`](#parameter-deploymentsmodelversion) | string | The version of Cognitive Services account deployment model. Required if the model does not have a default version. |
-
-### Parameter: `deployments.model.format`
-
-The format of Cognitive Services account deployment model.
+Two-letter ISO 3166-1 alpha-2 country or region code.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `deployments.model.name`
+### Parameter: `deployments.modelProviderData.industry`
 
-The name of Cognitive Services account deployment model.
+The organization industry accepted by the resource provider.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'education'
+    'finance'
+    'government'
+    'healthcare'
+    'manufacturing'
+    'media'
+    'other'
+    'retail'
+    'technology'
+  ]
+  ```
 
-### Parameter: `deployments.model.version`
+### Parameter: `deployments.modelProviderData.organizationName`
 
-The version of Cognitive Services account deployment model. Required if the model does not have a default version.
+Legal entity name of the organization deploying the model.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `deployments.name`
 
-Specify the name of cognitive service account deployment.
+The name of the Cognitive Services account deployment.
 
 - Required: No
 - Type: string
 
 ### Parameter: `deployments.raiPolicyName`
 
-The name of RAI policy.
+The name of the RAI policy.
 
 - Required: No
 - Type: string
 
 ### Parameter: `deployments.sku`
 
-The resource model definition representing SKU.
+The resource model definition representing the SKU.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-deploymentsskuname) | string | The name of the resource model definition representing SKU. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
-| [`family`](#parameter-deploymentsskufamily) | string | The family of the resource model definition representing SKU. |
-| [`size`](#parameter-deploymentsskusize) | string | The size of the resource model definition representing SKU. |
-| [`tier`](#parameter-deploymentsskutier) | string | The tier of the resource model definition representing SKU. |
-
-### Parameter: `deployments.sku.name`
-
-The name of the resource model definition representing SKU.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deployments.sku.capacity`
-
-The capacity of the resource model definition representing SKU.
-
-- Required: No
-- Type: int
-
-### Parameter: `deployments.sku.family`
-
-The family of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
-
-### Parameter: `deployments.sku.size`
-
-The size of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
-
-### Parameter: `deployments.sku.tier`
-
-The tier of the resource model definition representing SKU.
-
-- Required: No
-- Type: string
 
 ### Parameter: `deployments.versionUpgradeOption`
 
@@ -2423,7 +2538,7 @@ The version upgrade option.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.
 
 - Required: No
 - Type: array
@@ -2583,6 +2698,13 @@ The flag to enable dynamic throttling.
 - Type: bool
 - Default: `False`
 
+### Parameter: `enableDefenderForAI`
+
+Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2684,6 +2806,96 @@ A collection of rules governing the accessibility from specific network location
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypass`](#parameter-networkaclsbypass) | string | Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall. |
+| [`defaultAction`](#parameter-networkaclsdefaultaction) | string | The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated. |
+| [`ipRules`](#parameter-networkaclsiprules) | array | The list of IP address rules. |
+| [`virtualNetworkRules`](#parameter-networkaclsvirtualnetworkrules) | array | The list of virtual network rules. |
+
+### Parameter: `networkAcls.bypass`
+
+Setting for trusted services. Use 'AzureServices' to allow trusted Microsoft services to bypass the firewall.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureServices'
+    'None'
+  ]
+  ```
+
+### Parameter: `networkAcls.defaultAction`
+
+The default action when no rule from ipRules and from virtualNetworkRules match. This is only used after the bypass property has been evaluated.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `networkAcls.ipRules`
+
+The list of IP address rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78). |
+
+### Parameter: `networkAcls.ipRules.value`
+
+An IPv4 address range in CIDR notation, such as '124.56.78.91' (simple IP address) or '124.56.78.0/24' (all addresses that start with 124.56.78).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules`
+
+The list of virtual network rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-networkaclsvirtualnetworkrulesid) | string | Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ignoreMissingVnetServiceEndpoint`](#parameter-networkaclsvirtualnetworkrulesignoremissingvnetserviceendpoint) | bool | Ignore missing vnet service endpoint or not. |
+
+### Parameter: `networkAcls.virtualNetworkRules.id`
+
+Full resource id of a vnet subnet, such as '/subscriptions/subid/resourceGroups/rg/providers/Microsoft.Network/virtualNetworks/test-vnet/subnets/subnet1'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkAcls.virtualNetworkRules.ignoreMissingVnetServiceEndpoint`
+
+Ignore missing vnet service endpoint or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `networkInjections`
 

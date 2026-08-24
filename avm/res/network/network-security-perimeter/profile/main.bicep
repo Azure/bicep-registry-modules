@@ -11,6 +11,30 @@ param name string
 @description('Optional. Static Members to create for the network group. Contains virtual networks to add to the network group.')
 param accessRules accessRuleType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-nwsecperim-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 resource networkSecurityPerimeter 'Microsoft.Network/networkSecurityPerimeters@2024-07-01' existing = {
   name: networkPerimeterName
 }
@@ -24,6 +48,7 @@ module nsp_accessRules 'access-rule/main.bicep' = [
   for (accessRule, index) in (accessRules ?? []): {
     name: '${uniqueString(deployment().name)}-nsp-accessrule-${index}'
     params: {
+      enableTelemetry: enableReferencedModulesTelemetry
       networkPerimeterName: networkPerimeterName
       networkPerimeterProfileName: name
       name: accessRule.name
@@ -76,4 +101,7 @@ type accessRuleType = {
     @description('Required. The subscription id.')
     id: string
   }[]?
+
+  @description('Optional. Enable/Disable usage telemetry for module.')
+  enableTelemetry: bool?
 }

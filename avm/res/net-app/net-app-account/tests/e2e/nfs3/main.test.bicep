@@ -112,6 +112,9 @@ module testDeployment '../../../main.bicep' = {
             ]
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
             usageThreshold: 107374182400
+            tags: {
+              Description: 'This is a Test Tag for the volume'
+            }
           }
         ]
       }

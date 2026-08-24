@@ -17,13 +17,35 @@ param throughput int?
 param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL database resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview'>.tags?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.documentdb-databaseaccountsqldb.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 }
 
-resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04-15' = {
+resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2026-04-01-preview' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -31,7 +53,7 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04
     resource: {
       id: name
     }
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+    options: databaseAccount.properties.capacityMode == 'Serverless'
       ? null
       : {
           throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
@@ -43,6 +65,8 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2025-04
         }
   }
 }
+
+var enableReferencedModulesTelemetry = false
 
 module container 'container/main.bicep' = [
   for container in (containers ?? []): {
@@ -56,6 +80,7 @@ module container 'container/main.bicep' = [
       conflictResolutionPolicy: container.?conflictResolutionPolicy
       defaultTtl: container.?defaultTtl
       indexingPolicy: container.?indexingPolicy
+      dataMaskingPolicy: container.?dataMaskingPolicy
       kind: container.?kind
       version: container.?version
       paths: container.?paths
@@ -65,6 +90,7 @@ module container 'container/main.bicep' = [
       uniqueKeyPolicyKeys: container.?uniqueKeyPolicyKeys
       vectorEmbeddingPolicy: container.?vectorEmbeddingPolicy
       fullTextPolicy: container.?fullTextPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -92,7 +118,7 @@ type containerType = {
   analyticalStorageTtl: int?
 
   @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
-  conflictResolutionPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.conflictResolutionPolicy?
+  conflictResolutionPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.conflictResolutionPolicy?
 
   @maxValue(2147483647)
   @minValue(-1)
@@ -107,7 +133,7 @@ type containerType = {
   autoscaleSettingsMaxThroughput: int?
 
   @description('Optional. Tags of the SQL Database resource.')
-  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.tags?
+  tags: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.tags?
 
   @maxLength(3)
   @minLength(1)
@@ -115,16 +141,19 @@ type containerType = {
   paths: string[]
 
   @description('Optional. Indexing policy of the container.')
-  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.indexingPolicy?
+  indexingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.indexingPolicy?
+
+  @description('Optional. The Data Masking policy for the container.')
+  dataMaskingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.dataMaskingPolicy?
 
   @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
-  uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
+  uniqueKeyPolicyKeys: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.uniqueKeyPolicy.uniqueKeys?
 
   @description('Optional. The vector embedding policy for the container.')
-  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.vectorEmbeddingPolicy?
+  vectorEmbeddingPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.vectorEmbeddingPolicy?
 
   @description('Optional. The full text policy for the container.')
-  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2025-04-15'>.properties.resource.fullTextPolicy?
+  fullTextPolicy: resourceInput<'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers@2026-04-01-preview'>.properties.resource.fullTextPolicy?
 
   @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
   kind: ('Hash' | 'MultiHash')?

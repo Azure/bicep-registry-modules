@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "7974105255280005786"
+      "version": "0.43.8.12551",
+      "templateHash": "14052719763892614973"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager."
@@ -974,13 +974,14 @@
       "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.network-networkmanager.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1073,6 +1074,9 @@
           },
           "memberType": {
             "value": "[coalesce(tryGet(coalesce(parameters('networkGroups'), createArray())[copyIndex()], 'memberType'), 'VirtualNetwork')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1082,8 +1086,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2118639867326147807"
+              "version": "0.43.8.12551",
+              "templateHash": "189444064130736935"
             },
             "name": "Network Manager Network Groups",
             "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
@@ -1152,9 +1156,39 @@
               "metadata": {
                 "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwmgr-networkgroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
@@ -1195,6 +1229,9 @@
                   },
                   "resourceId": {
                     "value": "[coalesce(parameters('staticMembers'), createArray())[copyIndex()].resourceId]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -1203,8 +1240,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "7538069423329129039"
+                      "version": "0.43.8.12551",
+                      "templateHash": "8378909517378530128"
                     },
                     "name": "Network Manager Network Group Static Members",
                     "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."
@@ -1233,9 +1270,36 @@
                       "metadata": {
                         "description": "Required. Resource ID of the virtual network."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
                   },
                   "resources": [
+                    {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-nwmgr-nwgrpstaticmember.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
                     {
                       "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
                       "apiVersion": "2025-05-01",
@@ -1344,6 +1408,9 @@
           },
           "isGlobal": {
             "value": "[coalesce(tryGet(coalesce(parameters('connectivityConfigurations'), createArray())[copyIndex()], 'isGlobal'), false())]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1353,8 +1420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7344402562242479369"
+              "version": "0.43.8.12551",
+              "templateHash": "2271242280591133883"
             },
             "name": "Network Manager Connectivity Configurations",
             "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -1497,9 +1564,36 @@
               "metadata": {
                 "description": "Optional. Flag if global mesh is supported. By default, mesh connectivity is applied to virtual networks within the same region. If set to \"True\", a global mesh enables connectivity across regions."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwmgr-connectivityconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
@@ -1579,6 +1673,9 @@
           },
           "tenantId": {
             "value": "[coalesce(parameters('scopeConnections'), createArray())[copyIndex()].tenantId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1587,8 +1684,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6102581470604353399"
+              "version": "0.43.8.12551",
+              "templateHash": "16146715740417194693"
             },
             "name": "Network Manager Scope Connections",
             "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
@@ -1626,9 +1723,36 @@
               "metadata": {
                 "description": "Required. Tenant ID of the subscription or management group that you want to manage."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
+            {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwmgr-scopeconnection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Network/networkManagers/scopeConnections",
               "apiVersion": "2025-05-01",
@@ -1697,6 +1821,9 @@
           },
           "ruleCollections": {
             "value": "[coalesce(tryGet(coalesce(parameters('securityAdminConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1706,8 +1833,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "532263128343195989"
+              "version": "0.43.8.12551",
+              "templateHash": "17599920735536349487"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -1983,9 +2110,39 @@
               "metadata": {
                 "description": "Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwmgr-secadmcfg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
@@ -2033,6 +2190,9 @@
                   },
                   "rules": {
                     "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2042,8 +2202,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "746942558690909189"
+                      "version": "0.43.8.12551",
+                      "templateHash": "13537893443281618560"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -2270,7 +2430,17 @@
                       "metadata": {
                         "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
+                  },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
                   },
                   "resources": {
                     "networkManager::securityAdminConfiguration": {
@@ -2278,6 +2448,26 @@
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
                       "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-nwmgr-secadmcfgrulecoll.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "networkManager": {
                       "existing": true,
@@ -2346,6 +2536,9 @@
                           },
                           "sources": {
                             "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sources'), createArray())]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -2355,8 +2548,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "4216432551800767261"
+                              "version": "0.43.8.12551",
+                              "templateHash": "9526017554594859085"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -2529,6 +2722,13 @@
                               "metadata": {
                                 "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "resources": {
@@ -2543,6 +2743,26 @@
                               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
                               "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-nwmgr-secadmcfgrulecollrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "networkManager": {
                               "existing": true,
@@ -2686,6 +2906,9 @@
           },
           "ruleCollections": {
             "value": "[coalesce(tryGet(coalesce(parameters('routingConfigurations'), createArray())[copyIndex()], 'ruleCollections'), createArray())]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2695,8 +2918,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6605833306668609644"
+              "version": "0.43.8.12551",
+              "templateHash": "5886947315026114533"
             },
             "name": "Network Manager Routing Configurations",
             "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -2901,9 +3124,39 @@
               "metadata": {
                 "description": "Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
           "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.network-nwmgr-routingcfg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
@@ -2953,6 +3206,9 @@
                   },
                   "rules": {
                     "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'rules'), createArray())]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2962,8 +3218,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.41.2.15936",
-                      "templateHash": "14772952753338542761"
+                      "version": "0.43.8.12551",
+                      "templateHash": "17243379447974655448"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -3128,7 +3384,17 @@
                       "metadata": {
                         "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
                       }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
                     }
+                  },
+                  "variables": {
+                    "enableReferencedModulesTelemetry": false
                   },
                   "resources": {
                     "networkManager::routingConfiguration": {
@@ -3136,6 +3402,26 @@
                       "type": "Microsoft.Network/networkManagers/routingConfigurations",
                       "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2025-04-01",
+                      "name": "[format('46d3xbcp.res.network-nwmgr-routingcfgrulecoll.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "networkManager": {
                       "existing": true,
@@ -3187,6 +3473,9 @@
                           },
                           "nextHop": {
                             "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].nextHop]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -3196,8 +3485,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.41.2.15936",
-                              "templateHash": "13436762613765903502"
+                              "version": "0.43.8.12551",
+                              "templateHash": "5334537838932650922"
                             },
                             "name": "Network Manager Routing configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -3303,6 +3592,13 @@
                               "metadata": {
                                 "description": "Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "resources": {
@@ -3317,6 +3613,26 @@
                               "type": "Microsoft.Network/networkManagers/routingConfigurations",
                               "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('routingConfigurationName'))]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-nwmgr-routingcfgrulecollrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "networkManager": {
                               "existing": true,

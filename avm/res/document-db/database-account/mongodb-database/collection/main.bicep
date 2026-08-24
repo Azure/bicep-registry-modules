@@ -14,24 +14,46 @@ param name string
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')
-param indexes resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.indexes
+param indexes resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.indexes
 
 @description('Required. ShardKey for the collection.')
-param shardKey resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15'>.properties.resource.shardKey
+param shardKey resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview'>.properties.resource.shardKey
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-04-15' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-mongodbdbcollection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 
-  resource mongodbDatabase 'mongodbDatabases@2025-04-15' existing = {
+  resource mongodbDatabase 'mongodbDatabases@2026-04-01-preview' existing = {
     name: mongodbDatabaseName
   }
 }
 
-resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2025-04-15' = {
+resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2026-04-01-preview' = {
   name: name
   parent: databaseAccount::mongodbDatabase
   properties: {
-    options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+    options: databaseAccount.properties.capacityMode == 'Serverless'
       ? null
       : {
           throughput: throughput

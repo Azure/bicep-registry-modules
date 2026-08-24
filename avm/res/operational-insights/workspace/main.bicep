@@ -89,7 +89,7 @@ param features workspaceFeaturesType?
 @description('Optional. The workspace replication properties.')
 param replication workspaceReplicationType?
 
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingType[]?
 
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
@@ -176,7 +176,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.operationalinsights-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -234,14 +234,18 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -256,7 +260,7 @@ resource logAnalyticsWorkspace_diagnosticSettings 'Microsoft.Insights/diagnostic
 
 module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.bicep' = [
   for (storageInsightsConfig, index) in storageInsightsConfigs ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-StorageInsightsConfig-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-StorageInsightsConfig-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       containers: storageInsightsConfig.?containers
@@ -269,7 +273,7 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
 
 module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
   for (linkedService, index) in linkedServices ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-LinkedService-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-LinkedService-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedService.name
@@ -282,7 +286,7 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [
 
 module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.bicep' = [
   for (linkedStorageAccount, index) in linkedStorageAccounts ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-LinkedStorageAccount-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-LinkedStorageAccount-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: linkedStorageAccount.name
@@ -294,7 +298,7 @@ module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.
 
 module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
   for (savedSearch, index) in savedSearches ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-SavedSearch-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-SavedSearch-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: '${savedSearch.name}${uniqueString(subscription().id, resourceGroup().id)}'
@@ -316,7 +320,7 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [
 
 module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
   for (dataExport, index) in dataExports ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-DataExport-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-DataExport-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
       name: dataExport.name
@@ -330,7 +334,7 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [
 
 module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
   for (dataSource, index) in dataSources ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-DataSource-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-DataSource-${index}'
     params: {
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       name: dataSource.name
@@ -354,7 +358,7 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [
 
 module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   for (table, index) in tables ?? []: {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-Table-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-Table-${index}'
     params: {
       workspaceName: logAnalyticsWorkspace.name
       name: table.name
@@ -372,7 +376,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
 
 module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-LAW-Solution-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-LAW-Solution-${index}'
     params: {
       name: gallerySolution.name
       location: location
