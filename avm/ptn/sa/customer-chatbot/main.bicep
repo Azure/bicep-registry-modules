@@ -1031,15 +1031,15 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
 }
 
 // WAF aligned configuration for Redundancy - ACR Geo-Replication
-// resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@2025-04-01' = if (enableRedundancy) {
-//   parent: containerRegistry
-//   name: replicaLocation
-//   location: replicaLocation
-//   tags: tags
-//   properties: {
-//     zoneRedundancy: 'Enabled'
-//   }
-// }
+resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@2025-04-01' = if (enableRedundancy) {
+  parent: containerRegistry
+  name: 'creg-${replicaLocation}'
+  location: replicaLocation
+  tags: tags
+  properties: {
+    zoneRedundancy: 'Enabled'
+  }
+}
 
 // WAF aligned configuration for Private Networking - ACR Private Endpoint
 module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.1' = if (enablePrivateNetworking) {
