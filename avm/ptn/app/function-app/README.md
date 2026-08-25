@@ -1,6 +1,6 @@
-# Function App Pattern `[Web/FunctionApp]`
+# Function App Pattern `[App/FunctionApp]`
 
-Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.
+Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.
 
 You can reference the module as follows:
 ```bicep
@@ -83,7 +83,6 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using all parameters](#example-2-using-all-parameters)
-- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -171,6 +170,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
     appServicePlanName: 'wfamax-asp'
     appServicePlanSkuCapacity: 2
     appServicePlanSkuName: 'EP1'
+    appServicePlanZoneRedundant: true
     appSettingsKeyValuePairs: {
       MY_CUSTOM_SETTING: 'custom-value'
     }
@@ -191,9 +191,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
       }
     ]
     enableTelemetry: true
-    enableWafAlignment: true
     functionAppKind: 'functionapp,linux'
-    functionAppSubnetResourceId: '<functionAppSubnetResourceId>'
     functionAppTags: {
       'azd-service-name': 'api'
     }
@@ -204,14 +202,6 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
       name: 'myCustomLockName'
     }
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    privateDnsZoneResourceIds: {
-      blob: '<blob>'
-      file: '<file>'
-      queue: '<queue>'
-      sites: '<sites>'
-      table: '<table>'
-    }
-    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
     runtimeVersion: '20'
     storageAccountName: '<storageAccountName>'
     tags: {
@@ -253,6 +243,9 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
     "appServicePlanSkuName": {
       "value": "EP1"
     },
+    "appServicePlanZoneRedundant": {
+      "value": true
+    },
     "appSettingsKeyValuePairs": {
       "value": {
         "MY_CUSTOM_SETTING": "custom-value"
@@ -285,14 +278,8 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
     "enableTelemetry": {
       "value": true
     },
-    "enableWafAlignment": {
-      "value": true
-    },
     "functionAppKind": {
       "value": "functionapp,linux"
-    },
-    "functionAppSubnetResourceId": {
-      "value": "<functionAppSubnetResourceId>"
     },
     "functionAppTags": {
       "value": {
@@ -313,18 +300,6 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
     },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    "privateDnsZoneResourceIds": {
-      "value": {
-        "blob": "<blob>",
-        "file": "<file>",
-        "queue": "<queue>",
-        "sites": "<sites>",
-        "table": "<table>"
-      }
-    },
-    "privateEndpointSubnetResourceId": {
-      "value": "<privateEndpointSubnetResourceId>"
     },
     "runtimeVersion": {
       "value": "20"
@@ -363,6 +338,7 @@ param applicationInsightsName = 'dep-ai-wfamax'
 param appServicePlanName = 'wfamax-asp'
 param appServicePlanSkuCapacity = 2
 param appServicePlanSkuName = 'EP1'
+param appServicePlanZoneRedundant = true
 param appSettingsKeyValuePairs = {
   MY_CUSTOM_SETTING: 'custom-value'
 }
@@ -383,9 +359,7 @@ param diagnosticSettings = [
   }
 ]
 param enableTelemetry = true
-param enableWafAlignment = true
 param functionAppKind = 'functionapp,linux'
-param functionAppSubnetResourceId = '<functionAppSubnetResourceId>'
 param functionAppTags = {
   'azd-service-name': 'api'
 }
@@ -396,14 +370,6 @@ param lock = {
   name: 'myCustomLockName'
 }
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param privateDnsZoneResourceIds = {
-  blob: '<blob>'
-  file: '<file>'
-  queue: '<queue>'
-  sites: '<sites>'
-  table: '<table>'
-}
-param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
 param runtimeVersion = '20'
 param storageAccountName = '<storageAccountName>'
 param tags = {
@@ -412,134 +378,6 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
-
-This instance deploys the module with the WAF-aligned baseline enabled (VNet integration, Private Endpoints, managed identity, HTTPS-only and TLS 1.2 enforcement).
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
-  params: {
-    // Required parameters
-    functionAppName: 'wfawaf001'
-    // Non-required parameters
-    appServicePlanSkuCapacity: 2
-    appServicePlanSkuName: 'EP1'
-    enableWafAlignment: true
-    functionAppKind: 'functionapp,linux'
-    functionAppSubnetResourceId: '<functionAppSubnetResourceId>'
-    functionAppTags: {
-      'azd-service-name': 'api'
-    }
-    functionWorkerRuntime: 'dotnet-isolated'
-    location: '<location>'
-    privateEndpointSubnetResourceId: '<privateEndpointSubnetResourceId>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "functionAppName": {
-      "value": "wfawaf001"
-    },
-    // Non-required parameters
-    "appServicePlanSkuCapacity": {
-      "value": 2
-    },
-    "appServicePlanSkuName": {
-      "value": "EP1"
-    },
-    "enableWafAlignment": {
-      "value": true
-    },
-    "functionAppKind": {
-      "value": "functionapp,linux"
-    },
-    "functionAppSubnetResourceId": {
-      "value": "<functionAppSubnetResourceId>"
-    },
-    "functionAppTags": {
-      "value": {
-        "azd-service-name": "api"
-      }
-    },
-    "functionWorkerRuntime": {
-      "value": "dotnet-isolated"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpointSubnetResourceId": {
-      "value": "<privateEndpointSubnetResourceId>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app/function-app:<version>'
-
-// Required parameters
-param functionAppName = 'wfawaf001'
-// Non-required parameters
-param appServicePlanSkuCapacity = 2
-param appServicePlanSkuName = 'EP1'
-param enableWafAlignment = true
-param functionAppKind = 'functionapp,linux'
-param functionAppSubnetResourceId = '<functionAppSubnetResourceId>'
-param functionAppTags = {
-  'azd-service-name': 'api'
-}
-param functionWorkerRuntime = 'dotnet-isolated'
-param location = '<location>'
-param privateEndpointSubnetResourceId = '<privateEndpointSubnetResourceId>'
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>
@@ -560,27 +398,24 @@ param tags = {
 | [`applicationInsightsName`](#parameter-applicationinsightsname) | string | The name of the Application Insights component. Defaults to `<functionAppName>-ai`. |
 | [`appServicePlanName`](#parameter-appserviceplanname) | string | The name of the App Service Plan to create. Defaults to `<functionAppName>-asp`. |
 | [`appServicePlanSkuCapacity`](#parameter-appserviceplanskucapacity) | int | Number of workers for the App Service Plan. |
-| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. For WAF-aligned deployments with full Premium features use `EP1` or higher to support zone redundancy. |
+| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. |
+| [`appServicePlanZoneRedundant`](#parameter-appserviceplanzoneredundant) | bool | Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Left `false` by default because zone redundancy increases cost and is not available in every region. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list. |
 | [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | The scope of uniqueness for the default hostname of the Function App during resource creation. |
 | [`corsAllowedOrigins`](#parameter-corsallowedorigins) | array | The list of origins that are permitted to make cross-origin requests to the Function App (e.g. `https://portal.azure.com`). When non-empty, these are set as the CORS allowed origins in the site configuration. |
 | [`corsSupportCredentials`](#parameter-corssupportcredentials) | bool | Whether CORS requests with credentials (cookies, authorization headers, or TLS client certificates) are allowed on the Function App. Only takes effect when `corsAllowedOrigins` is non-empty. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the Function App. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableWafAlignment`](#parameter-enablewafalignment) | bool | When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one. |
 | [`flexConsumptionDeploymentStorageContainerName`](#parameter-flexconsumptiondeploymentstoragecontainername) | string | (Flex Consumption only) Name of the blob container that stores the Function App's deployment package. Created in the runtime Storage Account when `appServicePlanSkuName` is `FC1`. |
 | [`flexConsumptionInstanceMemoryMB`](#parameter-flexconsumptioninstancememorymb) | int | (Flex Consumption only) Memory allocated to each instance of the Function App in MB. Allowed values are 512, 2048, and 4096. |
 | [`flexConsumptionMaximumInstanceCount`](#parameter-flexconsumptionmaximuminstancecount) | int | (Flex Consumption only) Maximum number of instances the Function App can scale out to. Allowed range is 40-1000. |
 | [`functionAppKind`](#parameter-functionappkind) | string | The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release. |
-| [`functionAppSubnetResourceId`](#parameter-functionappsubnetresourceid) | string | The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`. |
 | [`functionAppTags`](#parameter-functionapptags) | object | Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag. |
 | [`functionWorkerRuntime`](#parameter-functionworkerruntime) | string | The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead. |
 | [`location`](#parameter-location) | string | The Azure region into which all resources will be deployed. |
 | [`lock`](#parameter-lock) | object | The lock settings for all resources deployed by this module. |
 | [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created. |
-| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | object | Resource IDs of the Private DNS Zones to associate with the Private Endpoints created by this module when `enableWafAlignment` is `true`. Required for name resolution from the VNet to the Private Endpoints. Each property is optional — when omitted, no DNS Zone Group is configured for that Private Endpoint and consumers are expected to manage DNS resolution out-of-band (e.g., via DNS Private Resolver or Azure-provided DNS). |
-| [`privateEndpointSubnetResourceId`](#parameter-privateendpointsubnetresourceid) | string | The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true`. |
 | [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. Function App names only allow alphanumeric and hyphens, so only hyphens need to be stripped to satisfy Storage Account naming constraints. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. |
@@ -620,7 +455,7 @@ Number of workers for the App Service Plan.
 
 ### Parameter: `appServicePlanSkuName`
 
-The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. For WAF-aligned deployments with full Premium features use `EP1` or higher to support zone redundancy.
+The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead.
 
 - Required: No
 - Type: string
@@ -653,6 +488,14 @@ The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (
     'Y1'
   ]
   ```
+
+### Parameter: `appServicePlanZoneRedundant`
+
+Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Left `false` by default because zone redundancy increases cost and is not available in every region.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `appSettingsKeyValuePairs`
 
@@ -847,14 +690,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableWafAlignment`
-
-When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `flexConsumptionDeploymentStorageContainerName`
 
 (Flex Consumption only) Name of the blob container that stores the Function App's deployment package. Created in the runtime Storage Account when `appServicePlanSkuName` is `FC1`.
@@ -904,14 +739,6 @@ The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,lin
     'functionapp,workflowapp'
   ]
   ```
-
-### Parameter: `functionAppSubnetResourceId`
-
-The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `functionAppTags`
 
@@ -1007,66 +834,6 @@ Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to
 - Type: string
 - Default: `''`
 
-### Parameter: `privateDnsZoneResourceIds`
-
-Resource IDs of the Private DNS Zones to associate with the Private Endpoints created by this module when `enableWafAlignment` is `true`. Required for name resolution from the VNet to the Private Endpoints. Each property is optional — when omitted, no DNS Zone Group is configured for that Private Endpoint and consumers are expected to manage DNS resolution out-of-band (e.g., via DNS Private Resolver or Azure-provided DNS).
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`blob`](#parameter-privatednszoneresourceidsblob) | string | Resource ID of the Private DNS Zone for the Storage blob endpoint (typically `privatelink.blob.core.windows.net` for Azure public cloud). |
-| [`file`](#parameter-privatednszoneresourceidsfile) | string | Resource ID of the Private DNS Zone for the Storage file endpoint (typically `privatelink.file.core.windows.net` for Azure public cloud). |
-| [`queue`](#parameter-privatednszoneresourceidsqueue) | string | Resource ID of the Private DNS Zone for the Storage queue endpoint (typically `privatelink.queue.core.windows.net` for Azure public cloud). |
-| [`sites`](#parameter-privatednszoneresourceidssites) | string | Resource ID of the Private DNS Zone for the Function App (typically `privatelink.azurewebsites.net`). |
-| [`table`](#parameter-privatednszoneresourceidstable) | string | Resource ID of the Private DNS Zone for the Storage table endpoint (typically `privatelink.table.core.windows.net` for Azure public cloud). |
-
-### Parameter: `privateDnsZoneResourceIds.blob`
-
-Resource ID of the Private DNS Zone for the Storage blob endpoint (typically `privatelink.blob.core.windows.net` for Azure public cloud).
-
-- Required: No
-- Type: string
-
-### Parameter: `privateDnsZoneResourceIds.file`
-
-Resource ID of the Private DNS Zone for the Storage file endpoint (typically `privatelink.file.core.windows.net` for Azure public cloud).
-
-- Required: No
-- Type: string
-
-### Parameter: `privateDnsZoneResourceIds.queue`
-
-Resource ID of the Private DNS Zone for the Storage queue endpoint (typically `privatelink.queue.core.windows.net` for Azure public cloud).
-
-- Required: No
-- Type: string
-
-### Parameter: `privateDnsZoneResourceIds.sites`
-
-Resource ID of the Private DNS Zone for the Function App (typically `privatelink.azurewebsites.net`).
-
-- Required: No
-- Type: string
-
-### Parameter: `privateDnsZoneResourceIds.table`
-
-Resource ID of the Private DNS Zone for the Storage table endpoint (typically `privatelink.table.core.windows.net` for Azure public cloud).
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpointSubnetResourceId`
-
-The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true`.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `runtimeVersion`
 
 The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime.
@@ -1125,11 +892,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.13.3` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.15.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.32.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
 | `br/public:avm/res/web/site:0.23.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
 

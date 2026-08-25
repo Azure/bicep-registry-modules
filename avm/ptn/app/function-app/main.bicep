@@ -1,31 +1,8 @@
 metadata name = 'Function App Pattern'
-metadata description = '''Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. When `enableWafAlignment` is set to `true`, the module additionally configures Private Endpoints for the Function App and Storage Account, enables regional VNet integration, routes content-share traffic over the VNet, and enforces HTTPS-only / TLS 1.2 / public-access-disabled across all resources.'''
-metadata owner = 'Azure/avm-ptn-web-functionapp-module-owners-bicep'
+metadata description = '''Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.'''
+metadata owner = 'Azure/avm-ptn-app-functionapp-module-owners-bicep'
 
 import { lockType, diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
-
-// ================ //
-// User-Defined     //
-// Types            //
-// ================ //
-
-@export()
-type privateDnsZoneResourceIdsType = {
-  @description('Optional. Resource ID of the Private DNS Zone for the Function App (typically `privatelink.azurewebsites.net`).')
-  sites: string?
-
-  @description('Optional. Resource ID of the Private DNS Zone for the Storage blob endpoint (typically `privatelink.blob.core.windows.net` for Azure public cloud).')
-  blob: string?
-
-  @description('Optional. Resource ID of the Private DNS Zone for the Storage file endpoint (typically `privatelink.file.core.windows.net` for Azure public cloud).')
-  file: string?
-
-  @description('Optional. Resource ID of the Private DNS Zone for the Storage queue endpoint (typically `privatelink.queue.core.windows.net` for Azure public cloud).')
-  queue: string?
-
-  @description('Optional. Resource ID of the Private DNS Zone for the Storage table endpoint (typically `privatelink.table.core.windows.net` for Azure public cloud).')
-  table: string?
-}
 
 // ================ //
 // Parameters       //
@@ -77,7 +54,7 @@ param logAnalyticsWorkspaceResourceId string = ''
 ])
 param functionAppKind string = 'functionapp,linux'
 
-@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. For WAF-aligned deployments with full Premium features use `EP1` or higher to support zone redundancy.')
+@description('Optional. The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead.')
 @allowed([
   'Y1'
   'FC1'
@@ -109,6 +86,9 @@ param appServicePlanSkuName string = 'FC1'
 @minValue(1)
 param appServicePlanSkuCapacity int = 1
 
+@description('Optional. Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Left `false` by default because zone redundancy increases cost and is not available in every region.')
+param appServicePlanZoneRedundant bool = false
+
 @description('Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead.')
 @allowed([
   'dotnet'
@@ -135,18 +115,6 @@ param flexConsumptionInstanceMemoryMB int = 2048
 @minValue(40)
 @maxValue(1000)
 param flexConsumptionMaximumInstanceCount int = 100
-
-@description('Optional. When `true`, applies the AVM WAF-aligned baseline: regional VNet integration, HTTPS-only and TLS 1.2 enforcement, FTPS disabled, public network access disabled on the Function App and Storage Account, content share traffic routed over the VNet, geo-redundant Storage, App Service Plan zone redundancy (when SKU and capacity support it), and Private Endpoints for the Function App and Storage Account. Requires `functionAppSubnetResourceId` and `privateEndpointSubnetResourceId` to be provided. Note: this module does not provision a Key Vault — compose `avm/res/key-vault/vault` separately if you need one.')
-param enableWafAlignment bool = false
-
-@description('Optional. The resource ID of the subnet to use for Function App regional VNet integration. Required when `enableWafAlignment` is `true`.')
-param functionAppSubnetResourceId string = ''
-
-@description('Optional. The resource ID of the subnet to use for Private Endpoints. Required when `enableWafAlignment` is `true`.')
-param privateEndpointSubnetResourceId string = ''
-
-@description('Optional. Resource IDs of the Private DNS Zones to associate with the Private Endpoints created by this module when `enableWafAlignment` is `true`. Required for name resolution from the VNet to the Private Endpoints. Each property is optional — when omitted, no DNS Zone Group is configured for that Private Endpoint and consumers are expected to manage DNS resolution out-of-band (e.g., via DNS Private Resolver or Azure-provided DNS).')
-param privateDnsZoneResourceIds privateDnsZoneResourceIdsType?
 
 @description('Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list.')
 param appSettingsKeyValuePairs object?
@@ -198,23 +166,6 @@ var serverFarmKind = isFlexConsumption
   : isElasticPremium
       ? (isLinux ? 'linux,elastic' : 'elastic')
       : (isConsumption ? (isLinux ? 'functionapp,linux' : 'functionapp') : (isLinux ? 'linux' : 'app'))
-
-// Only Pv3, Pmv3 and EP SKUs support zone redundancy on App Service Plans, and
-// ARM rejects zone-redundant plans with a worker count below 2.
-var zoneRedundantEligibleSkus = [
-  'P1v3'
-  'P2v3'
-  'P3v3'
-  'P1mv3'
-  'P2mv3'
-  'P3mv3'
-  'P4mv3'
-  'P5mv3'
-  'EP1'
-  'EP2'
-  'EP3'
-]
-var zoneRedundantEligible = enableWafAlignment && contains(zoneRedundantEligibleSkus, appServicePlanSkuName) && appServicePlanSkuCapacity >= 2
 
 // Consumption (Y1) and Elastic Premium (EP*) plans require a content share for
 // the Functions runtime. Dedicated/Flex plans do not.
@@ -277,10 +228,6 @@ var derivedLogAnalyticsWorkspaceName = empty(logAnalyticsWorkspaceName)
 
 var createUserAssignedIdentity = empty(userAssignedIdentityResourceId)
 
-// Defensive alias so safe-access (`.?`) lookups still work when the consumer passes `null` for the entire
-// optional `privateDnsZoneResourceIds` parameter (rather than just omitting individual fields).
-var dnsZoneIds = privateDnsZoneResourceIds ?? {}
-
 // BYO UAMI resource ID parsing — gated by `if (!createUserAssignedIdentity)` on the `existing` reference,
 // so these split lookups are only evaluated when `userAssignedIdentityResourceId` is non-empty.
 var userAssignedIdentityResourceIdParts = split(userAssignedIdentityResourceId, '/')
@@ -306,7 +253,6 @@ var reservedAppSettingKeys = [
   'FUNCTIONS_WORKER_RUNTIME'
   'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
   'WEBSITE_CONTENTSHARE'
-  'WEBSITE_CONTENTOVERVNET'
 ]
 
 // Filter out reserved keys from user-supplied app settings so module-managed values always win.
@@ -370,20 +316,10 @@ var contentShareAppSettings = requiresContentShare
     ]
   : []
 
-// When the storage account sits behind a Private Endpoint, the content share
-// traffic must be routed over the integrated VNet (only relevant for plans
-// that actually use a content share).
-var contentOverVnetAppSettings = (enableWafAlignment && requiresContentShare)
-  ? [
-      { name: 'WEBSITE_CONTENTOVERVNET', value: '1' }
-    ]
-  : []
-
 var appSettingsArray = concat(
   staticAppSettingsArray,
   runtimeAppSettingsBase,
-  contentShareAppSettings,
-  contentOverVnetAppSettings
+  contentShareAppSettings
 )
 
 // Resolved User-Assigned Managed Identity values (created or BYO).
@@ -395,18 +331,15 @@ var userAssignedIdentityPrincipalId = createUserAssignedIdentity
   : existingUserAssignedIdentity!.properties.principalId
 
 // Build the final site app settings array shape expected by avm/res/web/site.
+// The security-relevant values here are always applied — they are baseline hardening
+// rather than an opt-in feature: TLS 1.2 minimum and no FTP/FTPS publishing surface.
 var siteConfigBase = union(
   {
     minTlsVersion: '1.2'
-    ftpsState: enableWafAlignment ? 'Disabled' : 'FtpsOnly'
+    ftpsState: 'Disabled'
     http20Enabled: true
     appSettings: appSettingsArray
   },
-  enableWafAlignment
-    ? {
-        vnetRouteAllEnabled: true
-      }
-    : {},
   runtimeVersionSiteConfig,
   !empty(corsAllowedOrigins)
     ? {
@@ -451,7 +384,7 @@ var flexConsumptionFunctionAppConfig = {
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.web-functionapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.app-functionapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -529,7 +462,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     tags: tags
     enableTelemetry: enableTelemetry
     lock: lock
-    skuName: enableWafAlignment ? 'Standard_GRS' : 'Standard_LRS'
+    skuName: 'Standard_LRS'
     kind: 'StorageV2'
     // Flex Consumption Function Apps deploy from a blob container in the runtime Storage Account
     // referenced via `functionAppConfig.deployment.storage`. Create that container up-front so the
@@ -556,16 +489,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
     // (Y1 Consumption and EP Elastic Premium), since `WEBSITE_CONTENTAZUREFILECONNECTIONSTRING` is still the
     // GA mechanism for those plans. Dedicated and Flex plans run fully identity-based.
     allowSharedKeyAccess: requiresContentShare
-    publicNetworkAccess: enableWafAlignment ? 'Disabled' : 'Enabled'
-    networkAcls: enableWafAlignment
-      ? {
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-        }
-      : {
-          bypass: 'AzureServices'
-          defaultAction: 'Allow'
-        }
+    publicNetworkAccess: 'Enabled'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
     roleAssignments: [
       // Storage Blob Data Contributor – read/write access to blobs for the Function host and bindings.
       {
@@ -586,60 +514,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    // When `enableWafAlignment` is true, `privateEndpointSubnetResourceId` is required; an empty value
-    // will surface as a clear ARM validation error from the underlying module rather than being silently dropped.
-    privateEndpoints: enableWafAlignment
-      ? [
-          {
-            name: 'pe-${storageAccountName}-blob'
-            service: 'blob'
-            subnetResourceId: privateEndpointSubnetResourceId
-            privateDnsZoneGroup: !empty(dnsZoneIds.?blob)
-              ? {
-                  privateDnsZoneGroupConfigs: [
-                    { privateDnsZoneResourceId: dnsZoneIds.?blob! }
-                  ]
-                }
-              : null
-          }
-          {
-            name: 'pe-${storageAccountName}-file'
-            service: 'file'
-            subnetResourceId: privateEndpointSubnetResourceId
-            privateDnsZoneGroup: !empty(dnsZoneIds.?file)
-              ? {
-                  privateDnsZoneGroupConfigs: [
-                    { privateDnsZoneResourceId: dnsZoneIds.?file! }
-                  ]
-                }
-              : null
-          }
-          {
-            name: 'pe-${storageAccountName}-queue'
-            service: 'queue'
-            subnetResourceId: privateEndpointSubnetResourceId
-            privateDnsZoneGroup: !empty(dnsZoneIds.?queue)
-              ? {
-                  privateDnsZoneGroupConfigs: [
-                    { privateDnsZoneResourceId: dnsZoneIds.?queue! }
-                  ]
-                }
-              : null
-          }
-          {
-            name: 'pe-${storageAccountName}-table'
-            service: 'table'
-            subnetResourceId: privateEndpointSubnetResourceId
-            privateDnsZoneGroup: !empty(dnsZoneIds.?table)
-              ? {
-                  privateDnsZoneGroupConfigs: [
-                    { privateDnsZoneResourceId: dnsZoneIds.?table! }
-                  ]
-                }
-              : null
-          }
-        ]
-      : null
   }
 }
 
@@ -655,7 +529,10 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
     skuCapacity: appServicePlanSkuCapacity
     kind: serverFarmKind
     reserved: isLinux
-    zoneRedundant: zoneRedundantEligible
+    // Passed explicitly because the underlying serverfarm module defaults this to `true` for
+    // Premium and Elastic Premium SKUs, which fails to deploy unless the worker count is at
+    // least 2. Zone redundancy stays an explicit, opt-in choice for the consumer instead.
+    zoneRedundant: appServicePlanZoneRedundant
   }
 }
 
@@ -676,33 +553,12 @@ module functionApp 'br/public:avm/res/web/site:0.23.0' = {
         userAssignedIdentityResolvedResourceId
       ]
     }
-    // When `enableWafAlignment` is true, `functionAppSubnetResourceId` is required; an empty value
-    // will surface as a clear ARM validation error from the underlying module rather than being silently dropped.
-    virtualNetworkSubnetResourceId: enableWafAlignment ? functionAppSubnetResourceId : null
-    publicNetworkAccess: enableWafAlignment ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled'
     autoGeneratedDomainNameLabelScope: autoGeneratedDomainNameLabelScope
     siteConfig: siteConfigBase
     // `functionAppConfig` is only set for Flex Consumption (`FC1`); the underlying site module
     // ignores `null`, leaving non-Flex plan families on their existing app-settings-driven contract.
     functionAppConfig: isFlexConsumption ? flexConsumptionFunctionAppConfig : null
-    // When `enableWafAlignment` is true, `privateEndpointSubnetResourceId` is required; an empty value
-    // will surface as a clear ARM validation error from the underlying module rather than being silently dropped.
-    privateEndpoints: enableWafAlignment
-      ? [
-          {
-            name: 'pe-${functionAppName}'
-            service: 'sites'
-            subnetResourceId: privateEndpointSubnetResourceId
-            privateDnsZoneGroup: !empty(dnsZoneIds.?sites)
-              ? {
-                  privateDnsZoneGroupConfigs: [
-                    { privateDnsZoneResourceId: dnsZoneIds.?sites! }
-                  ]
-                }
-              : null
-          }
-        ]
-      : null
   }
 }
 
