@@ -1041,7 +1041,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' =
 // WAF aligned configuration for Redundancy - ACR Geo-Replication
 resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@2025-04-01' = if (enableRedundancy) {
   parent: containerRegistry
-  name: 'creg-${replicaLocation}'
+  name: replicaLocation
   location: replicaLocation
   tags: tags
   properties: {
