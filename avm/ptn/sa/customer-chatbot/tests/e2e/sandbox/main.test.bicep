@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the [Customer Chat bot Solution Ac
 
 @sys.description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.ccsa-${serviceShort}-rg'
+param resourceGroupName string = 'dep1-${namePrefix}-sa.ccsa-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cbot'
