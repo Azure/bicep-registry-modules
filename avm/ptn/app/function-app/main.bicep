@@ -418,7 +418,7 @@ resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIde
 // Resources        //
 // ================ //
 
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.1' = if (createUserAssignedIdentity) {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = if (createUserAssignedIdentity) {
   name: take('${uniqueString(deployment().name, location)}-functionApp-uami', 64)
   params: {
     name: '${functionAppName}-uami'
@@ -429,7 +429,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.1' = if (createLogAnalyticsWorkspace) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (createLogAnalyticsWorkspace) {
   name: take('${uniqueString(deployment().name, location)}-functionApp-law', 64)
   params: {
     name: derivedLogAnalyticsWorkspaceName
@@ -440,7 +440,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = {
   name: take('${uniqueString(deployment().name, location)}-functionApp-ai', 64)
   params: {
     name: applicationInsightsName
@@ -454,7 +454,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = {
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
   name: take('${uniqueString(deployment().name, location)}-functionApp-sa', 64)
   params: {
     name: storageAccountName
@@ -536,7 +536,7 @@ module appServicePlan 'br/public:avm/res/web/serverfarm:0.7.0' = {
   }
 }
 
-module functionApp 'br/public:avm/res/web/site:0.23.0' = {
+module functionApp 'br/public:avm/res/web/site:0.24.0' = {
   name: take('${uniqueString(deployment().name, location)}-functionApp-site', 64)
   params: {
     name: functionAppName
