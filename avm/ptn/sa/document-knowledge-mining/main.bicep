@@ -46,30 +46,30 @@ param gptModelDeploymentType string = 'GlobalStandard'
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
 @allowed([
-  'gpt-5-mini'
+  'gpt-4.1-mini'
 ])
-param gptModelName string = 'gpt-5-mini'
+param gptModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Version of the GPT model to deploy.')
-param gptModelVersion string = '2025-08-07'
+param gptModelVersion string = '2025-04-14'
 
 @description('Optional. Capacity of the GPT model deployment.')
 @minValue(10)
-param gptModelCapacity int = 100
+param gptModelCapacity int = 10
 
 @minLength(1)
 @description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
-  'text-embedding-3-large'
+  'text-embedding-3-small'
 ])
-param embeddingModelName string = 'text-embedding-3-large'
+param embeddingModelName string = 'text-embedding-3-small'
 
 @description('Optional. Version of the Text Embedding model to deploy.')
 param embeddingModelVersion string = '1'
 
 @description('Optional. Capacity of the Text Embedding model deployment.')
 @minValue(10)
-param embeddingModelCapacity int = 100
+param embeddingModelCapacity int = 10
 
 @description('Optional. Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true.')
 @secure()
@@ -107,8 +107,8 @@ param enablePurgeProtection bool = false
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt4.1-mini,150'
-      'OpenAI.GlobalStandard.text-embedding-3-large,100'
+      'OpenAI.GlobalStandard.gpt4.1-mini,10'
+      'OpenAI.GlobalStandard.text-embedding-3-small,10'
     ]
   }
 })
@@ -361,7 +361,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.8.2' = if (enablePr
 
 // Jumpbox Virtual Machine
 var jumpboxVmName = take('vm-jumpbox-${solutionSuffix}', 15)
-module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.2' = if (enablePrivateNetworking) {
+module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
@@ -527,7 +527,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
 }
 
 // ========== Cosmos Database for Mongo DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.0' = {
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.1' = {
   name: take('avm.res.cosmos-${solutionSuffix}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -894,7 +894,7 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.13.0' 
 
 // ========== Cognitive Services - OpenAI module ========== //
 var openAiAccountName = 'oai-${solutionSuffix}'
-module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.18.0' = {
+module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.19.0' = {
   name: take('avm.res.cognitiveservices.account.${openAiAccountName}', 64)
   params: {
     name: openAiAccountName
@@ -954,7 +954,7 @@ module avmOpenAi 'br/public:avm/res/cognitive-services/account:0.18.0' = {
 
 // ========== Cognitive Services - Document Intellignece module ========== //
 var docIntelAccountName = 'di-${solutionSuffix}'
-module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.18.0' = {
+module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.19.0' = {
   name: take('avm.res.cognitiveservices.account.${docIntelAccountName}', 64)
   params: {
     name: docIntelAccountName

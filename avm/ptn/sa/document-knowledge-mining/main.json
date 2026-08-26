@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "12736935935078813223"
+      "templateHash": "15687713761438913571"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -57,9 +57,9 @@
     },
     "gptModelName": {
       "type": "string",
-      "defaultValue": "gpt-5-mini",
+      "defaultValue": "gpt-4.1-mini",
       "allowedValues": [
-        "gpt-5-mini"
+        "gpt-4.1-mini"
       ],
       "minLength": 1,
       "metadata": {
@@ -68,14 +68,14 @@
     },
     "gptModelVersion": {
       "type": "string",
-      "defaultValue": "2025-08-07",
+      "defaultValue": "2025-04-14",
       "metadata": {
         "description": "Optional. Version of the GPT model to deploy."
       }
     },
     "gptModelCapacity": {
       "type": "int",
-      "defaultValue": 100,
+      "defaultValue": 10,
       "minValue": 10,
       "metadata": {
         "description": "Optional. Capacity of the GPT model deployment."
@@ -83,9 +83,9 @@
     },
     "embeddingModelName": {
       "type": "string",
-      "defaultValue": "text-embedding-3-large",
+      "defaultValue": "text-embedding-3-small",
       "allowedValues": [
-        "text-embedding-3-large"
+        "text-embedding-3-small"
       ],
       "minLength": 1,
       "metadata": {
@@ -101,7 +101,7 @@
     },
     "embeddingModelCapacity": {
       "type": "int",
-      "defaultValue": 100,
+      "defaultValue": 10,
       "minValue": 10,
       "metadata": {
         "description": "Optional. Capacity of the Text Embedding model deployment."
@@ -186,8 +186,8 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt4.1-mini,150",
-            "OpenAI.GlobalStandard.text-embedding-3-large,100"
+            "OpenAI.GlobalStandard.gpt4.1-mini,10",
+            "OpenAI.GlobalStandard.text-embedding-3-small,10"
           ]
         },
         "description": "Required. Location for AI Foundry deployment. This is the location where the AI Foundry resources will be deployed."
@@ -7164,7 +7164,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "12782207569935014109"
+              "templateHash": "6128454118056066379"
             }
           },
           "definitions": {
@@ -8306,7 +8306,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "600382754425975760"
+                      "templateHash": "494796290893196181"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet)."
@@ -8849,8 +8849,9 @@
                       "items": {
                         "type": "string"
                       },
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`."
+                        "description": "Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space."
                       }
                     },
                     "ipamPoolNumberOfIpAddresses": {
@@ -8859,6 +8860,16 @@
                       "metadata": {
                         "description": "Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool."
                       }
+                    },
+                    "ipamPoolPrefixAllocations": {
+                      "type": "array",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/virtualNetworks@2025-05-01#properties/properties/properties/addressSpace/properties/ipamPoolPrefixAllocations"
+                        },
+                        "description": "Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space."
+                      },
+                      "nullable": true
                     },
                     "virtualNetworkBgpCommunity": {
                       "type": "string",
@@ -9012,6 +9023,7 @@
                       }
                     ],
                     "enableReferencedModulesTelemetry": false,
+                    "addressPrefixIsIpamPoolResourceId": "[and(not(empty(coalesce(parameters('addressPrefixes'), createArray()))), contains(coalesce(parameters('addressPrefixes'), createArray(''))[0], '/Microsoft.Network/networkManagers/'))]",
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -9026,7 +9038,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-virtualnetwork.{0}.{1}', replace('0.10.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -9050,7 +9062,10 @@
                       "tags": "[parameters('tags')]",
                       "properties": {
                         "ipAllocations": "[parameters('ipAllocations')]",
-                        "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
+                        "addressSpace": {
+                          "addressPrefixes": "[if(or(variables('addressPrefixIsIpamPoolResourceId'), empty(coalesce(parameters('addressPrefixes'), createArray()))), null(), parameters('addressPrefixes'))]",
+                          "ipamPoolPrefixAllocations": "[if(variables('addressPrefixIsIpamPoolResourceId'), createArray(createObject('pool', createObject('id', coalesce(parameters('addressPrefixes'), createArray(''))[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses'))), parameters('ipamPoolPrefixAllocations'))]"
+                        },
                         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
                         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
                         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
@@ -11982,8 +11997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "12466733777804784927"
+              "version": "0.46.1.21595",
+              "templateHash": "13337816593158331551"
             },
             "name": "Virtual Machines",
             "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -14189,6 +14204,17 @@
                 "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
               }
             },
+            "diskControllerType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "NVMe",
+                "SCSI"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the disk controller type."
+              }
+            },
             "osDisk": {
               "$ref": "#/definitions/osDiskType",
               "metadata": {
@@ -14591,7 +14617,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.Compute/virtualMachines@2024-11-01#properties/tags"
+                  "source": "Microsoft.Compute/virtualMachines@2025-11-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -14825,7 +14851,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-07-01",
-              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.22.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.22.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -14870,7 +14896,7 @@
             },
             "vm": {
               "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2025-11-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "identity": "[variables('identity')]",
@@ -14899,6 +14925,7 @@
                     }
                   ],
                   "imageReference": "[parameters('imageReference')]",
+                  "diskControllerType": "[parameters('diskControllerType')]",
                   "osDisk": {
                     "name": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), last(split(parameters('osDisk').managedDisk.resourceId, '/')), coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name'))))]",
                     "createOption": "[if(not(empty(tryGet(parameters('osDisk').managedDisk, 'resourceId'))), 'Attach', coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage'))]",
@@ -15143,8 +15170,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "11907294224049847321"
+                      "version": "0.46.1.21595",
+                      "templateHash": "7214252610679762604"
                     }
                   },
                   "definitions": {
@@ -18024,8 +18051,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18281,8 +18308,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18543,8 +18570,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -18803,8 +18830,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19065,8 +19092,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19322,8 +19349,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19587,8 +19614,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -19857,8 +19884,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20120,8 +20147,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20379,8 +20406,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20655,8 +20682,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -20919,8 +20946,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "13152527455858951210"
+                      "version": "0.46.1.21595",
+                      "templateHash": "13006287475263156655"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension."
@@ -21166,8 +21193,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "12301222876794203511"
+                      "version": "0.46.1.21595",
+                      "templateHash": "4654585847895244475"
                     },
                     "name": "Recovery Service Vaults Protection Container Protected Item",
                     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -21301,14 +21328,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('vm', '2025-11-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('vm', '2024-07-01', 'full').location]"
+              "value": "[reference('vm', '2025-11-01', 'full').location]"
             },
             "nicConfigurations": {
               "type": "array",
@@ -22331,7 +22358,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "3330420429040615968"
+              "templateHash": "11216962395017091360"
             },
             "name": "Container Registry Module"
           },
@@ -22534,8 +22561,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "1509121545318808417"
+                      "version": "0.46.1.21595",
+                      "templateHash": "16626893392076981919"
                     },
                     "name": "Azure Container Registries (ACR)",
                     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -23781,6 +23808,13 @@
                         "description": "Optional. The default action of allow or deny when no other rules match."
                       }
                     },
+                    "networkRuleBypassAllowedForTasks": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Whether if ACR Tasks can bypass the network rules."
+                      }
+                    },
                     "networkRuleSetIpRules": {
                       "type": "array",
                       "nullable": true,
@@ -23980,7 +24014,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.containerregistry-registry.{0}.{1}', replace('0.13.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -24046,6 +24080,7 @@
                         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
                         "publicNetworkAccess": "[variables('publicNetworkAccessMode')]",
                         "networkRuleBypassOptions": "[parameters('networkRuleBypassOptions')]",
+                        "networkRuleBypassAllowedForTasks": "[parameters('networkRuleBypassAllowedForTasks')]",
                         "networkRuleSet": "[if(variables('shouldConfigureNetworkRuleSet'), createObject('defaultAction', parameters('networkRuleSetDefaultAction'), 'ipRules', coalesce(parameters('networkRuleSetIpRules'), createArray())), null())]",
                         "zoneRedundancy": "[if(equals(parameters('acrSku'), 'Premium'), parameters('zoneRedundancy'), null())]"
                       },
@@ -24168,8 +24203,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "3787322352564227867"
+                              "version": "0.46.1.21595",
+                              "templateHash": "8150718470953049335"
                             },
                             "name": "Container Registries scope maps",
                             "description": "This module deploys an Azure Container Registry (ACR) scope map."
@@ -24321,8 +24356,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "6219097750044645017"
+                              "version": "0.46.1.21595",
+                              "templateHash": "4722795496082997082"
                             },
                             "name": "Azure Container Registry (ACR) Replications",
                             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -24388,7 +24423,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('46d3xbcp.res.containerregistry-registry-repl.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.containerregistry-registry-repl.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -24498,8 +24533,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "13412699468141336519"
+                              "version": "0.46.1.21595",
+                              "templateHash": "3539242052234821455"
                             },
                             "name": "Container Registries Credential Sets",
                             "description": "This module deploys an ACR Credential Set."
@@ -24709,8 +24744,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "1319901650921923538"
+                              "version": "0.46.1.21595",
+                              "templateHash": "5757609132434081283"
                             },
                             "name": "Container Registry Cache",
                             "description": "The cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -24865,8 +24900,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "5970335582661416899"
+                              "version": "0.46.1.21595",
+                              "templateHash": "12074575110583320726"
                             },
                             "name": "Container Registries Tokens",
                             "description": "Deploys an Azure Container Registry (ACR) Token."
@@ -25059,8 +25094,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "2468771835002458415"
+                              "version": "0.46.1.21595",
+                              "templateHash": "6154410557233912144"
                             },
                             "name": "Container Registries Tasks",
                             "description": "Deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview))."
@@ -25381,8 +25416,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "3200175097987099858"
+                              "version": "0.46.1.21595",
+                              "templateHash": "18083260585368169081"
                             },
                             "name": "Azure Container Registry (ACR) Webhooks",
                             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -26428,7 +26463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "15182945067539595523"
+              "templateHash": "10229663317990951846"
             },
             "name": "Azure Cosmos DB account",
             "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -28551,7 +28586,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-07-01",
-              "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('0.21.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('0.21.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -28707,7 +28742,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "1423329355790434656"
+                      "templateHash": "13132458688459691925"
                     },
                     "name": "DocumentDB Database Account SQL Databases",
                     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -29035,7 +29070,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.46.1.21595",
-                              "templateHash": "10847007959639305614"
+                              "templateHash": "536282762867917042"
                             },
                             "name": "DocumentDB Database Account SQL Database Containers",
                             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -29249,7 +29284,7 @@
                               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                               "tags": "[parameters('tags')]",
                               "properties": {
-                                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version')))), if(contains(reference('databaseAccount').capabilities, 'EnableDynamicDataMasking'), createObject('dataMaskingPolicy', coalesce(parameters('dataMaskingPolicy'), createObject('includedPaths', createArray(), 'excludedPaths', createArray()))), createObject()), createObject('uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
+                                "resource": "[shallowMerge(createArray(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'id', parameters('name'), 'indexingPolicy', parameters('indexingPolicy'), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version')))), if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableDynamicDataMasking')), createObject('dataMaskingPolicy', coalesce(parameters('dataMaskingPolicy'), createObject('includedPaths', createArray(), 'excludedPaths', createArray()))), createObject()), createObject('uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('vectorEmbeddingPolicy'), null())), createObject('vectorEmbeddingPolicy', parameters('vectorEmbeddingPolicy')), createObject()), if(not(equals(parameters('fullTextPolicy'), null())), createObject('fullTextPolicy', parameters('fullTextPolicy')), createObject()), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()), if(not(equals(parameters('defaultTtl'), null())), createObject('defaultTtl', parameters('defaultTtl')), createObject())))]",
                                 "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
                               },
                               "dependsOn": [
@@ -45954,8 +45989,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -48168,7 +48203,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "4251342478725072758"
+              "templateHash": "12277709919924994962"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -48215,6 +48250,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The version upgrade option."
+                  }
+                },
+                "modelProviderData": {
+                  "$ref": "#/definitions/modelProviderDataType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
                   }
                 }
               },
@@ -48994,6 +49036,46 @@
                 }
               }
             },
+            "modelProviderDataType": {
+              "type": "object",
+              "properties": {
+                "organizationName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Legal entity name of the organization deploying the model."
+                  }
+                },
+                "countryCode": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+                  }
+                },
+                "industry": {
+                  "type": "string",
+                  "allowedValues": [
+                    "education",
+                    "finance",
+                    "government",
+                    "healthcare",
+                    "manufacturing",
+                    "media",
+                    "other",
+                    "retail",
+                    "technology"
+                  ],
+                  "metadata": {
+                    "description": "Required. The organization industry accepted by the resource provider."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Model-provider attestation information.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "deployment/main.bicep"
+                }
+              }
+            },
             "privateEndpointSingleServiceType": {
               "type": "object",
               "properties": {
@@ -49561,7 +49643,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.18.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.19.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -49763,6 +49845,9 @@
                   },
                   "versionUpgradeOption": {
                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
+                  },
+                  "modelProviderData": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'modelProviderData')]"
                   }
                 },
                 "template": {
@@ -49773,10 +49858,50 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "7586312923556688142"
+                      "templateHash": "14977457587260829280"
                     },
                     "name": "Cognitive Services Account Deployment",
                     "description": "This module deploys a Cognitive Services account model deployment."
+                  },
+                  "definitions": {
+                    "modelProviderDataType": {
+                      "type": "object",
+                      "properties": {
+                        "organizationName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Legal entity name of the organization deploying the model."
+                          }
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+                          }
+                        },
+                        "industry": {
+                          "type": "string",
+                          "allowedValues": [
+                            "education",
+                            "finance",
+                            "government",
+                            "healthcare",
+                            "manufacturing",
+                            "media",
+                            "other",
+                            "retail",
+                            "technology"
+                          ],
+                          "metadata": {
+                            "description": "Required. The organization industry accepted by the resource provider."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Model-provider attestation information."
+                      }
+                    }
                   },
                   "parameters": {
                     "name": {
@@ -49826,6 +49951,13 @@
                       "metadata": {
                         "description": "Optional. The version upgrade option."
                       }
+                    },
+                    "modelProviderData": {
+                      "$ref": "#/definitions/modelProviderDataType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
+                      }
                     }
                   },
                   "resources": {
@@ -49842,7 +49974,8 @@
                       "properties": {
                         "model": "[parameters('model')]",
                         "raiPolicyName": "[parameters('raiPolicyName')]",
-                        "versionUpgradeOption": "[parameters('versionUpgradeOption')]"
+                        "versionUpgradeOption": "[parameters('versionUpgradeOption')]",
+                        "modelProviderData": "[parameters('modelProviderData')]"
                       },
                       "sku": "[parameters('sku')]"
                     }
@@ -50850,7 +50983,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "4251342478725072758"
+              "templateHash": "12277709919924994962"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -50897,6 +51030,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The version upgrade option."
+                  }
+                },
+                "modelProviderData": {
+                  "$ref": "#/definitions/modelProviderDataType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
                   }
                 }
               },
@@ -51676,6 +51816,46 @@
                 }
               }
             },
+            "modelProviderDataType": {
+              "type": "object",
+              "properties": {
+                "organizationName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Legal entity name of the organization deploying the model."
+                  }
+                },
+                "countryCode": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+                  }
+                },
+                "industry": {
+                  "type": "string",
+                  "allowedValues": [
+                    "education",
+                    "finance",
+                    "government",
+                    "healthcare",
+                    "manufacturing",
+                    "media",
+                    "other",
+                    "retail",
+                    "technology"
+                  ],
+                  "metadata": {
+                    "description": "Required. The organization industry accepted by the resource provider."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Model-provider attestation information.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "deployment/main.bicep"
+                }
+              }
+            },
             "privateEndpointSingleServiceType": {
               "type": "object",
               "properties": {
@@ -52243,7 +52423,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.18.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.19.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -52445,6 +52625,9 @@
                   },
                   "versionUpgradeOption": {
                     "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
+                  },
+                  "modelProviderData": {
+                    "value": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'modelProviderData')]"
                   }
                 },
                 "template": {
@@ -52455,10 +52638,50 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.46.1.21595",
-                      "templateHash": "7586312923556688142"
+                      "templateHash": "14977457587260829280"
                     },
                     "name": "Cognitive Services Account Deployment",
                     "description": "This module deploys a Cognitive Services account model deployment."
+                  },
+                  "definitions": {
+                    "modelProviderDataType": {
+                      "type": "object",
+                      "properties": {
+                        "organizationName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Legal entity name of the organization deploying the model."
+                          }
+                        },
+                        "countryCode": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Two-letter ISO 3166-1 alpha-2 country or region code."
+                          }
+                        },
+                        "industry": {
+                          "type": "string",
+                          "allowedValues": [
+                            "education",
+                            "finance",
+                            "government",
+                            "healthcare",
+                            "manufacturing",
+                            "media",
+                            "other",
+                            "retail",
+                            "technology"
+                          ],
+                          "metadata": {
+                            "description": "Required. The organization industry accepted by the resource provider."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "Model-provider attestation information."
+                      }
+                    }
                   },
                   "parameters": {
                     "name": {
@@ -52508,6 +52731,13 @@
                       "metadata": {
                         "description": "Optional. The version upgrade option."
                       }
+                    },
+                    "modelProviderData": {
+                      "$ref": "#/definitions/modelProviderDataType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude, used to auto-accept the provider's Azure Marketplace offer. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published `Microsoft.CognitiveServices/accounts/deployments` OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated."
+                      }
                     }
                   },
                   "resources": {
@@ -52524,7 +52754,8 @@
                       "properties": {
                         "model": "[parameters('model')]",
                         "raiPolicyName": "[parameters('raiPolicyName')]",
-                        "versionUpgradeOption": "[parameters('versionUpgradeOption')]"
+                        "versionUpgradeOption": "[parameters('versionUpgradeOption')]",
+                        "modelProviderData": "[parameters('modelProviderData')]"
                       },
                       "sku": "[parameters('sku')]"
                     }
