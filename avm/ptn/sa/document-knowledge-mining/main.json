@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "4591870740232613552"
+      "templateHash": "6117358660167348322"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -53764,14 +53764,14 @@
             "value": [
               {
                 "name": "agentpool",
-                "vmSize": "Standard_D2ds_v5",
-                "count": 3,
+                "vmSize": "Standard_D2s_v3",
+                "count": "[if(parameters('enableScalability'), 3, 1)]",
                 "availabilityZones": "[if(parameters('enableRedundancy'), createArray(1, 2, 3), createArray())]",
                 "osType": "Linux",
                 "mode": "System",
                 "type": "VirtualMachineScaleSets",
-                "minCount": 3,
-                "maxCount": 5,
+                "minCount": "[if(parameters('enableScalability'), 3, 1)]",
+                "maxCount": "[if(parameters('enableScalability'), 5, 2)]",
                 "enableAutoScaling": true,
                 "scaleSetEvictionPolicy": "Delete",
                 "scaleSetPriority": "Regular",

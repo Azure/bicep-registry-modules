@@ -1034,15 +1034,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.14.
     primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
-        vmSize: 'Standard_D2ds_v5'
-        count: 3
+        vmSize: 'Standard_D2s_v3'
+        // WAF aligned configuration for Scalability: 3+ nodes when scalability is enabled, otherwise a minimal single-node pool to reduce vCPU footprint
+        count: enableScalability ? 3 : 1
         // WAF aligned configuration for Reliability: spread nodes across availability zones
         availabilityZones: enableRedundancy ? [1, 2, 3] : []
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'
-        minCount: 3
-        maxCount: 5
+        minCount: enableScalability ? 3 : 1
+        maxCount: enableScalability ? 5 : 2
 
         // WAF aligned configuration for Private Networking
         enableAutoScaling: true
