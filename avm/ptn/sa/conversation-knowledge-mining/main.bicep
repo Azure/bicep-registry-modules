@@ -39,8 +39,8 @@ param location string = resourceGroup().location
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.2,150'
-      'OpenAI.GlobalStandard.text-embedding-3-small,80'
+      'OpenAI.GlobalStandard.gpt-4.1-mini,10'
+      'OpenAI.GlobalStandard.text-embedding-3-small,10'
     ]
   }
 })
@@ -82,7 +82,7 @@ param vmAdminUsername string?
 param vmAdminPassword string?
 
 @description('Optional. The size of the virtual machine. Defaults to Standard_D2s_v5.')
-param vmSize string = 'Standard_D2s_v5'
+param vmSize string = 'Standard_D2s_v3'
 
 @description('Optional. Set to true to also deploy Cosmos DB (not required — SQL is the primary database).')
 param deployCosmos bool = false
@@ -96,14 +96,14 @@ param deployCosmos bool = false
 param deploymentType string = 'GlobalStandard'
 
 @description('Optional. Name of the GPT model to deploy.')
-param gptModelName string = 'gpt-5.2'
+param gptModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Version of the GPT model to deploy.')
-param gptModelVersion string = '2025-12-11'
+param gptModelVersion string = '2025-04-14'
 
 @minValue(10)
 @description('Optional. Capacity of the GPT deployment (TPM in thousands).')
-param gptDeploymentCapacity int = 150
+param gptDeploymentCapacity int = 10
 
 @description('Optional. Name of the embedding model to deploy.')
 @allowed(['text-embedding-3-small'])
@@ -111,7 +111,7 @@ param embeddingModel string = 'text-embedding-3-small'
 
 @minValue(10)
 @description('Optional. Capacity of the embedding model deployment.')
-param embeddingDeploymentCapacity int = 80
+param embeddingDeploymentCapacity int = 10
 
 // ============================================================================
 // Parameters — Compute
