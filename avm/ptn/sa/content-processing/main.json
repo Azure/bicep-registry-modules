@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "11663267763133667239"
+      "version": "0.45.6.27763",
+      "templateHash": "17031118809080075593"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -48,10 +48,10 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt-5.1,30"
+            "OpenAI.GlobalStandard.gpt-4.1-mini,5"
           ]
         },
-        "description": "Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead."
+        "description": "Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-4.1-mini (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-4.1-mini instead."
       }
     },
     "deploymentType": {
@@ -68,28 +68,28 @@
     },
     "gptModelName": {
       "type": "string",
-      "defaultValue": "gpt-5.1",
+      "defaultValue": "gpt-4.1-mini",
       "metadata": {
-        "description": "Optional. Name of the GPT model to deploy: gpt-5.1."
+        "description": "Optional. Name of the GPT model to deploy. Defaults to gpt-4.1-mini."
       }
     },
     "gptModelVersion": {
       "type": "string",
-      "defaultValue": "2025-11-13",
+      "defaultValue": "2025-04-14",
       "allowedValues": [
-        "2025-11-13"
+        "2025-04-14"
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Version of the GPT model to deploy:."
+        "description": "Optional. Version of the GPT model to deploy. Defaults to 2025-04-14."
       }
     },
     "gptDeploymentCapacity": {
       "type": "int",
-      "defaultValue": 100,
+      "defaultValue": 5,
       "minValue": 1,
       "metadata": {
-        "description": "Optional. Capacity of the GPT deployment: (minimum 10)."
+        "description": "Optional. Capacity of the GPT deployment. Defaults to 5."
       }
     },
     "secondaryLocation": {
@@ -336,8 +336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "434930705376892095"
+              "version": "0.45.6.27763",
+              "templateHash": "12707849284168000637"
             }
           },
           "definitions": {
@@ -4921,7 +4921,7 @@
           "name": {
             "value": "[take(variables('jumpboxVmName'), 15)]"
           },
-          "vmSize": "[if(empty(parameters('vmSize')), createObject('value', 'Standard_DS2_v2'), createObject('value', parameters('vmSize')))]",
+          "vmSize": "[if(empty(parameters('vmSize')), createObject('value', 'Standard_D2s_v3'), createObject('value', parameters('vmSize')))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -22336,8 +22336,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "3780374503519990274"
+              "version": "0.45.6.27763",
+              "templateHash": "16990554168323872433"
             }
           },
           "parameters": {
@@ -22928,8 +22928,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "4310273358985022119"
+              "version": "0.45.6.27763",
+              "templateHash": "3807523877292960102"
             },
             "name": "Container Registry Module"
           },
@@ -35507,8 +35507,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14266760788466288897"
+              "version": "0.45.6.27763",
+              "templateHash": "14631721414594570874"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -36740,8 +36740,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "11317633846907018259"
+                      "version": "0.45.6.27763",
+                      "templateHash": "889200477009851683"
                     }
                   },
                   "definitions": {
@@ -38445,8 +38445,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.46.1.21595",
-                              "templateHash": "205570163697229534"
+                              "version": "0.45.6.27763",
+                              "templateHash": "13610600162427148349"
                             }
                           },
                           "definitions": {
@@ -38595,8 +38595,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.46.1.21595",
-                              "templateHash": "11731390097490808434"
+                              "version": "0.45.6.27763",
+                              "templateHash": "4411313765307563402"
                             }
                           },
                           "definitions": {
@@ -48491,6 +48491,9 @@
           },
           "serverVersion": {
             "value": "7.0"
+          },
+          "capacityMode": {
+            "value": "Provisioned"
           },
           "capabilitiesToAdd": {
             "value": [

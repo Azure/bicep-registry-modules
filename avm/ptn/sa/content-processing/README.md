@@ -112,7 +112,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedStorageAccounts)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/savedSearches)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/storageInsightConfigs)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/tables)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
@@ -348,7 +348,7 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiServiceLocation`](#parameter-aiservicelocation) | string | Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead. |
+| [`aiServiceLocation`](#parameter-aiservicelocation) | string | Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-4.1-mini (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-4.1-mini instead. |
 
 **Optional parameters**
 
@@ -366,9 +366,9 @@ param vmAdminUsername = 'adminuser'
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1. |
-| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
+| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. Defaults to 5. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. Defaults to gpt-4.1-mini. |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2025-04-14. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment. |
@@ -382,7 +382,7 @@ param vmAdminUsername = 'adminuser'
 
 ### Parameter: `aiServiceLocation`
 
-Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead.
+Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-4.1-mini (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-4.1-mini instead.
 
 - Required: Yes
 - Type: string
@@ -500,32 +500,32 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `gptDeploymentCapacity`
 
-Capacity of the GPT deployment: (minimum 10).
+Capacity of the GPT deployment. Defaults to 5.
 
 - Required: No
 - Type: int
-- Default: `100`
+- Default: `5`
 - MinValue: 1
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy: gpt-5.1.
+Name of the GPT model to deploy. Defaults to gpt-4.1-mini.
 
 - Required: No
 - Type: string
-- Default: `'gpt-5.1'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `gptModelVersion`
 
-Version of the GPT model to deploy:.
+Version of the GPT model to deploy. Defaults to 2025-04-14.
 
 - Required: No
 - Type: string
-- Default: `'2025-11-13'`
+- Default: `'2025-04-14'`
 - Allowed:
   ```Bicep
   [
-    '2025-11-13'
+    '2025-04-14'
   ]
   ```
 
@@ -633,23 +633,23 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app-configuration/configuration-store:0.10.0` | Remote reference |
-| `br/public:avm/res/app/container-app:0.23.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.22.3` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.21.1` | Remote reference |
-| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
+| `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
+| `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.1` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

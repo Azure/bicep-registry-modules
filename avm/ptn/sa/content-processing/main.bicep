@@ -28,12 +28,12 @@ param location string = resourceGroup().location
 })
 param contentUnderstandingLocation string = 'WestUS'
 
-@description('Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead.')
+@description('Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-4.1-mini (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-4.1-mini instead.')
 @metadata({
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.1,30'
+      'OpenAI.GlobalStandard.gpt-4.1-mini,5'
     ]
   }
 })
@@ -47,19 +47,19 @@ param aiServiceLocation string
 ])
 param deploymentType string = 'GlobalStandard'
 
-@description('Optional. Name of the GPT model to deploy: gpt-5.1.')
-param gptModelName string = 'gpt-5.1'
+@description('Optional. Name of the GPT model to deploy. Defaults to gpt-4.1-mini.')
+param gptModelName string = 'gpt-4.1-mini'
 
 @minLength(1)
-@description('Optional. Version of the GPT model to deploy:.')
+@description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
 @allowed([
-  '2025-11-13'
+  '2025-04-14'
 ])
-param gptModelVersion string = '2025-11-13'
+param gptModelVersion string = '2025-04-14'
 
 @minValue(1)
-@description('Optional. Capacity of the GPT deployment: (minimum 10).')
-param gptDeploymentCapacity int = 100
+@description('Optional. Capacity of the GPT deployment. Defaults to 5.')
+param gptDeploymentCapacity int = 5
 
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
@@ -222,7 +222,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enable
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    vmSize: empty(vmSize) ? 'Standard_D2s_v3' : vmSize
     location: location
     adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
     adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
@@ -1100,6 +1100,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.21.1' = {
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: false
     serverVersion: '7.0'
+    capacityMode: 'Provisioned'
     capabilitiesToAdd: [
       'EnableMongo'
     ]
