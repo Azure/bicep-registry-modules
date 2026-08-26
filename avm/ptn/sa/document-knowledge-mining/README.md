@@ -493,8 +493,8 @@ Capacity of the GPT model deployment.
 
 - Required: No
 - Type: int
-- Default: `10`
-- MinValue: 10
+- Default: `5`
+- MinValue: 5
 
 ### Parameter: `gptModelDeploymentType`
 

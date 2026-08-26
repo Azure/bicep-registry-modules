@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "15698358170193441589"
+      "templateHash": "4591870740232613552"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -75,8 +75,8 @@
     },
     "gptModelCapacity": {
       "type": "int",
-      "defaultValue": 10,
-      "minValue": 10,
+      "defaultValue": 5,
+      "minValue": 5,
       "metadata": {
         "description": "Optional. Capacity of the GPT model deployment."
       }
@@ -186,7 +186,7 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt4.1-mini,10",
+            "OpenAI.GlobalStandard.gpt4.1-mini,5",
             "OpenAI.GlobalStandard.text-embedding-3-small,10"
           ]
         },
@@ -11904,7 +11904,7 @@
             "value": "[take(variables('jumpboxVmName'), 15)]"
           },
           "vmSize": {
-            "value": "[coalesce(parameters('vmSize'), 'Standard_D2s_v6')]"
+            "value": "[coalesce(parameters('vmSize'), 'Standard_D2s_v4')]"
           },
           "location": {
             "value": "[variables('solutionLocation')]"
@@ -45989,8 +45989,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
@@ -50960,7 +50960,6 @@
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkAcls": {
             "value": {
-              "bypass": "AzureServices",
               "defaultAction": "[if(parameters('enablePrivateNetworking'), 'Deny', 'Allow')]"
             }
           },
@@ -53765,7 +53764,7 @@
             "value": [
               {
                 "name": "agentpool",
-                "vmSize": "Standard_D4ds_v5",
+                "vmSize": "Standard_D2ds_v5",
                 "count": 3,
                 "availabilityZones": "[if(parameters('enableRedundancy'), createArray(1, 2, 3), createArray())]",
                 "osType": "Linux",

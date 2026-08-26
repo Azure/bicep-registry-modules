@@ -54,8 +54,8 @@ param gptModelName string = 'gpt-4.1-mini'
 param gptModelVersion string = '2025-04-14'
 
 @description('Optional. Capacity of the GPT model deployment.')
-@minValue(10)
-param gptModelCapacity int = 10
+@minValue(5)
+param gptModelCapacity int = 5
 
 @minLength(1)
 @description('Optional. Name of the Text Embedding model to deploy.')
@@ -107,7 +107,7 @@ param enablePurgeProtection bool = false
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt4.1-mini,10'
+      'OpenAI.GlobalStandard.gpt4.1-mini,5'
       'OpenAI.GlobalStandard.text-embedding-3-small,10'
     ]
   }
@@ -365,7 +365,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enable
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: vmSize ?? 'Standard_D2s_v6'
+    vmSize: vmSize ?? 'Standard_D2s_v4'
     location: solutionLocation
     adminUsername: vmAdminUsername ?? 'JumpboxAdminUser'
     adminPassword: vmAdminPassword ?? 'JumpboxAdminP@ssw0rd1234!'
@@ -969,9 +969,9 @@ module documentIntelligence 'br/public:avm/res/cognitive-services/account:0.19.0
     }
 
     // Networking aligned to WAF
+    // Note: 'FormRecognizer' kind does not support the 'AzureServices' trusted-services bypass, so it is intentionally omitted here.
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkAcls: {
-      bypass: 'AzureServices'
       defaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     }
 
@@ -1034,7 +1034,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.14.
     primaryAgentPoolProfiles: [
       {
         name: 'agentpool'
-        vmSize: 'Standard_D4ds_v5'
+        vmSize: 'Standard_D2ds_v5'
         count: 3
         // WAF aligned configuration for Reliability: spread nodes across availability zones
         availabilityZones: enableRedundancy ? [1, 2, 3] : []
