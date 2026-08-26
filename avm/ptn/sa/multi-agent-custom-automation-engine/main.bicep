@@ -27,7 +27,7 @@ param location string = resourceGroup().location
 var deployerInfo = deployer()
 var deployingUserPrincipalId = deployerInfo.objectId
 
-// Restricting deployment to only supported Azure OpenAI regions validated with GPT-4.1 models
+// Restricting deployment to only supported Azure OpenAI regions validated with GPT-4.1-mini
 @allowed([
   'australiaeast'
   'eastus2'
@@ -45,8 +45,7 @@ var deployingUserPrincipalId = deployerInfo.objectId
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-4.1, 10'
-      'OpenAI.GlobalStandard.gpt-4.1-mini, 5'
+      'OpenAI.GlobalStandard.gpt-4.1-mini, 15'
       // 'OpenAI.GlobalStandard.gpt-image-1.5, 5' // Commented out: gpt-image-1.5 not available yet
     ]
   }
@@ -65,8 +64,8 @@ param gptModelName string = 'gpt-4.1-mini'
 param gptModelVersion string = '2025-04-14'
 
 @minLength(1)
-@description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-4.1.')
-param gpt54ModelName string = 'gpt-4.1'
+@description('Optional. Name of the reasoning GPT model to deploy. Defaults to gpt-4.1-mini.')
+param gpt54ModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Version of the larger GPT model to deploy. Defaults to 2025-04-14.')
 param gpt54ModelVersion string = '2025-04-14'
@@ -94,7 +93,7 @@ param gptModelDeploymentType string = 'GlobalStandard'
   'Standard'
   'GlobalStandard'
 ])
-@description('Optional. GPT-4.1 model deployment type. Defaults to GlobalStandard.')
+@description('Optional. Reasoning GPT model deployment type. Defaults to GlobalStandard.')
 param gpt54ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
@@ -108,7 +107,7 @@ param gptImageModelDeploymentType string = 'GlobalStandard'
 @description('Optional. AI model deployment token capacity. Defaults to 5.')
 param gptModelCapacity int = 5
 
-@description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
+@description('Optional. Reasoning GPT model deployment token capacity. Defaults to 10.')
 param gpt54ModelCapacity int = 10
 
 @description('Optional. gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions.')
@@ -709,6 +708,7 @@ var aiFoundryAiServicesModelDeployment = {
   raiPolicyName: 'Microsoft.Default'
 }
 var aiFoundryAiServicesGpt54ModelDeployment = {
+  deploymentName: '${gpt54ModelName}-reasoning'
   format: 'OpenAI'
   name: gpt54ModelName
   version: gpt54ModelVersion
@@ -760,7 +760,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
         }
       }
       {
-        name: aiFoundryAiServicesGpt54ModelDeployment.name
+        name: aiFoundryAiServicesGpt54ModelDeployment.deploymentName
         model: {
           format: aiFoundryAiServicesGpt54ModelDeployment.format
           name: aiFoundryAiServicesGpt54ModelDeployment.name
@@ -1170,7 +1170,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
           }
           {
             name: 'AZURE_OPENAI_RAI_DEPLOYMENT_NAME'
-            value: aiFoundryAiServicesGpt54ModelDeployment.name
+            value: aiFoundryAiServicesGpt54ModelDeployment.deploymentName
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -1242,7 +1242,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
           }
           {
             name: 'SUPPORTED_MODELS'
-            value: '["gpt-4.1","gpt-4.1-mini","gpt-image-1.5"]'
+            value: '["gpt-4.1-mini","gpt-image-1.5"]'
           }
           {
             name: 'AZURE_STORAGE_BLOB_URL'
@@ -1816,7 +1816,7 @@ output mcpServerName string = 'MacaeMcpServer'
 output mcpServerDescription string = 'MCP server with greeting, HR, and planning tools'
 
 @description('The list of supported models.')
-output supportedModels string = '["gpt-4.1","gpt-4.1-mini","gpt-image-1.5"]'
+output supportedModels string = '["gpt-4.1-mini","gpt-image-1.5"]'
 
 @description('The Azure AI Search API key.')
 output azureAiSearchApiKey string = '<Deployed-Search-ApiKey>'

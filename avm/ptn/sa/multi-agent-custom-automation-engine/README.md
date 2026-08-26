@@ -233,6 +233,7 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
     // Required parameters
     azureAiServiceLocation: '<azureAiServiceLocation>'
     // Non-required parameters
+    cosmosDbReplicaLocation: 'westus3'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -263,6 +264,9 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
       "value": "<azureAiServiceLocation>"
     },
     // Non-required parameters
+    "cosmosDbReplicaLocation": {
+      "value": "westus3"
+    },
     "enableMonitoring": {
       "value": true
     },
@@ -307,6 +311,7 @@ using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 // Required parameters
 param azureAiServiceLocation = '<azureAiServiceLocation>'
 // Non-required parameters
+param cosmosDbReplicaLocation = 'westus3'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -347,9 +352,9 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
-| [`gpt54ModelCapacity`](#parameter-gpt54modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
-| [`gpt54ModelDeploymentType`](#parameter-gpt54modeldeploymenttype) | string | GPT-4.1 model deployment type. Defaults to GlobalStandard. |
-| [`gpt54ModelName`](#parameter-gpt54modelname) | string | Name of the larger GPT model to deploy. Defaults to gpt-4.1. |
+| [`gpt54ModelCapacity`](#parameter-gpt54modelcapacity) | int | Reasoning GPT model deployment token capacity. Defaults to 10. |
+| [`gpt54ModelDeploymentType`](#parameter-gpt54modeldeploymenttype) | string | Reasoning GPT model deployment type. Defaults to GlobalStandard. |
+| [`gpt54ModelName`](#parameter-gpt54modelname) | string | Name of the reasoning GPT model to deploy. Defaults to gpt-4.1-mini. |
 | [`gpt54ModelVersion`](#parameter-gpt54modelversion) | string | Version of the larger GPT model to deploy. Defaults to 2025-04-14. |
 | [`gptImageModelCapacity`](#parameter-gptimagemodelcapacity) | int | gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions. |
 | [`gptImageModelDeploymentType`](#parameter-gptimagemodeldeploymenttype) | string | GPT image model deployment type. Defaults to GlobalStandard. |
@@ -506,7 +511,7 @@ The Container Registry hostname where the docker images for the frontend are loc
 
 ### Parameter: `gpt54ModelCapacity`
 
-AI model deployment token capacity. Defaults to 150 for optimal performance.
+Reasoning GPT model deployment token capacity. Defaults to 10.
 
 - Required: No
 - Type: int
@@ -514,7 +519,7 @@ AI model deployment token capacity. Defaults to 150 for optimal performance.
 
 ### Parameter: `gpt54ModelDeploymentType`
 
-GPT-4.1 model deployment type. Defaults to GlobalStandard.
+Reasoning GPT model deployment type. Defaults to GlobalStandard.
 
 - Required: No
 - Type: string
@@ -529,11 +534,11 @@ GPT-4.1 model deployment type. Defaults to GlobalStandard.
 
 ### Parameter: `gpt54ModelName`
 
-Name of the larger GPT model to deploy. Defaults to gpt-4.1.
+Name of the reasoning GPT model to deploy. Defaults to gpt-4.1-mini.
 
 - Required: No
 - Type: string
-- Default: `'gpt-4.1'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `gpt54ModelVersion`
 
