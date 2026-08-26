@@ -54,7 +54,7 @@ param azureAiServiceLocation string
 @description('Optional. Tags to apply to all resources.')
 param tags object = {}
 
-@description('Optional. Enable/Disable usage telemetry for AVM modules.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Enable monitoring for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.')
@@ -232,6 +232,29 @@ var cosmosDbHaRegionPairs = {
   westeurope: 'northeurope'
 }
 var cosmosDbHaLocation = cosmosDbHaRegionPairs[location]
+
+// ========== WAF: Public maintenance-configuration region names for Azure SQL (WAF maintenance window) ========== //
+var sqlMaintenanceRegionNames = {
+  australiaeast: 'AustraliaEast'
+  australiasoutheast: 'AustraliaSoutheast'
+  centralus: 'CentralUS'
+  eastasia: 'EastAsia'
+  eastus: 'EastUS'
+  eastus2: 'EastUS2'
+  japaneast: 'JapanEast'
+  northeurope: 'NorthEurope'
+  southeastasia: 'SoutheastAsia'
+  swedencentral: 'SwedenCentral'
+  uksouth: 'UKSouth'
+  westeurope: 'WestEurope'
+  westus: 'WestUS'
+}
+var sqlMaintenanceConfigurationId = (enableScalability || enableRedundancy) && contains(
+    sqlMaintenanceRegionNames,
+    location
+  )
+  ? '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${sqlMaintenanceRegionNames[location]}_DB_1'
+  : null
 
 // ========== WAF: Diagnostic settings helper — reused across modules ========== //
 var monitoringDiagnosticSettings = enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : []
@@ -648,6 +671,7 @@ module ai_search './modules/ai/ai-search.bicep' = {
     solutionName: solutionSuffix
     location: location
     skuName: 'standard'
+    replicaCount: (enableScalability || enableRedundancy) ? 3 : 1
     tags: tags
     enableTelemetry: enableTelemetry
     // Temporarily public — Foundry Agent runtime runs outside the VNET and cannot resolve private DNS for AI Search.
@@ -681,6 +705,7 @@ module storage_account './modules/data/storage-account.bicep' = {
     location: location
     tags: tags
     enableHierarchicalNamespace: true
+    skuName: enableRedundancy ? 'Standard_GZRS' : 'Standard_LRS'
     enableTelemetry: enableTelemetry
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     diagnosticSettings: monitoringDiagnosticSettings
@@ -800,6 +825,10 @@ module sqlDBModule './modules/data/sql-database.bicep' = {
     enableTelemetry: enableTelemetry
     deployerPrincipalId: deployingUserPrincipalId
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    maintenanceConfigurationId: sqlMaintenanceConfigurationId
+    vulnerabilityAssessmentStorageResourceId: (enableMonitoring || enableRedundancy || enableScalability)
+      ? storage_account.outputs.resourceId
+      : null
     privateEndpoints: enablePrivateNetworking
       ? [
           {
@@ -845,7 +874,8 @@ module container_registry './modules/compute/container-registry.bicep' = {
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    sku: enablePrivateNetworking ? 'Premium' : 'Standard'
+    sku: (enablePrivateNetworking || enableRedundancy) ? 'Premium' : 'Standard'
+    replications: enableRedundancy ? [{ name: replicaLocation, location: replicaLocation }] : null
     // App Services pull images with their system-assigned managed identity (AcrPull granted in
     // the role-assignments module). Grant the deployer AcrPush so the post-provision build/push
     // step needs no manual RBAC.
@@ -991,77 +1021,103 @@ module role_assignments './modules/identity/role-assignments.bicep' = {
 }
 
 // ============================================================================
-// Outputs (matches infra_old/main.bicep output list)
+// AVM Telemetry
+// ============================================================================
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.ptn.sa-conversationknowledgemining.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+// ============================================================================
+// Outputs
 // ============================================================================
 
 @description('Azure OpenAI endpoint URL.')
-output AZURE_OPENAI_ENDPOINT string = aiFoundryEndpoint
+output azureOpenAiEndpoint string = aiFoundryEndpoint
 
 @description('Azure AI Search endpoint URL.')
-output AZURE_SEARCH_ENDPOINT string = ai_search.outputs.endpoint
+output azureSearchEndpoint string = ai_search.outputs.endpoint
 
 @description('Azure Content Understanding endpoint URL.')
-output AZURE_CONTENT_UNDERSTANDING_ENDPOINT string = azureOpenAiCuEndpoint
+output azureContentUnderstandingEndpoint string = azureOpenAiCuEndpoint
 
 @description('Azure Storage account name.')
-output AZURE_STORAGE_ACCOUNT string = storage_account.outputs.name
+output azureStorageAccount string = storage_account.outputs.name
 
 @description('Azure SQL Server FQDN.')
-output AZURE_SQL_SERVER string = sqlDBModule!.outputs.serverFqdn
+output azureSqlServer string = sqlDBModule!.outputs.serverFqdn
 
 @description('Azure SQL Database name.')
-output AZURE_SQL_DATABASE string = sqlDBModule!.outputs.databaseName
+output azureSqlDatabase string = sqlDBModule!.outputs.databaseName
 
 @description('Backend API application (and SQL contained user) name.')
-output API_APP_NAME string = backend_docker!.outputs.name
+output apiAppName string = backend_docker!.outputs.name
 
 @description('Backend API system-assigned managed identity principal ID.')
-output AZURE_API_PRINCIPAL_ID string = backend_docker!.outputs.identityPrincipalId
+output azureApiPrincipalId string = backend_docker!.outputs.identityPrincipalId
 
 @description('Azure Cosmos DB endpoint.')
-output AZURE_COSMOS_ENDPOINT string = deployCosmos ? cosmosDBModule!.outputs.endpoint : ''
+output azureCosmosEndpoint string = deployCosmos ? cosmosDBModule!.outputs.endpoint : ''
 
 @description('Azure AI Agent endpoint URL.')
-output AZURE_AI_AGENT_ENDPOINT string = projectEndpoint
+output azureAiAgentEndpoint string = projectEndpoint
 
 @description('Backend API application URL.')
-output API_APP_URL string = backend_docker!.outputs.appUrl
+output apiAppUrl string = backend_docker!.outputs.appUrl
 
 @description('Frontend web application URL.')
-output WEB_APP_URL string = frontend_docker!.outputs.appUrl
+output webAppUrl string = frontend_docker!.outputs.appUrl
 
 @description('Backend service URI (used by azd).')
-output SERVICE_BACKEND_URI string = backend_docker!.outputs.appUrl
+output serviceBackendUri string = backend_docker!.outputs.appUrl
 
 @description('Frontend service URI (used by azd).')
-output SERVICE_FRONTEND_URI string = frontend_docker!.outputs.appUrl
+output serviceFrontendUri string = frontend_docker!.outputs.appUrl
 
 @description('AI Search connection name in AI Foundry.')
-output AZURE_AI_SEARCH_CONNECTION_NAME string = foundry_search_connection.outputs.connectionName
+output azureAiSearchConnectionName string = foundry_search_connection.outputs.connectionName
 
 @description('Azure Container Registry name.')
-output ACR_NAME string = container_registry.outputs.name
+output acrName string = container_registry.outputs.name
 
 @description('Azure Container Registry login server URL.')
-output ACR_LOGIN_SERVER string = container_registry.outputs.loginServer
+output acrLoginServer string = container_registry.outputs.loginServer
 
 @description('Backend container image repository name to build and push to ACR.')
-output BACKEND_CONTAINER_IMAGE_NAME string = backendContainerImageName
+output backendContainerImageRepository string = backendContainerImageName
 
 @description('Backend container image tag to build and push to ACR.')
-output BACKEND_CONTAINER_IMAGE_TAG string = backendContainerImageTag
+output backendContainerImageVersion string = backendContainerImageTag
 
 @description('Frontend container image repository name to build and push to ACR.')
-output FRONTEND_CONTAINER_IMAGE_NAME string = frontendContainerImageName
+output frontendContainerImageRepository string = frontendContainerImageName
 
 @description('Frontend container image tag to build and push to ACR.')
-output FRONTEND_CONTAINER_IMAGE_TAG string = frontendContainerImageTag
+output frontendContainerImageVersion string = frontendContainerImageTag
 
 @description('Frontend web application (App Service) name.')
-output FRONTEND_APP_NAME string = frontend_docker!.outputs.name
+output frontendAppName string = frontend_docker!.outputs.name
 
 @description('Resource group name.')
-output RESOURCE_GROUP_NAME string = resourceGroup().name
+output resourceGroupName string = resourceGroup().name
 
 @description('Solution resource token suffix used in resource names.')
-output SOLUTION_SUFFIX string = solutionSuffix
+output solutionResourceSuffix string = solutionSuffix

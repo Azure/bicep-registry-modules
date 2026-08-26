@@ -113,20 +113,21 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Search/searchServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices)</li></ul> |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices/sharedPrivateLinkResources)</li></ul> |
 | `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
-| `Microsoft.Sql/servers` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers)</li></ul> |
-| `Microsoft.Sql/servers/auditingSettings` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings)</li></ul> |
-| `Microsoft.Sql/servers/connectionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/databases` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
-| `Microsoft.Sql/servers/elasticPools` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_elasticpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools)</li></ul> |
-| `Microsoft.Sql/servers/encryptionProtector` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_encryptionprotector.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector)</li></ul> |
-| `Microsoft.Sql/servers/failoverGroups` | 2024-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_failovergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups)</li></ul> |
-| `Microsoft.Sql/servers/firewallRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/firewallRules)</li></ul> |
-| `Microsoft.Sql/servers/keys` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys)</li></ul> |
-| `Microsoft.Sql/servers/securityAlertPolicies` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/securityAlertPolicies)</li></ul> |
-| `Microsoft.Sql/servers/virtualNetworkRules` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules)</li></ul> |
-| `Microsoft.Sql/servers/vulnerabilityAssessments` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/vulnerabilityAssessments)</li></ul> |
+| `Microsoft.Sql/servers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers)</li></ul> |
+| `Microsoft.Sql/servers/auditingSettings` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_auditingsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/auditingSettings)</li></ul> |
+| `Microsoft.Sql/servers/connectionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_connectionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/connectionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backuplongtermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupLongTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_databases_backupshorttermretentionpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/databases/backupShortTermRetentionPolicies)</li></ul> |
+| `Microsoft.Sql/servers/elasticPools` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_elasticpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/elasticPools)</li></ul> |
+| `Microsoft.Sql/servers/encryptionProtector` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_encryptionprotector.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/encryptionProtector)</li></ul> |
+| `Microsoft.Sql/servers/failoverGroups` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_failovergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/failoverGroups)</li></ul> |
+| `Microsoft.Sql/servers/firewallRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/firewallRules)</li></ul> |
+| `Microsoft.Sql/servers/keys` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_keys.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/keys)</li></ul> |
+| `Microsoft.Sql/servers/outboundFirewallRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_outboundfirewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/outboundFirewallRules)</li></ul> |
+| `Microsoft.Sql/servers/securityAlertPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_securityalertpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/securityAlertPolicies)</li></ul> |
+| `Microsoft.Sql/servers/virtualNetworkRules` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_virtualnetworkrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/virtualNetworkRules)</li></ul> |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.sql_servers_vulnerabilityassessments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2025-01-01/servers/vulnerabilityAssessments)</li></ul> |
 | `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
@@ -369,7 +370,7 @@ param vmAdminUsername = 'adminuser'
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for AVM modules. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingFoundryProjectResourceId`](#parameter-existingfoundryprojectresourceid) | string | Resource ID of an existing AI Foundry project (empty = create new). |
 | [`existingLogAnalyticsWorkspaceId`](#parameter-existingloganalyticsworkspaceid) | string | Resource ID of an existing Log Analytics workspace (empty = create new). |
 | [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | Frontend container image name. |
@@ -570,7 +571,7 @@ Enable scalability for applicable resources, aligned with the Well Architected F
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for AVM modules.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -699,30 +700,30 @@ The size of the virtual machine. Defaults to Standard_D2s_v5.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `ACR_LOGIN_SERVER` | string | Azure Container Registry login server URL. |
-| `ACR_NAME` | string | Azure Container Registry name. |
-| `API_APP_NAME` | string | Backend API application (and SQL contained user) name. |
-| `API_APP_URL` | string | Backend API application URL. |
-| `AZURE_AI_AGENT_ENDPOINT` | string | Azure AI Agent endpoint URL. |
-| `AZURE_AI_SEARCH_CONNECTION_NAME` | string | AI Search connection name in AI Foundry. |
-| `AZURE_API_PRINCIPAL_ID` | string | Backend API system-assigned managed identity principal ID. |
-| `AZURE_CONTENT_UNDERSTANDING_ENDPOINT` | string | Azure Content Understanding endpoint URL. |
-| `AZURE_COSMOS_ENDPOINT` | string | Azure Cosmos DB endpoint. |
-| `AZURE_OPENAI_ENDPOINT` | string | Azure OpenAI endpoint URL. |
-| `AZURE_SEARCH_ENDPOINT` | string | Azure AI Search endpoint URL. |
-| `AZURE_SQL_DATABASE` | string | Azure SQL Database name. |
-| `AZURE_SQL_SERVER` | string | Azure SQL Server FQDN. |
-| `AZURE_STORAGE_ACCOUNT` | string | Azure Storage account name. |
-| `BACKEND_CONTAINER_IMAGE_NAME` | string | Backend container image repository name to build and push to ACR. |
-| `BACKEND_CONTAINER_IMAGE_TAG` | string | Backend container image tag to build and push to ACR. |
-| `FRONTEND_APP_NAME` | string | Frontend web application (App Service) name. |
-| `FRONTEND_CONTAINER_IMAGE_NAME` | string | Frontend container image repository name to build and push to ACR. |
-| `FRONTEND_CONTAINER_IMAGE_TAG` | string | Frontend container image tag to build and push to ACR. |
-| `RESOURCE_GROUP_NAME` | string | Resource group name. |
-| `SERVICE_BACKEND_URI` | string | Backend service URI (used by azd). |
-| `SERVICE_FRONTEND_URI` | string | Frontend service URI (used by azd). |
-| `SOLUTION_SUFFIX` | string | Solution resource token suffix used in resource names. |
-| `WEB_APP_URL` | string | Frontend web application URL. |
+| `acrLoginServer` | string | Azure Container Registry login server URL. |
+| `acrName` | string | Azure Container Registry name. |
+| `apiAppName` | string | Backend API application (and SQL contained user) name. |
+| `apiAppUrl` | string | Backend API application URL. |
+| `azureAiAgentEndpoint` | string | Azure AI Agent endpoint URL. |
+| `azureAiSearchConnectionName` | string | AI Search connection name in AI Foundry. |
+| `azureApiPrincipalId` | string | Backend API system-assigned managed identity principal ID. |
+| `azureContentUnderstandingEndpoint` | string | Azure Content Understanding endpoint URL. |
+| `azureCosmosEndpoint` | string | Azure Cosmos DB endpoint. |
+| `azureOpenAiEndpoint` | string | Azure OpenAI endpoint URL. |
+| `azureSearchEndpoint` | string | Azure AI Search endpoint URL. |
+| `azureSqlDatabase` | string | Azure SQL Database name. |
+| `azureSqlServer` | string | Azure SQL Server FQDN. |
+| `azureStorageAccount` | string | Azure Storage account name. |
+| `backendContainerImageRepository` | string | Backend container image repository name to build and push to ACR. |
+| `backendContainerImageVersion` | string | Backend container image tag to build and push to ACR. |
+| `frontendAppName` | string | Frontend web application (App Service) name. |
+| `frontendContainerImageRepository` | string | Frontend container image repository name to build and push to ACR. |
+| `frontendContainerImageVersion` | string | Frontend container image tag to build and push to ACR. |
+| `resourceGroupName` | string | Resource group name. |
+| `serviceBackendUri` | string | Backend service URI (used by azd). |
+| `serviceFrontendUri` | string | Frontend service URI (used by azd). |
+| `solutionResourceSuffix` | string | Solution resource token suffix used in resource names. |
+| `webAppUrl` | string | Frontend web application URL. |
 
 ## Cross-referenced modules
 

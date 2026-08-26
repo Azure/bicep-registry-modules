@@ -55,10 +55,16 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @description('Optional. Managed identities for the resource.')
 param managedIdentities object = { systemAssigned: true }
 
+@description('Optional. Maintenance configuration id assigned to the database, defining the period when maintenance updates occur.')
+param maintenanceConfigurationId string?
+
+@description('Optional. Storage account resource ID for SQL vulnerability assessment scan results. When set, Defender for SQL and recurring vulnerability scans are enabled.')
+param vulnerabilityAssessmentStorageResourceId string?
+
 // ============================================================================
 // AVM Module Deployment
 // ============================================================================
-module sqlServer 'br/public:avm/res/sql/server:0.21.1' = {
+module sqlServer 'br/public:avm/res/sql/server:0.22.0' = {
   name: take('avm.res.sql.server.${name}', 64)
   params: {
     name: name
@@ -84,6 +90,7 @@ module sqlServer 'br/public:avm/res/sql/server:0.21.1' = {
         autoPauseDelay: autoPauseDelay
         minCapacity: '${minCapacity}'
         zoneRedundant: false
+        maintenanceConfigurationId: maintenanceConfigurationId
         sku: {
           name: skuName
           tier: skuTier
@@ -92,19 +99,42 @@ module sqlServer 'br/public:avm/res/sql/server:0.21.1' = {
         }
       }
     ]
-    firewallRules: publicNetworkAccess == 'Enabled' ? [
-      {
-        name: 'AllowSpecificRange'
-        startIpAddress: '0.0.0.0'
-        endIpAddress: '255.255.255.255'
-      }
-      {
-        name: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
-        startIpAddress: '0.0.0.0'
-        endIpAddress: '0.0.0.0'
-      }
-    ] : []
+    firewallRules: publicNetworkAccess == 'Enabled'
+      ? [
+          {
+            name: 'AllowSpecificRange'
+            startIpAddress: '0.0.0.0'
+            endIpAddress: '255.255.255.255'
+          }
+          {
+            name: 'AllowAllAzureServicesAndResourcesWithinAzureIps'
+            startIpAddress: '0.0.0.0'
+            endIpAddress: '0.0.0.0'
+          }
+        ]
+      : []
     privateEndpoints: privateEndpoints
+    securityAlertPolicies: vulnerabilityAssessmentStorageResourceId != null
+      ? [
+          {
+            name: 'Default'
+            state: 'Enabled'
+            emailAccountAdmins: true
+          }
+        ]
+      : null
+    vulnerabilityAssessmentsObj: vulnerabilityAssessmentStorageResourceId != null
+      ? {
+          name: 'default'
+          storageAccountResourceId: vulnerabilityAssessmentStorageResourceId!
+          recurringScans: {
+            isEnabled: true
+            emailSubscriptionAdmins: true
+            emails: []
+          }
+          createStorageRoleAssignment: true
+        }
+      : null
   }
 }
 
