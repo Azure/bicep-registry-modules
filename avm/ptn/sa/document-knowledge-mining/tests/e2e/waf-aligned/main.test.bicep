@@ -29,7 +29,7 @@ param vmAdminPassword string = newGuid()
 var enforcedLocation = 'australiaeast'
 
 #disable-next-line no-hardcoded-location
-var enforcedCosmosReplicaLocation = 'canadacentral'
+var enforcedCosmosReplicaLocation = 'westus3'
 
 // General resources
 // =================

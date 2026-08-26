@@ -585,7 +585,7 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 
 - Required: No
 - Type: string
-- Default: `'Standard_D2s_v6'`
+- Default: `'Standard_D2s_v3'`
 
 ## Outputs
 
