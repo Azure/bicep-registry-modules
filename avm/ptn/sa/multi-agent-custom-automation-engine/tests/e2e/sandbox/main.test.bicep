@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the [Multi-Agent Custom Automation
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep1-defaults-${namePrefix}-sa.macae-${serviceShort}-rg'
+param resourceGroupName string = 'dep2-defaults-${namePrefix}-sa.macae-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'macaemin'
@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 #disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'australiaeast'
 
 // General resources
 // =================
