@@ -27,7 +27,7 @@ param location string = resourceGroup().location
 var deployerInfo = deployer()
 var deployingUserPrincipalId = deployerInfo.objectId
 
-// Restricting deployment to only supported Azure OpenAI regions validated with GPT-5.4 model
+// Restricting deployment to only supported Azure OpenAI regions validated with GPT-4.1 models
 @allowed([
   'australiaeast'
   'eastus2'
@@ -45,7 +45,7 @@ var deployingUserPrincipalId = deployerInfo.objectId
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.4, 10'
+      'OpenAI.GlobalStandard.gpt-4.1, 10'
       'OpenAI.GlobalStandard.gpt-4.1-mini, 5'
       // 'OpenAI.GlobalStandard.gpt-image-1.5, 5' // Commented out: gpt-image-1.5 not available yet
     ]
@@ -65,11 +65,11 @@ param gptModelName string = 'gpt-4.1-mini'
 param gptModelVersion string = '2025-04-14'
 
 @minLength(1)
-@description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4.')
-param gpt54ModelName string = 'gpt-5.4'
+@description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-4.1.')
+param gpt54ModelName string = 'gpt-4.1'
 
-@description('Optional. Version of the larger GPT model to deploy. Defaults to 2026-03-05.')
-param gpt54ModelVersion string = '2026-03-05'
+@description('Optional. Version of the larger GPT model to deploy. Defaults to 2025-04-14.')
+param gpt54ModelVersion string = '2025-04-14'
 
 @minLength(1)
 @description('Optional. Name of the image-generation model to deploy. Defaults to gpt-image-1.5.')
@@ -94,7 +94,7 @@ param gptModelDeploymentType string = 'GlobalStandard'
   'Standard'
   'GlobalStandard'
 ])
-@description('Optional. GPT-5.4 model deployment type. Defaults to GlobalStandard.')
+@description('Optional. GPT-4.1 model deployment type. Defaults to GlobalStandard.')
 param gpt54ModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
@@ -1242,7 +1242,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.22.1' = {
           }
           {
             name: 'SUPPORTED_MODELS'
-            value: '["gpt-5.4","gpt-5.4-mini","gpt-image-1.5"]'
+            value: '["gpt-4.1","gpt-4.1-mini","gpt-image-1.5"]'
           }
           {
             name: 'AZURE_STORAGE_BLOB_URL'
@@ -1816,7 +1816,7 @@ output mcpServerName string = 'MacaeMcpServer'
 output mcpServerDescription string = 'MCP server with greeting, HR, and planning tools'
 
 @description('The list of supported models.')
-output supportedModels string = '["gpt-5.4","gpt-5.4-mini","gpt-image-1.5"]'
+output supportedModels string = '["gpt-4.1","gpt-4.1-mini","gpt-image-1.5"]'
 
 @description('The Azure AI Search API key.')
 output azureAiSearchApiKey string = '<Deployed-Search-ApiKey>'

@@ -348,9 +348,9 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
 | [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`gpt54ModelCapacity`](#parameter-gpt54modelcapacity) | int | AI model deployment token capacity. Defaults to 150 for optimal performance. |
-| [`gpt54ModelDeploymentType`](#parameter-gpt54modeldeploymenttype) | string | GPT-5.4 model deployment type. Defaults to GlobalStandard. |
-| [`gpt54ModelName`](#parameter-gpt54modelname) | string | Name of the larger GPT model to deploy. Defaults to gpt-5.4. |
-| [`gpt54ModelVersion`](#parameter-gpt54modelversion) | string | Version of the larger GPT model to deploy. Defaults to 2026-03-05. |
+| [`gpt54ModelDeploymentType`](#parameter-gpt54modeldeploymenttype) | string | GPT-4.1 model deployment type. Defaults to GlobalStandard. |
+| [`gpt54ModelName`](#parameter-gpt54modelname) | string | Name of the larger GPT model to deploy. Defaults to gpt-4.1. |
+| [`gpt54ModelVersion`](#parameter-gpt54modelversion) | string | Version of the larger GPT model to deploy. Defaults to 2025-04-14. |
 | [`gptImageModelCapacity`](#parameter-gptimagemodelcapacity) | int | gpt-image-1.5 deployment capacity (RPM). Defaults to 5 to support concurrent marketing-image generation across multiple sessions. |
 | [`gptImageModelDeploymentType`](#parameter-gptimagemodeldeploymenttype) | string | GPT image model deployment type. Defaults to GlobalStandard. |
 | [`gptImageModelName`](#parameter-gptimagemodelname) | string | Name of the image-generation model to deploy. Defaults to gpt-image-1.5. |
@@ -514,7 +514,7 @@ AI model deployment token capacity. Defaults to 150 for optimal performance.
 
 ### Parameter: `gpt54ModelDeploymentType`
 
-GPT-5.4 model deployment type. Defaults to GlobalStandard.
+GPT-4.1 model deployment type. Defaults to GlobalStandard.
 
 - Required: No
 - Type: string
@@ -529,19 +529,19 @@ GPT-5.4 model deployment type. Defaults to GlobalStandard.
 
 ### Parameter: `gpt54ModelName`
 
-Name of the larger GPT model to deploy. Defaults to gpt-5.4.
+Name of the larger GPT model to deploy. Defaults to gpt-4.1.
 
 - Required: No
 - Type: string
-- Default: `'gpt-5.4'`
+- Default: `'gpt-4.1'`
 
 ### Parameter: `gpt54ModelVersion`
 
-Version of the larger GPT model to deploy. Defaults to 2026-03-05.
+Version of the larger GPT model to deploy. Defaults to 2025-04-14.
 
 - Required: No
 - Type: string
-- Default: `'2026-03-05'`
+- Default: `'2025-04-14'`
 
 ### Parameter: `gptImageModelCapacity`
 

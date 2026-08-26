@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.6.27763",
-      "templateHash": "11690633341922419071"
+      "templateHash": "12777981908034258991"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -58,7 +58,7 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt-5.4, 10",
+            "OpenAI.GlobalStandard.gpt-4.1, 10",
             "OpenAI.GlobalStandard.gpt-4.1-mini, 5"
           ]
         },
@@ -89,17 +89,17 @@
     },
     "gpt54ModelName": {
       "type": "string",
-      "defaultValue": "gpt-5.4",
+      "defaultValue": "gpt-4.1",
       "minLength": 1,
       "metadata": {
-        "description": "Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4."
+        "description": "Optional. Name of the larger GPT model to deploy. Defaults to gpt-4.1."
       }
     },
     "gpt54ModelVersion": {
       "type": "string",
-      "defaultValue": "2026-03-05",
+      "defaultValue": "2025-04-14",
       "metadata": {
-        "description": "Optional. Version of the larger GPT model to deploy. Defaults to 2026-03-05."
+        "description": "Optional. Version of the larger GPT model to deploy. Defaults to 2025-04-14."
       }
     },
     "gptImageModelName": {
@@ -145,7 +145,7 @@
       ],
       "minLength": 1,
       "metadata": {
-        "description": "Optional. GPT-5.4 model deployment type. Defaults to GlobalStandard."
+        "description": "Optional. GPT-4.1 model deployment type. Defaults to GlobalStandard."
       }
     },
     "gptImageModelDeploymentType": {
@@ -38762,7 +38762,7 @@
                   },
                   {
                     "name": "SUPPORTED_MODELS",
-                    "value": "[[\"gpt-5.4\",\"gpt-5.4-mini\",\"gpt-image-1.5\"]"
+                    "value": "[[\"gpt-4.1\",\"gpt-4.1-mini\",\"gpt-image-1.5\"]"
                   },
                   {
                     "name": "AZURE_STORAGE_BLOB_URL",
@@ -55395,7 +55395,7 @@
       "metadata": {
         "description": "The list of supported models."
       },
-      "value": "[[\"gpt-5.4\",\"gpt-5.4-mini\",\"gpt-image-1.5\"]"
+      "value": "[[\"gpt-4.1\",\"gpt-4.1-mini\",\"gpt-image-1.5\"]"
     },
     "azureAiSearchApiKey": {
       "type": "string",
