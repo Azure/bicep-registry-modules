@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.function-app-${serviceSh
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wfamin'
+param serviceShort string = 'afamin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

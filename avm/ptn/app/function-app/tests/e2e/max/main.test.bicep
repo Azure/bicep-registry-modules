@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using all parameters'
-metadata description = 'This instance deploys the module with all parameters set to exercise the full feature surface.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.function-app-${serviceSh
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wfamax'
+param serviceShort string = 'afamax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'

@@ -22,10 +22,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Added `tags` / `functionAppTags` split: `tags` apply to every resource; `functionAppTags` are merged on top only on the Function App, intended for AZD's `azd-service-name` mapping.
 - `appSettingsKeyValuePairs` description clarified — values must be strings; reserved-key behavior documented.
 - Added `tests/e2e/max` test exercising every parameter (BYO UAMI, BYO Log Analytics workspace, custom names, CORS, lock, and diagnostic settings).
-
-### Scope
-
-Private networking is intentionally **out of scope** for v0.1. The module does not configure regional VNet integration, Private Endpoints or Private DNS Zones, and does not disable public network access. Workloads that need those capabilities should compose `avm/res/web/site`, `avm/res/storage/storage-account` and `avm/res/network/private-endpoint` directly. Storage redundancy is fixed at `Standard_LRS` and zone redundancy is opt-in, so no cost-affecting choice is applied implicitly.
+- Private networking is intentionally out of scope: the module does not configure regional VNet integration, Private Endpoints or Private DNS Zones, and does not disable public network access. Workloads needing those should compose `avm/res/web/site`, `avm/res/storage/storage-account` and `avm/res/network/private-endpoint` directly. Storage redundancy is fixed at `Standard_LRS`, so no cost-affecting choice is applied implicitly.
 
 ### Breaking Changes
 

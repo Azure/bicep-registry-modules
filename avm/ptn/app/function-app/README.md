@@ -82,7 +82,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/function-app:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using all parameters](#example-2-using-all-parameters)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -99,7 +99,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: 'wfamin001'
+    functionAppName: 'afamin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -120,7 +120,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "wfamin001"
+      "value": "afamin001"
     },
     // Non-required parameters
     "location": {
@@ -141,7 +141,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = 'wfamin001'
+param functionAppName = 'afamin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -149,9 +149,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using all parameters_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with all parameters set to exercise the full feature surface.
+This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
@@ -164,10 +164,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: 'wfamax001'
+    functionAppName: 'afamax001'
     // Non-required parameters
-    applicationInsightsName: 'dep-ai-wfamax'
-    appServicePlanName: 'wfamax-asp'
+    applicationInsightsName: 'dep-ai-afamax'
+    appServicePlanName: 'afamax-asp'
     appServicePlanSkuCapacity: 2
     appServicePlanSkuName: 'EP1'
     appServicePlanZoneRedundant: true
@@ -228,14 +228,14 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "wfamax001"
+      "value": "afamax001"
     },
     // Non-required parameters
     "applicationInsightsName": {
-      "value": "dep-ai-wfamax"
+      "value": "dep-ai-afamax"
     },
     "appServicePlanName": {
-      "value": "wfamax-asp"
+      "value": "afamax-asp"
     },
     "appServicePlanSkuCapacity": {
       "value": 2
@@ -332,10 +332,10 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = 'wfamax001'
+param functionAppName = 'afamax001'
 // Non-required parameters
-param applicationInsightsName = 'dep-ai-wfamax'
-param appServicePlanName = 'wfamax-asp'
+param applicationInsightsName = 'dep-ai-afamax'
+param appServicePlanName = 'afamax-asp'
 param appServicePlanSkuCapacity = 2
 param appServicePlanSkuName = 'EP1'
 param appServicePlanZoneRedundant = true
@@ -891,12 +891,12 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/insights/component:0.7.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.15.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.32.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
-| `br/public:avm/res/web/site:0.23.0` | Remote reference |
+| `br/public:avm/res/web/site:0.24.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
 
 ## Data Collection
