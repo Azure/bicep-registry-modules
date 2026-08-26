@@ -355,10 +355,10 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`gptImageModelDeploymentType`](#parameter-gptimagemodeldeploymenttype) | string | GPT image model deployment type. Defaults to GlobalStandard. |
 | [`gptImageModelName`](#parameter-gptimagemodelname) | string | Name of the image-generation model to deploy. Defaults to gpt-image-1.5. |
 | [`gptImageModelVersion`](#parameter-gptimagemodelversion) | string | Version of the image-generation model to deploy. Defaults to 2025-12-16. |
-| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 100 for optimal performance. |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 5. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. Defaults to gpt-5.4-mini. |
-| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2026-03-17. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. Defaults to gpt-4.1-mini. |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2025-04-14. |
 | [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`mcpContainerImageName`](#parameter-mcpcontainerimagename) | string | The Container Image Name to deploy on the MCP. |
 | [`mcpContainerImageTag`](#parameter-mcpcontainerimagetag) | string | The Container Image Tag to deploy on the MCP. |
@@ -584,11 +584,11 @@ Version of the image-generation model to deploy. Defaults to 2025-12-16.
 
 ### Parameter: `gptModelCapacity`
 
-AI model deployment token capacity. Defaults to 100 for optimal performance.
+AI model deployment token capacity. Defaults to 5.
 
 - Required: No
 - Type: int
-- Default: `10`
+- Default: `5`
 
 ### Parameter: `gptModelDeploymentType`
 
@@ -607,19 +607,19 @@ GPT model deployment type. Defaults to GlobalStandard.
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy. Defaults to gpt-5.4-mini.
+Name of the GPT model to deploy. Defaults to gpt-4.1-mini.
 
 - Required: No
 - Type: string
-- Default: `'gpt-5.4-mini'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `gptModelVersion`
 
-Version of the GPT model to deploy. Defaults to 2026-03-17.
+Version of the GPT model to deploy. Defaults to 2025-04-14.
 
 - Required: No
 - Type: string
-- Default: `'2026-03-17'`
+- Default: `'2025-04-14'`
 
 ### Parameter: `location`
 
@@ -766,7 +766,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/app/managed-environment:0.13.2` | Remote reference |
 | `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.22.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.12.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
 | `br/public:avm/res/insights/data-collection-rule:0.11.0` | Remote reference |

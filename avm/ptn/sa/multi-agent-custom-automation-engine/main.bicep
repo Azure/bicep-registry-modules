@@ -46,7 +46,7 @@ var deployingUserPrincipalId = deployerInfo.objectId
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-5.4, 10'
-      'OpenAI.GlobalStandard.gpt-5.4-mini, 10'
+      'OpenAI.GlobalStandard.gpt-4.1-mini, 5'
       // 'OpenAI.GlobalStandard.gpt-image-1.5, 5' // Commented out: gpt-image-1.5 not available yet
     ]
   }
@@ -58,11 +58,11 @@ param azureAiServiceLocation string
 param cosmosDbReplicaLocation string = 'canadacentral'
 
 @minLength(1)
-@description('Optional. Name of the GPT model to deploy. Defaults to gpt-5.4-mini.')
-param gptModelName string = 'gpt-5.4-mini'
+@description('Optional. Name of the GPT model to deploy. Defaults to gpt-4.1-mini.')
+param gptModelName string = 'gpt-4.1-mini'
 
-@description('Optional. Version of the GPT model to deploy. Defaults to 2026-03-17.')
-param gptModelVersion string = '2026-03-17'
+@description('Optional. Version of the GPT model to deploy. Defaults to 2025-04-14.')
+param gptModelVersion string = '2025-04-14'
 
 @minLength(1)
 @description('Optional. Name of the larger GPT model to deploy. Defaults to gpt-5.4.')
@@ -105,8 +105,8 @@ param gpt54ModelDeploymentType string = 'GlobalStandard'
 @description('Optional. GPT image model deployment type. Defaults to GlobalStandard.')
 param gptImageModelDeploymentType string = 'GlobalStandard'
 
-@description('Optional. AI model deployment token capacity. Defaults to 100 for optimal performance.')
-param gptModelCapacity int = 10
+@description('Optional. AI model deployment token capacity. Defaults to 5.')
+param gptModelCapacity int = 5
 
 @description('Optional. AI model deployment token capacity. Defaults to 150 for optimal performance.')
 param gpt54ModelCapacity int = 10
@@ -197,6 +197,13 @@ var replicaRegionPairs = {
   westeurope: 'northeurope'
 }
 var replicaLocation = replicaRegionPairs[location]
+var zoneRedundantReplicaRegions = [
+  'centralus'
+  'japaneast'
+  'westeurope'
+  'northeurope'
+]
+var replicaSupportsZoneRedundancy = contains(zoneRedundantReplicaRegions, replicaLocation)
 
 // ============== //
 // Resources      //
@@ -557,7 +564,7 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v4'
+var virtualMachineSize = 'Standard_D2s_v3'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
@@ -1003,7 +1010,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.12.0' 
           {
             name: replicaLocation
             location: replicaLocation
-            zoneRedundancy: 'Enabled'
+            zoneRedundancy: replicaSupportsZoneRedundancy ? 'Enabled' : 'Disabled'
           }
         ]
       : []
