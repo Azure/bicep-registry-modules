@@ -48,7 +48,7 @@ param secondaryLocation string = 'uksouth'
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.1,150'
+      'OpenAI.GlobalStandard.gpt-4.1-mini,10'
       'OpenAI.GlobalStandard.gpt-image-1-mini,1'
     ]
   }
@@ -66,10 +66,10 @@ param gptModelDeploymentType string = 'GlobalStandard'
 
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
-param gptModelName string = 'gpt-5.1'
+param gptModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Version of the GPT model to deploy.')
-param gptModelVersion string = '2025-11-13'
+param gptModelVersion string = '2025-04-14'
 
 @description('Optional. Image model to deploy: gpt-image-1-mini, gpt-image-1.5, or none to skip.')
 @allowed([
@@ -87,7 +87,7 @@ param azureAiAgentApiVersion string = '2025-05-01'
 
 @minValue(10)
 @description('Optional. AI model deployment token capacity.')
-param gptModelCapacity int = 150
+param gptModelCapacity int = 10
 
 @minValue(1)
 @description('Optional. Image model deployment capacity (RPM).')
@@ -258,7 +258,7 @@ resource resourceGroupTags 'Microsoft.Resources/tags@2025-04-01' = {
 
 // ========== Log Analytics Workspace ========== //
 var logAnalyticsWorkspaceResourceName = 'log-${solutionSuffix}'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.15.0' = if (enableMonitoring) {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
@@ -284,7 +284,7 @@ var logAnalyticsWorkspaceResourceId = enableMonitoring ? logAnalyticsWorkspace!.
 
 // ========== Application Insights ========== //
 var applicationInsightsResourceName = 'appi-${solutionSuffix}'
-module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (enableMonitoring) {
+module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
@@ -302,7 +302,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.7.1' = if (en
 
 // ========== User Assigned Identity ========== //
 var userAssignedIdentityResourceName = 'id-${solutionSuffix}'
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.5.0' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.6.0' = {
   name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedIdentityResourceName}', 64)
   params: {
     name: userAssignedIdentityResourceName
@@ -398,7 +398,7 @@ module avmPrivateDnsZones 'br/public:avm/res/network/private-dns-zone:0.8.1' = [
 ]
 
 // ========== AI Foundry: AI Services ========== //
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2' = {
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.19.0' = {
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
@@ -462,7 +462,7 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.14.2'
 }
 
 // Create private endpoint for AI Services AFTER the account is fully provisioned
-module aiServicesPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+module aiServicesPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.1' = if (enablePrivateNetworking) {
   name: take('pep-ai-services-${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: 'pep-${aiFoundryAiServicesResourceName}'
@@ -511,7 +511,7 @@ module aiFoundryAiServicesProject 'modules/ai-project.bicep' = {
 var aiFoundryAiProjectEndpoint = aiFoundryAiServicesProject.outputs.apiEndpoint
 
 // ========== AI Search ========== //
-module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = {
+module aiSearch 'br/public:avm/res/search/search-service:0.13.0' = {
   name: take('avm.res.search.search-service.${aiSearchName}', 64)
   params: {
     name: aiSearchName
@@ -548,7 +548,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.12.0' = {
 }
 
 // ========== AI Search Connection to AI Services ========== //
-resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-01-15-preview' = {
+resource aiSearchFoundryConnection 'Microsoft.CognitiveServices/accounts/projects/connections@2026-05-15-preview' = {
   name: '${aiFoundryAiServicesResourceName}/${aiFoundryAiProjectResourceName}/${aiSearchConnectionName}'
   properties: {
     category: 'CognitiveSearch'
@@ -569,7 +569,7 @@ var productImagesContainer = 'product-images'
 var generatedImagesContainer = 'generated-images'
 var dataContainer = 'data'
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.32.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
   name: take('avm.res.storage.storage-account.${storageAccountName}', 64)
   params: {
     name: storageAccountName
@@ -640,7 +640,7 @@ var cosmosDBDatabaseName = 'content_generation_db'
 var cosmosDBConversationsContainer = 'conversations'
 var cosmosDBProductsContainer = 'products'
 
-module cosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
+module cosmosDB 'br/public:avm/res/document-db/database-account:0.21.1' = {
   name: take('avm.res.document-db.database-account.${cosmosDBResourceName}', 64)
   params: {
     name: 'cosmos-${solutionSuffix}'
@@ -692,7 +692,7 @@ module cosmosDB 'br/public:avm/res/document-db/database-account:0.19.0' = {
       publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     }
     zoneRedundant: enableRedundancy
-    capabilitiesToAdd: enableRedundancy ? null : ['EnableServerless']
+    capacityMode: enableRedundancy ? 'Provisioned' : 'Serverless'
     enableAutomaticFailover: enableRedundancy
     failoverLocations: enableRedundancy
       ? [

@@ -34,9 +34,10 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/defenderForAISettings` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_defenderforaisettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/defenderForAISettings)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2026-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-05-01/accounts/deployments)</li></ul> |
 | `Microsoft.CognitiveServices/accounts/projects` | 2026-01-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-01-15-preview/accounts/projects)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/projects/connections` | 2026-01-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-01-15-preview/accounts/projects/connections)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | 2026-05-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-05-15-preview/accounts/projects/connections)</li></ul> |
 | `Microsoft.ContainerInstance/containerGroups` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerinstance_containergroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerInstance/2025-09-01/containerGroups)</li></ul> |
 | `Microsoft.ContainerRegistry/registries` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-06-01-preview/registries)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_cacherules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/cacheRules)</li></ul> |
@@ -46,21 +47,21 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.ContainerRegistry/registries/tasks` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tasks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-03-01-preview/registries/tasks)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/tokens` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tokens.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/tokens)</li></ul> |
 | `Microsoft.ContainerRegistry/registries/webhooks` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/webhooks)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_views.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraKeyspaces/views)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/tables` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraKeyspaces)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_views.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraKeyspaces/views)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/gremlinDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/mongodbDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/mongodbDatabases/collections)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/sqlRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2026-04-01-preview/databaseAccounts/tables)</li></ul> |
 | `Microsoft.Insights/components` | 2020-02-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components)</li></ul> |
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -124,86 +125,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-generation:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
-  params: {
-    // Required parameters
-    azureAiServiceLocation: 'swedencentral'
-    // Non-required parameters
-    cosmosDbReplicaLocation: 'canadacentral'
-    secondaryLocation: '<secondaryLocation>'
-    solutionName: '<solutionName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "azureAiServiceLocation": {
-      "value": "swedencentral"
-    },
-    // Non-required parameters
-    "cosmosDbReplicaLocation": {
-      "value": "canadacentral"
-    },
-    "secondaryLocation": {
-      "value": "<secondaryLocation>"
-    },
-    "solutionName": {
-      "value": "<solutionName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/content-generation:<version>'
-
-// Required parameters
-param azureAiServiceLocation = 'swedencentral'
-// Non-required parameters
-param cosmosDbReplicaLocation = 'canadacentral'
-param secondaryLocation = '<secondaryLocation>'
-param solutionName = '<solutionName>'
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox configuration with default parameter values_
+### Example 1: _Sandbox configuration with default parameter values_
 
 This instance deploys the module with the minimum set of required parameters, designed for Sandbox environments.
 
@@ -293,7 +218,7 @@ param solutionName = '<solutionName>'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 2: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -310,7 +235,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     // Required parameters
     azureAiServiceLocation: 'swedencentral'
     // Non-required parameters
-    cosmosDbReplicaLocation: 'canadacentral'
+    cosmosDbReplicaLocation: 'westus3'
     secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
@@ -335,7 +260,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     },
     // Non-required parameters
     "cosmosDbReplicaLocation": {
-      "value": "canadacentral"
+      "value": "westus3"
     },
     "secondaryLocation": {
       "value": "<secondaryLocation>"
@@ -360,7 +285,7 @@ using 'br/public:avm/ptn/sa/content-generation:<version>'
 // Required parameters
 param azureAiServiceLocation = 'swedencentral'
 // Non-required parameters
-param cosmosDbReplicaLocation = 'canadacentral'
+param cosmosDbReplicaLocation = 'westus3'
 param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```
@@ -516,7 +441,7 @@ AI model deployment token capacity.
 
 - Required: No
 - Type: int
-- Default: `150`
+- Default: `10`
 - MinValue: 10
 
 ### Parameter: `gptModelDeploymentType`
@@ -540,7 +465,7 @@ Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
-- Default: `'gpt-5.1'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `gptModelVersion`
 
@@ -548,7 +473,7 @@ Version of the GPT model to deploy.
 
 - Required: No
 - Type: string
-- Default: `'2025-11-13'`
+- Default: `'2025-04-14'`
 
 ### Parameter: `imageModelCapacity`
 
@@ -672,7 +597,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/cognitive-services/account:0.14.2` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.7.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
