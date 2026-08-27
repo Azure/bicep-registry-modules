@@ -485,8 +485,7 @@ module avmContainerRegistry './modules/container-registry.bicep' = {
     location: solutionLocation
     // WAF aligned configuration for Reliability & Security: Premium enables zone redundancy, geo-replication, and the network firewall
     acrSku: (enableRedundancy || enablePrivateNetworking) ? 'Premium' : 'Standard'
-    // Keep public access enabled; restrict it with a firewall (default Deny) to satisfy Azure.ACR.Firewall without disabling public access
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
     replications: enableRedundancy

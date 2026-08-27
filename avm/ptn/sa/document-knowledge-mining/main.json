@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "6117358660167348322"
+      "templateHash": "16764300345113770284"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -22330,9 +22330,7 @@
             "value": "[variables('solutionLocation')]"
           },
           "acrSku": "[if(or(parameters('enableRedundancy'), parameters('enablePrivateNetworking')), createObject('value', 'Premium'), createObject('value', 'Standard'))]",
-          "publicNetworkAccess": {
-            "value": "Enabled"
-          },
+          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkRuleSetDefaultAction": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
           "zoneRedundancy": "[if(parameters('enableRedundancy'), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
           "replications": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('name', variables('acrGeoReplicaLocation'), 'location', variables('acrGeoReplicaLocation'), 'regionEndpointEnabled', true(), 'zoneRedundancy', 'Disabled'))), createObject('value', createArray()))]",
@@ -45989,8 +45987,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
         "userAssignedIdentity",
         "virtualNetwork"
       ]
