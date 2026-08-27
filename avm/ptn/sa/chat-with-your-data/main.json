@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.45.6.27763",
-      "templateHash": "1460660060642495057"
+      "templateHash": "6606197939983338014"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -57,12 +57,11 @@
         "azd": {
           "type": "location",
           "usageName": [
-            "OpenAI.GlobalStandard.gpt-5.4-mini,50",
-            "OpenAI.GlobalStandard.gpt-5-mini,50",
+            "OpenAI.GlobalStandard.gpt-4.1-mini,15",
             "OpenAI.Standard.text-embedding-3-small,100"
           ]
         },
-        "description": "Required. Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1 GlobalStandard availability."
+        "description": "Required. Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability."
       }
     },
     "databaseType": {
@@ -89,7 +88,7 @@
     },
     "gptModelName": {
       "type": "string",
-      "defaultValue": "gpt-5.4-mini",
+      "defaultValue": "gpt-4.1-mini",
       "minLength": 1,
       "metadata": {
         "description": "Optional. Primary chat model deployment name."
@@ -97,7 +96,7 @@
     },
     "gptModelVersion": {
       "type": "string",
-      "defaultValue": "2026-03-17",
+      "defaultValue": "2025-04-14",
       "metadata": {
         "description": "Optional. Primary chat model version."
       }
@@ -115,7 +114,7 @@
     },
     "gptModelCapacity": {
       "type": "int",
-      "defaultValue": 50,
+      "defaultValue": 5,
       "minValue": 1,
       "metadata": {
         "description": "Optional. Token capacity (thousands of TPM) for the primary chat model."
@@ -123,7 +122,7 @@
     },
     "reasoningModelName": {
       "type": "string",
-      "defaultValue": "gpt-5-mini",
+      "defaultValue": "gpt-4.1-mini",
       "minLength": 1,
       "metadata": {
         "description": "Optional. Reasoning model deployment name (surfaced via the SSE reasoning channel)."
@@ -131,7 +130,7 @@
     },
     "reasoningModelVersion": {
       "type": "string",
-      "defaultValue": "2025-08-07",
+      "defaultValue": "2025-04-14",
       "metadata": {
         "description": "Optional. Reasoning model version."
       }
@@ -149,7 +148,7 @@
     },
     "reasoningModelCapacity": {
       "type": "int",
-      "defaultValue": 50,
+      "defaultValue": 10,
       "minValue": 1,
       "metadata": {
         "description": "Optional. Token capacity for the reasoning model."
@@ -282,9 +281,9 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D2s_v5",
+      "defaultValue": "Standard_D2s_v3",
       "metadata": {
-        "description": "Optional. VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5."
+        "description": "Optional. VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3."
       }
     },
     "tags": {
@@ -373,6 +372,7 @@
       "postgres": 7,
       "containerRegistry": 8
     },
+    "reasoningModelDeploymentName": "[format('{0}-reasoning', parameters('reasoningModelName'))]",
     "aiModelDeployments": [
       {
         "name": "[parameters('gptModelName')]",
@@ -388,7 +388,7 @@
         "raiPolicyName": "Microsoft.DefaultV2"
       },
       {
-        "name": "[parameters('reasoningModelName')]",
+        "name": "[variables('reasoningModelDeploymentName')]",
         "model": {
           "format": "OpenAI",
           "name": "[parameters('reasoningModelName')]",
@@ -48463,9 +48463,9 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', take(format('module.log-analytics.{0}', parameters('solutionName')), 64))]",
-        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').file], '.')[1], parameters('solutionName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').blob], '.')[1], parameters('solutionName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').queue], '.')[1], parameters('solutionName')), 64))]",
+        "[resourceId('Microsoft.Resources/deployments', take(format('module.private-dns-zone.{0}.{1}', split(variables('privateDnsZones')[variables('dnsZoneIndex').file], '.')[1], parameters('solutionName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('module.managed-identity.user-assigned-identity.{0}', parameters('solutionName')), 64))]",
         "[resourceId('Microsoft.Resources/deployments', take(format('module.virtualNetwork.{0}', parameters('solutionName')), 64))]"
       ]
@@ -74017,7 +74017,7 @@
       "metadata": {
         "description": "Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel)."
       },
-      "value": "[parameters('reasoningModelName')]"
+      "value": "[variables('reasoningModelDeploymentName')]"
     },
     "azureOpenAiEmbeddingDeployment": {
       "type": "string",

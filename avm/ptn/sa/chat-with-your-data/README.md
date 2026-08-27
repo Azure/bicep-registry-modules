@@ -446,7 +446,7 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1 GlobalStandard availability. |
+| [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability. |
 
 **Optional parameters**
 
@@ -485,11 +485,11 @@ param vmAdminUsername = 'adminuser'
 | [`tags`](#parameter-tags) | object | Tags applied to every deployed resource. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | VM admin password (AVM-WAF only, when private networking is enabled). |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | VM admin username (AVM-WAF only, when private networking is enabled). |
-| [`vmSize`](#parameter-vmsize) | string | VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5. |
+| [`vmSize`](#parameter-vmsize) | string | VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3. |
 
 ### Parameter: `azureAiServiceLocation`
 
-Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1 GlobalStandard availability.
+Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability.
 
 - Required: Yes
 - Type: string
@@ -650,7 +650,7 @@ Token capacity (thousands of TPM) for the primary chat model.
 
 - Required: No
 - Type: int
-- Default: `50`
+- Default: `5`
 - MinValue: 1
 
 ### Parameter: `gptModelDeploymentType`
@@ -674,7 +674,7 @@ Primary chat model deployment name.
 
 - Required: No
 - Type: string
-- Default: `'gpt-5.4-mini'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `gptModelVersion`
 
@@ -682,7 +682,7 @@ Primary chat model version.
 
 - Required: No
 - Type: string
-- Default: `'2026-03-17'`
+- Default: `'2025-04-14'`
 
 ### Parameter: `ingestionTrigger`
 
@@ -713,7 +713,7 @@ Token capacity for the reasoning model.
 
 - Required: No
 - Type: int
-- Default: `50`
+- Default: `10`
 - MinValue: 1
 
 ### Parameter: `reasoningModelDeploymentType`
@@ -737,7 +737,7 @@ Reasoning model deployment name (surfaced via the SSE reasoning channel).
 
 - Required: No
 - Type: string
-- Default: `'gpt-5-mini'`
+- Default: `'gpt-4.1-mini'`
 
 ### Parameter: `reasoningModelVersion`
 
@@ -745,7 +745,7 @@ Reasoning model version.
 
 - Required: No
 - Type: string
-- Default: `'2025-08-07'`
+- Default: `'2025-04-14'`
 
 ### Parameter: `searchIndexName`
 
@@ -821,11 +821,11 @@ VM admin username (AVM-WAF only, when private networking is enabled).
 
 ### Parameter: `vmSize`
 
-VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5.
+VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3.
 
 - Required: No
 - Type: string
-- Default: `'Standard_D2s_v5'`
+- Default: `'Standard_D2s_v3'`
 
 ## Outputs
 

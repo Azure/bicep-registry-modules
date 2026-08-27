@@ -105,9 +105,16 @@ function Test-TemplateDeployment {
         $deploymentNamePrefix = ($reducedElem + @($shortPathElems[-1])) -join '-'
 
         $DeploymentInputs = @{
-            TemplateFile = $TemplateFilePath
-            Verbose      = $true
-            OutVariable  = 'ValidationErrors'
+            Verbose     = $true
+            OutVariable = 'ValidationErrors'
+        }
+        if ((Split-Path $TemplateFilePath -Extension) -eq '.bicep') {
+            $DeploymentInputs['TemplateObject'] = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
+            if ($LASTEXITCODE -ne 0) {
+                throw "Failed to compile Bicep template [$TemplateFilePath]."
+            }
+        } else {
+            $DeploymentInputs['TemplateFile'] = $TemplateFilePath
         }
         if (-not [String]::IsNullOrEmpty($ParameterFilePath)) {
             $DeploymentInputs['TemplateParameterFile'] = $ParameterFilePath

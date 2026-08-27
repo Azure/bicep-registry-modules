@@ -50,13 +50,12 @@ param location string = resourceGroup().location
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-5.4-mini,50'
-      'OpenAI.GlobalStandard.gpt-5-mini,50'
+      'OpenAI.GlobalStandard.gpt-4.1-mini,15'
       'OpenAI.Standard.text-embedding-3-small,100'
     ]
   }
 })
-@description('Required. Region for AI Services / Foundry deployments. Restricted to regions with GPT-5.1 GlobalStandard availability.')
+@description('Required. Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability.')
 param azureAiServiceLocation string
 
 // ============================================================================
@@ -83,10 +82,10 @@ param ingestionTrigger string = 'direct_enqueue'
 
 @minLength(1)
 @description('Optional. Primary chat model deployment name.')
-param gptModelName string = 'gpt-5.4-mini'
+param gptModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Primary chat model version.')
-param gptModelVersion string = '2026-03-17'
+param gptModelVersion string = '2025-04-14'
 
 @allowed([
   'Standard'
@@ -97,14 +96,14 @@ param gptModelDeploymentType string = 'GlobalStandard'
 
 @minValue(1)
 @description('Optional. Token capacity (thousands of TPM) for the primary chat model.')
-param gptModelCapacity int = 50
+param gptModelCapacity int = 5
 
 @minLength(1)
 @description('Optional. Reasoning model deployment name (surfaced via the SSE reasoning channel).')
-param reasoningModelName string = 'gpt-5-mini'
+param reasoningModelName string = 'gpt-4.1-mini'
 
 @description('Optional. Reasoning model version.')
-param reasoningModelVersion string = '2025-08-07'
+param reasoningModelVersion string = '2025-04-14'
 
 @allowed([
   'Standard'
@@ -115,7 +114,7 @@ param reasoningModelDeploymentType string = 'GlobalStandard'
 
 @minValue(1)
 @description('Optional. Token capacity for the reasoning model.')
-param reasoningModelCapacity int = 50
+param reasoningModelCapacity int = 10
 
 @minLength(1)
 @description('Optional. Embedding model deployment name (used by Foundry IQ and the LangGraph indexer).')
@@ -184,8 +183,8 @@ param vmAdminUsername string = ''
 @description('Optional. VM admin password (AVM-WAF only, when private networking is enabled).')
 param vmAdminPassword string = ''
 
-@description('Optional. VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v5.')
-param vmSize string = 'Standard_D2s_v5'
+@description('Optional. VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3.')
+param vmSize string = 'Standard_D2s_v3'
 
 // ============================================================================
 // Parameters — Identity & Tagging
@@ -290,6 +289,8 @@ var dnsZoneIndex = {
   containerRegistry: 8
 }
 
+var reasoningModelDeploymentName = '${reasoningModelName}-reasoning'
+
 var aiModelDeployments = [
   {
     name: gptModelName
@@ -305,7 +306,7 @@ var aiModelDeployments = [
     raiPolicyName: 'Microsoft.DefaultV2'
   }
   {
-    name: reasoningModelName
+    name: reasoningModelDeploymentName
     model: {
       format: 'OpenAI'
       name: reasoningModelName
@@ -1495,7 +1496,7 @@ output azureAiAgentApiVersion string = azureAiAgentApiVersion
 output azureOpenAiGptDeployment string = gptModelName
 
 @description('Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel).')
-output azureOpenAiReasoningDeployment string = reasoningModelName
+output azureOpenAiReasoningDeployment string = reasoningModelDeploymentName
 
 @description('Deployment name of the embedding model used by the indexing pipeline.')
 output azureOpenAiEmbeddingDeployment string = embeddingModelName
