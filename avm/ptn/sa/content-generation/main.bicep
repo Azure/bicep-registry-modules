@@ -49,7 +49,6 @@ param secondaryLocation string = 'uksouth'
     type: 'location'
     usageName: [
       'OpenAI.GlobalStandard.gpt-4.1-mini,10'
-      'OpenAI.GlobalStandard.gpt-image-1-mini,1'
     ]
   }
 })

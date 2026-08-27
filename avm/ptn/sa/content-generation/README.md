@@ -149,6 +149,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     enablePrivateNetworking: false
     enableRedundancy: false
     enableScalability: false
+    imageModelChoice: 'none'
     secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
@@ -184,6 +185,9 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     "enableScalability": {
       "value": false
     },
+    "imageModelChoice": {
+      "value": "none"
+    },
     "secondaryLocation": {
       "value": "<secondaryLocation>"
     },
@@ -211,6 +215,7 @@ param enableMonitoring = false
 param enablePrivateNetworking = false
 param enableRedundancy = false
 param enableScalability = false
+param imageModelChoice = 'none'
 param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```
@@ -236,6 +241,7 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     azureAiServiceLocation: 'swedencentral'
     // Non-required parameters
     cosmosDbReplicaLocation: 'westus3'
+    imageModelChoice: 'none'
     secondaryLocation: '<secondaryLocation>'
     solutionName: '<solutionName>'
   }
@@ -262,6 +268,9 @@ module contentGeneration 'br/public:avm/ptn/sa/content-generation:<version>' = {
     "cosmosDbReplicaLocation": {
       "value": "westus3"
     },
+    "imageModelChoice": {
+      "value": "none"
+    },
     "secondaryLocation": {
       "value": "<secondaryLocation>"
     },
@@ -286,6 +295,7 @@ using 'br/public:avm/ptn/sa/content-generation:<version>'
 param azureAiServiceLocation = 'swedencentral'
 // Non-required parameters
 param cosmosDbReplicaLocation = 'westus3'
+param imageModelChoice = 'none'
 param secondaryLocation = '<secondaryLocation>'
 param solutionName = '<solutionName>'
 ```

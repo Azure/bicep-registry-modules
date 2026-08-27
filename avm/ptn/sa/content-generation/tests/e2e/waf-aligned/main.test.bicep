@@ -46,6 +46,7 @@ module testDeployment '../../../main.bicep' = [
       secondaryLocation: enforcedLocation
       azureAiServiceLocation: 'swedencentral'
       cosmosDbReplicaLocation: 'westus3'
+      imageModelChoice: 'none'
     }
   }
 ]

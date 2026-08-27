@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [
       enableRedundancy: false
       enableScalability: false
       enablePrivateNetworking: false
+      imageModelChoice: 'none'
     }
   }
 ]
