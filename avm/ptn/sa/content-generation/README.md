@@ -596,17 +596,19 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/cognitive-services/account:0.14.2` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.19.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.7.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.19.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.21.1` | Remote reference |
+| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.8.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.15.0` | Remote reference |
-| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.32.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
+| `br/public:avm/res/search/search-service:0.13.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
