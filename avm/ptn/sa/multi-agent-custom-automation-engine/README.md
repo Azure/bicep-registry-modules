@@ -143,80 +143,9 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>`.
 
-- [Default configuration with default parameter values](#example-1-default-configuration-with-default-parameter-values)
-- [Default configuration with WAF aligned parameter values](#example-2-default-configuration-with-waf-aligned-parameter-values)
+- [Default configuration with WAF aligned parameter values](#example-1-default-configuration-with-waf-aligned-parameter-values)
 
-### Example 1: _Default configuration with default parameter values_
-
-This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
-  params: {
-    // Required parameters
-    azureAiServiceLocation: '<azureAiServiceLocation>'
-    // Non-required parameters
-    location: '<location>'
-    solutionName: 'macaemin'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "azureAiServiceLocation": {
-      "value": "<azureAiServiceLocation>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "macaemin"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
-
-// Required parameters
-param azureAiServiceLocation = '<azureAiServiceLocation>'
-// Non-required parameters
-param location = '<location>'
-param solutionName = 'macaemin'
-```
-
-</details>
-<p>
-
-### Example 2: _Default configuration with WAF aligned parameter values_
+### Example 1: _Default configuration with WAF aligned parameter values_
 
 This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the [WAF aligned](https://learn.microsoft.com/azure/well-architected/) configuration.
 

@@ -1067,21 +1067,12 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.13.2
     // WAF aligned configuration for Redundancy
     zoneRedundant: enableRedundancy ? true : false
     infrastructureResourceGroupName: enableRedundancy ? '${resourceGroup().name}-infra' : null
-    workloadProfiles: enableRedundancy
-      ? [
-          {
-            maximumCount: 3
-            minimumCount: 3
-            name: 'CAW01'
-            workloadProfileType: 'D4'
-          }
-        ]
-      : [
-          {
-            name: 'Consumption'
-            workloadProfileType: 'Consumption'
-          }
-        ]
+    workloadProfiles: [
+      {
+        name: 'Consumption'
+        workloadProfileType: 'Consumption'
+      }
+    ]
   }
 }
 
