@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Default configuration with WAF aligned parameter values'
-metadata description = 'This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the [WAF aligned](https://learn.microsoft.com/azure/well-architected/) configuration.'
+metadata name = 'Default configuration with default parameter values'
+metadata description = 'This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
 
 // ========== //
 // Parameters //
@@ -9,17 +9,13 @@ metadata description = 'This instance deploys the [Multi-Agent Custom Automation
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep3-wafaligned-${namePrefix}-sa.macae-${serviceShort}-rg'
+param resourceGroupName string = 'dep2-defaults-${namePrefix}-sa.macae-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'macaewaf'
+param serviceShort string = 'macaemin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. The password to set for the Virtual Machine.')
-@secure()
-param virtualMachineAdminPassword string = newGuid()
 
 // ============ //
 // Dependencies //
@@ -47,15 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       solutionName: '${namePrefix}${serviceShort}'
       azureAiServiceLocation: enforcedLocation
-      cosmosDbReplicaLocation: 'westus3'
       location: enforcedLocation
-      enableMonitoring: true
-      enablePrivateNetworking: true
-      enableRedundancy: true
-      enableScalability: true
-      enableTelemetry: true
-      virtualMachineAdminUsername: 'adminuser'
-      virtualMachineAdminPassword: virtualMachineAdminPassword
     }
   }
 ]
