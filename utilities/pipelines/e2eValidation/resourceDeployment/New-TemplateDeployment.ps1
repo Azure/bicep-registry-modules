@@ -182,16 +182,9 @@ function New-TemplateDeploymentInner {
         $deploymentNamePrefix = ($reducedElem + @($shortPathElems[-1])) -join '-'
 
         $DeploymentInputs = @{
-            Verbose     = $true
-            ErrorAction = 'Stop'
-        }
-        if ((Split-Path $TemplateFilePath -Extension) -eq '.bicep') {
-            $DeploymentInputs['TemplateObject'] = bicep build $TemplateFilePath --stdout | ConvertFrom-Json -AsHashtable
-            if ($LASTEXITCODE -ne 0) {
-                throw "Failed to compile Bicep template [$TemplateFilePath]."
-            }
-        } else {
-            $DeploymentInputs['TemplateFile'] = $TemplateFilePath
+            TemplateFile = $TemplateFilePath
+            Verbose      = $true
+            ErrorAction  = 'Stop'
         }
 
         # Parameter file provided yes/no

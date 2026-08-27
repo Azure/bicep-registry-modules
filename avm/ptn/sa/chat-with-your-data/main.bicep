@@ -673,88 +673,78 @@ module aiProjectPrivateEndpoint './modules/networking/private-endpoint.bicep' = 
 // The Web socket from front end application connects to Speech service over a public internet and it does not work over a Private endpoint.
 // So public access is enabled even if AVM WAF is enabled.
 var enablePrivateNetworkingSpeech = false
-module speechService './modules/ai/ai-services.bicep' = {
-  name: take('module.ai-services.SpeechServices.${solutionName}', 64)
-  params: {
-    solutionName: solutionSuffix
+var speechServiceIndex = 0
+var contentSafetyIndex = 1
+var auxiliaryAiServiceConfigs = [
+  {
+    moduleName: 'SpeechServices'
     namePrefix: 'spch'
     customSubDomainName: 'spch${uniqueString(resourceGroup().id, solutionSuffix, 'SpeechServices')}'
-    location: azureAiServiceLocation
-    tags: allTags
-    enableTelemetry: enableTelemetry
     kind: 'SpeechServices'
-    publicNetworkAccess: enablePrivateNetworkingSpeech ? 'Disabled' : 'Enabled'
-    diagnosticSettings: monitoringDiagnosticSettings
-    roleAssignments: [
-      {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        // Cognitive Services Speech User — data-plane role for STS
-        roleDefinitionIdOrName: 'f2dc8367-1007-4938-bd23-fe263f013447'
-      }
-    ]
-    privateEndpoints: enablePrivateNetworkingSpeech
-      ? [
-          {
-            name: 'pep-spch-${solutionSuffix}'
-            customNetworkInterfaceName: 'nic-spch-${solutionSuffix}'
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-            service: 'account'
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'cognitiveservices'
-                  privateDnsZoneResourceId: privateDnsZoneDeployments[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-              ]
-            }
-          }
-        ]
-      : []
+    enableTelemetry: enableTelemetry
+    enablePrivateNetworking: enablePrivateNetworkingSpeech
+    roleDefinitionIdOrName: 'f2dc8367-1007-4938-bd23-fe263f013447'
   }
-}
-
-module contentSafety './modules/ai/ai-services.bicep' = {
-  name: take('module.ai-services.ContentSafety.${solutionName}', 64)
-  params: {
-    solutionName: solutionSuffix
+  {
+    moduleName: 'ContentSafety'
     namePrefix: 'cs'
     customSubDomainName: 'cs${uniqueString(resourceGroup().id, solutionSuffix, 'ContentSafety')}'
-    location: azureAiServiceLocation
-    tags: allTags
-    enableTelemetry: false
     kind: 'ContentSafety'
-    disableLocalAuth: true
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    diagnosticSettings: monitoringDiagnosticSettings
-    roleAssignments: [
-      {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        // Cognitive Services User — data-plane role for the AnalyzeText
-        roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908'
-      }
-    ]
-    privateEndpoints: enablePrivateNetworking
-      ? [
-          {
-            name: 'pep-cs-${solutionSuffix}'
-            customNetworkInterfaceName: 'nic-cs-${solutionSuffix}'
-            subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
-            service: 'account'
-            privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [
-                {
-                  name: 'cognitiveservices'
-                  privateDnsZoneResourceId: privateDnsZoneDeployments[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
-                }
-              ]
-            }
-          }
-        ]
-      : []
+    enableTelemetry: false
+    enablePrivateNetworking: enablePrivateNetworking
+    roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908'
   }
-}
+]
+
+module auxiliaryAiServices 'br/public:avm/res/cognitive-services/account:0.19.0' = [
+  for serviceConfig in auxiliaryAiServiceConfigs: {
+    name: take('module.ai-services.${serviceConfig.moduleName}.${solutionName}', 64)
+    params: {
+      name: '${serviceConfig.namePrefix}-${solutionSuffix}'
+      customSubDomainName: serviceConfig.customSubDomainName
+      location: azureAiServiceLocation
+      tags: allTags
+      enableTelemetry: serviceConfig.enableTelemetry
+      kind: serviceConfig.kind
+      sku: 'S0'
+      disableLocalAuth: true
+      managedIdentities: { systemAssigned: true }
+      publicNetworkAccess: serviceConfig.enablePrivateNetworking ? 'Disabled' : 'Enabled'
+      diagnosticSettings: monitoringDiagnosticSettings
+      roleAssignments: [
+        {
+          principalId: userAssignedIdentity.outputs.principalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: serviceConfig.roleDefinitionIdOrName
+        }
+      ]
+      networkAcls: {
+        bypass: null
+        defaultAction: serviceConfig.enablePrivateNetworking ? 'Deny' : 'Allow'
+        virtualNetworkRules: []
+        ipRules: []
+      }
+      privateEndpoints: serviceConfig.enablePrivateNetworking
+        ? [
+            {
+              name: 'pep-${serviceConfig.namePrefix}-${solutionSuffix}'
+              customNetworkInterfaceName: 'nic-${serviceConfig.namePrefix}-${solutionSuffix}'
+              subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+              service: 'account'
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    name: 'cognitiveservices'
+                    privateDnsZoneResourceId: privateDnsZoneDeployments[dnsZoneIndex.cognitiveServices]!.outputs.resourceId
+                  }
+                ]
+              }
+            }
+          ]
+        : []
+    }
+  }
+]
 
 module aiSearch './modules/ai/ai-search.bicep' = if (isCosmos) {
   name: take('module.ai-search.${solutionName}', 64)
@@ -1158,11 +1148,17 @@ module backendContainerApp './modules/compute/container-app.bicep' = {
             }
             { name: 'AZURE_POSTGRES_ENDPOINT', value: postgresLibpqUri }
             { name: 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', value: !isCosmos ? userAssignedIdentity.outputs.name : '' }
-            { name: 'AZURE_SPEECH_SERVICE_NAME', value: speechService.outputs.name }
+            { name: 'AZURE_SPEECH_SERVICE_NAME', value: auxiliaryAiServices[speechServiceIndex].outputs.name }
             { name: 'AZURE_SPEECH_SERVICE_REGION', value: azureAiServiceLocation }
-            { name: 'AZURE_SPEECH_ACCOUNT_RESOURCE_ID', value: speechService.outputs.resourceId }
+            {
+              name: 'AZURE_SPEECH_ACCOUNT_RESOURCE_ID'
+              value: auxiliaryAiServices[speechServiceIndex].outputs.resourceId
+            }
             { name: 'AZURE_CONTENT_SAFETY_ENABLED', value: 'true' }
-            { name: 'AZURE_CONTENT_SAFETY_ENDPOINT', value: contentSafety.outputs.endpoint }
+            {
+              name: 'AZURE_CONTENT_SAFETY_ENDPOINT'
+              value: auxiliaryAiServices[contentSafetyIndex].outputs.endpoint
+            }
             { name: 'CWYD_ORCHESTRATOR_NAME', value: databaseType == 'postgresql' ? 'langgraph' : 'agent_framework' }
             { name: 'AZURE_STORAGE_ACCOUNT_NAME', value: storageAccount.outputs.name }
             { name: 'AZURE_DOCUMENTS_CONTAINER', value: documentsContainerName }
@@ -1180,125 +1176,122 @@ module backendContainerApp './modules/compute/container-app.bicep' = {
   }
 }
 
-module frontendContainerApp './modules/compute/container-app.bicep' = {
-  name: take('module.container-app-frontend.${solutionName}', 64)
-  params: {
-    name: 'ca-frontend-${solutionSuffix}'
-    location: location
-    tags: union(allTags, { 'azd-service-name': 'frontend' })
-    enableTelemetry: enableTelemetry
-    environmentResourceId: containerAppsEnv.outputs.resourceId
-    registries: [
-      {
-        server: containerRegistry.outputs.loginServer
-        identity: userAssignedIdentity.outputs.resourceId
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
-    }
-    workloadProfileName: 'Consumption'
-    ingressTargetPort: 80
-    scaleSettings: {
-      minReplicas: enableRedundancy ? 2 : 1
-      maxReplicas: enableScalability ? 5 : 3
-    }
-    containers: [
-      {
-        name: 'frontend'
-        // image: '${containerRegistryEndpoint}/rag-frontend:${imageTag}'
-        image: sampleContainerImage
-        resources: {
-          cpu: any('0.5')
-          memory: '1.0Gi'
-        }
-        env: concat(
-          [
-            { name: 'VITE_BACKEND_URL', value: 'https://${backendContainerApp.outputs.fqdn}' }
-            { name: 'BACKEND_API_URL', value: 'https://${backendContainerApp.outputs.fqdn}' }
-          ],
-          enableMonitoring
-            ? [
-                { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: applicationInsights!.outputs.connectionString }
-              ]
-            : []
-        )
-      }
-    ]
+var frontendContainerAppIndex = 0
+var functionContainerAppIndex = 1
+var hostedContainerAppConfigs = [
+  {
+    serviceName: 'frontend'
+    kind: 'containerapps'
   }
-}
-
-module functionContainerApp './modules/compute/container-app.bicep' = {
-  name: take('module.container-app-function.${solutionName}', 64)
-  params: {
-    name: 'ca-function-${solutionSuffix}'
-    location: location
-    tags: union(allTags, { 'azd-service-name': 'function' })
+  {
+    serviceName: 'function'
     kind: 'functionapp'
-    enableTelemetry: enableTelemetry
-    environmentResourceId: containerAppsEnv.outputs.resourceId
-    registries: [
-      {
-        server: containerRegistry.outputs.loginServer
-        identity: userAssignedIdentity.outputs.resourceId
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
-    }
-    workloadProfileName: 'Consumption'
-    ingressTargetPort: 80
-    scaleSettings: {
-      minReplicas: enableRedundancy ? 2 : 1
-      maxReplicas: enableScalability ? 5 : 3
-    }
-    containers: [
-      {
-        name: 'function'
-        image: sampleContainerImage
-        resources: {
-          cpu: json(enableScalability ? '1.0' : '0.5')
-          memory: enableScalability ? '2.0Gi' : '1.0Gi'
-        }
-        env: concat(
-          [
-            { name: 'AzureWebJobsStorage__accountName', value: storageAccount.outputs.name }
-            { name: 'AzureWebJobsStorage__credential', value: 'managedidentity' }
-            { name: 'AzureWebJobsStorage__clientId', value: userAssignedIdentity.outputs.clientId }
-            { name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE', value: 'false' }
-            { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'python' }
-            { name: 'FUNCTIONS_EXTENSION_VERSION', value: '~4' }
-            { name: 'AZURE_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
-            { name: 'AZURE_UAMI_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
-            { name: 'AZURE_TENANT_ID', value: subscription().tenantId }
-            { name: 'AZURE_ENVIRONMENT', value: 'production' }
-            { name: 'AZURE_AI_PROJECT_ENDPOINT', value: projectEndpoint }
-            { name: 'AZURE_OPENAI_ENDPOINT', value: aiFoundryEndpoint }
-            { name: 'AZURE_AI_SERVICES_ENDPOINT', value: aiCognitiveServicesEndpoint }
-            { name: 'AZURE_OPENAI_API_VERSION', value: azureOpenAiApiVersion }
-            { name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', value: embeddingModelName }
-            { name: 'AZURE_DB_TYPE', value: databaseType }
-            { name: 'AZURE_INDEX_STORE', value: indexStoreValue }
-            { name: 'AZURE_COSMOS_ENDPOINT', value: isCosmos ? cosmosDb!.outputs.endpoint : '' }
-            { name: 'AZURE_AI_SEARCH_ENDPOINT', value: isCosmos ? aiSearch!.outputs.endpoint : '' }
-            { name: 'AZURE_POSTGRES_ENDPOINT', value: postgresLibpqUri }
-            { name: 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME', value: !isCosmos ? userAssignedIdentity.outputs.name : '' }
-            { name: 'AZURE_STORAGE_ACCOUNT_NAME', value: storageAccount!.outputs.name }
-            { name: 'AZURE_DOCUMENTS_CONTAINER', value: documentsContainerName }
-            { name: 'AZURE_DOC_PROCESSING_QUEUE', value: docProcessingQueueName }
-          ],
-          enableMonitoring
-            ? [
-                { name: 'APPLICATIONINSIGHTS_CONNECTION_STRING', value: applicationInsights!.outputs.connectionString }
-              ]
-            : []
-        )
-      }
-    ]
   }
-}
+]
+
+module hostedContainerApps './modules/compute/container-app.bicep' = [
+  for appConfig in hostedContainerAppConfigs: {
+    name: take('module.container-app-${appConfig.serviceName}.${solutionName}', 64)
+    params: {
+      name: 'ca-${appConfig.serviceName}-${solutionSuffix}'
+      location: location
+      tags: union(allTags, { 'azd-service-name': appConfig.serviceName })
+      kind: appConfig.kind
+      enableTelemetry: enableTelemetry
+      environmentResourceId: containerAppsEnv.outputs.resourceId
+      registries: [
+        {
+          server: containerRegistry.outputs.loginServer
+          identity: userAssignedIdentity.outputs.resourceId
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
+      }
+      workloadProfileName: 'Consumption'
+      ingressTargetPort: 80
+      scaleSettings: {
+        minReplicas: enableRedundancy ? 2 : 1
+        maxReplicas: enableScalability ? 5 : 3
+      }
+      containers: appConfig.serviceName == 'frontend'
+        ? [
+            {
+              name: 'frontend'
+              image: sampleContainerImage
+              resources: {
+                cpu: any('0.5')
+                memory: '1.0Gi'
+              }
+              env: concat(
+                [
+                  { name: 'VITE_BACKEND_URL', value: 'https://${backendContainerApp.outputs.fqdn}' }
+                  { name: 'BACKEND_API_URL', value: 'https://${backendContainerApp.outputs.fqdn}' }
+                ],
+                enableMonitoring
+                  ? [
+                      {
+                        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+                        value: applicationInsights!.outputs.connectionString
+                      }
+                    ]
+                  : []
+              )
+            }
+          ]
+        : [
+            {
+              name: 'function'
+              image: sampleContainerImage
+              resources: {
+                cpu: json(enableScalability ? '1.0' : '0.5')
+                memory: enableScalability ? '2.0Gi' : '1.0Gi'
+              }
+              env: concat(
+                [
+                  { name: 'AzureWebJobsStorage__accountName', value: storageAccount.outputs.name }
+                  { name: 'AzureWebJobsStorage__credential', value: 'managedidentity' }
+                  { name: 'AzureWebJobsStorage__clientId', value: userAssignedIdentity.outputs.clientId }
+                  { name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE', value: 'false' }
+                  { name: 'FUNCTIONS_WORKER_RUNTIME', value: 'python' }
+                  { name: 'FUNCTIONS_EXTENSION_VERSION', value: '~4' }
+                  { name: 'AZURE_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
+                  { name: 'AZURE_UAMI_CLIENT_ID', value: userAssignedIdentity.outputs.clientId }
+                  { name: 'AZURE_TENANT_ID', value: subscription().tenantId }
+                  { name: 'AZURE_ENVIRONMENT', value: 'production' }
+                  { name: 'AZURE_AI_PROJECT_ENDPOINT', value: projectEndpoint }
+                  { name: 'AZURE_OPENAI_ENDPOINT', value: aiFoundryEndpoint }
+                  { name: 'AZURE_AI_SERVICES_ENDPOINT', value: aiCognitiveServicesEndpoint }
+                  { name: 'AZURE_OPENAI_API_VERSION', value: azureOpenAiApiVersion }
+                  { name: 'AZURE_OPENAI_EMBEDDING_DEPLOYMENT', value: embeddingModelName }
+                  { name: 'AZURE_DB_TYPE', value: databaseType }
+                  { name: 'AZURE_INDEX_STORE', value: indexStoreValue }
+                  { name: 'AZURE_COSMOS_ENDPOINT', value: isCosmos ? cosmosDb!.outputs.endpoint : '' }
+                  { name: 'AZURE_AI_SEARCH_ENDPOINT', value: isCosmos ? aiSearch!.outputs.endpoint : '' }
+                  { name: 'AZURE_POSTGRES_ENDPOINT', value: postgresLibpqUri }
+                  {
+                    name: 'AZURE_POSTGRES_ADMIN_PRINCIPAL_NAME'
+                    value: !isCosmos ? userAssignedIdentity.outputs.name : ''
+                  }
+                  { name: 'AZURE_STORAGE_ACCOUNT_NAME', value: storageAccount!.outputs.name }
+                  { name: 'AZURE_DOCUMENTS_CONTAINER', value: documentsContainerName }
+                  { name: 'AZURE_DOC_PROCESSING_QUEUE', value: docProcessingQueueName }
+                ],
+                enableMonitoring
+                  ? [
+                      {
+                        name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+                        value: applicationInsights!.outputs.connectionString
+                      }
+                    ]
+                  : []
+              )
+            }
+          ]
+    }
+  }
+]
 
 module eventGridSystemTopic './modules/data/event-grid.bicep' = {
   name: take('modules.event-grid.system-topic.${solutionName}', 64)
@@ -1385,21 +1378,21 @@ var systemAssignedRoleAssignments = union(
     // Function App SI needs blob/queue/account roles for the host lock lease
     // and queue trigger bindings (allowSharedKeyAccess=false forces identity auth)
     {
-      principalId: frontendContainerApp.outputs.principalId
+      principalId: hostedContainerApps[frontendContainerAppIndex].outputs.principalId
       resourceId: storageAccount.outputs.resourceId
       roleName: 'Storage Blob Data Owner'
       roleDefinitionId: 'b7e6dc6d-f1e8-4753-8033-0f276bb0955b'
       principalType: 'ServicePrincipal'
     }
     {
-      principalId: frontendContainerApp.outputs.principalId
+      principalId: hostedContainerApps[frontendContainerAppIndex].outputs.principalId
       resourceId: storageAccount.outputs.resourceId
       roleName: 'Storage Queue Data Contributor'
       roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
       principalType: 'ServicePrincipal'
     }
     {
-      principalId: frontendContainerApp.outputs.principalId
+      principalId: hostedContainerApps[frontendContainerAppIndex].outputs.principalId
       resourceId: storageAccount.outputs.resourceId
       roleName: 'Storage Account Contributor'
       roleDefinitionId: '17d1049b-9a84-46fb-8f53-869881c3d3ab'
@@ -1504,21 +1497,21 @@ output azureOpenAiEmbeddingDeployment string = embeddingModelName
 // --- Speech (S1 / SPEECH-MVP) ---
 
 @description('Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK.')
-output azureSpeechServiceName string = speechService.outputs.name
+output azureSpeechServiceName string = auxiliaryAiServices[speechServiceIndex].outputs.name
 
 @description('Speech account region. Browser SDK passes this to SpeechConfig.fromAuthorizationToken(token, region) and the backend uses it to build the regional sts/v1.0/issueToken URL.')
 output azureSpeechServiceRegion string = azureAiServiceLocation
 
 @description('Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST.')
-output azureSpeechAccountResourceId string = speechService.outputs.resourceId
+output azureSpeechAccountResourceId string = auxiliaryAiServices[speechServiceIndex].outputs.resourceId
 
 // --- Content Safety ---
 
 @description('Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED.')
-output azureContentSafetyEndpoint string = contentSafety.outputs.endpoint
+output azureContentSafetyEndpoint string = auxiliaryAiServices[contentSafetyIndex].outputs.endpoint
 
 @description('Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint.')
-output azureContentSafetyName string = contentSafety.outputs.name
+output azureContentSafetyName string = auxiliaryAiServices[contentSafetyIndex].outputs.name
 
 // --- Conditional: Azure AI Search (CosmosDB mode only) ---
 
@@ -1581,13 +1574,13 @@ output azureIngestionTrigger string = ingestionTrigger
 output azureBackendUrl string = 'https://${backendContainerApp.outputs.fqdn}'
 
 @description('Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin.')
-output azureFrontendUrl string = 'https://${frontendContainerApp.outputs.fqdn}'
+output azureFrontendUrl string = 'https://${hostedContainerApps[frontendContainerAppIndex].outputs.fqdn}'
 
 @description('Public URL of the Function App hosting the indexing pipeline.')
-output azureFunctionAppUrl string = 'https://${functionContainerApp.outputs.fqdn}'
+output azureFunctionAppUrl string = 'https://${hostedContainerApps[functionContainerAppIndex].outputs.fqdn}'
 
 @description('Function App resource name (used by azd to deploy the function package).')
-output azureFunctionAppName string = functionContainerApp.outputs.name
+output azureFunctionAppName string = hostedContainerApps[functionContainerAppIndex].outputs.name
 
 @description('Container Registry login server.')
 output azureContainerRegistryEndpoint string = containerRegistry.outputs.loginServer
