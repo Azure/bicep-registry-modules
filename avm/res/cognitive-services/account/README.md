@@ -42,20 +42,155 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-1-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
-- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-2-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
-- [Using `AIServices` with `deployments` in parameter set](#example-3-using-aiservices-with-deployments-in-parameter-set)
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-4-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-5-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-6-using-customer-managed-keys-with-user-assigned-identity)
-- [Storing keys of service in key vault](#example-7-storing-keys-of-service-in-key-vault)
-- [Using only defaults](#example-8-using-only-defaults)
-- [Using large parameter set](#example-9-using-large-parameter-set)
-- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-10-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
-- [As Speech Service](#example-11-as-speech-service)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set](#example-1-using-aiservices-with-a-ga-partner-anthropic-deployments-in-parameter-set)
+- [Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection](#example-2-using-aiservices-with-deployments-in-parameter-set-private-endpoints-and-network-injection)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-3-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-4-using-aiservices-with-deployments-in-parameter-set)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-5-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-6-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-7-using-customer-managed-keys-with-user-assigned-identity)
+- [Storing keys of service in key vault](#example-8-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-9-using-only-defaults)
+- [Using large parameter set](#example-10-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-11-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-12-as-speech-service)
+- [WAF-aligned](#example-13-waf-aligned)
 
-### Example 1: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
+### Example 1: _Using `AIServices` with a GA partner (Anthropic) `deployments` in parameter set_
+
+This instance deploys the module with a GA partner model deployment that carries the required `modelProviderData` attestation.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/ai-model-deployment-anthropic]
+
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+The Anthropic Claude model deployment requires the target subscription to subscribe to the paid Anthropic Azure Marketplace offer.
+The deployment validation cannot complete in AVM validation subscription and is therefore skipped here. The scenario has been validated manually on a Marketplace-eligible subscription with approved Anthropic Claude quota.
+```
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
+  params: {
+    // Required parameters
+    kind: 'AIServices'
+    name: 'csadan001'
+    // Non-required parameters
+    customSubDomainName: 'xcsadanai'
+    deployments: [
+      {
+        model: {
+          format: 'Anthropic'
+          name: 'claude-sonnet-4-6'
+          version: '1'
+        }
+        modelProviderData: {
+          countryCode: 'US'
+          industry: 'technology'
+          organizationName: 'Contoso'
+        }
+        name: 'claude-sonnet-4-6'
+        sku: {
+          capacity: 25
+          name: 'GlobalStandard'
+        }
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AIServices"
+    },
+    "name": {
+      "value": "csadan001"
+    },
+    // Non-required parameters
+    "customSubDomainName": {
+      "value": "xcsadanai"
+    },
+    "deployments": {
+      "value": [
+        {
+          "model": {
+            "format": "Anthropic",
+            "name": "claude-sonnet-4-6",
+            "version": "1"
+          },
+          "modelProviderData": {
+            "countryCode": "US",
+            "industry": "technology",
+            "organizationName": "Contoso"
+          },
+          "name": "claude-sonnet-4-6",
+          "sku": {
+            "capacity": 25,
+            "name": "GlobalStandard"
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/cognitive-services/account:<version>'
+
+// Required parameters
+param kind = 'AIServices'
+param name = 'csadan001'
+// Non-required parameters
+param customSubDomainName = 'xcsadanai'
+param deployments = [
+  {
+    model: {
+      format: 'Anthropic'
+      name: 'claude-sonnet-4-6'
+      version: '1'
+    }
+    modelProviderData: {
+      countryCode: 'US'
+      industry: 'technology'
+      organizationName: 'Contoso'
+    }
+    name: 'claude-sonnet-4-6'
+    sku: {
+      capacity: 25
+      name: 'GlobalStandard'
+    }
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using `AIServices` with `deployments` in parameter set, private endpoints, and network injection_
 
 This instance deploys the module with the AI model deployment feature, private endpoint, and network injection for agent service.
 
@@ -238,7 +373,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+### Example 3: _Using `AIServices` with `deployments` in parameter set and private endpoints_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -404,7 +539,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 3: _Using `AIServices` with `deployments` in parameter set_
+### Example 4: _Using `AIServices` with `deployments` in parameter set_
 
 This instance deploys the module with the AI model deployment feature.
 
@@ -518,7 +653,7 @@ param deployments = [
 </details>
 <p>
 
-### Example 4: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 5: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
@@ -639,7 +774,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 5: _Using Customer-Managed-Keys with System-Assigned identity_
+### Example 6: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
@@ -744,7 +879,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 6: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 7: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -858,7 +993,7 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 7: _Storing keys of service in key vault_
+### Example 8: _Storing keys of service in key vault_
 
 This instance deploys the module and stores its keys in a key vault.
 
@@ -945,7 +1080,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using only defaults_
+### Example 9: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1007,7 +1142,7 @@ param name = 'csamin001'
 </details>
 <p>
 
-### Example 9: _Using large parameter set_
+### Example 10: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1511,7 +1646,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+### Example 11: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
 
 This instance deploys the module with the AI model deployment feature and private endpoint.
 
@@ -1668,7 +1803,7 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 11: _As Speech Service_
+### Example 12: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -1838,7 +1973,7 @@ param tags = {
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2310,6 +2445,7 @@ Array of deployments about cognitive service accounts to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`modelProviderData`](#parameter-deploymentsmodelproviderdata) | object | Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated. |
 | [`name`](#parameter-deploymentsname) | string | The name of the Cognitive Services account deployment. |
 | [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of the RAI policy. |
 | [`sku`](#parameter-deploymentssku) | object | The resource model definition representing the SKU. |
@@ -2321,6 +2457,56 @@ Properties of the deployment model.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `deployments.modelProviderData`
+
+Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`countryCode`](#parameter-deploymentsmodelproviderdatacountrycode) | string | Two-letter ISO 3166-1 alpha-2 country or region code. |
+| [`industry`](#parameter-deploymentsmodelproviderdataindustry) | string | The organization industry accepted by the resource provider. |
+| [`organizationName`](#parameter-deploymentsmodelproviderdataorganizationname) | string | Legal entity name of the organization deploying the model. |
+
+### Parameter: `deployments.modelProviderData.countryCode`
+
+Two-letter ISO 3166-1 alpha-2 country or region code.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deployments.modelProviderData.industry`
+
+The organization industry accepted by the resource provider.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'education'
+    'finance'
+    'government'
+    'healthcare'
+    'manufacturing'
+    'media'
+    'other'
+    'retail'
+    'technology'
+  ]
+  ```
+
+### Parameter: `deployments.modelProviderData.organizationName`
+
+Legal entity name of the organization deploying the model.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `deployments.name`
 
