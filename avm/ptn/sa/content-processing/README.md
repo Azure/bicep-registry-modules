@@ -354,10 +354,6 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`apiContainerImageName`](#parameter-apicontainerimagename) | string | The Container Image Name to deploy on the API Container App. |
-| [`appContainerImageName`](#parameter-appcontainerimagename) | string | The Container Image Name to deploy on the App Container App. |
-| [`containerImageTag`](#parameter-containerimagetag) | string | The container image tag to use for all container apps. |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Azure AI Content Understanding service deployment. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
@@ -370,7 +366,6 @@ param vmAdminUsername = 'adminuser'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-5.1. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment. |
 | [`solutionName`](#parameter-solutionname) | string | Name of the solution to deploy. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -378,7 +373,6 @@ param vmAdminUsername = 'adminuser'
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | Admin password for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | securestring | Admin username for the Jumpbox Virtual Machine. Set to custom value if enablePrivateNetworking is true. |
 | [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
-| [`webContainerImageName`](#parameter-webcontainerimagename) | string | The Container Image Name to deploy on the Web Container App. |
 
 ### Parameter: `aiServiceLocation`
 
@@ -386,46 +380,6 @@ Location for the Azure AI Services deployment. Must support both Azure OpenAI gp
 
 - Required: Yes
 - Type: string
-
-### Parameter: `apiContainerImageName`
-
-The Container Image Name to deploy on the API Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessorapi'`
-
-### Parameter: `appContainerImageName`
-
-The Container Image Name to deploy on the App Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessor'`
-
-### Parameter: `containerImageTag`
-
-The container image tag to use for all container apps.
-
-- Required: No
-- Type: string
-- Default: `'latest_2025-11-04_458'`
-
-### Parameter: `contentUnderstandingLocation`
-
-Location for the Azure AI Content Understanding service deployment.
-
-- Required: No
-- Type: string
-- Default: `'WestUS'`
-- Allowed:
-  ```Bicep
-  [
-    'AustraliaEast'
-    'SwedenCentral'
-    'WestUS'
-  ]
-  ```
 
 ### Parameter: `createdBy`
 
@@ -537,14 +491,6 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `publicContainerImageEndpoint`
-
-The public container image endpoint.
-
-- Required: No
-- Type: string
-- Default: `'cpscontainerreg.azurecr.io'`
-
 ### Parameter: `secondaryLocation`
 
 Location used for Azure Cosmos DB, Azure Container App deployment.
@@ -607,14 +553,6 @@ Size of the Jumpbox Virtual Machine when created. Set to custom value if enableP
 - Type: string
 - Default: `''`
 
-### Parameter: `webContainerImageName`
-
-The Container Image Name to deploy on the Web Container App.
-
-- Required: No
-- Type: string
-- Default: `'contentprocessorweb'`
-
 ## Outputs
 
 | Output | Type | Description |
@@ -633,23 +571,23 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app-configuration/configuration-store:0.10.0` | Remote reference |
-| `br/public:avm/res/app/container-app:0.23.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.22.3` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.21.1` | Remote reference |
-| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
+| `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
+| `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.1` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "11663267763133667239"
+      "templateHash": "4792433579298284310"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Content Processing solution accelerator](https://github.com/microsoft/content-processing-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-processing-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -25,22 +25,6 @@
       "metadata": {
         "description": "Optional. Location for all Resources."
       }
-    },
-    "contentUnderstandingLocation": {
-      "type": "string",
-      "defaultValue": "WestUS",
-      "allowedValues": [
-        "WestUS",
-        "SwedenCentral",
-        "AustraliaEast"
-      ],
-      "metadata": {
-        "azd": {
-          "type": "location"
-        },
-        "description": "Optional. Location for the Azure AI Content Understanding service deployment."
-      },
-      "minLength": 1
     },
     "aiServiceLocation": {
       "type": "string",
@@ -97,41 +81,6 @@
       "defaultValue": "[if(equals(parameters('location'), 'eastus2'), 'westus2', 'eastus2')]",
       "metadata": {
         "description": "Optional. Location used for Azure Cosmos DB, Azure Container App deployment."
-      }
-    },
-    "publicContainerImageEndpoint": {
-      "type": "string",
-      "defaultValue": "cpscontainerreg.azurecr.io",
-      "metadata": {
-        "description": "Optional. The public container image endpoint."
-      }
-    },
-    "appContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessor",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the App Container App."
-      }
-    },
-    "apiContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessorapi",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the API Container App."
-      }
-    },
-    "webContainerImageName": {
-      "type": "string",
-      "defaultValue": "contentprocessorweb",
-      "metadata": {
-        "description": "Optional. The Container Image Name to deploy on the Web Container App."
-      }
-    },
-    "containerImageTag": {
-      "type": "string",
-      "defaultValue": "latest_2025-11-04_458",
-      "metadata": {
-        "description": "Optional. The container image tag to use for all container apps."
       }
     },
     "enablePrivateNetworking": {
@@ -38826,10 +38775,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmContainerApp_Workflow",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]

@@ -18,16 +18,6 @@ param solutionName string = 'cps'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-@minLength(1)
-@description('Optional. Location for the Azure AI Content Understanding service deployment.')
-@allowed(['WestUS', 'SwedenCentral', 'AustraliaEast'])
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
-param contentUnderstandingLocation string = 'WestUS'
-
 @description('Required. Location for the Azure AI Services deployment. Must support both Azure OpenAI gpt-5.1 (GlobalStandard) and Azure AI Content Understanding GA. If the deploymentType param is set to Standard, override the metadata.azd.usageName below to reference OpenAI.Standard.gpt-5.1 instead.')
 @metadata({
   azd: {
@@ -63,21 +53,6 @@ param gptDeploymentCapacity int = 100
 
 @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = (location == 'eastus2') ? 'westus2' : 'eastus2'
-
-@description('Optional. The public container image endpoint.')
-param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
-
-@description('Optional. The Container Image Name to deploy on the App Container App.')
-param appContainerImageName string = 'contentprocessor'
-
-@description('Optional. The Container Image Name to deploy on the API Container App.')
-param apiContainerImageName string = 'contentprocessorapi'
-
-@description('Optional. The Container Image Name to deploy on the Web Container App.')
-param webContainerImageName string = 'contentprocessorweb'
-
-@description('Optional. The container image tag to use for all container apps.')
-param containerImageTag string = 'latest_2025-11-04_458'
 
 @description('Optional. Enable WAF for the deployment.')
 param enablePrivateNetworking bool = false
