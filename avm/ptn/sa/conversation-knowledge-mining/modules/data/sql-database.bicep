@@ -26,6 +26,10 @@ param enableTelemetry bool = true
 @description('Principal ID of the deployer for admin access.')
 param deployerPrincipalId string
 
+@allowed(['User', 'ServicePrincipal'])
+@description('Optional. Principal type of the deployer. A ServicePrincipal is mapped to the Application administrator type.')
+param deployerPrincipalType string = 'User'
+
 @description('SKU name for the database.')
 param skuName string = 'GP_S_Gen5'
 
@@ -78,7 +82,7 @@ module sqlServer 'br/public:avm/res/sql/server:0.22.0' = {
     administrators: {
       azureADOnlyAuthentication: true
       login: deployerPrincipalId
-      principalType: 'User'
+      principalType: deployerPrincipalType == 'ServicePrincipal' ? 'Application' : 'User'
       sid: deployerPrincipalId
       tenantId: subscription().tenantId
     }

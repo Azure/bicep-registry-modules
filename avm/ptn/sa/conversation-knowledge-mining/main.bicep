@@ -150,8 +150,8 @@ param existingFoundryProjectResourceId string = ''
 // ============================================================================
 
 @allowed(['User', 'ServicePrincipal'])
-@description('Optional. Principal type of the deploying user.')
-param deployingUserPrincipalType string = 'User'
+@description('Optional. Principal type of the deploying principal. When not set, it is auto-detected from the deployer identity (service principals have no userPrincipalName).')
+param deployingUserPrincipalType string?
 
 // ============================================================================
 // Variables
@@ -170,6 +170,9 @@ var solutionSuffix = toLower(trim(replace(
 var containerRegistryResourceName = !empty(containerRegistryName) ? containerRegistryName : 'acrkm${solutionSuffix}'
 var deployerInfo = deployer()
 var deployingUserPrincipalId = deployerInfo.objectId
+var deployingUserPrincipalTypeEffective = deployingUserPrincipalType ?? (contains(deployerInfo, 'userPrincipalName')
+  ? 'User'
+  : 'ServicePrincipal')
 var createdBy = contains(deployerInfo, 'userPrincipalName')
   ? split(deployerInfo.userPrincipalName, '@')[0]
   : deployerInfo.objectId
@@ -432,12 +435,12 @@ module ai_foundry_project './modules/ai/ai-foundry-project.bicep' = if (!useExis
       {
         roleDefinitionIdOrName: 'a97b65f3-24c7-4388-baec-2e87135dc908' // Cognitive Services User
         principalId: deployingUserPrincipalId
-        principalType: deployingUserPrincipalType
+        principalType: deployingUserPrincipalTypeEffective
       }
       {
         roleDefinitionIdOrName: '53ca6127-db72-4b80-b1b0-d745d6d5456d' // Foundry User
         principalId: deployingUserPrincipalId
-        principalType: deployingUserPrincipalType
+        principalType: deployingUserPrincipalTypeEffective
       }
     ]
   }
@@ -551,12 +554,12 @@ module ai_search './modules/ai/ai-search.bicep' = {
       {
         roleDefinitionIdOrName: '8ebe5a00-799e-43f5-93ac-243d3dce84a7' // Search Index Data Contributor
         principalId: deployingUserPrincipalId
-        principalType: deployingUserPrincipalType
+        principalType: deployingUserPrincipalTypeEffective
       }
       {
         roleDefinitionIdOrName: '7ca78c08-252a-4471-8644-bb5ff32d4ba0' // Search Service Contributor
         principalId: deployingUserPrincipalId
-        principalType: deployingUserPrincipalType
+        principalType: deployingUserPrincipalTypeEffective
       }
     ]
     // Temporarily no private endpoint — Foundry Agent cannot resolve private DNS for AI Search.
@@ -586,7 +589,7 @@ module storage_account './modules/data/storage-account.bicep' = {
       {
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Storage Blob Data Contributor
         principalId: deployingUserPrincipalId
-        principalType: deployingUserPrincipalType
+        principalType: deployingUserPrincipalTypeEffective
       }
     ]
     privateEndpoints: enablePrivateNetworking
@@ -656,6 +659,7 @@ module sqlDBModule './modules/data/sql-database.bicep' = {
     tags: tags
     enableTelemetry: enableTelemetry
     deployerPrincipalId: deployingUserPrincipalId
+    deployerPrincipalType: deployingUserPrincipalTypeEffective
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     maintenanceConfigurationId: sqlMaintenanceConfigurationId
     vulnerabilityAssessmentStorageResourceId: (enableMonitoring || enableRedundancy || enableScalability)
@@ -713,7 +717,7 @@ module container_registry './modules/compute/container-registry.bicep' = {
     // step needs no manual RBAC.
     adminUserEnabled: false
     acrPushPrincipalIds: [deployingUserPrincipalId]
-    acrPushPrincipalType: deployingUserPrincipalType == 'User' ? 'User' : 'ServicePrincipal'
+    acrPushPrincipalType: deployingUserPrincipalTypeEffective
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     networkRuleSetDefaultAction: enablePrivateNetworking ? 'Deny' : 'Allow'
     privateEndpoints: enablePrivateNetworking

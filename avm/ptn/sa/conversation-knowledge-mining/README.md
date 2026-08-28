@@ -225,7 +225,7 @@ param solutionName = '<solutionName>'
 | [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | Backend container image name. |
 | [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | Backend container image tag. |
 | [`containerRegistryName`](#parameter-containerregistryname) | string | Name of the Azure Container Registry. Leave empty to auto-generate a globally unique name (cr<suffix>). |
-| [`deployingUserPrincipalType`](#parameter-deployinguserprincipaltype) | string | Principal type of the deploying user. |
+| [`deployingUserPrincipalType`](#parameter-deployinguserprincipaltype) | string | Principal type of the deploying principal. When not set, it is auto-detected from the deployer identity (service principals have no userPrincipalName). |
 | [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the embedding model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the embedding model to deploy. |
@@ -338,11 +338,10 @@ Name of the Azure Container Registry. Leave empty to auto-generate a globally un
 
 ### Parameter: `deployingUserPrincipalType`
 
-Principal type of the deploying user.
+Principal type of the deploying principal. When not set, it is auto-detected from the deployer identity (service principals have no userPrincipalName).
 
 - Required: No
 - Type: string
-- Default: `'User'`
 - Allowed:
   ```Bicep
   [
