@@ -368,6 +368,7 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 | [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
+| [`vmSize`](#parameter-vmsize) | string | The size of the virtual machine. Applies only to AVM flavors. |
 
 ### Parameter: `azureAiServiceLocation`
 
@@ -690,6 +691,14 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 - Required: No
 - Type: securestring
+
+### Parameter: `vmSize`
+
+The size of the virtual machine. Applies only to AVM flavors.
+
+- Required: No
+- Type: string
+- Default: `'Standard_D2s_v5'`
 
 ## Outputs
 

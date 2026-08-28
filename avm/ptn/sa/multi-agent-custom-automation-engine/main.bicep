@@ -137,6 +137,9 @@ param virtualMachineAdminUsername string?
 @secure()
 param virtualMachineAdminPassword string?
 
+@description('Optional. The size of the virtual machine. Applies only to AVM flavors.')
+param vmSize string = 'Standard_D2s_v5'
+
 // These parameters are changed for testing - please reset as part of publication
 
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
@@ -551,13 +554,12 @@ module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-gr
     tags: tags
     enableTelemetry: enableTelemetry
     availabilityZone: virtualMachineAvailabilityZone
-    intent: { vmSizes: [virtualMachineSize] }
+    intent: { vmSizes: [vmSize] }
   }
 }
 
 var virtualMachineResourceName = 'vm-${solutionSuffix}'
 var virtualMachineAvailabilityZone = 1
-var virtualMachineSize = 'Standard_D2s_v4'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
@@ -567,7 +569,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.22.0' = if (e
     enableTelemetry: enableTelemetry
     computerName: take(virtualMachineResourceName, 15)
     osType: 'Windows'
-    vmSize: virtualMachineSize
+    vmSize: vmSize
     adminUsername: empty(virtualMachineAdminUsername) ? 'JumpboxAdminUser' : virtualMachineAdminUsername
     adminPassword: empty(virtualMachineAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : virtualMachineAdminPassword
     patchMode: 'AutomaticByPlatform'
