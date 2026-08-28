@@ -176,7 +176,8 @@ var createdBy = contains(deployerInfo, 'userPrincipalName')
 var useExistingAIProject = !empty(existingFoundryProjectResourceId)
 
 // ========== Tags: merge caller-supplied tags with standard metadata (matching old infra) ========== //
-var existingTags = resourceGroup().tags ?? {}
+// Safe-dereference: an untagged resource group omits the tags property entirely, which would otherwise throw.
+var existingTags = resourceGroup().?tags ?? {}
 var resourceTags = union(existingTags, tags, {
   TemplateName: 'KM-Generic'
   CreatedBy: createdBy
