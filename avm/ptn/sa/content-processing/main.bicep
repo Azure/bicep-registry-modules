@@ -197,7 +197,7 @@ module jumpboxVM 'br/public:avm/res/compute/virtual-machine:0.22.3' = if (enable
   name: take('avm.res.compute.virtual-machine.${jumpboxVmName}', 64)
   params: {
     name: take(jumpboxVmName, 15) // Shorten VM name to 15 characters to avoid Azure limits
-    vmSize: empty(vmSize) ? 'Standard_DS2_v2' : vmSize
+    vmSize: empty(vmSize) ? 'Standard_D2s_v5' : vmSize
     location: location
     adminUsername: empty(vmAdminUsername) ? 'JumpboxAdminUser' : vmAdminUsername
     adminPassword: empty(vmAdminPassword) ? 'JumpboxAdminP@ssw0rd1234!' : vmAdminPassword
