@@ -179,7 +179,7 @@ function Set-AvmGitHubIssueForWorkflow {
                     }
                     $platformIssueComment = @'
 > [!IMPORTANT]
-> This issue was created for a platform workflow. The maintainer team @Azure/avm-core-team-technical-bicep should investigate and mitigate the reason.
+> This issue was created for a platform workflow. The maintainer team @Azure/azure-verified-modules-tooling-contributors should investigate and mitigate the reason.
 '@
                     if ($PSCmdlet.ShouldProcess("Comment for maintainers to issue [$issueName]", 'Add')) {
                         $userCommentUrl = gh issue comment $issueUrl --body $platformIssueComment --repo $repo
@@ -203,7 +203,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 $taggingComment = $moduleIsOrphaned ? @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
-> @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
+> @Azure/azure-verified-modules-tooling-contributors, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@ : @"
 > [!IMPORTANT]
 > @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.

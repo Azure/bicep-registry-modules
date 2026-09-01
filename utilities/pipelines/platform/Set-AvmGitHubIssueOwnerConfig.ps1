@@ -192,7 +192,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
 > [!IMPORTANT]
-> Please note, that this module is currently orphaned. The @Azure/avm-core-team-technical-bicep, will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
+> Please note, that this module is currently orphaned. The @Azure/azure-verified-modules-tooling-contributors team will attempt to find an owner for it. In the meantime, the core team may assist with this issue. Thank you for your patience!
 "@
         }
         # existing module
