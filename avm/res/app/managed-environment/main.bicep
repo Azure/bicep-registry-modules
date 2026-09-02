@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
@@ -33,21 +33,17 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Application Insights connection string.')
-@secure()
-param appInsightsConnectionString string = ''
-
 @description('Optional. The configuration of Dapr component.')
-param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.daprConfiguration?
+param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.daprConfiguration?
 
 @description('Optional. Ingress configuration for the Managed Environment.')
-param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.ingressConfiguration?
+param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.ingressConfiguration?
 
 @description('Optional. The configuration of Keda component.')
-param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.kedaConfiguration?
+param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.kedaConfiguration?
 
 @description('Optional. Peer authentication settings for the Managed Environment.')
-param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.peerAuthentication?
+param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.peerAuthentication?
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
@@ -96,11 +92,8 @@ param certificateValue string?
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-@description('Optional. Open Telemetry configuration.')
-param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
-
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.workloadProfiles?
+param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.workloadProfiles?
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
@@ -183,15 +176,12 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   )
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    appInsightsConfiguration: {
-      connectionString: appInsightsConnectionString
-    }
     daprConfiguration: daprConfiguration
     ingressConfiguration: ingressConfiguration
     kedaConfiguration: kedaConfiguration
@@ -222,7 +212,6 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-previe
           }
         : null
     }
-    openTelemetryConfiguration: openTelemetryConfiguration
     peerTrafficConfiguration: {
       encryption: {
         enabled: peerTrafficEncryption
@@ -297,7 +286,6 @@ module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(cert
     name: certificate.?name ?? 'cert-${name}'
     managedEnvironmentName: managedEnvironment.name
     certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
-    certificateType: certificate.?certificateType
     certificateValue: certificate.?certificateValue
     certificatePassword: certificate.?certificatePassword
     location: certificate.?location
@@ -430,9 +418,6 @@ type certificateType = {
   @description('Optional. The name of the certificate.')
   name: string?
 
-  @description('Optional. The type of the certificate.')
-  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
-
   @description('Optional. The value of the certificate. PFX or PEM blob.')
   certificateValue: string?
 
@@ -447,7 +432,7 @@ type certificateType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
+  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2026-01-01'>.tags?
 }
 
 @export()

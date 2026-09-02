@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/certificate/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- upgraded `Microsoft.App/managedEnvironments/certificates` to `2026-01-01`
+
+### Breaking Changes
+
+- `value` parameter is now decorated with `@secure()`
+- removed `certificateType` parameter
+
 ## 0.1.0
 
 ### Changes
