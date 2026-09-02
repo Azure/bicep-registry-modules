@@ -33,10 +33,6 @@ function New-ModuleReleaseTag {
     # 1 Build Tag
     $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion
     Write-Verbose "Target release tag: [$tagName]" -Verbose
-    $headCommit = git rev-parse HEAD
-    if ($LASTEXITCODE -ne 0) {
-        throw 'Failed to resolve the current git commit.'
-    }
 
     # 2 Check tag format
     $wellFormattedTag = git check-ref-format --normalize $tagName
@@ -46,17 +42,9 @@ function New-ModuleReleaseTag {
 
     # 3 Check tag not already existing
     $existingTag = git ls-remote --tags origin $tagName
-    if ($LASTEXITCODE -ne 0) {
-        throw "Failed to query release tag [$tagName]."
-    }
     if ($existingTag) {
-        $existingTagCommit = ($existingTag -split '\s+')[0]
-        if ($existingTagCommit -eq $headCommit) {
-            Write-Verbose "Tag [$tagName] already exists at the current commit" -Verbose
-            return $tagName
-        }
-
-        throw "Tag [$tagName] already exists at a different commit."
+        Write-Verbose "Tag [$tagName] already exists" -Verbose
+        return $tagName
     }
 
 
@@ -69,15 +57,6 @@ function New-ModuleReleaseTag {
     git push origin $tagName
 
     if ($LASTEXITCODE -ne 0) {
-        $existingTag = git ls-remote --tags origin $tagName
-        if ($LASTEXITCODE -eq 0 -and $existingTag) {
-            $existingTagCommit = ($existingTag -split '\s+')[0]
-            if ($existingTagCommit -eq $headCommit) {
-                Write-Verbose "Tag [$tagName] was concurrently published at the current commit" -Verbose
-                return $tagName
-            }
-        }
-
         throw 'Git Tag creation failed. Please review error log.'
     }
 

@@ -1,4 +1,4 @@
-name: "avm.module"
+name: ".Module - Check and Publish"
 
 on:
   workflow_dispatch:
@@ -28,12 +28,12 @@ on:
         required: false
       createReleaseTag:
         type: boolean
-        description: "Create the next release tag when no publishable diff exists (upstream main only)"
+        description: "Create the next top-level module release tag when no publishable diff exists"
         required: false
         default: false
       publishOnly:
         type: boolean
-        description: "Skip validation and run only the publish step (upstream main only)"
+        description: "Skip validation and run only the publish step"
         required: false
         default: false
   push:
@@ -41,15 +41,9 @@ on:
       - main
     paths:
       - "avm/**"
-      - "!*/**/README.md"
-
-env:
-  workflowPath: ".github/workflows/avm.module.yml"
+      - "!avm/**/README.md"
 
 permissions: {}
-
-concurrency:
-  group: ${{ github.workflow }}
 
 jobs:
   job_initialize_pipeline:
@@ -63,29 +57,65 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: "Set input parameters to output variables"
-        id: get-workflow-param
-        uses: ./.github/actions/templates/avm-getWorkflowInput
-        with:
-          workflowPath: "${{ env.workflowPath }}"
       - name: "Get module matrix"
         id: get-module-matrix
         shell: pwsh
         env:
-          EVENT_NAME: ${{ github.event_name }}
-          MODULE_PATH_INPUT: ${{ inputs.modulePaths }}
-          BASE_SHA: ${{ github.event.before }}
-          HEAD_SHA: ${{ github.sha }}
+          BASE_SHA: "${{ github.event.before }}"
+          CREATE_RELEASE_TAG: "${{ inputs.createReleaseTag }}"
+          CUSTOM_LOCATION: "${{ inputs.customLocation }}"
+          DEPLOYMENT_VALIDATION: "${{ case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, true) }}"
+          EVENT_NAME: "${{ github.event_name }}"
+          HEAD_SHA: "${{ github.sha }}"
+          MODULE_PATH_INPUT: "${{ inputs.modulePaths }}"
+          PUBLISH_ONLY: "${{ inputs.publishOnly }}"
+          REMOVE_DEPLOYMENT: "${{ case(github.event_name == 'workflow_dispatch', inputs.removeDeployment, true) }}"
+          STATIC_VALIDATION: "${{ case(github.event_name == 'workflow_dispatch', inputs.staticValidation, true) }}"
         run: |
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1')
 
+          if (
+            $env:EVENT_NAME -eq 'workflow_dispatch' -and
+            $env:CREATE_RELEASE_TAG -eq 'true' -and
+            $env:PUBLISH_ONLY -ne 'true' -and
+            ($env:STATIC_VALIDATION -ne 'true' -or $env:DEPLOYMENT_VALIDATION -ne 'true')
+          ) {
+            throw 'createReleaseTag requires staticValidation and deploymentValidation unless publishOnly is selected.'
+          }
+          if (
+            $env:EVENT_NAME -eq 'workflow_dispatch' -and
+            $env:PUBLISH_ONLY -eq 'true' -and
+            $env:CREATE_RELEASE_TAG -ne 'true'
+          ) {
+            throw 'publishOnly requires createReleaseTag so release tag creation is explicitly approved.'
+          }
+
+          $baseCommit = ''
+          $includeAllVersionedModules = $false
           if ($env:EVENT_NAME -eq 'workflow_dispatch') {
             $moduleMatrix = Get-ModuleWorkflowMatrix -ModulePathInput $env:MODULE_PATH_INPUT -RepoRoot $env:GITHUB_WORKSPACE
           } else {
-            if ($env:BASE_SHA -match '^0+$') {
-              $changedFilePaths = @(git diff-tree --no-commit-id --name-only -r $env:HEAD_SHA -- avm)
+            $baseCommit = $env:BASE_SHA
+            $baseCommitAvailable = $baseCommit -notmatch '^0+$'
+            if ($baseCommitAvailable) {
+              git cat-file -e "${baseCommit}^{commit}" 2>$null
+              $baseCommitAvailable = $LASTEXITCODE -eq 0
+            }
+            if (-not $baseCommitAvailable -and $baseCommit -notmatch '^0+$') {
+              git fetch --no-tags origin $baseCommit 2>$null
+              if ($LASTEXITCODE -eq 0) {
+                git cat-file -e "${baseCommit}^{commit}" 2>$null
+                $baseCommitAvailable = $LASTEXITCODE -eq 0
+              }
+            }
+
+            if ($baseCommitAvailable) {
+              $changedFilePaths = @(git diff --no-renames --name-only --diff-filter=ACMRTD $baseCommit $env:HEAD_SHA -- avm)
             } else {
-              $changedFilePaths = @(git diff --name-only $env:BASE_SHA $env:HEAD_SHA -- avm)
+              Write-Warning 'The push base commit is unavailable. Running every current AVM module and previewing all versioned modules.'
+              $changedFilePaths = @(git ls-tree -r --name-only $env:HEAD_SHA -- avm)
+              $baseCommit = ''
+              $includeAllVersionedModules = $true
             }
             if ($LASTEXITCODE -ne 0) {
               throw 'Failed to identify changed module files.'
@@ -94,59 +124,110 @@ jobs:
             $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -RepoRoot $env:GITHUB_WORKSPACE
           }
 
-          $moduleMatrixJson = $moduleMatrix | ConvertTo-Json -Depth 5 -Compress
+          if ($moduleMatrix.include.Count -gt 256) {
+            throw "The workflow resolved [$($moduleMatrix.include.Count)] modules, exceeding the 256-job matrix limit. Run the workflow manually with smaller module path batches."
+          }
+
+          $deploymentValidation = $includeAllVersionedModules ? 'false' : $env:DEPLOYMENT_VALIDATION.ToLowerInvariant()
+          $workflowInput = @{
+            customLocation       = $env:CUSTOM_LOCATION
+            deploymentValidation = $deploymentValidation
+            removeDeployment     = $env:REMOVE_DEPLOYMENT.ToLowerInvariant()
+            staticValidation     = $env:STATIC_VALIDATION.ToLowerInvariant()
+          } | ConvertTo-Json -Compress
+          $moduleMatrixJson = $moduleMatrix | ConvertTo-Json -Depth 10 -Compress
           $hasModules = $moduleMatrix.include.Count -gt 0
+          if (-not $hasModules) {
+            Write-Output 'No AVM modules were affected. Nothing will be validated or published.'
+          }
 
-          Write-Verbose "Module matrix: $moduleMatrixJson" -Verbose
-          Write-Output "moduleMatrix=$moduleMatrixJson" >> $env:GITHUB_OUTPUT
+          Write-Output "baseCommit=$baseCommit" >> $env:GITHUB_OUTPUT
           Write-Output "hasModules=$($hasModules.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          Write-Output "includeAllVersionedModules=$($includeAllVersionedModules.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+          Write-Output "moduleMatrix=$moduleMatrixJson" >> $env:GITHUB_OUTPUT
+          Write-Output "targetCommit=$($env:HEAD_SHA)" >> $env:GITHUB_OUTPUT
+          Write-Output "workflowInput=$workflowInput" >> $env:GITHUB_OUTPUT
     outputs:
-      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
-      moduleMatrix: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
+      baseCommit: ${{ steps.get-module-matrix.outputs.baseCommit }}
       hasModules: ${{ steps.get-module-matrix.outputs.hasModules }}
+      includeAllVersionedModules: ${{ steps.get-module-matrix.outputs.includeAllVersionedModules }}
+      moduleMatrix: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
+      targetCommit: ${{ steps.get-module-matrix.outputs.targetCommit }}
+      workflowInput: ${{ steps.get-module-matrix.outputs.workflowInput }}
 
-  call_module_workflow_preview:
-    name: "Preview [${{ matrix.modulePath }}]"
+  call_module_preview:
+    name: "Check [${{ matrix.modulePath }}]"
     if: ${{ github.event_name == 'push' && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.job_initialize_pipeline.outputs.moduleMatrix) }}
+      max-parallel: 1
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     concurrency:
-      group: ${{ matrix.concurrencyGroup }}
+      group: generic-module-${{ matrix.modulePath }}
+      queue: max
     permissions:
-      id-token: write
       contents: read
-    uses: ./.github/workflows/avm.template.module-entry.yml
+      id-token: write
+    uses: ./.github/workflows/avm.template.module.preview.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
-      forcePublish: false
-      publishMode: "preview"
-      publishOnly: false
-      requirePublishApproval: false
+      moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ matrix.psRuleModuleTestFilePaths }}"
+      baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
+      targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
+      includeAllVersionedModules: ${{ needs.job_initialize_pipeline.outputs.includeAllVersionedModules == 'true' }}
     secrets: inherit
 
-  call_module_workflow:
-    name: "Run [${{ matrix.modulePath }}]"
-    if: ${{ github.event_name == 'workflow_dispatch' && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+  call_module_publish:
+    name: "Check and publish [${{ matrix.modulePath }}]"
+    if: ${{ github.event_name == 'workflow_dispatch' && !inputs.publishOnly && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.job_initialize_pipeline.outputs.moduleMatrix) }}
+      max-parallel: 1
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
     concurrency:
-      group: ${{ matrix.concurrencyGroup }}
+      group: generic-module-${{ matrix.modulePath }}
+      queue: max
     permissions:
-      id-token: write
       contents: write
-    uses: ./.github/workflows/avm.template.module-entry.yml
+      id-token: write
+    uses: ./.github/workflows/avm.template.module.publish.yml
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
+      moduleTestFilePaths: "${{ matrix.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ matrix.psRuleModuleTestFilePaths }}"
+      baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
+      targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
       forcePublish: ${{ inputs.createReleaseTag }}
-      publishMode: "publish"
-      publishOnly: ${{ inputs.publishOnly }}
+      publishReleaseTag: ${{ inputs.createReleaseTag }}
+      requirePublishApproval: ${{ inputs.createReleaseTag }}
+    secrets: inherit
+
+  call_module_publish_only:
+    name: "Publish [${{ matrix.modulePath }}]"
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publishOnly && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
+    concurrency:
+      group: generic-module-${{ matrix.modulePath }}
+      queue: max
+    permissions:
+      contents: write
+    uses: ./.github/workflows/avm.template.module.publish-only.yml
+    with:
+      modulePath: "${{ matrix.modulePath }}"
+      baseCommit: "${{ needs.job_initialize_pipeline.outputs.baseCommit }}"
+      targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
+      forcePublish: ${{ inputs.createReleaseTag }}
       requirePublishApproval: ${{ inputs.createReleaseTag }}
     secrets: inherit

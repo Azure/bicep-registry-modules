@@ -1,58 +1,63 @@
-name: "avm.template.module"
+name: "avm.template.module.preview"
 
 on:
   workflow_call:
     inputs:
       workflowInput:
         type: string
-        description: "Input from the workflow caller in JSON format"
         required: true
       moduleTestFilePaths:
         type: string
-        description: "List of relative path to the module test files in JSON format"
         required: true
       psRuleModuleTestFilePaths:
         type: string
-        description: "List of relative path to the PSRule module test files in JSON format"
         required: true
       modulePath:
         type: string
-        description: "Relative path to the module folder"
         required: true
+      baseCommit:
+        type: string
+        required: false
+      targetCommit:
+        type: string
+        required: true
+      includeAllVersionedModules:
+        type: boolean
+        required: false
+        default: false
 
 env:
-  # Used for token replacement steps in both PSRule and deployment validation
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
+  TOKEN_NAMEPREFIX: "gci"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
 
+permissions: {}
+
 jobs:
-  #########################
-  #   Static validation   #
-  #########################
-  job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  job_module_static_validation:
     name: "Static validation"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: Set environment
+      - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run tests"
         uses: ./.github/actions/templates/avm-validateModulePester
         with:
           modulePath: "${{ inputs.modulePath }}"
 
-  #########################
-  #   PSRule validation   #
-  #########################
-  job_psrule_must: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  job_psrule_must:
     name: "Must [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Required PSRule"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -63,11 +68,11 @@ jobs:
           - friendlyName: Custom Security
             baselineName: CB.AVM.WAF.Security
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - name: Set environment
+      - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
+      - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
@@ -76,10 +81,12 @@ jobs:
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
 
-  job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+  job_psrule_opt:
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -90,9 +97,9 @@ jobs:
           - friendlyName: Security
             baselineName: Azure.Pillar.Security
     steps:
-      - name: Checkout
+      - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - name: Set environment
+      - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
@@ -103,15 +110,16 @@ jobs:
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
 
-  #############################
-  #   Deployment validation   #
-  #############################
-  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deploy [${{ matrix.testCases.name}}]"
+  job_module_deploy_validation:
+    name: "Deploy [${{ matrix.testCases.name }}]"
     environment: avm-validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     if: |
       !cancelled() &&
+      inputs.moduleTestFilePaths != '[]' &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
@@ -127,7 +135,7 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: Set environment
+      - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
@@ -142,27 +150,25 @@ jobs:
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} # Still required for OIDC exception list
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
           VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
-  ####################
-  #   Tag creation   #
-  ####################
-  # Note: brm CI only creates the module release tag(s). The actual publishing to the Public Bicep
-  # Registry is performed by the Azure DevOps OneBranch pipelines that poll these tags. See the AME
-  # deploy migration to ADO documentation (Workstream 5) in the Azure-Verified-Modules repository.
-  job_publish_module: # Note: Keep this job's display name ("Publishing") stable; it may be referenced as a required branch-protection status check.
-    name: "Publishing"
+  job_preview_module:
+    name: "Publishing preview"
     runs-on: ubuntu-latest
-    # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
+    permissions:
+      contents: read
     if: |
       !cancelled() &&
       needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success' &&
+      (needs.job_module_deploy_validation.result == 'success' || (
+        (inputs.includeAllVersionedModules || inputs.moduleTestFilePaths == '[]') &&
+        needs.job_module_deploy_validation.result == 'skipped'
+      )) &&
       github.ref == 'refs/heads/main' &&
-      github.repository	 == 'Azure/bicep-registry-modules'
+      github.repository == 'Azure/bicep-registry-modules'
     needs:
       - job_module_static_validation
       - job_module_deploy_validation
@@ -171,27 +177,39 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Create module release tag"
+      - name: "Preview module release tag"
         shell: pwsh
+        env:
+          BASE_COMMIT: "${{ inputs.baseCommit }}"
+          INCLUDE_ALL_VERSIONED_MODULES: "${{ inputs.includeAllVersionedModules }}"
+          MODULE_PATH: "${{ inputs.modulePath }}"
+          TARGET_COMMIT: "${{ inputs.targetCommit }}"
         run: |
-          # Grouping task logs
-          Write-Output '::group::Create module release tag'
-
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleWorkflowReleaseTag.ps1')
 
           $functionInput = @{
-            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
-            RepoRoot         = $env:GITHUB_WORKSPACE
+            TemplateFilePath           = Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH 'main.bicep'
+            RepoRoot                   = $env:GITHUB_WORKSPACE
+            TargetCommit               = $env:TARGET_COMMIT
+            IncludeAllVersionedModules = $env:INCLUDE_ALL_VERSIONED_MODULES -eq 'true'
+            WhatIf                     = $true
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:BASE_COMMIT)) {
+            $functionInput['BaseCommit'] = $env:BASE_COMMIT
           }
 
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          $tagOutputs = Set-ModuleWorkflowReleaseTag @functionInput -Verbose
+          $proposedTags = @(
+            if ($tagOutputs) {
+              $tagOutputs.GetEnumerator() | ForEach-Object {
+                $_.Value.gitTagName ?? ('{0}/{1}' -f $_.Key, $_.Value.version)
+              }
+            }
+          )
 
-          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
-            Write-Verbose ("Created release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          if ($proposedTags.Count -eq 0) {
+            Write-Output 'Release tag publishing is disabled. No release tags would be created.'
+          } else {
+            Write-Output 'Release tag publishing is disabled. The following tag(s) would be created or reused:'
+            $proposedTags | ForEach-Object { Write-Output " - $_" }
           }
-
-          Write-Output '::endgroup::'
