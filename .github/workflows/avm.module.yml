@@ -1,0 +1,117 @@
+name: "avm.module"
+
+on:
+  workflow_dispatch:
+    inputs:
+      modulePaths:
+        type: string
+        description: 'Module path or JSON array of module paths (for example, avm/res/storage/storage-account or ["avm/res/storage/storage-account"])'
+        required: true
+      staticValidation:
+        type: boolean
+        description: "Execute static validation"
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: "Execute deployment validation"
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: "Remove deployed module"
+        required: false
+        default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
+      createReleaseTag:
+        type: boolean
+        description: "Create the next release tag when no publishable diff exists (upstream main only)"
+        required: false
+        default: false
+  push:
+    branches:
+      - main
+    paths:
+      - "avm/**"
+      - "!*/**/README.md"
+
+env:
+  workflowPath: ".github/workflows/avm.module.yml"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath }}"
+      - name: "Get module matrix"
+        id: get-module-matrix
+        shell: pwsh
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          MODULE_PATH_INPUT: ${{ inputs.modulePaths }}
+          BASE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1')
+
+          if ($env:EVENT_NAME -eq 'workflow_dispatch') {
+            $moduleMatrix = Get-ModuleWorkflowMatrix -ModulePathInput $env:MODULE_PATH_INPUT -RepoRoot $env:GITHUB_WORKSPACE
+          } else {
+            if ($env:BASE_SHA -match '^0+$') {
+              $changedFilePaths = @(git diff-tree --no-commit-id --name-only -r $env:HEAD_SHA -- avm)
+            } else {
+              $changedFilePaths = @(git diff --name-only $env:BASE_SHA $env:HEAD_SHA -- avm)
+            }
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Failed to identify changed module files.'
+            }
+
+            $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -RepoRoot $env:GITHUB_WORKSPACE
+          }
+
+          $moduleMatrixJson = $moduleMatrix | ConvertTo-Json -Depth 5 -Compress
+          $hasModules = $moduleMatrix.include.Count -gt 0
+
+          Write-Verbose "Module matrix: $moduleMatrixJson" -Verbose
+          Write-Output "moduleMatrix=$moduleMatrixJson" >> $env:GITHUB_OUTPUT
+          Write-Output "hasModules=$($hasModules.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleMatrix: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
+      hasModules: ${{ steps.get-module-matrix.outputs.hasModules }}
+
+  call_module_workflow:
+    name: "Run [${{ matrix.modulePath }}]"
+    if: ${{ needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.job_initialize_pipeline.outputs.moduleMatrix) }}
+    concurrency:
+      group: ${{ matrix.concurrencyGroup }}
+    permissions:
+      id-token: write
+      contents: write
+    uses: ./.github/workflows/avm.template.module-entry.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      modulePath: "${{ matrix.modulePath }}"
+      forcePublish: ${{ github.event_name == 'workflow_dispatch' && inputs.createReleaseTag }}
+    secrets: inherit

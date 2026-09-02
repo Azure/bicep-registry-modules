@@ -1,0 +1,91 @@
+name: "avm.template.module-entry"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        description: "Input from the workflow caller in JSON format"
+        required: true
+      modulePath:
+        type: string
+        description: "Relative path to the module folder"
+        required: true
+      forcePublish:
+        type: boolean
+        description: "Create a release tag when no publishable diff exists"
+        required: false
+        default: false
+
+jobs:
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize module"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Get module test file paths"
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+    outputs:
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
+
+  call_module_workflow:
+    name: "Run"
+    permissions:
+      id-token: write
+      contents: write
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ inputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
+      modulePath: "${{ inputs.modulePath }}"
+    secrets: inherit
+
+  job_force_publish_module:
+    name: "Force publishing"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: |
+      !cancelled() &&
+      inputs.forcePublish &&
+      needs.call_module_workflow.result == 'success' &&
+      fromJson(inputs.workflowInput).staticValidation == 'true' &&
+      fromJson(inputs.workflowInput).deploymentValidation == 'true' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - call_module_workflow
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Create module release tag"
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}' 'main.bicep'
+            RepoRoot         = $env:GITHUB_WORKSPACE
+            Force            = $true
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
+            Write-Verbose ("Created or reused release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          }
