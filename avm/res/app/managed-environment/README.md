@@ -23,9 +23,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -307,7 +307,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amemax001'
     // Non-required parameters
-    appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -356,18 +355,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    openTelemetryConfiguration: {
-      logsConfiguration: {
-        destinations: [
-          'appInsights'
-        ]
-      }
-      tracesConfiguration: {
-        destinations: [
-          'appInsights'
-        ]
-      }
     }
     peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
@@ -496,9 +483,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
-    "appInsightsConnectionString": {
-      "value": "<appInsightsConnectionString>"
-    },
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
@@ -568,20 +552,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "openTelemetryConfiguration": {
-      "value": {
-        "logsConfiguration": {
-          "destinations": [
-            "appInsights"
-          ]
-        },
-        "tracesConfiguration": {
-          "destinations": [
-            "appInsights"
-          ]
-        }
       }
     },
     "peerTrafficEncryption": {
@@ -723,7 +693,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amemax001'
 // Non-required parameters
-param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
   logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -772,18 +741,6 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
-}
-param openTelemetryConfiguration = {
-  logsConfiguration: {
-    destinations: [
-      'appInsights'
-    ]
-  }
-  tracesConfiguration: {
-    destinations: [
-      'appInsights'
-    ]
-  }
 }
 param peerTrafficEncryption = true
 param platformReservedCidr = '172.17.17.0/24'
@@ -1416,7 +1373,6 @@ param workloadProfiles = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
 | [`appLogsConfiguration`](#parameter-applogsconfiguration) | object | The AppLogsConfiguration for the Managed Environment. |
 | [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
@@ -1432,7 +1388,6 @@ param workloadProfiles = [
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`peerAuthentication`](#parameter-peerauthentication) | object | Peer authentication settings for the Managed Environment. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -1502,14 +1457,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-
-### Parameter: `appInsightsConnectionString`
-
-Application Insights connection string.
-
-- Required: No
-- Type: securestring
-- Default: `''`
 
 ### Parameter: `appLogsConfiguration`
 
@@ -1595,7 +1542,6 @@ A Managed Environment Certificate.
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
 | [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
-| [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
 | [`location`](#parameter-certificatelocation) | string | The location for the resource. |
 | [`name`](#parameter-certificatename) | string | The name of the certificate. |
@@ -1635,20 +1581,6 @@ The password of the certificate.
 
 - Required: No
 - Type: securestring
-
-### Parameter: `certificate.certificateType`
-
-The type of the certificate.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ImagePullTrustedCA'
-    'ServerSSLCertificate'
-  ]
-  ```
 
 ### Parameter: `certificate.certificateValue`
 
@@ -1971,13 +1903,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-
-### Parameter: `openTelemetryConfiguration`
-
-Open Telemetry configuration.
-
-- Required: No
-- Type: object
 
 ### Parameter: `peerAuthentication`
 
