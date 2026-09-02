@@ -16,8 +16,8 @@ Describe 'Get-ModuleWorkflowMatrix' {
         $result.include.concurrencyGroup | Should -Be @('avm.res.storage.storage-account')
     }
 
-    It 'Resolves a JSON array and removes duplicate module paths' {
-        $inputPaths = '["avm/res/storage/storage-account","avm/res/network/virtual-network","avm/res/storage/storage-account"]'
+    It 'Resolves comma-separated paths and removes duplicates' {
+        $inputPaths = 'avm/res/storage/storage-account, avm/res/network/virtual-network, avm/res/storage/storage-account'
 
         $result = Get-ModuleWorkflowMatrix -ModulePathInput $inputPaths -RepoRoot $repoRootPath
 
@@ -43,21 +43,9 @@ Describe 'Get-ModuleWorkflowMatrix' {
         } | Should -Throw 'No top-level AVM module was found at path*'
     }
 
-    It 'Rejects malformed JSON input' {
+    It 'Rejects an empty path in a comma-separated list' {
         {
-            Get-ModuleWorkflowMatrix -ModulePathInput '["avm/res/storage/storage-account"'
-        } | Should -Throw 'The module path input must be a module path or a valid JSON array of module paths.'
-    }
-
-    It 'Rejects an empty JSON array' {
-        {
-            Get-ModuleWorkflowMatrix -ModulePathInput '[]'
-        } | Should -Throw 'The module path array must contain at least one module path.'
-    }
-
-    It 'Rejects a JSON scalar string' {
-        {
-            Get-ModuleWorkflowMatrix -ModulePathInput '"avm/res/storage/storage-account"'
-        } | Should -Throw 'JSON module path input must be a non-empty array of strings.'
+            Get-ModuleWorkflowMatrix -ModulePathInput 'avm/res/storage/storage-account,'
+        } | Should -Throw 'Every module path must be a non-empty string.'
     }
 }

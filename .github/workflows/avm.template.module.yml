@@ -19,12 +19,34 @@ on:
         type: string
         description: "Relative path to the module folder"
         required: true
+      publishMode:
+        type: string
+        description: "Release tag behavior: publish or preview"
+        required: false
+        default: "publish"
+      publishOnly:
+        type: boolean
+        description: "Skip validation and run only the publish step"
+        required: false
+        default: false
+      forcePublish:
+        type: boolean
+        description: "Create a release tag when no publishable diff exists"
+        required: false
+        default: false
+      requirePublishApproval:
+        type: boolean
+        description: "Require approval before publishing a release tag"
+        required: false
+        default: false
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
+
+permissions: {}
 
 jobs:
   #########################
@@ -33,7 +55,9 @@ jobs:
   job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Static validation"
     runs-on: ubuntu-latest
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    permissions:
+      contents: read
+    if: ${{ !inputs.publishOnly && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -52,7 +76,9 @@ jobs:
   job_psrule_must: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Must [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Required PSRule"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    permissions:
+      contents: read
+    if: ${{ !inputs.publishOnly && inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
@@ -79,7 +105,9 @@ jobs:
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
     runs-on: ubuntu-latest
-    if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    permissions:
+      contents: read
+    if: ${{ !inputs.publishOnly && inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
       fail-fast: false
       matrix:
@@ -110,8 +138,12 @@ jobs:
     name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     if: |
       !cancelled() &&
+      !inputs.publishOnly &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
@@ -153,19 +185,108 @@ jobs:
   # Note: brm CI only creates the module release tag(s). The actual publishing to the Public Bicep
   # Registry is performed by the Azure DevOps OneBranch pipelines that poll these tags. See the AME
   # deploy migration to ADO documentation (Workstream 5) in the Azure-Verified-Modules repository.
+  job_preview_module:
+    name: "Publishing preview"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      !cancelled() &&
+      inputs.publishMode == 'preview' &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Preview module release tag"
+        shell: pwsh
+        run: |
+          Write-Output '::group::Preview module release tag'
+
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
+            RepoRoot         = $env:GITHUB_WORKSPACE
+            WhatIf           = $true
+          }
+          if ('${{ inputs.forcePublish }}' -eq 'true') {
+            $functionInput['Force'] = $true
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          $tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose
+          $proposedTags = @(
+            if ($tagOutputs) {
+              $tagOutputs.GetEnumerator() | ForEach-Object {
+                $_.Value.gitTagName ?? ('{0}/{1}' -f $_.Key, $_.Value.version)
+              }
+            }
+          )
+
+          if ($proposedTags.Count -eq 0) {
+            Write-Output 'Release tag publishing is disabled for this run. No release tags would be created.'
+          } else {
+            Write-Output 'Release tag publishing is disabled for this run. The following tag(s) would be created or reused:'
+            $proposedTags | ForEach-Object { Write-Output " - $_" }
+          }
+
+          Write-Output '::endgroup::'
+
+  job_publish_approval:
+    name: "Approve release tag creation"
+    environment: publish-approval
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      !cancelled() &&
+      inputs.requirePublishApproval &&
+      inputs.publishMode == 'publish' &&
+      (inputs.publishOnly || (
+        needs.job_module_static_validation.result == 'success' &&
+        needs.job_module_deploy_validation.result == 'success'
+      )) &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+    steps:
+      - name: "Approval granted"
+        shell: pwsh
+        run: Write-Output 'Release tag creation approved.'
+
   job_publish_module: # Note: Keep this job's display name ("Publishing") stable; it may be referenced as a required branch-protection status check.
     name: "Publishing"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
       !cancelled() &&
-      needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success' &&
+      inputs.publishMode == 'publish' &&
+      (!inputs.requirePublishApproval || needs.job_publish_approval.result == 'success') &&
+      (inputs.publishOnly || (
+        needs.job_module_static_validation.result == 'success' &&
+        needs.job_module_deploy_validation.result == 'success'
+      )) &&
       github.ref == 'refs/heads/main' &&
       github.repository	 == 'Azure/bicep-registry-modules'
     needs:
       - job_module_static_validation
       - job_module_deploy_validation
+      - job_publish_approval
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -185,6 +306,9 @@ jobs:
           $functionInput = @{
             TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.modulePath }}/main.bicep"
             RepoRoot         = $env:GITHUB_WORKSPACE
+          }
+          if ('${{ inputs.forcePublish }}' -eq 'true') {
+            $functionInput['Force'] = $true
           }
 
           Write-Verbose "Invoke function with" -Verbose

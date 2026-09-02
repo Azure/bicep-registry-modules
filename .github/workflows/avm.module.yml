@@ -5,7 +5,7 @@ on:
     inputs:
       modulePaths:
         type: string
-        description: 'Module path or JSON array of module paths (for example, avm/res/storage/storage-account or ["avm/res/storage/storage-account"])'
+        description: "Module path or comma-separated module paths"
         required: true
       staticValidation:
         type: boolean
@@ -31,6 +31,11 @@ on:
         description: "Create the next release tag when no publishable diff exists (upstream main only)"
         required: false
         default: false
+      publishOnly:
+        type: boolean
+        description: "Skip validation and run only the publish step (upstream main only)"
+        required: false
+        default: false
   push:
     branches:
       - main
@@ -41,6 +46,8 @@ on:
 env:
   workflowPath: ".github/workflows/avm.module.yml"
 
+permissions: {}
+
 concurrency:
   group: ${{ github.workflow }}
 
@@ -48,6 +55,8 @@ jobs:
   job_initialize_pipeline:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
+    permissions:
+      contents: read
     if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
@@ -96,9 +105,32 @@ jobs:
       moduleMatrix: ${{ steps.get-module-matrix.outputs.moduleMatrix }}
       hasModules: ${{ steps.get-module-matrix.outputs.hasModules }}
 
+  call_module_workflow_preview:
+    name: "Preview [${{ matrix.modulePath }}]"
+    if: ${{ github.event_name == 'push' && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.job_initialize_pipeline.outputs.moduleMatrix) }}
+    concurrency:
+      group: ${{ matrix.concurrencyGroup }}
+    permissions:
+      id-token: write
+      contents: read
+    uses: ./.github/workflows/avm.template.module-entry.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      modulePath: "${{ matrix.modulePath }}"
+      forcePublish: false
+      publishMode: "preview"
+      publishOnly: false
+      requirePublishApproval: false
+    secrets: inherit
+
   call_module_workflow:
     name: "Run [${{ matrix.modulePath }}]"
-    if: ${{ needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
@@ -113,5 +145,8 @@ jobs:
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       modulePath: "${{ matrix.modulePath }}"
-      forcePublish: ${{ github.event_name == 'workflow_dispatch' && inputs.createReleaseTag }}
+      forcePublish: ${{ inputs.createReleaseTag }}
+      publishMode: "publish"
+      publishOnly: ${{ inputs.publishOnly }}
+      requirePublishApproval: ${{ inputs.createReleaseTag }}
     secrets: inherit

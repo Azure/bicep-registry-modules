@@ -16,11 +16,31 @@ on:
         description: "Create a release tag when no publishable diff exists"
         required: false
         default: false
+      publishMode:
+        type: string
+        description: "Release tag behavior: publish or preview"
+        required: false
+        default: "publish"
+      publishOnly:
+        type: boolean
+        description: "Skip validation and run only the publish step"
+        required: false
+        default: false
+      requirePublishApproval:
+        type: boolean
+        description: "Require approval before publishing a release tag"
+        required: false
+        default: false
+
+permissions: {}
 
 jobs:
   job_initialize_pipeline:
+    if: ${{ !inputs.publishOnly }}
     runs-on: ubuntu-latest
     name: "Initialize module"
+    permissions:
+      contents: read
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -35,8 +55,29 @@ jobs:
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
 
+  call_module_workflow_preview:
+    name: "Preview"
+    if: ${{ !inputs.publishOnly && inputs.publishMode == 'preview' }}
+    permissions:
+      id-token: write
+      contents: read
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ inputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
+      modulePath: "${{ inputs.modulePath }}"
+      forcePublish: ${{ inputs.forcePublish }}
+      publishMode: "preview"
+      publishOnly: false
+      requirePublishApproval: false
+    secrets: inherit
+
   call_module_workflow:
     name: "Run"
+    if: ${{ !inputs.publishOnly && inputs.publishMode == 'publish' }}
     permissions:
       id-token: write
       contents: write
@@ -48,44 +89,26 @@ jobs:
       moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ inputs.modulePath }}"
+      forcePublish: ${{ inputs.forcePublish }}
+      publishMode: "publish"
+      publishOnly: false
+      requirePublishApproval: ${{ inputs.requirePublishApproval }}
     secrets: inherit
 
-  job_force_publish_module:
-    name: "Force publishing"
-    runs-on: ubuntu-latest
+  call_publish_only_workflow:
+    name: "Publish only"
+    if: ${{ inputs.publishOnly }}
     permissions:
+      id-token: write
       contents: write
-    if: |
-      !cancelled() &&
-      inputs.forcePublish &&
-      needs.call_module_workflow.result == 'success' &&
-      fromJson(inputs.workflowInput).staticValidation == 'true' &&
-      fromJson(inputs.workflowInput).deploymentValidation == 'true' &&
-      github.ref == 'refs/heads/main' &&
-      github.repository == 'Azure/bicep-registry-modules'
-    needs:
-      - call_module_workflow
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          fetch-depth: 0
-      - name: "Set environment"
-        uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Create module release tag"
-        shell: pwsh
-        run: |
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleReleaseTag.ps1')
-
-          $functionInput = @{
-            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}' 'main.bicep'
-            RepoRoot         = $env:GITHUB_WORKSPACE
-            Force            = $true
-          }
-
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          if ($tagOutputs = Set-ModuleReleaseTag @functionInput -Verbose) {
-            Write-Verbose ("Created or reused release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
-          }
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ inputs.workflowInput }}"
+      moduleTestFilePaths: "[]"
+      psRuleModuleTestFilePaths: "[]"
+      modulePath: "${{ inputs.modulePath }}"
+      forcePublish: ${{ inputs.forcePublish }}
+      publishMode: "${{ inputs.publishMode }}"
+      publishOnly: true
+      requirePublishApproval: ${{ inputs.requirePublishApproval }}
+    secrets: inherit

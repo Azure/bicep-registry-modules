@@ -3,7 +3,7 @@
 Resolve module paths for the generic module workflow.
 
 .DESCRIPTION
-Accepts either a single module path, a JSON array of module paths, or changed file paths.
+Accepts either a single module path, comma-separated module paths, or changed file paths.
 Returns a GitHub Actions matrix containing unique top-level AVM module paths.
 #>
 function Get-ModuleWorkflowMatrix {
@@ -24,27 +24,10 @@ function Get-ModuleWorkflowMatrix {
     if ($PSCmdlet.ParameterSetName -eq 'Input') {
         $trimmedInput = $ModulePathInput.Trim()
         if ([string]::IsNullOrWhiteSpace($trimmedInput)) {
-            throw 'A module path or JSON array of module paths must be specified.'
+            throw 'At least one module path must be specified.'
         }
 
-        if ($trimmedInput.StartsWith('[')) {
-            if (-not $trimmedInput.EndsWith(']')) {
-                throw 'The module path input must be a module path or a valid JSON array of module paths.'
-            }
-            try {
-                $requestedPaths = @($trimmedInput | ConvertFrom-Json -ErrorAction Stop)
-            } catch {
-                throw 'The module path input must be a module path or a valid JSON array of module paths.'
-            }
-
-            if ($requestedPaths.Count -eq 0) {
-                throw 'The module path array must contain at least one module path.'
-            }
-        } elseif ($trimmedInput.StartsWith('"') -or $trimmedInput.StartsWith('{')) {
-            throw 'JSON module path input must be a non-empty array of strings.'
-        } else {
-            $requestedPaths = @($trimmedInput)
-        }
+        $requestedPaths = @($trimmedInput.Split(','))
     } else {
         $requestedPaths = @($ChangedFilePath)
     }
