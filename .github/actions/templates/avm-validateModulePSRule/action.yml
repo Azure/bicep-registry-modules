@@ -104,7 +104,7 @@ runs:
     # [PSRule validation] task(s)
     #-----------------------------
     - name: Run PSRule analysis
-      uses: microsoft/ps-rule@24eda55e317e99b3921c62c27e2acfc9970e0dfa # v2.9.0
+      uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
       env:
         CONTINUE_ON_ERROR: ${{ inputs.softFailure }}
       continue-on-error: ${{ fromJSON(env.CONTINUE_ON_ERROR) }}
