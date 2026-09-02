@@ -62,7 +62,7 @@ runs:
     # [Deployment validation] task(s)
     # -------------------------------
     - name: "Validate Test Execution"
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         errorActionPreference: "SilentlyContinue"
@@ -91,7 +91,7 @@ runs:
     - name: "Set OIDC temporary exception"
       id: set-oidc-exception
       if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -123,7 +123,7 @@ runs:
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
-      uses: azure/login@v2
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
@@ -134,7 +134,7 @@ runs:
     # Should only be leveraged by modules listed in $exceptionModulePaths above
     - name: "Azure Login - Exception"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@v2
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
@@ -144,7 +144,7 @@ runs:
     - name: "Get Resource Location"
       id: get-resource-location
       if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -179,7 +179,7 @@ runs:
     # ---------------------------
     - name: "Replace tokens in template file"
       if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -244,7 +244,7 @@ runs:
 
     - name: "Validate template file"
       if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -325,7 +325,7 @@ runs:
     - name: "Deploy template file"
       if: env.skip_deployment_ci == 'false'
       id: deploy_step
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -421,7 +421,7 @@ runs:
     # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
-      uses: azure/login@v2
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
@@ -432,7 +432,7 @@ runs:
     # Should only be leveraged by modules listed in $exceptionModulePaths above
     - name: "Azure Login - Exception"
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@v2
+      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
@@ -532,7 +532,7 @@ runs:
     # ----------------------------
     - name: "Remove deployed resources"
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' && env.skip_deployment_ci == 'false' }}
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
