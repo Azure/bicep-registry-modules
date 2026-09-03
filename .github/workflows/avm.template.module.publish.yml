@@ -1,0 +1,233 @@
+name: "avm.template.module.publish"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        required: true
+      moduleTestFilePaths:
+        type: string
+        required: true
+      psRuleModuleTestFilePaths:
+        type: string
+        required: true
+      modulePath:
+        type: string
+        required: true
+      baseCommit:
+        type: string
+        required: false
+      targetCommit:
+        type: string
+        required: true
+      forcePublish:
+        type: boolean
+        required: false
+        default: false
+      publishReleaseTag:
+        type: boolean
+        required: false
+        default: false
+      requirePublishApproval:
+        type: boolean
+        required: false
+        default: false
+
+env:
+  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  TOKEN_NAMEPREFIX: "gci"
+  CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
+
+permissions: {}
+
+jobs:
+  job_module_static_validation:
+    name: "Static validation"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run tests"
+        uses: ./.github/actions/templates/avm-validateModulePester
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+
+  job_psrule_must:
+    name: "Must [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Required PSRule"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+        baseline:
+          - friendlyName: Reliability
+            baselineName: Azure.Pillar.Reliability
+          - friendlyName: Custom Security
+            baselineName: CB.AVM.WAF.Security
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psruleBaseline: ${{ matrix.baseline.baselineName }}
+          softFailure: false
+
+  job_psrule_opt:
+    name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+        baseline:
+          - friendlyName: All pillars
+            baselineName: Azure.Default
+          - friendlyName: Security
+            baselineName: Azure.Pillar.Security
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "/utilities/pipelines/staticValidation/psrule"
+          psruleBaseline: ${{ matrix.baseline.baselineName }}
+          softFailure: true
+
+  job_module_deploy_validation:
+    name: "Deploy [${{ matrix.testCases.name }}]"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    if: |
+      !cancelled() &&
+      inputs.moduleTestFilePaths != '[]' &&
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_module_static_validation.result != 'failure' &&
+      needs.job_psrule_must.result != 'failure'
+    needs:
+      - job_module_static_validation
+      - job_psrule_must
+    strategy:
+      fail-fast: false
+      matrix:
+        testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
+        uses: ./.github/actions/templates/avm-validateModuleDeployment
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
+          deploymentMetadataLocation: "WestEurope"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+          customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
+          e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+
+  job_publish_approval:
+    name: "Approve release tag creation"
+    environment: publish-approval
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      !cancelled() &&
+      inputs.requirePublishApproval &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+    steps:
+      - name: "Approval granted"
+        shell: pwsh
+        run: Write-Output 'Release tag creation approved.'
+
+  job_publish_module:
+    name: "Publishing"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: |
+      !cancelled() &&
+      inputs.publishReleaseTag &&
+      (!inputs.requirePublishApproval || needs.job_publish_approval.result == 'success') &&
+      needs.job_module_static_validation.result == 'success' &&
+      needs.job_module_deploy_validation.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_module_static_validation
+      - job_module_deploy_validation
+      - job_publish_approval
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Create module release tag"
+        shell: pwsh
+        env:
+          BASE_COMMIT: "${{ inputs.baseCommit }}"
+          FORCE_PUBLISH: "${{ inputs.forcePublish }}"
+          MODULE_PATH: "${{ inputs.modulePath }}"
+          TARGET_COMMIT: "${{ inputs.targetCommit }}"
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleWorkflowReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH 'main.bicep'
+            RepoRoot         = $env:GITHUB_WORKSPACE
+            TargetCommit     = $env:TARGET_COMMIT
+            Force            = $env:FORCE_PUBLISH -eq 'true'
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:BASE_COMMIT)) {
+            $functionInput['BaseCommit'] = $env:BASE_COMMIT
+          }
+
+          $tagOutputs = Set-ModuleWorkflowReleaseTag @functionInput -Verbose
+          if ($tagOutputs.Count -gt 0) {
+            Write-Verbose ("Created or reused release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          } else {
+            Write-Output 'No publishable module changes were found. No release tags were created.'
+          }
