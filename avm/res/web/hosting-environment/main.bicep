@@ -97,6 +97,8 @@ var identity = !empty(managedIdentities)
     }
   : any(null)
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -169,13 +171,14 @@ resource appServiceEnvironment 'Microsoft.Web/hostingEnvironments@2025-03-01' = 
   }
 }
 
-module appServiceEnvironment_configurations_customDnsSuffix 'configuration--customdnssuffix/main.bicep' = if (!empty(customDnsSuffix ?? '')) {
+module appServiceEnvironment_configurations_customDnsSuffix 'configuration/main.bicep' = if (!empty(customDnsSuffix ?? '')) {
   name: '${uniqueString(deployment().name, location)}-AppServiceEnv-Configurations-CustomDnsSuffix'
   params: {
     hostingEnvironmentName: appServiceEnvironment.name
     certificateUrl: customDnsSuffixCertificateUrl ?? ''
     keyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity ?? ''
     dnsSuffix: customDnsSuffix ?? ''
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
