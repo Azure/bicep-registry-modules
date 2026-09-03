@@ -34,13 +34,11 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    logAnalyticsWorkspaceName: last(split(diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId, '/'))
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    appInsightsComponentName: 'dep-${namePrefix}-appinsights-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
   }
 }
@@ -74,7 +72,6 @@ module testDeployment '../../../main.bicep' = [
         logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
       location: resourceLocation
-      appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -104,14 +101,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      openTelemetryConfiguration: {
-        tracesConfiguration: {
-          destinations: ['appInsights']
-        }
-        logsConfiguration: {
-          destinations: ['appInsights']
-        }
-      }
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Owner'
@@ -133,7 +122,6 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-
       storages: [
         {
           kind: 'SMB'
