@@ -18,7 +18,7 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
 
 ### Pre-flight check
 
-> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions.
+> **MANDATORY**: You MUST output the following block visibly to the user at the very start of the workflow, before any other actions. This makes the configuration in use visible when a transcript is shared for triage.
 
 ```json
 {
@@ -26,8 +26,6 @@ This repository contains **Azure Verified Modules (AVM)** for Bicep - the offici
   "model": "<your model name>"
 }
 ```
-
-> **MANDATORY**: If the agent-mode is set to anything else but `agent` or the model is set to anything else but `Claude Opus 4.6`, you **MUST** warn the user that they are using a configuration the AVM team did not test and validate the custom prompts/skills/agents on. Currently, AVM's custom prompts/skills/agents are only tested with agent-mode `agent` and model `Claude Opus 4.6`. Inform the user that there is a bootstrapping prompt available to set the correct configuration, and provide instructions on how to use it --> `/AVM-Boostrap`
 
 ### Compliance with ALL AVM Bicep and Shared specifications
 
