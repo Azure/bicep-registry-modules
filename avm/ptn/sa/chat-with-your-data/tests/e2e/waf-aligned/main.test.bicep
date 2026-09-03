@@ -1,6 +1,5 @@
-metadata name = 'Sandbox With Azure Cosmos DB'
-metadata description = 'This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.'
-
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework'
 targetScope = 'subscription'
 
 // ========== //
@@ -9,14 +8,21 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sa.cwydcs-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-sa.cwyd-${serviceShort}-rg'
+
+@description('Optional. The location to deploy resources to.')
+#disable-next-line no-unused-params // overridden below to avoid the allowed location list validation
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sacwydcssmin'
+param serviceShort string = 'scwydswaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Optional. The password used for VM authentication.')
+@secure()
+param vmAdminPassword string = newGuid()
 // ============ //
 // Dependencies //
 // ============ //
@@ -44,7 +50,13 @@ module testDeployment '../../../main.bicep' = [
       solutionName: take('${namePrefix}${serviceShort}001', 15)
       location: enforcedLocation
       azureAiServiceLocation: enforcedLocation
-      databaseType: 'cosmosdb'
+      enableScalability: true
+      enableTelemetry: true
+      enableMonitoring: true
+      enablePrivateNetworking: true
+      enableRedundancy: true
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: vmAdminPassword
       gptModelCapacity: 10
       embeddingModelCapacity: 10
     }

@@ -518,6 +518,54 @@ module proximityPlacementGroup './modules/compute/proximity-placement-group.bice
   }
 }
 
+// Jumpbox VM — administration access when private networking is enabled
+module jumpboxVM './modules/compute/virtual-machine.bicep' = if (enablePrivateNetworking) {
+  name: take('module.virtual-machine.${solutionName}', 64)
+  params: {
+    solutionName: solutionSuffix
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2019-datacenter'
+      version: 'latest'
+    }
+    vmSize: vmSize
+    availabilityZone: virtualMachineAvailabilityZone
+    adminUsername: !empty(vmAdminUsername) ? vmAdminUsername : 'testvmuser'
+    adminPassword: !empty(vmAdminPassword)
+      ? vmAdminPassword
+      : 'Vm!${uniqueString(subscription().subscriptionId, solutionName)}${guid(subscription().subscriptionId, solutionName, 'vm-admin-password')}'
+    subnetResourceId: virtualNetwork!.outputs.administrationSubnetResourceId
+    deployingUserPrincipalId: deployingUserPrincipalId
+    deployingUserPrincipalType: deployingUserPrincipalType
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: '1c0163c0-47e6-4577-8991-ea5c82e286e4' // Virtual Machine Administrator Login
+        principalId: deployingUserPrincipalId
+        principalType: deployingUserPrincipalType
+      }
+    ]
+    diagnosticSettings: monitoringDiagnosticSettings
+    maintenanceConfigurationResourceId: maintenanceConfiguration!.outputs.resourceId
+    proximityPlacementGroupResourceId: proximityPlacementGroup!.outputs.resourceId
+    extensionMonitoringAgentConfig: enableMonitoring
+      ? {
+          dataCollectionRuleAssociations: [
+            {
+              dataCollectionRuleResourceId: windowsVmDataCollectionRules!.outputs.resourceId
+              name: 'send-${logAnalyticsWorkspaceName}'
+            }
+          ]
+          enabled: true
+          tags: allTags
+        }
+      : null
+  }
+}
+
 @batchSize(5)
 module privateDnsZoneDeployments './modules/networking/private-dns-zone.bicep' = [
   for (zone, i) in privateDnsZones: if (enablePrivateNetworking) {
