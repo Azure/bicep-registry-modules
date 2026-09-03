@@ -210,6 +210,7 @@ jobs:
         env:
           BASE_COMMIT: "${{ inputs.baseCommit }}"
           FORCE_PUBLISH: "${{ inputs.forcePublish }}"
+          GH_TOKEN: "${{ github.token }}"
           MODULE_PATH: "${{ inputs.modulePath }}"
           TARGET_COMMIT: "${{ inputs.targetCommit }}"
         run: |
