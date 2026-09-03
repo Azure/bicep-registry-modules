@@ -1,8 +1,6 @@
----
-description: "Instructions for working with Azure Verified Modules (AVM) Bicep repository. Rules of generating and maintaining Bicep modules with AVM best practices and formatting guidelines with GitHub Copilot."
----
+# Azure Verified Modules (AVM) Bicep - Agent Instructions
 
-# Azure Verified Modules (AVM) - General Instructions
+> Cross-assistant instructions for any AI agent (GitHub Copilot, Claude Code, Cursor, and others) working in this repository. This file mirrors [.github/copilot-instructions.md](.github/copilot-instructions.md); keep the two in sync.
 
 ## Overview
 
