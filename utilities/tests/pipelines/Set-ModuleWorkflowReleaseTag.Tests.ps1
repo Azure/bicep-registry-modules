@@ -41,6 +41,7 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
 
             return @{
                 modulePath = $modulePath
+                remotePath = $remotePath
                 repoPath   = $repoPath
             }
         }
@@ -49,12 +50,29 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
     BeforeEach {
         $testRepository = Initialize-ReleaseTagTestRepository
         $script:modulePath = $testRepository.modulePath
+        $script:remotePath = $testRepository.remotePath
         $script:repoPath = $testRepository.repoPath
+        $script:originalGitHubRepository = $env:GITHUB_REPOSITORY
+        $env:GITHUB_REPOSITORY = 'Azure/bicep-registry-modules'
+        Mock Invoke-ModuleReleaseTagGitHubApi {
+            param (
+                [string] $Repository,
+                [string] $TagName,
+                [string] $TargetCommit,
+                [string] $GitHubToken
+            )
+
+            git --git-dir $script:remotePath update-ref "refs/tags/$TagName" $TargetCommit
+            if ($LASTEXITCODE -ne 0) {
+                throw "Failed to create test tag [$TagName]."
+            }
+        }
         Push-Location $script:repoPath
     }
 
     AfterEach {
         Pop-Location
+        $env:GITHUB_REPOSITORY = $script:originalGitHubRepository
     }
 
     It 'Previews a forced release tag without creating it' {
@@ -81,6 +99,7 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
 
         $firstResult['avm/res/test/module'].gitTagName | Should -Be 'avm/res/test/module/1.0.0'
         $secondResult['avm/res/test/module'].gitTagName | Should -Be 'avm/res/test/module/1.0.0'
+        Should -Invoke Invoke-ModuleReleaseTagGitHubApi -Times 1 -Exactly
     }
 
     It 'Reuses an annotated tag that points at the target commit' {
@@ -109,6 +128,51 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
                 -TargetVersion '1.0.0' `
                 -TargetCommit $targetCommit
         } | Should -Throw '*already exists at a different commit.'
+    }
+
+    It 'Reuses a tag created concurrently after an API failure' {
+        Mock Invoke-ModuleReleaseTagGitHubApi {
+            param (
+                [string] $Repository,
+                [string] $TagName,
+                [string] $TargetCommit,
+                [string] $GitHubToken
+            )
+
+            git --git-dir $script:remotePath update-ref "refs/tags/$TagName" $TargetCommit
+            throw 'Simulated create conflict.'
+        }
+
+        $result = Set-ModuleWorkflowReleaseTag `
+            -TemplateFilePath (Join-Path $script:modulePath 'main.bicep') `
+            -RepoRoot $script:repoPath `
+            -Force
+
+        $result['avm/res/test/module'].gitTagName | Should -Be 'avm/res/test/module/1.0.0'
+    }
+
+    It 'Rejects a tag created concurrently at a different commit' {
+        $script:conflictingCommit = git rev-parse HEAD
+        git commit --allow-empty -m 'Target commit' | Out-Null
+        $targetCommit = git rev-parse HEAD
+        Mock Invoke-ModuleReleaseTagGitHubApi {
+            param (
+                [string] $Repository,
+                [string] $TagName,
+                [string] $TargetCommit,
+                [string] $GitHubToken
+            )
+
+            git --git-dir $script:remotePath update-ref "refs/tags/$TagName" $script:conflictingCommit
+            throw 'Simulated create conflict.'
+        }
+
+        {
+            New-ModuleWorkflowReleaseTag `
+                -ModuleFolderPath $script:modulePath `
+                -TargetVersion '1.0.0' `
+                -TargetCommit $targetCommit
+        } | Should -Throw '*concurrently created at a different commit*'
     }
 
     It 'Surfaces a conflicting reset version during preview' {
@@ -169,5 +233,99 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
                 -RetryCount 2 `
                 -RetryDelaySeconds 0
         } | Should -Throw '*after*Git output*'
+    }
+}
+
+Describe 'Invoke-ModuleReleaseTagGitHubApi' {
+
+    BeforeAll {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTagReference.ps1')
+    }
+
+    BeforeEach {
+        $script:originalGhToken = $env:GH_TOKEN
+        $env:GH_TOKEN = 'test-token'
+        Mock Invoke-RestMethod { }
+    }
+
+    AfterEach {
+        $env:GH_TOKEN = $script:originalGhToken
+    }
+
+    It 'Creates the exact lightweight tag through the Git Refs API' {
+        $expectedBody = @{
+            ref = 'refs/tags/avm/res/test/module/1.0.0'
+            sha = '0123456789012345678901234567890123456789'
+        } | ConvertTo-Json -Compress
+
+        Invoke-ModuleReleaseTagGitHubApi `
+            -Repository 'Azure/bicep-registry-modules' `
+            -TagName 'avm/res/test/module/1.0.0' `
+            -TargetCommit '0123456789012345678901234567890123456789'
+
+        Should -Invoke Invoke-RestMethod -Times 1 -Exactly -ParameterFilter {
+            $Uri -eq 'https://api.github.com/repos/Azure/bicep-registry-modules/git/refs' -and
+            $Method -eq 'Post' -and
+            $ContentType -eq 'application/json' -and
+            $Body -eq $expectedBody -and
+            $Headers.Authorization -eq 'Bearer test-token'
+        }
+    }
+}
+
+Describe 'New-ModuleReleaseTag' {
+
+    BeforeAll {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
+    }
+
+    BeforeEach {
+        $testRootPath = Join-Path $TestDrive ([guid]::NewGuid().ToString())
+        $script:legacyRemotePath = Join-Path $testRootPath 'remote.git'
+        $script:legacyRepoPath = Join-Path $testRootPath 'repo'
+        $script:legacyModulePath = Join-Path $script:legacyRepoPath 'avm' 'res' 'test' 'module'
+        $null = New-Item -Path $script:legacyModulePath -ItemType Directory -Force
+        Set-Content -Path (Join-Path $script:legacyModulePath 'main.bicep') -Value "metadata name = 'test'"
+        git init --bare $script:legacyRemotePath | Out-Null
+        git init $script:legacyRepoPath | Out-Null
+        git -C $script:legacyRepoPath config user.email 'avm-tests@example.com'
+        git -C $script:legacyRepoPath config user.name 'AVM Tests'
+        git -C $script:legacyRepoPath remote add origin $script:legacyRemotePath
+        git -C $script:legacyRepoPath add .
+        git -C $script:legacyRepoPath commit -m 'Initial commit' | Out-Null
+        git -C $script:legacyRepoPath push -u origin HEAD:main | Out-Null
+        $script:originalGitHubRepository = $env:GITHUB_REPOSITORY
+        $env:GITHUB_REPOSITORY = 'Azure/bicep-registry-modules'
+        Mock Invoke-ModuleReleaseTagGitHubApi {
+            param (
+                [string] $Repository,
+                [string] $TagName,
+                [string] $TargetCommit,
+                [string] $GitHubToken
+            )
+
+            git --git-dir $script:legacyRemotePath update-ref "refs/tags/$TagName" $TargetCommit
+        }
+        Push-Location $script:legacyRepoPath
+    }
+
+    AfterEach {
+        Pop-Location
+        $env:GITHUB_REPOSITORY = $script:originalGitHubRepository
+    }
+
+    It 'Creates the legacy release tag through the Git Refs API helper' {
+        $targetCommit = git rev-parse HEAD
+
+        $result = New-ModuleReleaseTag `
+            -ModuleFolderPath $script:legacyModulePath `
+            -TargetVersion '1.0.0'
+
+        $result | Should -Be 'avm/res/test/module/1.0.0'
+        Should -Invoke Invoke-ModuleReleaseTagGitHubApi -Times 1 -Exactly -ParameterFilter {
+            $Repository -eq 'Azure/bicep-registry-modules' -and
+            $TagName -eq 'avm/res/test/module/1.0.0' -and
+            $TargetCommit -eq $targetCommit
+        }
     }
 }

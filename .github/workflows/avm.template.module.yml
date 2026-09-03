@@ -175,6 +175,8 @@ jobs:
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Create module release tag"
         shell: pwsh
+        env:
+          GH_TOKEN: "${{ github.token }}"
         run: |
           # Grouping task logs
           Write-Output '::group::Create module release tag'

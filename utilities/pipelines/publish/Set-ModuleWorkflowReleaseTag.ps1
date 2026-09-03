@@ -1,3 +1,5 @@
+. (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTagReference.ps1')
+
 function Invoke-ModuleWorkflowGitLsRemote {
 
     [CmdletBinding()]
@@ -263,25 +265,8 @@ function New-ModuleWorkflowReleaseTag {
     }
 
     if ($PSCmdlet.ShouldProcess("release tag [$tagName] at commit [$TargetCommit]", 'Create and publish')) {
-        git tag $tagName $TargetCommit
-        if ($LASTEXITCODE -ne 0) {
-            throw "Failed to create local tag [$tagName]."
-        }
-
-        git push origin "refs/tags/${tagName}:refs/tags/${tagName}"
-        if ($LASTEXITCODE -eq 0) {
-            return $tagName
-        }
-
-        $concurrentTags = ConvertTo-ModuleWorkflowRemoteTag -Reference @(
-            Invoke-ModuleWorkflowGitLsRemote -Remote origin -Pattern "$tagName*"
-        ) | Where-Object { $_.name -eq $tagName }
-        if ($concurrentTags.commit -contains $TargetCommit) {
-            Write-Verbose "Tag [$tagName] was concurrently published at the target commit." -Verbose
-            return $tagName
-        }
-
-        throw "Failed to publish tag [$tagName]."
+        New-ModuleReleaseTagReference -TagName $tagName -TargetCommit $TargetCommit
+        return $tagName
     }
 
     return $null
