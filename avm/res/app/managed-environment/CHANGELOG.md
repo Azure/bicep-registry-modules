@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Added examples to parameters.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
