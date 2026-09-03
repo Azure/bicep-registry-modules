@@ -1983,6 +1983,9 @@ Mandatory. The template file content object to crawl data from
 .PARAMETER ForceCacheRefresh
 Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
+.PARAMETER IsParentModule
+Optional. Configures whether the module has any usages examples in its readme worth referencing
+
 .EXAMPLE
 Initialize-ReadMe -ReadMeFilePath 'C:/ResourceModules/modules/sql/managed-instances/administrators/readme.md' -FullModuleIdentifier 'sql/managed-instance/administrator' -TemplateFileContent @{ resource = @{}; ... }
 
@@ -2003,6 +2006,9 @@ function Initialize-ReadMe {
 
         [Parameter(Mandatory = $true)]
         [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory = $true)]
+        [bool] $HasUsageExamples,
 
         [Parameter()]
         [switch] $ForceCacheRefresh
@@ -2080,7 +2086,7 @@ function Initialize-ReadMe {
             '  params: { (...) }',
             '}',
             '```',
-            'For examples, please refer to the [Usage Examples](#usage-examples) section.'
+            ($HasUsageExamples ? 'For examples, please refer to the [Usage Examples](#usage-examples) section.' : 'For examples, please refer to the main module''s _Usage Examples_ section.')
         )
     }
 
@@ -2280,6 +2286,12 @@ function Set-ModuleReadMe {
         $notes = @()
     }
 
+    $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
+    $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
+
+    # If it's multi-scope child module, we need to check if its parent has tests
+    $hasTests = (Get-ChildItem -Path ($isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
+
     # Initialize readme
     $inputObject = @{
         ReadMeFilePath       = $ReadMeFilePath
@@ -2287,6 +2299,7 @@ function Set-ModuleReadMe {
         TemplateFileContent  = $templateFileContent
         TemplateFilePath     = $TemplateFilePath
         ForceCacheRefresh    = $ForceCacheRefresh
+        HasUsageExamples     = $hasTests
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 
@@ -2303,11 +2316,6 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $isMultiScopeChildModule = $moduleRoot -match '[\/|\\](rg|sub|mg)\-scope$'
-    $isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleRoot) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
-
-    # If it's multi-scope child module, we need to check if its parent has tests
-    $hasTests = (Get-ChildItem -Path ($isMultiScopeChildModule ? (Split-Path $moduleRoot) : $moduleRoot) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
 
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
