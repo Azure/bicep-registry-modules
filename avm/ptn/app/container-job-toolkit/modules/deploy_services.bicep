@@ -510,7 +510,7 @@ module nsg_consumption_plan 'br/public:avm/res/network/network-security-group:0.
   }
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.10.1' = if (zoneRedundant) {
+module vnet 'br/public:avm/res/network/virtual-network:0.10.2' = if (zoneRedundant) {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-vnet'
   params: {
     name: 'vnet-${name}'
@@ -826,7 +826,7 @@ resource law_existing 'Microsoft.OperationalInsights/workspaces@2025-02-01' exis
 
 // Managed Environment
 // -------------------
-module managedEnvironment 'br/public:avm/res/app/managed-environment:0.15.0' = {
+module managedEnvironment 'br/public:avm/res/app/managed-environment:0.16.0' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-managedEnvironment'
   params: {
     name: 'container-apps-environment-${name}'

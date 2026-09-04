@@ -25,9 +25,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.App/jobs` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_jobs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/jobs)</li></ul> |
-| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.ContainerRegistry/registries` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-06-01-preview/registries)</li></ul> |
@@ -1500,18 +1500,19 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.5` | Remote reference |
-| `br/public:avm/res/app/job:0.7.2` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.13.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.14.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.10.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
+| `br/public:avm/ptn/deployment-script/import-image-to-acr:0.4.4` | Remote reference |
+| `br/public:avm/res/app/job:0.6.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.25.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Notes
 
