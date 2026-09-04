@@ -182,10 +182,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceId: '<userAssignedResourceId>'
-    }
     requireInfrastructureEncryption: true
     skuName: 'Premium'
   }
@@ -216,12 +212,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": false,
-        "userAssignedResourceId": "<userAssignedResourceId>"
-      }
-    },
     "requireInfrastructureEncryption": {
       "value": true
     },
@@ -249,10 +239,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  systemAssigned: false
-  userAssignedResourceId: '<userAssignedResourceId>'
 }
 param requireInfrastructureEncryption = true
 param skuName = 'Premium'
