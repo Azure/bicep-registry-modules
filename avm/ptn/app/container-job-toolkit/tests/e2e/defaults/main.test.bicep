@@ -34,7 +34,7 @@ module dependencies './dependencies.bicep' = {
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
 }
@@ -55,6 +55,9 @@ module testDeployment '../../../main.bicep' = [
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsResourceId
       // needed for idempotency testing
       overwriteExistingImage: true
+      tags: {
+        SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions. Key Vault will be deployed with a public endpoint, which is not allowed in production subscriptions.
+      }
     }
   }
 ]
