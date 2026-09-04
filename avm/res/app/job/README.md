@@ -1016,7 +1016,7 @@ param workloadProfileName = '<workloadProfileName>'
 | [`containers`](#parameter-containers) | array | List of container definitions for the Container App. |
 | [`environmentResourceId`](#parameter-environmentresourceid) | string | Resource ID of Container Apps Environment. |
 | [`name`](#parameter-name) | string | Name of the Container App. |
-| [`triggerType`](#parameter-triggertype) | string | Trigger type of the job. |
+| [`triggerType`](#parameter-triggertype) | string | Trigger with typo errors for testing type of the job. |
 
 **Conditional parameters**
 
@@ -1446,7 +1446,7 @@ Name of the Container App.
 
 ### Parameter: `triggerType`
 
-Trigger type of the job.
+Trigger with typo errors for testing type of the job.
 
 - Required: Yes
 - Type: string
