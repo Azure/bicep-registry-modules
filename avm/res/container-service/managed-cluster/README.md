@@ -25,8 +25,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.ContainerService/managedClusters` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-10-01/managedClusters)</li></ul> |
-| `Microsoft.ContainerService/managedClusters/agentPools` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-10-01/managedClusters/agentPools)</li></ul> |
+| `Microsoft.ContainerService/managedClusters` | 2026-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2026-03-01/managedClusters)</li></ul> |
+| `Microsoft.ContainerService/managedClusters/agentPools` | 2026-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_agentpools.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2026-03-01/managedClusters/agentPools)</li></ul> |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | 2025-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerservice_managedclusters_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2025-10-01/managedClusters/maintenanceConfigurations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KubernetesConfiguration/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetesconfiguration_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2024-11-01/extensions)</li></ul> |
@@ -1140,6 +1140,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 128
         osDiskType: 'Managed'
         osType: 'Linux'
+        podSubnetResourceId: '<podSubnetResourceId>'
         powerState: {
           code: 'Running'
         }
@@ -1149,7 +1150,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '33%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_DS2_v2'
+        vmSize: '<vmSize>'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1196,6 +1197,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 30
         osDiskType: 'Ephemeral'
         osType: 'Linux'
+        podSubnetResourceId: '<podSubnetResourceId>'
         powerState: {
           code: 'Running'
         }
@@ -1207,7 +1209,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '50%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_D2s_v3'
+        vmSize: '<vmSize>'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1314,6 +1316,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     enableStorageProfileDiskCSIDriver: true
     enableStorageProfileFileCSIDriver: true
     enableStorageProfileSnapshotController: true
+    gatewayAPI: {
+      installation: 'Standard'
+    }
     httpApplicationRoutingEnabled: false
     identityProfile: {
       kubeletidentity: {
@@ -1378,10 +1383,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     }
     managedOutboundIPCount: 2
     monitoringWorkspaceResourceId: '<monitoringWorkspaceResourceId>'
-    networkDataplane: 'azure'
+    networkDataplane: 'cilium'
     networkPlugin: 'azure'
     networkPluginMode: 'overlay'
-    networkPolicy: 'azure'
+    networkPolicy: 'cilium'
     nodeProvisioningProfile: {
       mode: 'Manual'
     }
@@ -1396,7 +1401,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       '<publicIPAKSResourceId>'
     ]
     outboundType: 'loadBalancer'
-    podCidr: '10.244.0.0/16'
     podIdentityProfile: {
       enabled: false
     }
@@ -1493,6 +1497,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 128,
           "osDiskType": "Managed",
           "osType": "Linux",
+          "podSubnetResourceId": "<podSubnetResourceId>",
           "powerState": {
             "code": "Running"
           },
@@ -1502,7 +1507,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "33%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "<vmSize>",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -1555,6 +1560,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 30,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
+          "podSubnetResourceId": "<podSubnetResourceId>",
           "powerState": {
             "code": "Running"
           },
@@ -1566,7 +1572,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "50%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_D2s_v3",
+          "vmSize": "<vmSize>",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -1722,6 +1728,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enableStorageProfileSnapshotController": {
       "value": true
     },
+    "gatewayAPI": {
+      "value": {
+        "installation": "Standard"
+      }
+    },
     "httpApplicationRoutingEnabled": {
       "value": false
     },
@@ -1813,7 +1824,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "<monitoringWorkspaceResourceId>"
     },
     "networkDataplane": {
-      "value": "azure"
+      "value": "cilium"
     },
     "networkPlugin": {
       "value": "azure"
@@ -1822,7 +1833,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "overlay"
     },
     "networkPolicy": {
-      "value": "azure"
+      "value": "cilium"
     },
     "nodeProvisioningProfile": {
       "value": {
@@ -1853,9 +1864,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "outboundType": {
       "value": "loadBalancer"
-    },
-    "podCidr": {
-      "value": "10.244.0.0/16"
     },
     "podIdentityProfile": {
       "value": {
@@ -1974,6 +1982,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 128
     osDiskType: 'Managed'
     osType: 'Linux'
+    podSubnetResourceId: '<podSubnetResourceId>'
     powerState: {
       code: 'Running'
     }
@@ -1983,7 +1992,7 @@ param primaryAgentPoolProfiles = [
       maxSurge: '33%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_DS2_v2'
+    vmSize: '<vmSize>'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2030,6 +2039,7 @@ param agentPools = [
     osDiskSizeGB: 30
     osDiskType: 'Ephemeral'
     osType: 'Linux'
+    podSubnetResourceId: '<podSubnetResourceId>'
     powerState: {
       code: 'Running'
     }
@@ -2041,7 +2051,7 @@ param agentPools = [
       maxSurge: '50%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_D2s_v3'
+    vmSize: '<vmSize>'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2148,6 +2158,9 @@ param enableStorageProfileBlobCSIDriver = true
 param enableStorageProfileDiskCSIDriver = true
 param enableStorageProfileFileCSIDriver = true
 param enableStorageProfileSnapshotController = true
+param gatewayAPI = {
+  installation: 'Standard'
+}
 param httpApplicationRoutingEnabled = false
 param identityProfile = {
   kubeletidentity: {
@@ -2212,10 +2225,10 @@ param managedIdentities = {
 }
 param managedOutboundIPCount = 2
 param monitoringWorkspaceResourceId = '<monitoringWorkspaceResourceId>'
-param networkDataplane = 'azure'
+param networkDataplane = 'cilium'
 param networkPlugin = 'azure'
 param networkPluginMode = 'overlay'
-param networkPolicy = 'azure'
+param networkPolicy = 'cilium'
 param nodeProvisioningProfile = {
   mode: 'Manual'
 }
@@ -2230,7 +2243,6 @@ param outboundPublicIPResourceIds = [
   '<publicIPAKSResourceId>'
 ]
 param outboundType = 'loadBalancer'
-param podCidr = '10.244.0.0/16'
 param podIdentityProfile = {
   enabled: false
 }
@@ -3201,6 +3213,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fluxExtension`](#parameter-fluxextension) | object | Settings and configurations for the flux extension. |
 | [`fqdnSubdomain`](#parameter-fqdnsubdomain) | string | The FQDN subdomain of the private cluster with custom private dns zone. This cannot be updated once the Managed Cluster has been created. |
+| [`gatewayAPI`](#parameter-gatewayapi) | object | Gateway API profile for the managed cluster. |
 | [`httpApplicationRoutingEnabled`](#parameter-httpapplicationroutingenabled) | bool | Specifies whether the httpApplicationRouting add-on is enabled or not. |
 | [`httpProxyConfig`](#parameter-httpproxyconfig) | object | Configurations for provisioning the cluster with HTTP proxy servers. |
 | [`identityProfile`](#parameter-identityprofile) | object | Identities associated with the cluster. |
@@ -4628,6 +4641,13 @@ The FQDN subdomain of the private cluster with custom private dns zone. This can
 
 - Required: No
 - Type: string
+
+### Parameter: `gatewayAPI`
+
+Gateway API profile for the managed cluster.
+
+- Required: No
+- Type: object
 
 ### Parameter: `httpApplicationRoutingEnabled`
 

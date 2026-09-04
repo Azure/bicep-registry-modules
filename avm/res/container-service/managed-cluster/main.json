@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "1864836677966239899"
+      "version": "0.46.1.21595",
+      "templateHash": "15549213402504605076"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster."
@@ -1277,6 +1277,16 @@
       },
       "nullable": true
     },
+    "gatewayAPI": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerService/managedClusters@2026-03-01#properties/properties/properties/ingressProfile/properties/gatewayAPI"
+        },
+        "description": "Optional. Gateway API profile for the managed cluster."
+      },
+      "nullable": true
+    },
     "enableDnsZoneContributorRoleAssignment": {
       "type": "bool",
       "defaultValue": true,
@@ -1642,7 +1652,8 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "usesPodSubnet": "[contains(map(concat(parameters('primaryAgentPoolProfiles'), coalesce(parameters('agentPools'), createArray())), lambda('profile', not(empty(tryGet(lambdaVariables('profile'), 'podSubnetResourceId'))))), true())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -1667,7 +1678,7 @@
     },
     "managedCluster": {
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2025-10-01",
+      "apiVersion": "2026-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1694,6 +1705,7 @@
           }
         },
         "ingressProfile": {
+          "gatewayAPI": "[parameters('gatewayAPI')]",
           "webAppRouting": {
             "enabled": "[parameters('webApplicationRoutingEnabled')]",
             "dnsZoneResourceIds": "[if(not(empty(parameters('dnsZoneResourceId'))), createArray(parameters('dnsZoneResourceId')), null())]",
@@ -1748,7 +1760,7 @@
           "staticEgressGatewayProfile": "[parameters('staticEgressGatewayProfile')]",
           "networkDataplane": "[parameters('networkDataplane')]",
           "networkPlugin": "[parameters('networkPlugin')]",
-          "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
+          "networkPluginMode": "[if(variables('usesPodSubnet'), null(), if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode')))]",
           "networkPolicy": "[if(equals(parameters('networkDataplane'), 'cilium'), 'cilium', parameters('networkPolicy'))]",
           "podCidr": "[parameters('podCidr')]",
           "serviceCidr": "[parameters('serviceCidr')]",
@@ -1946,8 +1958,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "8944764257590886332"
+              "version": "0.46.1.21595",
+              "templateHash": "9235080649776332574"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations."
@@ -2245,8 +2257,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "16346140098583042094"
+              "version": "0.46.1.21595",
+              "templateHash": "10823651473689322161"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
@@ -2724,12 +2736,12 @@
             "managedCluster": {
               "existing": true,
               "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2025-10-01",
+              "apiVersion": "2026-03-01",
               "name": "[parameters('managedClusterName')]"
             },
             "agentPool": {
               "type": "Microsoft.ContainerService/managedClusters/agentPools",
-              "apiVersion": "2025-10-01",
+              "apiVersion": "2026-03-01",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
               "properties": {
                 "availabilityZones": "[if(equals(parameters('type'), 'VirtualMachines'), null(), map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone')))))]",
@@ -3411,7 +3423,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedCluster', '2025-10-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedCluster', '2026-03-01', 'full'), 'identity'), 'principalId')]"
     },
     "kubeletIdentityClientId": {
       "type": "string",
@@ -3474,7 +3486,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedCluster', '2025-10-01', 'full').location]"
+      "value": "[reference('managedCluster', '2026-03-01', 'full').location]"
     },
     "oidcIssuerUrl": {
       "type": "string",
