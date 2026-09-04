@@ -1334,6 +1334,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
+          timeBasedImmutability: 'Enable'
+          timeBasedImmutabilityMode: 'Locked'
         }
         backupShortTermRetentionPolicy: {
           retentionDays: 14
@@ -1537,7 +1539,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
-            "monthlyRetention": "P6M"
+            "monthlyRetention": "P6M",
+            "timeBasedImmutability": "Enable",
+            "timeBasedImmutabilityMode": "Locked"
           },
           "backupShortTermRetentionPolicy": {
             "retentionDays": 14
@@ -1760,6 +1764,8 @@ param databases = [
     availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
+      timeBasedImmutability: 'Enable'
+      timeBasedImmutabilityMode: 'Locked'
     }
     backupShortTermRetentionPolicy: {
       retentionDays: 14
@@ -3119,6 +3125,8 @@ The long term backup retention policy for the database.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-databasesbackuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`timeBasedImmutability`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
+| [`timeBasedImmutabilityMode`](#parameter-databasesbackuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
@@ -3136,6 +3144,34 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.backupLongTermRetentionPolicy.timeBasedImmutability`
+
+The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disable'
+    'Enable'
+  ]
+  ```
+
+### Parameter: `databases.backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
+
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.weeklyRetention`
 

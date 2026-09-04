@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "4166313002074913692"
+      "version": "0.46.1.21595",
+      "templateHash": "16839086441948448700"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -50,6 +50,28 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Yearly retention in ISO 8601 duration format."
+      }
+    },
+    "timeBasedImmutability": {
+      "type": "string",
+      "allowedValues": [
+        "Disable",
+        "Enable"
+      ],
+      "defaultValue": "Disable",
+      "metadata": {
+        "description": "Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled."
+      }
+    },
+    "timeBasedImmutabilityMode": {
+      "type": "string",
+      "allowedValues": [
+        "Locked",
+        "Unlocked"
+      ],
+      "defaultValue": "Locked",
+      "metadata": {
+        "description": "Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked."
       }
     },
     "enableTelemetry": {
@@ -101,7 +123,9 @@
         "monthlyRetention": "[parameters('monthlyRetention')]",
         "weeklyRetention": "[parameters('weeklyRetention')]",
         "weekOfYear": "[parameters('weekOfYear')]",
-        "yearlyRetention": "[parameters('yearlyRetention')]"
+        "yearlyRetention": "[parameters('yearlyRetention')]",
+        "timeBasedImmutability": "[parameters('timeBasedImmutability')]",
+        "timeBasedImmutabilityMode": "[parameters('timeBasedImmutabilityMode')]"
       }
     }
   },

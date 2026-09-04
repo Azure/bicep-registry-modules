@@ -405,4 +405,10 @@ type longTermBackupRetentionPolicyType = {
 
   @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
+
+  @description('Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.')
+  timeBasedImmutability: 'Disable' | 'Enable'?
+
+  @description('Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.')
+  timeBasedImmutabilityMode: 'Locked' | 'Unlocked'?
 }
