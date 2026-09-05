@@ -466,7 +466,7 @@ module service_loggers 'logger/main.bicep' = [
       apiManagementServiceName: service.name
       credentials: logger.?credentials
       isBuffered: logger.?isBuffered
-      description: logger.?loggerDescription
+      description: logger.?description
       type: logger.?type ?? 'azureMonitor'
       targetResourceId: logger.?targetResourceId
       enableTelemetry: enableReferencedModulesTelemetry
