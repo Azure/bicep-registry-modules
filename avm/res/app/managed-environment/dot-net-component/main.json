@@ -6,16 +6,16 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "544728002505550197"
+      "templateHash": "7676530607928911404"
     },
-    "name": "App ManagedEnvironments Certificates",
-    "description": "This module deploys a App Managed Environment Certificate."
+    "name": "App ManagedEnvironments DotNetComponents",
+    "description": "This module deploys an App Managed Environment .NET Component."
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the file share."
+        "description": "Required. Name of the .NET Component."
       }
     },
     "managedEnvironmentName": {
@@ -24,27 +24,31 @@
         "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
       }
     },
-    "accessMode": {
+    "componentType": {
       "type": "string",
       "metadata": {
-        "description": "Required. The access mode for the storage."
+        "description": "Required. Type of the .NET Component."
       }
     },
-    "kind": {
-      "type": "string",
-      "allowedValues": [
-        "NFS",
-        "SMB"
-      ],
+    "configurations": {
+      "type": "array",
       "metadata": {
-        "description": "Required. Type of storage: \"SMB\" or \"NFS\"."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/configurations"
+        },
+        "description": "Optional. List of .NET Components configuration properties."
+      },
+      "nullable": true
     },
-    "storageAccountName": {
-      "type": "string",
+    "serviceBinds": {
+      "type": "array",
       "metadata": {
-        "description": "Required. Storage account name."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/serviceBinds"
+        },
+        "description": "Optional. List of .NET Components that are bound to the .NET component."
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -59,7 +63,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.app-managedenvironment-storage.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('46d3xbcp.res.app-managedenvironment-dotnetcomp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -78,16 +82,17 @@
     "managedEnvironment": {
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2026-01-01",
+      "apiVersion": "2025-10-02-preview",
       "name": "[parameters('managedEnvironmentName')]"
     },
-    "storage": {
-      "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2026-01-01",
+    "dotNetComponent": {
+      "type": "Microsoft.App/managedEnvironments/dotNetComponents",
+      "apiVersion": "2025-10-02-preview",
       "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
       "properties": {
-        "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",
-        "azureFile": "[if(equals(parameters('kind'), 'SMB'), createObject('accessMode', parameters('accessMode'), 'accountName', parameters('storageAccountName'), 'accountKey', listkeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2025-01-01').keys[0].value, 'shareName', parameters('name')), null())]"
+        "componentType": "[parameters('componentType')]",
+        "configurations": "[parameters('configurations')]",
+        "serviceBinds": "[parameters('serviceBinds')]"
       }
     }
   },
@@ -95,21 +100,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the file share."
+        "description": "The name of the .NET Component."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the file share."
+        "description": "The resource ID of the .NET Component."
       },
-      "value": "[resourceId('Microsoft.App/managedEnvironments/storages', parameters('managedEnvironmentName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.App/managedEnvironments/dotNetComponents', parameters('managedEnvironmentName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the file share was deployed into."
+        "description": "The resource group the .NET Component was deployed into."
       },
       "value": "[resourceGroup().name]"
     }
