@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "7325360733109072268"
+      "templateHash": "5137384448978703811"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -771,7 +771,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+            "description": "Optional. The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
           }
         },
         "terms": {
@@ -4731,7 +4731,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.43.8.12551",
-              "templateHash": "3517063021717500432"
+              "templateHash": "5798349273925493482"
             },
             "name": "API Management Workspace Products",
             "description": "This module deploys a Product in an API Management Workspace."
@@ -4909,9 +4909,9 @@
             },
             "subscriptionsLimit": {
               "type": "int",
-              "defaultValue": 1,
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+                "description": "Optional. The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
               }
             },
             "terms": {
