@@ -38,11 +38,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' existing = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' existing = {
   name: managedEnvironmentName
 }
 
-resource storage 'Microsoft.App/managedEnvironments/storages@2025-10-02-preview' = {
+resource storage 'Microsoft.App/managedEnvironments/storages@2026-01-01' = {
   name: name
   parent: managedEnvironment
   properties: {

@@ -34,14 +34,25 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-paramNested'
   params: {
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     certname: 'dep-${namePrefix}-cert-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    appInsightsComponentName: 'dep-${namePrefix}-appinsights-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
   }
 }
 
@@ -58,10 +69,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       appLogsConfiguration: {
         destination: 'log-analytics'
-        logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+        logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
       location: resourceLocation
-      appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -83,21 +93,13 @@ module testDeployment '../../../main.bicep' = [
       peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.defaultSubnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
-      }
-      openTelemetryConfiguration: {
-        tracesConfiguration: {
-          destinations: ['appInsights']
-        }
-        logsConfiguration: {
-          destinations: ['appInsights']
-        }
       }
       roleAssignments: [
         {
@@ -120,7 +122,6 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-
       storages: [
         {
           kind: 'SMB'
@@ -149,6 +150,90 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          logCategoriesAndGroups: [
+            {
+              category: 'ContainerAppConsoleLogs'
+            }
+            {
+              category: 'ContainerAppSystemLogs'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      privateEndpoints: [
+        {
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          service: 'managedEnvironments'
+          subnetResourceId: nestedDependencies.outputs.peSubnetResourceId
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
+          ipConfigurations: [
+            {
+              name: 'myIPconfig'
+              properties: {
+                groupId: 'managedEnvironments'
+                memberName: 'managedEnvironments'
+                privateIPAddress: '10.0.2.10'
+              }
+            }
+          ]
+          customDnsConfigs: [
+            {
+              fqdn: 'abc.managedEnvironments.com'
+              ipAddresses: [
+                '10.0.2.10'
+              ]
+            }
+          ]
+        }
+        {
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          resourceGroupResourceId: resourceGroup.id
+          subnetResourceId: nestedDependencies.outputs.peSubnetResourceId
+        }
+      ]
     }
   }
 ]

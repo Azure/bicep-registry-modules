@@ -2,15 +2,39 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/app/managed-environment/CHANGELOG.md).
 
-## 0.13.4
+## 0.16.0
 
 ### Changes
 
-- Added `dotNetComponents` parameter and child module `avm/res/app/managed-environment/dot-net-component` to support Aspire Dashboard and other .NET components
+- Upgrade `Microsoft.App/managedEnvironments` to `2026-01-01`
+- Added examples to parameters.
+
+### Breaking Changes
+
+- `workloadProfiles` paramerter: Removed property 'enableFips'
+- removed `openTelemetryConfiguration` parameter
+- removed `appInsightsConnectionString` parameter
+
+## 0.15.0
+
+### Changes
+
+- Added support for Diagnostic Settings & Private Endpoints
+- Upgraded all `avm-common-types` module references to use version `0.7.0`
 
 ### Breaking Changes
 
 - None
+
+## 0.14.0
+
+### Changes
+
+- Fixed `staticIp` output failing to deploy for Managed Environments that do not expose a static IP (e.g., external/non-VNet environments). The output is now nullable and uses safe-dereference (`.?staticIp`).
+
+### Breaking Changes
+
+- `staticIp` output type changed from `string` to `string?` (nullable). Consumers assigning this output to a non-nullable `string` parameter must update to accept `string?`.
 
 ## 0.13.3
 

@@ -5,7 +5,7 @@ metadata description = 'This module deploys a Cassandra View (Materialized View)
 param name string
 
 @description('Optional. Tags of the Cassandra view resource.')
-param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview'>.tags?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview'>.tags?
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -25,15 +25,37 @@ param autoscaleSettingsMaxThroughput int?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' existing = {
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2026-04-01-preview' existing = {
   name: databaseAccountName
 
-  resource cassandraKeyspace 'cassandraKeyspaces@2025-05-01-preview' existing = {
+  resource cassandraKeyspace 'cassandraKeyspaces@2026-04-01-preview' existing = {
     name: cassandraKeyspaceName
   }
 }
 
-var viewOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' })
+var viewOptions = databaseAccount.properties.capacityMode == 'Serverless'
   ? {}
   : {
       autoscaleSettings: throughput == null && autoscaleSettingsMaxThroughput != null
@@ -44,7 +66,7 @@ var viewOptions = contains(databaseAccount.properties.capabilities, { name: 'Ena
       throughput: throughput
     }
 
-resource cassandraView 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2025-05-01-preview' = {
+resource cassandraView 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views@2026-04-01-preview' = {
   name: name
   tags: tags
   location: location

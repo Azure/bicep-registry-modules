@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "16849125625989667544"
+      "version": "0.46.1.21595",
+      "templateHash": "8817254137811788105"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -64,7 +64,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.doctdb-dbacct-sqlroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -84,12 +84,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "sqlRoleAssignment": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), variables('formattedScope'))))]",
       "properties": {
         "principalId": "[parameters('principalId')]",

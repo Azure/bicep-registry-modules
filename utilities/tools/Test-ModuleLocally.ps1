@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 This function helps with testing a module locally
 
@@ -174,6 +174,7 @@ function Test-ModuleLocally {
 
     begin {
         $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName
+        $TemplateFilePath = (Resolve-Path -Path $TemplateFilePath).Path
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         $moduleRoot = Split-Path $TemplateFilePath

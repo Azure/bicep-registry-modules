@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
           name: nestedDependencies.outputs.pairedRegionName
         }
       ]
-      trustPolicyStatus: 'enabled'
+      trustPolicyStatus: 'disabled' // Deprecated in 2028. Ref: https://learn.microsoft.com/en-us/azure/container-registry/container-registry-content-trust-deprecation
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

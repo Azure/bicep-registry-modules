@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "6645342504161409231"
+      "version": "0.46.1.21595",
+      "templateHash": "6947738326636712431"
     },
     "name": "Azure Cosmos DB account tables",
     "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -22,7 +22,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.DocumentDB/databaseAccounts/tables@2025-04-15#properties/tags"
+          "source": "Microsoft.DocumentDB/databaseAccounts/tables@2026-04-01-preview#properties/tags"
         },
         "description": "Optional. Tags for the table."
       },
@@ -47,22 +47,49 @@
       "metadata": {
         "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
       }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('46d3xbcp.res.documentdb-databaseaccounttable.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "table": {
       "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-      "apiVersion": "2025-04-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
+        "options": "[if(equals(reference('databaseAccount').capacityMode, 'Serverless'), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]"
         }

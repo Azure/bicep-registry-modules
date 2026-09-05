@@ -216,6 +216,14 @@ module testDeployment '../../../main.bicep' = {
           resourceLocation: resourceLocation
           datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
         }
+        dataSourceSetInfo: {
+          resourceID: nestedDependencies.outputs.storageAccountResourceId
+          resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: nestedDependencies.outputs.storageAccountResourceId
+          resourceLocation: resourceLocation
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+        }
         policyInfo: {
           policyName: blobBackupPolicyName
           policyParameters: {

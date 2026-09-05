@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using analytical storage'
-metadata description = 'This instance deploys the module with analytical storage enabled.'
+metadata name = 'Using network perimeter'
+metadata description = 'This instance deploys the module with network perimeter.'
 
 // ========== //
 // Parameters //
@@ -12,14 +12,15 @@ metadata description = 'This instance deploys the module with analytical storage
 param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddaanl'
+param serviceShort string = 'dddansp'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+// Using a single zone region for NSP e2e tests.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastus2'
+var enforcedLocation = 'francecentral'
 
 // ============== //
 // General resources
@@ -33,17 +34,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
-  params: {
-    enableAnalyticalStorage: true
-    name: '${namePrefix}-analytical'
-    sqlDatabases: [
-      {
-        name: 'no-containers-specified'
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      networkRestrictions: {
+        publicNetworkAccess: 'SecuredByPerimeter'
       }
-    ]
-    zoneRedundant: false
+    }
   }
-}
+]

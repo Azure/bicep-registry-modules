@@ -17,8 +17,8 @@ param serviceShort string = 'swwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+#disable-next-line no-hardcoded-location // Accounting for capacity constraints
+var enforcedLocation = 'polandcentral'
 
 // ============ //
 // Dependencies //

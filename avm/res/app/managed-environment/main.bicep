@@ -8,34 +8,42 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.tags?
+param tags resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.tags?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointSingleServiceType[]?
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Application Insights connection string.')
-@secure()
-param appInsightsConnectionString string = ''
-
 @description('Optional. The configuration of Dapr component.')
-param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.daprConfiguration?
+param daprConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.daprConfiguration?
 
 @description('Optional. Ingress configuration for the Managed Environment.')
-param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.ingressConfiguration?
+param ingressConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.ingressConfiguration?
 
 @description('Optional. The configuration of Keda component.')
-param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.kedaConfiguration?
+param kedaConfiguration resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.kedaConfiguration?
 
 @description('Optional. Peer authentication settings for the Managed Environment.')
-param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.peerAuthentication?
+param peerAuthentication resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.peerAuthentication?
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
@@ -45,7 +53,7 @@ param daprAIConnectionString string = ''
 @secure()
 param daprAIInstrumentationKey string = ''
 
-@description('Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.16.0.1/28`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
@@ -54,10 +62,10 @@ param infrastructureSubnetResourceId string?
 @description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
 
-@description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.')
+@description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.0/24`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.')
 param platformReservedCidr string = ''
 
-@description('Conditional. An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Conditional. An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.17`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param platformReservedDnsIP string = ''
 
 @description('Optional. Whether or not to encrypt peer traffic.')
@@ -84,15 +92,8 @@ param certificateValue string?
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. The lock settings of the service.')
-param lock lockType?
-
-@description('Optional. Open Telemetry configuration.')
-param openTelemetryConfiguration resourceInput<'Microsoft.App/managedEnvironments@2025-02-02-preview'>.properties.openTelemetryConfiguration?
-
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2025-10-02-preview'>.properties.workloadProfiles?
+param workloadProfiles resourceInput<'Microsoft.App/managedEnvironments@2026-01-01'>.properties.workloadProfiles?
 
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
@@ -178,15 +179,12 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   )
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2026-01-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    appInsightsConfiguration: {
-      connectionString: appInsightsConnectionString
-    }
     daprConfiguration: daprConfiguration
     ingressConfiguration: ingressConfiguration
     kedaConfiguration: kedaConfiguration
@@ -217,7 +215,6 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-10-02-previe
           }
         : null
     }
-    openTelemetryConfiguration: openTelemetryConfiguration
     peerTrafficConfiguration: {
       encryption: {
         enabled: peerTrafficEncryption
@@ -306,7 +303,6 @@ module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(cert
     name: certificate.?name ?? 'cert-${name}'
     managedEnvironmentName: managedEnvironment.name
     certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
-    certificateType: certificate.?certificateType
     certificateValue: certificate.?certificateValue
     certificatePassword: certificate.?certificatePassword
     location: certificate.?location
@@ -314,6 +310,94 @@ module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(cert
     enableTelemetry: enableReferencedModulesTelemetry
   }
 }
+
+module managedEnvironment_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): {
+    name: '${uniqueString(deployment().name, location)}-managedEnvironment-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+              properties: {
+                privateLinkServiceId: managedEnvironment.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'managedEnvironments'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(managedEnvironment.id, '/'))}-${privateEndpoint.?service ?? 'managedEnvironments'}-${index}'
+              properties: {
+                privateLinkServiceId: managedEnvironment.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'managedEnvironments'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+resource managedEnvironment_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: managedEnvironment
+  }
+]
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -333,8 +417,8 @@ output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?princ
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
 
-@description('The IP address of the Managed Environment.')
-output staticIp string = managedEnvironment.properties.staticIp
+@description('The IP address of the Managed Environment. Only populated for internal Managed Environments deployed into a VNet.')
+output staticIp string? = managedEnvironment.properties.?staticIp
 
 @description('The domain verification id for custom domains.')
 output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
@@ -352,9 +436,6 @@ type certificateType = {
   @description('Optional. The name of the certificate.')
   name: string?
 
-  @description('Optional. The type of the certificate.')
-  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
-
   @description('Optional. The value of the certificate. PFX or PEM blob.')
   certificateValue: string?
 
@@ -369,7 +450,7 @@ type certificateType = {
   location: string?
 
   @description('Optional. Tags of the resource.')
-  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2025-10-02-preview'>.tags?
+  tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2026-01-01'>.tags?
 }
 
 @export()
