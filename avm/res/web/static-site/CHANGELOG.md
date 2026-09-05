@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/web/static-site/CHANGELOG.md).
 
+## 0.9.6
+
+### Changes
+
+- Fix deployment error when deploying with a custom private DNS zone
+- Update child modules and API versions
+
+### Breaking Changes
+
+- None
+
 ## 0.9.5
 
 ### Changes
