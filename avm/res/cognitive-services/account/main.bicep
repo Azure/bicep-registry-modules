@@ -60,7 +60,7 @@ param sku string = 'S0'
 param location string = resourceGroup().location
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.0'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
@@ -141,6 +141,9 @@ param allowProjectManagement bool?
 
 @description('Optional. Commitment plans to deploy for the cognitive services account.')
 param commitmentPlans commitmentPlanType[]?
+
+@description('Optional. Enable (or disable) Microsoft Defender for AI for the account. When not set, the Defender for AI settings are left unmanaged by this module.')
+param enableDefenderForAI bool?
 
 var enableReferencedModulesTelemetry = false
 
@@ -388,18 +391,17 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-06-01' = {
 }
 
 @batchSize(1)
-resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/deployments@2025-06-01' = [
-  for (deployment, index) in (deployments ?? []): {
-    parent: cognitiveService
-    name: deployment.?name ?? '${name}-deployments'
-    properties: {
-      model: deployment.model
-      raiPolicyName: deployment.?raiPolicyName
-      versionUpgradeOption: deployment.?versionUpgradeOption
-    }
-    sku: deployment.?sku ?? {
-      name: 'Standard'
-      capacity: 1
+module cognitiveService_deployments 'deployment/main.bicep' = [
+  for (deploymentConfiguration, index) in (deployments ?? []): {
+    name: '${uniqueString(deployment().name, location)}-cognitiveservice-deployment-${index}'
+    params: {
+      accountName: cognitiveService.name
+      name: deploymentConfiguration.?name ?? '${name}-deployments'
+      model: deploymentConfiguration.model
+      sku: deploymentConfiguration.?sku
+      raiPolicyName: deploymentConfiguration.?raiPolicyName
+      versionUpgradeOption: deploymentConfiguration.?versionUpgradeOption
+      modelProviderData: deploymentConfiguration.?modelProviderData
     }
   }
 ]
@@ -423,6 +425,14 @@ resource cognitiveService_commitmentPlans 'Microsoft.CognitiveServices/accounts/
   }
 ]
 
+resource cognitiveService_defenderForAISettings 'Microsoft.CognitiveServices/accounts/defenderForAISettings@2025-06-01' = if (enableDefenderForAI != null) {
+  parent: cognitiveService
+  name: 'Default'
+  properties: {
+    state: enableDefenderForAI! ? 'Enabled' : 'Disabled'
+  }
+}
+
 #disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -433,14 +443,18 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
       metrics: [
-        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+        for group in (diagnosticSetting.?metricCategories ?? (empty(diagnosticSetting.?logCategoriesAndGroups)
+          ? [{ category: 'AllMetrics' }]
+          : [])): {
           category: group.category
           enabled: group.?enabled ?? true
           timeGrain: null
         }
       ]
       logs: [
-        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? (empty(diagnosticSetting.?metricCategories)
+          ? [{ categoryGroup: 'allLogs' }]
+          : [])): {
           categoryGroup: group.?categoryGroup
           category: group.?category
           enabled: group.?enabled ?? true
@@ -608,6 +622,30 @@ output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().ke
 // Definitions      //
 // ================ //
 
+import { modelProviderDataType } from 'deployment/main.bicep'
+
+@export()
+@description('The type for a Cognitive Services account deployment.')
+type deploymentType = {
+  @description('Optional. The name of the Cognitive Services account deployment.')
+  name: string?
+
+  @description('Required. Properties of the deployment model.')
+  model: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.properties.model
+
+  @description('Optional. The resource model definition representing the SKU.')
+  sku: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.sku?
+
+  @description('Optional. The name of the RAI policy.')
+  raiPolicyName: string?
+
+  @description('Optional. The version upgrade option.')
+  versionUpgradeOption: string?
+
+  @description('Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.')
+  modelProviderData: modelProviderDataType?
+}
+
 @export()
 @description('The type for the private endpoint output.')
 type privateEndpointOutputType = {
@@ -631,49 +669,6 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
-}
-
-@export()
-@description('The type for a cognitive services account deployment.')
-type deploymentType = {
-  @description('Optional. Specify the name of cognitive service account deployment.')
-  name: string?
-
-  @description('Required. Properties of Cognitive Services account deployment model.')
-  model: {
-    @description('Required. The name of Cognitive Services account deployment model.')
-    name: string
-
-    @description('Required. The format of Cognitive Services account deployment model.')
-    format: string
-
-    @description('Conditional. The version of Cognitive Services account deployment model. Required if the model does not have a default version.')
-    version: string?
-  }
-
-  @description('Optional. The resource model definition representing SKU.')
-  sku: {
-    @description('Required. The name of the resource model definition representing SKU.')
-    name: string
-
-    @description('Optional. The capacity of the resource model definition representing SKU.')
-    capacity: int?
-
-    @description('Optional. The tier of the resource model definition representing SKU.')
-    tier: string?
-
-    @description('Optional. The size of the resource model definition representing SKU.')
-    size: string?
-
-    @description('Optional. The family of the resource model definition representing SKU.')
-    family: string?
-  }?
-
-  @description('Optional. The name of RAI policy.')
-  raiPolicyName: string?
-
-  @description('Optional. The version upgrade option.')
-  versionUpgradeOption: string?
 }
 
 @export()
