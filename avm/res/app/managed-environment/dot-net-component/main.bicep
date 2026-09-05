@@ -11,10 +11,10 @@ param managedEnvironmentName string
 param componentType string
 
 @description('Optional. List of .NET Components configuration properties.')
-param configurations dotNetComponentConfigurationPropertyType[]?
+param configurations resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.configurations?
 
 @description('Optional. List of .NET Components that are bound to the .NET component.')
-param serviceBinds dotNetComponentServiceBindType[]?
+param serviceBinds resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.serviceBinds?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -60,27 +60,3 @@ output resourceId string = dotNetComponent.id
 
 @description('The resource group the .NET Component was deployed into.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type for a .NET Component configuration property.')
-type dotNetComponentConfigurationPropertyType = {
-  @description('Optional. The name of the property.')
-  propertyName: string?
-
-  @description('Optional. The value of the property.')
-  value: string?
-}
-
-@export()
-@description('The type for a .NET Component service bind.')
-type dotNetComponentServiceBindType = {
-  @description('Optional. Name of the service bind.')
-  name: string?
-
-  @description('Optional. Resource id of the target service.')
-  serviceId: string?
-}

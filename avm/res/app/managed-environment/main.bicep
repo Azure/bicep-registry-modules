@@ -427,7 +427,6 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
-import { dotNetComponentConfigurationPropertyType, dotNetComponentServiceBindType } from 'dot-net-component/main.bicep'
 import { certificateKeyVaultPropertiesType } from 'certificate/main.bicep'
 
 @export()
@@ -463,10 +462,10 @@ type dotNetComponentType = {
   componentType: string
 
   @description('Optional. List of .NET Components configuration properties.')
-  configurations: dotNetComponentConfigurationPropertyType[]?
+  configurations: resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.configurations?
 
   @description('Optional. List of .NET Components that are bound to the .NET component.')
-  serviceBinds: dotNetComponentServiceBindType[]?
+  serviceBinds: resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.serviceBinds?
 }
 
 @export()

@@ -74,27 +74,6 @@ List of .NET Components configuration properties.
 - Required: No
 - Type: array
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`propertyName`](#parameter-configurationspropertyname) | string | The name of the property. |
-| [`value`](#parameter-configurationsvalue) | string | The value of the property. |
-
-### Parameter: `configurations.propertyName`
-
-The name of the property.
-
-- Required: No
-- Type: string
-
-### Parameter: `configurations.value`
-
-The value of the property.
-
-- Required: No
-- Type: string
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -109,27 +88,6 @@ List of .NET Components that are bound to the .NET component.
 
 - Required: No
 - Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-servicebindsname) | string | Name of the service bind. |
-| [`serviceId`](#parameter-servicebindsserviceid) | string | Resource id of the target service. |
-
-### Parameter: `serviceBinds.name`
-
-Name of the service bind.
-
-- Required: No
-- Type: string
-
-### Parameter: `serviceBinds.serviceId`
-
-Resource id of the target service.
-
-- Required: No
-- Type: string
 
 ## Outputs
 

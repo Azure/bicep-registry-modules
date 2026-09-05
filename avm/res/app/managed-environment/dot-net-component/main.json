@@ -6,58 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "10082624388876426735"
+      "templateHash": "7676530607928911404"
     },
     "name": "App ManagedEnvironments DotNetComponents",
     "description": "This module deploys an App Managed Environment .NET Component."
-  },
-  "definitions": {
-    "dotNetComponentConfigurationPropertyType": {
-      "type": "object",
-      "properties": {
-        "propertyName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name of the property."
-          }
-        },
-        "value": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of the property."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a .NET Component configuration property."
-      }
-    },
-    "dotNetComponentServiceBindType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Name of the service bind."
-          }
-        },
-        "serviceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Resource id of the target service."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a .NET Component service bind."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -80,23 +32,23 @@
     },
     "configurations": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/dotNetComponentConfigurationPropertyType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/configurations"
+        },
         "description": "Optional. List of .NET Components configuration properties."
-      }
+      },
+      "nullable": true
     },
     "serviceBinds": {
       "type": "array",
-      "items": {
-        "$ref": "#/definitions/dotNetComponentServiceBindType"
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/serviceBinds"
+        },
         "description": "Optional. List of .NET Components that are bound to the .NET component."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
