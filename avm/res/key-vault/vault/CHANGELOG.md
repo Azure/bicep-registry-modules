@@ -6,6 +6,16 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Update API version to 2026-02-01 before retirement 02/27/2027
+
+### Breaking Changes
+
+- None
+
+## 0.14.0
+
+### Changes
+
 - None
 
 ### Breaking Changes
