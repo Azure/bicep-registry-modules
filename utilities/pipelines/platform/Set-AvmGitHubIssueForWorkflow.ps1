@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Check for failing pipelines and create issues for those, that are failing.
 
@@ -19,6 +19,9 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 
 .PARAMETER IgnoreWorkflows
 Optional. List of workflow names that should be ignored (even if they fail, no ticket will be created). Default is an empty array.
+
+.PARAMETER PipelineFilter
+Optional. Regex used to select AVM module workflows.
 
 .EXAMPLE
 Set-AvmGitHubIssueForWorkflow -Repo 'owner/repo01' -IgnoreWorkflows @('Pipeline 01')
@@ -42,6 +45,9 @@ function Set-AvmGitHubIssueForWorkflow {
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $PipelineFilter = '.*',
 
         [Parameter(Mandatory = $false)]
         [String[]] $IgnoreWorkflows = @(
@@ -160,14 +166,15 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
-                $workflowRun.name -notmatch 'avm.(?:res|ptn|utl)'
-                switch ($matches[0]) {
-                    'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    default {
-                        Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
+                $module = $null
+                if ($workflowRun.name -match '^(avm\.(?:res|ptn|utl))') {
+                    switch ($matches[1]) {
+                        'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                        'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                        'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
                     }
+                } else {
+                    Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
                 }
 
                 # CASE : Platform workflow

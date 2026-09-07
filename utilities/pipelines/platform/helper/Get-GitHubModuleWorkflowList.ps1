@@ -42,7 +42,7 @@ function Get-GitHubModuleWorkflowList {
         [switch] $IncludeDisabled,
 
         [Parameter(Mandatory = $false)]
-        [string] $Filter = 'avm\.(?:res|ptn|utl)'
+        [string] $Filter = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish$)'
     )
 
     $allWorkflows = @()

@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Upgrade `Microsoft.App/managedEnvironments` to `2026-01-01`
+- Added examples to parameters.
 
 ### Breaking Changes
 
