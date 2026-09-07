@@ -21,7 +21,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/certificates)</li></ul> |
 
 ## Parameters
 
@@ -43,8 +43,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | The password of the certificate. |
-| [`certificateType`](#parameter-certificatetype) | string | The type of the certificate. |
-| [`certificateValue`](#parameter-certificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`certificateValue`](#parameter-certificatevalue) | securestring | The value of the certificate. PFX or PEM blob. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -98,26 +97,12 @@ The password of the certificate.
 - Required: No
 - Type: securestring
 
-### Parameter: `certificateType`
-
-The type of the certificate.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ImagePullTrustedCA'
-    'ServerSSLCertificate'
-  ]
-  ```
-
 ### Parameter: `certificateValue`
 
 The value of the certificate. PFX or PEM blob.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `enableTelemetry`
 

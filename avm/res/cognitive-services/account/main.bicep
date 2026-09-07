@@ -401,6 +401,7 @@ module cognitiveService_deployments 'deployment/main.bicep' = [
       sku: deploymentConfiguration.?sku
       raiPolicyName: deploymentConfiguration.?raiPolicyName
       versionUpgradeOption: deploymentConfiguration.?versionUpgradeOption
+      modelProviderData: deploymentConfiguration.?modelProviderData
     }
   }
 ]
@@ -621,6 +622,8 @@ output secondaryKey string? = !disableLocalAuth ? cognitiveService.listKeys().ke
 // Definitions      //
 // ================ //
 
+import { modelProviderDataType } from 'deployment/main.bicep'
+
 @export()
 @description('The type for a Cognitive Services account deployment.')
 type deploymentType = {
@@ -638,6 +641,9 @@ type deploymentType = {
 
   @description('Optional. The version upgrade option.')
   versionUpgradeOption: string?
+
+  @description('Optional. Model-provider attestation required by the Cognitive Services resource provider for partner models such as Anthropic Claude. Documented in [Deploy and use Claude on Microsoft Foundry](https://learn.microsoft.com/en-us/azure/developer/ai/how-to/deploy-claude-foundry#terms-of-use). This property is not yet reflected in the published OpenAPI spec (tracked in [Azure/azure-rest-api-specs#43610](https://github.com/Azure/azure-rest-api-specs/issues/43610)), so its exact shape may still change once the spec is updated.')
+  modelProviderData: modelProviderDataType?
 }
 
 @export()

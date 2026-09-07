@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3507510501751778108"
+      "version": "0.43.8.12551",
+      "templateHash": "11547406171431472478"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway."
@@ -651,7 +651,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Azure Bastion resource."
+        "description": "Required. Name of the Azure NAT gateway resource."
       }
     },
     "availabilityZone": {
@@ -1603,8 +1603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7479808418199292631"
+              "version": "0.43.8.12551",
+              "templateHash": "17363601923642173540"
             }
           },
           "parameters": {
@@ -2121,8 +2121,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7479808418199292631"
+              "version": "0.43.8.12551",
+              "templateHash": "17363601923642173540"
             }
           },
           "parameters": {
@@ -2851,8 +2851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7479808418199292631"
+              "version": "0.43.8.12551",
+              "templateHash": "17363601923642173540"
             }
           },
           "parameters": {
@@ -3369,8 +3369,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "7479808418199292631"
+              "version": "0.43.8.12551",
+              "templateHash": "17363601923642173540"
             }
           },
           "parameters": {

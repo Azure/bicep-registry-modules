@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Check for failing pipelines and create issues for those, that are failing.
 
@@ -19,6 +19,9 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 
 .PARAMETER IgnoreWorkflows
 Optional. List of workflow names that should be ignored (even if they fail, no ticket will be created). Default is an empty array.
+
+.PARAMETER PipelineFilter
+Optional. Regex used to select AVM module workflows.
 
 .EXAMPLE
 Set-AvmGitHubIssueForWorkflow -Repo 'owner/repo01' -IgnoreWorkflows @('Pipeline 01')
@@ -42,6 +45,9 @@ function Set-AvmGitHubIssueForWorkflow {
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $PipelineFilter = '.*',
 
         [Parameter(Mandatory = $false)]
         [String[]] $IgnoreWorkflows = @(
@@ -160,14 +166,15 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
-                $workflowRun.name -notmatch 'avm.(?:res|ptn|utl)'
-                switch ($matches[0]) {
-                    'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    default {
-                        Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
+                $module = $null
+                if ($workflowRun.name -match '^(avm\.(?:res|ptn|utl))') {
+                    switch ($matches[1]) {
+                        'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                        'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                        'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
                     }
+                } else {
+                    Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
                 }
 
                 # CASE : Platform workflow
@@ -179,7 +186,7 @@ function Set-AvmGitHubIssueForWorkflow {
                     }
                     $platformIssueComment = @'
 > [!IMPORTANT]
-> This issue was created for a platform workflow. The maintainer team @Azure/avm-core-team-technical-bicep should investigate and mitigate the reason.
+> This issue was created for a platform workflow. The maintainer team @Azure/azure-verified-modules-tooling-contributors should investigate and mitigate the reason.
 '@
                     if ($PSCmdlet.ShouldProcess("Comment for maintainers to issue [$issueName]", 'Add')) {
                         $userCommentUrl = gh issue comment $issueUrl --body $platformIssueComment --repo $repo
@@ -203,7 +210,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 $taggingComment = $moduleIsOrphaned ? @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
-> @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
+> @Azure/azure-verified-modules-tooling-contributors, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@ : @"
 > [!IMPORTANT]
 > @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.

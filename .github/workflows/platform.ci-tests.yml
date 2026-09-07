@@ -31,7 +31,7 @@ jobs:
     if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: "Set input parameters to output variables"
@@ -52,7 +52,7 @@ jobs:
       - job_initialize_pipeline
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
 
@@ -61,7 +61,7 @@ jobs:
 
       - name: Run CI tests
         id: pester_run_step
-        uses: azure/powershell@v2
+        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
         with:
           inlineScript: |
             # Load used functions
