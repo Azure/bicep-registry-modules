@@ -2,6 +2,23 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/conversation-knowledge-mining/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Restructured `main.bicep` into a pure orchestrator pattern: all resources are now deployed via local wrapper modules under `modules/{ai,compute,data,identity,monitoring,networking}/`, each wrapping exactly one published `avm/res/...` module, replacing the previous flat `modules/*.bicep` files.
+- Added parameters `deployCosmos` (Cosmos DB is now optional; SQL is the primary database), `azureAdTenantId`, `azureAdClientId`, `adminApiKey`, `existingLogAnalyticsWorkspaceId`, `existingFoundryProjectResourceId`, `deployingUserPrincipalType`, `containerRegistryName`, `appServicePlanSku`, and `kind`.
+- Backend and frontend App Services now use a system-assigned managed identity instead of a user-assigned identity.
+- SQL AAD admin is now permanently set to the deploying principal, relying on the solution accelerator's post-provision `setup-sql-roles.ps1` script to configure additional access.
+- Deployer identity is now granted broad data-plane role assignments (Search Index Data Contributor, Storage Blob Data Contributor, Cognitive Services User, ACR Push, SQL AAD admin) directly in the template.
+- Renamed all outputs from camelCase to `ALL_CAPS` (e.g. `azureOpenAIEndpoint` → `AZURE_OPENAI_ENDPOINT`) to align with the solution accelerator's environment-variable naming convention.
+
+### Breaking Changes
+
+- Renamed parameter `aiServiceLocation` to `azureAiServiceLocation`.
+- Removed parameters `usecase`, `secondaryLocation`, `cosmosDbReplicaLocation`, `azureContentUnderstandingApiVersion`, `azureOpenAIApiVersion`, and `azureAiAgentApiVersion`.
+- Renamed all outputs from camelCase to `ALL_CAPS` (see Changes above) — any consumers referencing the old output names must be updated.
+
 ## 0.5.0
 
 ### Changes

@@ -32,7 +32,7 @@ configuration:
       #   actions:
       #     - mentionUsers:
       #         mentionees:
-      #           - Azure/avm-core-team-technical-bicep
+      #           - Azure/azure-verified-modules-tooling-contributors
       #         replyTemplate: |
       #           > [!WARNING]
       #           > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
@@ -65,7 +65,7 @@ configuration:
       #   actions:
       #     - mentionUsers:
       #         mentionees:
-      #           - Azure/avm-core-team-technical-bicep
+      #           - Azure/azure-verified-modules-tooling-contributors
       #         replyTemplate: |
       #           > [!WARNING]
       #           > **Tagging the AVM Core Team (${mentionees}) due to a module owner or contributor having not responded to this issue within 3 business days. The AVM Core Team will attempt to contact the module owners/contributors directly.**
@@ -101,7 +101,7 @@ configuration:
       #   actions:
       #     - mentionUsers:
       #         mentionees:
-      #           - Azure/avm-core-team-technical-bicep
+      #           - Azure/azure-verified-modules-tooling-contributors
       #         replyTemplate: |
       #           > [!CAUTION]
       #           > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**
@@ -134,7 +134,7 @@ configuration:
       #   actions:
       #     - mentionUsers:
       #         mentionees:
-      #           - Azure/avm-core-team-technical-bicep
+      #           - Azure/azure-verified-modules-tooling-contributors
       #         replyTemplate: |
       #           > [!CAUTION]
       #           > **This issue requires the AVM Core Team's (${mentionees}) immediate attention as  it hasn't been responded to within 6 business days.**

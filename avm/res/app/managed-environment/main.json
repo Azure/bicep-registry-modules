@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.45.6.27763",
-      "templateHash": "7601733008905202799"
+      "version": "0.46.1.21595",
+      "templateHash": "2511855123089425316"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -20,17 +20,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The name of the certificate."
-          }
-        },
-        "certificateType": {
-          "type": "string",
-          "allowedValues": [
-            "ImagePullTrustedCA",
-            "ServerSSLCertificate"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The type of the certificate."
           }
         },
         "certificateValue": {
@@ -65,7 +54,7 @@
           "type": "object",
           "metadata": {
             "__bicep_resource_derived_type!": {
-              "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+              "source": "Microsoft.App/managedEnvironments/certificates@2026-01-01#properties/tags"
             },
             "description": "Optional. Tags of the resource."
           },
@@ -734,7 +723,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/tags"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -791,18 +780,11 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "appInsightsConnectionString": {
-      "type": "securestring",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Application Insights connection string."
-      }
-    },
     "daprConfiguration": {
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/daprConfiguration"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/properties/properties/daprConfiguration"
         },
         "description": "Optional. The configuration of Dapr component."
       },
@@ -812,7 +794,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/ingressConfiguration"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/properties/properties/ingressConfiguration"
         },
         "description": "Optional. Ingress configuration for the Managed Environment."
       },
@@ -822,7 +804,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/kedaConfiguration"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/properties/properties/kedaConfiguration"
         },
         "description": "Optional. The configuration of Keda component."
       },
@@ -832,7 +814,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/peerAuthentication"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/properties/properties/peerAuthentication"
         },
         "description": "Optional. Peer authentication settings for the Managed Environment."
       },
@@ -856,7 +838,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+        "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.16.0.1/28`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "infrastructureSubnetResourceId": {
@@ -877,14 +859,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
+        "description": "Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.0/24`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant."
       }
     },
     "platformReservedDnsIP": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
+        "description": "Conditional. An IP address from the IP range defined by \"platformReservedCidr\" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.17`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "peerTrafficEncryption": {
@@ -933,21 +915,11 @@
         "description": "Optional. DNS suffix for the environment domain."
       }
     },
-    "openTelemetryConfiguration": {
-      "type": "object",
-      "metadata": {
-        "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-02-02-preview#properties/properties/properties/openTelemetryConfiguration"
-        },
-        "description": "Optional. Open Telemetry configuration."
-      },
-      "nullable": true
-    },
     "workloadProfiles": {
       "type": "array",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments@2025-10-02-preview#properties/properties/properties/workloadProfiles"
+          "source": "Microsoft.App/managedEnvironments@2026-01-01#properties/properties/properties/workloadProfiles"
         },
         "description": "Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant."
       },
@@ -1036,15 +1008,12 @@
     },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2025-10-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "appInsightsConfiguration": {
-          "connectionString": "[parameters('appInsightsConnectionString')]"
-        },
         "daprConfiguration": "[parameters('daprConfiguration')]",
         "ingressConfiguration": "[parameters('ingressConfiguration')]",
         "kedaConfiguration": "[parameters('kedaConfiguration')]",
@@ -1058,7 +1027,6 @@
           "dnsSuffix": "[parameters('dnsSuffix')]",
           "certificateKeyVaultProperties": "[if(not(empty(tryGet(parameters('certificate'), 'certificateKeyVaultProperties'))), createObject('identity', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'identityResourceId'), 'keyVaultUrl', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'keyVaultUrl')), null())]"
         },
-        "openTelemetryConfiguration": "[parameters('openTelemetryConfiguration')]",
         "peerTrafficConfiguration": {
           "encryption": {
             "enabled": "[parameters('peerTrafficEncryption')]"
@@ -1197,8 +1165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "16840471117835457397"
+              "version": "0.46.1.21595",
+              "templateHash": "14989290710577039100"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1270,12 +1238,12 @@
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "storage": {
               "type": "Microsoft.App/managedEnvironments/storages",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "properties": {
                 "nfsAzureFile": "[if(equals(parameters('kind'), 'NFS'), createObject('accessMode', parameters('accessMode'), 'server', format('{0}.file.{1}', parameters('storageAccountName'), environment().suffixes.storage), 'shareName', format('/{0}/{1}', parameters('storageAccountName'), parameters('name'))), null())]",
@@ -1332,9 +1300,6 @@
           "certificateKeyVaultProperties": {
             "value": "[tryGet(parameters('certificate'), 'certificateKeyVaultProperties')]"
           },
-          "certificateType": {
-            "value": "[tryGet(parameters('certificate'), 'certificateType')]"
-          },
           "certificateValue": {
             "value": "[tryGet(parameters('certificate'), 'certificateValue')]"
           },
@@ -1358,8 +1323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "10666842197311488093"
+              "version": "0.46.1.21595",
+              "templateHash": "4830934724584315790"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1414,19 +1379,8 @@
                 "description": "Optional. A key vault reference to the certificate to use for the custom domain."
               }
             },
-            "certificateType": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "ServerSSLCertificate",
-                "ImagePullTrustedCA"
-              ],
-              "metadata": {
-                "description": "Optional. The type of the certificate."
-              }
-            },
             "certificateValue": {
-              "type": "string",
+              "type": "securestring",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The value of the certificate. PFX or PEM blob."
@@ -1443,7 +1397,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+                  "source": "Microsoft.App/managedEnvironments/certificates@2026-01-01#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -1481,17 +1435,16 @@
             "managedEnvironment": {
               "existing": true,
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[parameters('managedEnvironmentName')]"
             },
             "managedEnvironmentCertificate": {
               "type": "Microsoft.App/managedEnvironments/certificates",
-              "apiVersion": "2025-10-02-preview",
+              "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
                 "certificateKeyVaultProperties": "[if(not(empty(parameters('certificateKeyVaultProperties'))), createObject('identity', parameters('certificateKeyVaultProperties').identityResourceId, 'keyVaultUrl', parameters('certificateKeyVaultProperties').keyVaultUrl), null())]",
-                "certificateType": "[parameters('certificateType')]",
                 "password": "[parameters('certificatePassword')]",
                 "value": "[parameters('certificateValue')]"
               },
@@ -2243,7 +2196,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedEnvironment', '2025-10-02-preview', 'full').location]"
+      "value": "[reference('managedEnvironment', '2026-01-01', 'full').location]"
     },
     "name": {
       "type": "string",
@@ -2265,7 +2218,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedEnvironment', '2025-10-02-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedEnvironment', '2026-01-01', 'full'), 'identity'), 'principalId')]"
     },
     "defaultDomain": {
       "type": "string",
