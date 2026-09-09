@@ -65,6 +65,19 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      - name: Get test subscriptions
+        id: get-test-subscriptions
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
+          Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
+          Write-Output ("subscriptions={0}" -f (ConvertTo-Json -InputObject $subscriptions -Compress)) >> $env:GITHUB_OUTPUT
+
       # [Azure login] task(s)
       # ------------------------------
       # Supports both OIDC and service principal with secret
@@ -74,25 +87,29 @@ jobs:
         with:
           client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
           tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
-          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
       - name: Remove deployments
         uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
+        env:
+          TEST_SUBSCRIPTIONS: ${{ steps.get-test-subscriptions.outputs.subscriptions }}
         with:
           inlineScript: |
             # Load used functions
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-SubscriptionDeploymentHistory.ps1')
 
-            $functionInput = @{
-              SubscriptionId               = '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
-              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            foreach ($subscription in ($env:TEST_SUBSCRIPTIONS | ConvertFrom-Json)) {
+              $functionInput = @{
+                SubscriptionId               = $subscription.id
+                maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+              }
+
+              Write-Verbose "Invoke task with" -Verbose
+              Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+              Clear-SubscriptionDeploymentHistory @functionInput
             }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Clear-SubscriptionDeploymentHistory @functionInput
           azPSVersion: "latest"
 
   job_cleanup_managementGroup_deployments:
@@ -113,6 +130,18 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      - name: Get test subscriptions
+        id: get-test-subscriptions
+        shell: pwsh
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
+          Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
+
       # [Azure login] task(s)
       # ------------------------------
       # Supports both OIDC and service principal with secret
@@ -122,7 +151,7 @@ jobs:
         with:
           client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
           tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
-          subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
       - name: Remove deployments
