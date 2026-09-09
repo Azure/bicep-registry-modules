@@ -2140,26 +2140,22 @@ Describe 'Governance tests' {
         }
     }
 
-    It '[<moduleFolderName>] Owning team should be specified correctly in CODEWONERS file.' -TestCases $governanceTestCases {
+    It '[<moduleFolderName>] Shared module and tooling ownership should be specified correctly in CODEOWNERS file.' -TestCases $governanceTestCases {
 
         param(
-            [string] $relativeModulePath,
             [string] $repoRootPath
         )
 
         $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
-        $codeOwnersContent = Get-Content $codeownersFilePath
+        $ownershipRules = @(Get-Content $codeownersFilePath | ForEach-Object { $_.Trim() -replace '\s+', ' ' } | Where-Object { $_ -and -not $_.StartsWith('#') })
+        $expectedRules = @(
+            '* @Azure/azure-verified-modules-tooling-contributors'
+            '/avm/ @Azure/azure-verified-modules-module-contributors'
+            '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
+            '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
+        )
 
-        $formattedEntry = $relativeModulePath -replace '\\', '\/'
-        $moduleLine = $codeOwnersContent | Where-Object { $_ -match "^\s*\/$formattedEntry\/" }
-
-        $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/azure-verified-modules-module-owners' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
-
-        # Line should exist
-        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
-
-        # Line should be correct
-        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file).'
+        $ownershipRules | Should -Be $expectedRules -Because 'module ownership must use the shared contributors team, with tooling ownership preserved for the repository default, core-team tests, and deployment exclusions.'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
