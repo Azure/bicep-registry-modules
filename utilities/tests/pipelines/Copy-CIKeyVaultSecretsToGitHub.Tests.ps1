@@ -135,6 +135,16 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         $result.Kind | Should -Be @('Secret', 'Secret')
     }
 
+    It 'Imports CI-fooBar as the readable CI_FOO_BAR name by default' {
+        $script:sources = @(New-TestSecretMetadata -Name 'CI-fooBar')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Confirm:$false
+
+        $result.DestinationName | Should -BeExactly 'CI_FOO_BAR'
+        $result.Status | Should -Be 'Copied'
+        ($script:writes[0].Arguments -join '|') | Should -Be 'secret|set|CI_FOO_BAR|--repo|owner/repo'
+    }
+
     It 'Copies only reviewed source names, ignoring unselected invalid legacy names' {
         $script:sources += @(
             New-TestSecretMetadata -Name 'CI-location'
@@ -313,8 +323,50 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         }
     }
 
-    It 'Blocks multiple same-kind aliases even with explicit overwrite' {
-        $script:secretNames = @('CI_CLIENTSECRET', 'CI__CLIENTSECRET')
+    It 'Selects CI_ over CI__ for existing <kind> aliases [reverse: <reverse>]' -ForEach @(
+        @{ kind = 'Secret'; reverse = $false; variables = @() }
+        @{ kind = 'Secret'; reverse = $true; variables = @() }
+        @{ kind = 'Variable'; reverse = $false; variables = @('CI_CLIENT_SECRET') }
+        @{ kind = 'Variable'; reverse = $true; variables = @('CI_CLIENT_SECRET') }
+    ) {
+        $aliases = $reverse ? @('CI__CLIENTSECRET', 'CI_CLIENT_SECRET') : @('CI_CLIENT_SECRET', 'CI__CLIENTSECRET')
+        if ($kind -eq 'Secret') {
+            $script:secretNames = $aliases
+        } else {
+            $script:variableNames = $aliases
+        }
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -VariableName $variables -Apply -Confirm:$false
+
+        $result.DestinationName | Should -BeExactly 'CI_CLIENT_SECRET'
+        $result.Status | Should -Be 'SkippedExisting'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+        Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
+    }
+
+    It 'Overwrites only the preferred CI_ <kind> alias when explicitly approved' -ForEach @(
+        @{ kind = 'Secret'; variables = @() }
+        @{ kind = 'Variable'; variables = @('CI_CLIENT_SECRET') }
+    ) {
+        if ($kind -eq 'Secret') {
+            $script:secretNames = @('CI__CLIENTSECRET', 'CI_CLIENT_SECRET')
+        } else {
+            $script:variableNames = @('CI_CLIENT_SECRET', 'CI__CLIENTSECRET')
+        }
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -VariableName $variables -Apply -Overwrite -Confirm:$false
+
+        $result.DestinationName | Should -BeExactly 'CI_CLIENT_SECRET'
+        $result.Status | Should -Be 'Copied'
+        $script:writes.Count | Should -Be 1
+        $script:writes[0].Arguments[2] | Should -BeExactly 'CI_CLIENT_SECRET'
+        Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter {
+            $ArgumentList[1] -eq 'set' -and $ArgumentList[2] -eq 'CI__CLIENTSECRET'
+        }
+    }
+
+    It 'Blocks multiple aliases within the winning prefix even with explicit overwrite' {
+        $script:secretNames = @('CI_CLIENTSECRET', 'CI_CLIENT_SECRET', 'CI__CLIENTSECRET')
 
         $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
 
@@ -325,12 +377,33 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
 
     It 'Blocks new ambiguity found after the preview' {
         $script:secretNames = @('CI_CLIENTSECRET')
-        $script:lateSecretNames = @('CI__CLIENTSECRET')
+        $script:lateSecretNames = @('CI_CLIENT_SECRET')
 
         $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
 
         $result.Status | Should -Be 'BlockedByAmbiguousAliases'
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+    }
+
+    It 'Keeps the approved CI_ destination when a lower-priority exact alias appears' {
+        $script:secretNames = @('CI_CLIENT_SECRET')
+        $script:lateSecretNames = @('CI__CLIENTSECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'Copied'
+        $script:writes[0].Arguments[2] | Should -BeExactly 'CI_CLIENT_SECRET'
+    }
+
+    It 'Blocks a new higher-priority alias instead of retargeting an approved exact alias' {
+        $script:secretNames = @('CI__CLIENTSECRET')
+        $script:lateSecretNames = @('CI_CLIENT_SECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedChangedDestination'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+        Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
     }
 
     It 'Does not retarget an approved copy when a different alias appears' {

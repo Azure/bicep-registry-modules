@@ -140,6 +140,9 @@ function Get-CIGitHubConfigurationMap {
             $names[$parameterName] += $entry.name
         }
     }
+    foreach ($parameterName in @($names.psbase.Keys)) {
+        $names[$parameterName] = @(Select-CIParameterAlias -Name $names[$parameterName])
+    }
     return $names
 }
 #endregion
@@ -156,8 +159,9 @@ literal underscores and avoids the reserved CI_KEY_VAULT_NAME selector.
 Values remain secrets unless explicitly selected using VariableName. Variables are NON-SENSITIVE.
 Dry run is the default. Apply and per-entry ShouldProcess approval are required before reading values.
 Existing aliases are skipped unless Overwrite is supplied, in which case their names are reused.
-Ambiguous aliases and opposite-kind collisions are always blocked; resolve the classification or
-destination configuration explicitly before retrying.
+Within the selected kind, CI_ takes precedence over CI__ for the same parameter.
+Multiple aliases in the winning prefix and opposite-kind collisions are always blocked;
+resolve the classification or destination configuration explicitly before retrying.
 Never deletes source or destination entries, writes value files, or prints values.
 
 Only the selected repository or environment scope is inventoried; GitHub resolves inherited scopes
@@ -261,6 +265,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
 
     . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'ConvertFrom-CIParameterName.ps1')
     . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'ConvertTo-CIParameterName.ps1')
+    . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'Select-CIParameterAlias.ps1')
 
     try {
         $ghPath = (Get-Command -Name gh -CommandType Application -ErrorAction Stop).Path

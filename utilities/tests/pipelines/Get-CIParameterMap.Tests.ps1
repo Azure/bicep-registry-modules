@@ -90,9 +90,72 @@ Describe 'Get-CIParameterMap' {
         ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'secret'
     }
 
+    It 'Prefers readable <source> aliases regardless of order [reverse: <reverse>]' -ForEach @(
+        @{ source = 'Variables'; reverse = $false }
+        @{ source = 'Variables'; reverse = $true }
+        @{ source = 'Secrets'; reverse = $false }
+        @{ source = 'Secrets'; reverse = $true }
+    ) {
+        $entries = $reverse ? [ordered]@{
+            CI__ADMINMEMBERSSECRET = 'exact'
+            CI_ADMIN_MEMBERS_SECRET = 'readable'
+            CI__FOO = 'exact-foo'
+            CI_FOO = 'readable-foo'
+        } : [ordered]@{
+            CI_ADMIN_MEMBERS_SECRET = 'readable'
+            CI__ADMINMEMBERSSECRET = 'exact'
+            CI_FOO = 'readable-foo'
+            CI__FOO = 'exact-foo'
+        }
+        $arguments = @{
+            TemplateParameters = @{
+                adminMembersSecret = @{ type = 'secureString' }
+                foo = @{ type = 'secureString' }
+            }
+            "GitHub$source" = $entries | ConvertTo-Json -Compress
+        }
+
+        $result = Get-CIParameterMap @arguments
+
+        ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'readable'
+        ConvertFrom-SecureString -SecureString $result.foo -AsPlainText | Should -Be 'readable-foo'
+    }
+
+    It 'Keeps an empty winning CI_ <source> value instead of falling back to CI__ or Key Vault' -ForEach @(
+        @{ source = 'Variables' }
+        @{ source = 'Secrets' }
+    ) {
+        $arguments = @{
+            TemplateParameters = @{ foo = @{ type = 'secureString' } }
+            KeyVaultName = 'test-vault'
+            "GitHub$source" = '{"CI__FOO":"exact","CI_FOO":""}'
+        }
+
+        $result = Get-CIParameterMap @arguments
+
+        $result.foo | Should -BeOfType [securestring]
+        $result.foo.Length | Should -Be 0
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Applies source precedence before prefix precedence' {
+        $result = Get-CIParameterMap -TemplateParameters @{ foo = @{ type = 'secureString' } } `
+            -GitHubVariables '{"CI_FOO":"readable-variable","CI__FOO":"exact-variable"}' `
+            -GitHubSecrets '{"CI__FOO":"exact-secret","CI_FOO":"readable-secret"}'
+
+        ConvertFrom-SecureString -SecureString $result.foo -AsPlainText | Should -Be 'readable-secret'
+    }
+
+    It 'Does not inspect the value of a shadowed exact alias' {
+        $result = Get-CIParameterMap -TemplateParameters @{ foo = @{ type = 'secureString' } } `
+            -GitHubSecrets '{"CI__FOO":null,"CI_FOO":"readable"}'
+
+        ConvertFrom-SecureString -SecureString $result.foo -AsPlainText | Should -Be 'readable'
+    }
+
     It 'Rejects multiple <source> aliases for the same parameter before accessing Key Vault' -ForEach @(
         @{ source = 'Variables'; names = @('CI_ADMIN_MEMBERS_SECRET', 'CI_ADMINMEMBERSSECRET') }
-        @{ source = 'Secrets'; names = @('CI__ADMINMEMBERSSECRET', 'CI_ADMIN_MEMBERS_SECRET') }
+        @{ source = 'Secrets'; names = @('CI_ADMIN_MEMBERS_SECRET', 'CI_ADMINMEMBERSSECRET') }
     ) {
         $arguments = @{
             TemplateParameters = $templateParameters
@@ -102,6 +165,13 @@ Describe 'Get-CIParameterMap' {
 
         { Get-CIParameterMap @arguments } | Should -Throw "*Multiple GitHub $source names*map to parameter*"
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Does not use an exact alias to resolve two competing readable aliases' {
+        {
+            Get-CIParameterMap -TemplateParameters $templateParameters `
+                -GitHubSecrets '{"CI__ADMINMEMBERSSECRET":"exact","CI_ADMIN_MEMBERS_SECRET":"one","CI_ADMINMEMBERSSECRET":"two"}'
+        } | Should -Throw '*Multiple GitHub Secrets names*preferred prefix*'
     }
 
     It 'Ignores conflicting aliases that do not target the current template' {
@@ -352,6 +422,7 @@ Describe 'Get-CIParameterMap' {
 
         It 'Formats <parameterName> without losing its identity' -ForEach @(
             @{ parameterName = 'adminMembersSecret'; expected = 'CI_ADMIN_MEMBERS_SECRET' }
+            @{ parameterName = 'fooBar'; expected = 'CI_FOO_BAR' }
             @{ parameterName = 'managedHSMResourceId'; expected = 'CI_MANAGED_HSM_RESOURCE_ID' }
             @{ parameterName = 'clientID'; expected = 'CI_CLIENT_ID' }
             @{ parameterName = 'tls1Version'; expected = 'CI_TLS1_VERSION' }

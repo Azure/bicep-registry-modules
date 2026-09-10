@@ -6,7 +6,8 @@ Resolve additional test parameters from GitHub Actions and the legacy CI Key Vau
 Matches GitHub names without regard to case: CI_ removes separator underscores,
 while CI__ preserves literal underscores. Key Vault CI- names remain literal.
 GitHub secrets override variables; Key Vault only supplies missing parameters.
-Aliases within the same GitHub source must not target the same template parameter.
+Within each GitHub source, CI_ takes precedence over CI__. Multiple aliases in the
+winning prefix must not target the same template parameter.
 GitHub values are converted to the declared ARM parameter types.
 
 .PARAMETER TemplateParameters
@@ -47,6 +48,7 @@ function Get-CIParameterMap {
     )
 
     . (Join-Path $PSScriptRoot 'ConvertFrom-CIParameterName.ps1')
+    . (Join-Path $PSScriptRoot 'Select-CIParameterAlias.ps1')
 
     $parameterNames = @{}
     # Parameter names can shadow dictionary properties such as Keys and Count.
@@ -82,12 +84,20 @@ function Get-CIParameterMap {
                 continue
             }
             $parameterName = $parameterNames[$name]
-            if ($source.Values.ContainsKey($parameterName)) {
-                throw "Multiple GitHub $sourceName names [$($source.Values[$parameterName].Name)] and [$($entry.Key)] map to parameter [$parameterName]."
+            if (-not $source.Values.ContainsKey($parameterName)) {
+                $source.Values[$parameterName] = @()
+            }
+            $source.Values[$parameterName] += $entry.Key
+        }
+
+        foreach ($parameterName in @($source.Values.psbase.Keys)) {
+            $names = @(Select-CIParameterAlias -Name $source.Values[$parameterName])
+            if ($names.Count -gt 1) {
+                throw "Multiple GitHub $sourceName names [$($names -join ', ')] in the preferred prefix map to parameter [$parameterName]."
             }
             $source.Values[$parameterName] = @{
-                Name  = $entry.Key
-                Value = $entry.Value
+                Name  = $names[0]
+                Value = $values[$names[0]]
             }
         }
     }
