@@ -17,6 +17,8 @@
 ##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'                                |
 ##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'            |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
+##   | subscriptionSelectionSeed  | true     | ''      | Shared seed for shuffling the test subscription pool  | '12345'                                                                    |
+##   | subscriptionJobIndex       | false    | '0'     | Matrix job index for round-robin subscription selection | '0'                                                                      |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
@@ -38,11 +40,26 @@ inputs:
   deploymentMetadataLocation:
     description: "The location to store the deployment metadata"
     required: true
+  subscriptionSelectionSeed:
+    description: "Shared random seed for shuffling TEST_SUBSCRIPTION_IDS across the test matrix"
+    required: true
+  subscriptionJobIndex:
+    description: "Matrix job index used to assign a subscription from the shuffled pool"
+    default: "0"
+    required: false
   managementGroupId:
     description: "The management group ID to deploy to"
     required: false
   customTokens:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
+    required: false
+  githubVariables:
+    description: "Resolved GitHub Actions vars context as JSON. CI_ ignores underscores; CI__ preserves literal spelling."
+    default: "{}"
+    required: false
+  githubSecrets:
+    description: "Resolved GitHub Actions secrets context as JSON. CI_ or CI__ secrets override variables for the same parameter."
+    default: "{}"
     required: false
   removeDeployment:
     description: 'Set "true" to set module up for removal'
@@ -86,12 +103,45 @@ runs:
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
           }
 
+    - name: "Warn about CI Key Vault deprecation"
+      if: env.skip_deployment_ci == 'false' && env.CI_KEY_VAULT_NAME != ''
+      shell: pwsh
+      run: |
+        Write-Output '::warning title=CI Key Vault deprecation::CI_KEY_VAULT_NAME support may be removed in a future release. Use CI_-prefixed GitHub Actions secrets or variables instead. GitHub secrets override variables, and both override Key Vault values.'
+
+    - name: "Select test subscription"
+      id: get-test-subscription
+      if: env.skip_deployment_ci == 'false'
+      shell: pwsh
+      env:
+        SUBSCRIPTION_SELECTION_SEED: ${{ inputs.subscriptionSelectionSeed }}
+        SUBSCRIPTION_JOB_INDEX: ${{ inputs.subscriptionJobIndex }}
+      run: |
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+
+        $functionInput = @{
+          TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
+          FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
+          RandomSeed             = [int]::Parse($env:SUBSCRIPTION_SELECTION_SEED)
+        }
+        $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
+        $jobIndex = [int]::Parse($env:SUBSCRIPTION_JOB_INDEX)
+        if ($jobIndex -lt 0) {
+          throw 'The subscription job index must not be negative.'
+        }
+        $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
+
+        Write-Output ("subscriptionId={0}" -f $subscription.id) >> $env:GITHUB_OUTPUT
+        Write-Verbose ("Using test subscription [{0}] from a pool of [{1}]." -f $subscription.name, $subscriptions.Count) -Verbose
+
     # [Azure login] task(s)
     # ------------------------------
     - name: "Set OIDC temporary exception"
       id: set-oidc-exception
       if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -116,6 +166,14 @@ runs:
             Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
           }
 
+          if ($oidcException -eq 'true') {
+            $credentials = ConvertFrom-Json -InputObject $env:AZURE_CREDENTIALS -AsHashtable -ErrorAction Stop
+            $credentials['subscriptionId'] = $env:SELECTED_SUBSCRIPTION_ID
+            $credentialsJson = ConvertTo-Json -InputObject $credentials -Depth 10 -Compress
+            Write-Output "::add-mask::$credentialsJson"
+            Write-Output "azureCredentials=$credentialsJson" >> $env:GITHUB_OUTPUT
+          }
+
           Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
           Write-Output '::endgroup::'
 
@@ -127,7 +185,7 @@ runs:
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
-        subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+        subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
         enable-AzPSSession: true
 
     # Exception: module requires login by using service principal with secret
@@ -136,7 +194,7 @@ runs:
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
+        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
 
     # [Set Deployment Location] task(s)
@@ -209,7 +267,7 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
+            subscriptionId    = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
@@ -245,6 +303,9 @@ runs:
     - name: "Validate template file"
       if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
+        AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -253,11 +314,12 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
 
           # Prepare general parameters
           # --------------------------
           # Fetching parameters
-          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
+          $subscriptionId = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -266,10 +328,14 @@ runs:
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
             $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Failed to compile the test template.'
+            }
           } else {
-            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+            $moduleTemplateContent = Get-Content $moduleTestFilePath -Raw | ConvertFrom-Json -AsHashtable
           }
+          $moduleTemplateParameters = $moduleTemplateContent.parameters ?? @{}
+          $moduleTemplatePossibleParameters = $moduleTemplateParameters.psbase.Keys
 
           # ----------------- #
           # Invoke validation #
@@ -295,26 +361,22 @@ runs:
             }
           }
 
-          # Fetch & add custom secrets, if any
-          # -----------------------------------
-          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
-          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
-            # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
-
-            foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
-              if($moduleTemplatePossibleParameters -contains $formattedName) {
-                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-                $functionInput.AdditionalParameters += @{
-                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
-                }
-              }
-            }
+          $ciParameterInput = @{
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
+          }
+          $ciParameters = Get-CIParameterMap @ciParameterInput
+          foreach ($parameter in $ciParameters.GetEnumerator()) {
+            $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }
 
           Write-Verbose 'Invoke task with' -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          $logInput = $functionInput.Clone()
+          $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
+          Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
 
           Test-TemplateDeployment @functionInput -Verbose
 
@@ -326,6 +388,9 @@ runs:
       if: env.skip_deployment_ci == 'false'
       id: deploy_step
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
+        AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -334,10 +399,11 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
 
           # Prepare general parameters
           # --------------------------
-          $subscriptionId = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
+          $subscriptionId = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           $managementGroupId = '${{ inputs.managementGroupId }}'
 
           # Resolve template file path
@@ -346,10 +412,14 @@ runs:
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
             $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Failed to compile the test template.'
+            }
           } else {
-            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+            $moduleTemplateContent = Get-Content $moduleTestFilePath -Raw | ConvertFrom-Json -AsHashtable
           }
+          $moduleTemplateParameters = $moduleTemplateContent.parameters ?? @{}
+          $moduleTemplatePossibleParameters = $moduleTemplateParameters.psbase.Keys
 
           # ----------------- #
           # Invoke deployment #
@@ -375,26 +445,22 @@ runs:
             }
           }
 
-          # Fetch & add custom secrets, if any
-          # -----------------------------------
-          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
-          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
-            # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
-
-            foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
-              if($moduleTemplatePossibleParameters -contains $formattedName) {
-                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-                $functionInput.AdditionalParameters += @{
-                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
-                }
-              }
-            }
+          $ciParameterInput = @{
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
+          }
+          $ciParameters = Get-CIParameterMap @ciParameterInput
+          foreach ($parameter in $ciParameters.GetEnumerator()) {
+            $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }
 
           Write-Verbose 'Invoke task with' -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          $logInput = $functionInput.Clone()
+          $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
+          Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
 
           # Invoke deployment
           $res = New-TemplateDeployment @functionInput -Verbose
@@ -425,7 +491,7 @@ runs:
       with:
         client-id: ${{ env.VALIDATE_CLIENT_ID }}
         tenant-id: ${{ env.VALIDATE_TENANT_ID }}
-        subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+        subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
         enable-AzPSSession: true
 
     # Exception: module requires login by using service principal with secret
@@ -434,7 +500,7 @@ runs:
       if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
-        creds: ${{ env.AZURE_CREDENTIALS }}
+        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
 
     # [Post-Deployment test] task(s)
@@ -548,8 +614,8 @@ runs:
             ManagementGroupId = '${{ inputs.managementGroupId }}'
           }
 
-          if (-not [String]::IsNullOrEmpty('${{ env.VALIDATE_SUBSCRIPTION_ID }}')) {
-              $functionInput['SubscriptionId'] = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
+          if (-not [String]::IsNullOrEmpty('${{ steps.get-test-subscription.outputs.subscriptionId }}')) {
+              $functionInput['SubscriptionId'] = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           }
 
           Write-Verbose 'Invoke task with' -Verbose

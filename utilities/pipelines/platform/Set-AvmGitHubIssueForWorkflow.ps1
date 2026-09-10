@@ -59,6 +59,7 @@ function Set-AvmGitHubIssueForWorkflow {
 
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleOwnerLogin.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowLatestRun.ps1')
@@ -159,23 +160,29 @@ function Set-AvmGitHubIssueForWorkflow {
                 #     - If module is not orphaned, assign the owner & tag the owner in a comment
                 #       -  If the owner-assignment failed, add an extra comment to call this out
 
+                $module = $null
+                $moduleIndexData = @()
+                $moduleOwnerLogins = @()
+                if ($workflowRun.name -match '^(avm\.(?:res|ptn|utl))') {
+                    switch ($matches[1]) {
+                        'avm.ptn' { $moduleIndexData = $knownPatterns; break }
+                        'avm.res' { $moduleIndexData = $knownResources; break }
+                        'avm.utl' { $moduleIndexData = $knownUtilities; break }
+                    }
+                    $module = $moduleIndexData | Where-Object { $_.ModuleName -eq $moduleName }
+                    if ($null -ne $module) {
+                        $moduleOwnerLogins = @(Get-AvmModuleOwnerLogin -ModuleName $moduleName -ModuleIndexData $moduleIndexData)
+                    }
+                } else {
+                    Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
+                }
+
                 # Create a new issue and add it to project
                 # ----------------------------------------
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
                     $issueUrl = gh issue create --title $issueName --body $failedRunText --label "$avmLabel,$bugLabel" --repo $repo
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
-
-                $module = $null
-                if ($workflowRun.name -match '^(avm\.(?:res|ptn|utl))') {
-                    switch ($matches[1]) {
-                        'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                        'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                        'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    }
-                } else {
-                    Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
-                }
 
                 # CASE : Platform workflow
                 # ------------------------
@@ -198,7 +205,8 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 # CASE : Module workflow
                 # ----------------------
-                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
+                $moduleIsOrphaned = $moduleOwnerLogins.Count -eq 0
+                $ownerMentions = ($moduleOwnerLogins | ForEach-Object { "@$_" }) -join ', '
 
                 $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
@@ -213,28 +221,29 @@ function Set-AvmGitHubIssueForWorkflow {
 > @Azure/azure-verified-modules-tooling-contributors, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
 "@ : @"
 > [!IMPORTANT]
-> @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
+> $ownerMentions, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
 
                 if (-not $moduleIsOrphaned) {
+                    $primaryOwnerLogin = $moduleOwnerLogins[0]
                     # If not orphaned we should assign the issue to the module owner
                     # --------------------------------------------------------------
-                    if ($PSCmdlet.ShouldProcess(('Owner [{0}] to issue [{1}]' -f $module.PrimaryModuleOwnerGHHandle, $issueName), 'Assign')) {
-                        $assign = gh issue edit $issueUrl --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $repo
+                    if ($PSCmdlet.ShouldProcess(('Owner [{0}] to issue [{1}]' -f $primaryOwnerLogin, $issueName), 'Assign')) {
+                        $assign = gh issue edit $issueUrl --add-assignee $primaryOwnerLogin --repo $repo
                     }
 
                     # Error handling of owner assignment failed
                     if ([String]::IsNullOrEmpty($assign)) {
                         $ownerAssignmentFailedComment = @"
 > [!WARNING]
-> This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
+> This issue couldn't be assigend due to an internal error. @$primaryOwnerLogin, please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
                         if ($PSCmdlet.ShouldProcess("Missing user comment to issue [$issueName]", 'Add')) {
                             $userCommentUrl = gh issue comment $issueUrl --body $ownerAssignmentFailedComment --repo $repo
                         }
                         Write-Verbose ('💬 Commented issue {0} ({1}) as the automation was unable to auto-assign the module owner. ({2})' -f $issueUrl, $issueName, $userCommentUrl) -Verbose
                     } else {
-                        Write-Verbose ('👋 Assigned owner [@{0}] to issue {1} ({2})' -f $module.PrimaryModuleOwnerGHHandle, $issueUrl, $issueName) -Verbose
+                        Write-Verbose ('👋 Assigned owner [@{0}] to issue {1} ({2})' -f $primaryOwnerLogin, $issueUrl, $issueName) -Verbose
                     }
                 }
 

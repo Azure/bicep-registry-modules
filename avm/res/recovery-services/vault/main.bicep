@@ -334,15 +334,17 @@ module rsv_backupConfig 'backup-config/main.bicep' = if (!empty(backupConfig)) {
   params: {
     recoveryVaultName: rsv.name
     name: backupConfig.?name
+    // Once `softDeleteSettings` is set on the vault itself, the backupconfig API no longer accepts writes to the
+    // soft delete related properties. They are therefore not forwarded to the child module in that case.
     enhancedSecurityState: !empty(softDeleteSettings) ? null : backupConfig.?enhancedSecurityState
     resourceGuardOperationRequests: backupConfig.?resourceGuardOperationRequests
     softDeleteFeatureState: !empty(softDeleteSettings) ? null : backupConfig.?softDeleteFeatureState
     storageModelType: backupConfig.?storageModelType
     storageType: backupConfig.?storageType
     storageTypeState: backupConfig.?storageTypeState
-    isSoftDeleteFeatureStateEditable: backupConfig.?isSoftDeleteFeatureStateEditable
+    isSoftDeleteFeatureStateEditable: !empty(softDeleteSettings) ? null : backupConfig.?isSoftDeleteFeatureStateEditable
     enableTelemetry: enableReferencedModulesTelemetry
-    softDeleteRetentionPeriodInDays: backupConfig.?softDeleteRetentionPeriodInDays
+    softDeleteRetentionPeriodInDays: !empty(softDeleteSettings) ? null : backupConfig.?softDeleteRetentionPeriodInDays
   }
 }
 

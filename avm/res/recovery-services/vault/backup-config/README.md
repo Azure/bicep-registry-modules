@@ -73,6 +73,7 @@ Enable this setting to protect hybrid backups against accidental deletes and add
     'AlwaysON'
     'Disabled'
     'Enabled'
+    'Invalid'
   ]
   ```
 
@@ -82,7 +83,6 @@ Is soft delete feature state editable.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 

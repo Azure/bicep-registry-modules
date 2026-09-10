@@ -118,6 +118,20 @@ jobs:
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
 
+  job_initialize_subscription_selection:
+    name: "Initialize subscription selection"
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: inputs.moduleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
+    outputs:
+      randomSeed: ${{ steps.random-seed.outputs.randomSeed }}
+    steps:
+      - name: "Generate shared subscription shuffle seed"
+        id: random-seed
+        shell: pwsh
+        run: |
+          Write-Output ("randomSeed={0}" -f (Get-Random -Minimum 0 -Maximum 2147483647)) >> $env:GITHUB_OUTPUT
+
   job_module_deploy_validation:
     name: "Deploy [${{ matrix.testCases.name }}]"
     environment: avm-validation
@@ -129,9 +143,11 @@ jobs:
       !cancelled() &&
       inputs.moduleTestFilePaths != '[]' &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_initialize_subscription_selection.result == 'success' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
     needs:
+      - job_initialize_subscription_selection
       - job_module_static_validation
       - job_psrule_must
     strategy:
@@ -153,12 +169,17 @@ jobs:
           modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           deploymentMetadataLocation: "WestEurope"
+          subscriptionSelectionSeed: "${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}"
+          subscriptionJobIndex: "${{ strategy.job-index }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
+          githubVariables: ${{ toJSON(vars) }}
+          githubSecrets: ${{ toJSON(secrets) }}
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
           VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
           VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
           VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
