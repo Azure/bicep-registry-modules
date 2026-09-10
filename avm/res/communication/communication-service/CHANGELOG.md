@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/communication/communication-service/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Exposed `disableLocalAuth` (bool) and `publicNetworkAccess` (string) properties already supported by `Microsoft.Communication/communicationServices@2025-09-01`. Both parameters are nullable and default to null so existing deployments are unaffected.
+- Updated `max` test to exercise both new parameters.
+- Updated `waf-aligned` test to demonstrate the hardened configuration (`disableLocalAuth: true`, `publicNetworkAccess: 'Disabled'`).
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

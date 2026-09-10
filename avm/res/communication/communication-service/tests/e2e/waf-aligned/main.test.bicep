@@ -59,6 +59,8 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: 'global'
       dataLocation: 'Germany'
+      disableLocalAuth: true
+      publicNetworkAccess: 'Disabled'
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
