@@ -17,6 +17,8 @@ New-ModuleReleaseTag -ModuleFolderPath 'C:\avm\res\key-vault\vault' -TargetVersi
 Creates 'avm/res/key-vault/vault/1.0.0' release tag
 #>
 
+. (Join-Path $PSScriptRoot 'New-ModuleReleaseTagReference.ps1')
+
 function New-ModuleReleaseTag {
 
     [CmdletBinding()]
@@ -40,25 +42,15 @@ function New-ModuleReleaseTag {
         throw "Tag [$tagName] is not well formatted."
     }
 
-    # 3 Check tag not already existing
-    $existingTag = git ls-remote --tags origin $tagName
-    if ($existingTag) {
-        Write-Verbose "Tag [$tagName] already exists" -Verbose
-        return $tagName
-    }
-
-
-    # 3 Create local tag
-    Write-Verbose "Creating release tag: [$tagName]" -Verbose
-    git tag $tagName
-
-    # 4 Publish release tag
-    Write-Verbose "Publishing release tag: [$tagName]" -Verbose
-    git push origin $tagName
-
+    # 3 Resolve target commit
+    $targetCommit = git rev-parse HEAD
     if ($LASTEXITCODE -ne 0) {
-        throw 'Git Tag creation failed. Please review error log.'
+        throw 'Failed to resolve the target commit for the release tag.'
     }
+
+    # 4 Create remote tag
+    Write-Verbose "Publishing release tag: [$tagName]" -Verbose
+    New-ModuleReleaseTagReference -TagName $tagName -TargetCommit $targetCommit
 
     # 5 Return tag
     return $tagName
