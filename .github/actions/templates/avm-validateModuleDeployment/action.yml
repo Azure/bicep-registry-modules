@@ -362,10 +362,11 @@ runs:
           }
 
           $ciParameterInput = @{
-            TemplateParameters = $moduleTemplateParameters
-            GitHubVariables    = $env:AVM_CI_VARIABLES
-            GitHubSecrets      = $env:AVM_CI_SECRETS
-            KeyVaultName       = $env:CI_KEY_VAULT_NAME
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
           foreach ($parameter in $ciParameters.GetEnumerator()) {
@@ -445,10 +446,11 @@ runs:
           }
 
           $ciParameterInput = @{
-            TemplateParameters = $moduleTemplateParameters
-            GitHubVariables    = $env:AVM_CI_VARIABLES
-            GitHubSecrets      = $env:AVM_CI_SECRETS
-            KeyVaultName       = $env:CI_KEY_VAULT_NAME
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
           foreach ($parameter in $ciParameters.GetEnumerator()) {

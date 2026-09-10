@@ -10,6 +10,9 @@ parameters. GitHub values are converted to the declared ARM parameter types.
 .PARAMETER TemplateParameters
 The parameters object from the compiled test template.
 
+.PARAMETER TemplateDefinitions
+The definitions object used to resolve user-defined parameter types.
+
 .PARAMETER GitHubVariables
 The JSON-serialized, resolved GitHub Actions vars context.
 
@@ -27,6 +30,9 @@ function Get-CIParameterMap {
         [Parameter(Mandatory)]
         [AllowEmptyCollection()]
         [System.Collections.IDictionary] $TemplateParameters,
+
+        [Parameter()]
+        [System.Collections.IDictionary] $TemplateDefinitions = @{},
 
         [Parameter()]
         [string] $GitHubVariables = '{}',
@@ -88,7 +94,20 @@ function Get-CIParameterMap {
             throw "The GitHub value for parameter [$parameterName] must be a string."
         }
 
-        $parameterType = $TemplateParameters[$parameterName].type
+        $definition = $TemplateParameters[$parameterName]
+        $visitedDefinitions = [System.Collections.Generic.HashSet[string]]::new()
+        while (-not $definition.type -and $definition.Contains('$ref')) {
+            $reference = [string] $definition['$ref']
+            if (-not $reference.StartsWith('#/definitions/', [System.StringComparison]::Ordinal)) {
+                throw "Parameter [$parameterName] has an unsupported type reference."
+            }
+            $definitionName = $reference.Substring('#/definitions/'.Length).Replace('~1', '/').Replace('~0', '~')
+            if (-not $TemplateDefinitions.Contains($definitionName) -or -not $visitedDefinitions.Add($definitionName)) {
+                throw "Parameter [$parameterName] has an unresolved or circular type reference."
+            }
+            $definition = $TemplateDefinitions[$definitionName]
+        }
+        $parameterType = $definition.type
         if ($isSecret -and $parameterType -notin @('secureString', 'secureObject')) {
             Write-Warning "GitHub secret [$githubName] targets non-secure parameter [$parameterName]. Sensitive values require a secureString or secureObject test parameter."
         }

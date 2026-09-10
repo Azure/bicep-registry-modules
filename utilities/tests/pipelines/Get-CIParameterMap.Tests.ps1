@@ -186,6 +186,29 @@ Describe 'Get-CIParameterMap' {
         $result.options.Count | Should -Be 0
     }
 
+    It 'Resolves user-defined parameter types, including secure aliases' {
+        $definitions = @{
+            'private/config' = @{ type = 'secureObject' }
+            alias            = @{ '$ref' = '#/definitions/private~1config' }
+        }
+        $result = Get-CIParameterMap -TemplateParameters @{ secureConfig = @{ '$ref' = '#/definitions/alias' } } `
+            -TemplateDefinitions $definitions -GitHubSecrets '{"CI_SECURECONFIG":"{\"password\":\"example\"}"}' `
+            -WarningVariable warnings
+
+        $result.secureConfig.password | Should -Be 'example'
+        $warnings.Count | Should -Be 0
+    }
+
+    It 'Rejects missing or circular user-defined types' -ForEach @(
+        @{ definitions = @{} }
+        @{ definitions = @{ alias = @{ '$ref' = '#/definitions/alias' } } }
+    ) {
+        {
+            Get-CIParameterMap -TemplateParameters @{ secureConfig = @{ '$ref' = '#/definitions/alias' } } `
+                -TemplateDefinitions $definitions -GitHubSecrets '{"CI_SECURECONFIG":"{}"}'
+        } | Should -Throw '*unresolved or circular type reference*'
+    }
+
     It 'Warns without logging the value when a secret targets a non-secure parameter' {
         $result = Get-CIParameterMap -TemplateParameters $templateParameters -GitHubSecrets '{"CI_LOCATION":"sensitive-example"}' `
             -WarningVariable warnings -WarningAction SilentlyContinue

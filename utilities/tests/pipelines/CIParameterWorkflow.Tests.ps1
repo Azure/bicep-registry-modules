@@ -78,7 +78,10 @@ Describe 'CI parameter workflow integration' {
 @secure()
 param adminMembersSecret string
 @secure()
-param secureConfig object
+type testConfig = {
+  password: string
+}
+param secureConfig testConfig
 param resourceLocation string
 param baseTime string
 
