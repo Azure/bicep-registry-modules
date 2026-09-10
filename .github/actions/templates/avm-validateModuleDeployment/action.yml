@@ -54,11 +54,11 @@ inputs:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
     required: false
   githubVariables:
-    description: "Resolved GitHub Actions vars context as JSON. Only CI_-prefixed test parameters are used."
+    description: "Resolved GitHub Actions vars context as JSON. CI_ ignores underscores; CI__ preserves literal spelling."
     default: "{}"
     required: false
   githubSecrets:
-    description: "Resolved GitHub Actions secrets context as JSON. CI_-prefixed secrets override variables."
+    description: "Resolved GitHub Actions secrets context as JSON. CI_ or CI__ secrets override variables for the same parameter."
     default: "{}"
     required: false
   removeDeployment:

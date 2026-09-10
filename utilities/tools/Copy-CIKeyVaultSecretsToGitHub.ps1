@@ -93,7 +93,7 @@ function Invoke-CIGitHubCommand {
     }
 }
 
-function Get-CIGitHubConfigurationNameSet {
+function Get-CIGitHubConfigurationMap {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
@@ -124,14 +124,23 @@ function Get-CIGitHubConfigurationNameSet {
         throw "Invalid GitHub $Kind name inventory: expected an array."
     }
 
-    $names = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $names = @{}
     foreach ($entry in $entries) {
         if ($entry -isnot [System.Collections.IDictionary] -or $entry.name -isnot [string] -or $entry.name -cnotmatch '^[A-Za-z_][A-Za-z0-9_]*$') {
             throw "Invalid entry in GitHub $Kind name inventory. Response details are suppressed."
         }
-        $null = $names.Add($entry.name)
+        $parameterName = ConvertFrom-CIParameterName -Name $entry.name
+        if ([string]::IsNullOrEmpty($parameterName)) {
+            continue
+        }
+        if (-not $names.ContainsKey($parameterName)) {
+            $names[$parameterName] = @()
+        }
+        if ($names[$parameterName] -notcontains $entry.name) {
+            $names[$parameterName] += $entry.name
+        }
     }
-    return ,$names
+    return $names
 }
 #endregion
 
@@ -142,11 +151,13 @@ Preview or copy CI Key Vault secrets to GitHub Actions secrets or explicitly sel
 .DESCRIPTION
 Inventories CI-<parameterName> Key Vault secret metadata and GitHub destination names.
 SecretName optionally limits the plan to reviewed, existing source names; omitted means all CI- entries.
-Maps names to uppercase CI_<parameterName> without changing the parameter suffix.
+Creates readable uppercase CI_ names from camelCase source parameters. CI__ preserves
+literal underscores and avoids the reserved CI_KEY_VAULT_NAME selector.
 Values remain secrets unless explicitly selected using VariableName. Variables are NON-SENSITIVE.
 Dry run is the default. Apply and per-entry ShouldProcess approval are required before reading values.
-Existing entries are skipped unless Overwrite is supplied. Opposite-kind collisions are always blocked;
-resolve the classification or destination configuration explicitly before retrying.
+Existing aliases are skipped unless Overwrite is supplied, in which case their names are reused.
+Ambiguous aliases and opposite-kind collisions are always blocked; resolve the classification or
+destination configuration explicitly before retrying.
 Never deletes source or destination entries, writes value files, or prints values.
 
 Only the selected repository or environment scope is inventoried; GitHub resolves inherited scopes
@@ -170,8 +181,8 @@ Omitted includes all CI- entries. An explicitly empty selection, unknown name, o
 Unselected legacy entries are not validated or copied. This does not change destination classification.
 
 .PARAMETER VariableName
-Optional. Explicit CI_<parameterName> destination names to copy as NON-SENSITIVE GitHub variables.
-Names are matched case-insensitively and must match the selected source plan. All other entries are secrets.
+Optional. CI_ or CI__ destination names resolving to selected source parameters to copy as
+NON-SENSITIVE GitHub variables. All other entries are secrets.
 
 .PARAMETER Apply
 Optional. Perform approved copies. Without this switch, only metadata is read.
@@ -248,6 +259,9 @@ function Copy-CIKeyVaultSecretsToGitHub {
         throw 'SecretName was explicitly empty. Supply reviewed CI- source names or omit the parameter to include all CI- entries.'
     }
 
+    . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'ConvertFrom-CIParameterName.ps1')
+    . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'ConvertTo-CIParameterName.ps1')
+
     try {
         $ghPath = (Get-Command -Name gh -CommandType Application -ErrorAction Stop).Path
     } catch [System.Management.Automation.CommandNotFoundException] {
@@ -286,7 +300,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
         }
     }
 
-    $plannedNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $plannedParameters = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     $plan = @(
         foreach ($source in $sources) {
             if ($null -ne $selectedNames -and -not $selectedNames.Contains($source.Name)) {
@@ -295,26 +309,32 @@ function Copy-CIKeyVaultSecretsToGitHub {
             if ($source.Name -notmatch '^CI-') {
                 continue
             }
-            if ($source.Name -cnotmatch '^(?i:CI)-[A-Za-z_][A-Za-z0-9_]*$' -or $source.Name.Length -gt 100) {
+            if ($source.Name -cnotmatch '^(?i:CI)-[A-Za-z_][A-Za-z0-9_]*$') {
                 throw "Cannot map Key Vault name [$($source.Name)] to CI_<parameterName>. The suffix must be a Bicep identifier and the target at most 100 characters; hyphens are not replaced."
             }
-            $targetName = 'CI_{0}' -f $source.Name.Substring(3).ToUpperInvariant()
-            if (-not $plannedNames.Add($targetName)) {
-                throw "Multiple source names map to GitHub name [$targetName]. Resolve the ambiguity before copying."
+            $parameterName = $source.Name.Substring(3)
+            $targetName = ConvertTo-CIParameterName -ParameterName $parameterName
+            if ($targetName.Length -gt 100) {
+                throw "Cannot map Key Vault name [$($source.Name)]: the generated GitHub name exceeds 100 characters."
+            }
+            if (-not $plannedParameters.Add($parameterName)) {
+                throw "Multiple source names map to parameter [$parameterName]. Resolve the ambiguity before copying."
             }
             @{
-                Source = $source
-                Name   = $targetName
+                Source        = $source
+                Name          = $targetName
+                ParameterName = $parameterName
             }
         }
     )
 
-    $variableNames = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
+    $variableParameters = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
     foreach ($name in $VariableName) {
-        if ([string]::IsNullOrWhiteSpace($name) -or -not $plannedNames.Contains($name)) {
-            throw "VariableName [$name] does not match a planned CI_ destination name. Use exact mapped names, not Key Vault CI- names."
+        $parameterName = [string]::IsNullOrWhiteSpace($name) ? $null : (ConvertFrom-CIParameterName -Name $name)
+        if ([string]::IsNullOrEmpty($parameterName) -or -not $plannedParameters.Contains($parameterName)) {
+            throw "VariableName [$name] does not match a planned CI_ destination name. Use a CI_ or CI__ alias for a selected source parameter, not a Key Vault CI- name."
         }
-        $null = $variableNames.Add($name)
+        $null = $variableParameters.Add($parameterName)
     }
 
     $githubOptions = @{
@@ -324,11 +344,11 @@ function Copy-CIKeyVaultSecretsToGitHub {
     }
     $destinationNames = @{}
     foreach ($kind in @('Secret', 'Variable')) {
-        $destinationNames[$kind] = Get-CIGitHubConfigurationNameSet @githubOptions -Kind $kind
+        $destinationNames[$kind] = Get-CIGitHubConfigurationMap @githubOptions -Kind $kind
     }
 
     foreach ($item in $plan) {
-        $kind = $variableNames.Contains($item.Name) ? 'Variable' : 'Secret'
+        $kind = $variableParameters.Contains($item.ParameterName) ? 'Variable' : 'Secret'
         $oppositeKind = $kind -eq 'Secret' ? 'Variable' : 'Secret'
         $result = [pscustomobject]@{
             VaultName       = $VaultName
@@ -341,9 +361,15 @@ function Copy-CIKeyVaultSecretsToGitHub {
             Status          = 'Planned'
         }
 
-        if ($destinationNames[$oppositeKind].Contains($item.Name)) {
+        $matchingNames = $destinationNames[$kind][$item.ParameterName] ?? @()
+        if ($matchingNames.Count -eq 1) {
+            $result.DestinationName = $matchingNames[0]
+        }
+        if ($destinationNames[$oppositeKind].ContainsKey($item.ParameterName)) {
             $result.Status = 'BlockedByOppositeKind'
-        } elseif ($destinationNames[$kind].Contains($item.Name) -and -not $Overwrite) {
+        } elseif ($matchingNames.Count -gt 1) {
+            $result.Status = 'BlockedByAmbiguousAliases'
+        } elseif ($matchingNames.Count -eq 1 -and -not $Overwrite) {
             $result.Status = 'SkippedExisting'
         } elseif ($item.Source.Enabled -eq $false) {
             $result.Status = 'SkippedDisabled'
@@ -351,7 +377,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
             $result.Status = 'SkippedExpired'
         } elseif ($item.Source.NotBefore -and [DateTimeOffset] $item.Source.NotBefore -gt [DateTimeOffset]::UtcNow) {
             $result.Status = 'SkippedNotYetValid'
-        } elseif ($destinationNames[$kind].Contains($item.Name)) {
+        } elseif ($matchingNames.Count -eq 1) {
             $result.Status = 'PlannedOverwrite'
         }
 
@@ -361,7 +387,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
         }
 
         $action = $Overwrite ? 'Copy or overwrite from Key Vault' : 'Copy from Key Vault'
-        $target = "$Repository [$($result.Scope):$Environment] $kind [$($item.Name)] from [$($item.Source.Name)]"
+        $target = "$Repository [$($result.Scope):$Environment] $kind [$($result.DestinationName)] from [$($item.Source.Name)]"
         if (-not $PSCmdlet.ShouldProcess($target, $action)) {
             $result.Status = 'SkippedShouldProcess'
             $result
@@ -371,15 +397,28 @@ function Copy-CIKeyVaultSecretsToGitHub {
         # Recheck both kinds after approval, before retrieving a value.
         $currentNames = @{}
         foreach ($currentKind in @('Secret', 'Variable')) {
-            $currentNames[$currentKind] = Get-CIGitHubConfigurationNameSet @githubOptions -Kind $currentKind
+            $currentNames[$currentKind] = Get-CIGitHubConfigurationMap @githubOptions -Kind $currentKind
         }
-        if ($currentNames[$oppositeKind].Contains($item.Name)) {
+        $currentMatches = $currentNames[$kind][$item.ParameterName] ?? @()
+        if ($currentNames[$oppositeKind].ContainsKey($item.ParameterName)) {
             $result.Status = 'BlockedByOppositeKind'
             $result
             continue
         }
-        if ($currentNames[$kind].Contains($item.Name) -and -not $Overwrite) {
+        if ($currentMatches.Count -gt 1) {
+            $result.Status = 'BlockedByAmbiguousAliases'
+            $result
+            continue
+        }
+        if ($currentMatches.Count -eq 1 -and -not $Overwrite) {
+            $result.DestinationName = $currentMatches[0]
             $result.Status = 'SkippedExisting'
+            $result
+            continue
+        }
+        if (($currentMatches.Count -eq 1 -and $currentMatches[0] -ine $result.DestinationName) -or
+            ($result.Status -eq 'PlannedOverwrite' -and $currentMatches.Count -eq 0)) {
+            $result.Status = 'BlockedChangedDestination'
             $result
             continue
         }
@@ -436,7 +475,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
                 throw "Key Vault secret [$($item.Source.Name)] did not return the pinned version. Nothing was copied for this entry."
             }
 
-            $arguments = @($kind.ToLowerInvariant(), 'set', $item.Name, '--repo', $Repository)
+            $arguments = @($kind.ToLowerInvariant(), 'set', $result.DestinationName, '--repo', $Repository)
             if ($Environment) {
                 $arguments += @('--env', $Environment)
             }

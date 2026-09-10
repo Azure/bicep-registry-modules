@@ -53,11 +53,84 @@ Describe 'Get-CIParameterMap' {
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
-    It 'Preserves underscores instead of guessing snake_case to camelCase mappings' {
-        $result = Get-CIParameterMap -TemplateParameters $templateParameters -GitHubVariables '{"CI_RESOURCE_NAME":"example","CI_ADMIN_MEMBERS_SECRET":"not-matched"}'
+    It 'Uses readable names for camelCase parameters and double underscores for literal names' {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
+            -GitHubVariables '{"CI__RESOURCE_NAME":"example","CI_ADMIN_MEMBERS_SECRET":"readable"}'
 
-        @($result.Keys) | Should -Be @('resource_name')
+        @($result.Keys | Sort-Object) | Should -Be @('adminMembersSecret', 'resource_name')
         $result.resource_name | Should -Be 'example'
+        ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'readable'
+    }
+
+    It 'Does not remove literal underscores from double-prefix inputs or declared parameter names' {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
+            -GitHubVariables '{"CI_RESOURCE_NAME":"not-literal","CI__ADMIN_MEMBERS_SECRET":"not-camelCase"}'
+
+        $result.Count | Should -Be 0
+    }
+
+    It 'Distinguishes camelCase and underscored parameters in the same template' {
+        $result = Get-CIParameterMap -TemplateParameters @{
+            adminMembersSecret   = @{ type = 'secureString' }
+            admin_members_secret = @{ type = 'secureString' }
+        } -GitHubSecrets '{"CI_ADMIN_MEMBERS_SECRET":"camel","CI__ADMIN_MEMBERS_SECRET":"literal"}'
+
+        ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'camel'
+        ConvertFrom-SecureString -SecureString $result.admin_members_secret -AsPlainText | Should -Be 'literal'
+    }
+
+    It 'Keeps secret precedence across different aliases' -ForEach @(
+        @{ variableName = 'CI_ADMIN_MEMBERS_SECRET'; secretName = 'CI__ADMINMEMBERSSECRET' }
+        @{ variableName = 'CI__ADMINMEMBERSSECRET'; secretName = 'CI_ADMIN_MEMBERS_SECRET' }
+    ) {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
+            -GitHubVariables (@{ $variableName = 'variable' } | ConvertTo-Json -Compress) `
+            -GitHubSecrets (@{ $secretName = 'secret' } | ConvertTo-Json -Compress)
+
+        ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'secret'
+    }
+
+    It 'Rejects multiple <source> aliases for the same parameter before accessing Key Vault' -ForEach @(
+        @{ source = 'Variables'; names = @('CI_ADMIN_MEMBERS_SECRET', 'CI_ADMINMEMBERSSECRET') }
+        @{ source = 'Secrets'; names = @('CI__ADMINMEMBERSSECRET', 'CI_ADMIN_MEMBERS_SECRET') }
+    ) {
+        $arguments = @{
+            TemplateParameters = $templateParameters
+            KeyVaultName       = 'test-vault'
+            "GitHub$source"    = @{ $names[0] = 'one'; $names[1] = 'two' } | ConvertTo-Json -Compress
+        }
+
+        { Get-CIParameterMap @arguments } | Should -Throw "*Multiple GitHub $source names*map to parameter*"
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Ignores conflicting aliases that do not target the current template' {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
+            -GitHubVariables '{"CI_OTHER_INPUT":"one","CI__OTHERINPUT":"two"}'
+
+        $result.Count | Should -Be 0
+    }
+
+    It 'Does not inject the reserved Key Vault selector into a template parameter' {
+        $result = Get-CIParameterMap -TemplateParameters @{ keyVaultName = @{ type = 'string' } } `
+            -GitHubVariables '{"CI_KEY_VAULT_NAME":"legacy-vault"}'
+
+        $result.Count | Should -Be 0
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
+    }
+
+    It 'Uses an exact alias to supply keyVaultName independently of the legacy selector' {
+        $result = Get-CIParameterMap -TemplateParameters @{ keyVaultName = @{ type = 'string' } } `
+            -GitHubVariables '{"CI_KEY_VAULT_NAME":"legacy-vault","CI__KEYVAULTNAME":"test-vault"}'
+
+        $result.keyVaultName | Should -Be 'test-vault'
+    }
+
+    It 'Rejects template parameter names that GitHub cannot distinguish by case' {
+        $definitions = ConvertFrom-Json '{"name":{"type":"string"},"NAME":{"type":"string"}}' -AsHashtable
+
+        { Get-CIParameterMap -TemplateParameters $definitions -GitHubVariables '{"CI_NAME":"ambiguous"}' } |
+            Should -Throw '*differs from another parameter only in case*'
     }
 
     It 'Supports parameters whose names shadow dictionary properties' {
@@ -243,7 +316,63 @@ Describe 'Get-CIParameterMap' {
     It 'Rejects duplicate case-insensitive names' {
         {
             Get-CIParameterMap -TemplateParameters $templateParameters -GitHubVariables '{"CI_LOCATION":"one","ci_location":"two"}'
-        } | Should -Throw '*duplicate CI_ names*'
+        } | Should -Throw '*Multiple GitHub Variables names*'
+    }
+
+    Describe 'CI parameter name formats' {
+
+        BeforeAll {
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'ConvertFrom-CIParameterName.ps1')
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'ConvertTo-CIParameterName.ps1')
+        }
+
+        It 'Decodes <name> using its explicit prefix' -ForEach @(
+            @{ name = 'CI_ADMIN_MEMBERS_SECRET'; expected = 'ADMINMEMBERSSECRET' }
+            @{ name = 'CI_ADMINMEMBERSSECRET'; expected = 'ADMINMEMBERSSECRET' }
+            @{ name = 'ci_admin_members_secret'; expected = 'adminmemberssecret' }
+            @{ name = 'CI_ADMIN__MEMBERS_SECRET'; expected = 'ADMINMEMBERSSECRET' }
+            @{ name = 'CI__ADMIN_MEMBERS_SECRET'; expected = 'ADMIN_MEMBERS_SECRET' }
+            @{ name = 'CI__ADMINMEMBERSSECRET'; expected = 'ADMINMEMBERSSECRET' }
+            @{ name = 'CI___NAME'; expected = '_NAME' }
+        ) {
+            ConvertFrom-CIParameterName -Name $name | Should -BeExactly $expected
+        }
+
+        It 'Does not treat <name> as a parameter' -ForEach @(
+            @{ name = 'CI_KEY_VAULT_NAME' }
+            @{ name = 'ci_key_vault_name' }
+            @{ name = 'OTHER_VALUE' }
+            @{ name = 'CI-value' }
+            @{ name = 'CI_' }
+            @{ name = 'CI__' }
+            @{ name = '' }
+        ) {
+            ConvertFrom-CIParameterName -Name $name | Should -BeNullOrEmpty
+        }
+
+        It 'Formats <parameterName> without losing its identity' -ForEach @(
+            @{ parameterName = 'adminMembersSecret'; expected = 'CI_ADMIN_MEMBERS_SECRET' }
+            @{ parameterName = 'managedHSMResourceId'; expected = 'CI_MANAGED_HSM_RESOURCE_ID' }
+            @{ parameterName = 'clientID'; expected = 'CI_CLIENT_ID' }
+            @{ parameterName = 'tls1Version'; expected = 'CI_TLS1_VERSION' }
+            @{ parameterName = 'resource_name'; expected = 'CI__RESOURCE_NAME' }
+            @{ parameterName = '_name'; expected = 'CI___NAME' }
+            @{ parameterName = 'keyVaultName'; expected = 'CI__KEYVAULTNAME' }
+        ) {
+            $name = ConvertTo-CIParameterName -ParameterName $parameterName
+
+            $name | Should -BeExactly $expected
+            ConvertFrom-CIParameterName -Name $name | Should -Be $parameterName
+        }
+
+        It 'Keeps long camelCase names compact instead of exceeding the GitHub name limit' {
+            $parameterName = 'aB' * 48
+            $name = ConvertTo-CIParameterName -ParameterName $parameterName
+
+            $name | Should -BeExactly ('CI_' + $parameterName.ToUpperInvariant())
+            $name.Length | Should -BeLessOrEqual 100
+            ConvertFrom-CIParameterName -Name $name | Should -Be $parameterName
+        }
     }
 
     It 'Rejects a non-string matching context value' {

@@ -100,7 +100,7 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
 
         $result.Count | Should -Be 1
         $result[0].SourceName | Should -Be 'CI-clientSecret'
-        $result[0].DestinationName | Should -BeExactly 'CI_CLIENTSECRET'
+        $result[0].DestinationName | Should -BeExactly 'CI_CLIENT_SECRET'
         $result[0].Kind | Should -Be 'Secret'
         $result[0].Status | Should -Be 'Planned'
         $result[0].Scope | Should -Be 'Repository'
@@ -120,9 +120,9 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
     }
 
-    It 'Filters only the anchored CI- prefix and preserves the parameter suffix case-insensitively' {
+    It 'Filters only the anchored CI- prefix and emits readable names' {
         $script:sources = @(
-            New-TestSecretMetadata -Name 'ci-ClIeNtId'
+            New-TestSecretMetadata -Name 'ci-clientId'
             New-TestSecretMetadata -Name 'CI-location'
             New-TestSecretMetadata -Name 'other-CI-clientId'
             New-TestSecretMetadata -Name 'CI_clientId'
@@ -131,7 +131,7 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
 
         $result = @(Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo')
 
-        $result.DestinationName | Should -Be @('CI_CLIENTID', 'CI_LOCATION')
+        $result.DestinationName | Should -Be @('CI_CLIENT_ID', 'CI_LOCATION')
         $result.Kind | Should -Be @('Secret', 'Secret')
     }
 
@@ -145,7 +145,7 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
 
         $result.Count | Should -Be 1
         $result[0].SourceName | Should -BeExactly 'CI-clientSecret'
-        $result[0].DestinationName | Should -BeExactly 'CI_CLIENTSECRET'
+        $result[0].DestinationName | Should -BeExactly 'CI_CLIENT_SECRET'
         $result[0].Kind | Should -Be 'Secret'
         $result[0].Status | Should -Be 'Copied'
         $script:writes.Count | Should -Be 1
@@ -245,7 +245,7 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
 
         $result.Kind | Should -Be @('Secret', 'Variable')
         $result.Status | Should -Be @('Copied', 'Copied')
-        ($script:writes[0].Arguments -join '|') | Should -Be 'secret|set|CI_CLIENTSECRET|--repo|owner/repo'
+        ($script:writes[0].Arguments -join '|') | Should -Be 'secret|set|CI_CLIENT_SECRET|--repo|owner/repo'
         ($script:writes[1].Arguments -join '|') | Should -Be 'variable|set|CI_LOCATION|--repo|owner/repo'
         ($result | ConvertTo-Json) | Should -Not -Match ([regex]::Escape($script:payload))
         $result[0].PSObject.Properties.Name | Should -Be @(
@@ -262,7 +262,7 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         $result.Scope | Should -Be $scope
         $result.Environment | Should -Be $environment
         $expectedSuffix = $environment ? "|--env|$environment" : ''
-        ($script:writes[0].Arguments -join '|') | Should -Be "secret|set|CI_CLIENTSECRET|--repo|owner/repo$expectedSuffix"
+        ($script:writes[0].Arguments -join '|') | Should -Be "secret|set|CI_CLIENT_SECRET|--repo|owner/repo$expectedSuffix"
         Should -Invoke Invoke-CIGitHubCommand -Times 4 -Exactly -ParameterFilter {
             $ArgumentList[1] -eq 'list' -and ($ArgumentList -join '|').EndsWith("--json|name$expectedSuffix")
         }
@@ -293,6 +293,111 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         $result.Status | Should -Be 'PlannedOverwrite'
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
         Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
+    }
+
+    It 'Reuses an existing <alias> instead of creating a conflicting name' -ForEach @(
+        @{ alias = 'CI_CLIENTSECRET'; applyCopy = $false; expectedStatus = 'PlannedOverwrite' }
+        @{ alias = 'CI__CLIENTSECRET'; applyCopy = $true; expectedStatus = 'Copied' }
+        @{ alias = 'CI_CLIENT_SECRET'; applyCopy = $true; expectedStatus = 'Copied' }
+    ) {
+        $script:secretNames = @($alias)
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Overwrite -Apply:$applyCopy -Confirm:$false
+
+        $result.DestinationName | Should -BeExactly $alias
+        $result.Status | Should -Be $expectedStatus
+        if ($applyCopy) {
+            $script:writes[0].Arguments[2] | Should -BeExactly $alias
+        } else {
+            Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+        }
+    }
+
+    It 'Blocks multiple same-kind aliases even with explicit overwrite' {
+        $script:secretNames = @('CI_CLIENTSECRET', 'CI__CLIENTSECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedByAmbiguousAliases'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+        Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
+    }
+
+    It 'Blocks new ambiguity found after the preview' {
+        $script:secretNames = @('CI_CLIENTSECRET')
+        $script:lateSecretNames = @('CI__CLIENTSECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedByAmbiguousAliases'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+    }
+
+    It 'Does not retarget an approved copy when a different alias appears' {
+        $script:lateSecretNames = @('CI__CLIENTSECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedChangedDestination'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+    }
+
+    It 'Does not recreate an alias removed after approval' {
+        Mock Invoke-CIGitHubCommand {
+            $script:listCounts.secret++
+            if ($script:listCounts.secret -eq 1) {
+                return '[{"name":"CI__CLIENTSECRET"}]'
+            }
+            return '[]'
+        } -ParameterFilter { $ArgumentList[0] -eq 'secret' -and $ArgumentList[1] -eq 'list' }
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedChangedDestination'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+    }
+
+    It 'Matches opposite-kind aliases by parameter identity rather than spelling' {
+        $script:variableNames = @('CI__CLIENTSECRET')
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -Apply -Overwrite -Confirm:$false
+
+        $result.Status | Should -Be 'BlockedByOppositeKind'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name }
+    }
+
+    It 'Separates camelCase and literal underscore inputs during migration' {
+        $script:sources = @(
+            New-TestSecretMetadata -Name 'CI-resourceName'
+            New-TestSecretMetadata -Name 'CI-resource_name'
+        )
+        $script:secretNames = @('CI__RESOURCE_NAME')
+
+        $result = @(Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo')
+
+        $result.DestinationName | Should -Be @('CI_RESOURCE_NAME', 'CI__RESOURCE_NAME')
+        $result.Status | Should -Be @('Planned', 'SkippedExisting')
+    }
+
+    It 'Preserves acronym boundaries and avoids the reserved vault selector' {
+        $script:sources = @(
+            New-TestSecretMetadata -Name 'CI-managedHSMResourceId'
+            New-TestSecretMetadata -Name 'CI-keyVaultName'
+        )
+        $script:variableNames = @('CI_KEY_VAULT_NAME')
+
+        $result = @(Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -VariableName 'CI__KEYVAULTNAME')
+
+        $result.DestinationName | Should -Be @('CI_MANAGED_HSM_RESOURCE_ID', 'CI__KEYVAULTNAME')
+        $result.Kind | Should -Be @('Secret', 'Variable')
+        $result.Status | Should -Be @('Planned', 'Planned')
+    }
+
+    It 'Accepts an exact VariableName alias for a selected camelCase source' {
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo' -VariableName 'CI__CLIENTSECRET'
+
+        $result.Kind | Should -Be 'Variable'
+        $result.DestinationName | Should -Be 'CI_CLIENT_SECRET'
     }
 
     It 'Deliberately overwrites same-kind <kind> entries only when requested' -ForEach @(

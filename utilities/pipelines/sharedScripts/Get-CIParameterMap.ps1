@@ -3,9 +3,11 @@
 Resolve additional test parameters from GitHub Actions and the legacy CI Key Vault.
 
 .DESCRIPTION
-Matches CI_ GitHub names and CI- Key Vault names to template parameters without
-regard to case. GitHub secrets override variables; Key Vault only supplies missing
-parameters. GitHub values are converted to the declared ARM parameter types.
+Matches GitHub names without regard to case: CI_ removes separator underscores,
+while CI__ preserves literal underscores. Key Vault CI- names remain literal.
+GitHub secrets override variables; Key Vault only supplies missing parameters.
+Aliases within the same GitHub source must not target the same template parameter.
+GitHub values are converted to the declared ARM parameter types.
 
 .PARAMETER TemplateParameters
 The parameters object from the compiled test template.
@@ -44,6 +46,17 @@ function Get-CIParameterMap {
         [string] $KeyVaultName
     )
 
+    . (Join-Path $PSScriptRoot 'ConvertFrom-CIParameterName.ps1')
+
+    $parameterNames = @{}
+    # Parameter names can shadow dictionary properties such as Keys and Count.
+    foreach ($parameterName in $TemplateParameters.psbase.Keys) {
+        if ($parameterNames.ContainsKey($parameterName)) {
+            throw "Template parameter [$parameterName] differs from another parameter only in case and cannot be resolved from GitHub inputs."
+        }
+        $parameterNames[$parameterName] = $parameterName
+    }
+
     $sources = @{
         Variables = @{ Json = $GitHubVariables; Values = @{} }
         Secrets   = @{ Json = $GitHubSecrets; Values = @{} }
@@ -64,31 +77,34 @@ function Get-CIParameterMap {
         }
 
         foreach ($entry in $values.GetEnumerator()) {
-            if ($entry.Key -notmatch '^CI_.+') {
+            $name = ConvertFrom-CIParameterName -Name $entry.Key
+            if ([string]::IsNullOrEmpty($name) -or -not $parameterNames.ContainsKey($name)) {
                 continue
             }
-            if ($source.Values.ContainsKey($entry.Key)) {
-                throw "The GitHub $sourceName context contains duplicate CI_ names differing only in case."
+            $parameterName = $parameterNames[$name]
+            if ($source.Values.ContainsKey($parameterName)) {
+                throw "Multiple GitHub $sourceName names [$($source.Values[$parameterName].Name)] and [$($entry.Key)] map to parameter [$parameterName]."
             }
-            $source.Values[$entry.Key] = $entry.Value
+            $source.Values[$parameterName] = @{
+                Name  = $entry.Key
+                Value = $entry.Value
+            }
         }
     }
 
     $parameters = @{}
-    $parameterNames = @{}
-    # Parameter names can shadow dictionary properties such as Keys and Count.
     foreach ($parameterName in $TemplateParameters.psbase.Keys) {
-        $parameterNames[$parameterName] = $parameterName
-        $githubName = "CI_$parameterName"
-        if ($sources.Secrets.Values.ContainsKey($githubName)) {
-            $value = $sources.Secrets.Values[$githubName]
+        if ($sources.Secrets.Values.ContainsKey($parameterName)) {
+            $entry = $sources.Secrets.Values[$parameterName]
             $isSecret = $true
-        } elseif ($sources.Variables.Values.ContainsKey($githubName)) {
-            $value = $sources.Variables.Values[$githubName]
+        } elseif ($sources.Variables.Values.ContainsKey($parameterName)) {
+            $entry = $sources.Variables.Values[$parameterName]
             $isSecret = $false
         } else {
             continue
         }
+        $value = $entry.Value
+        $githubName = $entry.Name
 
         if ($value -isnot [string]) {
             throw "The GitHub value for parameter [$parameterName] must be a string."

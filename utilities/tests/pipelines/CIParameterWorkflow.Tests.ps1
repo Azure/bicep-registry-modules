@@ -61,8 +61,8 @@ Describe 'CI parameter workflow integration' {
         }
         $env:GITHUB_WORKSPACE = $repoRootPath
         $env:GITHUB_OUTPUT = Join-Path $TestDrive 'output.txt'
-        $env:AVM_CI_VARIABLES = '{"CI_ADMINMEMBERSSECRET":"variable-value","CI_RESOURCELOCATION":"eastus"}'
-        $env:AVM_CI_SECRETS = '{"CI_ADMINMEMBERSSECRET":"secret-value","CI_SECURECONFIG":"{\"password\":\"nested-secret-value\"}"}'
+        $env:AVM_CI_VARIABLES = '{"CI_ADMINMEMBERSSECRET":"variable-value","CI_RESOURCE_LOCATION":"eastus","CI__RESOURCE_NAME":"literal-name"}'
+        $env:AVM_CI_SECRETS = '{"CI_ADMIN_MEMBERS_SECRET":"secret-value","CI__SECURECONFIG":"{\"password\":\"nested-secret-value\"}"}'
 
         $templatePath = Join-Path $TestDrive 'template.json'
         @{
@@ -70,6 +70,7 @@ Describe 'CI parameter workflow integration' {
                 adminMembersSecret = @{ type = 'secureString' }
                 secureConfig       = @{ type = 'secureObject' }
                 resourceLocation   = @{ type = 'string' }
+                resource_name      = @{ type = 'string' }
                 baseTime           = @{ type = 'string' }
             }
         } | ConvertTo-Json -Depth 5 | Set-Content -Path $templatePath
@@ -83,6 +84,7 @@ type testConfig = {
 }
 param secureConfig testConfig
 param resourceLocation string
+param resource_name string
 param baseTime string
 
 @secure()
@@ -90,6 +92,7 @@ output configuredParameters object = {
   adminMembersSecret: adminMembersSecret
   secureConfig: secureConfig
   resourceLocation: resourceLocation
+  resource_name: resource_name
   baseTime: baseTime
 }
 '@ | Set-Content -Path $bicepPath
@@ -163,6 +166,7 @@ output configuredParameters object = {
             (ConvertFrom-SecureString -SecureString $AdditionalParameters.adminMembersSecret -AsPlainText) -eq 'secret-value' -and
             $AdditionalParameters.secureConfig.password -eq 'nested-secret-value' -and
             $AdditionalParameters.resourceLocation -eq 'eastus' -and
+            $AdditionalParameters.resource_name -eq 'literal-name' -and
             -not [string]::IsNullOrEmpty($AdditionalParameters.baseTime)
         }
         ($messages | Out-String) | Should -Not -Match 'secret-value|nested-secret-value|variable-value'
