@@ -167,6 +167,8 @@ jobs:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
+          githubVariables: ${{ toJSON(vars) }}
+          githubSecrets: ${{ toJSON(secrets) }}
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
           TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}

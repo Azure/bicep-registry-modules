@@ -53,6 +53,14 @@ inputs:
   customTokens:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
     required: false
+  githubVariables:
+    description: "Resolved GitHub Actions vars context as JSON. CI_ ignores underscores; CI__ preserves literal spelling."
+    default: "{}"
+    required: false
+  githubSecrets:
+    description: "Resolved GitHub Actions secrets context as JSON. CI_ or CI__ secrets override variables for the same parameter."
+    default: "{}"
+    required: false
   removeDeployment:
     description: 'Set "true" to set module up for removal'
     default: "true"
@@ -94,6 +102,12 @@ runs:
             Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFilePath" -Verbose
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
           }
+
+    - name: "Warn about CI Key Vault deprecation"
+      if: env.skip_deployment_ci == 'false' && env.CI_KEY_VAULT_NAME != ''
+      shell: pwsh
+      run: |
+        Write-Output '::warning title=CI Key Vault deprecation::CI_KEY_VAULT_NAME support may be removed in a future release. Use CI_-prefixed GitHub Actions secrets or variables instead. GitHub secrets override variables, and both override Key Vault values.'
 
     - name: "Select test subscription"
       id: get-test-subscription
@@ -289,6 +303,9 @@ runs:
     - name: "Validate template file"
       if: env.skip_deployment_ci == 'false'
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
+        AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -297,6 +314,7 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -310,10 +328,14 @@ runs:
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
             $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Failed to compile the test template.'
+            }
           } else {
-            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+            $moduleTemplateContent = Get-Content $moduleTestFilePath -Raw | ConvertFrom-Json -AsHashtable
           }
+          $moduleTemplateParameters = $moduleTemplateContent.parameters ?? @{}
+          $moduleTemplatePossibleParameters = $moduleTemplateParameters.psbase.Keys
 
           # ----------------- #
           # Invoke validation #
@@ -339,26 +361,22 @@ runs:
             }
           }
 
-          # Fetch & add custom secrets, if any
-          # -----------------------------------
-          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
-          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
-            # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
-
-            foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
-              if($moduleTemplatePossibleParameters -contains $formattedName) {
-                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-                $functionInput.AdditionalParameters += @{
-                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
-                }
-              }
-            }
+          $ciParameterInput = @{
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
+          }
+          $ciParameters = Get-CIParameterMap @ciParameterInput
+          foreach ($parameter in $ciParameters.GetEnumerator()) {
+            $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }
 
           Write-Verbose 'Invoke task with' -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          $logInput = $functionInput.Clone()
+          $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
+          Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
 
           Test-TemplateDeployment @functionInput -Verbose
 
@@ -370,6 +388,9 @@ runs:
       if: env.skip_deployment_ci == 'false'
       id: deploy_step
       uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      env:
+        AVM_CI_VARIABLES: ${{ inputs.githubVariables }}
+        AVM_CI_SECRETS: ${{ inputs.githubSecrets }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -378,6 +399,7 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -390,10 +412,14 @@ runs:
           # Determine possible parameters depending on file type
           if ((Split-Path $moduleTestFilePath -Extension) -eq '.bicep') {
             $moduleTemplateContent = bicep build $moduleTestFilePath --stdout | ConvertFrom-Json -AsHashtable
-            $moduleTemplatePossibleParameters = $moduleTemplateContent.parameters.Keys
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Failed to compile the test template.'
+            }
           } else {
-            $moduleTemplatePossibleParameters = ((Get-Content $moduleTestFilePath -Raw) | ConvertFrom-Json -AsHashtable).parameters.keys
+            $moduleTemplateContent = Get-Content $moduleTestFilePath -Raw | ConvertFrom-Json -AsHashtable
           }
+          $moduleTemplateParameters = $moduleTemplateContent.parameters ?? @{}
+          $moduleTemplatePossibleParameters = $moduleTemplateParameters.psbase.Keys
 
           # ----------------- #
           # Invoke deployment #
@@ -419,26 +445,22 @@ runs:
             }
           }
 
-          # Fetch & add custom secrets, if any
-          # -----------------------------------
-          $keyVaultName = "${{ env.CI_KEY_VAULT_NAME }}"
-          if(-not [String]::IsNullOrEmpty($keyVaultName)) {
-            # Note: This action requires at least 'Key Vault Secrets User' permissions
-            $customKeyVaultSecrets = Get-AzKeyVaultSecret -VaultName $keyVaultName | Where-Object { $_.Name -match '^CI-.+' }
-
-            foreach($customSecret in $customKeyVaultSecrets) {
-              $formattedName = $customSecret.Name -replace '^CI-' # e.g. 'CI-mySecret' -> 'mySecret'
-              if($moduleTemplatePossibleParameters -contains $formattedName) {
-                Write-Verbose ('Setting value for parameter [{0}]' -f $formattedName) -Verbose
-                $functionInput.AdditionalParameters += @{
-                  $formattedName = (Get-AzKeyVaultSecret -VaultName $keyVaultName -Name $customSecret.Name).SecretValue
-                }
-              }
-            }
+          $ciParameterInput = @{
+            TemplateParameters  = $moduleTemplateParameters
+            TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
+            GitHubVariables     = $env:AVM_CI_VARIABLES
+            GitHubSecrets       = $env:AVM_CI_SECRETS
+            KeyVaultName        = $env:CI_KEY_VAULT_NAME
+          }
+          $ciParameters = Get-CIParameterMap @ciParameterInput
+          foreach ($parameter in $ciParameters.GetEnumerator()) {
+            $functionInput.AdditionalParameters[$parameter.Key] = $parameter.Value
           }
 
           Write-Verbose 'Invoke task with' -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          $logInput = $functionInput.Clone()
+          $logInput.AdditionalParameters = @($functionInput.AdditionalParameters.psbase.Keys)
+          Write-Verbose ($logInput | ConvertTo-Json | Out-String) -Verbose
 
           # Invoke deployment
           $res = New-TemplateDeployment @functionInput -Verbose
