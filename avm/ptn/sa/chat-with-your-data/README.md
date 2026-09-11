@@ -30,35 +30,65 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
+| `Microsoft.App/containerApps` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/containerApps)</li></ul> |
+| `Microsoft.App/containerApps/authConfigs` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_containerapps_authconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/containerApps/authConfigs)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Automanage/configurationProfileAssignments` | 2022-05-04 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.automanage_configurationprofileassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments)</li></ul> |
-| `Microsoft.CognitiveServices/accounts` | 2026-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-03-01/accounts)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2026-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-03-01/accounts/commitmentPlans)</li></ul> |
-| `Microsoft.CognitiveServices/accounts/deployments` | 2026-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-03-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/commitmentPlans` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_commitmentplans.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/commitmentPlans)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/defenderForAISettings` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_defenderforaisettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/defenderForAISettings)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-06-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/deployments` | 2026-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_deployments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2026-05-01/accounts/deployments)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/projects)</li></ul> |
+| `Microsoft.CognitiveServices/accounts/projects/connections` | 2025-12-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.cognitiveservices_accounts_projects_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-12-01/accounts/projects/connections)</li></ul> |
 | `Microsoft.Compute/disks` | 2025-01-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_disks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2025-01-02/disks)</li></ul> |
+| `Microsoft.Compute/proximityPlacementGroups` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_proximityplacementgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-08-01/proximityPlacementGroups)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/administrators)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/configurations)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-06-01-preview/flexibleServers/databases)</li></ul> |
-| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2025-08-01/flexibleServers/firewallRules)</li></ul> |
+| `Microsoft.ContainerRegistry/registries` | 2025-06-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-06-01-preview/registries)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_cacherules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/cacheRules)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_credentialsets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/credentialSets)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/replications` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/replications)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_scopemaps.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/scopeMaps)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tasks` | 2025-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tasks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-03-01-preview/registries/tasks)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/tokens` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_tokens.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/tokens)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/webhooks` | 2025-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_webhooks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-11-01/registries/webhooks)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/administrators` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_administrators.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/administrators)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_advancedthreatprotectionsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/advancedThreatProtectionSettings)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2024-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2024-08-01/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/configurations` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_configurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/configurations)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/databases` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_databases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/databases)</li></ul> |
+| `Microsoft.DBforPostgreSQL/flexibleServers/firewallRules` | 2026-01-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.dbforpostgresql_flexibleservers_firewallrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforPostgreSQL/2026-01-01-preview/flexibleServers/firewallRules)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts` | 2025-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-11-01-preview/databaseAccounts)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-11-01-preview/databaseAccounts/sqlDatabases)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-11-01-preview/databaseAccounts/sqlDatabases/containers)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2025-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-11-01-preview/databaseAccounts/sqlRoleAssignments)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2025-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-11-01-preview/databaseAccounts/sqlRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces/tables)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/views` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces_views.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraKeyspaces/views)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions` | 2025-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandraroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-05-01-preview/databaseAccounts/cassandraRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_gremlindatabases_graphs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/gremlinDatabases/graphs)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.EventGrid/systemTopics` | 2025-02-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_systemtopics.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics)</li></ul> |
 | `Microsoft.EventGrid/systemTopics/eventSubscriptions` | 2025-02-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.eventgrid_systemtopics_eventsubscriptions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics/eventSubscriptions)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
 | `Microsoft.Insights/components` | 2020-02-02 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components)</li></ul> |
 | `microsoft.insights/components/linkedStorageAccounts` | 2020-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_components_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts)</li></ul> |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRuleAssociations)</li></ul> |
+| `Microsoft.Insights/dataCollectionRules` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionrules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRules)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2025-05-01/vaults/secrets)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
@@ -68,16 +98,24 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/bastionHosts` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_bastionhosts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/bastionHosts)</li></ul> |
 | `Microsoft.Network/networkInterfaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networkinterfaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkInterfaces)</li></ul> |
 | `Microsoft.Network/networkSecurityGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_networksecuritygroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/networkSecurityGroups)</li></ul> |
-| `Microsoft.Network/privateDnsZones` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones)</li></ul> |
+| `Microsoft.Network/privateDnsZones` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones)</li></ul> |
+| `Microsoft.Network/privateDnsZones/A` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_a.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A)</li></ul> |
+| `Microsoft.Network/privateDnsZones/AAAA` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_aaaa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA)</li></ul> |
+| `Microsoft.Network/privateDnsZones/CNAME` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_cname.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME)</li></ul> |
+| `Microsoft.Network/privateDnsZones/MX` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_mx.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX)</li></ul> |
+| `Microsoft.Network/privateDnsZones/PTR` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_ptr.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR)</li></ul> |
+| `Microsoft.Network/privateDnsZones/SOA` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_soa.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA)</li></ul> |
+| `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
+| `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
-| `Microsoft.Network/virtualNetworks` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks)</li></ul> |
-| `Microsoft.Network/virtualNetworks/subnets` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets)</li></ul> |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
@@ -87,21 +125,24 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/storageInsightConfigs)</li></ul> |
 | `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
-| `Microsoft.Portal/dashboards` | 2020-09-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.portal_dashboards.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Portal/2020-09-01-preview/dashboards)</li></ul> |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | 2025-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.recoveryservices_vaults_backupfabrics_protectioncontainers_protecteditems.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2025-02-01/vaults/backupFabrics/protectionContainers/protectedItems)</li></ul> |
 | `Microsoft.Resources/tags` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_tags.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-04-01/tags)</li></ul> |
 | `Microsoft.Search/searchServices` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices)</li></ul> |
-| `Microsoft.Search/searchServices` | 2026-03-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2026-03-01-preview/searchServices)</li></ul> |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.search_searchservices_sharedprivatelinkresources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-05-01/searchServices/sharedPrivateLinkResources)</li></ul> |
 | `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
-| `Microsoft.Storage/storageAccounts` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-08-01/storageAccounts)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-08-01/storageAccounts/blobServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-08-01/storageAccounts/blobServices/containers)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-08-01/storageAccounts/queueServices)</li></ul> |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2025-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-08-01/storageAccounts/queueServices/queues)</li></ul> |
-| `Microsoft.Web/serverfarms` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_serverfarms.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/serverfarms)</li></ul> |
-| `Microsoft.Web/sites` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites)</li></ul> |
-| `Microsoft.Web/sites/config` | 2025-03-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.web_sites_config.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2025-03-01/sites/config)</li></ul> |
+| `Microsoft.Storage/storageAccounts` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_blobservices_containers_immutabilitypolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/blobServices/containers/immutabilityPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/fileServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_fileservices_shares.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/fileServices/shares)</li></ul> |
+| `Microsoft.Storage/storageAccounts/localUsers` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_localusers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/localUsers)</li></ul> |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_managementpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/managementPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/objectReplicationPolicies` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_objectreplicationpolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-01-01/storageAccounts/objectReplicationPolicies)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_queueservices_queues.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/queueServices/queues)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices)</li></ul> |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | 2025-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.storage_storageaccounts_tableservices_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2025-06-01/storageAccounts/tableServices/tables)</li></ul> |
 
 ## Usage examples
 
@@ -111,154 +152,9 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/chat-with-your-data:<version>`.
 
-- [Sandbox With Azure Cosmos DB](#example-1-sandbox-with-azure-cosmos-db)
-- [Sandbox With Azure Database for PostgreSQL flexible servers](#example-2-sandbox-with-azure-database-for-postgresql-flexible-servers)
-- [WAF-aligned](#example-3-waf-aligned)
+- [WAF-aligned](#example-1-waf-aligned)
 
-### Example 1: _Sandbox With Azure Cosmos DB_
-
-This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Cosmos DB.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox-cosmos]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  params: {
-    azureOpenAIEmbeddingModelCapacity: 10
-    azureOpenAIModelCapacity: 10
-    databaseType: 'CosmosDB'
-    location: '<location>'
-    solutionName: '<solutionName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "azureOpenAIEmbeddingModelCapacity": {
-      "value": 10
-    },
-    "azureOpenAIModelCapacity": {
-      "value": 10
-    },
-    "databaseType": {
-      "value": "CosmosDB"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "<solutionName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param azureOpenAIEmbeddingModelCapacity = 10
-param azureOpenAIModelCapacity = 10
-param databaseType = 'CosmosDB'
-param location = '<location>'
-param solutionName = '<solutionName>'
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox With Azure Database for PostgreSQL flexible servers_
-
-This deploys the sandbox configuration for Chat with your data Solution Accelerator with database as Azure Database for PostgreSQL flexible servers.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
-  params: {
-    azureOpenAIEmbeddingModelCapacity: 10
-    azureOpenAIModelCapacity: 10
-    location: '<location>'
-    solutionName: '<solutionName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "azureOpenAIEmbeddingModelCapacity": {
-      "value": 10
-    },
-    "azureOpenAIModelCapacity": {
-      "value": 10
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "solutionName": {
-      "value": "<solutionName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
-
-param azureOpenAIEmbeddingModelCapacity = 10
-param azureOpenAIModelCapacity = 10
-param location = '<location>'
-param solutionName = '<solutionName>'
-```
-
-</details>
-<p>
-
-### Example 3: _WAF-aligned_
+### Example 1: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework
 
@@ -272,17 +168,20 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   params: {
-    azureOpenAIEmbeddingModelCapacity: 10
-    azureOpenAIModelCapacity: 10
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    embeddingModelCapacity: 10
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
     enableScalability: true
     enableTelemetry: true
+    gptModelCapacity: 10
     location: '<location>'
     solutionName: '<solutionName>'
-    virtualMachineAdminPassword: '<virtualMachineAdminPassword>'
-    virtualMachineAdminUsername: 'adminuser'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
   }
 }
 ```
@@ -299,10 +198,12 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureOpenAIEmbeddingModelCapacity": {
-      "value": 10
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
     },
-    "azureOpenAIModelCapacity": {
+    // Non-required parameters
+    "embeddingModelCapacity": {
       "value": 10
     },
     "enableMonitoring": {
@@ -320,16 +221,19 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
     "enableTelemetry": {
       "value": true
     },
+    "gptModelCapacity": {
+      "value": 10
+    },
     "location": {
       "value": "<location>"
     },
     "solutionName": {
       "value": "<solutionName>"
     },
-    "virtualMachineAdminPassword": {
-      "value": "<virtualMachineAdminPassword>"
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
     },
-    "virtualMachineAdminUsername": {
+    "vmAdminUsername": {
       "value": "adminuser"
     }
   }
@@ -346,17 +250,20 @@ module chatWithYourData 'br/public:avm/ptn/sa/chat-with-your-data:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/sa/chat-with-your-data:<version>'
 
-param azureOpenAIEmbeddingModelCapacity = 10
-param azureOpenAIModelCapacity = 10
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param embeddingModelCapacity = 10
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
 param enableScalability = true
 param enableTelemetry = true
+param gptModelCapacity = 10
 param location = '<location>'
 param solutionName = '<solutionName>'
-param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
-param virtualMachineAdminUsername = 'adminuser'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
 ```
 
 </details>
@@ -364,488 +271,93 @@ param virtualMachineAdminUsername = 'adminuser'
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureAiServiceLocation`](#parameter-azureaiservicelocation) | string | Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedImageProcessingMaxImages`](#parameter-advancedimageprocessingmaximages) | int | The maximum number of images to pass to the vision model in a single request. |
-| [`appEnvironment`](#parameter-appenvironment) | string | Application Environment. |
-| [`appversion`](#parameter-appversion) | string | Image version tag to use. |
-| [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Azure OpenAI Api Version. |
-| [`azureOpenAIEmbeddingModel`](#parameter-azureopenaiembeddingmodel) | string | Azure OpenAI Embedding Model Deployment Name. |
-| [`azureOpenAIEmbeddingModelCapacity`](#parameter-azureopenaiembeddingmodelcapacity) | int | Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota . |
-| [`azureOpenAIEmbeddingModelName`](#parameter-azureopenaiembeddingmodelname) | string | Azure OpenAI Embedding Model Name. |
-| [`azureOpenAIEmbeddingModelVersion`](#parameter-azureopenaiembeddingmodelversion) | string | Azure OpenAI Embedding Model Version. |
-| [`azureOpenAIMaxTokens`](#parameter-azureopenaimaxtokens) | string | Azure OpenAI Max Tokens. |
-| [`azureOpenAIModel`](#parameter-azureopenaimodel) | string | Azure OpenAI Model Deployment Name. |
-| [`azureOpenAIModelCapacity`](#parameter-azureopenaimodelcapacity) | int | Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota. |
-| [`azureOpenAIModelName`](#parameter-azureopenaimodelname) | string | Azure OpenAI Model Name. |
-| [`azureOpenAIModelVersion`](#parameter-azureopenaimodelversion) | string | Azure OpenAI Model Version. |
-| [`azureOpenAISkuName`](#parameter-azureopenaiskuname) | string | Name of Azure OpenAI Resource SKU. |
-| [`azureOpenAIStopSequence`](#parameter-azureopenaistopsequence) | string | Azure OpenAI Stop Sequence. |
-| [`azureOpenAIStream`](#parameter-azureopenaistream) | string | Whether or not to stream responses from Azure OpenAI. |
-| [`azureOpenAISystemMessage`](#parameter-azureopenaisystemmessage) | string | Azure OpenAI System Message. |
-| [`azureOpenAITemperature`](#parameter-azureopenaitemperature) | string | Azure OpenAI Temperature. |
-| [`azureOpenAITopP`](#parameter-azureopenaitopp) | string | Azure OpenAI Top P. |
-| [`azureSearchChunkColumn`](#parameter-azuresearchchunkcolumn) | string | Chunk column. |
-| [`azureSearchContentColumn`](#parameter-azuresearchcontentcolumn) | string | Content columns. |
-| [`azureSearchConversationLogIndex`](#parameter-azuresearchconversationlogindex) | string | Azure AI Search Conversation Log Index. |
-| [`azureSearchDimensions`](#parameter-azuresearchdimensions) | string | Azure AI Search vector field dimensions that must match the selected embedding model (1536 for text-embedding-3-small, 3072 for text-embedding-3-large). Only applies when databaseType is CosmosDB. |
-| [`azureSearchEnableInDomain`](#parameter-azuresearchenableindomain) | string | Enable in domain. |
-| [`azureSearchFieldId`](#parameter-azuresearchfieldid) | string | Id columns. |
-| [`azureSearchFieldsMetadata`](#parameter-azuresearchfieldsmetadata) | string | Metadata column. |
-| [`azureSearchFilenameColumn`](#parameter-azuresearchfilenamecolumn) | string | Filename column. |
-| [`azureSearchFilter`](#parameter-azuresearchfilter) | string | Search filter. |
-| [`azureSearchIndexIsPrechunked`](#parameter-azuresearchindexisprechunked) | string | Is the index prechunked. |
-| [`azureSearchLayoutTextColumn`](#parameter-azuresearchlayouttextcolumn) | string | Layout Text column. |
-| [`azureSearchOffsetColumn`](#parameter-azuresearchoffsetcolumn) | string | Offset column. |
-| [`azureSearchSemanticSearchConfig`](#parameter-azuresearchsemanticsearchconfig) | string | Semantic search config. |
-| [`azureSearchSku`](#parameter-azuresearchsku) | string | The SKU of the search service you want to create. E.g. free or standard. |
-| [`azureSearchSourceColumn`](#parameter-azuresearchsourcecolumn) | string | Source column. |
-| [`azureSearchTextColumn`](#parameter-azuresearchtextcolumn) | string | Text column. |
-| [`azureSearchTitleColumn`](#parameter-azuresearchtitlecolumn) | string | Title column. |
-| [`azureSearchTopK`](#parameter-azuresearchtopk) | string | Top K results. |
-| [`azureSearchUrlColumn`](#parameter-azuresearchurlcolumn) | string | Url column. |
-| [`azureSearchUseIntegratedVectorization`](#parameter-azuresearchuseintegratedvectorization) | bool | Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false. |
-| [`azureSearchUseSemanticSearch`](#parameter-azuresearchusesemanticsearch) | bool | Use semantic search. |
-| [`azureSearchVectorColumn`](#parameter-azuresearchvectorcolumn) | string | Vector columns. |
-| [`computerVisionLocation`](#parameter-computervisionlocation) | string | Location of Computer Vision Resource (if useAdvancedImageProcessing=true). |
-| [`computerVisionSkuName`](#parameter-computervisionskuname) | string | Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true). |
-| [`computerVisionVectorizeImageApiVersion`](#parameter-computervisionvectorizeimageapiversion) | string | Azure Computer Vision Vectorize Image API Version. |
-| [`computerVisionVectorizeImageModelVersion`](#parameter-computervisionvectorizeimagemodelversion) | string | Azure Computer Vision Vectorize Image Model Version. |
-| [`conversationFlow`](#parameter-conversationflow) | string | Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom. |
-| [`createdBy`](#parameter-createdby) | string | Created by user name. |
-| [`databaseType`](#parameter-databasetype) | string | The type of database to deploy (cosmos or postgres). |
-| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Enable purge protection for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
-| [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
+| [`azureAiAgentApiVersion`](#parameter-azureaiagentapiversion) | string | Azure AI Agent API version (used by the Agent Framework orchestrator). |
+| [`azureOpenAiApiVersion`](#parameter-azureopenaiapiversion) | string | Azure OpenAI API version exposed via the OpenAI-compatible endpoint (used by the LangGraph orchestrator). |
+| [`createdBy`](#parameter-createdby) | string | Identifier of the user creating the deployment, recorded in the resource group tags. |
+| [`databaseType`](#parameter-databasetype) | string | Selects both the chat-history backend and the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is not deployed). Locked at deploy time. |
+| [`deployingUserPrincipalType`](#parameter-deployinguserprincipaltype) | string | Principal type of the deploying user. Use ServicePrincipal for CI/CD pipelines with OIDC. |
+| [`embeddingModelCapacity`](#parameter-embeddingmodelcapacity) | int | Token capacity for the embedding model. |
+| [`embeddingModelDeploymentType`](#parameter-embeddingmodeldeploymenttype) | string | SKU for the embedding model deployment. |
+| [`embeddingModelName`](#parameter-embeddingmodelname) | string | Embedding model deployment name (used by Foundry IQ and the LangGraph indexer). |
+| [`embeddingModelVersion`](#parameter-embeddingmodelversion) | string | Embedding model version. |
+| [`enableMonitoring`](#parameter-enablemonitoring) | bool | Deploy Log Analytics + Application Insights and wire diagnostic settings on every applicable resource. |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Deploy a VNet, private endpoints, and disable public network access on data-plane resources. Wires the regional VNet (`modules/virtualNetwork.bicep`), private DNS zones, private endpoints for every data-plane resource, regional VNet integration for compute, and Bastion. Setting this to true is the WAF-aligned topology and requires no follow-up tasks; flipping it back to false re-enables public endpoints with default firewall rules. |
+| [`enableRedundancy`](#parameter-enableredundancy) | bool | Zone-redundant + paired-region failover on databases, App Service Plan, Container Apps, and Storage. |
+| [`enableScalability`](#parameter-enablescalability) | bool | Higher SKUs and autoscaling on App Service Plan, Container Apps, Search, and PostgreSQL. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hostingModel`](#parameter-hostingmodel) | string | Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment. |
-| [`hostingPlanSku`](#parameter-hostingplansku) | string | The pricing tier for the App Service plan. |
-| [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed. |
-| [`logLevel`](#parameter-loglevel) | string | The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO. |
-| [`newGuidString`](#parameter-newguidstring) | string | A new GUID string generated for this deployment. This can be used for unique naming if needed. |
-| [`orchestrationStrategy`](#parameter-orchestrationstrategy) | string | Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel. |
-| [`principal`](#parameter-principal) | object | Principal object to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}. |
-| [`recognizedLanguages`](#parameter-recognizedlanguages) | string | List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages. |
-| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
-| [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
-| [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
-| [`useAdvancedImageProcessing`](#parameter-useadvancedimageprocessing) | bool | Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false. |
-| [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
-| [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
-| [`vmSize`](#parameter-vmsize) | string | Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true. |
+| [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | Token capacity (thousands of TPM) for the primary chat model. |
+| [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | SKU for the primary chat model deployment. |
+| [`gptModelName`](#parameter-gptmodelname) | string | Primary chat model deployment name. |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Primary chat model version. |
+| [`ingestionTrigger`](#parameter-ingestiontrigger) | string | How an uploaded document is picked up for indexing. direct_enqueue: the backend admin upload enqueues the doc-processing message itself (works without an Event Grid subscription). event_grid: a storage Event Grid subscription fans BlobCreated/BlobDeleted to the blob-events queue and the blob_event Function translates each (create -> ingest, delete -> de-index), so the backend writes the blob only (no double-ingest). Flip to event_grid only after the blob_event Function blueprint is deployed. |
+| [`location`](#parameter-location) | string | Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where all three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions. |
+| [`reasoningModelCapacity`](#parameter-reasoningmodelcapacity) | int | Token capacity for the reasoning model. |
+| [`reasoningModelDeploymentType`](#parameter-reasoningmodeldeploymenttype) | string | SKU for the reasoning model deployment. |
+| [`reasoningModelName`](#parameter-reasoningmodelname) | string | Reasoning model deployment name (surfaced via the SSE reasoning channel). |
+| [`reasoningModelVersion`](#parameter-reasoningmodelversion) | string | Reasoning model version. |
+| [`searchIndexName`](#parameter-searchindexname) | string | Chat index name the azure_search provider reads/writes and post_provision.py creates. Single-sourced so the backend env binding and the azd output (consumed by the postdeploy seed self-check) cannot diverge. |
+| [`searchKnowledgeBaseApiVersion`](#parameter-searchknowledgebaseapiversion) | string | Foundry IQ knowledge base / knowledge source REST API version (operator-tunable so the KB protocol can advance without a new image). |
+| [`searchKnowledgeBaseName`](#parameter-searchknowledgebasename) | string | Foundry IQ knowledge base name the agent_framework orchestrator grounds on (cosmosdb mode). Must match the name seeded by post_provision.py and resolved through the Project-Search connection. |
+| [`searchKnowledgeSourceName`](#parameter-searchknowledgesourcename) | string | Foundry IQ knowledge source name backing the knowledge base (the search-index knowledge source seeded by post_provision.py). |
+| [`solutionName`](#parameter-solutionname) | string | Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits. |
+| [`solutionUniqueText`](#parameter-solutionuniquetext) | string | Short unique suffix appended to global resource names. Defaults to a 5-char hash of subscription + RG + solution name. |
+| [`tags`](#parameter-tags) | object | Tags applied to every deployed resource. |
+| [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | VM admin password (AVM-WAF only, when private networking is enabled). |
+| [`vmAdminUsername`](#parameter-vmadminusername) | securestring | VM admin username (AVM-WAF only, when private networking is enabled). |
+| [`vmSize`](#parameter-vmsize) | string | VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3. |
 
-### Parameter: `advancedImageProcessingMaxImages`
+### Parameter: `azureAiServiceLocation`
 
-The maximum number of images to pass to the vision model in a single request.
+Region for AI Services / Foundry deployments. Restricted to regions with GPT-4.1-mini GlobalStandard availability.
 
-- Required: No
-- Type: int
-- Default: `1`
-
-### Parameter: `appEnvironment`
-
-Application Environment.
-
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'Prod'`
-
-### Parameter: `appversion`
-
-Image version tag to use.
-
-- Required: No
-- Type: string
-- Default: `'latest_waf_2026-04-20_4083'`
-
-### Parameter: `azureOpenAIApiVersion`
-
-Azure OpenAI Api Version.
-
-- Required: No
-- Type: string
-- Default: `'2024-02-01'`
-
-### Parameter: `azureOpenAIEmbeddingModel`
-
-Azure OpenAI Embedding Model Deployment Name.
-
-- Required: No
-- Type: string
-- Default: `'text-embedding-3-small'`
-
-### Parameter: `azureOpenAIEmbeddingModelCapacity`
-
-Azure OpenAI Embedding Model Capacity - See here for more info https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota .
-
-- Required: No
-- Type: int
-- Default: `100`
-
-### Parameter: `azureOpenAIEmbeddingModelName`
-
-Azure OpenAI Embedding Model Name.
-
-- Required: No
-- Type: string
-- Default: `'text-embedding-3-small'`
-
-### Parameter: `azureOpenAIEmbeddingModelVersion`
-
-Azure OpenAI Embedding Model Version.
-
-- Required: No
-- Type: string
-- Default: `'1'`
-
-### Parameter: `azureOpenAIMaxTokens`
-
-Azure OpenAI Max Tokens.
-
-- Required: No
-- Type: string
-- Default: `'1000'`
-
-### Parameter: `azureOpenAIModel`
-
-Azure OpenAI Model Deployment Name.
-
-- Required: No
-- Type: string
-- Default: `'gpt-4.1'`
-
-### Parameter: `azureOpenAIModelCapacity`
-
-Azure OpenAI Model Capacity - See here for more info  https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/quota.
-
-- Required: No
-- Type: int
-- Default: `150`
-
-### Parameter: `azureOpenAIModelName`
-
-Azure OpenAI Model Name.
-
-- Required: No
-- Type: string
-- Default: `'gpt-4.1'`
-
-### Parameter: `azureOpenAIModelVersion`
-
-Azure OpenAI Model Version.
-
-- Required: No
-- Type: string
-- Default: `'2025-04-14'`
-
-### Parameter: `azureOpenAISkuName`
-
-Name of Azure OpenAI Resource SKU.
-
-- Required: No
-- Type: string
-- Default: `'S0'`
-
-### Parameter: `azureOpenAIStopSequence`
-
-Azure OpenAI Stop Sequence.
-
-- Required: No
-- Type: string
-- Default: `'\n'`
-
-### Parameter: `azureOpenAIStream`
-
-Whether or not to stream responses from Azure OpenAI.
-
-- Required: No
-- Type: string
-- Default: `'true'`
-
-### Parameter: `azureOpenAISystemMessage`
-
-Azure OpenAI System Message.
-
-- Required: No
-- Type: string
-- Default: `'You are an AI assistant that helps people find information.'`
-
-### Parameter: `azureOpenAITemperature`
-
-Azure OpenAI Temperature.
-
-- Required: No
-- Type: string
-- Default: `'0'`
-
-### Parameter: `azureOpenAITopP`
-
-Azure OpenAI Top P.
-
-- Required: No
-- Type: string
-- Default: `'1'`
-
-### Parameter: `azureSearchChunkColumn`
-
-Chunk column.
-
-- Required: No
-- Type: string
-- Default: `'chunk'`
-
-### Parameter: `azureSearchContentColumn`
-
-Content columns.
-
-- Required: No
-- Type: string
-- Default: `'content'`
-
-### Parameter: `azureSearchConversationLogIndex`
-
-Azure AI Search Conversation Log Index.
-
-- Required: No
-- Type: string
-- Default: `'conversations'`
-
-### Parameter: `azureSearchDimensions`
-
-Azure AI Search vector field dimensions that must match the selected embedding model (1536 for text-embedding-3-small, 3072 for text-embedding-3-large). Only applies when databaseType is CosmosDB.
-
-- Required: No
-- Type: string
-- Default: `'1536'`
-
-### Parameter: `azureSearchEnableInDomain`
-
-Enable in domain.
-
-- Required: No
-- Type: string
-- Default: `'true'`
-
-### Parameter: `azureSearchFieldId`
-
-Id columns.
-
-- Required: No
-- Type: string
-- Default: `'id'`
-
-### Parameter: `azureSearchFieldsMetadata`
-
-Metadata column.
-
-- Required: No
-- Type: string
-- Default: `'metadata'`
-
-### Parameter: `azureSearchFilenameColumn`
-
-Filename column.
-
-- Required: No
-- Type: string
-- Default: `'filename'`
-
-### Parameter: `azureSearchFilter`
-
-Search filter.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `azureSearchIndexIsPrechunked`
-
-Is the index prechunked.
-
-- Required: No
-- Type: string
-- Default: `'false'`
-
-### Parameter: `azureSearchLayoutTextColumn`
-
-Layout Text column.
-
-- Required: No
-- Type: string
-- Default: `'layoutText'`
-
-### Parameter: `azureSearchOffsetColumn`
-
-Offset column.
-
-- Required: No
-- Type: string
-- Default: `'offset'`
-
-### Parameter: `azureSearchSemanticSearchConfig`
-
-Semantic search config.
-
-- Required: No
-- Type: string
-- Default: `'default'`
-
-### Parameter: `azureSearchSku`
-
-The SKU of the search service you want to create. E.g. free or standard.
-
-- Required: No
-- Type: string
-- Default: `'standard'`
 - Allowed:
   ```Bicep
   [
-    'basic'
-    'free'
-    'standard'
-    'standard2'
-    'standard3'
-  ]
-  ```
-
-### Parameter: `azureSearchSourceColumn`
-
-Source column.
-
-- Required: No
-- Type: string
-- Default: `'source'`
-
-### Parameter: `azureSearchTextColumn`
-
-Text column.
-
-- Required: No
-- Type: string
-- Default: `'text'`
-
-### Parameter: `azureSearchTitleColumn`
-
-Title column.
-
-- Required: No
-- Type: string
-- Default: `'title'`
-
-### Parameter: `azureSearchTopK`
-
-Top K results.
-
-- Required: No
-- Type: string
-- Default: `'5'`
-
-### Parameter: `azureSearchUrlColumn`
-
-Url column.
-
-- Required: No
-- Type: string
-- Default: `'url'`
-
-### Parameter: `azureSearchUseIntegratedVectorization`
-
-Whether to use Azure Search Integrated Vectorization. If the database type is PostgreSQL, set this to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureSearchUseSemanticSearch`
-
-Use semantic search.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `azureSearchVectorColumn`
-
-Vector columns.
-
-- Required: No
-- Type: string
-- Default: `'content_vector'`
-
-### Parameter: `computerVisionLocation`
-
-Location of Computer Vision Resource (if useAdvancedImageProcessing=true).
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'eastus'
-    'francecentral'
+    'australiaeast'
+    'canadaeast'
+    'eastus2'
+    'japaneast'
     'koreacentral'
-    'northeurope'
-    'southeastasia'
-    'westeurope'
-    'westus'
+    'polandcentral'
+    'swedencentral'
+    'switzerlandnorth'
+    'uaenorth'
+    'uksouth'
+    'westus3'
   ]
   ```
 
-### Parameter: `computerVisionSkuName`
+### Parameter: `azureAiAgentApiVersion`
 
-Name of Computer Vision Resource SKU (if useAdvancedImageProcessing=true).
-
-- Required: No
-- Type: string
-- Default: `'S1'`
-- Allowed:
-  ```Bicep
-  [
-    'F0'
-    'S1'
-  ]
-  ```
-
-### Parameter: `computerVisionVectorizeImageApiVersion`
-
-Azure Computer Vision Vectorize Image API Version.
+Azure AI Agent API version (used by the Agent Framework orchestrator).
 
 - Required: No
 - Type: string
-- Default: `'2024-02-01'`
+- Default: `'2025-05-01'`
 
-### Parameter: `computerVisionVectorizeImageModelVersion`
+### Parameter: `azureOpenAiApiVersion`
 
-Azure Computer Vision Vectorize Image Model Version.
-
-- Required: No
-- Type: string
-- Default: `'2023-04-15'`
-
-### Parameter: `conversationFlow`
-
-Chat conversation type: custom or byod. If the database type is PostgreSQL, set this to custom.
+Azure OpenAI API version exposed via the OpenAI-compatible endpoint (used by the LangGraph orchestrator).
 
 - Required: No
 - Type: string
-- Default: `'custom'`
-- Allowed:
-  ```Bicep
-  [
-    'byod'
-    'custom'
-  ]
-  ```
+- Default: `'2025-01-01-preview'`
 
 ### Parameter: `createdBy`
 
-Created by user name.
+Identifier of the user creating the deployment, recorded in the resource group tags.
 
 - Required: No
 - Type: string
@@ -853,22 +365,77 @@ Created by user name.
 
 ### Parameter: `databaseType`
 
-The type of database to deploy (cosmos or postgres).
+Selects both the chat-history backend and the vector index store. CosmosDB: Cosmos DB + Azure AI Search. PostgreSQL: PostgreSQL Flexible Server with pgvector (Azure AI Search is not deployed). Locked at deploy time.
 
 - Required: No
 - Type: string
-- Default: `'PostgreSQL'`
+- Default: `'cosmosdb'`
 - Allowed:
   ```Bicep
   [
-    'CosmosDB'
-    'PostgreSQL'
+    'cosmosdb'
+    'postgresql'
   ]
   ```
 
+### Parameter: `deployingUserPrincipalType`
+
+Principal type of the deploying user. Use ServicePrincipal for CI/CD pipelines with OIDC.
+
+- Required: No
+- Type: string
+- Default: `'User'`
+- Allowed:
+  ```Bicep
+  [
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `embeddingModelCapacity`
+
+Token capacity for the embedding model.
+
+- Required: No
+- Type: int
+- Default: `100`
+- MinValue: 1
+
+### Parameter: `embeddingModelDeploymentType`
+
+SKU for the embedding model deployment.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'GlobalStandard'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `embeddingModelName`
+
+Embedding model deployment name (used by Foundry IQ and the LangGraph indexer).
+
+- Required: No
+- Type: string
+- Default: `'text-embedding-3-small'`
+
+### Parameter: `embeddingModelVersion`
+
+Embedding model version.
+
+- Required: No
+- Type: string
+- Default: `'1'`
+
 ### Parameter: `enableMonitoring`
 
-Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false.
+Deploy Log Analytics + Application Insights and wire diagnostic settings on every applicable resource.
 
 - Required: No
 - Type: bool
@@ -876,15 +443,7 @@ Enable monitoring applicable resources, aligned with the Well Architected Framew
 
 ### Parameter: `enablePrivateNetworking`
 
-Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `enablePurgeProtection`
-
-Enable purge protection for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+Deploy a VNet, private endpoints, and disable public network access on data-plane resources. Wires the regional VNet (`modules/virtualNetwork.bicep`), private DNS zones, private endpoints for every data-plane resource, regional VNet integration for compute, and Bastion. Setting this to true is the WAF-aligned topology and requires no follow-up tasks; flipping it back to false re-enables public endpoints with default firewall rules.
 
 - Required: No
 - Type: bool
@@ -892,7 +451,7 @@ Enable purge protection for applicable resources, aligned with the Well Architec
 
 ### Parameter: `enableRedundancy`
 
-Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+Zone-redundant + paired-region failover on databases, App Service Plan, Container Apps, and Storage.
 
 - Required: No
 - Type: bool
@@ -900,7 +459,7 @@ Enable redundancy for applicable resources, aligned with the Well Architected Fr
 
 ### Parameter: `enableScalability`
 
-Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false.
+Higher SKUs and autoscaling on App Service Plan, Container Apps, Search, and PostgreSQL.
 
 - Required: No
 - Type: bool
@@ -914,107 +473,144 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `hostingModel`
+### Parameter: `gptModelCapacity`
 
-Hosting model for the web apps. This value is fixed as "container", which uses prebuilt containers for faster deployment.
+Token capacity (thousands of TPM) for the primary chat model.
+
+- Required: No
+- Type: int
+- Default: `5`
+- MinValue: 1
+
+### Parameter: `gptModelDeploymentType`
+
+SKU for the primary chat model deployment.
 
 - Required: No
 - Type: string
-- Default: `'container'`
-
-### Parameter: `hostingPlanSku`
-
-The pricing tier for the App Service plan.
-
-- Required: No
-- Type: string
-- Default: `'B3'`
+- Default: `'GlobalStandard'`
 - Allowed:
   ```Bicep
   [
-    'B2'
-    'B3'
-    'S2'
-    'S3'
+    'GlobalStandard'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `gptModelName`
+
+Primary chat model deployment name.
+
+- Required: No
+- Type: string
+- Default: `'gpt-4.1-mini'`
+
+### Parameter: `gptModelVersion`
+
+Primary chat model version.
+
+- Required: No
+- Type: string
+- Default: `'2025-04-14'`
+
+### Parameter: `ingestionTrigger`
+
+How an uploaded document is picked up for indexing. direct_enqueue: the backend admin upload enqueues the doc-processing message itself (works without an Event Grid subscription). event_grid: a storage Event Grid subscription fans BlobCreated/BlobDeleted to the blob-events queue and the blob_event Function translates each (create -> ingest, delete -> de-index), so the backend writes the blob only (no double-ingest). Flip to event_grid only after the blob_event Function blueprint is deployed.
+
+- Required: No
+- Type: string
+- Default: `'direct_enqueue'`
+- Allowed:
+  ```Bicep
+  [
+    'direct_enqueue'
+    'event_grid'
   ]
   ```
 
 ### Parameter: `location`
 
-Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for PostgreSQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions). Note: In the "Deploy to Azure" interface, you will see both "Region" and "Location" fields - "Region" is only for deployment metadata while "Location" (this parameter) determines where your actual resources are deployed.
+Azure region for non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). Restricted to the 4 regions where all three redundancy guarantees hold simultaneously: PostgreSQL Flexible Server ZoneRedundant HA (3 AZs), Cosmos DB automatic failover with paired-region replicas, and Storage GZRS. Independent of azureAiServiceLocation, which selects the model-availability region. Source: https://learn.microsoft.com/azure/reliability/regions-list and https://learn.microsoft.com/azure/postgresql/flexible-server/overview#azure-regions.
 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `logLevel`
+### Parameter: `reasoningModelCapacity`
 
-The log level for application logging. This setting controls the verbosity of logs emitted by the application. Allowed values are CRITICAL, ERROR, WARN, INFO, and DEBUG. The default value is INFO.
+Token capacity for the reasoning model.
+
+- Required: No
+- Type: int
+- Default: `10`
+- MinValue: 1
+
+### Parameter: `reasoningModelDeploymentType`
+
+SKU for the reasoning model deployment.
 
 - Required: No
 - Type: string
-- Default: `'INFO'`
+- Default: `'GlobalStandard'`
 - Allowed:
   ```Bicep
   [
-    'CRITICAL'
-    'DEBUG'
-    'ERROR'
-    'INFO'
-    'WARN'
+    'GlobalStandard'
+    'Standard'
   ]
   ```
 
-### Parameter: `newGuidString`
+### Parameter: `reasoningModelName`
 
-A new GUID string generated for this deployment. This can be used for unique naming if needed.
-
-- Required: No
-- Type: string
-- Default: `[newGuid()]`
-
-### Parameter: `orchestrationStrategy`
-
-Orchestration strategy: openai_function or semantic_kernel or langchain str. If you use a old version of turbo (0301), please select langchain. If the database type is PostgreSQL, set this to sementic_kernel.
+Reasoning model deployment name (surfaced via the SSE reasoning channel).
 
 - Required: No
 - Type: string
-- Default: `'semantic_kernel'`
-- Allowed:
-  ```Bicep
-  [
-    'langchain'
-    'openai_function'
-    'semantic_kernel'
-  ]
-  ```
+- Default: `'gpt-4.1-mini'`
 
-### Parameter: `principal`
+### Parameter: `reasoningModelVersion`
 
-Principal object to assign application roles. Format: {"id":"<object-id>", "name":"<name-or-upn>", "type":"User|Group|ServicePrincipal"}.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      id: ''
-      name: ''
-      type: 'User'
-  }
-  ```
-
-### Parameter: `recognizedLanguages`
-
-List of comma-separated languages to recognize from the speech input. Supported languages are listed here: https://learn.microsoft.com/en-us/azure/ai-services/speech-service/language-support?tabs=stt#supported-languages.
+Reasoning model version.
 
 - Required: No
 - Type: string
-- Default: `'en-US,fr-FR,de-DE,it-IT'`
+- Default: `'2025-04-14'`
+
+### Parameter: `searchIndexName`
+
+Chat index name the azure_search provider reads/writes and post_provision.py creates. Single-sourced so the backend env binding and the azd output (consumed by the postdeploy seed self-check) cannot diverge.
+
+- Required: No
+- Type: string
+- Default: `'cwyd-index'`
+
+### Parameter: `searchKnowledgeBaseApiVersion`
+
+Foundry IQ knowledge base / knowledge source REST API version (operator-tunable so the KB protocol can advance without a new image).
+
+- Required: No
+- Type: string
+- Default: `'2025-11-01-preview'`
+
+### Parameter: `searchKnowledgeBaseName`
+
+Foundry IQ knowledge base name the agent_framework orchestrator grounds on (cosmosdb mode). Must match the name seeded by post_provision.py and resolved through the Project-Search connection.
+
+- Required: No
+- Type: string
+- Default: `'cwyd-kb'`
+
+### Parameter: `searchKnowledgeSourceName`
+
+Foundry IQ knowledge source name backing the knowledge base (the search-index knowledge source seeded by post_provision.py).
+
+- Required: No
+- Type: string
+- Default: `'cwyd-index-ks'`
 
 ### Parameter: `solutionName`
 
-A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.
+Unique application/solution name. Drives every resource name. Cap is 15 chars to keep PostgreSQL Flexible Server names within limits.
 
 - Required: No
 - Type: string
@@ -1022,7 +618,7 @@ A unique application/solution name for all resources in this deployment. This sh
 
 ### Parameter: `solutionUniqueText`
 
-A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name.
+Short unique suffix appended to global resource names. Defaults to a 5-char hash of subscription + RG + solution name.
 
 - Required: No
 - Type: string
@@ -1030,31 +626,23 @@ A unique text value for the solution. This is used to ensure resource names are 
 
 ### Parameter: `tags`
 
-The tags to apply to all deployed Azure resources.
+Tags applied to every deployed resource.
 
 - Required: No
 - Type: object
 - Default: `{}`
 
-### Parameter: `useAdvancedImageProcessing`
+### Parameter: `vmAdminPassword`
 
-Whether to enable the use of a vision LLM and Computer Vision for embedding images. If the database type is PostgreSQL, set this to false.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `virtualMachineAdminPassword`
-
-The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
+VM admin password (AVM-WAF only, when private networking is enabled).
 
 - Required: No
 - Type: securestring
 - Default: `''`
 
-### Parameter: `virtualMachineAdminUsername`
+### Parameter: `vmAdminUsername`
 
-The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
+VM admin username (AVM-WAF only, when private networking is enabled).
 
 - Required: No
 - Type: securestring
@@ -1062,52 +650,64 @@ The user name for the administrator account of the virtual machine. Allows to cu
 
 ### Parameter: `vmSize`
 
-Size of the Jumpbox Virtual Machine when created. Set to custom value if enablePrivateNetworking is true.
+VM size for jumpbox (AVM-WAF only). Defaults to Standard_D2s_v3.
 
 - Required: No
 - Type: string
-- Default: `'Standard_D2s_v5'`
+- Default: `'Standard_D2s_v3'`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `adminWebsiteUri` | string | Admin web application URI. |
-| `advancedImageProcessingMaxImagesOutput` | int | Maximum number of images sent per advanced image processing request. |
-| `appEnv` | string | Application environment (e.g., Prod, Dev). |
-| `applicationInsightsConnectionString` | string | Connection string for the Application Insights instance. |
-| `azureAppServiceHostingModel` | string | App Service hosting model used (code or container). |
-| `azureBlobStorageInfoOutput` | string | Blob storage info (container and account). |
-| `azureComputerVisionInfoOutput` | string | Computer Vision service information. |
-| `azureContentSafetyInfoOutput` | string | Content Safety service endpoint information. |
-| `azureCosmosDbInfoOutput` | string | Cosmos DB related information (account/database/container). |
-| `azureFormRecognizerInfoOutput` | string | Form Recognizer service endpoint information. |
-| `azureLocation` | string | Primary deployment location. |
-| `azureOpenAiConfigurationInfoOutput` | string | Azure OpenAI configuration details. |
-| `azureOpenAiEmbeddingModelInfoOutput` | string | Azure OpenAI embedding model information. |
-| `azureOpenAiModelInfoOutput` | string | Azure OpenAI model information. |
-| `azurePostgresDbInfoOutput` | string | PostgreSQL related information (host/database/user). |
-| `azureResourceGroup` | string | Name of the resource group. |
-| `azureSearchServiceInfoOutput` | string | Azure Cognitive Search service information (if deployed). |
-| `azureSearchUseIntegratedVectorizationEnabled` | bool | Whether Azure Search is using integrated vectorization. |
-| `azureSpeechServiceInfoOutput` | string | Azure Speech service information. |
-| `azureTenantId` | string | Azure tenant identifier. |
-| `azureWebJobsStorage` | string | Azure WebJobs Storage connection string for the Functions app. |
-| `backendUrlOutput` | string | Backend URL for the function app. |
-| `configuredLogLevel` | string | Configured log level for applications. |
-| `conversationFlowType` | string | Conversation flow type in use (custom or byod). |
-| `databaseTypeSelected` | string | Selected database type for this deployment. |
-| `documentProcessingQueueName` | string | Name of the document processing queue. |
-| `frontendWebsiteUri` | string | Frontend web application URI. |
-| `openAiFunctionsSystemPromptOutput` | string | System prompt for OpenAI functions. |
-| `orchestrationStrategyOutput` | string | Orchestration strategy selected (openai_function, semantic_kernel, etc.). |
-| `resourceGroupName` | string | Name of the resource group. |
-| `resourceToken` | string | Unique token for this solution deployment (short suffix). |
-| `semanticKernelSystemPromptOutput` | string | System prompt used by the Semantic Kernel orchestration. |
-| `serviceAdminWebResourceName` | string | Resource name of the admin web app service (used by azd deploy). |
-| `serviceFunctionResourceName` | string | Resource name of the function app service (used by azd deploy). |
-| `serviceWebResourceName` | string | Resource name of the web app service (used by azd deploy). |
-| `useAdvancedImageProcessingEnabled` | bool | Whether advanced image processing is enabled. |
+| `azureAiAgentApiVersion` | string | Azure AI Agents API version pinned for the Foundry Project endpoint. |
+| `azureAiProjectEndpoint` | string | Foundry Project endpoint (https://<account>.services.ai.azure.com/api/projects/<project>). Required by the Microsoft Agent Framework SDK. |
+| `azureAiSearchEndpoint` | string | AI Search service endpoint. Empty in PostgreSQL mode. |
+| `azureAiSearchIndex` | string | Chat index name. Exported so the postdeploy seed hook can run its index-population self-check; empty in postgresql mode (no AI Search). |
+| `azureAiSearchName` | string | AI Search service name. Empty in PostgreSQL mode. |
+| `azureAiServiceLocation` | string | Location of the AI Services account + model deployments (independent of AZURE_LOCATION). |
+| `azureAiServicesEndpoint` | string | Unified AI Services (Cognitive Services) endpoint. Used by Document Intelligence and other non-OpenAI AI Services APIs. |
+| `azureAppInsightsConnectionString` | string | Application Insights connection string. Empty when enableMonitoring=false. |
+| `azureBackendUrl` | string | Public URL of the backend Container App (FastAPI + LangGraph/Agent Framework). |
+| `azureBastionName` | string | Bastion host name (for `az network bastion tunnel`). Empty when enablePrivateNetworking=false. |
+| `azureContainerRegistryEndpoint` | string | Container Registry login server. |
+| `azureContainerRegistryName` | string | Container Registry resource name. |
+| `azureContentSafetyEndpoint` | string | Content Safety account endpoint. Backend reads via ContentSafetySettings.endpoint; lifespan gates client construction on this + AZURE_CONTENT_SAFETY_ENABLED. |
+| `azureContentSafetyName` | string | Content Safety account name (kind=ContentSafety). Diagnostic surface only — backend builds the client from the endpoint. |
+| `azureCosmosAccountName` | string | Cosmos DB account name. Empty in PostgreSQL mode. |
+| `azureCosmosEndpoint` | string | Cosmos DB account endpoint (DocumentEndpoint). Empty in PostgreSQL mode. |
+| `azureDbType` | string | Selected database engine for chat history + vector index (locked at deploy). |
+| `azureDocProcessingQueue` | string | Storage Queue name fed by Event Grid BlobCreated and consumed by the batch_push Function blueprint. |
+| `azureDocumentsContainer` | string | Container holding documents to be indexed (Event Grid filter + batch_start source). |
+| `azureFrontendUrl` | string | Public URL of the frontend Container App (React/Vite SPA proxy). Backend CORS must allow this origin. |
+| `azureFunctionAppName` | string | Function App resource name (used by azd to deploy the function package). |
+| `azureFunctionAppUrl` | string | Public URL of the Function App hosting the indexing pipeline. |
+| `azureIndexStore` | string | Logical name of the configured vector index store: "AzureSearch" (CosmosDB mode) or "pgvector" (PostgreSQL mode). |
+| `azureIngestionTrigger` | string | Ingestion trigger mode for the backend admin upload path: direct_enqueue (backend enqueues) or event_grid (Event Grid + blob_event Function own the push). |
+| `azureLocation` | string | Location of the non-AI resources (Container Apps, App Service, Functions, Storage, Cosmos/Postgres). |
+| `azureOpenAiApiVersion` | string | OpenAI-compatible API version pinned for the GPT + reasoning deployments. |
+| `azureOpenAiEmbeddingDeployment` | string | Deployment name of the embedding model used by the indexing pipeline. |
+| `azureOpenAiEndpoint` | string | Effective Azure OpenAI endpoint backends call for chat + reasoning + embedding deployments. When `existingOpenAiName` is set this points at the reused v1 OpenAI account; otherwise it equals AZURE_AI_SERVICES_ENDPOINT (deployments live on the v2 Foundry account). |
+| `azureOpenAiGptDeployment` | string | Deployment name of the chat-completions GPT model. |
+| `azureOpenAiReasoningDeployment` | string | Deployment name of the o-series reasoning model (output flows on the SSE `reasoning` channel). |
+| `azurePostgresAdminPrincipalName` | string | UAMI principal name used by the runtime apps to connect to Postgres. Empty in CosmosDB mode. |
+| `azurePostgresDeployerPrincipalName` | string | Deployer principal name registered as Postgres Entra admin (for post_provision.py). Empty in CosmosDB mode or when deployer has no UPN. |
+| `azurePostgresEndpoint` | string | Full libpq connection URI for the PostgreSQL Flexible Server (no credentials — the workload supplies an Entra token; the user comes from AZURE_UAMI_CLIENT_ID). Mirrors AZURE_COSMOS_ENDPOINT shape so AzurePostgresSettings reads one var. Empty in CosmosDB mode. |
+| `azurePostgresHost` | string | PostgreSQL Flexible Server FQDN (clients add :5432 themselves). Empty in CosmosDB mode. |
+| `azurePostgresName` | string | PostgreSQL Flexible Server resource name. Empty in CosmosDB mode. |
+| `azureSolutionSuffix` | string | Lower-cased solution suffix used in every downstream resource name. |
+| `azureSpeechAccountResourceId` | string | Speech account ARM resource id. Required as the x-ms-cognitiveservices-resource-id header on the AAD-bearer STS issueToken POST. |
+| `azureSpeechServiceName` | string | Speech account name (kind=SpeechServices). Backend reads via SpeechSettings.service_name; not used directly by the SDK. |
+| `azureSpeechServiceRegion` | string | Speech account region. Browser SDK passes this to SpeechConfig.fromAuthorizationToken(token, region) and the backend uses it to build the regional sts/v1.0/issueToken URL. |
+| `azureStorageAccountName` | string | Storage account name (shared by RAG document store, indexing queues, and the Function App deployment package). |
+| `azureStorageBlobEndpoint` | string | Primary blob endpoint of the shared storage account (https URL ending in /). Hostname follows the storage cloud-specific suffix. |
+| `azureTenantId` | string | Tenant ID for the deployment subscription. |
+| `azureUamiClientId` | string | Client ID of the user-assigned managed identity shared by all v2 workloads. |
+| `azureUamiPrincipalId` | string | Principal (object) ID of the user-assigned managed identity. |
+| `azureUamiResourceId` | string | Resource ID of the user-assigned managed identity. |
+| `azureVnetName` | string | VNet name. Empty when enablePrivateNetworking=false. |
+| `azureVnetResourceId` | string | VNet resource ID. Empty when enablePrivateNetworking=false. |
+| `resourceGroupName` | string | Resource group containing the deployment. |
 
 ## Cross-referenced modules
 
@@ -1116,22 +716,29 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.22.0` | Remote reference |
-| `br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.3` | Remote reference |
-| `br/public:avm/res/event-grid/system-topic:0.6.4` | Remote reference |
-| `br/public:avm/res/insights/component:0.7.1` | Remote reference |
+| `br/public:avm/res/app/container-app:0.23.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.17.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.19.0` | Remote reference |
+| `br/public:avm/res/compute/proximity-placement-group:0.4.1` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.22.2` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
+| `br/public:avm/res/db-for-postgre-sql/flexible-server:0.16.0` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.20.0` | Remote reference |
+| `br/public:avm/res/event-grid/system-topic:0.7.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
+| `br/public:avm/res/insights/data-collection-rule:0.11.0` | Remote reference |
 | `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.5.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.3` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.8.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.15.0` | Remote reference |
-| `br/public:avm/res/portal/dashboard:0.3.2` | Remote reference |
-| `br/public:avm/res/search/search-service:0.12.0` | Remote reference |
-| `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.10.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.0` | Remote reference |
+| `br/public:avm/res/search/search-service:0.13.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
