@@ -328,11 +328,13 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
   params: {
     serverName: serverName
     databaseName: database.name
+    enableTelemetry: enableReferencedModulesTelemetry
     weeklyRetention: backupLongTermRetentionPolicy.?weeklyRetention
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
     weekOfYear: backupLongTermRetentionPolicy.?weekOfYear
-    enableTelemetry: enableReferencedModulesTelemetry
+    timeBasedImmutability: backupLongTermRetentionPolicy.?timeBasedImmutability
+    timeBasedImmutabilityMode: backupLongTermRetentionPolicy.?timeBasedImmutabilityMode
   }
 }
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16837203186661778532"
+      "templateHash": "3145954587435745393"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -1036,6 +1036,9 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "weeklyRetention": {
             "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
           },
@@ -1048,8 +1051,11 @@
           "weekOfYear": {
             "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
           },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "timeBasedImmutability": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'timeBasedImmutability')]"
+          },
+          "timeBasedImmutabilityMode": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'timeBasedImmutabilityMode')]"
           }
         },
         "template": {
