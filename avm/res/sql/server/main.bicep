@@ -924,7 +924,7 @@ type elasticPoolType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/elasticPools@2023-08-01'>.tags?
 
   @description('Optional. The lock settings of the elastic pool.')
   lock: lockType?
@@ -1083,7 +1083,7 @@ type failoverGroupType = {
   name: string
 
   @description('Optional. Tags of the resource.')
-  tags: object?
+  tags: resourceInput<'Microsoft.Sql/servers/failoverGroups@2025-01-01'>.tags?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "16839086441948448700"
+      "version": "0.47.16.16243",
+      "templateHash": "8639973819039483041"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -55,10 +55,10 @@
     "timeBasedImmutability": {
       "type": "string",
       "allowedValues": [
-        "Disable",
-        "Enable"
+        "Disabled",
+        "Enabled"
       ],
-      "defaultValue": "Disable",
+      "defaultValue": "Disabled",
       "metadata": {
         "description": "Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled."
       }

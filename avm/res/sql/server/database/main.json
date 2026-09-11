@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "5029258025609107548"
+      "version": "0.47.16.16243",
+      "templateHash": "16837203186661778532"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -126,8 +126,8 @@
         "timeBasedImmutability": {
           "type": "string",
           "allowedValues": [
-            "Disable",
-            "Enable"
+            "Disabled",
+            "Enabled"
           ],
           "nullable": true,
           "metadata": {
@@ -918,8 +918,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14331309743091745507"
+              "version": "0.47.16.16243",
+              "templateHash": "3541467167014441850"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -1059,8 +1059,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "16839086441948448700"
+              "version": "0.47.16.16243",
+              "templateHash": "8639973819039483041"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -1109,10 +1109,10 @@
             "timeBasedImmutability": {
               "type": "string",
               "allowedValues": [
-                "Disable",
-                "Enable"
+                "Disabled",
+                "Enabled"
               ],
-              "defaultValue": "Disable",
+              "defaultValue": "Disabled",
               "metadata": {
                 "description": "Optional. The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled."
               }

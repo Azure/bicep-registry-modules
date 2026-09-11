@@ -1334,7 +1334,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
-          timeBasedImmutability: 'Enable'
+          timeBasedImmutability: 'Enabled'
           timeBasedImmutabilityMode: 'Locked'
         }
         backupShortTermRetentionPolicy: {
@@ -1540,7 +1540,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M",
-            "timeBasedImmutability": "Enable",
+            "timeBasedImmutability": "Enabled",
             "timeBasedImmutabilityMode": "Locked"
           },
           "backupShortTermRetentionPolicy": {
@@ -1764,7 +1764,7 @@ param databases = [
     availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
-      timeBasedImmutability: 'Enable'
+      timeBasedImmutability: 'Enabled'
       timeBasedImmutabilityMode: 'Locked'
     }
     backupShortTermRetentionPolicy: {
@@ -3154,8 +3154,8 @@ The setting for whether to enable time-based immutability for future backups. Wh
 - Allowed:
   ```Bicep
   [
-    'Disable'
-    'Enable'
+    'Disabled'
+    'Enabled'
   ]
   ```
 

@@ -168,8 +168,8 @@ The setting for whether to enable time-based immutability for future backups. Wh
 - Allowed:
   ```Bicep
   [
-    'Disable'
-    'Enable'
+    'Disabled'
+    'Enabled'
   ]
   ```
 

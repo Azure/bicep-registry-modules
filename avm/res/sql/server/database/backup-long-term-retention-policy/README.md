@@ -79,12 +79,12 @@ The setting for whether to enable time-based immutability for future backups. Wh
 
 - Required: No
 - Type: string
-- Default: `'Disable'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
-    'Disable'
-    'Enable'
+    'Disabled'
+    'Enabled'
   ]
   ```
 
