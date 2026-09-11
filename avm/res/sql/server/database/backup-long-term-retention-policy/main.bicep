@@ -23,7 +23,7 @@ param yearlyRetention string?
 param timeBasedImmutability 'Disabled' | 'Enabled' = 'Disabled'
 
 @description('Optional. The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.')
-param timeBasedImmutabilityMode 'Locked' | 'Unlocked' = 'Locked'
+param timeBasedImmutabilityMode ('Locked' | 'Unlocked')?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -64,7 +64,7 @@ resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLo
     weekOfYear: weekOfYear
     yearlyRetention: yearlyRetention
     timeBasedImmutability: timeBasedImmutability
-    timeBasedImmutabilityMode: timeBasedImmutabilityMode
+    timeBasedImmutabilityMode: timeBasedImmutability == 'Enabled' ? (timeBasedImmutabilityMode ?? 'Locked') : null
   }
 }
 

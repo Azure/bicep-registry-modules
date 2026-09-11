@@ -346,7 +346,6 @@ module server_databases 'database/main.bicep' = [
       sourceResourceId: database.?sourceResourceId
       useFreeLimit: database.?useFreeLimit
       zoneRedundant: database.?zoneRedundant
-
       diagnosticSettings: database.?diagnosticSettings
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy

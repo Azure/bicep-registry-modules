@@ -94,7 +94,6 @@ The setting for time-based immutability mode for future backup. Only effective i
 
 - Required: No
 - Type: string
-- Default: `'Locked'`
 - Allowed:
   ```Bicep
   [
