@@ -6244,7 +6244,7 @@ Products.
 | [`policies`](#parameter-productspolicies) | array | Array of Policies to apply to the Service Product. |
 | [`state`](#parameter-productsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non-published products are visible only to administrators. |
 | [`subscriptionRequired`](#parameter-productssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
-| [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`subscriptionsLimit`](#parameter-productssubscriptionslimit) | int | The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`terms`](#parameter-productsterms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
 
 ### Parameter: `products.displayName`
@@ -6362,7 +6362,7 @@ Whether a product subscription is required for accessing APIs included in this p
 
 ### Parameter: `products.subscriptionsLimit`
 
-Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.
+The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.
 
 - Required: No
 - Type: int
@@ -8150,7 +8150,7 @@ Products to deploy in this workspace.
 | [`policies`](#parameter-workspacesproductspolicies) | array | Array of Policies to apply to the Product. |
 | [`state`](#parameter-workspacesproductsstate) | string | Whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. |
 | [`subscriptionRequired`](#parameter-workspacesproductssubscriptionrequired) | bool | Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as "protected" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as "open" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true. |
-| [`subscriptionsLimit`](#parameter-workspacesproductssubscriptionslimit) | int | Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
+| [`subscriptionsLimit`](#parameter-workspacesproductssubscriptionslimit) | int | The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false. |
 | [`terms`](#parameter-workspacesproductsterms) | string | Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process. |
 
 ### Parameter: `workspaces.products.displayName`
@@ -8310,7 +8310,7 @@ Whether a product subscription is required for accessing APIs included in this p
 
 ### Parameter: `workspaces.products.subscriptionsLimit`
 
-Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.
+The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false.
 
 - Required: No
 - Type: int
