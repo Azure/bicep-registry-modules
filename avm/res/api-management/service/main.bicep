@@ -78,7 +78,7 @@ param roleAssignments roleAssignmentType[]?
 ])
 param sku string = 'Premium'
 
-@description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
+@description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. Note: the `Basic` SKU supports a maximum capacity of `2`, so the default of `3` is automatically clamped to `2` for `Basic`. For the range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
 param skuCapacity int = 3
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in. VNet injection is supported with Developer, Premium, and PremiumV2 SKUs only.')
@@ -252,7 +252,9 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
   tags: tags
   sku: {
     name: sku
-    capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
+    capacity: contains(sku, 'Consumption')
+      ? 0
+      : contains(sku, 'Developer') ? 1 : sku == 'Basic' ? min(skuCapacity, 2) : skuCapacity
   }
   zones: contains(sku, 'Premium') ? map(availabilityZones, zone => string(zone)) : []
   identity: identity
