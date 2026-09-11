@@ -354,6 +354,7 @@ module server_databases 'database/main.bicep' = [
     }
     dependsOn: [
       server_elasticPools // Enables us to add databases to existing elastic pools
+      server_encryptionProtector // To avoid conflicts with encryption
     ]
   }
 ]

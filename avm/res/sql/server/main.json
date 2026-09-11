@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1563950543926449752"
+      "templateHash": "17705603765740335864"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -3833,7 +3833,8 @@
       },
       "dependsOn": [
         "server",
-        "server_elasticPools"
+        "server_elasticPools",
+        "server_encryptionProtector"
       ]
     },
     "server_elasticPools": {
