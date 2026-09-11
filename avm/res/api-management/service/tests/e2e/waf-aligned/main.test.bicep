@@ -21,6 +21,10 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param customSecret string = newGuid()
 
+@description('Optional. The client ID to leverage for authorization server and identity provider configuration.')
+@secure()
+param customClientId string = newGuid()
+
 // Enforcing locations to not have conflicting availability zones
 @description('Optional. The primary location to deploy resources to.')
 var enforcedLocation = 'germanywestcentral'
@@ -47,6 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-s-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     lawReplicationRegion: secondaryEnforcedLocation
     location: enforcedLocation
   }
@@ -109,6 +114,12 @@ module testDeployment '../../../main.bicep' = [
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
         'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA': 'False'
+        'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_GCM_SHA384': 'False'
       }
       apis: [
         {
@@ -134,7 +145,7 @@ module testDeployment '../../../main.bicep' = [
       authorizationServers: [
         {
           authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-          clientId: 'apimClientid'
+          clientId: customClientId
           clientSecret: customSecret
           clientRegistrationEndpoint: 'https://localhost'
           grantTypes: [
@@ -173,7 +184,7 @@ module testDeployment '../../../main.bicep' = [
       identityProviders: [
         {
           name: 'aad'
-          clientId: 'apimClientid'
+          clientId: customClientId
           clientLibrary: 'MSAL-2'
           clientSecret: customSecret
           authority: split(environment().authentication.loginEndpoint, '/')[2]
@@ -206,6 +217,10 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'apimkey'
           name: 'apimkey'
           secret: true
+          keyVault: {
+            secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
+            identityClientId: nestedDependencies.outputs.managedIdentityClientId
+          }
         }
       ]
       policies: [

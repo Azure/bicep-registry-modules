@@ -16,6 +16,9 @@ param virtualNetworkName string
 @description('Required. The name of the Application insights instance to create.')
 param applicationInsightsName string
 
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
 var addressPrefix = '10.0.0.0/16'
 
 #disable-next-line use-recent-api-versions
@@ -63,6 +66,20 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-
   location: location
 }
 
+// Key Vault Secrets User role for the managed identity to access named value secrets
+resource keyVaultSecretsUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, managedIdentity.id, '4633458b-17de-408a-b874-0445c86b69e6')
+  scope: keyVault
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '4633458b-17de-408a-b874-0445c86b69e6'
+    )
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 #disable-next-line use-recent-api-versions
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: logAnalyticsWorkspaceName
@@ -99,11 +116,37 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+#disable-next-line use-recent-api-versions
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enableRbacAuthorization: true
+  }
+}
+
+#disable-next-line use-recent-api-versions
+resource keyVaultSecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+  parent: keyVault
+  name: 'apimNamedValueSecret'
+  properties: {
+    value: 'dummySecretValue'
+  }
+}
+
 @description('The principal ID of the created managed identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The client ID of the created Managed Identity.')
+output managedIdentityClientId string = managedIdentity.properties.clientId
 
 @description('The Application Insights Instrumentation Key')
 output appInsightsInstrumentationKey string = applicationInsights.properties.InstrumentationKey
@@ -116,3 +159,9 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
+
+@description('The URI of the created Key Vault secret.')
+output keyVaultSecretUri string = keyVaultSecret.properties.secretUri
