@@ -139,6 +139,8 @@ The long term backup retention policy to create for the database.
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-backuplongtermretentionpolicyenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`timeBasedImmutability`](#parameter-backuplongtermretentionpolicytimebasedimmutability) | string | The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled. |
+| [`timeBasedImmutabilityMode`](#parameter-backuplongtermretentionpolicytimebasedimmutabilitymode) | string | The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked. |
 | [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
@@ -156,6 +158,34 @@ Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.timeBasedImmutability`
+
+The setting for whether to enable time-based immutability for future backups. When set, future backups will have TimeBasedImmutability enabled.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disable'
+    'Enable'
+  ]
+  ```
+
+### Parameter: `backupLongTermRetentionPolicy.timeBasedImmutabilityMode`
+
+The setting for time-based immutability mode for future backup. Only effective if TimeBasedImmutability is enabled. Caution: Immutability of LTR backup cannot be removed if TimeBasedImmutabilityMode is Locked.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `backupLongTermRetentionPolicy.weeklyRetention`
 

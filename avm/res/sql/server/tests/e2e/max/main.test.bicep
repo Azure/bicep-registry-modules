@@ -171,6 +171,8 @@ module testDeployment '../../../main.bicep' = [
           }
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
+            timeBasedImmutability: 'Enable'
+            timeBasedImmutabilityMode: 'Locked'
           }
           availabilityZone: -1
           lock: {
