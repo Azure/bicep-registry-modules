@@ -47,17 +47,18 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: take('${namePrefix}${serviceShort}001', 16)
+      solutionName: take('${namePrefix}${serviceShort}001', 15)
       location: enforcedLocation
+      azureAiServiceLocation: enforcedLocation
       enableScalability: true
       enableTelemetry: true
       enableMonitoring: true
       enablePrivateNetworking: true
       enableRedundancy: true
-      virtualMachineAdminUsername: 'adminuser'
-      virtualMachineAdminPassword: vmAdminPassword
-      azureOpenAIModelCapacity: 10
-      azureOpenAIEmbeddingModelCapacity: 10
+      vmAdminUsername: 'adminuser'
+      vmAdminPassword: vmAdminPassword
+      gptModelCapacity: 10
+      embeddingModelCapacity: 10
     }
   }
 ]
