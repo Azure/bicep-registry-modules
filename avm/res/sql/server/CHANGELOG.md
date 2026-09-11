@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Added support for time-based immutability settings in database backup long-term retention policy module
+- Added types for tags parameters
 
 ### Breaking Changes
 
