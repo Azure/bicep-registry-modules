@@ -79,7 +79,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.KeyVault/vaults@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.KeyVault/vaults@2026-02-01'>.tags?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 @description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
@@ -173,7 +173,7 @@ var formattedAccessPolicies = [
 // ============ //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -191,7 +191,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: name
   location: location
   tags: tags
@@ -317,7 +317,7 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.12.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(
