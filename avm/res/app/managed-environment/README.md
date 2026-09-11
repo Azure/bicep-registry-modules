@@ -25,6 +25,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.App/managedEnvironments` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments)</li></ul> |
 | `Microsoft.App/managedEnvironments/certificates` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/dotNetComponents` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_dotnetcomponents.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/dotNetComponents)</li></ul> |
 | `Microsoft.App/managedEnvironments/storages` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
@@ -342,6 +343,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     ]
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
+    dotNetComponents: [
+      {
+        componentType: 'AspireDashboard'
+        name: 'aspire-dashboard'
+      }
+    ]
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
@@ -527,6 +534,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
+    },
+    "dotNetComponents": {
+      "value": [
+        {
+          "componentType": "AspireDashboard",
+          "name": "aspire-dashboard"
+        }
+      ]
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
@@ -728,6 +743,12 @@ param diagnosticSettings = [
 ]
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
+param dotNetComponents = [
+  {
+    componentType: 'AspireDashboard'
+    name: 'aspire-dashboard'
+  }
+]
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
@@ -1382,6 +1403,7 @@ param workloadProfiles = [
 | [`daprConfiguration`](#parameter-daprconfiguration) | object | The configuration of Dapr component. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
+| [`dotNetComponents`](#parameter-dotnetcomponents) | array | The list of .NET Components to deploy in the environment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`ingressConfiguration`](#parameter-ingressconfiguration) | object | Ingress configuration for the Managed Environment. |
 | [`kedaConfiguration`](#parameter-kedaconfiguration) | object | The configuration of Keda component. |
@@ -1801,6 +1823,55 @@ DNS suffix for the environment domain.
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `dotNetComponents`
+
+The list of .NET Components to deploy in the environment.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`componentType`](#parameter-dotnetcomponentscomponenttype) | string | Type of the .NET Component. |
+| [`name`](#parameter-dotnetcomponentsname) | string | Name of the .NET Component. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configurations`](#parameter-dotnetcomponentsconfigurations) | array | List of .NET Components configuration properties. |
+| [`serviceBinds`](#parameter-dotnetcomponentsservicebinds) | array | List of .NET Components that are bound to the .NET component. |
+
+### Parameter: `dotNetComponents.componentType`
+
+Type of the .NET Component.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dotNetComponents.name`
+
+Name of the .NET Component.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dotNetComponents.configurations`
+
+List of .NET Components configuration properties.
+
+- Required: No
+- Type: array
+
+### Parameter: `dotNetComponents.serviceBinds`
+
+List of .NET Components that are bound to the .NET component.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 

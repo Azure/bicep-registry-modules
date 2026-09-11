@@ -107,6 +107,9 @@ param certificate certificateType?
 @description('Optional. The AppLogsConfiguration for the Managed Environment.')
 param appLogsConfiguration appLogsConfigurationType?
 
+@description('Optional. The list of .NET Components to deploy in the environment.')
+param dotNetComponents dotNetComponentType[]?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -280,6 +283,20 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
+module managedEnvironment_dotNetComponent 'dot-net-component/main.bicep' = [
+  for (component, index) in (dotNetComponents ?? []): {
+    name: '${uniqueString(deployment().name)}-Managed-Environment-DotNetComponent-${index}'
+    params: {
+      name: component.name
+      managedEnvironmentName: managedEnvironment.name
+      componentType: component.componentType
+      configurations: component.?configurations
+      serviceBinds: component.?serviceBinds
+      enableTelemetry: enableReferencedModulesTelemetry
+    }
+  }
+]
+
 module managedEnvironment_certificate 'certificate/main.bicep' = if (!empty(certificate)) {
   name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
   params: {
@@ -433,6 +450,22 @@ type certificateType = {
 
   @description('Optional. Tags of the resource.')
   tags: resourceInput<'Microsoft.App/managedEnvironments/certificates@2026-01-01'>.tags?
+}
+
+@export()
+@description('The type for a .NET Component.')
+type dotNetComponentType = {
+  @description('Required. Name of the .NET Component.')
+  name: string
+
+  @description('Required. Type of the .NET Component.')
+  componentType: string
+
+  @description('Optional. List of .NET Components configuration properties.')
+  configurations: resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.configurations?
+
+  @description('Optional. List of .NET Components that are bound to the .NET component.')
+  serviceBinds: resourceInput<'Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview'>.properties.serviceBinds?
 }
 
 @export()
