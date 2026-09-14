@@ -35,9 +35,9 @@ Describe 'CODEOWNERS governance' {
         $script:ownershipRules = @(
             '* @Azure/azure-verified-modules-tooling-contributors'
             '/avm/ @Azure/azure-verified-modules-module-owners'
-            '/avm/ptn/example/pattern/ @pattern-owner'
-            '/avm/res/storage/storage-account/ @Owner-One @owner-two'
-            '/avm/res/storage/storage-account/blob-service/ @child-owner'
+            '/avm/ptn/example/pattern/ @pattern-owner @Azure/azure-verified-modules-module-owners'
+            '/avm/res/storage/storage-account/ @Owner-One @owner-two @Azure/azure-verified-modules-module-owners'
+            '/avm/res/storage/storage-account/blob-service/ @child-owner @Azure/azure-verified-modules-module-owners'
             '/avm/utl/example/utility/ @Azure/azure-verified-modules-module-owners'
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
@@ -45,6 +45,11 @@ Describe 'CODEOWNERS governance' {
     }
 
     It 'Accepts generated resource, pattern, utility and child-module ownership' {
+        Invoke-TestCodeOwnersGovernance
+    }
+
+    It 'Accepts the owners team as the only reviewer for an ownerless module' {
+        $script:ownershipRules[3] = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners'
         Invoke-TestCodeOwnersGovernance
     }
 
@@ -66,33 +71,35 @@ Describe 'CODEOWNERS governance' {
     }
 
     It 'Rejects malformed or unexpected module ownership: <Rule>' -ForEach @(
-        @{ Rule = '/avm/res/storage/storage-account/ @Azure/legacy-module-team' }
+        @{ Rule = '/avm/res/storage/storage-account/ @Azure/legacy-module-team @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-contributors' }
         @{ Rule = '/avm/res/storage/storage-account/' }
-        @{ Rule = '/avm/res/storage/storage-account @owner-one' }
-        @{ Rule = '/avm/res/storage/ @owner-one' }
-        @{ Rule = '/avm/res/storage/storage-account/ owner-one' }
-        @{ Rule = '/avm/res/storage/storage-account/ @invalid--owner' }
-        @{ Rule = '/avm/res/storage/storage-account/ @-invalid' }
-        @{ Rule = '/avm/res/storage/storage-account/ @invalid-' }
-        @{ Rule = '/avm/res/storage/storage-account/ @owner_one' }
-        @{ Rule = '/avm/res/storage/storage-account/ @abcdefghijklmnopqrstuvwxyzabcdefghijklmn' }
-        @{ Rule = '/avm/res/storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
-        @{ Rule = '/avm/unknown/storage/storage-account/ @owner-one' }
-        @{ Rule = '/avm/res/Storage/storage-account/ @owner-one' }
-        @{ Rule = '/utilities/ @owner-one' }
+        @{ Rule = '/avm/res/storage/storage-account @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @invalid--owner @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @-invalid @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @invalid- @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @owner_one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @abcdefghijklmnopqrstuvwxyzabcdefghijklmn @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/ @owner-one @owner-two' }
+        @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners @owner-one' }
+        @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/unknown/storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/Storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/utilities/ @owner-one @Azure/azure-verified-modules-module-owners' }
     ) {
         $script:ownershipRules[3] = $Rule
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*per-module entries must name*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*per-module entries must include*'
     }
 
     It 'Accepts one-character and maximum-length individual handles' {
-        $script:ownershipRules[3] = '/avm/res/storage/storage-account/ @a @abcdefghijklmnopqrstuvwxyzabcdefghijklm'
+        $script:ownershipRules[3] = '/avm/res/storage/storage-account/ @a @abcdefghijklmnopqrstuvwxyzabcdefghijklm @Azure/azure-verified-modules-module-owners'
         Invoke-TestCodeOwnersGovernance
     }
 
     It 'Rejects duplicate module patterns' {
-        $script:ownershipRules[4] = '/avm/res/storage/storage-account/ @another-owner'
+        $script:ownershipRules[4] = '/avm/res/storage/storage-account/ @another-owner @Azure/azure-verified-modules-module-owners'
         { Invoke-TestCodeOwnersGovernance } | Should -Throw '*each module must have a single ownership entry*'
     }
 
@@ -107,7 +114,7 @@ Describe 'CODEOWNERS governance' {
     }
 
     It 'Rejects a late module rule that shadows tooling overrides' {
-        $script:ownershipRules += '/avm/res/storage/storage-account/blob-service/container/ @owner-one'
+        $script:ownershipRules += '/avm/res/storage/storage-account/blob-service/container/ @owner-one @Azure/azure-verified-modules-module-owners'
         { Invoke-TestCodeOwnersGovernance } | Should -Throw '*tooling overrides must take precedence*'
     }
 

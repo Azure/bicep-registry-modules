@@ -2161,9 +2161,9 @@ Describe 'Governance tests' {
 
         $moduleOwnershipRules = @($ownershipRules | Select-Object -Skip 2 | Select-Object -SkipLast 2)
         $individualOwnerPattern = '@(?=[a-zA-Z0-9-]{1,39}(?: |$))[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*'
-        $moduleOwnershipPattern = "^/avm/(res|ptn|utl)/(?:[a-z0-9-]+/){2,} ($individualOwnerPattern( $individualOwnerPattern)*|@Azure/azure-verified-modules-module-owners)$"
+        $moduleOwnershipPattern = "^/avm/(res|ptn|utl)/(?:[a-z0-9-]+/){2,} ($individualOwnerPattern )*@Azure/azure-verified-modules-module-owners$"
         $invalidModuleRules = @($moduleOwnershipRules | Where-Object { $_ -cnotmatch $moduleOwnershipPattern })
-        $invalidModuleRules | Should -BeNullOrEmpty -Because 'per-module entries must name individual owners or the module-owners fallback team.'
+        $invalidModuleRules | Should -BeNullOrEmpty -Because 'per-module entries must include the module-owners team, optionally preceded by individual owners.'
 
         $modulePatterns = @($moduleOwnershipRules | ForEach-Object { ($_ -split ' ')[0] })
         @($modulePatterns | Sort-Object -Unique).Count | Should -Be $modulePatterns.Count -Because 'each module must have a single ownership entry.'
