@@ -2159,14 +2159,21 @@ Describe 'Governance tests' {
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
         ) -Because 'tooling overrides must take precedence over module ownership.'
 
-        $moduleOwnershipRules = @($ownershipRules | Select-Object -Skip 2 | Select-Object -SkipLast 2)
+        $modulePathPattern = '^/avm/(res|ptn|utl)/'
+        $moduleOwnershipRules = @($ownershipRules | Where-Object { $_ -match $modulePathPattern })
+        $invalidStaticRules = @($ownershipRules | Where-Object {
+                $_ -notmatch $modulePathPattern -and $_ -ne $ownershipRules[1] -and
+                $_ -cnotmatch '^\S+ @Azure/azure-verified-modules-tooling-contributors$'
+            })
+        $invalidStaticRules | Should -BeNullOrEmpty -Because 'non-module rules must preserve tooling ownership.'
+
         $individualOwnerPattern = '@(?=[a-zA-Z0-9-]{1,39}(?: |$))[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*'
         $moduleOwnershipPattern = "^/avm/(res|ptn|utl)/(?:[a-z0-9-]+/){2} ($individualOwnerPattern )*@Azure/azure-verified-modules-module-owners$"
         $invalidModuleRules = @($moduleOwnershipRules | Where-Object { $_ -cnotmatch $moduleOwnershipPattern })
         $invalidModuleRules | Should -BeNullOrEmpty -Because 'per-module entries must use a top-level module path and include the module-owners team, optionally preceded by individual owners.'
 
-        $modulePatterns = @($moduleOwnershipRules | ForEach-Object { ($_ -split ' ')[0] })
-        @($modulePatterns | Sort-Object -Unique).Count | Should -Be $modulePatterns.Count -Because 'each module must have a single ownership entry.'
+        $ownershipPatterns = @($ownershipRules | ForEach-Object { ($_ -split ' ')[0] })
+        @($ownershipPatterns | Sort-Object -Unique).Count | Should -Be $ownershipPatterns.Count -Because 'each ownership pattern must have a single entry.'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {

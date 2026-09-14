@@ -75,6 +75,16 @@ Describe 'CODEOWNERS governance' {
         Invoke-TestCodeOwnersGovernance
     }
 
+    It 'Selects module paths independently of additional tooling rules at index <Index>' -ForEach @(
+        @{ Index = 2 }
+        @{ Index = 6 }
+    ) {
+        $script:ownershipRules = @($script:ownershipRules[0..($Index - 1)]) +
+            @('/utilities/ @Azure/azure-verified-modules-tooling-contributors') +
+            @($script:ownershipRules[$Index..($script:ownershipRules.Count - 1)])
+        Invoke-TestCodeOwnersGovernance
+    }
+
     It 'Rejects malformed or unexpected module ownership: <Rule>' -ForEach @(
         @{ Rule = '/avm/res/storage/storage-account/ @Azure/legacy-module-team @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-contributors' }
@@ -92,12 +102,19 @@ Describe 'CODEOWNERS governance' {
         @{ Rule = '/avm/res/storage/storage-account/ @owner-one @owner-two' }
         @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners @owner-one' }
         @{ Rule = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners @Azure/azure-verified-modules-module-owners' }
-        @{ Rule = '/avm/unknown/storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/Storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
-        @{ Rule = '/utilities/ @owner-one @Azure/azure-verified-modules-module-owners' }
     ) {
         $script:ownershipRules[3] = $Rule
         { Invoke-TestCodeOwnersGovernance } | Should -Throw '*per-module entries must use a top-level module path*'
+    }
+
+    It 'Rejects unexpected non-module ownership: <Rule>' -ForEach @(
+        @{ Rule = '/avm/unknown/storage/storage-account/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/utilities/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/.github/CODEOWNERS @owner-one' }
+    ) {
+        $script:ownershipRules[3] = $Rule
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*non-module rules must preserve tooling ownership*'
     }
 
     It 'Accepts one-character and maximum-length individual handles' {
@@ -107,7 +124,15 @@ Describe 'CODEOWNERS governance' {
 
     It 'Rejects duplicate module patterns' {
         $script:ownershipRules[4] = '/avm/res/storage/storage-account/ @another-owner @Azure/azure-verified-modules-module-owners'
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*each module must have a single ownership entry*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*each ownership pattern must have a single entry*'
+    }
+
+    It 'Rejects duplicate static patterns at index <Index>' -ForEach @(
+        @{ Index = 0 }
+        @{ Index = 1 }
+    ) {
+        $script:ownershipRules[4] = $script:ownershipRules[$Index]
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*each ownership pattern must have a single entry*'
     }
 
     It 'Keeps repository-default ownership with the tooling team' {
