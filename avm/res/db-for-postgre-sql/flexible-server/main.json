@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.45.6.27763",
-      "templateHash": "3624203291665386002"
+      "version": "0.43.8.12551",
+      "templateHash": "13810997775356832370"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -1374,8 +1374,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "12993518847887267936"
+              "version": "0.43.8.12551",
+              "templateHash": "7269419402260886159"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1518,8 +1518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "3347962322046016549"
+              "version": "0.43.8.12551",
+              "templateHash": "6189967960673354373"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1657,8 +1657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "17451017663345935835"
+              "version": "0.43.8.12551",
+              "templateHash": "578371661156649440"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1722,12 +1722,12 @@
             "flexibleServer": {
               "existing": true,
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2026-01-01-preview",
+              "apiVersion": "2025-08-01",
               "name": "[parameters('flexibleServerName')]"
             },
             "configuration": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-              "apiVersion": "2026-01-01-preview",
+              "apiVersion": "2025-08-01",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
               "properties": {
                 "source": "[parameters('source')]",
@@ -1804,8 +1804,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "10338440676489662601"
+              "version": "0.43.8.12551",
+              "templateHash": "5173199586870670834"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1945,8 +1945,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "14968084964225196222"
+              "version": "0.43.8.12551",
+              "templateHash": "973369074153293967"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."

@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Changed the `configuration` child module API version from `2026-01-01-preview` to the stable `2025-08-01`, so that static (restart-required) server parameters such as `shared_buffers` and `shared_preload_libraries` are persisted after deployment (see issue [#7270](https://github.com/Azure/bicep-registry-modules/issues/7270))
+- Added the `configurations` end-to-end test that deploys static server parameters and reads back their persisted values to guard against configuration-persistence regressions
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
