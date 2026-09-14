@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.modernize-your-code.yml"
       - "avm/ptn/sa/modernize-your-code/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/modernize-your-code"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.hybrid-container-service.provisioned-cluster-instance.yml"
       - "avm/res/hybrid-container-service/provisioned-cluster-instance/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/hybrid-container-service/provisioned-cluster-instance"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.digital-twins.digital-twins-instance.yml"
       - "avm/res/digital-twins/digital-twins-instance/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/digital-twins/digital-twins-instance"

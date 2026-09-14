@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "SignalR Service SignalR",
+  "moduleDescription": "This module deploys a SignalR Service SignalR.",
+  "telemetryIdPrefix": "46d3xbcp.res.signalrservice-signalr",
+  "canonicalType": "Microsoft.SignalRService/signalR",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "krbar"
+      }
+    ]
+  }
+}

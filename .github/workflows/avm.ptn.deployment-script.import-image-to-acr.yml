@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.deployment-script.import-image-to-acr.yml"
       - "avm/ptn/deployment-script/import-image-to-acr/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/deployment-script/import-image-to-acr"

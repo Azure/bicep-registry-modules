@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.db-for-postgre-sql.flexible-server.yml"
       - "avm/res/db-for-postgre-sql/flexible-server/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/db-for-postgre-sql/flexible-server"

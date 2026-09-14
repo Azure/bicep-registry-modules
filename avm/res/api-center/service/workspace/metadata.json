@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "API Center Service Workspaces",
+  "moduleDescription": "This module deploys an API Center Service Workspace.",
+  "canonicalType": "Microsoft.ApiCenter/services/workspaces"
+}

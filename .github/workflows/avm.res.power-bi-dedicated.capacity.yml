@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.power-bi-dedicated.capacity.yml"
       - "avm/res/power-bi-dedicated/capacity/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/power-bi-dedicated/capacity"

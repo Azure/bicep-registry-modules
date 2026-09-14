@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Virtual Machine Extensions",
+  "moduleDescription": "This module deploys a Virtual Machine Extension.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-vm-extension",
+  "canonicalType": "Microsoft.Compute/virtualMachines/extensions"
+}

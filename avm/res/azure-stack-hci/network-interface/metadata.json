@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Azure Stack HCI Network Interface",
+  "moduleDescription": "This module deploys an Azure Stack HCI network interface.",
+  "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-networkinterface",
+  "canonicalType": "Microsoft.AzureStackHCI/networkInterfaces",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "chirag1603"
+      },
+      {
+        "githubHandle": "bniranjanbhat"
+      },
+      {
+        "githubHandle": "PrithwiTech"
+      }
+    ]
+  }
+}

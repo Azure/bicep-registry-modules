@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.signal-r-service.web-pub-sub.yml"
       - "avm/res/signal-r-service/web-pub-sub/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/signal-r-service/web-pub-sub"

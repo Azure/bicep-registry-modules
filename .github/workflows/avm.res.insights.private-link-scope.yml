@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.private-link-scope.yml"
       - "avm/res/insights/private-link-scope/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/private-link-scope"

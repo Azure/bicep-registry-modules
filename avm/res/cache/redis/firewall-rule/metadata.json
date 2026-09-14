@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Redis Cache Firewall Rules",
+  "moduleDescription": "This module creates a firewall rule for Redis Cache.",
+  "canonicalType": "Microsoft.Cache/redis/firewallRules"
+}

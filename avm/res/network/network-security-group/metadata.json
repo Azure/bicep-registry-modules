@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Network Security Groups",
+  "moduleDescription": "This module deploys a Network security Group (NSG).",
+  "telemetryIdPrefix": "46d3xbcp.res.network-networksecuritygroup",
+  "alternativeNames": ["NSG"],
+  "canonicalType": "Microsoft.Network/networkSecurityGroups",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "ahmadabdalla"
+      }
+    ]
+  }
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.content-processing.yml"
       - "avm/ptn/sa/content-processing/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/content-processing"

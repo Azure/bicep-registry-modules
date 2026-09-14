@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.azure-stack-hci.virtual-hard-disk.yml"
       - "avm/res/azure-stack-hci/virtual-hard-disk/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/azure-stack-hci/virtual-hard-disk"

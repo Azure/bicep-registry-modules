@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Web/Function Apps",
+  "moduleDescription": "This module deploys a Web or Function App.",
+  "telemetryIdPrefix": "46d3xbcp.res.web-site",
+  "alternativeNames": ["App Service", "Web Site", "Logic App", "Function App"],
+  "canonicalType": "Microsoft.Web/sites",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "tsc-buddy"
+      },
+      {
+        "githubHandle": "pankajagrawal16"
+      }
+    ]
+  }
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.authorization.role-definition.yml"
       - "avm/ptn/authorization/role-definition/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/authorization/role-definition"

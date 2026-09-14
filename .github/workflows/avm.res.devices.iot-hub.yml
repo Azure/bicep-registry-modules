@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.devices.iot-hub.yml"
       - "avm/res/devices/iot-hub/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/devices/iot-hub"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.operations-management.solution.yml"
       - "avm/res/operations-management/solution/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/operations-management/solution"

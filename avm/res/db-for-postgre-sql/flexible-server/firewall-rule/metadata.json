@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "DBforPostgreSQL Flexible Server Firewall Rules",
+  "moduleDescription": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
+  "telemetryIdPrefix": "46d3xbcp.res.dbforpostgresql-flexisrv-fwrule",
+  "canonicalType": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules"
+}

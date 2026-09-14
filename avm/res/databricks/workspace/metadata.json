@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Azure Databricks Workspaces",
+  "moduleDescription": "This module deploys an Azure Databricks Workspace.",
+  "telemetryIdPrefix": "46d3xbcp.res.databricks-workspace",
+  "canonicalType": "Microsoft.Databricks/workspaces",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "abhishekaryams"
+      }
+    ]
+  }
+}

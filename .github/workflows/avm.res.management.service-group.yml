@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.management.service-group.yml"
       - "avm/res/management/service-group/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/management/service-group"

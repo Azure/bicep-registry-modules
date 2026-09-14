@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.databricks.access-connector.yml"
       - "avm/res/databricks/access-connector/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/databricks/access-connector"

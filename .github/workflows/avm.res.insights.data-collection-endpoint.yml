@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.data-collection-endpoint.yml"
       - "avm/res/insights/data-collection-endpoint/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/data-collection-endpoint"

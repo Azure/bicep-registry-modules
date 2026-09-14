@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.db-for-my-sql.flexible-server.yml"
       - "avm/res/db-for-my-sql/flexible-server/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/db-for-my-sql/flexible-server"

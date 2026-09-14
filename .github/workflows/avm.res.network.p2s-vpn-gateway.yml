@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.p2s-vpn-gateway.yml"
       - "avm/res/network/p2s-vpn-gateway/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/p2s-vpn-gateway"

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Data Factories",
+  "moduleDescription": "This module deploys a Data Factory.",
+  "telemetryIdPrefix": "46d3xbcp.res.datafactory-factory",
+  "canonicalType": "Microsoft.DataFactory/factories",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "TomazMlakar"
+      }
+    ]
+  }
+}

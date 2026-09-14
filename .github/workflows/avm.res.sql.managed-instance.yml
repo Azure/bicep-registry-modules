@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.sql.managed-instance.yml"
       - "avm/res/sql/managed-instance/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/sql/managed-instance"

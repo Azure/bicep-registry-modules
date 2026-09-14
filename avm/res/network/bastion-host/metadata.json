@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Bastion Hosts",
+  "moduleDescription": "This module deploys a Bastion Host.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-bastionhost",
+  "canonicalType": "Microsoft.Network/bastionHosts",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "krbar"
+      }
+    ]
+  }
+}

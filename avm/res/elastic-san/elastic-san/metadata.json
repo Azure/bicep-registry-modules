@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Elastic SANs",
+  "moduleDescription": "This module deploys an Elastic SAN.",
+  "telemetryIdPrefix": "46d3xbcp.res.elasticsan-elasticsan",
+  "alternativeNames": [
+    "SAN",
+    "ESAN",
+    "Elastic SAN",
+    "Azure Elastic Storage Area Network",
+    "iSCSI",
+    "internet Small Computer Systems Interface"
+  ],
+  "canonicalType": "Microsoft.ElasticSan/elasticSans",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "jbinko"
+      }
+    ]
+  }
+}

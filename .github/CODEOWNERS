@@ -275,3 +275,4 @@
 
 *avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors
 *.e2eignore @Azure/azure-verified-modules-tooling-contributors
+metadata.json @Azure/azure-verified-modules-engineering-owners

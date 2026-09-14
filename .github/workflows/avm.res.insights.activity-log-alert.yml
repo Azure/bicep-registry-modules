@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.activity-log-alert.yml"
       - "avm/res/insights/activity-log-alert/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/activity-log-alert"

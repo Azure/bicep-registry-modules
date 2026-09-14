@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Azure Monitor Private Link Scopes",
+  "moduleDescription": "This module deploys an Azure Monitor Private Link Scope.",
+  "telemetryIdPrefix": "46d3xbcp.res.insights-privatelinkscope",
+  "canonicalType": "Microsoft.Insights/privateLinkScopes",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "ahmadabdalla"
+      }
+    ]
+  }
+}

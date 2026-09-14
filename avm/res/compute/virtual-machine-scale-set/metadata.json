@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "schemaVersion": 1,
+  "moduleDisplayName": "Virtual Machine Scale Sets",
+  "moduleDescription": "This module deploys a Virtual Machine Scale Set.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-virtualmachinescaleset",
+  "alternativeNames": ["VMSS"],
+  "canonicalType": "Microsoft.Compute/virtualMachineScaleSets",
+  "tier": "maintained",
+  "owners": {
+    "individuals": [
+      {
+        "githubHandle": "josunefon"
+      },
+      {
+        "githubHandle": "rahalan"
+      }
+    ]
+  }
+}

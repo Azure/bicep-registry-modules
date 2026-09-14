@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.maintenance.configuration-assignment.yml"
       - "avm/res/maintenance/configuration-assignment/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/maintenance/configuration-assignment"

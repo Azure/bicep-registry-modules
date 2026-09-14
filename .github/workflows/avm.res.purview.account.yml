@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.purview.account.yml"
       - "avm/res/purview/account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/purview/account"
