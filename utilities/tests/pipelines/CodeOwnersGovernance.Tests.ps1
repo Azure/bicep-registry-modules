@@ -48,6 +48,11 @@ Describe 'CODEOWNERS governance' {
         Invoke-TestCodeOwnersGovernance
     }
 
+    It 'Accepts the checked-in CODEOWNERS file' {
+        $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
+        Invoke-TestCodeOwnersGovernance
+    }
+
     It 'Accepts the owners team as the only reviewer for an ownerless module' {
         $script:ownershipRules[3] = '/avm/res/storage/storage-account/ @Azure/azure-verified-modules-module-owners'
         Invoke-TestCodeOwnersGovernance
