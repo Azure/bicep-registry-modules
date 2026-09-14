@@ -20,6 +20,7 @@ param enabled bool = true
 @allowed([
   'LogAlert'
   'LogToMetric'
+  'SimpleLogAlert'
 ])
 param kind string = 'LogAlert'
 
@@ -162,7 +163,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
     displayName: alertDisplayName ?? name
     enabled: enabled
     scopes: scopes
-    ...(kind == 'LogAlert'
+    ...(kind == 'LogAlert' || kind == 'SimpleLogAlert'
       ? {
           evaluationFrequency: evaluationFrequency
           overrideQueryTimeRange: queryTimeRange
