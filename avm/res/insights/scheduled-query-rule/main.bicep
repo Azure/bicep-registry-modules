@@ -163,7 +163,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' =
     displayName: alertDisplayName ?? name
     enabled: enabled
     scopes: scopes
-    ...(kind == 'LogAlert' || kind == 'SimpleLogAlert'
+    ...(kind != 'LogToMetric'
       ? {
           evaluationFrequency: evaluationFrequency
           overrideQueryTimeRange: queryTimeRange
