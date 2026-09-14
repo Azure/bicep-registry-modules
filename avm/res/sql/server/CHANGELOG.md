@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/CHANGELOG.md).
 
+## 0.22.1
+
+### Changes
+
+- Added support for time-based immutability settings in database backup long-term retention policy module
+- Added types for tags parameters
+
+### Breaking Changes
+
+- None
+
 ## 0.22.0
 
 ### Changes

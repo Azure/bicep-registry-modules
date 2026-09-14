@@ -177,7 +177,7 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
 }
 
 module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routingIntent'
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-routingIntent'
   params: {
     virtualHubName: virtualHub.name
     azureFirewallResourceId: azureFirewallResourceId!
@@ -190,7 +190,7 @@ module virtualHub_routingIntent 'routing-intent/main.bicep' = if (!empty(azureFi
 // Initially create the route tables without routes
 module virtualHub_routeTables 'hub-route-table/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeTable-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: routeTable.name
@@ -203,7 +203,7 @@ module virtualHub_routeTables 'hub-route-table/main.bicep' = [
 
 module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
   for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-connection-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-connection-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: virtualNetworkConnection.name
@@ -220,7 +220,7 @@ module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/m
 
 module virtualHub_routeMaps 'route-map/main.bicep' = [
   for (routeMap, index) in (routeMaps ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-routeMap-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-routeMap-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: routeMap.name

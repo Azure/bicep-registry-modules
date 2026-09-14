@@ -13,7 +13,7 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -70,6 +70,9 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+  }
+  tags: {
+    SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
   }
   dependsOn: [
     roleAssignment

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "11484857230031915995"
+      "version": "0.46.1.21595",
+      "templateHash": "1840262284581142474"
     },
     "name": "DocumentDB Database Account Cassandra Role Definitions.",
     "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -68,7 +68,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2025-05-01-preview). Please refer to official Azure documentation once available."
+        "description": "Optional. An array of data actions that are allowed. Note: Valid data action strings for Cassandra API are currently undocumented (as of API version 2026-04-01-preview). Please refer to official Azure documentation once available."
       }
     },
     "notDataActions": {
@@ -78,7 +78,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2025-05-01-preview)."
+        "description": "Optional. An array of data actions that are denied. Note: Unlike SQL RBAC, Cassandra RBAC supports deny rules (notDataActions) for granular access control. Valid data action strings are currently undocumented (as of API version 2026-04-01-preview)."
       }
     },
     "assignableScopes": {
@@ -136,12 +136,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "cassandraRoleDefinition": {
       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
-      "apiVersion": "2025-05-01-preview",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), parameters('roleName'))))]",
       "properties": {
         "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
@@ -195,8 +195,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17915066094138952658"
+              "version": "0.46.1.21595",
+              "templateHash": "11712498461322399240"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -266,12 +266,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2024-11-15",
+              "apiVersion": "2026-04-01-preview",
               "name": "[parameters('databaseAccountName')]"
             },
             "cassandraRoleAssignment": {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments",
-              "apiVersion": "2025-05-01-preview",
+              "apiVersion": "2026-04-01-preview",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
               "properties": {
                 "principalId": "[parameters('principalId')]",

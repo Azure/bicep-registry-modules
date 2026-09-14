@@ -1,0 +1,83 @@
+name: "avm.template.module.publish-only"
+
+on:
+  workflow_call:
+    inputs:
+      modulePath:
+        type: string
+        required: true
+      baseCommit:
+        type: string
+        required: false
+      targetCommit:
+        type: string
+        required: true
+      forcePublish:
+        type: boolean
+        required: false
+        default: false
+      requirePublishApproval:
+        type: boolean
+        required: false
+        default: false
+
+permissions: {}
+
+jobs:
+  job_publish_approval:
+    name: "Approve release tag creation"
+    environment: publish-approval
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: |
+      inputs.requirePublishApproval &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    steps:
+      - name: "Approval granted"
+        shell: pwsh
+        run: Write-Output 'Release tag creation approved.'
+
+  job_publish_module:
+    name: "Publishing"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: |
+      !cancelled() &&
+      (!inputs.requirePublishApproval || needs.job_publish_approval.result == 'success') &&
+      github.ref == 'refs/heads/main' &&
+      github.repository == 'Azure/bicep-registry-modules'
+    needs:
+      - job_publish_approval
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Create module release tag"
+        shell: pwsh
+        env:
+          BASE_COMMIT: "${{ inputs.baseCommit }}"
+          FORCE_PUBLISH: "${{ inputs.forcePublish }}"
+          MODULE_PATH: "${{ inputs.modulePath }}"
+          TARGET_COMMIT: "${{ inputs.targetCommit }}"
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'Set-ModuleWorkflowReleaseTag.ps1')
+
+          $functionInput = @{
+            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE $env:MODULE_PATH 'main.bicep'
+            RepoRoot         = $env:GITHUB_WORKSPACE
+            TargetCommit     = $env:TARGET_COMMIT
+            Force            = $env:FORCE_PUBLISH -eq 'true'
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:BASE_COMMIT)) {
+            $functionInput['BaseCommit'] = $env:BASE_COMMIT
+          }
+
+          $tagOutputs = Set-ModuleWorkflowReleaseTag @functionInput -Verbose
+          if ($tagOutputs.Count -gt 0) {
+            Write-Verbose ("Created or reused release tag(s):`n{0}" -f ($tagOutputs | ConvertTo-Json -Depth 10 | Out-String)) -Verbose
+          } else {
+            Write-Output 'No publishable module changes were found. No release tags were created.'
+          }

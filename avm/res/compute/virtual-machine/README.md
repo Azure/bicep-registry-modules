@@ -319,7 +319,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminUsername: 'localAdminUser'
     disablePasswordAuthentication: true
-    diskControllerType: 'SCSI'
     imageReference: {
       offer: '0001-com-ubuntu-server-jammy'
       publisher: 'Canonical'
@@ -390,9 +389,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "disablePasswordAuthentication": {
       "value": true
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "imageReference": {
       "value": {
         "offer": "0001-com-ubuntu-server-jammy",
@@ -449,7 +445,6 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminUsername = 'localAdminUser'
 param disablePasswordAuthentication = true
-param diskControllerType = 'SCSI'
 param imageReference = {
   offer: '0001-com-ubuntu-server-jammy'
   publisher: 'Canonical'
@@ -624,7 +619,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     ]
     disablePasswordAuthentication: true
-    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -947,9 +941,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     },
     "disablePasswordAuthentication": {
       "value": true
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -1282,7 +1273,6 @@ param dataDisks = [
   }
 ]
 param disablePasswordAuthentication = true
-param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -1554,7 +1544,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
-    diskControllerType: 'SCSI'
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
@@ -1857,9 +1846,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         }
       ]
-    },
-    "diskControllerType": {
-      "value": "SCSI"
     },
     "enableAutomaticUpdates": {
       "value": true
@@ -2168,7 +2154,6 @@ param dataDisks = [
     }
   }
 ]
-param diskControllerType = 'SCSI'
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
@@ -2359,7 +2344,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
-    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -2424,9 +2408,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -2475,7 +2456,6 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
-param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'
@@ -2741,7 +2721,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
-    diskControllerType: 'SCSI'
     extensionGuestConfigurationExtension: {
       enabled: true
     }
@@ -2839,9 +2818,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "extensionGuestConfigurationExtension": {
       "value": {
         "enabled": true
@@ -2929,7 +2905,6 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
-param diskControllerType = 'SCSI'
 param extensionGuestConfigurationExtension = {
   enabled: true
 }
@@ -4545,7 +4520,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     adminUsername: 'localAdminUser'
-    diskControllerType: 'SCSI'
     imageReference: {
       offer: 'WindowsServer'
       publisher: 'MicrosoftWindowsServer'
@@ -4611,9 +4585,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "adminUsername": {
       "value": "localAdminUser"
     },
-    "diskControllerType": {
-      "value": "SCSI"
-    },
     "imageReference": {
       "value": {
         "offer": "WindowsServer",
@@ -4665,7 +4636,6 @@ param vmSize = 'Standard_D2s_v6'
 // Non-required parameters
 param adminPassword = '<adminPassword>'
 param adminUsername = 'localAdminUser'
-param diskControllerType = 'SCSI'
 param imageReference = {
   offer: 'WindowsServer'
   publisher: 'MicrosoftWindowsServer'

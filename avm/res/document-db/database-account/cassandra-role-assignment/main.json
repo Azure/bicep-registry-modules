@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "17915066094138952658"
+      "version": "0.46.1.21595",
+      "templateHash": "11712498461322399240"
     },
     "name": "DocumentDB Database Account Cassandra Role Assignments.",
     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -76,12 +76,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2024-11-15",
+      "apiVersion": "2026-04-01-preview",
       "name": "[parameters('databaseAccountName')]"
     },
     "cassandraRoleAssignment": {
       "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleAssignments",
-      "apiVersion": "2025-05-01-preview",
+      "apiVersion": "2026-04-01-preview",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
       "properties": {
         "principalId": "[parameters('principalId')]",

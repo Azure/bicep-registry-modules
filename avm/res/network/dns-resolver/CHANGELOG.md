@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/network/dns-resolver/CHANGELOG.md).
 
+## 0.5.8
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two DNS Resolvers are deployed in the same resource group at the same time.
+- Updated API version for `Microsoft.Resources/deployments` to `2025-04-01` for telemetry deployment resource.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.7
 
 ### Changes

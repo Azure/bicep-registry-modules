@@ -7,11 +7,14 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.')
-param addressPrefixes string[]
+@description('Conditional. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. Required if `ipamPoolPrefixAllocations` is empty. Cannot be combined with `ipamPoolPrefixAllocations` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.')
+param addressPrefixes string[]?
 
 @description('Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.')
 param ipamPoolNumberOfIpAddresses string?
+
+@description('Conditional. The IPAM pool prefix allocations to use for the Virtual Network address space. Required if `addressPrefixes` is empty. Cannot be combined with `addressPrefixes` as Azure does not allow mixing explicit prefixes and IPAM pool references in the same address space.')
+param ipamPoolPrefixAllocations resourceInput<'Microsoft.Network/virtualNetworks@2025-05-01'>.properties.addressSpace.ipamPoolPrefixAllocations?
 
 @description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
@@ -75,6 +78,12 @@ param ipAllocations resourceInput<'Microsoft.Network/virtualNetworks@2025-05-01'
 
 var enableReferencedModulesTelemetry = false
 
+// When the first entry of `addressPrefixes` is an IPAM pool resource ID, the legacy single-pool syntax is used.
+var addressPrefixIsIpamPoolResourceId = !empty(addressPrefixes ?? []) && contains(
+  (addressPrefixes ?? [''])[0],
+  '/Microsoft.Network/networkManagers/'
+)
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -133,20 +142,19 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
   tags: tags
   properties: {
     ipAllocations: ipAllocations
-    addressSpace: contains(addressPrefixes[0], '/Microsoft.Network/networkManagers/')
-      ? {
-          ipamPoolPrefixAllocations: [
+    addressSpace: {
+      addressPrefixes: addressPrefixIsIpamPoolResourceId || empty(addressPrefixes ?? []) ? null : addressPrefixes
+      ipamPoolPrefixAllocations: addressPrefixIsIpamPoolResourceId
+        ? [
             {
               pool: {
-                id: addressPrefixes[0]
+                id: (addressPrefixes ?? [''])[0]
               }
               numberOfIpAddresses: ipamPoolNumberOfIpAddresses
             }
           ]
-        }
-      : {
-          addressPrefixes: addressPrefixes
-        }
+        : ipamPoolPrefixAllocations
+    }
     bgpCommunities: !empty(virtualNetworkBgpCommunity)
       ? {
           virtualNetworkCommunity: virtualNetworkBgpCommunity!
@@ -178,7 +186,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-05-01' = {
 @batchSize(1)
 module virtualNetwork_subnets 'subnet/main.bicep' = [
   for (subnet, index) in (subnets ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-subnet-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-subnet-${index}'
     params: {
       virtualNetworkName: virtualNetwork.name
       name: subnet.name
@@ -207,7 +215,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
 // Local to Remote peering
 module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-local-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-virtualNetworkPeering-local-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [
@@ -231,7 +239,7 @@ module virtualNetwork_peering_local 'virtual-network-peering/main.bicep' = [
 // Remote to local peering (reverse)
 module virtualNetwork_peering_remote 'virtual-network-peering/main.bicep' = [
   for (peering, index) in (peerings ?? []): if (peering.?remotePeeringEnabled ?? false) {
-    name: '${uniqueString(subscription().id, resourceGroup().id, location)}-virtualNetworkPeering-remote-${index}'
+    name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-virtualNetworkPeering-remote-${index}'
     // This is a workaround for an error in which the peering is deployed whilst the subnet creation is still taking place
     // TODO: https://github.com/Azure/bicep/issues/1013 would be a better solution
     dependsOn: [

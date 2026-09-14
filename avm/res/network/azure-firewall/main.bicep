@@ -187,7 +187,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-azurefirewall.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -205,8 +205,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Firewall-PIP'
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.13.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
     publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId')
@@ -241,8 +241,8 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.12.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
-  name: '${uniqueString(subscription().id, resourceGroup().id, location)}-Firewall-MIP'
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.13.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+  name: '${uniqueString(subscription().id, resourceGroup().id, location, name)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
       ? (!(empty(managementIPAddressObject.name)) ? managementIPAddressObject.name : '${name}-mip')

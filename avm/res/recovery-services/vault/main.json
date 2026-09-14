@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.45.6.27763",
-      "templateHash": "220046558025066618"
+      "version": "0.42.1.51946",
+      "templateHash": "10721181273595885843"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -1705,8 +1705,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "16156952054359373168"
+              "version": "0.42.1.51946",
+              "templateHash": "4300134200808733054"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -1908,8 +1908,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.6.27763",
-                      "templateHash": "8736444571877131181"
+                      "version": "0.42.1.51946",
+                      "templateHash": "108524614303970407"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2104,8 +2104,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.6.27763",
-                              "templateHash": "6594901912927952880"
+                              "version": "0.42.1.51946",
+                              "templateHash": "6182913882922066329"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2368,8 +2368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "6356275547804494974"
+              "version": "0.42.1.51946",
+              "templateHash": "17818226242428631919"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2537,8 +2537,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "3711233916359961813"
+              "version": "0.42.1.51946",
+              "templateHash": "7094832860756691411"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -2703,8 +2703,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "27240770409910105"
+              "version": "0.42.1.51946",
+              "templateHash": "18064254233216935123"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -2824,15 +2824,11 @@
           "storageTypeState": {
             "value": "[tryGet(parameters('backupConfig'), 'storageTypeState')]"
           },
-          "isSoftDeleteFeatureStateEditable": {
-            "value": "[tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable')]"
-          },
+          "isSoftDeleteFeatureStateEditable": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable')))]",
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           },
-          "softDeleteRetentionPeriodInDays": {
-            "value": "[tryGet(parameters('backupConfig'), 'softDeleteRetentionPeriodInDays')]"
-          }
+          "softDeleteRetentionPeriodInDays": "[if(not(empty(parameters('softDeleteSettings'))), createObject('value', null()), createObject('value', tryGet(parameters('backupConfig'), 'softDeleteRetentionPeriodInDays')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2841,8 +2837,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "2431393405068255158"
+              "version": "0.42.1.51946",
+              "templateHash": "17536143300264072774"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2867,7 +2863,8 @@
               "allowedValues": [
                 "AlwaysON",
                 "Disabled",
-                "Enabled"
+                "Enabled",
+                "Invalid"
               ],
               "metadata": {
                 "description": "Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations."
@@ -2932,7 +2929,7 @@
             },
             "isSoftDeleteFeatureStateEditable": {
               "type": "bool",
-              "defaultValue": true,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Is soft delete feature state editable."
               }
@@ -2983,16 +2980,7 @@
               "type": "Microsoft.RecoveryServices/vaults/backupconfig",
               "apiVersion": "2026-01-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
-              "properties": {
-                "enhancedSecurityState": "[parameters('enhancedSecurityState')]",
-                "resourceGuardOperationRequests": "[parameters('resourceGuardOperationRequests')]",
-                "softDeleteFeatureState": "[parameters('softDeleteFeatureState')]",
-                "storageModelType": "[parameters('storageModelType')]",
-                "storageType": "[parameters('storageType')]",
-                "storageTypeState": "[parameters('storageTypeState')]",
-                "isSoftDeleteFeatureStateEditable": "[parameters('isSoftDeleteFeatureStateEditable')]",
-                "softDeleteRetentionPeriodInDays": "[parameters('softDeleteRetentionPeriodInDays')]"
-              }
+              "properties": "[shallowMerge(createArray(createObject('resourceGuardOperationRequests', parameters('resourceGuardOperationRequests'), 'storageModelType', parameters('storageModelType'), 'storageType', parameters('storageType'), 'storageTypeState', parameters('storageTypeState')), if(not(equals(parameters('enhancedSecurityState'), null())), createObject('enhancedSecurityState', parameters('enhancedSecurityState')), createObject()), if(not(equals(parameters('softDeleteFeatureState'), null())), createObject('softDeleteFeatureState', parameters('softDeleteFeatureState')), createObject()), if(not(equals(parameters('isSoftDeleteFeatureStateEditable'), null())), createObject('isSoftDeleteFeatureStateEditable', parameters('isSoftDeleteFeatureStateEditable')), createObject()), if(not(equals(parameters('softDeleteRetentionPeriodInDays'), null())), createObject('softDeleteRetentionPeriodInDays', parameters('softDeleteRetentionPeriodInDays')), createObject())))]"
             }
           },
           "outputs": {
@@ -3061,8 +3049,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.6.27763",
-              "templateHash": "3580637060467830058"
+              "version": "0.42.1.51946",
+              "templateHash": "14592636309960011598"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."

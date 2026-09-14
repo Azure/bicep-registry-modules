@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/operational-insights/workspace/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Fixed child module deployment names creation to prevent conflicts when two workspaces are deployed in the same resource group at the same time.
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
