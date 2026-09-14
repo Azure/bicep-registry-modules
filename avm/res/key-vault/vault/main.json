@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "11192832176006921046"
+      "version": "0.47.16.16243",
+      "templateHash": "5190792038032382557"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -1482,8 +1482,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "3687027835976050393"
+              "version": "0.47.16.16243",
+              "templateHash": "14980321378434619153"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy."
@@ -1654,7 +1654,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.keyvault-accesspolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -1674,12 +1674,12 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "policies": {
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "copy": [
@@ -1778,8 +1778,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "10654617653161100545"
+              "version": "0.47.16.16243",
+              "templateHash": "1677370526635931583"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret."
@@ -1963,7 +1963,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.keyvault-secret.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -1983,12 +1983,12 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secret": {
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2127,8 +2127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "2933783592100364067"
+              "version": "0.47.16.16243",
+              "templateHash": "244443850836561521"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key."
@@ -2444,7 +2444,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('46d3xbcp.res.keyvault-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
@@ -2464,12 +2464,12 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "key": {
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"
