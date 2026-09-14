@@ -37,14 +37,14 @@ Describe 'CODEOWNERS governance' {
             '/avm/ @Azure/azure-verified-modules-module-owners'
             '/avm/ptn/example/pattern/ @pattern-owner @Azure/azure-verified-modules-module-owners'
             '/avm/res/storage/storage-account/ @Owner-One @owner-two @Azure/azure-verified-modules-module-owners'
-            '/avm/res/storage/storage-account/blob-service/ @child-owner @Azure/azure-verified-modules-module-owners'
+            '/avm/res/network/virtual-network/ @network-owner @Azure/azure-verified-modules-module-owners'
             '/avm/utl/example/utility/ @Azure/azure-verified-modules-module-owners'
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
         )
     }
 
-    It 'Accepts generated resource, pattern, utility and child-module ownership' {
+    It 'Accepts generated resource, pattern and utility module ownership' {
         Invoke-TestCodeOwnersGovernance
     }
 
@@ -81,6 +81,8 @@ Describe 'CODEOWNERS governance' {
         @{ Rule = '/avm/res/storage/storage-account/' }
         @{ Rule = '/avm/res/storage/storage-account @owner-one @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/blob-service/ @owner-one @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/res/storage/storage-account/blob-service/container/ @owner-one @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/storage-account/ owner-one @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/storage-account/ @invalid--owner @Azure/azure-verified-modules-module-owners' }
         @{ Rule = '/avm/res/storage/storage-account/ @-invalid @Azure/azure-verified-modules-module-owners' }
@@ -95,7 +97,7 @@ Describe 'CODEOWNERS governance' {
         @{ Rule = '/utilities/ @owner-one @Azure/azure-verified-modules-module-owners' }
     ) {
         $script:ownershipRules[3] = $Rule
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*per-module entries must include*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*per-module entries must use a top-level module path*'
     }
 
     It 'Accepts one-character and maximum-length individual handles' {
@@ -119,7 +121,7 @@ Describe 'CODEOWNERS governance' {
     }
 
     It 'Rejects a late module rule that shadows tooling overrides' {
-        $script:ownershipRules += '/avm/res/storage/storage-account/blob-service/container/ @owner-one @Azure/azure-verified-modules-module-owners'
+        $script:ownershipRules += '/avm/res/key-vault/vault/ @owner-one @Azure/azure-verified-modules-module-owners'
         { Invoke-TestCodeOwnersGovernance } | Should -Throw '*tooling overrides must take precedence*'
     }
 
