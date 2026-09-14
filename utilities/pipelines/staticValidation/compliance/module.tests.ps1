@@ -2140,7 +2140,7 @@ Describe 'Governance tests' {
         }
     }
 
-    It '[<moduleFolderName>] Shared module and tooling ownership should be specified correctly in CODEOWNERS file.' -TestCases $governanceTestCases {
+    It '[<moduleFolderName>] Module and tooling ownership should be specified correctly in CODEOWNERS file.' -TestCases $governanceTestCases {
 
         param(
             [string] $repoRootPath
@@ -2148,14 +2148,25 @@ Describe 'Governance tests' {
 
         $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
         $ownershipRules = @(Get-Content $codeownersFilePath | ForEach-Object { $_.Trim() -replace '\s+', ' ' } | Where-Object { $_ -and -not $_.StartsWith('#') })
-        $expectedRules = @(
-            '* @Azure/azure-verified-modules-tooling-contributors'
+        $ownershipRules.Count | Should -BeGreaterOrEqual 4
+        $ownershipRules[0] | Should -Be '* @Azure/azure-verified-modules-tooling-contributors'
+        $ownershipRules[1] | Should -BeIn @(
             '/avm/ @Azure/azure-verified-modules-module-contributors'
+            '/avm/ @Azure/azure-verified-modules-module-owners'
+        )
+        $ownershipRules[-2..-1] | Should -Be @(
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
-        )
+        ) -Because 'tooling overrides must take precedence over module ownership.'
 
-        $ownershipRules | Should -Be $expectedRules -Because 'module ownership must use the shared contributors team, with tooling ownership preserved for the repository default, core-team tests, and deployment exclusions.'
+        $moduleOwnershipRules = @($ownershipRules | Select-Object -Skip 2 | Select-Object -SkipLast 2)
+        $individualOwnerPattern = '@(?=[a-zA-Z0-9-]{1,39}(?: |$))[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*'
+        $moduleOwnershipPattern = "^/avm/(res|ptn|utl)/(?:[a-z0-9-]+/){2,} ($individualOwnerPattern( $individualOwnerPattern)*|@Azure/azure-verified-modules-module-owners)$"
+        $invalidModuleRules = @($moduleOwnershipRules | Where-Object { $_ -cnotmatch $moduleOwnershipPattern })
+        $invalidModuleRules | Should -BeNullOrEmpty -Because 'per-module entries must name individual owners or the module-owners fallback team.'
+
+        $modulePatterns = @($moduleOwnershipRules | ForEach-Object { ($_ -split ' ')[0] })
+        @($modulePatterns | Sort-Object -Unique).Count | Should -Be $modulePatterns.Count -Because 'each module must have a single ownership entry.'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
