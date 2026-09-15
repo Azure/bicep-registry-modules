@@ -54,12 +54,5 @@ function Get-AvmCsvData {
     # Convert the CSV content to a PowerShell object
     $formattedBicepFullCsv = ConvertFrom-Csv $unfilteredCSV.Content
 
-    # Loop through each item in the filtered data
-    foreach ($item in $formattedBicepFullCsv) {
-        # Remove '@Azure/' from the ModuleOwnersGHTeam property
-        $item.ModuleOwnersGHTeam = $item.ModuleOwnersGHTeam -replace '@Azure\/', ''
-    }
-
-    # Return the modified data
     return $formattedBicepFullCsv
 }

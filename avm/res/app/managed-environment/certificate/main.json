@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "7145592441049491126"
+      "version": "0.46.1.21595",
+      "templateHash": "4830934724584315790"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."
@@ -61,19 +61,8 @@
         "description": "Optional. A key vault reference to the certificate to use for the custom domain."
       }
     },
-    "certificateType": {
-      "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "ServerSSLCertificate",
-        "ImagePullTrustedCA"
-      ],
-      "metadata": {
-        "description": "Optional. The type of the certificate."
-      }
-    },
     "certificateValue": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "metadata": {
         "description": "Optional. The value of the certificate. PFX or PEM blob."
@@ -90,7 +79,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.App/managedEnvironments/certificates@2025-10-02-preview#properties/tags"
+          "source": "Microsoft.App/managedEnvironments/certificates@2026-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -128,17 +117,16 @@
     "managedEnvironment": {
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2025-10-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('managedEnvironmentName')]"
     },
     "managedEnvironmentCertificate": {
       "type": "Microsoft.App/managedEnvironments/certificates",
-      "apiVersion": "2025-10-02-preview",
+      "apiVersion": "2026-01-01",
       "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
         "certificateKeyVaultProperties": "[if(not(empty(parameters('certificateKeyVaultProperties'))), createObject('identity', parameters('certificateKeyVaultProperties').identityResourceId, 'keyVaultUrl', parameters('certificateKeyVaultProperties').keyVaultUrl), null())]",
-        "certificateType": "[parameters('certificateType')]",
         "password": "[parameters('certificatePassword')]",
         "value": "[parameters('certificateValue')]"
       },

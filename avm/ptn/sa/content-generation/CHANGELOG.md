@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/content-generation/CHANGELOG.md).
 
+## 0.3.0
+
+### Changes
+
+- Added an Azure Container Registry with managed identity-based `AcrPull` access for the App Service and Container Instance.
+- Added Premium SKU selection, private endpoint, and private DNS integration when private networking or scalability is enabled.
+- Configured public placeholder images for the initial deployment so application images can be built and pushed during post-deployment.
+
+### Breaking Changes
+
+- Removed the `acrName` and `imageTag` parameters. The module now provisions and outputs its own Azure Container Registry.
+
 ## 0.2.0
 
 ### Changes

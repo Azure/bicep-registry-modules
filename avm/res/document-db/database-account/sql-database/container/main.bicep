@@ -108,7 +108,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
         kind: kind
         version: kind == 'MultiHash' ? 2 : version
       }
-      ...contains(databaseAccount.properties.capabilities, 'EnableDynamicDataMasking')
+      ...contains(databaseAccount.properties.capabilities, { name: 'EnableDynamicDataMasking' })
         ? {
             dataMaskingPolicy: dataMaskingPolicy ?? {
               includedPaths: []
