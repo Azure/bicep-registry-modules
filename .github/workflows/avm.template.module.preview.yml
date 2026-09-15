@@ -27,6 +27,7 @@ on:
         default: false
 
 env:
+  AVM_TEST_TENANT: "${{ case(contains(fromJSON(vars.TEST_BAMI_MODULE_PATHS || '[]'), inputs.modulePath), 'bami', 'legacy') }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "gci"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
@@ -58,8 +59,6 @@ jobs:
     permissions:
       contents: read
     if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
-    needs:
-      - job_initialize_subscription_selection
     strategy:
       fail-fast: false
       matrix:
@@ -72,21 +71,19 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - name: "Apply frozen test tenant"
-        uses: ./.github/actions/templates/avm-applyTestTenant
-        with:
-          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
-          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, '') }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, '') }}
 
   job_psrule_opt:
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
@@ -94,8 +91,6 @@ jobs:
     permissions:
       contents: read
     if: ${{ inputs.psRuleModuleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).staticValidation == 'true' }}
-    needs:
-      - job_initialize_subscription_selection
     strategy:
       fail-fast: false
       matrix:
@@ -108,29 +103,33 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - name: "Apply frozen test tenant"
-        uses: ./.github/actions/templates/avm-applyTestTenant
-        with:
-          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
-          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, '') }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, '') }}
 
   job_initialize_subscription_selection:
-    name: "Initialize test context"
+    name: "Initialize subscription selection"
+    runs-on: ubuntu-latest
     permissions: {}
-    if: (fromJson(inputs.workflowInput)).staticValidation == 'true' || (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
-    uses: ./.github/workflows/avm.template.test-tenant.yml
-    with:
-      modulePath: ${{ inputs.modulePath }}
+    if: inputs.moduleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
+    outputs:
+      randomSeed: ${{ steps.random-seed.outputs.randomSeed }}
+    steps:
+      - name: "Generate shared subscription shuffle seed"
+        id: random-seed
+        shell: pwsh
+        run: |
+          Write-Output ("randomSeed={0}" -f (Get-Random -Minimum 0 -Maximum 2147483647)) >> $env:GITHUB_OUTPUT
 
   job_module_deploy_validation:
     name: "Deploy [${{ matrix.testCases.name }}]"
@@ -139,12 +138,6 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    env:
-      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-      TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-      VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
-      VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
-      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
     if: |
       !cancelled() &&
       inputs.moduleTestFilePaths != '[]' &&
@@ -165,11 +158,6 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
-      - name: "Apply frozen test tenant"
-        uses: ./.github/actions/templates/avm-applyTestTenant
-        with:
-          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
-          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: "Set environment"
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
@@ -182,12 +170,19 @@ jobs:
           deploymentMetadataLocation: "WestEurope"
           subscriptionSelectionSeed: "${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}"
           subscriptionJobIndex: "${{ strategy.job-index }}"
-          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
+        env:
+          AZURE_CREDENTIALS: ${{ case(env.AVM_TEST_TENANT == 'bami', '', secrets.AZURE_CREDENTIALS) }}
+          CI_KEY_VAULT_NAME: ${{ case(env.AVM_TEST_TENANT == 'bami', '', vars.CI_KEY_VAULT_NAME) }}
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, vars.TEST_SUBSCRIPTION_IDS) }}
+          VALIDATE_CLIENT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_BICEP_CLIENT_ID, secrets.VALIDATE_CLIENT_ID) }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', '', secrets.VALIDATE_SUBSCRIPTION_ID) }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, secrets.VALIDATE_TENANT_ID) }}
 
   job_preview_module:
     name: "Publishing preview"

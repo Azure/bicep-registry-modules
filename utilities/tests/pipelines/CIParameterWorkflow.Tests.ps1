@@ -125,18 +125,17 @@ output configuredParameters object = {
         @($deployment.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
     }
 
-    It 'Only exposes context payloads as environment data to fixture checks, validation and deployment' {
+    It 'Only exposes context payloads as environment data to validation and deployment steps' {
         $action.inputs.githubVariables.default | Should -Be '{}'
         $action.inputs.githubSecrets.default | Should -Be '{}'
         $stepsWithSecrets = @($action.runs.steps | Where-Object { $_.env -and $_.env.ContainsKey('AVM_CI_SECRETS') })
-        $stepsWithSecrets.Count | Should -Be 3
+        $stepsWithSecrets.Count | Should -Be 2
         foreach ($step in $stepsWithSecrets) {
-            $step.name | Should -BeIn @('Check BAMI fixture compatibility', 'Validate template file', 'Deploy template file')
+            $step.name | Should -BeIn @('Validate template file', 'Deploy template file')
             $step.env.AVM_CI_VARIABLES | Should -Be '${{ inputs.githubVariables }}'
             $step.env.AVM_CI_SECRETS | Should -Be '${{ inputs.githubSecrets }}'
-            $script = $step.run ?? $step.with.inlineScript
-            $script | Should -Not -Match '\$\{\{\s*inputs\.github(Secrets|Variables)'
-            $script | Should -Not -Match 'GITHUB_ENV'
+            $step.with.inlineScript | Should -Not -Match '\$\{\{\s*inputs\.github(Secrets|Variables)'
+            $step.with.inlineScript | Should -Not -Match 'GITHUB_ENV'
         }
     }
 
