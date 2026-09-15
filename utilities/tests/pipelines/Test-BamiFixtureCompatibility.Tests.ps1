@@ -98,4 +98,86 @@ Describe 'BAMI fixture compatibility' {
 
         { Test-BamiFixtureCompatibility @context -CIParameters $parameters } | Should -Throw '*unsupported tenant-bound identifier*'
     }
+
+    It 'rejects foreign ARM identity-map keys in <representation> without exposing their contents' -ForEach @(
+        @{ representation = 'object' }
+        @{ representation = 'JSON string' }
+        @{ representation = 'secureString' }
+    ) {
+        $resourceId = '/subscriptions/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/resourceGroups/sensitive-key/providers/Microsoft.ManagedIdentity/userAssignedIdentities/legacy'
+        $deployment = @{ identity = @{ userAssignedIdentities = @{ $resourceId = @{} } } }
+        $json = ConvertTo-Json -InputObject $deployment -Depth 6 -Compress
+        $value = switch ($representation) {
+            'object' { $deployment }
+            'JSON string' { $json }
+            'secureString' { ConvertTo-SecureString -String $json -AsPlainText -Force }
+        }
+        $failure = $null
+        try {
+            Test-BamiFixtureCompatibility @context -CIParameters @{ deployment = $value }
+        } catch {
+            $failure = $_
+        }
+
+        $failure | Should -Not -BeNullOrEmpty
+        $failure.Exception.Message | Should -Match 'outside the frozen test/Persistent context'
+        $failure.Exception.Message | Should -Not -Match 'aaaaaaaa|sensitive-key|userAssignedIdentities/legacy'
+    }
+
+    It 'allows frozen test, Persistent and management-group keys in <representation>' -ForEach @(
+        @{ representation = 'object' }
+        @{ representation = 'JSON string' }
+        @{ representation = 'secureString' }
+    ) {
+        $deployment = @{
+            identity = @{
+                userAssignedIdentities = @{
+                    '/subscriptions/10000000-0000-0000-0000-000000000001/resourceGroups/test/providers/Microsoft.ManagedIdentity/userAssignedIdentities/test'           = @{}
+                    '/subscriptions/20000000-0000-0000-0000-000000000001/resourceGroups/fixtures/providers/Microsoft.ManagedIdentity/userAssignedIdentities/persistent' = @{}
+                }
+            }
+            scopes   = @{ '/providers/Microsoft.Management/managementGroups/bami-root' = @{} }
+        }
+        $json = ConvertTo-Json -InputObject $deployment -Depth 6 -Compress
+        $value = switch ($representation) {
+            'object' { $deployment }
+            'JSON string' { $json }
+            'secureString' { ConvertTo-SecureString -String $json -AsPlainText -Force }
+        }
+
+        { Test-BamiFixtureCompatibility @context -CIParameters @{ deployment = $value } } | Should -Not -Throw
+    }
+
+    It 'checks root dictionary keys without logging a resource ID as the parameter name' {
+        $resourceId = '/subscriptions/aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa/resourceGroups/sensitive-key'
+        $failure = $null
+        try {
+            Test-BamiFixtureCompatibility @context -CIParameters @{ $resourceId = @{} }
+        } catch {
+            $failure = $_
+        }
+
+        $failure | Should -Not -BeNullOrEmpty
+        $failure.Exception.Message | Should -Match 'outside the frozen test/Persistent context'
+        $failure.Exception.Message | Should -Not -Match 'aaaaaaaa|sensitive-key'
+    }
+
+    It 'rejects foreign management-group dictionary keys' {
+        $parameters = @{ scopes = @{ '/providers/Microsoft.Management/managementGroups/legacy-root' = @{} } }
+
+        { Test-BamiFixtureCompatibility @context -CIParameters $parameters } | Should -Throw '*management group outside the frozen context*'
+    }
+
+    It 'does not interpret property and credential key names as identifier values' {
+        $parameters = @{
+            credentials = @{
+                tenantId = $context.TenantId
+                clientId = $context.ClientId
+                password = 'not-a-real-password'
+                apiKey   = '50000000-0000-0000-0000-000000000001'
+            }
+        }
+
+        { Test-BamiFixtureCompatibility @context -CIParameters $parameters } | Should -Not -Throw
+    }
 }

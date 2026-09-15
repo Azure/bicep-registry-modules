@@ -3,8 +3,9 @@
 Reject CI fixture references outside the frozen BAMI context before Azure login.
 
 .DESCRIPTION
-Checks effective CI parameters, including secure and nested values, without logging
-their contents. Scoped fixtures must use a BAMI test or Persistent subscription.
+Checks effective CI parameters, including dictionary keys and secure or nested
+values, without logging their contents. Scoped fixtures must use a BAMI test or
+Persistent subscription.
 Unscoped directory principal/object IDs are unsupported because their tenant cannot
 be established locally. Ordinary credentials and keys are not treated as identities.
 #>
@@ -38,7 +39,9 @@ function Test-BamiFixtureCompatibility {
     )
     $pending = [System.Collections.Generic.Stack[object]]::new()
     foreach ($name in $CIParameters.psbase.Keys) {
-        $pending.Push(@{ Name = $name; ParameterName = $name; Value = $CIParameters[$name] })
+        $parameterName = $name -match '^[a-zA-Z_][a-zA-Z0-9_]*$' ? $name : 'dictionary key'
+        $pending.Push(@{ Name = $name; ParameterName = $parameterName; Value = $CIParameters[$name] })
+        $pending.Push(@{ Name = ''; ParameterName = 'dictionary key'; Value = $name; IsDictionaryKey = $true })
     }
 
     while ($pending.Count -gt 0) {
@@ -47,6 +50,7 @@ function Test-BamiFixtureCompatibility {
         if ($value -is [System.Collections.IDictionary]) {
             foreach ($name in $value.psbase.Keys) {
                 $pending.Push(@{ Name = $name; ParameterName = $item.ParameterName; Value = $value[$name] })
+                $pending.Push(@{ Name = ''; ParameterName = 'dictionary key'; Value = $name; IsDictionaryKey = $true })
             }
             continue
         }
@@ -63,7 +67,7 @@ function Test-BamiFixtureCompatibility {
             continue
         }
 
-        if ($value.TrimStart() -match '^[\[{]' -and (Test-Json -Json $value -ErrorAction Ignore)) {
+        if (-not $item['IsDictionaryKey'] -and $value.TrimStart() -match '^[\[{]' -and (Test-Json -Json $value -ErrorAction Ignore)) {
             $pending.Push(@{
                     Name          = $item.Name
                     ParameterName = $item.ParameterName
