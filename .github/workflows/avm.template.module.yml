@@ -53,6 +53,8 @@ jobs:
     name: "Must [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Required PSRule"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    needs:
+      - job_initialize_subscription_selection
     strategy:
       fail-fast: false
       matrix:
@@ -65,13 +67,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Apply frozen test tenant"
+        uses: ./.github/actions/templates/avm-applyTestTenant
+        with:
+          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
+          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Required PSRule validation with baseline [${{ matrix.baseline.friendlyName}}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
@@ -80,6 +87,8 @@ jobs:
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
+    needs:
+      - job_initialize_subscription_selection
     strategy:
       fail-fast: false
       matrix:
@@ -92,13 +101,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Apply frozen test tenant"
+        uses: ./.github/actions/templates/avm-applyTestTenant
+        with:
+          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
+          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
@@ -107,23 +121,23 @@ jobs:
   #   Deployment validation   #
   #############################
   job_initialize_subscription_selection:
-    name: "Initialize subscription selection"
-    runs-on: ubuntu-latest
+    name: "Initialize test context"
     permissions: {}
-    if: (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
-    outputs:
-      randomSeed: ${{ steps.random-seed.outputs.randomSeed }}
-    steps:
-      - name: "Generate shared subscription shuffle seed"
-        id: random-seed
-        shell: pwsh
-        run: |
-          Write-Output ("randomSeed={0}" -f (Get-Random -Minimum 0 -Maximum 2147483647)) >> $env:GITHUB_OUTPUT
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true' || (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
+    uses: ./.github/workflows/avm.template.test-tenant.yml
+    with:
+      modulePath: ${{ inputs.modulePath }}
 
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
     environment: avm-validation
     runs-on: ubuntu-latest
+    env:
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
+      VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
+      VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+      VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
     if: |
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
@@ -143,6 +157,11 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+      - name: "Apply frozen test tenant"
+        uses: ./.github/actions/templates/avm-applyTestTenant
+        with:
+          testTenant: ${{ needs.job_initialize_subscription_selection.outputs.testTenant }}
+          settingsJson: ${{ needs.job_initialize_subscription_selection.outputs.settingsJson }}
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
@@ -155,18 +174,12 @@ jobs:
           deploymentMetadataLocation: "WestEurope"
           subscriptionSelectionSeed: "${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}"
           subscriptionJobIndex: "${{ strategy.job-index }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ env.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} # Still required for OIDC exception list
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   ####################
   #   Tag creation   #

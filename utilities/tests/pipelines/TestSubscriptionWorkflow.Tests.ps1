@@ -19,6 +19,8 @@ Describe 'Test subscription workflow integration' {
         $exceptionStep = $action.runs.steps | Where-Object { $_.id -eq 'set-oidc-exception' }
         $cleanupPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.deployment.history.cleanup.yml'
         $cleanupWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $cleanupPath -Raw)
+        $initializerPath = Join-Path $repoRootPath '.github' 'workflows' 'avm.template.test-tenant.yml'
+        $initializerWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $initializerPath -Raw)
         $subscriptions = @(
             @{ id = '11111111-1111-1111-1111-111111111111'; name = 'test-one' }
             @{ id = '22222222-2222-2222-2222-222222222222'; name = 'test-two' }
@@ -28,7 +30,7 @@ Describe 'Test subscription workflow integration' {
         $environmentNames = @(
             'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'TEST_SUBSCRIPTION_IDS', 'VALIDATE_SUBSCRIPTION_ID',
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
-            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS'
+            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT'
         )
 
         function Get-StepOutput {
@@ -76,19 +78,19 @@ Describe 'Test subscription workflow integration' {
 
         $initializer.permissions.Count | Should -Be 0
         $initializer.ContainsKey('environment') | Should -BeFalse
-        @($initializer.outputs.Keys) | Should -Be @('randomSeed')
-        $initializer.outputs.randomSeed | Should -Be '${{ steps.random-seed.outputs.randomSeed }}'
+        $initializer.uses | Should -Be './.github/workflows/avm.template.test-tenant.yml'
+        $initializerWorkflow.jobs.resolve.outputs.randomSeed | Should -Be '${{ steps.random-seed.outputs.randomSeed }}'
         $initializer.if | Should -Match "deploymentValidation == 'true'"
         $deployment.needs | Should -Contain 'job_initialize_subscription_selection'
         $deployment.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
-        $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.TEST_SUBSCRIPTION_IDS }}'
-        $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
+        $deployment.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.TEST_SUBSCRIPTION_IDS }}'
+        $deployment.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
         $deploymentStep.with.subscriptionSelectionSeed | Should -Be '${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}'
         $deploymentStep.with.subscriptionJobIndex | Should -Be '${{ strategy.job-index }}'
     }
 
     It 'Generates a numeric seed without subscription data or Azure access' {
-        $seedStep = $workflows['avm.template.module'].jobs.job_initialize_subscription_selection.steps[0]
+        $seedStep = $initializerWorkflow.jobs.resolve.steps | Where-Object { $_.id -eq 'random-seed' }
 
         . ([scriptblock]::Create($seedStep.run))
         $seed = (Get-StepOutput).randomSeed

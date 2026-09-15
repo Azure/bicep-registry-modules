@@ -1,0 +1,46 @@
+name: "avm.template.test-tenant"
+
+on:
+  workflow_call:
+    inputs:
+      modulePath:
+        type: string
+        required: true
+    outputs:
+      testTenant:
+        value: ${{ jobs.resolve.outputs.testTenant }}
+      settingsJson:
+        value: ${{ jobs.resolve.outputs.settingsJson }}
+      randomSeed:
+        value: ${{ jobs.resolve.outputs.randomSeed }}
+
+permissions: {}
+
+jobs:
+  resolve:
+    name: "Resolve test tenant"
+    runs-on: ubuntu-latest
+    outputs:
+      testTenant: ${{ steps.test-tenant.outputs.test-tenant }}
+      settingsJson: ${{ steps.test-tenant.outputs.settings-json }}
+      randomSeed: ${{ steps.random-seed.outputs.randomSeed }}
+    steps:
+      - name: "Resolve centrally configured test tenant"
+        id: test-tenant
+        uses: Azure/azure-verified-modules-tools/repository-management/test-tenant/actions/resolve-test-tenant@c70eaed1f330c3b2e51de9db0b56a10205f38a03
+        with:
+          module-path: ${{ inputs.modulePath }}
+          module-config: ${{ vars.TEST_BAMI_MODULE_CONFIG }}
+          bami-settings: |
+            {
+              "TEST_BAMI_TENANT_ID": ${{ toJSON(vars.TEST_BAMI_TENANT_ID) }},
+              "TEST_BAMI_BICEP_CLIENT_ID": ${{ toJSON(vars.TEST_BAMI_BICEP_CLIENT_ID) }},
+              "TEST_BAMI_SUBSCRIPTION_IDS": ${{ toJSON(vars.TEST_BAMI_SUBSCRIPTION_IDS) }},
+              "TEST_BAMI_MANAGEMENT_GROUP_ID": ${{ toJSON(vars.TEST_BAMI_MANAGEMENT_GROUP_ID) }},
+              "TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID": ${{ toJSON(vars.TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID) }}
+            }
+      - name: "Generate shared subscription shuffle seed"
+        id: random-seed
+        shell: pwsh
+        run: |
+          Write-Output ("randomSeed={0}" -f (Get-Random -Minimum 0 -Maximum 2147483647)) >> $env:GITHUB_OUTPUT

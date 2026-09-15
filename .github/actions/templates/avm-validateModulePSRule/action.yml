@@ -72,6 +72,9 @@ runs:
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
+          if ($env:AVM_TEST_TENANT -ceq 'bami') {
+            $ConvertTokensInputs.Tokens['persistentSubscriptionId'] = $env:TEST_PERSISTENT_SUBSCRIPTION_ID
+          }
 
           # Add local (source control) tokens
           $tokenMap = @{}
