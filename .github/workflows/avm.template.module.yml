@@ -22,6 +22,7 @@ on:
 
 env:
   # Used for token replacement steps in both PSRule and deployment validation
+  AVM_TEST_TENANT: "${{ case(contains(fromJSON(vars.TEST_BAMI_MODULE_PATHS || '[]'), inputs.modulePath), 'bami', 'legacy') }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
@@ -71,10 +72,13 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: false
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, '') }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, '') }}
 
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Opt [${{ matrix.baseline.friendlyName }}] on [${{ matrix.testCases.name }}] - Optional PSRule"
@@ -98,10 +102,13 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
           softFailure: true
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, '') }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, '') }}
 
   #############################
   #   Deployment validation   #
@@ -155,18 +162,19 @@ jobs:
           deploymentMetadataLocation: "WestEurope"
           subscriptionSelectionSeed: "${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}"
           subscriptionJobIndex: "${{ strategy.job-index }}"
-          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          managementGroupId: "${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
           e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
           githubVariables: ${{ toJSON(vars) }}
           githubSecrets: ${{ toJSON(secrets) }}
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }} # Still required for OIDC exception list
-          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+          AZURE_CREDENTIALS: ${{ case(env.AVM_TEST_TENANT == 'bami', '', secrets.AZURE_CREDENTIALS) }} # Still required for OIDC exception list
+          CI_KEY_VAULT_NAME: ${{ case(env.AVM_TEST_TENANT == 'bami', '', vars.CI_KEY_VAULT_NAME) }}
+          TEST_SUBSCRIPTION_IDS: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_SUBSCRIPTION_IDS, vars.TEST_SUBSCRIPTION_IDS) }}
+          VALIDATE_CLIENT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_BICEP_CLIENT_ID, secrets.VALIDATE_CLIENT_ID) }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', '', secrets.VALIDATE_SUBSCRIPTION_ID) }}
+          VALIDATE_TENANT_ID: ${{ case(env.AVM_TEST_TENANT == 'bami', vars.TEST_BAMI_TENANT_ID, secrets.VALIDATE_TENANT_ID) }}
 
   ####################
   #   Tag creation   #

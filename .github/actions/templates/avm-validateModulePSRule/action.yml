@@ -72,6 +72,15 @@ runs:
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
+          if ($env:AVM_TEST_TENANT -ceq 'bami') {
+            if ([string]::IsNullOrWhiteSpace($env:TEST_SUBSCRIPTION_IDS) -or
+                [string]::IsNullOrWhiteSpace($env:VALIDATE_TENANT_ID) -or
+                [string]::IsNullOrWhiteSpace($ConvertTokensInputs.Tokens['managementGroupId'])) {
+              throw 'BAMI PSRule requires tenant, management group and test subscriptions.'
+            }
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+            $ConvertTokensInputs.Tokens['subscriptionId'] = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS)[0].id
+          }
 
           # Add local (source control) tokens
           $tokenMap = @{}
