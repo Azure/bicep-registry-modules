@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-postgre-sql/flexible-server/CHANGELOG.md).
 
+## 0.16.1
+
+### Changes
+
+- Changed the `configuration` child module API version from `2026-01-01-preview` to the stable `2025-08-01`
+
+### Breaking Changes
+
+- None
+
 ## 0.16.0
 
 ### Changes
