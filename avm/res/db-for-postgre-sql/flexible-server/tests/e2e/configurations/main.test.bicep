@@ -73,30 +73,13 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// Read back the persisted configuration values to confirm the requested static values were applied.
-module readback 'readback.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-readback'
-  params: {
-    flexibleServerName: '${namePrefix}${serviceShort}001'
-    expectedConfigurations: [
-      for configuration in staticConfigurations: {
-        name: configuration.name
-        value: configuration.value
-      }
-    ]
+@description('The resource ID of the deployed flexible server. Consumed by the post-deployment test.')
+output serverResourceId string = testDeployment[1].outputs.resourceId
+
+@description('The static configurations and their requested values. Consumed by the post-deployment test.')
+output expectedConfigurations object[] = [
+  for configuration in staticConfigurations: {
+    name: configuration.name
+    value: configuration.value
   }
-  dependsOn: [
-    testDeployment
-  ]
-}
-
-@description('The requested vs. persisted value for each static configuration under test.')
-output configurationResults array = readback.outputs.results
-
-@description('True only if every requested static configuration value was persisted on the server.')
-output allConfigurationsPersisted bool = reduce(
-  map(readback.outputs.results, result => result.persisted),
-  true,
-  (cur, next) => cur && next
-)
+]
