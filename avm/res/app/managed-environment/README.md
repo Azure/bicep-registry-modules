@@ -23,9 +23,9 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments)</li></ul> |
-| `Microsoft.App/managedEnvironments/certificates` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/certificates)</li></ul> |
-| `Microsoft.App/managedEnvironments/storages` | 2025-10-02-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-10-02-preview/managedEnvironments/storages)</li></ul> |
+| `Microsoft.App/managedEnvironments` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments)</li></ul> |
+| `Microsoft.App/managedEnvironments/certificates` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_certificates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/certificates)</li></ul> |
+| `Microsoft.App/managedEnvironments/storages` | 2026-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.app_managedenvironments_storages.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2026-01-01/managedEnvironments/storages)</li></ul> |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
@@ -307,7 +307,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amemax001'
     // Non-required parameters
-    appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -356,18 +355,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
-    }
-    openTelemetryConfiguration: {
-      logsConfiguration: {
-        destinations: [
-          'appInsights'
-        ]
-      }
-      tracesConfiguration: {
-        destinations: [
-          'appInsights'
-        ]
-      }
     }
     peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
@@ -496,9 +483,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
-    "appInsightsConnectionString": {
-      "value": "<appInsightsConnectionString>"
-    },
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
@@ -568,20 +552,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
-      }
-    },
-    "openTelemetryConfiguration": {
-      "value": {
-        "logsConfiguration": {
-          "destinations": [
-            "appInsights"
-          ]
-        },
-        "tracesConfiguration": {
-          "destinations": [
-            "appInsights"
-          ]
-        }
       }
     },
     "peerTrafficEncryption": {
@@ -723,7 +693,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amemax001'
 // Non-required parameters
-param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
   logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
@@ -772,18 +741,6 @@ param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
-}
-param openTelemetryConfiguration = {
-  logsConfiguration: {
-    destinations: [
-      'appInsights'
-    ]
-  }
-  tracesConfiguration: {
-    destinations: [
-      'appInsights'
-    ]
-  }
 }
 param peerTrafficEncryption = true
 param platformReservedCidr = '172.17.17.0/24'
@@ -1404,19 +1361,18 @@ param workloadProfiles = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.16.0.1/28`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
-| [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.0/24`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
+| [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.17`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
 | [`appLogsConfiguration`](#parameter-applogsconfiguration) | object | The AppLogsConfiguration for the Managed Environment. |
 | [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
@@ -1432,7 +1388,6 @@ param workloadProfiles = [
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`peerAuthentication`](#parameter-peerauthentication) | object | Peer authentication settings for the Managed Environment. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -1451,7 +1406,7 @@ Name of the Container Apps Managed Environment.
 
 ### Parameter: `dockerBridgeCidr`
 
-CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
+CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.16.0.1/28`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: string
@@ -1482,7 +1437,7 @@ Boolean indicating the environment only has an internal load balancer. These env
 
 ### Parameter: `platformReservedCidr`
 
-IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.
+IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.0/24`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.
 
 - Required: No
 - Type: string
@@ -1490,7 +1445,7 @@ IP range in CIDR notation that can be reserved for environment infrastructure IP
 
 ### Parameter: `platformReservedDnsIP`
 
-An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
+An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. E.g. `172.17.17.17`. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: string
@@ -1502,14 +1457,6 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 
 - Required: No
 - Type: array
-
-### Parameter: `appInsightsConnectionString`
-
-Application Insights connection string.
-
-- Required: No
-- Type: securestring
-- Default: `''`
 
 ### Parameter: `appLogsConfiguration`
 
@@ -1595,7 +1542,6 @@ A Managed Environment Certificate.
 | :-- | :-- | :-- |
 | [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
 | [`certificatePassword`](#parameter-certificatecertificatepassword) | securestring | The password of the certificate. |
-| [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
 | [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
 | [`location`](#parameter-certificatelocation) | string | The location for the resource. |
 | [`name`](#parameter-certificatename) | string | The name of the certificate. |
@@ -1635,20 +1581,6 @@ The password of the certificate.
 
 - Required: No
 - Type: securestring
-
-### Parameter: `certificate.certificateType`
-
-The type of the certificate.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'ImagePullTrustedCA'
-    'ServerSSLCertificate'
-  ]
-  ```
 
 ### Parameter: `certificate.certificateValue`
 
@@ -1971,13 +1903,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-
-### Parameter: `openTelemetryConfiguration`
-
-Open Telemetry configuration.
-
-- Required: No
-- Type: object
 
 ### Parameter: `peerAuthentication`
 

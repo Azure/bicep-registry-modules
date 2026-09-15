@@ -38,7 +38,7 @@ runs:
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -72,6 +72,15 @@ runs:
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
           }
+          if ($env:AVM_TEST_TENANT -ceq 'bami') {
+            if ([string]::IsNullOrWhiteSpace($env:TEST_SUBSCRIPTION_IDS) -or
+                [string]::IsNullOrWhiteSpace($env:VALIDATE_TENANT_ID) -or
+                [string]::IsNullOrWhiteSpace($ConvertTokensInputs.Tokens['managementGroupId'])) {
+              throw 'BAMI PSRule requires tenant, management group and test subscriptions.'
+            }
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+            $ConvertTokensInputs.Tokens['subscriptionId'] = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS)[0].id
+          }
 
           # Add local (source control) tokens
           $tokenMap = @{}
@@ -104,7 +113,7 @@ runs:
     # [PSRule validation] task(s)
     #-----------------------------
     - name: Run PSRule analysis
-      uses: microsoft/ps-rule@v2.9.0
+      uses: microsoft/ps-rule@46451b8f5258c41beb5ae69ed7190ccbba84112c # v2.9.0
       env:
         CONTINUE_ON_ERROR: ${{ inputs.softFailure }}
       continue-on-error: ${{ fromJSON(env.CONTINUE_ON_ERROR) }}
@@ -123,7 +132,7 @@ runs:
     #-----------------------------
     - name: "Parse CSV content"
       if: always()
-      uses: azure/powershell@v2
+      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
       with:
         azPSVersion: "latest"
         inlineScript: |

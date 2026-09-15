@@ -544,7 +544,9 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Non-required parameters
     backupConfig: {
       enhancedSecurityState: 'AlwaysON'
+      isSoftDeleteFeatureStateEditable: true
       softDeleteFeatureState: 'AlwaysON'
+      softDeleteRetentionPeriodInDays: 7
     }
     backupPolicies: [
       {
@@ -951,7 +953,9 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     "backupConfig": {
       "value": {
         "enhancedSecurityState": "AlwaysON",
-        "softDeleteFeatureState": "AlwaysON"
+        "isSoftDeleteFeatureStateEditable": true,
+        "softDeleteFeatureState": "AlwaysON",
+        "softDeleteRetentionPeriodInDays": 7
       }
     },
     "backupPolicies": {
@@ -1384,7 +1388,9 @@ param name = 'rsvmax001'
 // Non-required parameters
 param backupConfig = {
   enhancedSecurityState: 'AlwaysON'
+  isSoftDeleteFeatureStateEditable: true
   softDeleteFeatureState: 'AlwaysON'
+  softDeleteRetentionPeriodInDays: 7
 }
 param backupPolicies = [
   {
