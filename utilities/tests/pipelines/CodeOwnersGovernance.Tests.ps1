@@ -70,7 +70,7 @@ Describe 'CODEOWNERS governance' {
             '/avm/utl/example/utility/ @Azure/azure-verified-modules-module-owners'
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
-            'metadata.json @Azure/azure-verified-modules-engineering-owners'
+            'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
         )
     }
 
@@ -99,7 +99,7 @@ Describe 'CODEOWNERS governance' {
         Invoke-TestCodeOwnersGovernance
     }
 
-    It 'Requires engineering-only approval for <Path>' -ForEach @(
+    It 'Allows engineering owners or module owners as the only approvers for <Path>' -ForEach @(
         @{ Path = 'metadata.json' }
         @{ Path = 'avm/res/storage/storage-account/metadata.json' }
         @{ Path = 'avm/res/storage/storage-account/blob-service/metadata.json' }
@@ -108,11 +108,17 @@ Describe 'CODEOWNERS governance' {
         @{ Path = 'avm/ptn/network/hub-networking/child/nested/metadata.json' }
         @{ Path = 'avm/utl/types/avm-common-types/metadata.json' }
         @{ Path = 'avm/utl/types/avm-common-types/child/nested/metadata.json' }
+        @{ Path = 'avm/res/unindexed/example/child/nested/metadata.json' }
+        @{ Path = 'avm/ptn/unindexed/example/child/nested/metadata.json' }
+        @{ Path = 'avm/utl/unindexed/example/child/nested/metadata.json' }
         @{ Path = 'utilities/metadata.json' }
         @{ Path = '.github/metadata.json' }
     ) {
         $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
-        @(Get-TestCodeOwners -Path $Path) | Should -Be @('@Azure/azure-verified-modules-engineering-owners')
+        @(Get-TestCodeOwners -Path $Path) | Should -Be @(
+            '@Azure/azure-verified-modules-engineering-owners'
+            '@Azure/azure-verified-modules-module-owners'
+        )
     }
 
     It 'Preserves non-metadata ownership for <Path>' -ForEach @(
@@ -138,23 +144,24 @@ Describe 'CODEOWNERS governance' {
 
     It 'Rejects missing or shadowed metadata ownership' {
         $script:ownershipRules = $script:ownershipRules[0..7]
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must require engineering-only ownership*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must allow approval from engineering owners or module owners*'
 
         $script:ownershipRules = @($script:ownershipRules[0..1]) +
-            @('metadata.json @Azure/azure-verified-modules-engineering-owners') +
+            @('metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners') +
             @($script:ownershipRules[2..7])
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must require engineering-only ownership*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must allow approval from engineering owners or module owners*'
     }
 
-    It 'Rejects metadata ownership that allows another approver or misses nested files: <Rule>' -ForEach @(
+    It 'Rejects metadata ownership that omits an approved team, adds another approver or misses nested files: <Rule>' -ForEach @(
+        @{ Rule = 'metadata.json @Azure/azure-verified-modules-engineering-owners' }
         @{ Rule = 'metadata.json @Azure/azure-verified-modules-module-owners' }
-        @{ Rule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners' }
-        @{ Rule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @owner-one' }
-        @{ Rule = '/metadata.json @Azure/azure-verified-modules-engineering-owners' }
-        @{ Rule = '/avm/*/metadata.json @Azure/azure-verified-modules-engineering-owners' }
+        @{ Rule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners @Azure/azure-verified-modules-tooling-contributors' }
+        @{ Rule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners @owner-one' }
+        @{ Rule = '/metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners' }
+        @{ Rule = '/avm/*/metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners' }
     ) {
         $script:ownershipRules[-1] = $Rule
-        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must require engineering-only ownership*'
+        { Invoke-TestCodeOwnersGovernance } | Should -Throw '*metadata files must allow approval from engineering owners or module owners*'
     }
 
     It 'Ignores generation comments, blank lines and harmless whitespace' {

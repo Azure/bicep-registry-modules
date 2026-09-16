@@ -2151,14 +2151,14 @@ Describe 'Governance tests' {
 
         $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
         $ownershipRules = @(Get-Content $codeownersFilePath | ForEach-Object { $_.Trim() -replace '\s+', ' ' } | Where-Object { $_ -and -not $_.StartsWith('#') })
-        $metadataOwnershipRule = 'metadata.json @Azure/azure-verified-modules-engineering-owners'
+        $metadataOwnershipRule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
         $ownershipRules.Count | Should -BeGreaterOrEqual 5
         $ownershipRules[0] | Should -Be '* @Azure/azure-verified-modules-tooling-contributors'
         $ownershipRules[1] | Should -BeIn @(
             '/avm/ @Azure/azure-verified-modules-module-contributors'
             '/avm/ @Azure/azure-verified-modules-module-owners'
         )
-        $ownershipRules[-1] | Should -Be $metadataOwnershipRule -Because 'metadata files must require engineering-only ownership after all other rules.'
+        $ownershipRules[-1] | Should -Be $metadataOwnershipRule -Because 'metadata files must allow approval from engineering owners or module owners after all other rules.'
         $ownershipRules[-3..-2] | Should -Be @(
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
