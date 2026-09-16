@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.network.private-link-private-dns-zones.yml"
       - "avm/ptn/network/private-link-private-dns-zones/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/network/private-link-private-dns-zones"

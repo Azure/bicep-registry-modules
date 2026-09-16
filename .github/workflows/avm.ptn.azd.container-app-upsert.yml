@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.container-app-upsert.yml"
       - "avm/ptn/azd/container-app-upsert/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/container-app-upsert"

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Redis database",
+  "moduleDescription": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis cluster.",
+  "telemetryIdPrefix": "46d3xbcp.res.cache-redisenterprise-database",
+  "canonicalType": "Microsoft.Cache/redisEnterprise/databases"
+}

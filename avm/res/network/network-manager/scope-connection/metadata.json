@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Manager Scope Connections",
+  "moduleDescription": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-scopeconnection",
+  "canonicalType": "Microsoft.Network/networkManagers/scopeConnections"
+}

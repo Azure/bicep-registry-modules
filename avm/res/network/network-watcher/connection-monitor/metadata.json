@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Watchers Connection Monitors",
+  "moduleDescription": "This module deploys a Network Watcher Connection Monitor.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-networkwatcher-connmonitor",
+  "canonicalType": "Microsoft.Network/networkWatchers/connectionMonitors"
+}

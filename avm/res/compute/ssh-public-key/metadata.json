@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Public SSH Keys",
+  "moduleDescription": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-sshpublickey",
+  "canonicalType": "Microsoft.Compute/sshPublicKeys",
+  "owners": ["ChrisSidebotham"]
+}

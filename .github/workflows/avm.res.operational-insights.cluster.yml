@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.operational-insights.cluster.yml"
       - "avm/res/operational-insights/cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/operational-insights/cluster"

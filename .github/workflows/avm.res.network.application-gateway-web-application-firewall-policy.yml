@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.application-gateway-web-application-firewall-policy.yml"
       - "avm/res/network/application-gateway-web-application-firewall-policy/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/application-gateway-web-application-firewall-policy"

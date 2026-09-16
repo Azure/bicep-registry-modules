@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.compute.image.yml"
       - "avm/res/compute/image/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/compute/image"

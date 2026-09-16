@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.health-bot.health-bot.yml"
       - "avm/res/health-bot/health-bot/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/health-bot/health-bot"

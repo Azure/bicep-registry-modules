@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Dev Center Network Connection",
+  "moduleDescription": "This module deploys an Azure Dev Center Network Connection.",
+  "telemetryIdPrefix": "46d3xbcp.res.devcenter-networkconnection",
+  "canonicalType": "Microsoft.DevCenter/networkConnections",
+  "owners": ["ahmadabdalla"]
+}

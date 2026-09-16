@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.data-factory.factory.yml"
       - "avm/res/data-factory/factory/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/data-factory/factory"

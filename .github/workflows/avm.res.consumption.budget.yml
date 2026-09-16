@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.consumption.budget.yml"
       - "avm/res/consumption/budget/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/consumption/budget"

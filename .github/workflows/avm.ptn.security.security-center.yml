@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.security.security-center.yml"
       - "avm/ptn/security/security-center/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/security/security-center"

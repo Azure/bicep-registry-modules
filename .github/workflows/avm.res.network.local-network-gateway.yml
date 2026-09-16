@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.local-network-gateway.yml"
       - "avm/res/network/local-network-gateway/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/local-network-gateway"

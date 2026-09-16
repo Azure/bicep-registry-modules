@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Arc License",
+  "moduleDescription": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process.",
+  "telemetryIdPrefix": "46d3xbcp.res.hybridcompute-license",
+  "canonicalType": "Microsoft.HybridCompute/licenses",
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
+}

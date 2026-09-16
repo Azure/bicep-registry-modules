@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.kubernetes-configuration.extension.yml"
       - "avm/res/kubernetes-configuration/extension/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/kubernetes-configuration/extension"

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Hybrid Compute Machines",
+  "moduleDescription": "This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.",
+  "telemetryIdPrefix": "46d3xbcp.res.hybridcompute-machine",
+  "canonicalType": "Microsoft.HybridCompute/machines",
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
+}

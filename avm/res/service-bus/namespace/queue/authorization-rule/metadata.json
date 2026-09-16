@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Service Bus Namespace Queue Authorization Rules",
+  "moduleDescription": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
+  "telemetryIdPrefix": "46d3xbcp.res.servicebus-namespace-queueauthzrule",
+  "canonicalType": "Microsoft.ServiceBus/namespaces/queues/authorizationRules"
+}

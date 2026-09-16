@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Virtual WANs",
+  "moduleDescription": "This module deploys a Virtual WAN.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-virtualwan",
+  "alternativeNames": ["vWAN"],
+  "canonicalType": "Microsoft.Network/virtualWans",
+  "owners": ["arnoldna"]
+}

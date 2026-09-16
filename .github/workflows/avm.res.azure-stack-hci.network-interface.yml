@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.azure-stack-hci.network-interface.yml"
       - "avm/res/azure-stack-hci/network-interface/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/azure-stack-hci/network-interface"

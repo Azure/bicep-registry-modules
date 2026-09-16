@@ -601,7 +601,8 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $expectedPushTriggerPathFilters = @(
             ".github/workflows/$WorkflowFileName",
             "$RelativeModulePath/**",
-            '!*/**/README.md'
+            '!*/**/README.md',
+            '!avm/**/metadata.json'
         )
 
         $missingPushTriggerPathFilters = $expectedPushTriggerPathFilters | Where-Object {
@@ -609,6 +610,7 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         }
 
         $missingPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of missing push trigger path filters should be 0, but got [{0}].' -f ($missingPushTriggerPathFilters -join ', '))
+        $PushTrigger.Paths[-1] | Should -Be '!avm/**/metadata.json' -Because 'metadata-only changes must be excluded after all positive module path filters.'
     }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should only have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
@@ -620,7 +622,8 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $expectedPushTriggerPathFilters = @(
             ".github/workflows/$WorkflowFileName",
             "$RelativeModulePath/**",
-            '!*/**/README.md'
+            '!*/**/README.md',
+            '!avm/**/metadata.json'
         )
 
         $excessPushTriggerPathFilters = $PushTrigger.Paths | Where-Object {
@@ -2148,13 +2151,15 @@ Describe 'Governance tests' {
 
         $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
         $ownershipRules = @(Get-Content $codeownersFilePath | ForEach-Object { $_.Trim() -replace '\s+', ' ' } | Where-Object { $_ -and -not $_.StartsWith('#') })
-        $ownershipRules.Count | Should -BeGreaterOrEqual 4
+        $metadataOwnershipRule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
+        $ownershipRules.Count | Should -BeGreaterOrEqual 5
         $ownershipRules[0] | Should -Be '* @Azure/azure-verified-modules-tooling-contributors'
         $ownershipRules[1] | Should -BeIn @(
             '/avm/ @Azure/azure-verified-modules-module-contributors'
             '/avm/ @Azure/azure-verified-modules-module-owners'
         )
-        $ownershipRules[-2..-1] | Should -Be @(
+        $ownershipRules[-1] | Should -Be $metadataOwnershipRule -Because 'metadata files must allow approval from engineering owners or module owners after all other rules.'
+        $ownershipRules[-3..-2] | Should -Be @(
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
         ) -Because 'tooling overrides must take precedence over module ownership.'
@@ -2163,6 +2168,7 @@ Describe 'Governance tests' {
         $moduleOwnershipRules = @($ownershipRules | Where-Object { $_ -match $modulePathPattern })
         $invalidStaticRules = @($ownershipRules | Where-Object {
                 $_ -notmatch $modulePathPattern -and $_ -ne $ownershipRules[1] -and
+                $_ -ne $metadataOwnershipRule -and
                 $_ -cnotmatch '^\S+ @Azure/azure-verified-modules-tooling-contributors$'
             })
         $invalidStaticRules | Should -BeNullOrEmpty -Because 'non-module rules must preserve tooling ownership.'

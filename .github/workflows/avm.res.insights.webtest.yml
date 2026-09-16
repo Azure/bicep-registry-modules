@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.webtest.yml"
       - "avm/res/insights/webtest/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/webtest"

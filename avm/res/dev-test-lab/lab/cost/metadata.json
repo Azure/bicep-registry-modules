@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "DevTest Lab Costs",
+  "moduleDescription": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.",
+  "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab-cost",
+  "canonicalType": "Microsoft.DevTestLab/labs/costs"
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.maps.account.yml"
       - "avm/res/maps/account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/maps/account"

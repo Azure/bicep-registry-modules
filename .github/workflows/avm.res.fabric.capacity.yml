@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.fabric.capacity.yml"
       - "avm/res/fabric/capacity/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/fabric/capacity"

@@ -30,6 +30,7 @@ on:
       - ".github/workflows/avm.res.sql.instance-pool.yml"
       - "avm/res/sql/instance-pool/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/sql/instance-pool"

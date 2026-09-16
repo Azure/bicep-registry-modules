@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "DNS Resolver Inbound Endpoint",
+  "moduleDescription": "This module deploys a DNS Resolver Inbound Endpoint.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-dnsresolver-inboundendpoint",
+  "canonicalType": "Microsoft.Network/dnsResolvers/inboundEndpoints"
+}

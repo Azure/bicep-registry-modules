@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.service-networking.traffic-controller.yml"
       - "avm/res/service-networking/traffic-controller/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/service-networking/traffic-controller"

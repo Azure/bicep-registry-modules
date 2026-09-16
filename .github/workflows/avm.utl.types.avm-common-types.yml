@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.utl.types.avm-common-types.yml"
       - "avm/utl/types/avm-common-types/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/utl/types/avm-common-types"

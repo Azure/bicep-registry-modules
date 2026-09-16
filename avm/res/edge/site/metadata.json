@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Microsoft Edge Site (Multi-Scope)",
+  "moduleDescription": "This module's child-modules deploy a Microsoft Edge Site at a Subscription (sub-scope) or Resource Group (rg-scope) scope.\n\n> While this template is **not** published, you can find the actual published modules in the subfolders\n> - `sub-scope`\n> - `rg-scope`\n\n",
+  "telemetryIdPrefix": "46d3xbcp.res.edge-site",
+  "canonicalType": "Microsoft.Edge/sites",
+  "owners": ["chirag1603", "bniranjanbhat"]
+}

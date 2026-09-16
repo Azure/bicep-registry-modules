@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Communication Services",
+  "moduleDescription": "This module deploys a Communication Service",
+  "telemetryIdPrefix": "46d3xbcp.res.communication-communicationservice",
+  "canonicalType": "Microsoft.Communication/communicationServices",
+  "owners": ["donk-msft"]
+}

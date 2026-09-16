@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.security-insights.setting.yml"
       - "avm/res/security-insights/setting/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/security-insights/setting"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.dns-zone.yml"
       - "avm/res/network/dns-zone/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/dns-zone"

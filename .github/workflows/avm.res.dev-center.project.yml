@@ -29,6 +29,7 @@ on:
       - .github/workflows/avm.res.dev-center.project.yml
       - avm/res/dev-center/project/**
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/dev-center/project"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.insights-dashboard.yml"
       - "avm/ptn/azd/insights-dashboard/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/insights-dashboard"

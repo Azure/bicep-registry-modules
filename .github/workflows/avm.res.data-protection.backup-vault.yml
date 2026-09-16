@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.data-protection.backup-vault.yml"
       - "avm/res/data-protection/backup-vault/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/data-protection/backup-vault"

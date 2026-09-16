@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.app.managed-environment.yml"
       - "avm/res/app/managed-environment/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/app/managed-environment"

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Integration Account Agreements",
+  "moduleDescription": "This module deploys an Integration Account Agreement.",
+  "telemetryIdPrefix": "46d3xbcp.res.logic-integrationaccount-agreement",
+  "canonicalType": "Microsoft.Logic/integrationAccounts/agreements"
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.aks.yml"
       - "avm/ptn/azd/aks/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/aks"

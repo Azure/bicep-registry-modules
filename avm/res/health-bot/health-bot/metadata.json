@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Health Bots",
+  "moduleDescription": "This module deploys an Azure Health Bot.",
+  "telemetryIdPrefix": "46d3xbcp.res.healthbot-healthbot",
+  "canonicalType": "Microsoft.HealthBot/healthBots",
+  "owners": ["TomazMlakar", "segraef"]
+}

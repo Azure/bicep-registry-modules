@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Automation Account Powershell72 Modules",
+  "moduleDescription": "This module deploys a Powershell72 Module in the Automation Account.",
+  "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-powersh72module",
+  "canonicalType": "Microsoft.Automation/automationAccounts/powerShell72Modules"
+}

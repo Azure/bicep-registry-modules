@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.desktop-virtualization.application-group.yml"
       - "avm/res/desktop-virtualization/application-group/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/desktop-virtualization/application-group"
