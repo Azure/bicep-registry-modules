@@ -1,16 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Virtual Hubs",
   "moduleDescription": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.",
   "telemetryIdPrefix": "46d3xbcp.res.network-virtualhub",
   "canonicalType": "Microsoft.Network/virtualHubs",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "arnoldna"
-      }
-    ]
-  }
+  "owners": ["arnoldna"]
 }

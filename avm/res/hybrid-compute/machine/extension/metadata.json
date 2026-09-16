@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Arc Machine Extensions",
   "moduleDescription": "This module deploys a Arc Machine Extension. This module should be used as a standalone deployment after the Arc agent has connected to the Arc Machine resource.",
   "telemetryIdPrefix": "46d3xbcp.res.hybridcompute-machine-extension",

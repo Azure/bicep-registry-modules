@@ -1,22 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Azure Arc Gateway",
   "moduleDescription": "This module deploys a Azure Arc Gateway.",
   "telemetryIdPrefix": "46d3xbcp.res.hybridcompute-gateway",
   "canonicalType": "Microsoft.HybridCompute/gateways",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "chirag1603"
-      },
-      {
-        "githubHandle": "bniranjanbhat"
-      },
-      {
-        "githubHandle": "PrithwiTech"
-      }
-    ]
-  }
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
 }

@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Virtual Hub Routing Intent",
   "moduleDescription": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.",
   "telemetryIdPrefix": "46d3xbcp.res.network-virtualhub-routingintent",

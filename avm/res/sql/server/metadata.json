@@ -1,16 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Azure SQL Servers",
   "moduleDescription": "This module deploys an Azure SQL Server.",
   "telemetryIdPrefix": "46d3xbcp.res.sql-server",
   "canonicalType": "Microsoft.Sql/servers",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "peterbud"
-      }
-    ]
-  }
+  "owners": ["peterbud"]
 }

@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Role Assignments (Subscription scope)",
   "moduleDescription": "This module deploys a Role Assignment at a Subscription scope.",
   "telemetryIdPrefix": "46d3xbcp.res.authz-roleassignment_subscope",

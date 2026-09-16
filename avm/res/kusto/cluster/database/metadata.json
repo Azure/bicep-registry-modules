@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Kusto Cluster Databases",
   "moduleDescription": "This module deploys a Kusto Cluster Database.",
   "telemetryIdPrefix": "46d3xbcp.res.kusto-cluster-database",

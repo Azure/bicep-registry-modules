@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Cognitive Services Account Deployment",
   "moduleDescription": "This module deploys a Cognitive Services account model deployment.",
   "telemetryIdPrefix": "46d3xbcp.res.cognitiveservices-account-deployment",

@@ -1,16 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Event Grid Domains",
   "moduleDescription": "This module deploys an Event Grid Domain.",
   "telemetryIdPrefix": "46d3xbcp.res.eventgrid-domain",
   "canonicalType": "Microsoft.EventGrid/domains",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "fabmas"
-      }
-    ]
-  }
+  "owners": ["fabmas"]
 }

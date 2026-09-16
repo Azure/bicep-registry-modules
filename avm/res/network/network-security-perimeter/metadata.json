@@ -1,16 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Network Security Perimeter",
   "moduleDescription": "This module deploys a Network Security Perimeter (NSP).",
   "telemetryIdPrefix": "46d3xbcp.res.network-nwsecurityperimeter",
   "canonicalType": "Microsoft.Network/networkSecurityPerimeters",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "peterbud"
-      }
-    ]
-  }
+  "owners": ["peterbud"]
 }

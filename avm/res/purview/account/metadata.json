@@ -1,16 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Purview Accounts",
   "moduleDescription": "This module deploys a Purview Account.",
   "telemetryIdPrefix": "46d3xbcp.res.purview-account",
   "canonicalType": "Microsoft.Purview/accounts",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "abhishekaryams"
-      }
-    ]
-  }
+  "owners": ["abhishekaryams"]
 }

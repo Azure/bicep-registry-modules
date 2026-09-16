@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "moduleDisplayName": "Microsoft Entra Domain Services",
   "moduleDescription": "This module deploys an Microsoft Entra Domain Services (Azure AD DS) instance.",
   "telemetryIdPrefix": "46d3xbcp.res.aad-domainservice",
@@ -12,15 +11,5 @@
     "Azure AD DS"
   ],
   "canonicalType": "Microsoft.AAD/domainServices",
-  "tier": "maintained",
-  "owners": {
-    "individuals": [
-      {
-        "githubHandle": "ReneHezser"
-      },
-      {
-        "githubHandle": "CRYP70N1X"
-      }
-    ]
-  }
+  "owners": ["ReneHezser", "CRYP70N1X"]
 }

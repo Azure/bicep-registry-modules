@@ -1,6 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "schemaVersion": 1,
   "canonicalType": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
   "moduleDisplayName": "Storage Account Object Replication Policy",
   "moduleDescription": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account.",
