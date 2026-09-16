@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Changed the `configuration` child module API version from `2026-01-01-preview` to the stable `2025-08-01`
+- Upgraded `avm/res/network/private-endpoint` module reference to `0.12.1`
 
 ### Breaking Changes
 
