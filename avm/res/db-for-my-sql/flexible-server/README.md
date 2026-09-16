@@ -83,11 +83,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     geoRedundantBackup: 'Disabled'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     storageAutoGrow: 'Enabled'
   }
 }
@@ -136,13 +131,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "geoRedundantBackup": {
       "value": "Disabled"
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "storageAutoGrow": {
       "value": "Enabled"
     }
@@ -175,11 +163,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param geoRedundantBackup = 'Disabled'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param storageAutoGrow = 'Enabled'
 ```
 

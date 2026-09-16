@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/machine-learning-services/workspace/CHANGELOG.md).
 
+## 0.14.1
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
 ## 0.14.0
 
 ### Changes
