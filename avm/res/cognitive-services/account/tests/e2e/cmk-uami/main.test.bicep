@@ -63,11 +63,6 @@ module testDeployment '../../../main.bicep' = [
       }
       publicNetworkAccess: 'Enabled'
       sku: 'S0'
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
       restrictOutboundNetworkAccess: false
     }
   }
