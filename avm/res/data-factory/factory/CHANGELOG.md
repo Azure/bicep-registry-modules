@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/data-factory/factory/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Fixed the Git repository configuration being silently discarded by the resource provider. Only the properties that belong to the configured `gitRepoType` are now sent, and optional properties (`gitLastCommitId`, `gitTenantId`, `gitHostName`) are omitted instead of being sent as empty strings.
+- Added an end-to-end test that deploys the module with a Git repository configuration and asserts that the configuration is persisted on the Data Factory.
+
+### Breaking Changes
+
+- Deployments with `gitConfigureLater` set to `false` now fail with an explicit error if any of the required Git parameters (`gitAccountName`, `gitRepositoryName`, `gitCollaborationBranch`, `gitRootFolder` and, for `FactoryVSTSConfiguration`, `gitProjectName`) is empty. Previously such deployments succeeded but left the Data Factory without any Git configuration.
+
 ## 0.12.1
 
 ### Changes
