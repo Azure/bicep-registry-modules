@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Required. The name of the Azure Code Signing Account SKU.')
 param skuName resourceInput<'Microsoft.CodeSigning/codeSigningAccounts@2025-10-13'>.sku.name
 
-// @sys.description('Optional. Certificate profiles to create.')
-// param certificateProfiles certificateProfileType[]?
+@sys.description('Optional. Certificate profiles to create.')
+param certificateProfiles certificateProfileType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
@@ -93,6 +93,23 @@ resource codeSigningAccount 'Microsoft.CodeSigning/codeSigningAccounts@2025-10-1
     }
   }
 }
+
+resource certificateProfile 'Microsoft.CodeSigning/codeSigningAccounts/certificateProfiles@2026-05-15-preview' = [
+  for (profile, index) in (certificateProfiles ?? []): {
+    parent: codeSigningAccount
+    name: profile.name
+    properties: {
+      identityValidationId: profile.identityValidationId
+      profileType: profile.profileType
+      includeCity: profile.?includeCity
+      includeCountry: profile.?includeCountry
+      includePostalCode: profile.?includePostalCode
+      includeState: profile.?includeState
+      includeStreetAddress: profile.?includeStreetAddress
+      programType: profile.?programType
+    }
+  }
+]
 
 resource codeSigningAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -177,24 +194,24 @@ output location string = codeSigningAccount.location
 // Definitions      //
 // ================ //
 
-// @description('The type for Dev Center Attached Network.')
-// type certificateProfileType = {
-//   @description('Required. The name of the attached network.')
-//   name: string
-//   @description('Required. The identity validation ID for the certificate profile.')
-//   identityValidationId: string
-//   @description('Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
-//   includeCity: bool?
-//   @description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
-//   includeCountry: bool?
-//   @description('Optional. Whether to include PC in the certificate subject name.')
-//   includePostalCode: bool?
-//   @description('Optional. Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
-//   includeState: bool?
-//   @description('Optional. Whether to include STREET in the certificate subject name.')
-//   includeStreetAddress: bool?
-//   @description('Required. Profile type of the certificate.')
-//   profileType: ('PrivateTrust' | 'PrivateTrustCIPolicy' | 'PublicTrust' | 'PublicTrustTest' | 'VBSEnclave')
-//   @description('Optional. Indicates whether the resource is intended for a specific usage scenario.')
-//   programType: string?
-// }
+@description('The type for Dev Center Attached Network.')
+type certificateProfileType = {
+  @description('Required. The name of the attached network.')
+  name: string
+  @description('Required. The identity validation ID for the certificate profile.')
+  identityValidationId: string
+  @description('Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
+  includeCity: bool?
+  @description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
+  includeCountry: bool?
+  @description('Optional. Whether to include PC in the certificate subject name.')
+  includePostalCode: bool?
+  @description('Optional. Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
+  includeState: bool?
+  @description('Optional. Whether to include STREET in the certificate subject name.')
+  includeStreetAddress: bool?
+  @description('Required. Profile type of the certificate.')
+  profileType: ('PrivateTrust' | 'PrivateTrustCIPolicy' | 'PublicTrust' | 'PublicTrustTest' | 'VBSEnclave')
+  @description('Optional. Indicates whether the resource is intended for a specific usage scenario.')
+  programType: string?
+}

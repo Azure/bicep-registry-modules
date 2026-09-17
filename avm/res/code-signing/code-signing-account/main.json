@@ -6,12 +6,87 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17195028798084836731"
+      "templateHash": "3298536199551809118"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
   },
   "definitions": {
+    "certificateProfileType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the attached network."
+          }
+        },
+        "identityValidationId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The identity validation ID for the certificate profile."
+          }
+        },
+        "includeCity": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types."
+          }
+        },
+        "includeCountry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types."
+          }
+        },
+        "includePostalCode": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to include PC in the certificate subject name."
+          }
+        },
+        "includeState": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types."
+          }
+        },
+        "includeStreetAddress": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to include STREET in the certificate subject name."
+          }
+        },
+        "profileType": {
+          "type": "string",
+          "allowedValues": [
+            "PrivateTrust",
+            "PrivateTrustCIPolicy",
+            "PublicTrust",
+            "PublicTrustTest",
+            "VBSEnclave"
+          ],
+          "metadata": {
+            "description": "Required. Profile type of the certificate."
+          }
+        },
+        "programType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the resource is intended for a specific usage scenario."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for Dev Center Attached Network."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -270,6 +345,16 @@
         "description": "Required. The name of the Azure Code Signing Account SKU."
       }
     },
+    "certificateProfiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/certificateProfileType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Certificate profiles to create."
+      }
+    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -363,6 +448,28 @@
           "name": "[parameters('skuName')]"
         }
       }
+    },
+    "certificateProfile": {
+      "copy": {
+        "name": "certificateProfile",
+        "count": "[length(coalesce(parameters('certificateProfiles'), createArray()))]"
+      },
+      "type": "Microsoft.CodeSigning/codeSigningAccounts/certificateProfiles",
+      "apiVersion": "2026-05-15-preview",
+      "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].name)]",
+      "properties": {
+        "identityValidationId": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].identityValidationId]",
+        "profileType": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].profileType]",
+        "includeCity": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCity')]",
+        "includeCountry": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCountry')]",
+        "includePostalCode": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includePostalCode')]",
+        "includeState": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeState')]",
+        "includeStreetAddress": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeStreetAddress')]",
+        "programType": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'programType')]"
+      },
+      "dependsOn": [
+        "codeSigningAccount"
+      ]
     },
     "codeSigningAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

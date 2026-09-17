@@ -31,6 +31,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.CodeSigning/codeSigningAccounts` | 2025-10-13 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.codesigning_codesigningaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CodeSigning/2025-10-13/codeSigningAccounts)</li></ul> |
+| `Microsoft.CodeSigning/codeSigningAccounts/certificateProfiles` | 2026-05-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.codesigning_codesigningaccounts_certificateprofiles.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CodeSigning/2026-05-15-preview/codeSigningAccounts/certificateProfiles)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 
 ## Usage examples
@@ -337,6 +338,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`certificateProfiles`](#parameter-certificateprofiles) | array | Certificate profiles to create. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
@@ -356,6 +358,105 @@ The name of the Azure Code Signing Account.
 The name of the Azure Code Signing Account SKU.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `certificateProfiles`
+
+Certificate profiles to create.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityValidationId`](#parameter-certificateprofilesidentityvalidationid) | string | The identity validation ID for the certificate profile. |
+| [`name`](#parameter-certificateprofilesname) | string | The name of the attached network. |
+| [`profileType`](#parameter-certificateprofilesprofiletype) | string | Profile type of the certificate. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`includeCity`](#parameter-certificateprofilesincludecity) | bool | Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
+| [`includeCountry`](#parameter-certificateprofilesincludecountry) | bool | Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
+| [`includePostalCode`](#parameter-certificateprofilesincludepostalcode) | bool | Whether to include PC in the certificate subject name. |
+| [`includeState`](#parameter-certificateprofilesincludestate) | bool | Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
+| [`includeStreetAddress`](#parameter-certificateprofilesincludestreetaddress) | bool | Whether to include STREET in the certificate subject name. |
+| [`programType`](#parameter-certificateprofilesprogramtype) | string | Indicates whether the resource is intended for a specific usage scenario. |
+
+### Parameter: `certificateProfiles.identityValidationId`
+
+The identity validation ID for the certificate profile.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateProfiles.name`
+
+The name of the attached network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateProfiles.profileType`
+
+Profile type of the certificate.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PrivateTrust'
+    'PrivateTrustCIPolicy'
+    'PublicTrust'
+    'PublicTrustTest'
+    'VBSEnclave'
+  ]
+  ```
+
+### Parameter: `certificateProfiles.includeCity`
+
+Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.
+
+- Required: No
+- Type: bool
+
+### Parameter: `certificateProfiles.includeCountry`
+
+Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.
+
+- Required: No
+- Type: bool
+
+### Parameter: `certificateProfiles.includePostalCode`
+
+Whether to include PC in the certificate subject name.
+
+- Required: No
+- Type: bool
+
+### Parameter: `certificateProfiles.includeState`
+
+Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types.
+
+- Required: No
+- Type: bool
+
+### Parameter: `certificateProfiles.includeStreetAddress`
+
+Whether to include STREET in the certificate subject name.
+
+- Required: No
+- Type: bool
+
+### Parameter: `certificateProfiles.programType`
+
+Indicates whether the resource is intended for a specific usage scenario.
+
+- Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings`
