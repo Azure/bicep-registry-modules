@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16194500950493353560"
+      "templateHash": "4989483668240976285"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
@@ -578,7 +578,7 @@
             "value": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'lock')]"
           },
           "programType": {
-            "value": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].programType]"
+            "value": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'programType')]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'roleAssignments')]"

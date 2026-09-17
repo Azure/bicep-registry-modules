@@ -1,5 +1,10 @@
 # Azure Code Signing Account `[Microsoft.CodeSigning/codeSigningAccounts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+>
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure Code Signing Account.
 
 You can reference the module as follows:
@@ -57,7 +62,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   params: {
     // Required parameters
     name: 'dihmin001'
-    skuName: 'S1'
+    skuName: 'Basic'
   }
 }
 ```
@@ -79,7 +84,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": "dihmin001"
     },
     "skuName": {
-      "value": "S1"
+      "value": "Basic"
     }
   }
 }
@@ -97,7 +102,7 @@ using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
 param name = 'dihmin001'
-param skuName = 'S1'
+param skuName = 'Basic'
 ```
 
 </details>
@@ -119,7 +124,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   params: {
     // Required parameters
     name: 'dihmax001'
-    skuName: 'S1'
+    skuName: 'Basic'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -156,7 +161,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": "dihmax001"
     },
     "skuName": {
-      "value": "S1"
+      "value": "Basic"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -191,7 +196,7 @@ using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
 param name = 'dihmax001'
-param skuName = 'S1'
+param skuName = 'Basic'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -228,8 +233,15 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   params: {
     // Required parameters
     name: 'dihwaf001'
-    skuName: 'S1'
+    skuName: 'Basic'
     // Non-required parameters
+    certificateProfiles: [
+      {
+        identityValidationId: 'defaultValidationId'
+        name: 'defaultProfile'
+        profileType: 'PublicTrustTest'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -264,9 +276,18 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": "dihwaf001"
     },
     "skuName": {
-      "value": "S1"
+      "value": "Basic"
     },
     // Non-required parameters
+    "certificateProfiles": {
+      "value": [
+        {
+          "identityValidationId": "defaultValidationId",
+          "name": "defaultProfile",
+          "profileType": "PublicTrustTest"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -300,8 +321,15 @@ using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
 param name = 'dihwaf001'
-param skuName = 'S1'
+param skuName = 'Basic'
 // Non-required parameters
+param certificateProfiles = [
+  {
+    identityValidationId: 'defaultValidationId'
+    name: 'defaultProfile'
+    profileType: 'PublicTrustTest'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'

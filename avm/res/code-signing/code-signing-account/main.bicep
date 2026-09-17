@@ -112,7 +112,7 @@ module certificateProfile_deploy 'certificate-profiles/main.bicep' = [
       includeStreetAddress: certificateProfile.?includeStreetAddress
       location: certificateProfile.?location
       lock: certificateProfile.?lock
-      programType: certificateProfile.programType
+      programType: certificateProfile.?programType
       roleAssignments: certificateProfile.?roleAssignments
     }
   }
