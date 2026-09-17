@@ -62,13 +62,6 @@ module testDeployment '../../../main.bicep' = [
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
-      certificateProfiles: [
-        {
-          name: 'defaultProfile'
-          identityValidationId: 'defaultValidationId'
-          profileType: 'PublicTrustTest'
-        }
-      ]
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
