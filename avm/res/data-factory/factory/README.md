@@ -303,10 +303,6 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-Temporarily skipped so that the deployment validation only runs the new `git-config` test. Remove this file before merging.
-```
 
 <details>
 
