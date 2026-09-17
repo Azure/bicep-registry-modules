@@ -56,12 +56,19 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'S1'
+      skuName: 'Basic'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      certificateProfiles: [
+        {
+          name: 'defaultProfile'
+          identityValidationId: 'defaultValidationId'
+          profileType: 'PublicTrustTest'
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
