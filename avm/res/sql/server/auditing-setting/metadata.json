@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure SQL Server Audit Settings",
+  "moduleDescription": "This module deploys an Azure SQL Server Audit Settings.",
+  "telemetryIdPrefix": "46d3xbcp.res.sql-server-auditingsetting",
+  "canonicalType": "Microsoft.Sql/servers/auditingSettings"
+}

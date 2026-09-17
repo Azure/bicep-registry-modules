@@ -123,12 +123,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       ]
     }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -221,14 +215,6 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
         ]
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -309,12 +295,6 @@ param ipAddress = {
       port: 443
       protocol: 'Tcp'
     }
-  ]
-}
-param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
   ]
 }
 ```

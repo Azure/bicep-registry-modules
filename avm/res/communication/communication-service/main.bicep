@@ -34,6 +34,17 @@ param dataLocation string
 @description('Optional. List of email Domain resource Ids.')
 param linkedDomains string[]?
 
+@description('Optional. Disable local authentication for the Communication Service. When set to true, access key-based authentication is disabled. Defaults to null (not set), preserving existing behaviour.')
+param disableLocalAuth bool?
+
+@allowed([
+  'Disabled'
+  'Enabled'
+  'SecuredByPerimeter'
+])
+@description('Optional. Allow, disallow, or let network security perimeter configuration control public network access to the Communication Service. Defaults to null (not set), preserving existing behaviour.')
+param publicNetworkAccess string?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -111,7 +122,9 @@ resource communicationService 'Microsoft.Communication/communicationServices@202
   tags: tags
   properties: {
     dataLocation: dataLocation
+    disableLocalAuth: disableLocalAuth
     linkedDomains: linkedDomains
+    publicNetworkAccess: publicNetworkAccess
   }
 }
 

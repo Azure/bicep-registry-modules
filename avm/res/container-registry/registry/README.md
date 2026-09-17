@@ -146,11 +146,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     publicNetworkAccess: 'Disabled'
   }
 }
@@ -186,13 +181,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "publicNetworkAccess": {
       "value": "Disabled"
     }
@@ -220,11 +208,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param publicNetworkAccess = 'Disabled'
 ```
 
@@ -1225,6 +1208,7 @@ param trustPolicyStatus = '<trustPolicyStatus>'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`networkRuleBypassAllowedForTasks`](#parameter-networkrulebypassallowedfortasks) | bool | Whether if ACR Tasks can bypass the network rules. |
 | [`networkRuleBypassOptions`](#parameter-networkrulebypassoptions) | string | Whether to allow trusted Azure services to access a network restricted registry. |
 | [`networkRuleSetDefaultAction`](#parameter-networkrulesetdefaultaction) | string | The default action of allow or deny when no other rules match. |
 | [`networkRuleSetIpRules`](#parameter-networkrulesetiprules) | array | The IP ACL rules. Note, requires the 'acrSku' to be 'Premium'. Set to an empty array to explicitly configure no allowed IPs. |
@@ -1770,6 +1754,14 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `networkRuleBypassAllowedForTasks`
+
+Whether if ACR Tasks can bypass the network rules.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `networkRuleBypassOptions`
 

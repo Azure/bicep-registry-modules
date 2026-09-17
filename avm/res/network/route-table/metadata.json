@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Route Tables",
+  "moduleDescription": "This module deploys a User Defined Route Table (UDR).",
+  "telemetryIdPrefix": "46d3xbcp.res.network-routetable",
+  "alternativeNames": ["UDR"],
+  "canonicalType": "Microsoft.Network/routeTables",
+  "owners": ["segraef"]
+}

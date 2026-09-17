@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Manager Network Group Static Members",
+  "moduleDescription": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-nwgrpstaticmember",
+  "canonicalType": "Microsoft.Network/networkManagers/networkGroups/staticMembers"
+}

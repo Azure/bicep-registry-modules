@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "DevTest Lab Schedules",
+  "moduleDescription": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines.",
+  "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab-schedule",
+  "canonicalType": "Microsoft.DevTestLab/labs/schedules"
+}

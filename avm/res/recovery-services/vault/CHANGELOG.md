@@ -2,6 +2,27 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.13.2
+
+### Changes
+
+- Added the customer-managed key's user-assigned identity to the resource's managed identities.
+- Updated the Key Vault API version used for customer-managed key references.
+
+### Breaking Changes
+
+- None
+
+## 0.13.1
+
+### Changes
+
+- Fixed the deployment of the `backup-config` child module failing when vault-level `softDeleteSettings` is provided together with `backupConfig`. The soft delete related properties of `backupConfig` are now omitted from the `backupconfig` request payload entirely, as the API rejects any write to these properties once they were set through the vault itself. [#7289](https://github.com/Azure/bicep-registry-modules/issues/7289)
+
+### Breaking Changes
+
+- None
+
 ## 0.13.0
 
 ### Changes

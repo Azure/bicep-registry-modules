@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Managed Redis Database Access Policy Assignment",
+  "moduleDescription": "This module deploys an access policy assignment for an Azure Managed Redis database.",
+  "telemetryIdPrefix": "46d3xbcp.res.cache-redisenterprise-databaseaccess",
+  "canonicalType": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments"
+}

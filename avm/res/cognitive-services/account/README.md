@@ -902,11 +902,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
     sku: 'S0'
@@ -941,13 +936,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "publicNetworkAccess": {
       "value": "Enabled"
     },
@@ -979,11 +967,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 param publicNetworkAccess = 'Enabled'
 param restrictOutboundNetworkAccess = false

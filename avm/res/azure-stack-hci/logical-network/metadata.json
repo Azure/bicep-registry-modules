@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Stack HCI Logical Network",
+  "moduleDescription": "This module deploys an Azure Stack HCI Logical Network.",
+  "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-logicalnetwork",
+  "canonicalType": "Microsoft.AzureStackHCI/logicalNetworks",
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
+}

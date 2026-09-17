@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Front Doors (Classic)",
+  "moduleDescription": "DEPRECATED - This module deploys an Azure Front Door (Classic).\n\nPlease note that the Azure Front Door (Classic) service is being deprecated in favor of the new Azure Front Door Standard/Premium offerings ([ref(https://learn.microsoft.com/en-us/azure/frontdoor/classic-overview)]).\nYou can use the `avm/res/cdn/profile` module to deploy the new Azure Front Door Standard/Premium services.\n",
+  "telemetryIdPrefix": "46d3xbcp.res.network-frontdoor",
+  "canonicalType": "Microsoft.Network/frontDoors",
+  "owners": []
+}

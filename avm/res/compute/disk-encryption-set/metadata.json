@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Disk Encryption Sets",
+  "moduleDescription": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-diskencryptionset",
+  "canonicalType": "Microsoft.Compute/diskEncryptionSets",
+  "owners": ["segraef", "krbar"]
+}

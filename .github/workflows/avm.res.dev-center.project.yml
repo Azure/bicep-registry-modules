@@ -29,6 +29,7 @@ on:
       - .github/workflows/avm.res.dev-center.project.yml
       - avm/res/dev-center/project/**
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/dev-center/project"
@@ -47,7 +48,7 @@ jobs:
     if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: "Set input parameters to output variables"

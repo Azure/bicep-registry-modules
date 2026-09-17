@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "API Management Service API Version Sets",
+  "moduleDescription": "This module deploys an API Management Service API Version Set.",
+  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-apiversionset",
+  "canonicalType": "Microsoft.ApiManagement/service/apiVersionSets"
+}

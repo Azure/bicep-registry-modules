@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
+  "moduleDescription": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster.",
+  "telemetryIdPrefix": "46d3xbcp.res.documentdb-mongocluster-firewallrule",
+  "canonicalType": "Microsoft.DocumentDB/mongoClusters/firewallRules"
+}
