@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5635904455633022817"
+      "templateHash": "7899540354593107156"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
@@ -408,7 +408,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -547,9 +546,6 @@
           "name": {
             "value": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].name]"
           },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "identityValidationId": {
             "value": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'identityValidationId')]"
           },
@@ -592,7 +588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13091446140174993991"
+              "templateHash": "2427982049196328420"
             },
             "name": "Certificate Profiles",
             "description": "This module deploys certificate profiles for a code signing account."
@@ -808,13 +804,6 @@
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
             }
           },
           "variables": {
@@ -834,26 +823,6 @@
             }
           },
           "resources": {
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.codesigning-certificateprofile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
             "codeSigningAccount": {
               "existing": true,
               "type": "Microsoft.CodeSigning/codeSigningAccounts",
