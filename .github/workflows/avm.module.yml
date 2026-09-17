@@ -1,4 +1,6 @@
-name: ".Module - Check and Publish"
+# This workflow is a work in progress to test whether workflow consolidation is possible.
+# It should not be used yet.
+name: ".Module - Check and Publish [EXPERIMENTAL]"
 
 on:
   workflow_dispatch:

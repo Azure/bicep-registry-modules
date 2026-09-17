@@ -20,7 +20,7 @@ Describe 'Generic module workflow' {
     }
 
     It 'uses the expected display name and has no global concurrency group' {
-        $workflow.name | Should -Be '.Module - Check and Publish'
+        $workflow.name | Should -Be '.Module - Check and Publish [EXPERIMENTAL]'
         $workflow.ContainsKey('concurrency') | Should -BeFalse
     }
 
@@ -76,8 +76,51 @@ Describe 'Generic module workflow' {
         $workflow.jobs.call_module_publish.with.ContainsKey('customTokens') | Should -BeFalse
     }
 
-    It 'includes the generic workflow in the UI kill switch' {
-        $toggleWorkflow.on.workflow_dispatch.inputs.includePattern.default | Should -Match '\\.Module - Check and Publish'
+    It 'includes generic and module-specific workflows in the UI kill switch' {
+        $filter = $toggleWorkflow.on.workflow_dispatch.inputs.includePattern.default
+        foreach ($workflowName in @(
+                $workflow.name
+                '.Module - Check and Publish'
+                'avm.res.storage.storage-account'
+                'avm.ptn.test'
+                'avm.utl.test'
+            )) {
+            $workflowName | Should -Match $filter
+        }
+        '.Platform - Toggle AVM workflows' | Should -Not -Match $filter
+        '.Module - Check and Publish [EXPERIMENTAL] extra' | Should -Not -Match $filter
+    }
+
+    It 'keeps <FunctionName> aligned with the UI workflow filter' -ForEach @(
+        @{
+            FunctionName  = 'Get-GitHubModuleWorkflowList'
+            RelativePath  = 'utilities\pipelines\platform\helper\Get-GitHubModuleWorkflowList.ps1'
+            ParameterName = 'Filter'
+        }
+        @{
+            FunctionName  = 'Switch-WorkflowState'
+            RelativePath  = 'utilities\pipelines\platform\Switch-WorkflowState.ps1'
+            ParameterName = 'IncludePattern'
+        }
+        @{
+            FunctionName  = 'Invoke-WorkflowsFailedJobsReRun'
+            RelativePath  = 'utilities\tools\Invoke-WorkflowsFailedJobsReRun.ps1'
+            ParameterName = 'PipelineFilter'
+        }
+    ) {
+        $parseErrors = $null
+        $ast = [System.Management.Automation.Language.Parser]::ParseFile(
+            (Join-Path $repoRootPath $RelativePath), [ref] $null, [ref] $parseErrors
+        )
+        $parseErrors | Should -BeNullOrEmpty
+        $functionAst = $ast.Find({
+                param($node)
+                $node -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -eq $FunctionName
+            }, $true)
+        $parameter = $functionAst.Body.ParamBlock.Parameters |
+            Where-Object { $_.Name.VariablePath.UserPath -eq $ParameterName }
+        $parameter.DefaultValue.SafeGetValue() |
+            Should -Be $toggleWorkflow.on.workflow_dispatch.inputs.includePattern.default
     }
 }
 
