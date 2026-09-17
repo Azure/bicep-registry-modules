@@ -344,6 +344,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'csmin001'
     primaryAgentPoolProfiles: [
       {
+        availabilityZones: []
         count: 3
         mode: 'System'
         name: 'systempool'
@@ -381,6 +382,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfiles": {
       "value": [
         {
+          "availabilityZones": [],
           "count": 3,
           "mode": "System",
           "name": "systempool",
@@ -418,6 +420,7 @@ using 'br/public:avm/res/container-service/managed-cluster:<version>'
 param name = 'csmin001'
 param primaryAgentPoolProfiles = [
   {
+    availabilityZones: []
     count: 3
     mode: 'System'
     name: 'systempool'
