@@ -209,15 +209,15 @@ type certificateProfileType = {
   identityValidationId: string
   @description('Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
   includeCity: bool?
-  @description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types')
+  @description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
   includeCountry: bool?
   @description('Optional. Whether to include PC in the certificate subject name.')
-  includePostalCoe: bool?
+  includePostalCode: bool?
   @description('Optional. Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
   includeState: bool?
   @description('Optional. Whether to include STREET in the certificate subject name.')
   includeStreetAddress: bool?
-  @description('Required.Profile type of the certificate.')
+  @description('Required. Profile type of the certificate.')
   profileType: ('PrivateTrust' | 'PrivateTrustCIPolicy' | 'PublicTrust' | 'PublicTrustTest' | 'VBSEnclave')
   @description('Optional. Indicates whether the resource is intended for a specific usage scenario.')
   programType: string?

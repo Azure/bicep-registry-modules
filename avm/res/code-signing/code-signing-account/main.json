@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15554615454438602814"
+      "templateHash": "5635904455633022817"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
@@ -38,10 +38,10 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types"
+            "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types."
           }
         },
-        "includePostalCoe": {
+        "includePostalCode": {
           "type": "bool",
           "nullable": true,
           "metadata": {
@@ -72,7 +72,7 @@
             "VBSEnclave"
           ],
           "metadata": {
-            "description": "Required.Profile type of the certificate."
+            "description": "Required. Profile type of the certificate."
           }
         },
         "programType": {
@@ -592,7 +592,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5968394621833283836"
+              "templateHash": "13091446140174993991"
             },
             "name": "Certificate Profiles",
             "description": "This module deploys certificate profiles for a code signing account."
@@ -734,14 +734,14 @@
               "type": "bool",
               "nullable": true,
               "metadata": {
-                "description": "Required. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types."
+                "description": "Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types."
               }
             },
             "includeCountry": {
               "type": "bool",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types"
+                "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types."
               }
             },
             "includePostalCode": {

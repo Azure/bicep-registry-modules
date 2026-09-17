@@ -9,9 +9,9 @@ param codeSigningAccountName string
 
 @description('Required. The identity validation ID for the certificate profile.')
 param identityValidationId string
-@description('Required. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
+@description('Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
 param includeCity bool?
-@description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types')
+@description('Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.')
 param includeCountry bool?
 @description('Optional. Whether to include PC in the certificate subject name.')
 param includePostalCode bool?

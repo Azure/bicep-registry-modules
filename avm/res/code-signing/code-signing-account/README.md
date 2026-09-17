@@ -396,14 +396,15 @@ Certificate profiles to create.
 | :-- | :-- | :-- |
 | [`identityValidationId`](#parameter-certificateprofilesidentityvalidationid) | string | The identity validation ID for the certificate profile. |
 | [`name`](#parameter-certificateprofilesname) | string | The name of the attached network. |
+| [`profileType`](#parameter-certificateprofilesprofiletype) | string | Profile type of the certificate. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`includeCity`](#parameter-certificateprofilesincludecity) | bool | Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
-| [`includeCountry`](#parameter-certificateprofilesincludecountry) | bool | Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types |
-| [`includePostalCoe`](#parameter-certificateprofilesincludepostalcoe) | bool | Whether to include PC in the certificate subject name. |
+| [`includeCountry`](#parameter-certificateprofilesincludecountry) | bool | Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
+| [`includePostalCode`](#parameter-certificateprofilesincludepostalcode) | bool | Whether to include PC in the certificate subject name. |
 | [`includeState`](#parameter-certificateprofilesincludestate) | bool | Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
 | [`includeStreetAddress`](#parameter-certificateprofilesincludestreetaddress) | bool | Whether to include STREET in the certificate subject name. |
 | [`programType`](#parameter-certificateprofilesprogramtype) | string | Indicates whether the resource is intended for a specific usage scenario. |
@@ -422,6 +423,23 @@ The name of the attached network.
 - Required: Yes
 - Type: string
 
+### Parameter: `certificateProfiles.profileType`
+
+Profile type of the certificate.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PrivateTrust'
+    'PrivateTrustCIPolicy'
+    'PublicTrust'
+    'PublicTrustTest'
+    'VBSEnclave'
+  ]
+  ```
+
 ### Parameter: `certificateProfiles.includeCity`
 
 Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.
@@ -431,12 +449,12 @@ Whether to include L in the certificate subject name. Applicable only for privat
 
 ### Parameter: `certificateProfiles.includeCountry`
 
-Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types
+Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.
 
 - Required: No
 - Type: bool
 
-### Parameter: `certificateProfiles.includePostalCoe`
+### Parameter: `certificateProfiles.includePostalCode`
 
 Whether to include PC in the certificate subject name.
 

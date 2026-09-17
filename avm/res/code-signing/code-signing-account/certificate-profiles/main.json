@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5627038735261088411"
+      "templateHash": "13091446140174993991"
     },
     "name": "Certificate Profiles",
     "description": "This module deploys certificate profiles for a code signing account."
@@ -148,14 +148,14 @@
       "type": "bool",
       "nullable": true,
       "metadata": {
-        "description": "Required. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types."
+        "description": "Optional. Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types."
       }
     },
     "includeCountry": {
       "type": "bool",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types"
+        "description": "Optional. Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types."
       }
     },
     "includePostalCode": {
@@ -252,7 +252,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.codesigning-codesigningaccount-certificateprofile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.codesigning-certificateprofile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

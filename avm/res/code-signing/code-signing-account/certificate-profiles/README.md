@@ -34,7 +34,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | [`codeSigningAccountName`](#parameter-codesigningaccountname) | string | The name of the code signing account to which the certificate profile belongs. |
 | [`identityValidationId`](#parameter-identityvalidationid) | string | The identity validation ID for the certificate profile. |
-| [`includeCity`](#parameter-includecity) | bool | Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
 | [`name`](#parameter-name) | string | The name of the certificate profile to create. |
 | [`profileType`](#parameter-profiletype) | string | Profile type of the certificate. |
 
@@ -43,7 +42,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`includeCountry`](#parameter-includecountry) | bool | Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types |
+| [`includeCity`](#parameter-includecity) | bool | Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
+| [`includeCountry`](#parameter-includecountry) | bool | Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
 | [`includePostalCode`](#parameter-includepostalcode) | bool | Whether to include PC in the certificate subject name. |
 | [`includeState`](#parameter-includestate) | bool | Whether to include S in the certificate subject name. Applicable only for private trust, private trust ci profile types. |
 | [`includeStreetAddress`](#parameter-includestreetaddress) | bool | Whether to include STREET in the certificate subject name. |
@@ -65,13 +65,6 @@ The identity validation ID for the certificate profile.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `includeCity`
-
-Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `name`
 
@@ -105,9 +98,16 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `includeCity`
+
+Whether to include L in the certificate subject name. Applicable only for private trust, private trust ci profile types.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `includeCountry`
 
-Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types
+Whether to include C in the certificate subject name. Applicable only for private trust, private trust ci profile types.
 
 - Required: No
 - Type: bool

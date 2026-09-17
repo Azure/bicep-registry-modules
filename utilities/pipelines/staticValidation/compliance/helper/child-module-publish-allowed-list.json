@@ -75,6 +75,7 @@
     "avm/res/cdn/profile/rule-set/rule",
     "avm/res/cdn/profile/secret",
     "avm/res/cdn/profile/security-policy",
+    "avm/res/code-signing/code-signing-account/certificate-profiles",
     "avm/res/communication/email-service/domain",
     "avm/res/communication/email-service/domain/sender-username",
     "avm/res/compute/gallery/application",
