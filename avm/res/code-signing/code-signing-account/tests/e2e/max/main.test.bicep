@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module testing consumer groups
 param resourceGroupName string = 'dep-${namePrefix}-devices.iothubs-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dihmax'
+param serviceShort string = 'cermax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
