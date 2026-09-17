@@ -61,7 +61,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dihmin001'
+    name: 'cermin001'
     skuName: 'Basic'
   }
 }
@@ -81,7 +81,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihmin001"
+      "value": "cermin001"
     },
     "skuName": {
       "value": "Basic"
@@ -101,7 +101,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
 using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
-param name = 'dihmin001'
+param name = 'cermin001'
 param skuName = 'Basic'
 ```
 
@@ -123,7 +123,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dihmax001'
+    name: 'cermax001'
     skuName: 'Basic'
     // Non-required parameters
     diagnosticSettings: [
@@ -158,7 +158,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihmax001"
+      "value": "cermax001"
     },
     "skuName": {
       "value": "Basic"
@@ -195,7 +195,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
 using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
-param name = 'dihmax001'
+param name = 'cermax001'
 param skuName = 'Basic'
 // Non-required parameters
 param diagnosticSettings = [
@@ -232,7 +232,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<version>' = {
   params: {
     // Required parameters
-    name: 'dihwaf001'
+    name: 'cerwaf001'
     skuName: 'Basic'
     // Non-required parameters
     certificateProfiles: [
@@ -273,7 +273,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihwaf001"
+      "value": "cerwaf001"
     },
     "skuName": {
       "value": "Basic"
@@ -320,7 +320,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
 using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 
 // Required parameters
-param name = 'dihwaf001'
+param name = 'cerwaf001'
 param skuName = 'Basic'
 // Non-required parameters
 param certificateProfiles = [
