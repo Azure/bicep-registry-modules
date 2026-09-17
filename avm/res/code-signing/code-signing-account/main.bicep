@@ -101,7 +101,7 @@ module certificateProfile_deploy 'certificate-profiles/main.bicep' = [
     name: '${deployment().name}-CertificateProfile-${index}'
     params: {
       codeSigningAccountName: codeSigningAccount.name
-      name: certificateProfile
+      name: certificateProfile.name
       enableTelemetry: enableReferencedModulesTelemetry
       identityValidationId: certificateProfile.?identityValidationId
       profileType: certificateProfile.?profileType
