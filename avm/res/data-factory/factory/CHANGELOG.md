@@ -8,6 +8,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Fixed the Git repository configuration being silently discarded by the resource provider. Only the properties that belong to the configured `gitRepoType` are now sent, and optional properties (`gitLastCommitId`, `gitTenantId`, `gitHostName`) are omitted instead of being sent as empty strings.
 - Added an end-to-end test that deploys the module with a Git repository configuration and asserts that the configuration is persisted on the Data Factory.
+- Updated the telemetry deployment to API version `2025-04-01`.
+- Updated the referenced `avm/res/network/private-endpoint` module to version `0.12.1`.
 
 ### Breaking Changes
 
