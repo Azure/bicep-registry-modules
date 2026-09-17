@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Kusto Cluster",
+  "moduleDescription": "This module deploys a Kusto Cluster.",
+  "telemetryIdPrefix": "46d3xbcp.res.kusto-cluster",
+  "canonicalType": "Microsoft.Kusto/clusters",
+  "owners": ["oZakari"]
+}

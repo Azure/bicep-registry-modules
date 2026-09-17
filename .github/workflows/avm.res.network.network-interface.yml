@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.network-interface.yml"
       - "avm/res/network/network-interface/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/network-interface"

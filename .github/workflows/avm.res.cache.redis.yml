@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.cache.redis.yml"
       - "avm/res/cache/redis/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/cache/redis"

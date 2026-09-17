@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.alerts-management.action-rule.yml"
       - "avm/res/alerts-management/action-rule/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/alerts-management/action-rule"

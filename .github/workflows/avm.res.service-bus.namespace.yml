@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.service-bus.namespace.yml"
       - "avm/res/service-bus/namespace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/service-bus/namespace"

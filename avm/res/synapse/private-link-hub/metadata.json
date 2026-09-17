@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Synapse Analytics",
+  "moduleDescription": "This module deploys an Azure Synapse Analytics (Private Link Hub).",
+  "telemetryIdPrefix": "46d3xbcp.res.synapse-privatelinkhub",
+  "canonicalType": "Microsoft.Synapse/privateLinkHubs",
+  "owners": ["TomazMlakar"]
+}

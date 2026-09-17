@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.communication.communication-service.yml"
       - "avm/res/communication/communication-service/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/communication/communication-service"

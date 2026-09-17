@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Container Registry Cache",
+  "moduleDescription": "The cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
+  "telemetryIdPrefix": "46d3xbcp.res.containerregistry-registry-cacherule",
+  "canonicalType": "Microsoft.ContainerRegistry/registries/cacheRules"
+}

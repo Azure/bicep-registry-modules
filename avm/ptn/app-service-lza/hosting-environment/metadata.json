@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "App Service Landing Zone Accelerator",
+  "moduleDescription": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
+  "telemetryIdPrefix": "46d3xbcp.ptn.appsvclza-hostingenvironment",
+  "canonicalType": "app-service-lza/hosting-environment",
+  "owners": ["MikeTB-Microsoft"]
+}

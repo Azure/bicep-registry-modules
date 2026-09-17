@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.web.static-site.yml"
       - "avm/res/web/static-site/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/web/static-site"

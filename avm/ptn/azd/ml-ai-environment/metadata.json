@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azd Azure Machine Learning Environment",
+  "moduleDescription": "DEPRECATED - Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.azd-mlaienvironment",
+  "alternativeNames": ["Azure Developer CLI - Machine Learning AI Environment"],
+  "canonicalType": "azd/ml-ai-environment",
+  "owners": []
+}

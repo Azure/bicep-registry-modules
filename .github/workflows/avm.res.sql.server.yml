@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.sql.server.yml"
       - "avm/res/sql/server/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/sql/server"

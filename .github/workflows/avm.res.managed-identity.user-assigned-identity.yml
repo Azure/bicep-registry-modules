@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.managed-identity.user-assigned-identity.yml"
       - "avm/res/managed-identity/user-assigned-identity/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/managed-identity/user-assigned-identity"

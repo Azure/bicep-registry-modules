@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Private DNS Zone SRV record",
+  "moduleDescription": "This module deploys a Private DNS Zone SRV record.",
+  "telemetryIdPrefix": "46d3xbcp.res.nw-privdnszonesrv",
+  "canonicalType": "Microsoft.Network/privateDnsZones/SRV"
+}

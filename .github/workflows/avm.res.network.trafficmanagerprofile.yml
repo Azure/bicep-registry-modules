@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.trafficmanagerprofile.yml"
       - "avm/res/network/trafficmanagerprofile/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/trafficmanagerprofile"

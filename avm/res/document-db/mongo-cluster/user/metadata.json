@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Cosmos DB for MongoDB (vCore) cluster user",
+  "moduleDescription": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication.",
+  "telemetryIdPrefix": "46d3xbcp.res.documentdb-mongocluster-user",
+  "canonicalType": "Microsoft.DocumentDB/mongoClusters/users"
+}

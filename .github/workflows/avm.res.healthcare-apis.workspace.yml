@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.healthcare-apis.workspace.yml"
       - "avm/res/healthcare-apis/workspace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/healthcare-apis/workspace"

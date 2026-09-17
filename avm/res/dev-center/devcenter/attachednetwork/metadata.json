@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Dev Center Attached Network",
+  "moduleDescription": "This module deploys a Dev Center Attached Network.",
+  "telemetryIdPrefix": "46d3xbcp.res.devcenter-devcenter-attachednetwork",
+  "canonicalType": "Microsoft.DevCenter/devcenters/attachednetworks"
+}

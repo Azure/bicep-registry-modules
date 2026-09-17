@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.logic.integration-account.yml"
       - "avm/res/logic/integration-account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/logic/integration-account"

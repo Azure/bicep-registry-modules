@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.ai-platform.baseline.yml"
       - "avm/ptn/ai-platform/baseline/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/ai-platform/baseline"

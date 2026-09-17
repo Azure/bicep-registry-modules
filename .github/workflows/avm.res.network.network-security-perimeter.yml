@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.network-security-perimeter.yml"
       - "avm/res/network/network-security-perimeter/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/network-security-perimeter"

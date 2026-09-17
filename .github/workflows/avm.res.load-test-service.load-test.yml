@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.load-test-service.load-test.yml"
       - "avm/res/load-test-service/load-test/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/load-test-service/load-test"

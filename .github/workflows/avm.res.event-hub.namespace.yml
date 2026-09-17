@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.event-hub.namespace.yml"
       - "avm/res/event-hub/namespace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/event-hub/namespace"

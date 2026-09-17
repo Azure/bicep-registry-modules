@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure NetApp Files Volume Backup",
+  "moduleDescription": "This module deploys a backup of a NetApp Files Volume.",
+  "telemetryIdPrefix": "46d3xbcp.res.netapp-netappaccount-backupvaultbckp",
+  "canonicalType": "Microsoft.NetApp/netAppAccounts/backupVaults/backups"
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "avm/ptn/alz/ama",
+  "moduleDescription": "This modules deployes resources for Azure Monitoring Agent (AMA) to be used within Azure Landing Zones",
+  "telemetryIdPrefix": "46d3xbcp.ptn.alz-ama",
+  "canonicalType": "alz/ama",
+  "owners": ["yeddlapurishivasai", "akshayrohilla", "jtracey93"]
+}

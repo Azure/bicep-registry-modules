@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Manager Security Admin Configuration Rule Collections",
+  "moduleDescription": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-secadmcfgrulecoll",
+  "canonicalType": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections"
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.private-endpoint.yml"
       - "avm/res/network/private-endpoint/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/private-endpoint"

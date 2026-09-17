@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.azure-stack-hci.cluster.yml"
       - "avm/res/azure-stack-hci/cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/azure-stack-hci/cluster"

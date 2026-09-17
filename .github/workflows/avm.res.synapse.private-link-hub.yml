@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.synapse.private-link-hub.yml"
       - "avm/res/synapse/private-link-hub/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/synapse/private-link-hub"

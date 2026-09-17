@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "private-analytical-workspace",
+  "moduleDescription": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.data-privateanalyticalworkspace",
+  "alternativeNames": ["Data Analytics", "Data Lake", "Databricks", "Database"],
+  "canonicalType": "data/private-analytical-workspace",
+  "owners": ["jbinko"]
+}

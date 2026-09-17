@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "CDN Profiles",
+  "moduleDescription": "This module deploys a CDN Profile.",
+  "telemetryIdPrefix": "46d3xbcp.res.cdn-profile",
+  "alternativeNames": ["Azure Front Door"],
+  "canonicalType": "Microsoft.Cdn/profiles",
+  "owners": ["gbeaud"]
+}

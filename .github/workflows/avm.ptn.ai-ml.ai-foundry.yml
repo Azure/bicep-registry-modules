@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.ai-ml.ai-foundry.yml"
       - "avm/ptn/ai-ml/ai-foundry/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/ai-ml/ai-foundry"

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Role Assignments (All scopes)",
+  "moduleDescription": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.authorization-roleassignment",
+  "canonicalType": "authorization/role-assignment",
+  "owners": ["jtracey93"]
+}

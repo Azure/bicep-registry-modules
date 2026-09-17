@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Traffic Manager Profiles",
+  "moduleDescription": "This module deploys a Traffic Manager Profile.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-trafficmanagerprofile",
+  "canonicalType": "Microsoft.Network/trafficmanagerprofiles",
+  "owners": ["lsnoddy"]
+}

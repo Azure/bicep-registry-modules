@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.public-ip-prefix.yml"
       - "avm/res/network/public-ip-prefix/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/public-ip-prefix"

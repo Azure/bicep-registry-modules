@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.app.container-job-toolkit.yml"
       - "avm/ptn/app/container-job-toolkit/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/app/container-job-toolkit"

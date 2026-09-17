@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.batch.batch-account.yml"
       - "avm/res/batch/batch-account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/batch/batch-account"
