@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7883658594837965621"
+      "templateHash": "15554615454438602814"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
   },
   "definitions": {
-    "certificateProfile": {
+    "certificateProfileType": {
       "type": "object",
       "properties": {
         "name": {
@@ -348,7 +348,7 @@
     "certificateProfiles": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/certificateProfile"
+        "$ref": "#/definitions/certificateProfileType"
       },
       "nullable": true,
       "metadata": {
@@ -422,7 +422,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.devices-codeSigningAccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.codesigning-codesigningaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -592,7 +592,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7879153160911593510"
+              "templateHash": "5968394621833283836"
             },
             "name": "Certificate Profiles",
             "description": "This module deploys certificate profiles for a code signing account."
@@ -838,7 +838,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.databricks-accessconnector.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.codesigning-certificateprofile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

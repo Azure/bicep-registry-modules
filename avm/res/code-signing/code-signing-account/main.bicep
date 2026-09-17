@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param skuName resourceInput<'Microsoft.CodeSigning/codeSigningAccounts@2025-10-13'>.sku.name
 
 @sys.description('Optional. Certificate profiles to create.')
-param certificateProfiles certificateProfile[]?
+param certificateProfiles certificateProfileType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
@@ -68,7 +68,7 @@ var formattedRoleAssignments = [
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.devices-codeSigningAccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.codesigning-codesigningaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -202,7 +202,7 @@ output location string = codeSigningAccount.location
 // ================ //
 
 @description('The type for Dev Center Attached Network.')
-type certificateProfile = {
+type certificateProfileType = {
   @description('Required. The name of the attached network.')
   name: string
   @description('Required. The identity validation ID for the certificate profile.')
