@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Session Hosts",
   "moduleDescription": "This module deploys Session Hosts.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.a216c73",
+  "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-session-hosts",
   "canonicalType": "avd-lza/session-hosts"
 }

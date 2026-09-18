@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Update Manager",
   "moduleDescription": "This module deploys Azure Update Manager.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.c99b47d",
+  "telemetryIdPrefix": "46d3xbcp.ptn.maintenance-azure-update-manager",
   "canonicalType": "maintenance/azure-update-manager"
 }

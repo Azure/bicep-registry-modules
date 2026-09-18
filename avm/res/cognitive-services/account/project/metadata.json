@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Project",
   "moduleDescription": "This module deploys Project.",
-  "telemetryIdPrefix": "46d3xbcp.res.59c9c62",
+  "telemetryIdPrefix": "46d3xbcp.res.cognitive-services-account-project",
   "canonicalType": "Microsoft.CognitiveServices/accounts/projects"
 }

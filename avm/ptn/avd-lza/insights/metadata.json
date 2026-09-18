@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Insights",
   "moduleDescription": "This module deploys Insights.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.119d7b1",
+  "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-insights",
   "canonicalType": "avd-lza/insights"
 }
