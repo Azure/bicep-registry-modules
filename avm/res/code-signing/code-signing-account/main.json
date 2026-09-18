@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3298536199551809118"
+      "templateHash": "3442757014864123603"
     },
     "name": "Azure Code Signing Account",
     "description": "This module deploys an Azure Code Signing Account."
@@ -460,11 +460,11 @@
       "properties": {
         "identityValidationId": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].identityValidationId]",
         "profileType": "[coalesce(parameters('certificateProfiles'), createArray())[copyIndex()].profileType]",
-        "includeCity": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCity')]",
-        "includeCountry": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCountry')]",
-        "includePostalCode": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includePostalCode')]",
-        "includeState": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeState')]",
-        "includeStreetAddress": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeStreetAddress')]",
+        "includeCity": "[coalesce(tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCity'), false())]",
+        "includeCountry": "[coalesce(tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeCountry'), false())]",
+        "includePostalCode": "[coalesce(tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includePostalCode'), false())]",
+        "includeState": "[coalesce(tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeState'), false())]",
+        "includeStreetAddress": "[coalesce(tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'includeStreetAddress'), false())]",
         "programType": "[tryGet(coalesce(parameters('certificateProfiles'), createArray())[copyIndex()], 'programType')]"
       },
       "dependsOn": [

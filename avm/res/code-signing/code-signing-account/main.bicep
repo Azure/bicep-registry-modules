@@ -101,11 +101,11 @@ resource certificateProfile 'Microsoft.CodeSigning/codeSigningAccounts/certifica
     properties: {
       identityValidationId: profile.identityValidationId
       profileType: profile.profileType
-      includeCity: profile.?includeCity
-      includeCountry: profile.?includeCountry
-      includePostalCode: profile.?includePostalCode
-      includeState: profile.?includeState
-      includeStreetAddress: profile.?includeStreetAddress
+      includeCity: profile.?includeCity ?? false
+      includeCountry: profile.?includeCountry ?? false
+      includePostalCode: profile.?includePostalCode ?? false
+      includeState: profile.?includeState ?? false
+      includeStreetAddress: profile.?includeStreetAddress ?? false
       programType: profile.?programType
     }
   }
