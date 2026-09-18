@@ -15,11 +15,11 @@ param functionAppName string
 @description('Optional. The Azure region into which all resources will be deployed.')
 param location string = resourceGroup().location
 
-@description('Optional. Resource tags to apply to all created resources.')
-param tags object?
+@description('Optional. Resource tags to apply to all created resources. The runtime Storage Account is always tagged with `resource-usage: azure-functions`.')
+param tags resourceInput<'Microsoft.Web/sites@2025-03-01'>.tags?
 
 @description('Optional. Additional tags to apply only to the Function App resource (merged on top of `tags`). Typically used to surface the AZD service mapping via the `azd-service-name` tag.')
-param functionAppTags object?
+param functionAppTags resourceInput<'Microsoft.Web/sites@2025-03-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -112,8 +112,8 @@ param flexConsumptionInstanceMemoryMB int = 2048
 @maxValue(1000)
 param flexConsumptionMaximumInstanceCount int = 100
 
-@description('Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings; non-string values will not be projected correctly into the site `appSettings` array. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list.')
-param appSettingsKeyValuePairs object?
+@description('Optional. Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list.')
+param appSettingsKeyValuePairs appSettingMapType?
 
 @description('Optional. The list of origins that are permitted to make cross-origin requests to the Function App (e.g. `https://portal.azure.com`). When non-empty, these are set as the CORS allowed origins in the site configuration.')
 param corsAllowedOrigins string[] = []
@@ -428,7 +428,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.33.1' = {
   params: {
     name: storageAccountName
     location: location
-    tags: tags
+    tags: union(tags ?? {}, { 'resource-usage': 'azure-functions' })
     enableTelemetry: enableTelemetry
     lock: lock
     skuName: 'Standard_LRS'
@@ -517,6 +517,7 @@ module functionApp 'br/public:avm/res/web/site:0.24.0' = {
     kind: functionAppKind
     serverFarmResourceId: appServicePlan.outputs.resourceId
     httpsOnly: true
+    clientAffinityEnabled: false
     managedIdentities: {
       userAssignedResourceIds: [
         userAssignedIdentityResolvedResourceId
@@ -583,3 +584,14 @@ output applicationInsightsName string = applicationInsights.outputs.name
 output logAnalyticsWorkspaceResourceId string = createLogAnalyticsWorkspace
   ? logAnalyticsWorkspace!.outputs.resourceId
   : logAnalyticsWorkspaceResourceId
+
+// ================== //
+// User Defined Types //
+// ================== //
+
+@export()
+@description('A mapping of application setting names to string values.')
+type appSettingMapType = {
+  @description('Required. The string value of the application setting.')
+  *: string
+}
