@@ -57,6 +57,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       skuName: 'Basic'
+      tags: {
+        environment: 'max'
+      }
+      roleAssignments: [
+        {
+          principalId: deployer().objectId
+          roleDefinitionIdOrName: 'Contributor'
+        }
+      ]
+      lock: {
+        name: 'NoDelete'
+        kind: 'CanNotDelete'
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -69,6 +82,13 @@ module testDeployment '../../../main.bicep' = [
           eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
           storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
+      certificateProfiles: [
+        {
+          name: 'test'
+          identityValidationId: guid(deployment().name)
+          profileType: 'PrivateTrust'
         }
       ]
     }
