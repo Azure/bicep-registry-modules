@@ -86,7 +86,7 @@ param appServicePlanSkuName string = 'FC1'
 @minValue(1)
 param appServicePlanSkuCapacity int = 1
 
-@description('Optional. Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Left `false` by default because zone redundancy increases cost and is not available in every region.')
+@description('Optional. Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Also selects `Standard_ZRS` for runtime storage instead of `Standard_LRS`, as zone-enabled Function Apps require zone-redundant storage. Left `false` by default because zone redundancy increases compute and storage costs and is not available in every region.')
 param appServicePlanZoneRedundant bool = false
 
 @description('Optional. The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead.')
@@ -450,7 +450,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.33.1' = {
     tags: union(tags ?? {}, { 'resource-usage': 'azure-functions' })
     enableTelemetry: enableTelemetry
     lock: lock
-    skuName: 'Standard_LRS'
+    skuName: appServicePlanZoneRedundant ? 'Standard_ZRS' : 'Standard_LRS'
     kind: 'StorageV2'
     // Flex Consumption Function Apps deploy from a blob container in the runtime Storage Account
     // referenced via `functionAppConfig.deployment.storage`. Create that container up-front so the
