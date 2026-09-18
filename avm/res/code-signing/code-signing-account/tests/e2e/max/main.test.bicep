@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           principalId: deployer().objectId
-          roleDefinitionIdOrName: 'Contributor'
+          roleDefinitionIdOrName: '4339b7cf-9826-4e41-b4ed-c7f4505dac08' //Artifact Signing Identity Verifier
         }
       ]
       lock: {
