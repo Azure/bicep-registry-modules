@@ -86,7 +86,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       certificateProfiles: [
         {
-          name: 'test'
+          name: 'testprofile'
           identityValidationId: guid(deployment().name)
           profileType: 'PrivateTrust'
         }

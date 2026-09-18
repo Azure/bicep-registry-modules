@@ -129,7 +129,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
     certificateProfiles: [
       {
         identityValidationId: '<identityValidationId>'
-        name: 'test'
+        name: 'testprofile'
         profileType: 'PrivateTrust'
       }
     ]
@@ -188,7 +188,7 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": [
         {
           "identityValidationId": "<identityValidationId>",
-          "name": "test",
+          "name": "testprofile",
           "profileType": "PrivateTrust"
         }
       ]
@@ -249,7 +249,7 @@ param skuName = 'Basic'
 param certificateProfiles = [
   {
     identityValidationId: '<identityValidationId>'
-    name: 'test'
+    name: 'testprofile'
     profileType: 'PrivateTrust'
   }
 ]
