@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.code-signing.code-signing-account.yml"
       - "avm/res/code-signing/code-signing-account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/code-signing/code-signing-account"
