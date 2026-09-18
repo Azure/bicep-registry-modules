@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.container-registry.registry.yml"
       - "avm/res/container-registry/registry/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/container-registry/registry"

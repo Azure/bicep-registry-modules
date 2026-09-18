@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Event Grid Namespaces",
+  "moduleDescription": "This module deploys an Event Grid Namespace.",
+  "telemetryIdPrefix": "46d3xbcp.res.eventgrid-namespace",
+  "canonicalType": "Microsoft.EventGrid/namespaces",
+  "owners": ["fabmas"]
+}

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "11362996184152667836"
+      "version": "0.46.1.21595",
+      "templateHash": "10855568302773785436"
     },
     "name": "Communication Services",
     "description": "This module deploys a Communication Service"
@@ -351,6 +351,25 @@
         "description": "Optional. List of email Domain resource Ids."
       }
     },
+    "disableLocalAuth": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Disable local authentication for the Communication Service. When set to true, access key-based authentication is disabled. Defaults to null (not set), preserving existing behaviour."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Enabled",
+        "SecuredByPerimeter"
+      ],
+      "metadata": {
+        "description": "Optional. Allow, disallow, or let network security perimeter configuration control public network access to the Communication Service. Defaults to null (not set), preserving existing behaviour."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -408,7 +427,9 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "dataLocation": "[parameters('dataLocation')]",
-        "linkedDomains": "[parameters('linkedDomains')]"
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "linkedDomains": "[parameters('linkedDomains')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       }
     },
     "communicationService_lock": {

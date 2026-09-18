@@ -142,6 +142,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableLocalAuth: false
     linkedDomains: [
       '<emailDomainResourceId>'
     ]
@@ -156,6 +157,7 @@ module communicationService 'br/public:avm/res/communication/communication-servi
         '<managedIdentityResourceId>'
       ]
     }
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: '9237b909-e8fb-4bb8-8194-34aae537cee2'
@@ -220,6 +222,9 @@ module communicationService 'br/public:avm/res/communication/communication-servi
         }
       ]
     },
+    "disableLocalAuth": {
+      "value": false
+    },
     "linkedDomains": {
       "value": [
         "<emailDomainResourceId>"
@@ -241,6 +246,9 @@ module communicationService 'br/public:avm/res/communication/communication-servi
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
     },
     "roleAssignments": {
       "value": [
@@ -302,6 +310,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param disableLocalAuth = false
 param linkedDomains = [
   '<emailDomainResourceId>'
 ]
@@ -316,6 +325,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: '9237b909-e8fb-4bb8-8194-34aae537cee2'
@@ -371,7 +381,9 @@ module communicationService 'br/public:avm/res/communication/communication-servi
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableLocalAuth: true
     location: 'global'
+    publicNetworkAccess: 'Disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -411,8 +423,14 @@ module communicationService 'br/public:avm/res/communication/communication-servi
         }
       ]
     },
+    "disableLocalAuth": {
+      "value": true
+    },
     "location": {
       "value": "global"
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "tags": {
       "value": {
@@ -447,7 +465,9 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param disableLocalAuth = true
 param location = 'global'
+param publicNetworkAccess = 'Disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -472,11 +492,13 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Disable local authentication for the Communication Service. When set to true, access key-based authentication is disabled. Defaults to null (not set), preserving existing behaviour. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`linkedDomains`](#parameter-linkeddomains) | array | List of email Domain resource Ids. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Allow, disallow, or let network security perimeter configuration control public network access to the Communication Service. Defaults to null (not set), preserving existing behaviour. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 
@@ -640,6 +662,13 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `disableLocalAuth`
+
+Disable local authentication for the Communication Service. When set to true, access key-based authentication is disabled. Defaults to null (not set), preserving existing behaviour.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -734,6 +763,21 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `publicNetworkAccess`
+
+Allow, disallow, or let network security perimeter configuration control public network access to the Communication Service. Defaults to null (not set), preserving existing behaviour.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'SecuredByPerimeter'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 

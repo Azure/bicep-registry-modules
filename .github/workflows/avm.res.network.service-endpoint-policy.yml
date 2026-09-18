@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.service-endpoint-policy.yml"
       - "avm/res/network/service-endpoint-policy/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/service-endpoint-policy"

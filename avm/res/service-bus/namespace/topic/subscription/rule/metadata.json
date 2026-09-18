@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Service Bus Namespace Topic Subscription Rule",
+  "moduleDescription": "This module deploys a Service Bus Namespace Topic Subscription Rule.",
+  "telemetryIdPrefix": "46d3xbcp.res.servicebus-namespace-topicsubrule",
+  "canonicalType": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules"
+}

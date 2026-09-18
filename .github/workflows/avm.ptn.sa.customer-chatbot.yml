@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.customer-chatbot.yml"
       - "avm/ptn/sa/customer-chatbot/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/customer-chatbot"

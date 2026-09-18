@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Hybrid Container Service Provisioned Cluster Instance",
+  "moduleDescription": "Deploy a provisioned cluster instance.",
+  "telemetryIdPrefix": "46d3xbcp.res.hybcontsvc-provclustinst",
+  "canonicalType": "Microsoft.HybridContainerService/provisionedClusterInstances",
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
+}

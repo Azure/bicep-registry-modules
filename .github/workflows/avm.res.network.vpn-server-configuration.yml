@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.vpn-server-configuration.yml"
       - "avm/res/network/vpn-server-configuration/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/vpn-server-configuration"

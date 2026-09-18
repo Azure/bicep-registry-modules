@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.scheduled-query-rule.yml"
       - "avm/res/insights/scheduled-query-rule/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/scheduled-query-rule"

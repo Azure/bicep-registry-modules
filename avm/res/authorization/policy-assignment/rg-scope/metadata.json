@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Policy Assignments (Resource Group scope)",
+  "moduleDescription": "This module deploys a Policy Assignment at a Resource Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity.",
+  "telemetryIdPrefix": "46d3xbcp.res.authz-policyassignment_rgscope",
+  "canonicalType": "Microsoft.Authorization/policyAssignments"
+}

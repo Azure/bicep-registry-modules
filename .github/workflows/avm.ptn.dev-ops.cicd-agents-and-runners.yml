@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.dev-ops.cicd-agents-and-runners.yml"
       - "avm/ptn/dev-ops/cicd-agents-and-runners/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/dev-ops/cicd-agents-and-runners"

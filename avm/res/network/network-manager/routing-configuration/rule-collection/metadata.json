@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Manager Routing Configuration Rule Collections",
+  "moduleDescription": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-routingcfgrulecoll",
+  "canonicalType": "Microsoft.Network/networkManagers/routingConfigurations/ruleCollections"
+}

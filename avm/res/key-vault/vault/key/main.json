@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4777855062233224678"
+      "version": "0.47.16.16243",
+      "templateHash": "244443850836561521"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key."
@@ -322,7 +322,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.keyvault-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -342,12 +342,12 @@
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2026-02-01",
       "name": "[parameters('keyVaultName')]"
     },
     "key": {
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2026-02-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"

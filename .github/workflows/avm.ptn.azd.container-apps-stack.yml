@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.container-apps-stack.yml"
       - "avm/ptn/azd/container-apps-stack/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/container-apps-stack"

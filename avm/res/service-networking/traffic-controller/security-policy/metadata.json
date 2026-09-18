@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Application Gateway for Containers Security Policy",
+  "moduleDescription": "This module deploys an Application Gateway for Containers Security Policy",
+  "telemetryIdPrefix": "46d3xbcp.res.servicenetworking-traffctrlsecpolicy",
+  "canonicalType": "Microsoft.ServiceNetworking/trafficControllers/securityPolicies"
+}

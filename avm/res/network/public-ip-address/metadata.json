@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Public IP Addresses",
+  "moduleDescription": "This module deploys a Public IP Address.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-publicipaddress",
+  "alternativeNames": ["PIP"],
+  "canonicalType": "Microsoft.Network/publicIPAddresses",
+  "owners": ["ChrisSidebotham", "krbar"]
+}

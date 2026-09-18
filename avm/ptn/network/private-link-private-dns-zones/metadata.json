@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "avm/ptn/network/private-link-private-dns-zones",
+  "moduleDescription": "Private Link Private DNS Zones",
+  "telemetryIdPrefix": "46d3xbcp.ptn.network-privatelinkprivatednszones",
+  "canonicalType": "network/private-link-private-dns-zones",
+  "owners": ["jtracey93"]
+}

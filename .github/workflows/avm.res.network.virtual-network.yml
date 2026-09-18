@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.virtual-network.yml"
       - "avm/res/network/virtual-network/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/virtual-network"

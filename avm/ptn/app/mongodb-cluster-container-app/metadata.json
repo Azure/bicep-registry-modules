@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Mongodb Cluster Container App",
+  "moduleDescription": "This module deploys Mongodb Cluster Container App.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.app-mongodb-cluster-container-app",
+  "canonicalType": "app/mongodb-cluster-container-app",
+  "owners": []
+}

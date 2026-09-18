@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.container-instance.container-group.yml"
       - "avm/res/container-instance/container-group/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/container-instance/container-group"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.dns-forwarding-ruleset.yml"
       - "avm/res/network/dns-forwarding-ruleset/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/dns-forwarding-ruleset"

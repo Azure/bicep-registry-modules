@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Application Gateways",
+  "moduleDescription": "This module deploys a Network Application Gateway.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-appgw",
+  "alternativeNames": ["App GW"],
+  "canonicalType": "Microsoft.Network/applicationGateways",
+  "owners": ["toddbeauchemin"]
+}

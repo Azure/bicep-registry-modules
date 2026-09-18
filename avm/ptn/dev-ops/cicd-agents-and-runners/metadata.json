@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "CI CD Agents and Runners",
+  "moduleDescription": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.devops-cicdagentsandrunners",
+  "canonicalType": "dev-ops/cicd-agents-and-runners",
+  "owners": ["sebassem"]
+}

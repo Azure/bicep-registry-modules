@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.public-ip-address.yml"
       - "avm/res/network/public-ip-address/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/public-ip-address"

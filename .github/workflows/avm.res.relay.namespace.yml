@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.relay.namespace.yml"
       - "avm/res/relay/namespace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/relay/namespace"

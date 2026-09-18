@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.authorization.policy-assignment.yml"
       - "avm/ptn/authorization/policy-assignment/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/authorization/policy-assignment"

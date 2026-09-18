@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.diagnostic-setting.yml"
       - "avm/res/insights/diagnostic-setting/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/diagnostic-setting"

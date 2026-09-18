@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.alz.empty.yml"
       - "avm/ptn/alz/empty/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/alz/empty"

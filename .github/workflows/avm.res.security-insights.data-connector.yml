@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.security-insights.data-connector.yml"
       - "avm/res/security-insights/data-connector/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/security-insights/data-connector"

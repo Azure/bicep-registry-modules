@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azd AKS",
+  "moduleDescription": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.azd-aks",
+  "alternativeNames": ["Azure Developer CLI - Azure Kubernetes Services"],
+  "canonicalType": "azd/aks",
+  "owners": ["JeffreyCA"]
+}

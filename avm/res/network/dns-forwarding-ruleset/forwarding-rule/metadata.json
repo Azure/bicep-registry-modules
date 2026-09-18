@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Dns Forwarding Rulesets Forwarding Rules",
+  "moduleDescription": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-dnsforwardingruleset-fwdrule",
+  "canonicalType": "Microsoft.Network/dnsForwardingRulesets/forwardingRules"
+}

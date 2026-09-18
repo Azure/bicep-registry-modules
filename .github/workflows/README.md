@@ -1,6 +1,10 @@
 # Module Check and Publish Workflow
 
-The `.Module - Check and Publish` workflow provides a generic way to validate and publish one or more AVM modules. It is implemented by [`avm.module.yml`](./avm.module.yml).
+> [!WARNING]
+> This workflow is a work in progress to test whether workflow consolidation is possible.
+> It should not be used yet.
+
+The `.Module - Check and Publish [EXPERIMENTAL]` workflow provides a generic way to validate and publish one or more AVM modules. It is implemented by [`avm.module.yml`](./avm.module.yml).
 
 ## Automatic checks
 
@@ -16,7 +20,7 @@ The generic workflow runs alongside the existing module-specific workflows durin
 
 ## Manual runs
 
-Use **Actions** > **.Module - Check and Publish** > **Run workflow**.
+Use **Actions** > **.Module - Check and Publish [EXPERIMENTAL]** > **Run workflow**.
 
 `modulePaths` accepts one module path or a comma-separated list:
 

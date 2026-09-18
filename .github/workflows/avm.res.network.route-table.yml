@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.route-table.yml"
       - "avm/res/network/route-table/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/route-table"

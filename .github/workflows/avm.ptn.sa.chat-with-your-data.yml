@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.chat-with-your-data.yml"
       - "avm/ptn/sa/chat-with-your-data/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/chat-with-your-data"

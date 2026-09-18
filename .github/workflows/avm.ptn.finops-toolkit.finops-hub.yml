@@ -25,6 +25,7 @@ on:
       - ".github/workflows/avm.ptn.finops-toolkit.finops-hub.yml"
       - "avm/ptn/finops-toolkit/finops-hub/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/finops-toolkit/finops-hub"

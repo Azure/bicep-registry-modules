@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.edge.site.yml"
       - "avm/res/edge/site/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/edge/site"

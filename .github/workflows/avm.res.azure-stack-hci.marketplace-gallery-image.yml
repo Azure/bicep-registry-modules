@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.azure-stack-hci.marketplace-gallery-image.yml"
       - "avm/res/azure-stack-hci/marketplace-gallery-image/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/azure-stack-hci/marketplace-gallery-image"

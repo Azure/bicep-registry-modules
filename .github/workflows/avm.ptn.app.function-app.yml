@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.app.function-app.yml"
       - "avm/ptn/app/function-app/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/app/function-app"

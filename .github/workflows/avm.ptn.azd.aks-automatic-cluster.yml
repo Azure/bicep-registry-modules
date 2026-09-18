@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.aks-automatic-cluster.yml"
       - "avm/ptn/azd/aks-automatic-cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/aks-automatic-cluster"

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Stack HCI Cluster Deployment Settings",
+  "moduleDescription": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource.",
+  "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-cluster-deplsetting",
+  "canonicalType": "Microsoft.AzureStackHCI/clusters/deploymentSettings"
+}

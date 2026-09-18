@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.portal.dashboard.yml"
       - "avm/res/portal/dashboard/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/portal/dashboard"
