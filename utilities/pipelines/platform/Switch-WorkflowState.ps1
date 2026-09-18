@@ -58,7 +58,7 @@ function Switch-WorkflowState {
         [string] $RepositoryName = 'bicep-registry-modules',
 
         [Parameter(Mandatory = $false)]
-        [string] $IncludePattern = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish$)',
+        [string] $IncludePattern = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish(?: \[EXPERIMENTAL\])?$)',
 
         [Parameter(Mandatory = $false)]
         [string] $ExlcudePattern = '^$',
