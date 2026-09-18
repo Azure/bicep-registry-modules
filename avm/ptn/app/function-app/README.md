@@ -1,6 +1,9 @@
 # Function App Pattern `[App/FunctionApp]`
 
-Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.
+Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access and Application Insights ingestion. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.
+
+Application Insights requires Microsoft Entra authentication. The Function App's managed identity receives the Monitoring Metrics Publisher role on the Application Insights resource, and the Functions host is configured to use that identity. Local authentication is disabled. Application code that sends telemetry directly through an SDK, such as a .NET isolated worker, must also configure Microsoft Entra credentials; the host setting alone does not configure every SDK. The Functions host's managed-identity authentication setting does not support local development. Use a separate development telemetry resource or an appropriately authenticated SDK for local telemetry. See [Configure monitoring for Azure Functions](https://learn.microsoft.com/azure/azure-functions/configure-monitoring#require-microsoft-entra-authentication).
+
 
 You can reference the module as follows:
 ```bicep
@@ -407,7 +410,7 @@ param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 | [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. Function App names only allow alphanumeric and hyphens, so only hyphens need to be stripped to satisfy Storage Account naming constraints. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. The runtime Storage Account is always tagged with `resource-usage: azure-functions`. |
-| [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used. |
+| [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access and Application Insights ingestion. When not provided, a new identity is created and used. |
 
 ### Parameter: `functionAppName`
 
@@ -852,7 +855,7 @@ Resource tags to apply to all created resources. The runtime Storage Account is 
 
 ### Parameter: `userAssignedIdentityResourceId`
 
-The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used.
+The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access and Application Insights ingestion. When not provided, a new identity is created and used.
 
 - Required: No
 - Type: string
@@ -876,7 +879,7 @@ The resource ID of an existing User-Assigned Managed Identity to assign to the F
 | `storageAccountResourceId` | string | The resource ID of the Storage Account that backs the Function App runtime. |
 | `userAssignedIdentityClientId` | string | The client ID of the User-Assigned Managed Identity used by the Function App. |
 | `userAssignedIdentityPrincipalId` | string | The principal (object) ID of the User-Assigned Managed Identity used by the Function App. |
-| `userAssignedIdentityResourceId` | string | The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access (created by this module or supplied via `userAssignedIdentityResourceId`). |
+| `userAssignedIdentityResourceId` | string | The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access and Application Insights ingestion (created by this module or supplied via `userAssignedIdentityResourceId`). |
 
 ## Cross-referenced modules
 

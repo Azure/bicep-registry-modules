@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "2020356782729715850"
+      "templateHash": "10539714557299448403"
     },
     "name": "Function App Pattern",
-    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required."
+    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access and Application Insights ingestion. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.\n\nApplication Insights requires Microsoft Entra authentication. The Function App's managed identity receives the Monitoring Metrics Publisher role on the Application Insights resource, and the Functions host is configured to use that identity. Local authentication is disabled. Application code that sends telemetry directly through an SDK, such as a .NET isolated worker, must also configure Microsoft Entra credentials; the host setting alone does not configure every SDK. The Functions host's managed-identity authentication setting does not support local development. Use a separate development telemetry resource or an appropriately authenticated SDK for local telemetry. See [Configure monitoring for Azure Functions](https://learn.microsoft.com/azure/azure-functions/configure-monitoring#require-microsoft-entra-authentication).\n"
   },
   "definitions": {
     "appSettingMapType": {
@@ -401,7 +401,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access. When not provided, a new identity is created and used."
+        "description": "Optional. The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access and Application Insights ingestion. When not provided, a new identity is created and used."
       }
     },
     "runtimeVersion": {
@@ -490,6 +490,8 @@
       "AzureWebJobsStorage__clientId",
       "AzureWebJobsStorage__credential",
       "APPLICATIONINSIGHTS_CONNECTION_STRING",
+      "APPLICATIONINSIGHTS_AUTHENTICATION_STRING",
+      "APPINSIGHTS_INSTRUMENTATIONKEY",
       "FUNCTIONS_EXTENSION_VERSION",
       "FUNCTIONS_WORKER_RUNTIME",
       "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
@@ -4408,7 +4410,19 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "workspaceResourceId": "[if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', parameters('logAnalyticsWorkspaceResourceId')))]"
+          "workspaceResourceId": "[if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', parameters('logAnalyticsWorkspaceResourceId')))]",
+          "disableLocalAuth": {
+            "value": true
+          },
+          "roleAssignments": {
+            "value": [
+              {
+                "roleDefinitionIdOrName": "Monitoring Metrics Publisher",
+                "principalId": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.principalId.value, reference('existingUserAssignedIdentity').principalId)]",
+                "principalType": "ServicePrincipal"
+              }
+            ]
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5162,7 +5176,9 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWorkspace"
+        "existingUserAssignedIdentity",
+        "logAnalyticsWorkspace",
+        "userAssignedIdentity"
       ]
     },
     "storageAccount": {
@@ -14344,7 +14360,7 @@
             "value": "[parameters('autoGeneratedDomainNameLabelScope')]"
           },
           "siteConfig": {
-            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', 'Disabled', 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value)), if(variables('requiresContentShare'), createArray(createObject('name', 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', 'value', listOutputsWithSecureValues('storageAccount', '2025-04-01').primaryConnectionString), createObject('name', 'WEBSITE_CONTENTSHARE', 'value', toLower(parameters('functionAppName')))), createArray()))), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
+            "value": "[union(createObject('minTlsVersion', '1.2', 'ftpsState', 'Disabled', 'http20Enabled', true(), 'appSettings', concat(variables('staticAppSettingsArray'), createArray(createObject('name', 'AzureWebJobsStorage__accountName', 'value', reference('storageAccount').outputs.name.value), createObject('name', 'AzureWebJobsStorage__clientId', 'value', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)), createObject('name', 'APPLICATIONINSIGHTS_CONNECTION_STRING', 'value', reference('applicationInsights').outputs.connectionString.value), createObject('name', 'APPLICATIONINSIGHTS_AUTHENTICATION_STRING', 'value', format('ClientId={0};Authorization=AAD', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.clientId.value, reference('existingUserAssignedIdentity').clientId)))), if(variables('requiresContentShare'), createArray(createObject('name', 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', 'value', listOutputsWithSecureValues('storageAccount', '2025-04-01').primaryConnectionString), createObject('name', 'WEBSITE_CONTENTSHARE', 'value', toLower(parameters('functionAppName')))), createArray()))), variables('runtimeVersionSiteConfig'), if(not(empty(parameters('corsAllowedOrigins'))), createObject('cors', createObject('allowedOrigins', parameters('corsAllowedOrigins'), 'supportCredentials', parameters('corsSupportCredentials'))), createObject()))]"
           },
           "functionAppConfig": "[if(variables('isFlexConsumption'), createObject('value', createObject('deployment', createObject('storage', createObject('type', 'blobContainer', 'value', format('{0}{1}', reference('storageAccount').outputs.primaryBlobEndpoint.value, parameters('flexConsumptionDeploymentStorageContainerName')), 'authentication', createObject('type', 'UserAssignedIdentity', 'userAssignedIdentityResourceId', if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.resourceId.value, parameters('userAssignedIdentityResourceId'))))), 'runtime', createObject('name', parameters('functionWorkerRuntime'), 'version', variables('effectiveLinuxRuntimeVersion')), 'scaleAndConcurrency', createObject('instanceMemoryMB', parameters('flexConsumptionInstanceMemoryMB'), 'maximumInstanceCount', parameters('flexConsumptionMaximumInstanceCount')))), createObject('value', null()))]"
         },
@@ -29185,7 +29201,7 @@
     "userAssignedIdentityResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access (created by this module or supplied via `userAssignedIdentityResourceId`)."
+        "description": "The resource ID of the User-Assigned Managed Identity used by the Function App for runtime storage access and Application Insights ingestion (created by this module or supplied via `userAssignedIdentityResourceId`)."
       },
       "value": "[if(variables('createUserAssignedIdentity'), reference('userAssignedIdentity').outputs.resourceId.value, parameters('userAssignedIdentityResourceId'))]"
     },
