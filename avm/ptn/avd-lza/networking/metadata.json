@@ -3,5 +3,6 @@
   "moduleDisplayName": "Networking",
   "moduleDescription": "This module deploys Networking.",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-networking",
-  "canonicalType": "avd-lza/networking"
+  "canonicalType": "avd-lza/networking",
+  "owners": []
 }

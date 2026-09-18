@@ -3,5 +3,6 @@
   "moduleDisplayName": "Private",
   "moduleDescription": "This module deploys Private.",
   "telemetryIdPrefix": "46d3xbcp.ptn.deployment-script-private",
-  "canonicalType": "deployment-script/private"
+  "canonicalType": "deployment-script/private",
+  "owners": ["sebassem"]
 }

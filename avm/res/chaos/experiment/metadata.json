@@ -3,5 +3,6 @@
   "moduleDisplayName": "Experiment",
   "moduleDescription": "This module deploys Experiment.",
   "telemetryIdPrefix": "46d3xbcp.res.chaos-experiment",
-  "canonicalType": "Microsoft.Chaos/experiments"
+  "canonicalType": "Microsoft.Chaos/experiments",
+  "owners": []
 }

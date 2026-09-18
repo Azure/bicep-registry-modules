@@ -3,5 +3,6 @@
   "moduleDisplayName": "Landing Zone",
   "moduleDescription": "This module deploys Landing Zone.",
   "telemetryIdPrefix": "46d3xbcp.ptn.ai-ml-landing-zone",
-  "canonicalType": "ai-ml/landing-zone"
+  "canonicalType": "ai-ml/landing-zone",
+  "owners": ["placerda", "mbilalamjad"]
 }

@@ -3,5 +3,6 @@
   "moduleDisplayName": "Session Hosts",
   "moduleDescription": "This module deploys Session Hosts.",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-session-hosts",
-  "canonicalType": "avd-lza/session-hosts"
+  "canonicalType": "avd-lza/session-hosts",
+  "owners": []
 }

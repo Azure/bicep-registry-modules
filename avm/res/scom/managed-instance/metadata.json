@@ -3,5 +3,6 @@
   "moduleDisplayName": "Managed Instance",
   "moduleDescription": "This module deploys Managed Instance.",
   "telemetryIdPrefix": "46d3xbcp.res.scom-managed-instance",
-  "canonicalType": "Microsoft.Scom/managedInstances"
+  "canonicalType": "Microsoft.Scom/managedInstances",
+  "owners": []
 }

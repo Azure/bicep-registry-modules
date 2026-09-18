@@ -3,5 +3,6 @@
   "moduleDisplayName": "Virtual Enclave",
   "moduleDescription": "This module deploys Virtual Enclave.",
   "telemetryIdPrefix": "46d3xbcp.res.mission-virtual-enclave",
-  "canonicalType": "Microsoft.Mission/virtualEnclaves"
+  "canonicalType": "Microsoft.Mission/virtualEnclaves",
+  "owners": ["SvenAelterman"]
 }

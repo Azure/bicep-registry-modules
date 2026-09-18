@@ -3,5 +3,6 @@
   "moduleDisplayName": "Resource Guard",
   "moduleDescription": "This module deploys Resource Guard.",
   "telemetryIdPrefix": "46d3xbcp.res.data-protection-resource-guard",
-  "canonicalType": "Microsoft.DataProtection/resourceGuards"
+  "canonicalType": "Microsoft.DataProtection/resourceGuards",
+  "owners": ["andyleejordan"]
 }

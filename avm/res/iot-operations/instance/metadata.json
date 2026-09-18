@@ -3,5 +3,6 @@
   "moduleDisplayName": "Instance",
   "moduleDescription": "This module deploys Instance.",
   "telemetryIdPrefix": "46d3xbcp.res.iot-operations-instance",
-  "canonicalType": "Microsoft.IoTOperations/instances"
+  "canonicalType": "Microsoft.IoTOperations/instances",
+  "owners": ["agreaves-ms"]
 }

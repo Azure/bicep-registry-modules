@@ -3,5 +3,6 @@
   "moduleDisplayName": "Amba",
   "moduleDescription": "This module deploys Amba.",
   "telemetryIdPrefix": "46d3xbcp.ptn.monitoring-amba",
-  "canonicalType": "monitoring/amba"
+  "canonicalType": "monitoring/amba",
+  "owners": ["arjenhuitema"]
 }

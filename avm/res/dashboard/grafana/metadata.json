@@ -3,5 +3,6 @@
   "moduleDisplayName": "Grafana",
   "moduleDescription": "This module deploys Grafana.",
   "telemetryIdPrefix": "46d3xbcp.res.dashboard-grafana",
-  "canonicalType": "Microsoft.Dashboard/grafana"
+  "canonicalType": "Microsoft.Dashboard/grafana",
+  "owners": ["vlahane"]
 }

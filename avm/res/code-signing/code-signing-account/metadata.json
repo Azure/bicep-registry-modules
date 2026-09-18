@@ -3,5 +3,6 @@
   "moduleDisplayName": "Code Signing Account",
   "moduleDescription": "This module deploys Code Signing Account.",
   "telemetryIdPrefix": "46d3xbcp.res.code-signing-code-signing-account",
-  "canonicalType": "Microsoft.CodeSigning/codeSigningAccounts"
+  "canonicalType": "Microsoft.CodeSigning/codeSigningAccounts",
+  "owners": []
 }

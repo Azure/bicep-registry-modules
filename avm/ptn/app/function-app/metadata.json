@@ -3,5 +3,6 @@
   "moduleDisplayName": "Function App",
   "moduleDescription": "This module deploys Function App.",
   "telemetryIdPrefix": "46d3xbcp.ptn.app-function-app",
-  "canonicalType": "app/function-app"
+  "canonicalType": "app/function-app",
+  "owners": ["bwateratmsft"]
 }

@@ -3,5 +3,6 @@
   "moduleDisplayName": "Streaming Job",
   "moduleDescription": "This module deploys Streaming Job.",
   "telemetryIdPrefix": "46d3xbcp.res.stream-analytics-streaming-job",
-  "canonicalType": "Microsoft.StreamAnalytics/streamingjobs"
+  "canonicalType": "Microsoft.StreamAnalytics/streamingjobs",
+  "owners": []
 }

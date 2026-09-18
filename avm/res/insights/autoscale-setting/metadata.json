@@ -3,5 +3,6 @@
   "moduleDisplayName": "Autoscale Setting",
   "moduleDescription": "This module deploys Autoscale Setting.",
   "telemetryIdPrefix": "46d3xbcp.res.insights-autoscale-setting",
-  "canonicalType": "Microsoft.Insights/autoscalesettings"
+  "canonicalType": "Microsoft.Insights/autoscalesettings",
+  "owners": ["FallenHoot"]
 }

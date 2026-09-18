@@ -3,5 +3,6 @@
   "moduleDisplayName": "Bpg Peer",
   "moduleDescription": "This module deploys Bpg Peer.",
   "telemetryIdPrefix": "46d3xbcp.res.kubernetes-runtime-bpg-peer",
-  "canonicalType": "Microsoft.KubernetesRuntime/bgpPeers"
+  "canonicalType": "Microsoft.KubernetesRuntime/bgpPeers",
+  "owners": ["chirag1603"]
 }

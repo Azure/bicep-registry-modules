@@ -3,5 +3,6 @@
   "moduleDisplayName": "Enclave Connection",
   "moduleDescription": "This module deploys Enclave Connection.",
   "telemetryIdPrefix": "46d3xbcp.res.mission-enclave-connection",
-  "canonicalType": "Microsoft.Mission/enclaveConnections"
+  "canonicalType": "Microsoft.Mission/enclaveConnections",
+  "owners": ["SvenAelterman"]
 }

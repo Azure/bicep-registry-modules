@@ -3,5 +3,6 @@
   "moduleDisplayName": "E2e Baseline",
   "moduleDescription": "This module deploys E2e Baseline.",
   "telemetryIdPrefix": "46d3xbcp.ptn.openai-e2e-baseline",
-  "canonicalType": "openai/e2e-baseline"
+  "canonicalType": "openai/e2e-baseline",
+  "owners": []
 }

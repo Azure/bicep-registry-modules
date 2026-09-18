@@ -3,5 +3,6 @@
   "moduleDisplayName": "Data Services",
   "moduleDescription": "This module deploys Data Services.",
   "telemetryIdPrefix": "46d3xbcp.ptn.lza-shared-data-services",
-  "canonicalType": "lza-shared/data-services"
+  "canonicalType": "lza-shared/data-services",
+  "owners": ["kpantos"]
 }

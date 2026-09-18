@@ -3,5 +3,6 @@
   "moduleDisplayName": "Vwan Connected Vnets",
   "moduleDescription": "This module deploys Vwan Connected Vnets.",
   "telemetryIdPrefix": "46d3xbcp.ptn.network-vwan-connected-vnets",
-  "canonicalType": "network/vwan-connected-vnets"
+  "canonicalType": "network/vwan-connected-vnets",
+  "owners": ["juancj", "ericscheffler"]
 }

@@ -3,5 +3,6 @@
   "moduleDisplayName": "Sentinel",
   "moduleDescription": "This module deploys Sentinel.",
   "telemetryIdPrefix": "46d3xbcp.ptn.security-sentinel",
-  "canonicalType": "security/sentinel"
+  "canonicalType": "security/sentinel",
+  "owners": []
 }

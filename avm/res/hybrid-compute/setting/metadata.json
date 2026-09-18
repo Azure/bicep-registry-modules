@@ -3,5 +3,6 @@
   "moduleDisplayName": "Setting",
   "moduleDescription": "This module deploys Setting.",
   "telemetryIdPrefix": "46d3xbcp.res.hybrid-compute-setting",
-  "canonicalType": "Microsoft.HybridCompute/settings"
+  "canonicalType": "Microsoft.HybridCompute/settings",
+  "owners": ["chirag1603"]
 }

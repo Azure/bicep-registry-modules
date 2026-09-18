@@ -3,5 +3,6 @@
   "moduleDisplayName": "Service",
   "moduleDescription": "This module deploys Service.",
   "telemetryIdPrefix": "46d3xbcp.res.kubernetes-runtime-service",
-  "canonicalType": "Microsoft.KubernetesRuntime/services"
+  "canonicalType": "Microsoft.KubernetesRuntime/services",
+  "owners": ["chirag1603"]
 }

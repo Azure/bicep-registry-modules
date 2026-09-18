@@ -3,5 +3,6 @@
   "moduleDisplayName": "Scheduler",
   "moduleDescription": "This module deploys Scheduler.",
   "telemetryIdPrefix": "46d3xbcp.res.durable-task-scheduler",
-  "canonicalType": "Microsoft.DurableTask/schedulers"
+  "canonicalType": "Microsoft.DurableTask/schedulers",
+  "owners": ["greenie-msft"]
 }
