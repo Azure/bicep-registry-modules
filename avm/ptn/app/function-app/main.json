@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "317659593655561361"
+      "templateHash": "6419209464040838240"
     },
     "name": "Function App Pattern",
-    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.",
-    "owner": "Azure/avm-ptn-app-functionapp-module-owners-bicep"
+    "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required."
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -473,10 +472,6 @@
     "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
     "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
     "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
-    "userAssignedIdentityResourceIdParts": "[split(parameters('userAssignedIdentityResourceId'), '/')]",
-    "existingUserAssignedIdentitySubscriptionId": "[if(variables('createUserAssignedIdentity'), subscription().subscriptionId, variables('userAssignedIdentityResourceIdParts')[2])]",
-    "existingUserAssignedIdentityResourceGroupName": "[if(variables('createUserAssignedIdentity'), resourceGroup().name, variables('userAssignedIdentityResourceIdParts')[4])]",
-    "existingUserAssignedIdentityName": "[if(variables('createUserAssignedIdentity'), '', last(variables('userAssignedIdentityResourceIdParts')))]",
     "reservedAppSettingKeys": [
       "AzureWebJobsStorage",
       "AzureWebJobsStorage__accountName",
@@ -520,13 +515,13 @@
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "existingUserAssignedIdentity": {
-      "condition": "[not(variables('createUserAssignedIdentity'))]",
+      "condition": "[not(empty(parameters('userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "subscriptionId": "[variables('existingUserAssignedIdentitySubscriptionId')]",
-      "resourceGroup": "[variables('existingUserAssignedIdentityResourceGroupName')]",
-      "name": "[variables('existingUserAssignedIdentityName')]"
+      "subscriptionId": "[split(parameters('userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('userAssignedIdentityResourceId'), '/'))]"
     },
     "userAssignedIdentity": {
       "condition": "[variables('createUserAssignedIdentity')]",

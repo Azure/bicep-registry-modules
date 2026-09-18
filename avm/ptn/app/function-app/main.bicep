@@ -1,6 +1,5 @@
 metadata name = 'Function App Pattern'
 metadata description = '''Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required.'''
-metadata owner = 'Azure/avm-ptn-app-functionapp-module-owners-bicep'
 
 import { lockType, diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 
@@ -228,17 +227,6 @@ var derivedLogAnalyticsWorkspaceName = empty(logAnalyticsWorkspaceName)
 
 var createUserAssignedIdentity = empty(userAssignedIdentityResourceId)
 
-// BYO UAMI resource ID parsing — gated by `if (!createUserAssignedIdentity)` on the `existing` reference,
-// so these split lookups are only evaluated when `userAssignedIdentityResourceId` is non-empty.
-var userAssignedIdentityResourceIdParts = split(userAssignedIdentityResourceId, '/')
-var existingUserAssignedIdentitySubscriptionId = createUserAssignedIdentity
-  ? subscription().subscriptionId
-  : userAssignedIdentityResourceIdParts[2]
-var existingUserAssignedIdentityResourceGroupName = createUserAssignedIdentity
-  ? resourceGroup().name
-  : userAssignedIdentityResourceIdParts[4]
-var existingUserAssignedIdentityName = createUserAssignedIdentity ? '' : last(userAssignedIdentityResourceIdParts)
-
 // App settings reserved by this module. User-supplied values for these keys are dropped
 // (rather than allowed to override) because they would put the Function App into a broken
 // or unsupported state. Surfaced via a `#warning` from `appSettingsKeyValuePairs` validation
@@ -409,9 +397,12 @@ resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces
   name: logAnalyticsWorkspaceName
 }
 
-resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!createUserAssignedIdentity) {
-  name: existingUserAssignedIdentityName
-  scope: resourceGroup(existingUserAssignedIdentitySubscriptionId, existingUserAssignedIdentityResourceGroupName)
+resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(userAssignedIdentityResourceId)) {
+  name: last(split(userAssignedIdentityResourceId, '/'))
+  scope: resourceGroup(
+    split(userAssignedIdentityResourceId, '/')[2],
+    split(userAssignedIdentityResourceId, '/')[4]
+  )
 }
 
 // ================ //

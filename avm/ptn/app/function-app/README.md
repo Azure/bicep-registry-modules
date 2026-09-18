@@ -98,10 +98,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
-    // Required parameters
     functionAppName: 'afamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -118,13 +115,8 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "functionAppName": {
       "value": "afamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -140,10 +132,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/app/function-app:<version>'
 
-// Required parameters
 param functionAppName = 'afamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>

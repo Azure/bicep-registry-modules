@@ -41,7 +41,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       functionAppName: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
     }
   }
 ]
