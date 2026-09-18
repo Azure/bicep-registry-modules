@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Approval",
   "moduleDescription": "This module deploys Approval.",
-  "telemetryIdPrefix": "46d3xbcp.res.mission-approval",
+  "telemetryIdPrefix": "46d3xbcp.res.c5f598f",
   "canonicalType": "Microsoft.Mission/approvals"
 }

@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Dev Box",
   "moduleDescription": "This module deploys Dev Box.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.dev-center-dev-box",
+  "telemetryIdPrefix": "46d3xbcp.ptn.72d26f4",
   "canonicalType": "dev-center/dev-box"
 }

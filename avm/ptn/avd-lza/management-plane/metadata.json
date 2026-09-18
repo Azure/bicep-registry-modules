@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Management Plane",
   "moduleDescription": "This module deploys Management Plane.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-management-plane",
+  "telemetryIdPrefix": "46d3xbcp.ptn.fb93e38",
   "canonicalType": "avd-lza/management-plane"
 }

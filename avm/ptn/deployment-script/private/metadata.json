@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Private",
   "moduleDescription": "This module deploys Private.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.deployment-script-private",
+  "telemetryIdPrefix": "46d3xbcp.ptn.18ff21b",
   "canonicalType": "deployment-script/private"
 }

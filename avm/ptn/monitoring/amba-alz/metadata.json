@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Amba Alz",
   "moduleDescription": "This module deploys Amba Alz.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.monitoring-amba-alz",
+  "telemetryIdPrefix": "46d3xbcp.ptn.3d24035",
   "canonicalType": "monitoring/amba-alz"
 }

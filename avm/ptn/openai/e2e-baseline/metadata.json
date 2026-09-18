@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "E2e Baseline",
   "moduleDescription": "This module deploys E2e Baseline.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.openai-e2e-baseline",
+  "telemetryIdPrefix": "46d3xbcp.ptn.68b8f72",
   "canonicalType": "openai/e2e-baseline"
 }

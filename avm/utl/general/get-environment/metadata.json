@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Get Environment",
   "moduleDescription": "This module deploys Get Environment.",
-  "telemetryIdPrefix": "46d3xbcp.utl.general-get-environment",
+  "telemetryIdPrefix": "46d3xbcp.utl.2209ce0",
   "canonicalType": "general/get-environment"
 }

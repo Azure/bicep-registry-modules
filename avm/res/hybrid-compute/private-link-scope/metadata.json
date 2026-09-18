@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Private Link Scope",
   "moduleDescription": "This module deploys Private Link Scope.",
-  "telemetryIdPrefix": "46d3xbcp.res.hybrid-compute-private-link-scope",
+  "telemetryIdPrefix": "46d3xbcp.res.630ab4b",
   "canonicalType": "Microsoft.HybridCompute/privateLinkScopes"
 }

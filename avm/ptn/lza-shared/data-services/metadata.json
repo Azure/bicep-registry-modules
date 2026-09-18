@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Data Services",
   "moduleDescription": "This module deploys Data Services.",
-  "telemetryIdPrefix": "46d3xbcp.ptn.lza-shared-data-services",
+  "telemetryIdPrefix": "46d3xbcp.ptn.53df0e5",
   "canonicalType": "lza-shared/data-services"
 }

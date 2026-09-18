@@ -2,6 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Bpg Peer",
   "moduleDescription": "This module deploys Bpg Peer.",
-  "telemetryIdPrefix": "46d3xbcp.res.kubernetes-runtime-bpg-peer",
+  "telemetryIdPrefix": "46d3xbcp.res.225cab7",
   "canonicalType": "Microsoft.KubernetesRuntime/bgpPeers"
 }
