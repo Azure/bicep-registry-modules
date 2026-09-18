@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Virtual Machines",
+  "moduleDescription": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-virtualmachine",
+  "alternativeNames": ["VM"],
+  "canonicalType": "Microsoft.Compute/virtualMachines",
+  "owners": ["josunefon", "rahalan"]
+}

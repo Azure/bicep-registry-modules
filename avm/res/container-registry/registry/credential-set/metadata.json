@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Container Registries Credential Sets",
+  "moduleDescription": "This module deploys an ACR Credential Set.",
+  "telemetryIdPrefix": "46d3xbcp.res.containerregistry-registry-credset",
+  "canonicalType": "Microsoft.ContainerRegistry/registries/credentialSets"
+}

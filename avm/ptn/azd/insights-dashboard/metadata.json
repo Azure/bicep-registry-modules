@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Application Insights Components",
+  "moduleDescription": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.azd-insightsdashboard",
+  "alternativeNames": ["Azure Developer CLI - Inishgts Dashboard"],
+  "canonicalType": "azd/insights-dashboard",
+  "owners": ["JeffreyCA"]
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.load-balancer.yml"
       - "avm/res/network/load-balancer/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/load-balancer"

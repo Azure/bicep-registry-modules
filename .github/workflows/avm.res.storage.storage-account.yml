@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.storage.storage-account.yml"
       - "avm/res/storage/storage-account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/storage/storage-account"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.dev-test-lab.lab.yml"
       - "avm/res/dev-test-lab/lab/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/dev-test-lab/lab"

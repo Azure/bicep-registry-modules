@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Machine Learning Services Workspaces Computes",
+  "moduleDescription": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
+  "telemetryIdPrefix": "46d3xbcp.res.mlservices-workspace-compute",
+  "canonicalType": "Microsoft.MachineLearningServices/workspaces/computes"
+}

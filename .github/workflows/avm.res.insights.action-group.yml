@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.insights.action-group.yml"
       - "avm/res/insights/action-group/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/insights/action-group"

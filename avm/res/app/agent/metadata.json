@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Agent",
+  "moduleDescription": "This module deploys Agent.",
+  "telemetryIdPrefix": "46d3xbcp.res.app-agent",
+  "canonicalType": "Microsoft.App/agents",
+  "owners": ["FallenHoot"]
+}

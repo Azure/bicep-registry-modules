@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.data.private-analytical-workspace.yml"
       - "avm/ptn/data/private-analytical-workspace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/data/private-analytical-workspace"

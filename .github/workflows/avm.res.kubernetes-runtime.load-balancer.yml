@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.kubernetes-runtime.load-balancer.yml"
       - "avm/res/kubernetes-runtime/load-balancer/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/kubernetes-runtime/load-balancer"

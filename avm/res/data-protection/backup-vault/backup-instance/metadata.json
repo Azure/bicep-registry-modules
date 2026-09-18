@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Data Protection Backup Vault Backup Instances",
+  "moduleDescription": "This module deploys a Data Protection Backup Vault Backup Instance.",
+  "telemetryIdPrefix": "46d3xbcp.res.dataprot-backupvault-backupinst",
+  "canonicalType": "Microsoft.Authorization/roleAssignments"
+}

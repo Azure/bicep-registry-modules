@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.application-gateway.yml"
       - "avm/res/network/application-gateway/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/application-gateway"

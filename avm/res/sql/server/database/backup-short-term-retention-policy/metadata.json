@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure SQL Server Database Short Term Backup Retention Policies",
+  "moduleDescription": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
+  "telemetryIdPrefix": "46d3xbcp.res.sql-server-dbbckpshorttermretpolicy",
+  "canonicalType": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies"
+}

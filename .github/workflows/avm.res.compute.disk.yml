@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.compute.disk.yml"
       - "avm/res/compute/disk/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/compute/disk"

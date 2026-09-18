@@ -21,6 +21,7 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
             Set-Content -Path (Join-Path $Path 'main.bicep') -Value "metadata name = 'test'"
             Set-Content -Path (Join-Path $Path 'main.json') -Value '{}'
             Set-Content -Path (Join-Path $Path 'version.json') -Value (@{ version = $Version } | ConvertTo-Json)
+            Set-Content -Path (Join-Path $Path 'metadata.json') -Value '{"telemetryIdPrefix":"test"}'
         }
 
         function Initialize-ReleaseTagTestRepository {
@@ -159,6 +160,104 @@ Describe 'Set-ModuleWorkflowReleaseTag' {
         $result.Keys | Should -Contain 'avm/res/test/module/ptr'
         $result.Keys | Should -Contain 'avm/res/test/module/soa'
         $result.Count | Should -Be 3
+    }
+
+    It 'Does not create root or nested tags for metadata-only <Change> changes' -ForEach @(
+        @{ Change = 'added' }
+        @{ Change = 'modified' }
+        @{ Change = 'deleted' }
+    ) {
+        $childPath = Join-Path $script:modulePath 'child'
+        $nestedPath = Join-Path $childPath 'nested'
+        Initialize-TestModule -Path $childPath
+        Initialize-TestModule -Path $nestedPath
+        $metadataPaths = @($script:modulePath, $childPath, $nestedPath) | ForEach-Object { Join-Path $_ 'metadata.json' }
+        if ($Change -eq 'added') {
+            $metadataPaths | Remove-Item
+        }
+        git add .
+        git commit -m 'Prepare metadata fixtures' | Out-Null
+        $baseCommit = git rev-parse HEAD
+
+        if ($Change -eq 'deleted') {
+            $metadataPaths | Remove-Item
+        } else {
+            $metadataPaths | ForEach-Object { Set-Content -Path $_ -Value '{"telemetryIdPrefix":"updated"}' }
+        }
+        git add .
+        git commit -m 'Change metadata only' | Out-Null
+
+        $result = Set-ModuleWorkflowReleaseTag `
+            -TemplateFilePath (Join-Path $script:modulePath 'main.bicep') `
+            -RepoRoot $script:repoPath `
+            -BaseCommit $baseCommit `
+            -TargetCommit HEAD
+
+        $result.Count | Should -Be 0
+        git ls-remote --tags origin | Should -BeNullOrEmpty
+    }
+
+    It 'Selects only source or version changes for <Scenario>' -ForEach @(
+        @{ Scenario = 'root source'; ChangedPaths = @('main.json'); Templates = @('main.json') }
+        @{ Scenario = 'root version'; ChangedPaths = @('version.json'); Templates = @('main.json') }
+        @{ Scenario = 'child source'; ChangedPaths = @('child/main.json'); Templates = @('child/main.json') }
+        @{ Scenario = 'nested version'; ChangedPaths = @('child/nested/version.json'); Templates = @('child/nested/main.json') }
+        @{
+            Scenario = 'root source with metadata-only children'
+            ChangedPaths = @('main.json', 'child/metadata.json', 'child/nested/metadata.json')
+            Templates = @('main.json')
+        }
+        @{
+            Scenario = 'child source with metadata-only parent and sibling'
+            ChangedPaths = @('metadata.json', 'child/main.json', 'sibling/metadata.json')
+            Templates = @('child/main.json')
+        }
+    ) {
+        foreach ($relativePath in @('child', 'child/nested', 'sibling')) {
+            Initialize-TestModule -Path (Join-Path $script:modulePath $relativePath)
+        }
+        git add .
+        git commit -m 'Add release selection fixtures' | Out-Null
+        $baseCommit = git rev-parse HEAD
+        foreach ($changedPath in $ChangedPaths) {
+            Set-Content -Path (Join-Path $script:modulePath $changedPath) -Value '{"changed":true}'
+        }
+        git add .
+        git commit -m 'Change selected module files' | Out-Null
+
+        $result = @(Get-ModuleWorkflowTemplatesToPublish `
+                -ModuleFolderPath $script:modulePath `
+                -RepoRoot $script:repoPath `
+                -BaseCommit $baseCommit `
+                -TargetCommit HEAD)
+
+        $result.Count | Should -Be $Templates.Count
+        foreach ($template in $Templates) {
+            $result | Should -Contain (Join-Path $script:modulePath $template)
+        }
+    }
+
+    It 'Preserves explicit forced top-level releases after metadata-only changes' {
+        $childPath = Join-Path $script:modulePath 'child'
+        Initialize-TestModule -Path $childPath
+        git add .
+        git commit -m 'Add child fixture' | Out-Null
+        $baseCommit = git rev-parse HEAD
+        Set-Content -Path (Join-Path $childPath 'metadata.json') -Value '{"telemetryIdPrefix":"updated"}'
+        git add .
+        git commit -m 'Change child metadata only' | Out-Null
+
+        $result = Set-ModuleWorkflowReleaseTag `
+            -TemplateFilePath (Join-Path $script:modulePath 'main.bicep') `
+            -RepoRoot $script:repoPath `
+            -BaseCommit $baseCommit `
+            -TargetCommit HEAD `
+            -Force `
+            -WhatIf
+
+        $result.Count | Should -Be 1
+        $result.Keys | Should -Contain 'avm/res/test/module'
+        git ls-remote --tags origin | Should -BeNullOrEmpty
     }
 
     It 'Retries and fails a remote query explicitly' {

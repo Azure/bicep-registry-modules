@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.monitoring.yml"
       - "avm/ptn/azd/monitoring/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/monitoring"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.hybrid-compute.license.yml"
       - "avm/res/hybrid-compute/license/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/hybrid-compute/license"

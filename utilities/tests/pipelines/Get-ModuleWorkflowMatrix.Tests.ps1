@@ -47,6 +47,19 @@ Describe 'Get-ModuleWorkflowMatrix' {
         $result.include.Count | Should -Be 0
     }
 
+    It 'Keeps root and nested metadata eligible for validation in <ModulePath>' -ForEach @(
+        @{ ModulePath = 'avm/res/storage/storage-account' }
+        @{ ModulePath = 'avm/ptn/network/hub-networking' }
+        @{ ModulePath = 'avm/utl/types/avm-common-types' }
+    ) {
+        $result = Get-ModuleWorkflowMatrix -ChangedFilePath @(
+            "$ModulePath/metadata.json"
+            "$ModulePath/child/nested/metadata.json"
+        ) -RepoRoot $repoRootPath
+
+        $result.include.modulePath | Should -Be @($ModulePath)
+    }
+
     It 'Rejects a missing manual module path' {
         {
             Get-ModuleWorkflowMatrix -ModulePathInput 'avm/res/example/missing'

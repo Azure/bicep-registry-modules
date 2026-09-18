@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Network Manager Network Groups",
+  "moduleDescription": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-networkgroup",
+  "canonicalType": "Microsoft.Network/networkManagers/networkGroups"
+}

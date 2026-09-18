@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "API Management Workspace Product API Links",
+  "moduleDescription": "This module deploys an Product API Link in an API Management Workspace.",
+  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-service-workspprodapilink",
+  "canonicalType": "Microsoft.ApiManagement/service/workspaces/products/apiLinks"
+}

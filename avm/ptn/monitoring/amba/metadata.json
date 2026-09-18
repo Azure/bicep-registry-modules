@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Amba",
+  "moduleDescription": "This module deploys Amba.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.monitoring-amba",
+  "canonicalType": "monitoring/amba",
+  "owners": ["arjenhuitema"]
+}

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Cosmos Db Account Container App",
+  "moduleDescription": "This module deploys Cosmos Db Account Container App.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.app-cosmos-db-account-container-app",
+  "canonicalType": "app/cosmos-db-account-container-app",
+  "owners": []
+}

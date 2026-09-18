@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.cognitive-services.account.yml"
       - "avm/res/cognitive-services/account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/cognitive-services/account"

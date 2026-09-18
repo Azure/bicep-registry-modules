@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Email Services",
+  "moduleDescription": "This module deploys an Email Service",
+  "telemetryIdPrefix": "46d3xbcp.res.communication-emailservice",
+  "canonicalType": "Microsoft.Communication/emailServices",
+  "owners": ["donk-msft"]
+}

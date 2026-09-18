@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.kusto.cluster.yml"
       - "avm/res/kusto/cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/kusto/cluster"

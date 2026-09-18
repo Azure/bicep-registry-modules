@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.compute.availability-set.yml"
       - "avm/res/compute/availability-set/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/compute/availability-set"

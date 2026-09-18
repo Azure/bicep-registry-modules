@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Hub Networking",
+  "moduleDescription": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.network-hubnetworking",
+  "canonicalType": "network/hub-networking",
+  "owners": ["jtracey93"]
+}

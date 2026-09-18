@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.network-watcher.yml"
       - "avm/res/network/network-watcher/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/network-watcher"

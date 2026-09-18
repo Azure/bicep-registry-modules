@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.compute.ssh-public-key.yml"
       - "avm/res/compute/ssh-public-key/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/compute/ssh-public-key"

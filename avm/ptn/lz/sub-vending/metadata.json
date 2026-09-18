@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Sub-vending",
+  "moduleDescription": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
+  "telemetryIdPrefix": "46d3xbcp.ptn.lz-subvending",
+  "canonicalType": "lz/sub-vending",
+  "owners": ["jtracey93", "sebassem"]
+}

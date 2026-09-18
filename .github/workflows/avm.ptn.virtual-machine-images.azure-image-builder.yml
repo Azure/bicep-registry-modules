@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.virtual-machine-images.azure-image-builder.yml"
       - "avm/ptn/virtual-machine-images/azure-image-builder/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/virtual-machine-images/azure-image-builder"
