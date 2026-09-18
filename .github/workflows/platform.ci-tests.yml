@@ -61,7 +61,7 @@ jobs:
 
       - name: Run CI tests
         id: pester_run_step
-        uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0
+        uses: azure/powershell@f5b8adcfff1904872c7b98d4012d4914d74b1a82 # v3.0.0
         with:
           inlineScript: |
             # Load used functions
