@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "6419209464040838240"
+      "templateHash": "8061117762062759498"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it). Private networking - VNet integration, Private Endpoints and Private DNS Zones - is intentionally out of scope for this module; compose the underlying AVM resource modules directly when those are required."
@@ -231,18 +231,11 @@
         "description": "Optional. The name of the Application Insights component. Defaults to `<functionAppName>-ai`."
       }
     },
-    "logAnalyticsWorkspaceName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group."
-      }
-    },
     "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created."
+        "description": "Optional. Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When empty, a new workspace named `<functionAppName>-law` is created in the current resource group."
       }
     },
     "functionAppKind": {
@@ -469,8 +462,7 @@
       "python": {}
     },
     "runtimeVersionSiteConfig": "[if(variables('isFlexConsumption'), createObject(), if(variables('isLinux'), createObject('linuxFxVersion', format('{0}|{1}', variables('linuxFxVersionPrefixMap')[parameters('functionWorkerRuntime')], variables('effectiveLinuxRuntimeVersion'))), if(not(empty(parameters('runtimeVersion'))), variables('windowsRuntimeVersionConfigMap')[parameters('functionWorkerRuntime')], createObject())))]",
-    "createLogAnalyticsWorkspace": "[and(empty(parameters('logAnalyticsWorkspaceResourceId')), empty(parameters('logAnalyticsWorkspaceName')))]",
-    "derivedLogAnalyticsWorkspaceName": "[if(empty(parameters('logAnalyticsWorkspaceName')), format('{0}-law', parameters('functionAppName')), parameters('logAnalyticsWorkspaceName'))]",
+    "createLogAnalyticsWorkspace": "[empty(parameters('logAnalyticsWorkspaceResourceId'))]",
     "createUserAssignedIdentity": "[empty(parameters('userAssignedIdentityResourceId'))]",
     "reservedAppSettingKeys": [
       "AzureWebJobsStorage",
@@ -506,13 +498,6 @@
           }
         }
       }
-    },
-    "existingLogAnalyticsWorkspace": {
-      "condition": "[and(not(empty(parameters('logAnalyticsWorkspaceName'))), empty(parameters('logAnalyticsWorkspaceResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2025-02-01",
-      "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "existingUserAssignedIdentity": {
       "condition": "[not(empty(parameters('userAssignedIdentityResourceId')))]",
@@ -1074,7 +1059,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('derivedLogAnalyticsWorkspaceName')]"
+            "value": "[format('{0}-law', parameters('functionAppName'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -4403,7 +4388,7 @@
           "lock": {
             "value": "[parameters('lock')]"
           },
-          "workspaceResourceId": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', parameters('logAnalyticsWorkspaceResourceId')), if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName')))))]"
+          "workspaceResourceId": "[if(variables('createLogAnalyticsWorkspace'), createObject('value', reference('logAnalyticsWorkspace').outputs.resourceId.value), createObject('value', parameters('logAnalyticsWorkspaceResourceId')))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5245,8 +5230,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.45.15.27210",
-              "templateHash": "16223006470023907583"
+              "version": "0.47.16.16243",
+              "templateHash": "2436216577628069923"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -7561,8 +7546,8 @@
             "immutabilityValidation": "[if(and(equals(parameters('enableHierarchicalNamespace'), true()), not(empty(parameters('immutableStorageWithVersioning')))), fail('Configuration error: Immutable storage with versioning cannot be enabled when hierarchical namespace is enabled.'), null())]",
             "supportsBlobService": "[or(or(or(equals(parameters('kind'), 'BlockBlobStorage'), equals(parameters('kind'), 'BlobStorage')), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
             "supportsFileService": "[or(or(equals(parameters('kind'), 'FileStorage'), equals(parameters('kind'), 'StorageV2')), equals(parameters('kind'), 'Storage'))]",
-            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(or(not(empty(parameters('managedIdentities'))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -7594,10 +7579,10 @@
           },
           "resources": {
             "cMKKeyVault::cMKKey": {
-              "condition": "[and(and(not(variables('isHSMManagedCMK')), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+              "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -7606,7 +7591,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.33.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.storage-storageaccount.{0}.{1}', replace('0.33.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -7623,10 +7608,10 @@
               }
             },
             "cMKKeyVault": {
-              "condition": "[and(not(variables('isHSMManagedCMK')), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
+              "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -8413,8 +8398,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "9083014173454167748"
+                      "version": "0.47.16.16243",
+                      "templateHash": "15760520727091050971"
                     },
                     "name": "Storage Account Management Policies",
                     "description": "This module deploys a Storage Account Management Policy."
@@ -8555,8 +8540,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "16315994787713107990"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5788326158686238043"
                     },
                     "name": "Storage Account Local Users",
                     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -8823,8 +8808,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "11581812194842886786"
+                      "version": "0.47.16.16243",
+                      "templateHash": "11546723476658973239"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -9520,8 +9505,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "13926898705357402577"
+                              "version": "0.47.16.16243",
+                              "templateHash": "944920833661128981"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -9866,8 +9851,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.45.15.27210",
-                                      "templateHash": "9297812652870824568"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "9213350816282028115"
                                     },
                                     "name": "Storage Account Blob Container Immutability Policies",
                                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -10076,8 +10061,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "10728488885203854368"
+                      "version": "0.47.16.16243",
+                      "templateHash": "8488179377672808428"
                     },
                     "name": "Storage Account File Share Services",
                     "description": "This module deploys a Storage Account File Share Service."
@@ -10637,8 +10622,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "3426195262626337404"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8473370668087178589"
                             },
                             "name": "Storage Account File Shares",
                             "description": "This module deploys a Storage Account File Share."
@@ -11125,8 +11110,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "9126826042424362141"
+                      "version": "0.47.16.16243",
+                      "templateHash": "8369868961823341799"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -11588,8 +11573,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "12674732339746550132"
+                              "version": "0.47.16.16243",
+                              "templateHash": "2759633732671004536"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -11891,8 +11876,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "11841978272829245461"
+                      "version": "0.47.16.16243",
+                      "templateHash": "12162330359015211397"
                     },
                     "name": "Storage Account Table Services",
                     "description": "This module deploys a Storage Account Table Service."
@@ -12341,8 +12326,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "16676172785636431119"
+                              "version": "0.47.16.16243",
+                              "templateHash": "4072326245529934345"
                             },
                             "name": "Storage Account Table",
                             "description": "This module deploys a Storage Account Table."
@@ -12622,8 +12607,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "4248279074278818432"
+                      "version": "0.47.16.16243",
+                      "templateHash": "3196846249547589955"
                     }
                   },
                   "definitions": {
@@ -12779,8 +12764,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.45.15.27210",
-                      "templateHash": "12737769857338488910"
+                      "version": "0.47.16.16243",
+                      "templateHash": "7194036000423413685"
                     },
                     "name": "Storage Account Object Replication Policy",
                     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -12964,8 +12949,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "12764673743714488832"
+                              "version": "0.47.16.16243",
+                              "templateHash": "12647861960231275548"
                             },
                             "name": "Storage Account Object Replication Policy",
                             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -13211,8 +13196,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.45.15.27210",
-                              "templateHash": "12764673743714488832"
+                              "version": "0.47.16.16243",
+                              "templateHash": "12647861960231275548"
                             },
                             "name": "Storage Account Object Replication Policy",
                             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -29242,7 +29227,7 @@
       "metadata": {
         "description": "The resource ID of the Log Analytics workspace created or referenced by this module."
       },
-      "value": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), parameters('logAnalyticsWorkspaceResourceId'), if(variables('createLogAnalyticsWorkspace'), reference('logAnalyticsWorkspace').outputs.resourceId.value, resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))))]"
+      "value": "[if(variables('createLogAnalyticsWorkspace'), reference('logAnalyticsWorkspace').outputs.resourceId.value, parameters('logAnalyticsWorkspaceResourceId'))]"
     }
   }
 }

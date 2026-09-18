@@ -39,10 +39,7 @@ param storageAccountName string = take(
 @description('Optional. The name of the Application Insights component. Defaults to `<functionAppName>-ai`.')
 param applicationInsightsName string = '${functionAppName}-ai'
 
-@description('Optional. The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group.')
-param logAnalyticsWorkspaceName string = ''
-
-@description('Optional. Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created.')
+@description('Optional. Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When empty, a new workspace named `<functionAppName>-law` is created in the current resource group.')
 param logAnalyticsWorkspaceResourceId string = ''
 
 @description('Optional. The kind of Function App to deploy. `functionapp` (Windows) and `functionapp,linux` (Linux) are the standard values; `functionapp,workflowapp` is for Logic Apps Standard. Container-based Function Apps (`functionapp,linux,container`) are not yet supported by this pattern module — they require dedicated container image / registry parameters and are planned for a future release.')
@@ -216,15 +213,7 @@ var runtimeVersionSiteConfig = isFlexConsumption
       ? { linuxFxVersion: '${linuxFxVersionPrefixMap[functionWorkerRuntime]}|${effectiveLinuxRuntimeVersion}' }
       : (!empty(runtimeVersion) ? windowsRuntimeVersionConfigMap[functionWorkerRuntime] : {}))
 
-// Resolve the Log Analytics workspace strategy:
-// 1. Explicit resource ID provided -> use it as-is.
-// 2. Workspace name provided (existing) -> reference it.
-// 3. Otherwise -> create a new workspace (Application Insights classic mode is deprecated).
-var createLogAnalyticsWorkspace = empty(logAnalyticsWorkspaceResourceId) && empty(logAnalyticsWorkspaceName)
-var derivedLogAnalyticsWorkspaceName = empty(logAnalyticsWorkspaceName)
-  ? '${functionAppName}-law'
-  : logAnalyticsWorkspaceName
-
+var createLogAnalyticsWorkspace = empty(logAnalyticsWorkspaceResourceId)
 var createUserAssignedIdentity = empty(userAssignedIdentityResourceId)
 
 // App settings reserved by this module. User-supplied values for these keys are dropped
@@ -304,11 +293,7 @@ var contentShareAppSettings = requiresContentShare
     ]
   : []
 
-var appSettingsArray = concat(
-  staticAppSettingsArray,
-  runtimeAppSettingsBase,
-  contentShareAppSettings
-)
+var appSettingsArray = concat(staticAppSettingsArray, runtimeAppSettingsBase, contentShareAppSettings)
 
 // Resolved User-Assigned Managed Identity values (created or BYO).
 var userAssignedIdentityResolvedResourceId = createUserAssignedIdentity
@@ -393,16 +378,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 // Existing refs    //
 // ================ //
 
-resource existingLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalyticsWorkspaceName) && empty(logAnalyticsWorkspaceResourceId)) {
-  name: logAnalyticsWorkspaceName
-}
-
 resource existingUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(userAssignedIdentityResourceId)) {
   name: last(split(userAssignedIdentityResourceId, '/'))
-  scope: resourceGroup(
-    split(userAssignedIdentityResourceId, '/')[2],
-    split(userAssignedIdentityResourceId, '/')[4]
-  )
+  scope: resourceGroup(split(userAssignedIdentityResourceId, '/')[2], split(userAssignedIdentityResourceId, '/')[4])
 }
 
 // ================ //
@@ -423,7 +401,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (createLogAnalyticsWorkspace) {
   name: take('${uniqueString(deployment().name, location)}-functionApp-law', 64)
   params: {
-    name: derivedLogAnalyticsWorkspaceName
+    name: '${functionAppName}-law'
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
@@ -439,13 +417,13 @@ module applicationInsights 'br/public:avm/res/insights/component:0.8.0' = {
     tags: tags
     enableTelemetry: enableTelemetry
     lock: lock
-    workspaceResourceId: !empty(logAnalyticsWorkspaceResourceId)
-      ? logAnalyticsWorkspaceResourceId
-      : (createLogAnalyticsWorkspace ? logAnalyticsWorkspace!.outputs.resourceId : existingLogAnalyticsWorkspace.id)
+    workspaceResourceId: createLogAnalyticsWorkspace
+      ? logAnalyticsWorkspace!.outputs.resourceId
+      : logAnalyticsWorkspaceResourceId
   }
 }
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.33.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.33.1' = {
   name: take('${uniqueString(deployment().name, location)}-functionApp-sa', 64)
   params: {
     name: storageAccountName
@@ -602,6 +580,6 @@ output applicationInsightsResourceId string = applicationInsights.outputs.resour
 output applicationInsightsName string = applicationInsights.outputs.name
 
 @description('The resource ID of the Log Analytics workspace created or referenced by this module.')
-output logAnalyticsWorkspaceResourceId string = !empty(logAnalyticsWorkspaceResourceId)
-  ? logAnalyticsWorkspaceResourceId
-  : (createLogAnalyticsWorkspace ? logAnalyticsWorkspace!.outputs.resourceId : existingLogAnalyticsWorkspace.id)
+output logAnalyticsWorkspaceResourceId string = createLogAnalyticsWorkspace
+  ? logAnalyticsWorkspace!.outputs.resourceId
+  : logAnalyticsWorkspaceResourceId

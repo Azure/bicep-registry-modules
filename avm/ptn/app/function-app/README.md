@@ -403,8 +403,7 @@ param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 | [`functionWorkerRuntime`](#parameter-functionworkerruntime) | string | The runtime stack of the Function App, e.g. `dotnet-isolated`, `node`, `python`, `java`, `powershell`. Note: `dotnet` (in-process .NET) is **not** supported on Flex Consumption (`FC1`); use `dotnet-isolated` instead. |
 | [`location`](#parameter-location) | string | The Azure region into which all resources will be deployed. |
 | [`lock`](#parameter-lock) | object | The lock settings for all resources deployed by this module. |
-| [`logAnalyticsWorkspaceName`](#parameter-loganalyticsworkspacename) | string | The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When empty, a new workspace named `<functionAppName>-law` is created in the current resource group. |
 | [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. Function App names only allow alphanumeric and hyphens, so only hyphens need to be stripped to satisfy Storage Account naming constraints. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. |
@@ -807,17 +806,9 @@ Specify the notes of the lock.
 - Required: No
 - Type: string
 
-### Parameter: `logAnalyticsWorkspaceName`
-
-The name of an *existing* Log Analytics workspace (in the current resource group) to associate with Application Insights. Ignored if `logAnalyticsWorkspaceResourceId` is provided. If both are empty, a new workspace named `<functionAppName>-law` is created in the current resource group.
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `logAnalyticsWorkspaceResourceId`
 
-Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When provided, takes precedence over `logAnalyticsWorkspaceName` and no workspace is created.
+Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When empty, a new workspace named `<functionAppName>-law` is created in the current resource group.
 
 - Required: No
 - Type: string
@@ -883,7 +874,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/insights/component:0.8.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.1` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.7.0` | Remote reference |
 | `br/public:avm/res/web/site:0.24.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
