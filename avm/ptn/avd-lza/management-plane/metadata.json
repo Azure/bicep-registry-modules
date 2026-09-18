@@ -3,5 +3,6 @@
   "moduleDisplayName": "Management Plane",
   "moduleDescription": "This module deploys Management Plane.",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-management-plane",
-  "canonicalType": "avd-lza/management-plane"
+  "canonicalType": "avd-lza/management-plane",
+  "owners": []
 }

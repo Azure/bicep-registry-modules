@@ -3,5 +3,6 @@
   "moduleDisplayName": "Order Item",
   "moduleDescription": "This module deploys Order Item.",
   "telemetryIdPrefix": "46d3xbcp.res.edge-order-order-item",
-  "canonicalType": "Microsoft.EdgeOrder/orderItems"
+  "canonicalType": "Microsoft.EdgeOrder/orderItems",
+  "owners": ["chirag1603"]
 }

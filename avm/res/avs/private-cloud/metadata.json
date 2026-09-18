@@ -3,5 +3,6 @@
   "moduleDisplayName": "Private Cloud",
   "moduleDescription": "This module deploys Private Cloud.",
   "telemetryIdPrefix": "46d3xbcp.res.avs-private-cloud",
-  "canonicalType": "Microsoft.AVS/privateClouds"
+  "canonicalType": "Microsoft.AVS/privateClouds",
+  "owners": ["jchancellor-ms"]
 }

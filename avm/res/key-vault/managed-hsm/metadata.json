@@ -3,5 +3,6 @@
   "moduleDisplayName": "Managed Hsm",
   "moduleDescription": "This module deploys Managed Hsm.",
   "telemetryIdPrefix": "46d3xbcp.res.key-vault-managed-hsm",
-  "canonicalType": "Microsoft.KeyVault/managedHSMs"
+  "canonicalType": "Microsoft.KeyVault/managedHSMs",
+  "owners": ["ns-github-design"]
 }

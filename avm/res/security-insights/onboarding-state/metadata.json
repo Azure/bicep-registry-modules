@@ -3,5 +3,6 @@
   "moduleDisplayName": "Onboarding State",
   "moduleDescription": "This module deploys Onboarding State.",
   "telemetryIdPrefix": "46d3xbcp.res.security-insights-onboarding-state",
-  "canonicalType": "Microsoft.SecurityInsights/onboardingStates"
+  "canonicalType": "Microsoft.SecurityInsights/onboardingStates",
+  "owners": []
 }

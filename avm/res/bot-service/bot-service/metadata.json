@@ -3,5 +3,6 @@
   "moduleDisplayName": "Bot Service",
   "moduleDescription": "This module deploys Bot Service.",
   "telemetryIdPrefix": "46d3xbcp.res.bot-service-bot-service",
-  "canonicalType": "Microsoft.BotService/botServices"
+  "canonicalType": "Microsoft.BotService/botServices",
+  "owners": []
 }

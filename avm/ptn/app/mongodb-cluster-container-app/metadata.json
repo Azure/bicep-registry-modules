@@ -3,5 +3,6 @@
   "moduleDisplayName": "Mongodb Cluster Container App",
   "moduleDescription": "This module deploys Mongodb Cluster Container App.",
   "telemetryIdPrefix": "46d3xbcp.ptn.app-mongodb-cluster-container-app",
-  "canonicalType": "app/mongodb-cluster-container-app"
+  "canonicalType": "app/mongodb-cluster-container-app",
+  "owners": []
 }

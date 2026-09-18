@@ -3,5 +3,6 @@
   "moduleDisplayName": "Container Migration",
   "moduleDescription": "This module deploys Container Migration.",
   "telemetryIdPrefix": "46d3xbcp.ptn.sa-container-migration",
-  "canonicalType": "sa/container-migration"
+  "canonicalType": "sa/container-migration",
+  "owners": ["aniaroramsft", "alguadam"]
 }

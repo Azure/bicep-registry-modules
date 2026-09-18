@@ -3,5 +3,6 @@
   "moduleDisplayName": "Insights",
   "moduleDescription": "This module deploys Insights.",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-insights",
-  "canonicalType": "avd-lza/insights"
+  "canonicalType": "avd-lza/insights",
+  "owners": []
 }

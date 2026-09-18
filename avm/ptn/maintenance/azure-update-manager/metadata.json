@@ -3,5 +3,6 @@
   "moduleDisplayName": "Azure Update Manager",
   "moduleDescription": "This module deploys Azure Update Manager.",
   "telemetryIdPrefix": "46d3xbcp.ptn.maintenance-azure-update-manager",
-  "canonicalType": "maintenance/azure-update-manager"
+  "canonicalType": "maintenance/azure-update-manager",
+  "owners": ["akhilthomas011"]
 }

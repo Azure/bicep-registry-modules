@@ -3,5 +3,6 @@
   "moduleDisplayName": "Community",
   "moduleDescription": "This module deploys Community.",
   "telemetryIdPrefix": "46d3xbcp.res.mission-community",
-  "canonicalType": "Microsoft.Mission/communities"
+  "canonicalType": "Microsoft.Mission/communities",
+  "owners": ["SvenAelterman"]
 }

@@ -3,5 +3,6 @@
   "moduleDisplayName": "Private Link Scope",
   "moduleDescription": "This module deploys Private Link Scope.",
   "telemetryIdPrefix": "46d3xbcp.res.hybrid-compute-private-link-scope",
-  "canonicalType": "Microsoft.HybridCompute/privateLinkScopes"
+  "canonicalType": "Microsoft.HybridCompute/privateLinkScopes",
+  "owners": ["chirag1603"]
 }
