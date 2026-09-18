@@ -84,10 +84,91 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/function-app:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using Dedicated Windows hosting](#example-1-using-dedicated-windows-hosting)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using Dedicated Windows hosting_
+
+This instance deploys a Windows Function App on a Dedicated plan with managed-identity runtime storage access.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/dedicated]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
+  params: {
+    // Required parameters
+    functionAppName: '<functionAppName>'
+    // Non-required parameters
+    appServicePlanSkuName: 'B1'
+    functionAppKind: 'functionapp'
+    functionWorkerRuntime: 'dotnet-isolated'
+    runtimeVersion: '8.0'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "functionAppName": {
+      "value": "<functionAppName>"
+    },
+    // Non-required parameters
+    "appServicePlanSkuName": {
+      "value": "B1"
+    },
+    "functionAppKind": {
+      "value": "functionapp"
+    },
+    "functionWorkerRuntime": {
+      "value": "dotnet-isolated"
+    },
+    "runtimeVersion": {
+      "value": "8.0"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app/function-app:<version>'
+
+// Required parameters
+param functionAppName = '<functionAppName>'
+// Non-required parameters
+param appServicePlanSkuName = 'B1'
+param functionAppKind = 'functionapp'
+param functionWorkerRuntime = 'dotnet-isolated'
+param runtimeVersion = '8.0'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -101,7 +182,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
-    functionAppName: 'afamin001'
+    functionAppName: '<functionAppName>'
   }
 }
 ```
@@ -119,7 +200,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "functionAppName": {
-      "value": "afamin001"
+      "value": "<functionAppName>"
     }
   }
 }
@@ -135,13 +216,13 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/app/function-app:<version>'
 
-param functionAppName = 'afamin001'
+param functionAppName = '<functionAppName>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -156,10 +237,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: 'afamax001'
+    functionAppName: '<functionAppName>'
     // Non-required parameters
-    applicationInsightsName: 'dep-ai-afamax'
-    appServicePlanName: 'afamax-asp'
+    applicationInsightsName: '<applicationInsightsName>'
+    appServicePlanName: '<appServicePlanName>'
     appServicePlanSkuCapacity: 2
     appServicePlanSkuName: 'EP1'
     appServicePlanZoneRedundant: true
@@ -194,7 +275,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
       name: 'myCustomLockName'
     }
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    runtimeVersion: '20'
+    runtimeVersion: '22'
     storageAccountName: '<storageAccountName>'
     tags: {
       Environment: 'Non-Prod'
@@ -220,14 +301,14 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "afamax001"
+      "value": "<functionAppName>"
     },
     // Non-required parameters
     "applicationInsightsName": {
-      "value": "dep-ai-afamax"
+      "value": "<applicationInsightsName>"
     },
     "appServicePlanName": {
-      "value": "afamax-asp"
+      "value": "<appServicePlanName>"
     },
     "appServicePlanSkuCapacity": {
       "value": 2
@@ -294,7 +375,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "runtimeVersion": {
-      "value": "20"
+      "value": "22"
     },
     "storageAccountName": {
       "value": "<storageAccountName>"
@@ -324,10 +405,10 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = 'afamax001'
+param functionAppName = '<functionAppName>'
 // Non-required parameters
-param applicationInsightsName = 'dep-ai-afamax'
-param appServicePlanName = 'afamax-asp'
+param applicationInsightsName = '<applicationInsightsName>'
+param appServicePlanName = '<appServicePlanName>'
 param appServicePlanSkuCapacity = 2
 param appServicePlanSkuName = 'EP1'
 param appServicePlanZoneRedundant = true
@@ -362,7 +443,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param runtimeVersion = '20'
+param runtimeVersion = '22'
 param storageAccountName = '<storageAccountName>'
 param tags = {
   Environment: 'Non-Prod'
@@ -389,8 +470,8 @@ param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 | :-- | :-- | :-- |
 | [`applicationInsightsName`](#parameter-applicationinsightsname) | string | The name of the Application Insights component. Defaults to `<functionAppName>-ai`. |
 | [`appServicePlanName`](#parameter-appserviceplanname) | string | The name of the App Service Plan to create. Defaults to `<functionAppName>-asp`. |
-| [`appServicePlanSkuCapacity`](#parameter-appserviceplanskucapacity) | int | Number of workers for the App Service Plan. |
-| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. |
+| [`appServicePlanSkuCapacity`](#parameter-appserviceplanskucapacity) | int | Number of workers for the App Service Plan. Also sets the maximum elastic worker count for Elastic Premium so its ceiling is not below the requested capacity. |
+| [`appServicePlanSkuName`](#parameter-appserviceplanskuname) | string | The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. Always On is enabled for Dedicated plans to keep non-HTTP triggers active. |
 | [`appServicePlanZoneRedundant`](#parameter-appserviceplanzoneredundant) | bool | Whether to spread the App Service Plan across availability zones. Only supported on Premium (`P*v2`/`P*v3`/`P*mv3`) and Elastic Premium (`EP*`) SKUs in regions that offer availability zones, and requires `appServicePlanSkuCapacity` to be at least 2. Left `false` by default because zone redundancy increases cost and is not available in every region. |
 | [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | Application settings (`name`/`value` pairs) to merge into the Function App configuration. All values must be strings. Reserved keys managed by this module are silently dropped to keep the Function App in a working state — see `reservedAppSettingKeys` in `main.bicep` for the current list. |
 | [`autoGeneratedDomainNameLabelScope`](#parameter-autogenerateddomainnamelabelscope) | string | The scope of uniqueness for the default hostname of the Function App during resource creation. |
@@ -407,7 +488,7 @@ param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
 | [`location`](#parameter-location) | string | The Azure region into which all resources will be deployed. |
 | [`lock`](#parameter-lock) | object | The lock settings for all resources deployed by this module. |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to associate with Application Insights. When empty, a new workspace named `<functionAppName>-law` is created in the current resource group. |
-| [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime. |
+| [`runtimeVersion`](#parameter-runtimeversion) | string | The version of the language runtime stack (e.g. `22` for Node 22, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime. |
 | [`storageAccountName`](#parameter-storageaccountname) | string | The name of the Storage Account that backs the Function App runtime. Must be globally unique, 3-24 lowercase alphanumeric characters. Defaults to a deterministic name derived from `functionAppName`. Function App names only allow alphanumeric and hyphens, so only hyphens need to be stripped to satisfy Storage Account naming constraints. |
 | [`tags`](#parameter-tags) | object | Resource tags to apply to all created resources. The runtime Storage Account is always tagged with `resource-usage: azure-functions`. |
 | [`userAssignedIdentityResourceId`](#parameter-userassignedidentityresourceid) | string | The resource ID of an existing User-Assigned Managed Identity to assign to the Function App and use for runtime storage access and Application Insights ingestion. When not provided, a new identity is created and used. |
@@ -437,7 +518,7 @@ The name of the App Service Plan to create. Defaults to `<functionAppName>-asp`.
 
 ### Parameter: `appServicePlanSkuCapacity`
 
-Number of workers for the App Service Plan.
+Number of workers for the App Service Plan. Also sets the maximum elastic worker count for Elastic Premium so its ceiling is not below the requested capacity.
 
 - Required: No
 - Type: int
@@ -446,7 +527,7 @@ Number of workers for the App Service Plan.
 
 ### Parameter: `appServicePlanSkuName`
 
-The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead.
+The SKU of the App Service Plan that hosts the Function App. Defaults to `FC1` (Flex Consumption). When `FC1` is selected the module wires up `functionAppConfig` (identity-based deployment storage, runtime, instance memory, max instance count) on the underlying `avm/res/web/site` module automatically; Flex Consumption is Linux-only and does not support the in-process `dotnet` runtime — use `dotnet-isolated` instead. Always On is enabled for Dedicated plans to keep non-HTTP triggers active.
 
 - Required: No
 - Type: string
@@ -832,7 +913,7 @@ Resource ID of an *existing* Log Analytics workspace (anywhere in the tenant) to
 
 ### Parameter: `runtimeVersion`
 
-The version of the language runtime stack (e.g. `20` for Node 20, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime.
+The version of the language runtime stack (e.g. `22` for Node 22, `3.11` for Python 3.11, `8.0` for .NET 8). When provided, sets `linuxFxVersion` for Linux Function Apps or the matching framework version property for Windows Function Apps. When empty AND the Function App is Linux, a sensible per-runtime default is applied (see `defaultLinuxRuntimeVersionMap` in `main.bicep`); Windows Function Apps fall back to the platform default for the chosen runtime.
 
 - Required: No
 - Type: string
