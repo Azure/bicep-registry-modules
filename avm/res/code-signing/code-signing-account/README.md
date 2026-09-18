@@ -126,6 +126,13 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
     name: 'cermax001'
     skuName: 'Basic'
     // Non-required parameters
+    certificateProfiles: [
+      {
+        identityValidationId: '<identityValidationId>'
+        name: 'test'
+        profileType: 'PrivateTrust'
+      }
+    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -140,6 +147,19 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'NoDelete'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        roleDefinitionIdOrName: 'Contributor'
+      }
+    ]
+    tags: {
+      environment: 'max'
+    }
   }
 }
 ```
@@ -164,6 +184,15 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": "Basic"
     },
     // Non-required parameters
+    "certificateProfiles": {
+      "value": [
+        {
+          "identityValidationId": "<identityValidationId>",
+          "name": "test",
+          "profileType": "PrivateTrust"
+        }
+      ]
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -179,6 +208,25 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "NoDelete"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionIdOrName": "Contributor"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "environment": "max"
+      }
     }
   }
 }
@@ -198,6 +246,13 @@ using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 param name = 'cermax001'
 param skuName = 'Basic'
 // Non-required parameters
+param certificateProfiles = [
+  {
+    identityValidationId: '<identityValidationId>'
+    name: 'test'
+    profileType: 'PrivateTrust'
+  }
+]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -212,6 +267,19 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'NoDelete'
+}
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    roleDefinitionIdOrName: 'Contributor'
+  }
+]
+param tags = {
+  environment: 'max'
+}
 ```
 
 </details>
