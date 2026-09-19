@@ -42,6 +42,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Compute/proximityPlacementGroups` | 2022-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_proximityplacementgroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-08-01/proximityPlacementGroups)</li></ul> |
 | `Microsoft.Compute/virtualMachines` | 2024-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines)</li></ul> |
 | `Microsoft.Compute/virtualMachines/extensions` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.compute_virtualmachines_extensions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-11-01/virtualMachines/extensions)</li></ul> |
+| `Microsoft.ContainerRegistry/registries` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-04-01/registries)</li></ul> |
+| `Microsoft.ContainerRegistry/registries/replications` | 2025-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.containerregistry_registries_replications.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2025-04-01/registries/replications)</li></ul> |
 | `Microsoft.DevTestLab/schedules` | 2018-09-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.devtestlab_schedules.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_cassandrakeyspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/cassandraKeyspaces)</li></ul> |
@@ -55,8 +57,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_mongodbdatabases_collections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/mongodbDatabases/collections)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqldatabases_containers.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/sqlDatabases/containers)</li></ul> |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-05-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-05-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | 2024-05-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-05-15/databaseAccounts/sqlRoleAssignments)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | 2024-11-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_sqlroledefinitions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions)</li></ul> |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | 2025-04-15 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.documentdb_databaseaccounts_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2025-04-15/databaseAccounts/tables)</li></ul> |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | 2024-04-05 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.guestconfiguration_guestconfigurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2024-04-05/guestConfigurationAssignments)</li></ul> |
@@ -82,8 +84,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
-| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/publicIPAddresses` | 2025-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_publicipaddresses.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-01-01/publicIPAddresses)</li></ul> |
@@ -320,7 +322,6 @@ param virtualMachineAdminUsername = 'adminuser'
 | :-- | :-- | :-- |
 | [`azureAiAgentApiVersion`](#parameter-azureaiagentapiversion) | string | Version of AI Agent API. |
 | [`azureOpenAIApiVersion`](#parameter-azureopenaiapiversion) | string | Version of the OpenAI. |
-| [`containerRegistryHost`](#parameter-containerregistryhost) | string | The host (excluding https://) of an existing container registry. This is the `loginServer` when using Azure Container Registry. |
 | [`createdBy`](#parameter-createdby) | string | Tag, Created by user name. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -332,8 +333,8 @@ param virtualMachineAdminUsername = 'adminuser'
 | [`gptModelCapacity`](#parameter-gptmodelcapacity) | int | AI model deployment token capacity. Defaults to 50 for optimal performance. |
 | [`gptModelDeploymentType`](#parameter-gptmodeldeploymenttype) | string | GPT model deployment type. Defaults to GlobalStandard. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
-| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2024-07-18. |
-| [`imageTag`](#parameter-imagetag) | string | The image tag to use for container images. Defaults to "latest_v2". |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy. Defaults to 2026-03-17. |
+| [`imageTag`](#parameter-imagetag) | string | The image tag to use for container images. Defaults to "latest". |
 | [`location`](#parameter-location) | string | Azure region for all services. Regions are restricted to guarantee compatibility with paired regions and replica locations for data redundancy and failover scenarios based on articles [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions). |
 | [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
 | [`solutionUniqueText`](#parameter-solutionuniquetext) | string | A unique text value for the solution. This is used to ensure resource names are unique for global resources. Defaults to a 5-character substring of the unique string generated from the subscription ID, resource group name, and solution name. |
@@ -379,14 +380,6 @@ Version of the OpenAI.
 - Required: No
 - Type: string
 - Default: `'2025-01-01-preview'`
-
-### Parameter: `containerRegistryHost`
-
-The host (excluding https://) of an existing container registry. This is the `loginServer` when using Azure Container Registry.
-
-- Required: No
-- Type: string
-- Default: `'ccbcontainerreg.azurecr.io'`
 
 ### Parameter: `createdBy`
 
@@ -488,23 +481,23 @@ Name of the GPT model to deploy.
 
 - Required: No
 - Type: string
-- Default: `'gpt-4o-mini'`
+- Default: `'gpt-5.4-mini'`
 
 ### Parameter: `gptModelVersion`
 
-Version of the GPT model to deploy. Defaults to 2024-07-18.
+Version of the GPT model to deploy. Defaults to 2026-03-17.
 
 - Required: No
 - Type: string
-- Default: `'2024-07-18'`
+- Default: `'2026-03-17'`
 
 ### Parameter: `imageTag`
 
-The image tag to use for container images. Defaults to "latest_v2".
+The image tag to use for container images. Defaults to "latest".
 
 - Required: No
 - Type: string
-- Default: `'latest_v2_2026-05-04_449'`
+- Default: `'latest'`
 
 ### Parameter: `location`
 
@@ -566,13 +559,10 @@ Size of the Jumpbox Virtual Machine. Allows to customize VM size if `enablePriva
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `acrName` | string | The Azure Container Registry name. |
 | `agentIdChat` | string | The agent ID for chat. |
 | `aiFoundryResourceId` | string | The AI Foundry resource ID. |
 | `aiSearchServiceResourceId` | string | The AI Search Service resource ID. |
 | `aiServiceName` | string | The AI service name. |
-| `apiAppName` | string | The API app service name. |
-| `apiAppUrl` | string | The backend API app URL. |
 | `apiPid` | string | The API user-assigned managed identity principal ID. |
 | `appEnv` | string | The application environment. |
 | `appInsightsInstrumentationKey` | string | The Application Insights instrumentation key. |
@@ -583,6 +573,8 @@ Size of the Jumpbox Virtual Machine. Allows to customize VM size if `enablePriva
 | `azureAiProjectConnString` | string | The Azure AI Project connection string. |
 | `azureAiProjectName` | string | The Azure AI Project name. |
 | `azureAiSearchEndpoint` | string | The Azure AI Search endpoint URL. |
+| `azureContainerRegistryEndpoint` | string | The Azure Container Registry endpoint URL. |
+| `azureContainerRegistryName` | string | The Azure Container Registry name. |
 | `azureCosmosDbAccount` | string | The Azure Cosmos DB account name. |
 | `azureCosmosDbConversationsContainer` | string | The Azure Cosmos DB conversations container name. |
 | `azureCosmosDbDatabase` | string | The Azure Cosmos DB database name. |
@@ -594,16 +586,23 @@ Size of the Jumpbox Virtual Machine. Allows to customize VM size if `enablePriva
 | `azureOpenAiEndpoint` | string | The Azure OpenAI endpoint URL. |
 | `azureOpenAiModelDeploymentType` | string | The Azure OpenAI model deployment type. |
 | `azureOpenAiResource` | string | The Azure OpenAI resource name. |
+| `chatApiAppName` | string | The chat backend API app service name. |
+| `chatApiAppUrl` | string | The chat backend API app URL. |
+| `chatWebAppName` | string | The chat frontend web app service name. |
+| `chatWebAppUrl` | string | The chat frontend web app URL. |
 | `cosmosDbDatabaseName` | string | The Cosmos DB database name. |
 | `cosmosDbEndpoint` | string | The Cosmos DB endpoint URL. |
 | `displayChartDefault` | string | Whether to display chart by default. |
 | `location` | string | The location the module was deployed into. |
 | `reactAppLayoutConfig` | string | The React app layout configuration. |
 | `resourceGroupName` | string | The name of the resource group the module was deployed into. |
+| `scenarioApiAppName` | string | The scenario backend API app service name. |
+| `scenarioApiAppUrl` | string | The scenario backend API app URL. |
+| `scenarioWebAppName` | string | The scenario frontend web app service name. |
+| `scenarioWebAppUrl` | string | The scenario frontend web app URL. |
 | `solutionName` | string | The solution name suffix used for resource naming. |
 | `useAiProjectClient` | string | Whether to use AI Project client. |
 | `useChatHistoryEnabled` | string | Whether chat history is enabled. |
-| `webAppUrl` | string | The frontend web app URL. |
 
 ## Cross-referenced modules
 

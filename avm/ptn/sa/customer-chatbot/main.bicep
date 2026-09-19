@@ -31,7 +31,7 @@ param location string = resourceGroup().location
   azd: {
     type: 'location'
     usageName: [
-      'OpenAI.GlobalStandard.gpt-4o-mini,50'
+      'OpenAI.GlobalStandard.gpt-5.4-mini,50'
       'OpenAI.GlobalStandard.gpt-realtime-mini,1'
     ]
   }
@@ -44,10 +44,10 @@ param cosmosDbReplicaLocation string?
 
 @minLength(1)
 @description('Optional. Name of the GPT model to deploy.')
-param gptModelName string = 'gpt-4o-mini'
+param gptModelName string = 'gpt-5.4-mini'
 
-@description('Optional. Version of the GPT model to deploy. Defaults to 2024-07-18.')
-param gptModelVersion string = '2024-07-18'
+@description('Optional. Version of the GPT model to deploy. Defaults to 2026-03-17.')
+param gptModelVersion string = '2026-03-17'
 
 @description('Optional. Version of the OpenAI.')
 param azureOpenAIApiVersion string = '2025-01-01-preview'
@@ -103,12 +103,8 @@ param virtualMachineAdminPassword string = ''
 @description('Optional. Size of the Jumpbox Virtual Machine. Allows to customize VM size if `enablePrivateNetworking` is set to true. See https://learn.microsoft.com/azure/virtual-machines/sizes for available sizes.')
 param vmSize string = 'Standard_D2s_v5'
 
-// These parameters are changed for testing - please reset as part of publication
-@description('Optional. The host (excluding https://) of an existing container registry. This is the `loginServer` when using Azure Container Registry.')
-param containerRegistryHost string = 'ccbcontainerreg.azurecr.io'
-
-@description('Optional. The image tag to use for container images. Defaults to "latest_v2".')
-param imageTag string = 'latest_v2_2026-05-04_449'
+@description('Optional. The image tag to use for container images. Defaults to "latest".')
+param imageTag string = 'latest'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -126,6 +122,12 @@ var solutionSuffix = toLower(trim(replace(
   '*',
   ''
 )))
+
+var helloWorldDefaultImageName = 'DOCKER|mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+var chatBackendImageName = helloWorldDefaultImageName
+var chatFrontendImageName = helloWorldDefaultImageName
+var scenarioBackendImageName = helloWorldDefaultImageName
+var scenarioFrontendImageName = helloWorldDefaultImageName
 
 // Replica regions list based on article in [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) and [Enhance resilience by replicating your Log Analytics workspace across regions](https://learn.microsoft.com/azure/azure-monitor/logs/workspace-replication#supported-regions) for supported regions for Log Analytics Workspace.
 var replicaRegionPairs = {
@@ -581,6 +583,7 @@ var privateDnsZones = [
   'privatelink.services.ai.azure.com'
   'privatelink.documents.azure.com'
   'privatelink.search.windows.net'
+  'privatelink.azurecr.io'
 ]
 
 // DNS Zone Index Constants
@@ -590,6 +593,7 @@ var dnsZoneIndex = {
   aiServices: 2
   cosmosDb: 3
   search: 4
+  acr: 5
 }
 
 // ===================================================
@@ -647,7 +651,7 @@ var aiModelDeployments = [
       name: 'GlobalStandard'
       capacity: 1
     }
-    version: '2025-10-06'
+    version: '2025-12-15'
     raiPolicyName: 'Microsoft.Default'
   }
 ]
@@ -727,7 +731,7 @@ module aiFoundryAiServices 'br:mcr.microsoft.com/bicep/avm/res/cognitive-service
     ]
     // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled'
     privateEndpoints: []
   }
 }
@@ -986,6 +990,87 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.7.0' = {
   }
 }
 
+// ========== Azure Container Registry ========== //
+// WAF best practices for Container Registry: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-registry
+var containerRegistryResourceName = 'cr${solutionSuffix}'
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2025-04-01' = {
+  name: containerRegistryResourceName
+  location: location
+  tags: tags
+  sku: {
+    name: enablePrivateNetworking || enableRedundancy ? 'Premium' : 'Standard'
+  }
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    adminUserEnabled: false
+    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    dataEndpointEnabled: false
+    networkRuleBypassOptions: 'AzureServices'
+    networkRuleSet: enablePrivateNetworking
+      ? {
+          defaultAction: 'Deny'
+        }
+      : null
+    policies: {
+      exportPolicy: {
+        status: 'enabled'
+      }
+      retentionPolicy: {
+        status: 'disabled'
+        days: 7
+      }
+      trustPolicy: {
+        status: 'disabled'
+        type: 'Notary'
+      }
+    }
+    zoneRedundancy: enableRedundancy ? 'Enabled' : 'Disabled'
+  }
+}
+
+// WAF aligned configuration for Redundancy - ACR Geo-Replication
+resource acrReplication 'Microsoft.ContainerRegistry/registries/replications@2025-04-01' = if (enableRedundancy) {
+  parent: containerRegistry
+  name: replicaLocation
+  location: replicaLocation
+  tags: tags
+  properties: {
+    zoneRedundancy: 'Enabled'
+  }
+}
+
+// WAF aligned configuration for Private Networking - ACR Private Endpoint
+module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.12.0' = if (enablePrivateNetworking) {
+  name: take('pep-${containerRegistryResourceName}-deployment', 64)
+  params: {
+    name: 'pep-${containerRegistryResourceName}'
+    customNetworkInterfaceName: 'nic-${containerRegistryResourceName}'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
+    privateLinkServiceConnections: [
+      {
+        name: 'pep-${containerRegistryResourceName}-connection'
+        properties: {
+          privateLinkServiceId: containerRegistry.id
+          groupIds: ['registry']
+        }
+      }
+    ]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          name: 'acr-dns-zone'
+          privateDnsZoneResourceId: avmPrivateDnsZones[dnsZoneIndex.acr]!.outputs.resourceId
+        }
+      ]
+    }
+    subnetResourceId: virtualNetwork!.outputs.backendSubnetResourceId
+  }
+}
+
 // ========== Backend API Docker container ========== //
 var reactAppLayoutConfig = '''{
   "appConfig": {
@@ -996,7 +1081,7 @@ var reactAppLayoutConfig = '''{
     }
   }
 }'''
-var backendWebSiteResourceName = 'api-${solutionSuffix}'
+var backendWebSiteResourceName = 'api-chat-${solutionSuffix}'
 module webSiteBackend 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${backendWebSiteResourceName}', 64)
   params: {
@@ -1009,10 +1094,11 @@ module webSiteBackend 'modules/web-sites.bicep' = {
       systemAssigned: true
     }
     siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryHost}/backend:${imageTag}'
+      linuxFxVersion: chatBackendImageName
       minTlsVersion: '1.2'
       healthCheckPath: '/health'
       webSocketsEnabled: true
+      acrUseManagedIdentityCreds: true
     }
     configs: [
       {
@@ -1045,7 +1131,7 @@ module webSiteBackend 'modules/web-sites.bicep' = {
           SOLUTION_NAME: solutionSuffix
           APP_ENV: 'Prod'
 
-          ALLOWED_ORIGINS_STR: 'https://app-${solutionSuffix}.azurewebsites.net'
+          ALLOWED_ORIGINS_STR: 'https://app-chat-${solutionSuffix}.azurewebsites.net,https://app-scenario-${solutionSuffix}.azurewebsites.net'
           AZURE_FOUNDRY_ENDPOINT: aiFoundryAiProjectEndpoint
           AZURE_SEARCH_ENDPOINT: searchServiceUpdate.outputs.endpoint
           AZURE_SEARCH_INDEX: 'policies'
@@ -1153,19 +1239,51 @@ resource searchToAiServicesOpenAIRole 'Microsoft.Authorization/roleAssignments@2
   }
 }
 
-// ========== Frontend Web App Docker container ========== //
-var webSiteResourceName = 'app-${solutionSuffix}'
-module webSite 'modules/web-sites.bicep' = {
-  name: take('module.web-sites.${webSiteResourceName}', 64)
+// ========== Additional Cosmos DB Role Assignment for Scenario Backend App Service ========== //
+resource cosmosDbScenarioBackendRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+  name: '${cosmosDbResourceName}/${guid(subscription().id, resourceGroup().id, scenarioBackendWebSiteResourceName, 'CosmosDBDataContributor')}'
+  properties: {
+    principalId: webSiteScenarioBackend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: '${cosmosDb.outputs.resourceId}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002'
+    scope: cosmosDb.outputs.resourceId
+  }
+}
+
+// Scenario Backend → Cognitive Services User on AI Foundry
+resource scenarioBackendToAiServicesUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    scenarioBackendWebSiteResourceName,
+    aiFoundryAiServicesResourceName,
+    'a97b65f3-24c7-4388-baec-2e87135dc908'
+  )
+  properties: {
+    principalId: webSiteScenarioBackend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'a97b65f3-24c7-4388-baec-2e87135dc908'
+    ) // Cognitive Services User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// ========== Chat Frontend Web App Docker container ========== //
+var chatFrontendWebSiteResourceName = 'app-chat-${solutionSuffix}'
+module webSiteChatFrontend 'modules/web-sites.bicep' = {
+  name: take('module.web-sites.${chatFrontendWebSiteResourceName}', 64)
   params: {
-    name: webSiteResourceName
+    name: chatFrontendWebSiteResourceName
     tags: tags
     location: location
     kind: 'app,linux,container'
     serverFarmResourceId: webServerFarm.?outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
     siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryHost}/frontend:${imageTag}'
+      linuxFxVersion: chatFrontendImageName
       minTlsVersion: '1.2'
+      acrUseManagedIdentityCreds: true
     }
     configs: [
       {
@@ -1183,8 +1301,198 @@ module webSite 'modules/web-sites.bicep' = {
     vnetRouteAllEnabled: enablePrivateNetworking ? true : false
     vnetImagePullEnabled: enablePrivateNetworking ? true : false
     virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
-    publicNetworkAccess: 'Enabled' // Always enabling the public network access for Web App
+    publicNetworkAccess: 'Enabled'
     e2eEncryptionEnabled: true
+  }
+}
+
+// ========== Scenario Backend API Docker container ========== //
+var scenarioBackendWebSiteResourceName = 'api-scenario-${solutionSuffix}'
+module webSiteScenarioBackend 'modules/web-sites.bicep' = {
+  name: take('module.web-sites.${scenarioBackendWebSiteResourceName}', 64)
+  params: {
+    name: scenarioBackendWebSiteResourceName
+    tags: tags
+    location: location
+    kind: 'app,linux,container'
+    serverFarmResourceId: webServerFarm.?outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
+    siteConfig: {
+      linuxFxVersion: scenarioBackendImageName
+      minTlsVersion: '1.2'
+      healthCheckPath: '/health'
+      webSocketsEnabled: true
+      acrUseManagedIdentityCreds: true
+    }
+    configs: [
+      {
+        name: 'appsettings'
+        properties: {
+          AZURE_OPENAI_DEPLOYMENT_MODEL: gptModelName
+          AZURE_OPENAI_ENDPOINT: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
+          AZURE_OPENAI_API_VERSION: azureOpenAIApiVersion
+          AZURE_OPENAI_RESOURCE: aiFoundryAiServicesResourceName
+          AZURE_AI_AGENT_ENDPOINT: aiFoundryAiProjectEndpoint
+          AZURE_AI_AGENT_API_VERSION: azureAiAgentApiVersion
+          AZURE_AI_AGENT_MODEL_DEPLOYMENT_NAME: gptModelName
+          USE_CHAT_HISTORY_ENABLED: 'False'
+          AZURE_COSMOSDB_ACCOUNT: cosmosDb.outputs.name
+          AZURE_COSMOSDB_DATABASE: cosmosDbDatabaseName
+          AZURE_COSMOSDB_ENABLE_FEEDBACK: ''
+          AZURE_AI_SEARCH_ENDPOINT: 'https://${searchServiceName}.search.windows.net'
+          AZURE_AI_SEARCH_INDEX: 'call_transcripts_index'
+          AZURE_AI_SEARCH_CONNECTION_NAME: aiSearchConnectionName
+          USE_AI_PROJECT_CLIENT: 'True'
+          DISPLAY_CHART_DEFAULT: 'False'
+          APPLICATIONINSIGHTS_CONNECTION_STRING: enableMonitoring ? applicationInsights!.outputs.connectionString : ''
+          DUMMY_TEST: 'True'
+          SOLUTION_NAME: solutionSuffix
+          APP_ENV: 'Prod'
+          ALLOWED_ORIGINS_STR: 'https://app-scenario-${solutionSuffix}.azurewebsites.net'
+          AZURE_FOUNDRY_ENDPOINT: aiFoundryAiProjectEndpoint
+          AZURE_SEARCH_ENDPOINT: searchServiceUpdate.outputs.endpoint
+          AZURE_SEARCH_INDEX: 'policies'
+          AZURE_SEARCH_PRODUCT_INDEX: 'products'
+          COSMOS_DB_DATABASE_NAME: cosmosDbDatabaseName
+          COSMOS_DB_ENDPOINT: 'https://${cosmosDb.outputs.name}.documents.azure.com:443/'
+          USE_FOUNDRY_AGENTS: 'False'
+          AZURE_OPENAI_DEPLOYMENT_NAME: gptModelName
+          RATE_LIMIT_REQUESTS: '100'
+          RATE_LIMIT_WINDOW: '60'
+          FOUNDRY_CHAT_AGENT: ''
+          FOUNDRY_PRODUCT_AGENT: ''
+          FOUNDRY_POLICY_AGENT: ''
+          AZURE_VOICELIVE_ENDPOINT: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
+          VOICELIVE_MODEL: 'gpt-realtime-mini'
+          VOICELIVE_VOICE: 'alloy'
+          VOICELIVE_TRANSCRIBE_MODEL: 'gpt-4o-transcribe'
+          VOICELIVE_VAD_SILENCE_MS: '1200'
+          VOICELIVE_VAD_THRESHOLD: '0.5'
+          VOICELIVE_VAD_PREFIX_PADDING_MS: '300'
+          REACT_APP_LAYOUT_CONFIG: reactAppLayoutConfig
+        }
+        applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
+      }
+    ]
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
+    vnetRouteAllEnabled: true
+    vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
+    publicNetworkAccess: 'Enabled'
+  }
+}
+
+// ========== Scenario Frontend Web App Docker container ========== //
+var scenarioFrontendWebSiteResourceName = 'app-scenario-${solutionSuffix}'
+module webSiteScenarioFrontend 'modules/web-sites.bicep' = {
+  name: take('module.web-sites.${scenarioFrontendWebSiteResourceName}', 64)
+  params: {
+    name: scenarioFrontendWebSiteResourceName
+    tags: tags
+    location: location
+    kind: 'app,linux,container'
+    serverFarmResourceId: webServerFarm.?outputs.resourceId
+    managedIdentities: {
+      systemAssigned: true
+    }
+    siteConfig: {
+      linuxFxVersion: scenarioFrontendImageName
+      minTlsVersion: '1.2'
+      acrUseManagedIdentityCreds: true
+    }
+    configs: [
+      {
+        name: 'appsettings'
+        properties: {
+          NODE_ENV: 'production'
+          VITE_API_BASE_URL: 'https://${webSiteScenarioBackend.outputs.defaultHostname}'
+          VITE_CHAT_API_BASE_URL: 'https://${webSiteBackend.outputs.defaultHostname}'
+        }
+        applicationInsightResourceId: enableMonitoring ? applicationInsights!.outputs.resourceId : null
+      }
+    ]
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
+    vnetRouteAllEnabled: enablePrivateNetworking ? true : false
+    vnetImagePullEnabled: enablePrivateNetworking ? true : false
+    virtualNetworkSubnetId: enablePrivateNetworking ? virtualNetwork!.outputs.webserverfarmSubnetResourceId : null
+    publicNetworkAccess: 'Enabled'
+    e2eEncryptionEnabled: true
+  }
+}
+
+// ========== ACR Pull Role Assignments ========== //
+// Grant ACR Pull role to all App Service managed identities
+resource chatBackendAcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    backendWebSiteResourceName,
+    containerRegistryResourceName,
+    '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+  )
+  scope: containerRegistry
+  properties: {
+    principalId: webSiteBackend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    ) // AcrPull
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource chatFrontendAcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    chatFrontendWebSiteResourceName,
+    containerRegistryResourceName,
+    '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+  )
+  scope: containerRegistry
+  properties: {
+    principalId: webSiteChatFrontend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    ) // AcrPull
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource scenarioBackendAcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    scenarioBackendWebSiteResourceName,
+    containerRegistryResourceName,
+    '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+  )
+  scope: containerRegistry
+  properties: {
+    principalId: webSiteScenarioBackend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    ) // AcrPull
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource scenarioFrontendAcrPull 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    resourceGroup().id,
+    scenarioFrontendWebSiteResourceName,
+    containerRegistryResourceName,
+    '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+  )
+  scope: containerRegistry
+  properties: {
+    principalId: webSiteScenarioFrontend.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+    ) // AcrPull
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -1267,7 +1575,10 @@ output azureAiAgentEndpoint string = aiFoundryAiProjectEndpoint
 output azureAiAgentModelDeploymentName string = gptModelName
 
 @description('The Azure Container Registry name.')
-output acrName string = split(containerRegistryHost, '.')[0]
+output azureContainerRegistryName string = containerRegistry.name
+
+@description('The Azure Container Registry endpoint URL.')
+output azureContainerRegistryEndpoint string = containerRegistry.properties.loginServer
 
 @description('The Azure environment image tag.')
 output azureEnvImageTag string = imageTag
@@ -1275,17 +1586,32 @@ output azureEnvImageTag string = imageTag
 @description('The AI service name.')
 output aiServiceName string = aiFoundryAiServicesResourceName
 
-@description('The API app service name.')
-output apiAppName string = backendWebSiteResourceName
+@description('The chat backend API app service name.')
+output chatApiAppName string = backendWebSiteResourceName
+
+@description('The chat frontend web app service name.')
+output chatWebAppName string = chatFrontendWebSiteResourceName
+
+@description('The scenario backend API app service name.')
+output scenarioApiAppName string = scenarioBackendWebSiteResourceName
+
+@description('The scenario frontend web app service name.')
+output scenarioWebAppName string = scenarioFrontendWebSiteResourceName
 
 @description('The API user-assigned managed identity principal ID.')
 output apiPid string = webSiteBackend.outputs.systemAssignedMIPrincipalId!
 
-@description('The backend API app URL.')
-output apiAppUrl string = 'https://api-${solutionSuffix}.azurewebsites.net'
+@description('The chat backend API app URL.')
+output chatApiAppUrl string = 'https://${webSiteBackend.outputs.defaultHostname}'
 
-@description('The frontend web app URL.')
-output webAppUrl string = 'https://app-${solutionSuffix}.azurewebsites.net'
+@description('The chat frontend web app URL.')
+output chatWebAppUrl string = 'https://${webSiteChatFrontend.outputs.defaultHostname}'
+
+@description('The scenario backend API app URL.')
+output scenarioApiAppUrl string = 'https://${webSiteScenarioBackend.outputs.defaultHostname}'
+
+@description('The scenario frontend web app URL.')
+output scenarioWebAppUrl string = 'https://${webSiteScenarioFrontend.outputs.defaultHostname}'
 
 @description('The Application Insights connection string.')
 output applicationInsightsConnectionString string = enableMonitoring
