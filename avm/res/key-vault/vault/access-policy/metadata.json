@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Key Vault Access Policies",
+  "moduleDisplayName": "Key Vault - Access Policy",
   "moduleDescription": "This module deploys a Key Vault Access Policy.",
   "telemetryIdPrefix": "46d3xbcp.res.keyvault-accesspolicy",
   "canonicalType": "Microsoft.KeyVault/vaults/accessPolicies"

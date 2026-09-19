@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Kubernetes Runtime Load Balancers",
+  "moduleDisplayName": "Kubernetes Runtime Load Balancer",
   "moduleDescription": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services.",
   "telemetryIdPrefix": "46d3xbcp.res.kubernetesruntime-loadbalancer",
   "canonicalType": "Microsoft.KubernetesRuntime/loadBalancers",

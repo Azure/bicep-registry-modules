@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Management Plane",
+  "moduleDisplayName": "Azure Virtual Desktop (AVD) LZA - Management Plane",
   "moduleDescription": "This module deploys Management Plane.",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-management-plane",
   "canonicalType": "avd-lza/management-plane",

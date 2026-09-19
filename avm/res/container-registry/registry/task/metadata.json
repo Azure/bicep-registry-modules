@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Container Registries Tasks",
+  "moduleDisplayName": "Azure Container Registry (ACR) - Task",
   "moduleDescription": "Deploys an Azure Container Registry (ACR) Task that can be used to automate container image builds and other workflows ([ref](https://learn.microsoft.com/en-us/azure/container-registry/container-registry-tasks-overview)).",
   "telemetryIdPrefix": "46d3xbcp.res.containerregistry-registry-task",
   "canonicalType": "Microsoft.ContainerRegistry/registries/tasks"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "WCF Relay Authorization Rules",
+  "moduleDisplayName": "Relay Namespace - Wcf Relay - Authorization Rule",
   "moduleDescription": "This module deploys a WCF Relay Authorization Rule.",
   "telemetryIdPrefix": "46d3xbcp.res.relay-namespace-wcfrelayauthzrule",
   "canonicalType": "Microsoft.Relay/namespaces/wcfRelays/authorizationRules"

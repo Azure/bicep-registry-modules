@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Virtual Hub Route Tables",
+  "moduleDisplayName": "Virtual Hub - Hub Route Table",
   "moduleDescription": "This module deploys a Virtual Hub Route Table.",
   "telemetryIdPrefix": "46d3xbcp.res.network-virtualhub-hubroutetable",
   "canonicalType": "Microsoft.Network/virtualHubs/hubRouteTables"

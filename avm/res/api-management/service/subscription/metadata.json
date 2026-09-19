@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "API Management Service Subscriptions",
+  "moduleDisplayName": "API Management Service - Subscription",
   "moduleDescription": "This module deploys an API Management Service Subscription.",
   "telemetryIdPrefix": "46d3xbcp.res.apimgmt-subscription",
   "canonicalType": "Microsoft.ApiManagement/service/subscriptions"

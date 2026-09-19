@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Load Balancers",
+  "moduleDisplayName": "Load Balancer",
   "moduleDescription": "This module deploys a Load Balancer.",
   "telemetryIdPrefix": "46d3xbcp.res.network-loadbalancer",
   "alternativeNames": ["LB", "NLB"],

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Workspace",
+  "moduleDisplayName": "Azure Virtual Desktop (AVD) Workspace",
   "moduleDescription": "This module deploys an Azure Virtual Desktop Workspace.",
   "telemetryIdPrefix": "46d3xbcp.res.desktopvirtualization-workspace",
   "canonicalType": "Microsoft.DesktopVirtualization/workspaces",

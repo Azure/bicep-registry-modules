@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Autoscale Setting",
+  "moduleDisplayName": "Insights - Auto Scale Setting",
   "moduleDescription": "This module deploys Autoscale Setting.",
   "telemetryIdPrefix": "46d3xbcp.res.insights-autoscale-setting",
   "canonicalType": "Microsoft.Insights/autoscalesettings",

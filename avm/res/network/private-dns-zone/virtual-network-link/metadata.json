@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Private DNS Zone Virtual Network Link",
+  "moduleDisplayName": "Virtual Network Links",
   "moduleDescription": "This module deploys a Private DNS Zone Virtual Network Link.",
   "telemetryIdPrefix": "46d3xbcp.res.nw-privdnszonevnetlink",
   "canonicalType": "Microsoft.Network/privateDnsZones/virtualNetworkLinks"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Images",
+  "moduleDisplayName": "Image",
   "moduleDescription": "This module deploys a Compute Image.",
   "telemetryIdPrefix": "46d3xbcp.res.compute-image",
   "canonicalType": "Microsoft.Compute/images",

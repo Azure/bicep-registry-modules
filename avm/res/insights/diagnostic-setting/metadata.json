@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
+  "moduleDisplayName": "Diagnostic Setting",
   "moduleDescription": "This module deploys a Subscription wide export of the Activity Log.",
   "telemetryIdPrefix": "46d3xbcp.res.insights-diagnosticsetting",
   "canonicalType": "Microsoft.Insights/diagnosticSettings",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "SQL Server Instance Pool",
+  "moduleDisplayName": "SQL Instance Pool",
   "moduleDescription": "This module deploys an Azure SQL Server Instance Pool.",
   "telemetryIdPrefix": "46d3xbcp.res.sql-instancepool",
   "canonicalType": "Microsoft.Sql/instancePools",
