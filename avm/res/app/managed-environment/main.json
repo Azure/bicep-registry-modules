@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "2511855123089425316"
+      "version": "0.43.8.12551",
+      "templateHash": "2871618766967457343"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -64,6 +64,47 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a certificate."
+      }
+    },
+    "dotNetComponentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the .NET Component."
+          }
+        },
+        "componentType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Type of the .NET Component."
+          }
+        },
+        "configurations": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/configurations"
+            },
+            "description": "Optional. List of .NET Components configuration properties."
+          },
+          "nullable": true
+        },
+        "serviceBinds": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/serviceBinds"
+            },
+            "description": "Optional. List of .NET Components that are bound to the .NET component."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a .NET Component."
       }
     },
     "storageType": {
@@ -955,6 +996,16 @@
       "metadata": {
         "description": "Optional. The AppLogsConfiguration for the Managed Environment."
       }
+    },
+    "dotNetComponents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dotNetComponentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of .NET Components to deploy in the environment."
+      }
     }
   },
   "variables": {
@@ -1165,8 +1216,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14989290710577039100"
+              "version": "0.43.8.12551",
+              "templateHash": "544728002505550197"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -1280,6 +1331,166 @@
         "managedEnvironment"
       ]
     },
+    "managedEnvironment_dotNetComponent": {
+      "copy": {
+        "name": "managedEnvironment_dotNetComponent",
+        "count": "[length(coalesce(parameters('dotNetComponents'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}-Managed-Environment-DotNetComponent-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('dotNetComponents'), createArray())[copyIndex()].name]"
+          },
+          "managedEnvironmentName": {
+            "value": "[parameters('name')]"
+          },
+          "componentType": {
+            "value": "[coalesce(parameters('dotNetComponents'), createArray())[copyIndex()].componentType]"
+          },
+          "configurations": {
+            "value": "[tryGet(coalesce(parameters('dotNetComponents'), createArray())[copyIndex()], 'configurations')]"
+          },
+          "serviceBinds": {
+            "value": "[tryGet(coalesce(parameters('dotNetComponents'), createArray())[copyIndex()], 'serviceBinds')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.43.8.12551",
+              "templateHash": "7676530607928911404"
+            },
+            "name": "App ManagedEnvironments DotNetComponents",
+            "description": "This module deploys an App Managed Environment .NET Component."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the .NET Component."
+              }
+            },
+            "managedEnvironmentName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
+              }
+            },
+            "componentType": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Type of the .NET Component."
+              }
+            },
+            "configurations": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/configurations"
+                },
+                "description": "Optional. List of .NET Components configuration properties."
+              },
+              "nullable": true
+            },
+            "serviceBinds": {
+              "type": "array",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/managedEnvironments/dotNetComponents@2025-10-02-preview#properties/properties/properties/serviceBinds"
+                },
+                "description": "Optional. List of .NET Components that are bound to the .NET component."
+              },
+              "nullable": true
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.app-managedenvironment-dotnetcomp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "managedEnvironment": {
+              "existing": true,
+              "type": "Microsoft.App/managedEnvironments",
+              "apiVersion": "2025-10-02-preview",
+              "name": "[parameters('managedEnvironmentName')]"
+            },
+            "dotNetComponent": {
+              "type": "Microsoft.App/managedEnvironments/dotNetComponents",
+              "apiVersion": "2025-10-02-preview",
+              "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
+              "properties": {
+                "componentType": "[parameters('componentType')]",
+                "configurations": "[parameters('configurations')]",
+                "serviceBinds": "[parameters('serviceBinds')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the .NET Component."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the .NET Component."
+              },
+              "value": "[resourceId('Microsoft.App/managedEnvironments/dotNetComponents', parameters('managedEnvironmentName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the .NET Component was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "managedEnvironment"
+      ]
+    },
     "managedEnvironment_certificate": {
       "condition": "[not(empty(parameters('certificate')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1323,8 +1534,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "4830934724584315790"
+              "version": "0.43.8.12551",
+              "templateHash": "1502949762273381803"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
