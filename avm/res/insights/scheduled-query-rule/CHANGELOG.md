@@ -6,7 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Allow usage of kind 'SimpleLogAlert'
+- Allow usage of kind `SimpleLogAlert`
 
 ### Breaking Changes
 
