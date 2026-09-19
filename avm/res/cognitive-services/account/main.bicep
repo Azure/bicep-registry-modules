@@ -404,7 +404,7 @@ module cognitiveService_deployments 'deployment/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-cognitiveservice-deployment-${index}'
     params: {
       accountName: cognitiveService.name
-      name: deploymentConfiguration.?name ?? '${name}-deployments'
+      name: deploymentConfiguration.name
       model: deploymentConfiguration.model
       sku: deploymentConfiguration.?sku
       raiPolicyName: deploymentConfiguration.?raiPolicyName
@@ -635,8 +635,8 @@ import { modelProviderDataType } from 'deployment/main.bicep'
 @export()
 @description('The type for a Cognitive Services account deployment.')
 type deploymentType = {
-  @description('Optional. The name of the Cognitive Services account deployment.')
-  name: string?
+  @description('Required. The name of the Cognitive Services account deployment. Must be unique within the account.')
+  name: string
 
   @description('Required. Properties of the deployment model.')
   model: resourceInput<'Microsoft.CognitiveServices/accounts/deployments@2025-06-01'>.properties.model
