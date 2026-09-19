@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/cognitive-services/account/CHANGELOG.md).
 
+## 0.20.0
+
+### Changes
+
+- Removed the `${name}-deployments` default for `deployments[*].name`, which caused a template validation error (`... is defined multiple times in a template`) as soon as more than one model deployment was specified (fixes [#4794](https://github.com/Azure/bicep-registry-modules/issues/4794)).
+
+### Breaking Changes
+
+- The `name` property of the `deployments` parameter items is now required, as each `Microsoft.CognitiveServices/accounts/deployments` resource must have a unique name. Specify an explicit name for every model deployment.
+
 ## 0.19.1
 
 ### Changes

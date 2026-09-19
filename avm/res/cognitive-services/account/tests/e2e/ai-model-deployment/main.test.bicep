@@ -61,6 +61,18 @@ module testDeployment '../../../main.bicep' = [
             capacity: 10
           }
         }
+        {
+          name: 'text-embedding-3-small'
+          model: {
+            format: 'OpenAI'
+            name: 'text-embedding-3-small'
+            version: '1'
+          }
+          sku: {
+            name: 'GlobalStandard'
+            capacity: 10
+          }
+        }
       ]
     }
   }
