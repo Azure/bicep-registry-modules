@@ -34,7 +34,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults (Subscription scope)](#example-1-using-only-defaults-subscription-scope)
 - [Using large parameter set (Subscription scope)](#example-2-using-large-parameter-set-subscription-scope)
-- [WAF-aligned (Subscription scope)](#example-3-waf-aligned-subscription-scope)
+- [Using custom notifications (Subscription scope)](#example-3-using-custom-notifications-subscription-scope)
+- [WAF-aligned (Subscription scope)](#example-4-waf-aligned-subscription-scope)
 
 ### Example 1: _Using only defaults (Subscription scope)_
 
@@ -235,7 +236,126 @@ param thresholdType = 'Forecasted'
 </details>
 <p>
 
-### Example 3: _WAF-aligned (Subscription scope)_
+### Example 3: _Using custom notifications (Subscription scope)_
+
+This instance deploys the module using per-threshold notification control with mixed actual and forecasted notifications.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sub-scope.notifications]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module budget 'br/public:avm/res/consumption/budget/sub-scope:<version>' = {
+  params: {
+    // Required parameters
+    amount: 500
+    name: 'rcbsubnot001'
+    // Non-required parameters
+    contactEmails: [
+      'dummy@contoso.com'
+    ]
+    location: '<location>'
+    notifications: [
+      {
+        operator: 'GreaterThan'
+        threshold: 75
+        thresholdType: 'Actual'
+      }
+      {
+        operator: 'GreaterThanOrEqualTo'
+        threshold: 100
+        thresholdType: 'Forecasted'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "amount": {
+      "value": 500
+    },
+    "name": {
+      "value": "rcbsubnot001"
+    },
+    // Non-required parameters
+    "contactEmails": {
+      "value": [
+        "dummy@contoso.com"
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "notifications": {
+      "value": [
+        {
+          "operator": "GreaterThan",
+          "threshold": 75,
+          "thresholdType": "Actual"
+        },
+        {
+          "operator": "GreaterThanOrEqualTo",
+          "threshold": 100,
+          "thresholdType": "Forecasted"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/consumption/budget/sub-scope:<version>'
+
+// Required parameters
+param amount = 500
+param name = 'rcbsubnot001'
+// Non-required parameters
+param contactEmails = [
+  'dummy@contoso.com'
+]
+param location = '<location>'
+param notifications = [
+  {
+    operator: 'GreaterThan'
+    threshold: 75
+    thresholdType: 'Actual'
+  }
+  {
+    operator: 'GreaterThanOrEqualTo'
+    threshold: 100
+    thresholdType: 'Forecasted'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned (Subscription scope)_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -337,12 +457,13 @@ param contactEmails = [
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
 | [`filter`](#parameter-filter) | object | The filter to use for restricting which resources are considered within the budget. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
+| [`notifications`](#parameter-notifications) | array | The list of notifications to configure, each with independent operator and threshold type. |
 | [`operator`](#parameter-operator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
 | [`resourceGroupFilter`](#parameter-resourcegroupfilter) | array | The list of resource groups that contain the resources that are to be considered within the budget. |
 | [`startDate`](#parameter-startdate) | string | The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month). |
-| [`thresholds`](#parameter-thresholds) | array | Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
-| [`thresholdType`](#parameter-thresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+| [`thresholds`](#parameter-thresholds) | array | Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000. |
+| [`thresholdType`](#parameter-thresholdtype) | string | Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
 
 ### Parameter: `amount`
 
@@ -425,6 +546,59 @@ Location deployment metadata.
 - Type: string
 - Default: `[deployment().location]`
 
+### Parameter: `notifications`
+
+The list of notifications to configure, each with independent operator and threshold type.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`operator`](#parameter-notificationsoperator) | string | The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`. |
+| [`threshold`](#parameter-notificationsthreshold) | int | Percent threshold of budget for when to get a notification. Must be between 1 and 1000. |
+| [`thresholdType`](#parameter-notificationsthresholdtype) | string | The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`. |
+
+### Parameter: `notifications.operator`
+
+The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EqualTo'
+    'GreaterThan'
+    'GreaterThanOrEqualTo'
+  ]
+  ```
+
+### Parameter: `notifications.threshold`
+
+Percent threshold of budget for when to get a notification. Must be between 1 and 1000.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 1000
+
+### Parameter: `notifications.thresholdType`
+
+The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Actual'
+    'Forecasted'
+  ]
+  ```
+
 ### Parameter: `operator`
 
 The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.
@@ -478,7 +652,7 @@ The start date for the budget. Start date should be the first day of the month a
 
 ### Parameter: `thresholds`
 
-Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
+Deprecated: use `notifications` for per-threshold control. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000.
 
 - Required: No
 - Type: array
@@ -495,7 +669,7 @@ Percent thresholds of budget for when to get a notification. Can be up to 5 thre
 
 ### Parameter: `thresholdType`
 
-The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
+Deprecated: use `notifications` for per-threshold control. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.
 
 - Required: No
 - Type: string
