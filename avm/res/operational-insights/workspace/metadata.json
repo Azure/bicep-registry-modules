@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Log Analytics Workspaces",
+  "moduleDisplayName": "Log Analytics Workspace",
   "moduleDescription": "This module deploys a Log Analytics Workspace.",
   "telemetryIdPrefix": "46d3xbcp.res.operationalinsights-workspace",
   "canonicalType": "Microsoft.OperationalInsights/workspaces",

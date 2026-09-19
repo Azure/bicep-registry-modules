@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Virtual Machine Image Templates",
+  "moduleDisplayName": "Virtual Machine Image Template",
   "moduleDescription": "This module deploys a Virtual Machine Image Template that can be consumed by the Azure Image Builder (AIB).",
   "telemetryIdPrefix": "46d3xbcp.res.virtualmachineimages-imagetemplate",
   "canonicalType": "Microsoft.VirtualMachineImages/imageTemplates",

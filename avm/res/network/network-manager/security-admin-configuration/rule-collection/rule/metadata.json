@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Network Manager Security Admin Configuration Rule Collection Rules",
+  "moduleDisplayName": "Network Manager - Security Admin Configuration - Rule Coll - Rule",
   "moduleDescription": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
   "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-secadmcfgrulecollrule",
   "canonicalType": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules"

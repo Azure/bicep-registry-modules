@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Kubernetes Configuration Flux Configurations",
+  "moduleDisplayName": "Kubernetes Configuration Flux Configuration",
   "moduleDescription": "This module deploys a Kubernetes Configuration Flux Configuration.",
   "telemetryIdPrefix": "46d3xbcp.res.kubernetesconfiguration-fluxconfig",
   "canonicalType": "Microsoft.KubernetesConfiguration/fluxConfigurations",

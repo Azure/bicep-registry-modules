@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "API Center Services",
+  "moduleDisplayName": "API Center Service",
   "moduleDescription": "This module deploys an API Center Service.",
   "telemetryIdPrefix": "46d3xbcp.res.apicenter-service",
   "canonicalType": "Microsoft.ApiCenter/services",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Site Deployment Extension ",
+  "moduleDisplayName": "Web/Function App - Extension",
   "moduleDescription": "This module deploys a Site extension for MSDeploy.",
   "telemetryIdPrefix": "46d3xbcp.res.web-site-extension",
   "canonicalType": "Microsoft.Web/sites/extensions"

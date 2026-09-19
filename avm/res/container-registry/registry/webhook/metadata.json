@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Azure Container Registry (ACR) Webhooks",
+  "moduleDisplayName": "Azure Container Registry (ACR) - Webhook",
   "moduleDescription": "This module deploys an Azure Container Registry (ACR) Webhook.",
   "telemetryIdPrefix": "46d3xbcp.res.containerregistry-registry-webhook",
   "canonicalType": "Microsoft.ContainerRegistry/registries/webhooks"
