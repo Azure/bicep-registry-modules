@@ -84,13 +84,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      certificateProfiles: [
-        {
-          name: 'testprofile'
-          identityValidationId: guid(deployment().name)
-          profileType: 'PrivateTrust'
-        }
-      ]
     }
   }
 ]

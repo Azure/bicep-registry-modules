@@ -145,13 +145,6 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
     name: 'cermax001'
     skuName: 'Basic'
     // Non-required parameters
-    certificateProfiles: [
-      {
-        identityValidationId: '<identityValidationId>'
-        name: 'testprofile'
-        profileType: 'PrivateTrust'
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -203,15 +196,6 @@ module codeSigningAccount 'br/public:avm/res/code-signing/code-signing-account:<
       "value": "Basic"
     },
     // Non-required parameters
-    "certificateProfiles": {
-      "value": [
-        {
-          "identityValidationId": "<identityValidationId>",
-          "name": "testprofile",
-          "profileType": "PrivateTrust"
-        }
-      ]
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -265,13 +249,6 @@ using 'br/public:avm/res/code-signing/code-signing-account:<version>'
 param name = 'cermax001'
 param skuName = 'Basic'
 // Non-required parameters
-param certificateProfiles = [
-  {
-    identityValidationId: '<identityValidationId>'
-    name: 'testprofile'
-    profileType: 'PrivateTrust'
-  }
-]
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
