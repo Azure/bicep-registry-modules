@@ -39,15 +39,15 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
   location: location
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2026-01-01' = {
   name: eventHubNamespaceName
   location: location
 
-  resource eventHub 'eventhubs@2024-01-01' = {
+  resource eventHub 'eventhubs@2026-01-01' = {
     name: eventHubNamespaceEventHubName
   }
 
-  resource authorizationRule 'authorizationRules@2024-01-01' = {
+  resource authorizationRule 'authorizationRules@2026-01-01' = {
     name: 'RootManageSharedAccessKey'
     properties: {
       rights: [
