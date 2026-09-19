@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Web/Function Apps Slot Host Name Bindings",
+  "moduleDescription": "This module deploys a Site Slot Host Name Binding.",
+  "canonicalType": "Microsoft.Web/sites/slots/hostNameBindings"
+}

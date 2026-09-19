@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.event-grid.topic.yml"
       - "avm/res/event-grid/topic/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/event-grid/topic"

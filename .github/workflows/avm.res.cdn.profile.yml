@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.cdn.profile.yml"
       - "avm/res/cdn/profile/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/cdn/profile"

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Create Kv Ssh Key Pair",
+  "moduleDescription": "This module deploys Create Kv Ssh Key Pair.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.deploymentscript-createkvsshkeypair",
+  "canonicalType": "deployment-script/create-kv-ssh-key-pair",
+  "owners": ["vlahane"]
+}

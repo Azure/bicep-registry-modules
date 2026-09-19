@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure NetApp Files Capacity Pool Volumes",
+  "moduleDescription": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
+  "telemetryIdPrefix": "46d3xbcp.res.netapp-netappaccount-capacitypoolvol",
+  "canonicalType": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes"
+}

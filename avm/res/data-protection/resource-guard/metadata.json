@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Resource Guard",
+  "moduleDescription": "This module deploys Resource Guard.",
+  "telemetryIdPrefix": "46d3xbcp.res.data-protection-resource-guard",
+  "canonicalType": "Microsoft.DataProtection/resourceGuards",
+  "owners": ["andyleejordan"]
+}

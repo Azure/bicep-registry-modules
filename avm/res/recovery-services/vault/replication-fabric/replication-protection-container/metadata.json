@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Recovery Services Vault Replication Fabric Replication Protection Containers",
+  "moduleDescription": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
+  "telemetryIdPrefix": "46d3xbcp.res.recsvcs-vault-repfabrepprotcontainer",
+  "canonicalType": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers"
+}

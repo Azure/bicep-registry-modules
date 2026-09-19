@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "ExpressRoute Circuits",
+  "moduleDescription": "This module deploys an Express Route Circuit.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-expressroutecircuit",
+  "alternativeNames": ["ER Circuit"],
+  "canonicalType": "Microsoft.Network/expressRouteCircuits",
+  "owners": ["arnoldna"]
+}

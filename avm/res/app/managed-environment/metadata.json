@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "App ManagedEnvironments",
+  "moduleDescription": "This module deploys an App Managed Environment (also known as a Container App Environment).",
+  "telemetryIdPrefix": "46d3xbcp.res.app-managedenvironment",
+  "canonicalType": "Microsoft.App/managedEnvironments",
+  "owners": ["abhishekaryams"]
+}

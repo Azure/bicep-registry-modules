@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Resource-scoped role assignment",
+  "moduleDescription": "This module deploys a Role Assignment for a specific resource.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.authorization-resourceroleassignment",
+  "canonicalType": "authorization/resource-role-assignment",
+  "owners": ["peterbud"]
+}

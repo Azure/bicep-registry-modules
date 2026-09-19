@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.azd.acr-container-app.yml"
       - "avm/ptn/azd/acr-container-app/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/azd/acr-container-app"

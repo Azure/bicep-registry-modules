@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.app.paas-ase-cosmosdb-tier4.yml"
       - "avm/ptn/app/paas-ase-cosmosdb-tier4/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/app/paas-ase-cosmosdb-tier4"

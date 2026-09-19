@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.ddos-protection-plan.yml"
       - "avm/res/network/ddos-protection-plan/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/ddos-protection-plan"

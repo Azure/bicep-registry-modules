@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Container App Auth Configs",
+  "moduleDescription": "This module deploys Container App Auth Configs.",
+  "telemetryIdPrefix": "46d3xbcp.res.app-containerapp-authconfig",
+  "canonicalType": "Microsoft.App/containerApps/authConfigs"
+}

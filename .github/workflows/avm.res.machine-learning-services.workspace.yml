@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.machine-learning-services.workspace.yml"
       - "avm/res/machine-learning-services/workspace/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/machine-learning-services/workspace"

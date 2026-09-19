@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Networking",
+  "moduleDescription": "This module deploys Networking.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-networking",
+  "canonicalType": "avd-lza/networking",
+  "owners": []
+}

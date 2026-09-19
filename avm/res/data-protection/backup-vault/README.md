@@ -74,9 +74,6 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     infrastructureEncryption: 'Enabled'
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
     }
   }
 }
@@ -114,10 +111,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "systemAssigned": true
       }
     }
   }
@@ -146,9 +140,6 @@ param customerManagedKey = {
 param infrastructureEncryption = 'Enabled'
 param managedIdentities = {
   systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 
@@ -559,6 +550,9 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     }
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -841,7 +835,10 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -1115,6 +1112,9 @@ param lock = {
 }
 param managedIdentities = {
   systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {

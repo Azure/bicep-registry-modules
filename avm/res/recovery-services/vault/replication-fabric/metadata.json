@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Recovery Services Vault Replication Fabrics",
+  "moduleDescription": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario.",
+  "telemetryIdPrefix": "46d3xbcp.res.recsvcs-vault-repfab",
+  "canonicalType": "Microsoft.RecoveryServices/vaults/replicationFabrics"
+}

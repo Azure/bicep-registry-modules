@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Fabric Capacities",
+  "moduleDescription": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.",
+  "telemetryIdPrefix": "46d3xbcp.res.fabric-capacity",
+  "canonicalType": "Microsoft.Fabric/capacities",
+  "owners": ["mswantek68", "cmaneu"]
+}

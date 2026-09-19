@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "SQL Managed Instance Database Backup Short-Term Retention Policies",
+  "moduleDescription": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy.",
+  "telemetryIdPrefix": "46d3xbcp.res.sql-mi-dbbckpshortermretpolicy",
+  "canonicalType": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies"
+}

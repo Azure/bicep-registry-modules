@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.net-app.net-app-account.yml"
       - "avm/res/net-app/net-app-account/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/net-app/net-app-account"

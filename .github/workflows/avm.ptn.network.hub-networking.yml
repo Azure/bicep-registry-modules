@@ -28,6 +28,7 @@ on:
       - ".github/workflows/avm.ptn.network.hub-networking.yml"
       - "avm/ptn/network/hub-networking/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 env:
   modulePath: "avm/ptn/network/hub-networking"
   workflowPath: ".github/workflows/avm.ptn.network.hub-networking.yml"

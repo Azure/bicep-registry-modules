@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.authorization.policy-exemption.yml"
       - "avm/ptn/authorization/policy-exemption/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/authorization/policy-exemption"

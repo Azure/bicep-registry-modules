@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.hybrid-compute.gateway.yml"
       - "avm/res/hybrid-compute/gateway/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/hybrid-compute/gateway"

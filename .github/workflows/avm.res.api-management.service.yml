@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.api-management.service.yml"
       - "avm/res/api-management/service/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/api-management/service"

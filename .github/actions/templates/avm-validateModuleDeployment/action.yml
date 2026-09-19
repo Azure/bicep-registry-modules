@@ -116,9 +116,17 @@ runs:
       env:
         SUBSCRIPTION_SELECTION_SEED: ${{ inputs.subscriptionSelectionSeed }}
         SUBSCRIPTION_JOB_INDEX: ${{ inputs.subscriptionJobIndex }}
+        MANAGEMENT_GROUP_ID: ${{ inputs.managementGroupId }}
       run: |
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
+        if ($env:AVM_TEST_TENANT -ceq 'bami') {
+          foreach ($name in @('TEST_SUBSCRIPTION_IDS', 'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID')) {
+            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+              throw "Missing BAMI configuration for [$name]."
+            }
+          }
+        }
         $functionInput = @{
           TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
           FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
@@ -158,6 +166,11 @@ runs:
             'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
           )
+          if ($env:AVM_TEST_TENANT -ceq 'bami' -and @(
+            $exceptionModulePaths | Where-Object { $modulePath -eq $_ -or $modulePath.StartsWith("$_/") }
+          ).Count -gt 0) {
+            throw "Missing BAMI candidate authentication configuration: the AZURE_CREDENTIALS exception is not supported for [$modulePath]."
+          }
           if ($exceptionModulePaths.Contains($modulePath)) {
             $oidcException = 'true'
             Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose

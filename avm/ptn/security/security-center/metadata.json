@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Security Center (Defender for Cloud)",
+  "moduleDescription": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.\n\nFor the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.\n",
+  "telemetryIdPrefix": "46d3xbcp.ptn.security-securitycenter",
+  "canonicalType": "security/security-center",
+  "owners": ["oZakari", "jtracey93"]
+}

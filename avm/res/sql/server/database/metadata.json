@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "SQL Server Database",
+  "moduleDescription": "This module deploys an Azure SQL Server Database.",
+  "telemetryIdPrefix": "46d3xbcp.res.sql-serverdb",
+  "canonicalType": "Microsoft.Sql/servers/databases"
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "DevTest Lab Virtual Networks",
+  "moduleDescription": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
+  "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab-virtualnetwork",
+  "canonicalType": "Microsoft.DevTestLab/labs/virtualnetworks"
+}

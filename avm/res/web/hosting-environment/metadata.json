@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "App Service Environments",
+  "moduleDescription": "This module deploys an App Service Environment.",
+  "telemetryIdPrefix": "46d3xbcp.res.web-hostingenvironment",
+  "alternativeNames": ["ASE"],
+  "canonicalType": "Microsoft.Web/hostingEnvironments",
+  "owners": ["tsc-buddy", "pankajagrawal16"]
+}

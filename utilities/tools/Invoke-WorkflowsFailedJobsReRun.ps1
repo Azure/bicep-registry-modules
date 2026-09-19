@@ -196,7 +196,7 @@ function Invoke-WorkflowsFailedJobsReRun {
         [string] $TargetBranch = 'main',
 
         [Parameter(Mandatory = $false)]
-        [string] $PipelineFilter = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish$)',
+        [string] $PipelineFilter = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish(?: \[EXPERIMENTAL\])?$)',
 
         [Parameter(Mandatory = $false)]
         [string] $RepositoryOwner = 'Azure',

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.express-route-port.yml"
       - "avm/res/network/express-route-port/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/express-route-port"

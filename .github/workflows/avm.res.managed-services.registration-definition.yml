@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.managed-services.registration-definition.yml"
       - "avm/res/managed-services/registration-definition/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/managed-services/registration-definition"

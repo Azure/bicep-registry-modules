@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.virtual-hub.yml"
       - "avm/res/network/virtual-hub/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/virtual-hub"

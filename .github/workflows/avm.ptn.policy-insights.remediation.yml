@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.policy-insights.remediation.yml"
       - "avm/ptn/policy-insights/remediation/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/policy-insights/remediation"

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.app.iaas-vm-cosmosdb-tier4.yml"
       - "avm/ptn/app/iaas-vm-cosmosdb-tier4/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/app/iaas-vm-cosmosdb-tier4"

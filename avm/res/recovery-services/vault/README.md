@@ -79,11 +79,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -111,13 +106,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -140,11 +128,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 

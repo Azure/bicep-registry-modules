@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Public IP Prefixes",
+  "moduleDescription": "This module deploys a Public IP Prefix.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-publicipprefix",
+  "alternativeNames": ["PIP Prefix"],
+  "canonicalType": "Microsoft.Network/publicIPPrefixes",
+  "owners": ["krbar"]
+}

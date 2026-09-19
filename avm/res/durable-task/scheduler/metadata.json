@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Scheduler",
+  "moduleDescription": "This module deploys Scheduler.",
+  "telemetryIdPrefix": "46d3xbcp.res.durable-task-scheduler",
+  "canonicalType": "Microsoft.DurableTask/schedulers",
+  "owners": ["greenie-msft"]
+}

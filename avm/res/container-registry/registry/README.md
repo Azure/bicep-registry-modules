@@ -146,11 +146,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
     publicNetworkAccess: 'Disabled'
   }
 }
@@ -186,13 +181,6 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
     "publicNetworkAccess": {
       "value": "Disabled"
     }
@@ -220,11 +208,6 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param location = '<location>'
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
 param publicNetworkAccess = 'Disabled'
 ```
 

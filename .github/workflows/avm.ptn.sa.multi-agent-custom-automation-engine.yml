@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.multi-agent-custom-automation-engine.yml"
       - "avm/ptn/sa/multi-agent-custom-automation-engine/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/multi-agent-custom-automation-engine"

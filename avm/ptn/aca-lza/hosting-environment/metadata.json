@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Container Apps Landing Zone Accelerator",
+  "moduleDescription": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework",
+  "telemetryIdPrefix": "46d3xbcp.ptn.acalza-hostingenvironment",
+  "canonicalType": "aca-lza/hosting-environment",
+  "owners": ["tthodoris"]
+}

@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.compute.virtual-machine-scale-set.yml"
       - "avm/res/compute/virtual-machine-scale-set/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/compute/virtual-machine-scale-set"

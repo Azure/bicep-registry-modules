@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "avm/ptn/azd/apim-api",
+  "moduleDescription": "Creates and configure an API within an API Management service instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.azd-apimapi",
+  "alternativeNames": ["Azure Developer CLI - API Management"],
+  "canonicalType": "azd/apim-api",
+  "owners": ["JeffreyCA"]
+}

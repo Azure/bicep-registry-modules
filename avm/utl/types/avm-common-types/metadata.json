@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Default interface types for AVM modules",
+  "moduleDescription": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n",
+  "telemetryIdPrefix": "46d3xbcp.utl.types-avmcommontypes",
+  "canonicalType": "types/avm-common-types",
+  "owners": ["AlexanderSehr"]
+}

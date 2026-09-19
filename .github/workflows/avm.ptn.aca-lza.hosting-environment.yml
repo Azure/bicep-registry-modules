@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.aca-lza.hosting-environment.yml"
       - "avm/ptn/aca-lza/hosting-environment/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/aca-lza/hosting-environment"

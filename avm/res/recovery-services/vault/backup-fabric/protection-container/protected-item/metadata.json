@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Recovery Service Vaults Protection Container Protected Item",
+  "moduleDescription": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
+  "telemetryIdPrefix": "46d3xbcp.res.recsvcs-vault-bckpfabprotcontprotitm",
+  "canonicalType": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems"
+}

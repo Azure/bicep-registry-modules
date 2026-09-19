@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.lz.sub-vending.yml"
       - "avm/ptn/lz/sub-vending/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/lz/sub-vending"

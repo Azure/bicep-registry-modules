@@ -134,11 +134,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
   }
 }
 ```
@@ -166,13 +161,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
     }
   }
 }
@@ -195,11 +183,6 @@ param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param managedIdentities = {
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
 }
 ```
 

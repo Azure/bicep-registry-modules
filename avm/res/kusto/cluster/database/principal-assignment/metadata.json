@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Kusto Cluster Database Principal Assignments",
+  "moduleDescription": "This module deploys a Kusto Cluster Database Principal Assignment.",
+  "telemetryIdPrefix": "46d3xbcp.res.kusto-cluster-dbprinassignment",
+  "canonicalType": "Microsoft.Kusto/clusters/databases/principalAssignments"
+}

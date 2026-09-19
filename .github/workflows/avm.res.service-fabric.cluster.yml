@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.service-fabric.cluster.yml"
       - "avm/res/service-fabric/cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/service-fabric/cluster"

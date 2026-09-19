@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.network.ip-group.yml"
       - "avm/res/network/ip-group/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/network/ip-group"

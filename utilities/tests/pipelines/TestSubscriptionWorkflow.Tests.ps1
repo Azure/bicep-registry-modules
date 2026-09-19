@@ -19,6 +19,10 @@ Describe 'Test subscription workflow integration' {
         $exceptionStep = $action.runs.steps | Where-Object { $_.id -eq 'set-oidc-exception' }
         $cleanupPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.deployment.history.cleanup.yml'
         $cleanupWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $cleanupPath -Raw)
+        $psrulePath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePSRule' 'action.yml'
+        $psrule = ConvertFrom-Yaml -Yaml (Get-Content -Path $psrulePath -Raw)
+        $ast = [System.Management.Automation.Language.Parser]::ParseInput($psrule.runs.steps[0].with.inlineScript, [ref] $null, [ref] $null)
+        $psruleSelection = $ast.Find({ param($node) $node -is [System.Management.Automation.Language.IfStatementAst] -and $node.Extent.Text.StartsWith('if ($env:AVM_TEST_TENANT') }, $true).Extent.Text
         $subscriptions = @(
             @{ id = '11111111-1111-1111-1111-111111111111'; name = 'test-one' }
             @{ id = '22222222-2222-2222-2222-222222222222'; name = 'test-two' }
@@ -28,7 +32,8 @@ Describe 'Test subscription workflow integration' {
         $environmentNames = @(
             'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'TEST_SUBSCRIPTION_IDS', 'VALIDATE_SUBSCRIPTION_ID',
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
-            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS'
+            'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
+            'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID'
         )
 
         function Get-StepOutput {
@@ -56,6 +61,9 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_SUBSCRIPTION_ID = '44444444-4444-4444-4444-444444444444'
         $env:SUBSCRIPTION_SELECTION_SEED = '12345'
         $env:SUBSCRIPTION_JOB_INDEX = '0'
+        $env:VALIDATE_CLIENT_ID = 'test-client'
+        $env:VALIDATE_TENANT_ID = 'test-tenant'
+        $env:MANAGEMENT_GROUP_ID = 'test-management-group'
     }
 
     AfterEach {
@@ -81,8 +89,24 @@ Describe 'Test subscription workflow integration' {
         $initializer.if | Should -Match "deploymentValidation == 'true'"
         $deployment.needs | Should -Contain 'job_initialize_subscription_selection'
         $deployment.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
-        $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ vars.TEST_SUBSCRIPTION_IDS }}'
-        $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
+        $workflow.env.AVM_TEST_TENANT | Should -Be '${{ case(contains(fromJSON(vars.TEST_BAMI_MODULE_PATHS || ''[]''), inputs.modulePath), ''bami'', ''legacy'') }}'
+        $workflow.env.ARM_MGMTGROUP_ID | Should -Be '${{ secrets.ARM_MGMTGROUP_ID }}'
+        $deploymentStep.with.managementGroupId | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}'
+        $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
+        $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_SUBSCRIPTION_IDS, vars.TEST_SUBSCRIPTION_IDS) }}'
+        $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_BICEP_CLIENT_ID, secrets.VALIDATE_CLIENT_ID) }}'
+        $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_TENANT_ID, secrets.VALIDATE_TENANT_ID) }}'
+        $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', secrets.VALIDATE_SUBSCRIPTION_ID) }}'
+        $deploymentStep.env.AZURE_CREDENTIALS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', secrets.AZURE_CREDENTIALS) }}'
+        $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', vars.CI_KEY_VAULT_NAME) }}'
+        $deployment.environment | Should -Be 'avm-validation'
+        @($deployment.env.Keys) | Should -Not -Contain 'VALIDATE_CLIENT_ID'
+        foreach ($jobName in @('job_psrule_must', 'job_psrule_opt')) {
+            $step = $workflow.jobs[$jobName].steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModulePSRule' }
+            $step.with.managementGroupId | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}'
+            $step.env.VALIDATE_TENANT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_TENANT_ID, '''') }}'
+            $step.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_SUBSCRIPTION_IDS, '''') }}'
+        }
         $deploymentStep.with.subscriptionSelectionSeed | Should -Be '${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}'
         $deploymentStep.with.subscriptionJobIndex | Should -Be '${{ strategy.job-index }}'
     }
@@ -135,6 +159,57 @@ Describe 'Test subscription workflow integration' {
         . ([scriptblock]::Create($selectionStep.run))
 
         (Get-StepOutput).subscriptionId | Should -Be $env:VALIDATE_SUBSCRIPTION_ID
+    }
+
+    It 'Selects the expected subscription for module list <modulePaths>' -ForEach @(
+        @{ modulePaths = $null; bami = $false }
+        @{ modulePaths = ''; bami = $false }
+        @{ modulePaths = '[]'; bami = $false }
+        @{ modulePaths = '["avm/res/storage/storage-account"]'; bami = $false }
+        @{ modulePaths = '["avm/res/dev-test-lab/lab"]'; bami = $true }
+    ) {
+        $paths = ConvertFrom-Json -InputObject ($modulePaths ? $modulePaths : '[]') -NoEnumerate
+        $selected = $paths -contains 'avm/res/dev-test-lab/lab'
+        $selected | Should -Be $bami
+        $env:AVM_TEST_TENANT = $selected ? 'bami' : 'legacy'
+        $legacyId = $env:VALIDATE_SUBSCRIPTION_ID
+        $env:TEST_SUBSCRIPTION_IDS = $selected ? $subscriptionJson : ''
+        $env:VALIDATE_SUBSCRIPTION_ID = $selected ? '' : $legacyId
+
+        . ([scriptblock]::Create($selectionStep.run))
+
+        if ($bami) {
+            (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
+            (Get-StepOutput).subscriptionId | Should -Not -Be $legacyId
+        } else {
+            (Get-StepOutput).subscriptionId | Should -Be $legacyId
+        }
+    }
+
+    It 'Rejects missing selected BAMI <setting> before login without using legacy fallback' -ForEach @(
+        @{ setting = 'TEST_SUBSCRIPTION_IDS' }
+        @{ setting = 'VALIDATE_CLIENT_ID' }
+        @{ setting = 'VALIDATE_TENANT_ID' }
+        @{ setting = 'MANAGEMENT_GROUP_ID' }
+    ) {
+        $env:AVM_TEST_TENANT = 'bami'
+        [Environment]::SetEnvironmentVariable($setting, '')
+
+        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw "*Missing BAMI configuration for [[]$setting[]]*"
+        (Get-StepOutput).Count | Should -Be 0
+    }
+
+    It 'Reads the BAMI pool for PSRule only when selected' {
+        $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'legacy-static-token'; managementGroupId = 'test-management-group' } }
+        $env:TEST_SUBSCRIPTION_IDS = 'invalid-unused-candidate'
+        . ([scriptblock]::Create($psruleSelection))
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be 'legacy-static-token'
+
+        $env:AVM_TEST_TENANT = 'bami'
+        { . ([scriptblock]::Create($psruleSelection)) } | Should -Throw
+        $env:TEST_SUBSCRIPTION_IDS = $subscriptionJson
+        . ([scriptblock]::Create($psruleSelection))
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be $subscriptions[0].id
     }
 
     It 'Fails before login when the configured pool is invalid' {
@@ -206,6 +281,17 @@ Describe 'Test subscription workflow integration' {
 
         $outputs.oidcException | Should -Be 'false'
         $outputs.ContainsKey('azureCredentials') | Should -BeFalse
+    }
+
+    It 'Blocks the BAMI HCI credential exception but allows the lab canary OIDC path' {
+        $env:AVM_TEST_TENANT = 'bami'
+        $hciScript = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/azure-stack-hci/cluster')
+        { . ([scriptblock]::Create($hciScript)) } | Should -Throw '*AZURE_CREDENTIALS exception is not supported*'
+        (Get-StepOutput).Count | Should -Be 0
+
+        $labScript = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
+        $null = . ([scriptblock]::Create($labScript))
+        (Get-StepOutput).oidcException | Should -Be 'false'
     }
 
     It 'Uses the configured pool for both history cleanup logins' {

@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Community",
+  "moduleDescription": "This module deploys Community.",
+  "telemetryIdPrefix": "46d3xbcp.res.mission-community",
+  "canonicalType": "Microsoft.Mission/communities",
+  "owners": ["SvenAelterman"]
+}

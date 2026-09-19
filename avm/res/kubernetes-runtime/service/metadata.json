@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Service",
+  "moduleDescription": "This module deploys Service.",
+  "telemetryIdPrefix": "46d3xbcp.res.kubernetes-runtime-service",
+  "canonicalType": "Microsoft.KubernetesRuntime/services",
+  "owners": ["chirag1603"]
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Compute Galleries Applications",
+  "moduleDescription": "This module deploys an Azure Compute Gallery Application.",
+  "telemetryIdPrefix": "46d3xbcp.res.compute-gallery-application",
+  "canonicalType": "Microsoft.Compute/galleries/applications"
+}

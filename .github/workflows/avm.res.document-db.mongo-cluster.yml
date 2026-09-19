@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.res.document-db.mongo-cluster.yml"
       - "avm/res/document-db/mongo-cluster/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/res/document-db/mongo-cluster"

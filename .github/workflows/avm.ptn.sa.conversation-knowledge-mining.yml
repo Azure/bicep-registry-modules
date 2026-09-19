@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.sa.conversation-knowledge-mining.yml"
       - "avm/ptn/sa/conversation-knowledge-mining/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/sa/conversation-knowledge-mining"

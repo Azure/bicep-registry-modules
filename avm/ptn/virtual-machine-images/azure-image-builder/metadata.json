@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Custom Images using Azure Image Builder",
+  "moduleDescription": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.",
+  "telemetryIdPrefix": "46d3xbcp.ptn.vmimages-azureimagebuilder",
+  "canonicalType": "virtual-machine-images/azure-image-builder",
+  "owners": ["AlexanderSehr"]
+}

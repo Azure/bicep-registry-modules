@@ -1,0 +1,8 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "API Management Services",
+  "moduleDescription": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.",
+  "telemetryIdPrefix": "46d3xbcp.res.apimanagement-service",
+  "canonicalType": "Microsoft.ApiManagement/service",
+  "owners": ["abhishekaryams", "tony-box"]
+}

@@ -1,0 +1,9 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "Azure Firewalls",
+  "moduleDescription": "This module deploys an Azure Firewall.",
+  "telemetryIdPrefix": "46d3xbcp.res.network-azurefirewall",
+  "alternativeNames": ["Azure FW"],
+  "canonicalType": "Microsoft.Network/azureFirewalls",
+  "owners": ["jtracey93", "oZakari"]
+}

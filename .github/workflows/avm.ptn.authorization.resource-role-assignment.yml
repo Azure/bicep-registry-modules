@@ -29,6 +29,7 @@ on:
       - ".github/workflows/avm.ptn.authorization.resource-role-assignment.yml"
       - "avm/ptn/authorization/resource-role-assignment/**"
       - "!*/**/README.md"
+      - "!avm/**/metadata.json"
 
 env:
   modulePath: "avm/ptn/authorization/resource-role-assignment"

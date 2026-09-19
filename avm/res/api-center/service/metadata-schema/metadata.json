@@ -1,0 +1,6 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
+  "moduleDisplayName": "API Center Service Metadata Schemas",
+  "moduleDescription": "This module deploys an API Center Service Metadata Schema.",
+  "canonicalType": "Microsoft.ApiCenter/services/metadataSchemas"
+}
