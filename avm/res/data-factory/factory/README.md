@@ -45,8 +45,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using a Git repository configuration](#example-3-using-a-git-repository-configuration)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
@@ -186,7 +187,117 @@ param name = 'dffmin001'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using a Git repository configuration_
+
+This instance deploys the module with a Git (Azure DevOps) repository configuration and validates that the configuration is actually persisted on the Data Factory - both after the initial and after a repeated deployment.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/git-config]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dffgit001'
+    // Non-required parameters
+    gitAccountName: 'contoso'
+    gitCollaborationBranch: 'main'
+    gitConfigureLater: false
+    gitDisablePublish: false
+    gitProjectName: 'contoso-adf'
+    gitRepositoryName: 'contoso-adf-repo'
+    gitRepoType: 'FactoryVSTSConfiguration'
+    gitRootFolder: '/'
+    gitTenantId: '<gitTenantId>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dffgit001"
+    },
+    // Non-required parameters
+    "gitAccountName": {
+      "value": "contoso"
+    },
+    "gitCollaborationBranch": {
+      "value": "main"
+    },
+    "gitConfigureLater": {
+      "value": false
+    },
+    "gitDisablePublish": {
+      "value": false
+    },
+    "gitProjectName": {
+      "value": "contoso-adf"
+    },
+    "gitRepositoryName": {
+      "value": "contoso-adf-repo"
+    },
+    "gitRepoType": {
+      "value": "FactoryVSTSConfiguration"
+    },
+    "gitRootFolder": {
+      "value": "/"
+    },
+    "gitTenantId": {
+      "value": "<gitTenantId>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/data-factory/factory:<version>'
+
+// Required parameters
+param name = 'dffgit001'
+// Non-required parameters
+param gitAccountName = 'contoso'
+param gitCollaborationBranch = 'main'
+param gitConfigureLater = false
+param gitDisablePublish = false
+param gitProjectName = 'contoso-adf'
+param gitRepositoryName = 'contoso-adf-repo'
+param gitRepoType = 'FactoryVSTSConfiguration'
+param gitRootFolder = '/'
+param gitTenantId = '<gitTenantId>'
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -698,7 +809,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -994,7 +1105,7 @@ param tags = {
 | [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
 | [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
 | [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | Add the tenantId of your Azure subscription. |
+| [`gitTenantId`](#parameter-gittenantid) | string | The tenant ID of the Azure DevOps organization. Only relevant for 'FactoryVSTSConfiguration'. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
 | [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
@@ -1308,7 +1419,7 @@ The root folder path name. Default is '/'.
 
 ### Parameter: `gitTenantId`
 
-Add the tenantId of your Azure subscription.
+The tenant ID of the Azure DevOps organization. Only relevant for 'FactoryVSTSConfiguration'.
 
 - Required: No
 - Type: string
@@ -2179,7 +2290,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
-| `br/public:avm/res/network/private-endpoint:0.12.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Notes
