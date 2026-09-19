@@ -41,11 +41,12 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionName: take('${namePrefix}${serviceShort}001', 16)
+      solutionName: take('${namePrefix}${serviceShort}001', 15)
       location: enforcedLocation
-      databaseType: 'CosmosDB'
-      azureOpenAIModelCapacity: 10
-      azureOpenAIEmbeddingModelCapacity: 10
+      azureAiServiceLocation: enforcedLocation
+      databaseType: 'cosmosdb'
+      gptModelCapacity: 10
+      embeddingModelCapacity: 10
     }
   }
 ]
