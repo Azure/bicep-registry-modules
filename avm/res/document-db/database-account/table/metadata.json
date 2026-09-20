@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Azure Cosmos DB account tables",
+  "moduleDisplayName": "Cosmos DB Database Account - Table",
   "moduleDescription": "This module deploys a table within an Azure Cosmos DB Account.",
   "telemetryIdPrefix": "46d3xbcp.res.documentdb-databaseaccounttable",
   "canonicalType": "Microsoft.DocumentDB/databaseAccounts/tables"

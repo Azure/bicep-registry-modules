@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Integration Account Certificates",
+  "moduleDisplayName": "Logic Apps Integration Account - Certificate",
   "moduleDescription": "This module deploys an Integration Account Certificate.",
   "telemetryIdPrefix": "46d3xbcp.res.logic-integrationaccount-certificate",
   "canonicalType": "Microsoft.Logic/integrationAccounts/certificates"

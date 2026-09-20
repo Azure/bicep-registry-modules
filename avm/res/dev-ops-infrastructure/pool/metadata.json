@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Managed DevOps Pool",
+  "moduleDisplayName": "DevOps Infrastructure Pool",
   "moduleDescription": "This module deploys the Managed DevOps Pool resource.",
   "telemetryIdPrefix": "46d3xbcp.res.devopsinfrastructure-pool",
   "canonicalType": "Microsoft.DevOpsInfrastructure/pools",

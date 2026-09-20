@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "API Management Workspace API Operation Policies",
+  "moduleDisplayName": "API Management Service - Workspace - API - Operation - Policy",
   "moduleDescription": "This module deploys an API Operation Policy in an API Management Workspace.",
   "telemetryIdPrefix": "46d3xbcp.res.apimgmt-service-workspaceapioppol",
   "canonicalType": "Microsoft.ApiManagement/service/workspaces/apis/operations/policies"

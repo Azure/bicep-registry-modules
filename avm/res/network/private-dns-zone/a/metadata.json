@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Private DNS Zone A record",
+  "moduleDisplayName": "Private DNS Zone - A",
   "moduleDescription": "This module deploys a Private DNS Zone A record.",
   "telemetryIdPrefix": "46d3xbcp.res.nw-privdnszonea",
   "canonicalType": "Microsoft.Network/privateDnsZones/A"

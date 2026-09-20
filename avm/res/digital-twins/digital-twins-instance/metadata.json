@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Digital Twins Instances",
+  "moduleDisplayName": "Digital Twins Instance",
   "moduleDescription": "This module deploys an Azure Digital Twins Instance.",
   "telemetryIdPrefix": "46d3xbcp.res.digitaltwins-digitaltwinsinstance",
   "canonicalType": "Microsoft.DigitalTwins/digitalTwinsInstances",

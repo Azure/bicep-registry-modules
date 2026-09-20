@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "DBforMySQL Flexible Server Databases",
+  "moduleDisplayName": "DB for MySQL Flexible Server - Database",
   "moduleDescription": "This module deploys a DBforMySQL Flexible Server Database.",
   "telemetryIdPrefix": "46d3xbcp.res.dbformysql-flexisrv-database",
   "canonicalType": "Microsoft.DBforMySQL/flexibleServers/databases"
