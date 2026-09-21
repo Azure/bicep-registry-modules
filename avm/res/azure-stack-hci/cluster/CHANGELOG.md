@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/cluster/CHANGELOG.md).
 
+## 0.5.0
+
+### Changes
+
+- Added a phase-derived `forceUpdateTag` to the cluster deployment script so a `Validate` -> `Deploy` transition reliably re-runs the script, while repeated deployments with identical inputs remain idempotent.
+
+### Breaking Changes
+
+- None (external module interface unchanged; all parameters and outputs remain the same)
+
 ## 0.4.0
 
 ### Changes
