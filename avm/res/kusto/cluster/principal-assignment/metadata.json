@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Kusto Cluster Principal Assignments",
+  "moduleDisplayName": "Azure Data Explorer (Kusto) cluster - Principal Assignment",
   "moduleDescription": "This module deploys a Kusto Cluster Principal Assignment.",
   "telemetryIdPrefix": "46d3xbcp.res.kusto-cluster-principalassignment",
   "canonicalType": "Microsoft.Kusto/clusters/principalAssignments"

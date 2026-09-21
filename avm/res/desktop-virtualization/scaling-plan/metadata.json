@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Azure Virtual Desktop Scaling Plan",
+  "moduleDisplayName": "Azure Virtual Desktop (AVD) Scaling Plan",
   "moduleDescription": "This module deploys an Azure Virtual Desktop Scaling Plan.",
   "telemetryIdPrefix": "46d3xbcp.res.desktopvirtualization-scalingplan",
   "canonicalType": "Microsoft.DesktopVirtualization/scalingPlans",

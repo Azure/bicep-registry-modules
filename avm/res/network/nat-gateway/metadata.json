@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "NAT Gateways",
+  "moduleDisplayName": "NAT Gateway",
   "moduleDescription": "This module deploys a NAT Gateway.",
   "telemetryIdPrefix": "46d3xbcp.res.network-natgateway",
   "alternativeNames": ["NAT GW"],

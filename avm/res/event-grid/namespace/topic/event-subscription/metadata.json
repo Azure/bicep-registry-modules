@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Event Subscriptions",
+  "moduleDisplayName": "Event Grid Namespace - Topic - Event Subscription",
   "moduleDescription": "This module deploys an Event Subscription.",
   "telemetryIdPrefix": "46d3xbcp.res.eventgrid-namespace-topiceventsub",
   "canonicalType": "Microsoft.EventGrid/namespaces/topics/eventSubscriptions"

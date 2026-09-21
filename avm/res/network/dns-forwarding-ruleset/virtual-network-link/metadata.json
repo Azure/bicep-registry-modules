@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Dns Forwarding Rulesets Virtual Network Links",
+  "moduleDisplayName": "DNS Forwarding Ruleset - Virtual Network Link",
   "moduleDescription": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",
   "telemetryIdPrefix": "46d3xbcp.res.network-dnsfwdruleset-vnetlink",
   "canonicalType": "Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks"

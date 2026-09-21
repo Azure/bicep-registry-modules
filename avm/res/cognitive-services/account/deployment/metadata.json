@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Cognitive Services Account Deployment",
+  "moduleDisplayName": "Azure AI Services (Cognitive Services) - Deployment",
   "moduleDescription": "This module deploys a Cognitive Services account model deployment.",
   "telemetryIdPrefix": "46d3xbcp.res.cognitiveservices-account-deployment",
   "canonicalType": "Microsoft.CognitiveServices/accounts/deployments"
