@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/content-processing/CHANGELOG.md).
 
+## 0.3.1
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults`, `Microsoft.KeyVault/vaults/keys`, and `Microsoft.KeyVault/vaults/secrets` API versions from `2023-07-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.3.0
 
 ### Changes

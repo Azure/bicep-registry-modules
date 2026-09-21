@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/azd/ml-project/CHANGELOG.md).
 
+## 0.1.6
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` API version from `2022-07-01` to `2026-02-01`.
+- Updated `Microsoft.KeyVault/vaults/accessPolicies` API version from `2023-07-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.5
 
 ### Changes

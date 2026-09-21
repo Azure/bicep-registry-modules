@@ -2,6 +2,18 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/sa/build-your-own-copilot/CHANGELOG.md).
 
+## 0.2.1
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` API versions from `2024-11-01` and `2025-05-01` to `2026-02-01`.
+- Updated `Microsoft.KeyVault/vaults/keys` API version from `2024-11-01` to `2026-02-01`.
+- Updated `Microsoft.KeyVault/vaults/secrets` API version from `2025-05-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.2.0
 
 ### Changes
