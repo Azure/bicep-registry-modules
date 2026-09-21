@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Virtual Networks",
-  "moduleDescription": "This module deploys a Virtual Network (vNet).",
+  "moduleDisplayName": "Virtual Network",
+  "moduleDescription": "AVM Resource Module for Virtual Network",
   "telemetryIdPrefix": "46d3xbcp.res.network-virtualnetwork",
   "alternativeNames": ["VNET"],
   "canonicalType": "Microsoft.Network/virtualNetworks",

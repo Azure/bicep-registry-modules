@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Container Instances Container Groups",
-  "moduleDescription": "This module deploys a Container Instance Container Group.",
+  "moduleDisplayName": "Container Instance",
+  "moduleDescription": "AVM Resource Module for Container Instance",
   "telemetryIdPrefix": "46d3xbcp.res.containerinstance-containergroup",
   "alternativeNames": ["ACI"],
   "canonicalType": "Microsoft.ContainerInstance/containerGroups",

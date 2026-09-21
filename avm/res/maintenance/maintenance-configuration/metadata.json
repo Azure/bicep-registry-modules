@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Maintenance Configurations",
-  "moduleDescription": "This module deploys a Maintenance Configuration.",
+  "moduleDisplayName": "Maintenance Configuration",
+  "moduleDescription": "AVM Resource Module for Maintenance Configuration",
   "telemetryIdPrefix": "46d3xbcp.res.maintenance-maintenanceconfiguration",
   "canonicalType": "Microsoft.Maintenance/maintenanceConfigurations",
   "owners": ["arievanderwende"]

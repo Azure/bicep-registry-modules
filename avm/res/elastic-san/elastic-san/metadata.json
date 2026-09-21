@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Elastic SANs",
-  "moduleDescription": "This module deploys an Elastic SAN.",
+  "moduleDisplayName": "Elastic SAN",
+  "moduleDescription": "AVM Resource Module for Elastic SAN",
   "telemetryIdPrefix": "46d3xbcp.res.elasticsan-elasticsan",
   "alternativeNames": [
     "SAN",

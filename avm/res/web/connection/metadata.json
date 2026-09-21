@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "API Connections",
-  "moduleDescription": "This module deploys an Azure API Connection.",
+  "moduleDisplayName": "API Connection",
+  "moduleDescription": "AVM Resource Module for API Connection",
   "telemetryIdPrefix": "46d3xbcp.res.web-connection",
   "canonicalType": "Microsoft.Web/connection",
   "owners": ["abhishekaryams", "krbar"]
