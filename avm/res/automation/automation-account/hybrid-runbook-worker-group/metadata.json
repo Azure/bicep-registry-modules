@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Automation Account Hybrid Runbook Worker Groups",
-  "moduleDescription": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group.",
+  "moduleDisplayName": "Automation Account - Hybrid Runbook Worker Group",
+  "moduleDescription": "AVM Child Module for Automation Account - Hybrid Runbook Worker Group",
   "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp",
   "canonicalType": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups"
 }

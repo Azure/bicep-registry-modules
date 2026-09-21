@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Azure Virtual Desktop Application Group",
-  "moduleDescription": "This module deploys an Azure Virtual Desktop Application Group.",
+  "moduleDisplayName": "Azure Virtual Desktop (AVD) Application Group",
+  "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Application Group",
   "telemetryIdPrefix": "46d3xbcp.res.desktopvirtualization-appgroup",
   "canonicalType": "Microsoft.DesktopVirtualization/applicationGroups",
   "owners": []

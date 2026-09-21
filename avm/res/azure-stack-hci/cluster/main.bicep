@@ -383,6 +383,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   properties: {
     azCliVersion: '2.67.0'
+    // Derive the force-update tag from the requested phase so a Validate -> Deploy transition re-runs the script, while identical inputs keep it idempotent.
+    forceUpdateTag: join(concat(sortedDeploymentOperations, [operationType]), '-')
     timeout: 'PT5H'
     retentionInterval: 'P1D'
     cleanupPreference: 'OnSuccess'

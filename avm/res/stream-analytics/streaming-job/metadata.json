@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Streaming Job",
-  "moduleDescription": "This module deploys Streaming Job.",
-  "telemetryIdPrefix": "46d3xbcp.res.stream-analytics-streaming-job",
+  "moduleDisplayName": "Stream Analytics Job",
+  "moduleDescription": "AVM Resource Module for Stream Analytics Job",
+  "telemetryIdPrefix": "46d3xbcp.res.streamanalytics-streamingjob",
   "canonicalType": "Microsoft.StreamAnalytics/streamingjobs",
   "owners": []
 }

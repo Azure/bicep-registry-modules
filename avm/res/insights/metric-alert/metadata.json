@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Metric Alerts",
-  "moduleDescription": "This module deploys a Metric Alert.",
+  "moduleDisplayName": "Metric Alert",
+  "moduleDescription": "AVM Resource Module for Metric Alert",
   "telemetryIdPrefix": "46d3xbcp.res.insights-metricalert",
   "canonicalType": "Microsoft.Insights/metricAlerts",
   "owners": ["kijunkang"]
