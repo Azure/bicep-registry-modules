@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Container job toolkit",
-  "moduleDescription": "This module deploys a container to run as a job.",
+  "moduleDescription": "AVM Pattern Module for Container Job Toolkit",
   "telemetryIdPrefix": "46d3xbcp.ptn.app-containerjobtoolkit",
   "canonicalType": "app/container-job-toolkit",
   "owners": ["ReneHezser"]

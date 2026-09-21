@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "VPN Site",
-  "moduleDescription": "This module deploys a VPN Site.",
+  "moduleDescription": "AVM Resource Module for VPN Site",
   "telemetryIdPrefix": "46d3xbcp.res.network-vpnsite",
   "canonicalType": "Microsoft.Network/vpnSites",
   "owners": ["fabmas"]

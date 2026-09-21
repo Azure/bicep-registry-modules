@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Healthcare API Workspace - Iotconnector",
-  "moduleDescription": "This module deploys a Healthcare API Workspace IoT Connector.",
+  "moduleDescription": "AVM Child Module for Healthcare API Workspace - Iotconnector",
   "telemetryIdPrefix": "46d3xbcp.res.healthcapis-workspace-iotconn",
   "canonicalType": "Microsoft.HealthcareApis/workspaces/iotconnectors"
 }

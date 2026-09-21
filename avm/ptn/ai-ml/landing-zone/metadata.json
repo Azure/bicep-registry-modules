@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AI-ML - Landing Zone (LZ)",
-  "moduleDescription": "This module deploys Landing Zone.",
+  "moduleDescription": "AVM Pattern Module for AI-ML - Landing Zone (LZ)",
   "telemetryIdPrefix": "46d3xbcp.ptn.ai-ml-landing-zone",
   "canonicalType": "ai-ml/landing-zone",
   "owners": ["placerda", "mbilalamjad"]

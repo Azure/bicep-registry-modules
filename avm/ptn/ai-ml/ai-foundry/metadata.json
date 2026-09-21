@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AI-ML - AI Foundry",
-  "moduleDescription": "Creates an AI Foundry account and project with Standard Agent Services.",
+  "moduleDescription": "AVM Pattern Module for AI-ML - AI Foundry",
   "telemetryIdPrefix": "46d3xbcp.ptn.aiml-aifoundry",
   "canonicalType": "ai-ml/ai-foundry",
   "owners": ["mswantek68", "sethsteenken"]
