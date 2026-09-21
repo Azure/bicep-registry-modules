@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Virtual Desktop (AVD) LZA - Insights",
-  "moduleDescription": "This module deploys Insights.",
+  "moduleDescription": "AVM Pattern Module for Azure Virtual Desktop (AVD) LZA - Insights",
   "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-insights",
   "canonicalType": "avd-lza/insights",
   "owners": []

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DevTest Lab - Notificationchannel",
-  "moduleDescription": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
+  "moduleDescription": "AVM Child Module for DevTest Lab - Notificationchannel",
   "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab-notificationchannel",
   "canonicalType": "Microsoft.DevTestLab/labs/notificationchannels"
 }

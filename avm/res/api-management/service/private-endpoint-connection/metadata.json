@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - Private Endpoint Connections",
-  "moduleDescription": "This module deploys Private Endpoint Connection.",
+  "moduleDescription": "AVM Child Module for API Management Service - Private Endpoint Connections",
   "telemetryIdPrefix": "46d3xbcp.res.apimgmt-privateendpointconn",
   "canonicalType": "Microsoft.ApiManagement/service/privateEndpointConnections"
 }

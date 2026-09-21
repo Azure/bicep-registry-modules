@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Power BI Dedicated Capacity",
-  "moduleDescription": "This module deploys a Power BI Dedicated Capacity.",
+  "moduleDescription": "AVM Resource Module for Power BI Dedicated Capacity",
   "telemetryIdPrefix": "46d3xbcp.res.powerbidedicated-capacity",
   "canonicalType": "Microsoft.PowerBIDedicated/capacities",
   "owners": ["ChrisSidebotham"]
