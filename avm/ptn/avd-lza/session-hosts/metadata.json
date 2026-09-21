@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Virtual Desktop (AVD) LZA - Session Hosts",
   "moduleDescription": "AVM Pattern Module for Azure Virtual Desktop (AVD) LZA - Session Hosts",
-  "telemetryIdPrefix": "46d3xbcp.ptn.avd-lza-session-hosts",
+  "telemetryIdPrefix": "46d3xbcp.ptn.avdlza-sessionhosts",
   "canonicalType": "avd-lza/session-hosts",
   "owners": []
 }
