@@ -85,8 +85,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/app/function-app:<version>`.
 
 - [Using Dedicated Windows hosting](#example-1-using-dedicated-windows-hosting)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using minimal parameters](#example-3-using-minimal-parameters)
 
 ### Example 1: _Using Dedicated Windows hosting_
 
@@ -168,61 +168,7 @@ param runtimeVersion = '8.0'
 </details>
 <p>
 
-### Example 2: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
-  params: {
-    functionAppName: '<functionAppName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "functionAppName": {
-      "value": "<functionAppName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app/function-app:<version>'
-
-param functionAppName = '<functionAppName>'
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -451,6 +397,60 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param userAssignedIdentityResourceId = '<userAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using minimal parameters_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/minimal]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
+  params: {
+    functionAppName: '<functionAppName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionAppName": {
+      "value": "<functionAppName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app/function-app:<version>'
+
+param functionAppName = '<functionAppName>'
 ```
 
 </details>

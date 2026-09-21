@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
+metadata name = 'Using minimal parameters'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.function-app-${serviceSh
 param resourceLocation string = deployment().location
 
 @description('Optional. An identifier for this test invocation. The generated portion isolates resources from earlier runs while remaining stable for deployment retries.')
-param serviceShort string = 'afa${uniqueString(baseTime, resourceLocation, 'defaults')}min'
+param serviceShort string = 'afa${uniqueString(baseTime, resourceLocation, 'minimal')}min'
 
 @description('Generated. Used as a basis for unique resource names. The pipeline supplies a fixed value for all retries.')
 param baseTime string = utcNow('u')
