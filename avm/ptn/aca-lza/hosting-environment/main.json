@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "10317736383736702635"
+      "version": "0.47.16.16243",
+      "templateHash": "10810012596422673876"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -312,8 +312,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "17975932592949602031"
+              "version": "0.47.16.16243",
+              "templateHash": "13797442183518061573"
             }
           },
           "parameters": {
@@ -353,7 +353,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
+            "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
             "naming": "[json(variables('$fxv#0'))]",
             "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
             "resourceTypeToken": "RES_TYPE",
@@ -994,8 +994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "10144670979077232415"
+              "version": "0.47.16.16243",
+              "templateHash": "7265006018567803539"
             }
           },
           "parameters": {
@@ -2791,8 +2791,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "6325643624647084486"
+                      "version": "0.47.16.16243",
+                      "templateHash": "3457261632912085772"
                     }
                   },
                   "parameters": {
@@ -6165,8 +6165,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10235252465567608848"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2151189084919227372"
                     }
                   },
                   "parameters": {
@@ -12799,8 +12799,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "8011107749947583449"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2176359347591482848"
                     }
                   },
                   "parameters": {
@@ -19434,8 +19434,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "14081353700731089575"
+              "version": "0.47.16.16243",
+              "templateHash": "7624418564454772242"
             }
           },
           "parameters": {
@@ -19569,8 +19569,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "12114700589648342604"
+                      "version": "0.47.16.16243",
+                      "templateHash": "677116255086840414"
                     }
                   },
                   "parameters": {
@@ -26890,8 +26890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "8016562525658915835"
+                      "version": "0.47.16.16243",
+                      "templateHash": "10766069316752555166"
                     }
                   },
                   "parameters": {
@@ -33324,8 +33324,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "18154156071036225234"
+                      "version": "0.47.16.16243",
+                      "templateHash": "16276916998197660441"
                     }
                   },
                   "parameters": {
@@ -42163,8 +42163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12620977545792229890"
+              "version": "0.47.16.16243",
+              "templateHash": "127549223864473719"
             }
           },
           "parameters": {
@@ -46709,8 +46709,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12363572973537601598"
+              "version": "0.47.16.16243",
+              "templateHash": "2714433535522142094"
             }
           },
           "parameters": {
@@ -48046,8 +48046,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "18343305704018965380"
+              "version": "0.47.16.16243",
+              "templateHash": "8630964408160262786"
             }
           },
           "parameters": {
@@ -48676,8 +48676,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "9768366615357270870"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2992362113950836377"
                     }
                   },
                   "parameters": {
@@ -48813,7 +48813,7 @@
                     {
                       "condition": "[not(empty(parameters('appGatewayCertificateData')))]",
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2024-04-01-preview",
+                      "apiVersion": "2026-02-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -48842,7 +48842,7 @@
                   "outputs": {
                     "SecretUri": {
                       "type": "string",
-                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2024-04-01-preview').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
+                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2026-02-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
                     }
                   }
                 }
@@ -49618,8 +49618,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "6827790472862290383"
+                      "version": "0.47.16.16243",
+                      "templateHash": "13673269021550513158"
                     }
                   },
                   "parameters": {
