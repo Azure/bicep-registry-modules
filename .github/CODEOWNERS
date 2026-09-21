@@ -9,15 +9,15 @@
 /avm/ptn/ai-ml/ai-foundry/ @mswantek68 @sethsteenken @Azure/azure-verified-modules-module-owners
 /avm/ptn/ai-ml/landing-zone/ @placerda @mbilalamjad @Azure/azure-verified-modules-module-owners
 /avm/ptn/ai-platform/baseline/ @cecheta @ross-p-smith @Azure/azure-verified-modules-module-owners
-/avm/ptn/alz/ama/ @yeddlapurishivasai @akshayrohilla @Azure/azure-verified-modules-module-owners
-/avm/ptn/alz/empty/ @yeddlapurishivasai @akshayrohilla @Azure/azure-verified-modules-module-owners
+/avm/ptn/alz/ama/ @yeddlapurishivasai @akshayrohilla @jtracey93 @Azure/azure-verified-modules-module-owners
+/avm/ptn/alz/empty/ @yeddlapurishivasai @akshayrohilla @jtracey93 @Azure/azure-verified-modules-module-owners
 /avm/ptn/app-service-lza/hosting-environment/ @miketb-microsoft @Azure/azure-verified-modules-module-owners
 /avm/ptn/app/container-job-toolkit/ @renehezser @Azure/azure-verified-modules-module-owners
 /avm/ptn/app/cosmos-db-account-container-app/ @Azure/azure-verified-modules-module-owners
 /avm/ptn/app/function-app/ @bwateratmsft @Azure/azure-verified-modules-module-owners
-/avm/ptn/app/iaas-vm-cosmosdb-tier4/ @mikestiers @Azure/azure-verified-modules-module-owners
+/avm/ptn/app/iaas-vm-cosmosdb-tier4/ @mikestiers @andbron @Azure/azure-verified-modules-module-owners
 /avm/ptn/app/mongodb-cluster-container-app/ @Azure/azure-verified-modules-module-owners
-/avm/ptn/app/paas-ase-cosmosdb-tier4/ @mikestiers @Azure/azure-verified-modules-module-owners
+/avm/ptn/app/paas-ase-cosmosdb-tier4/ @mikestiers @andbron @Azure/azure-verified-modules-module-owners
 /avm/ptn/authorization/pim-role-assignment/ @sebassem @Azure/azure-verified-modules-module-owners
 /avm/ptn/authorization/policy-assignment/ @jtracey93 @Azure/azure-verified-modules-module-owners
 /avm/ptn/authorization/policy-exemption/ @ozakari @Azure/azure-verified-modules-module-owners
@@ -45,14 +45,14 @@
 /avm/ptn/deployment-script/private/ @sebassem @Azure/azure-verified-modules-module-owners
 /avm/ptn/dev-center/dev-box/ @timfurnival-msft @Azure/azure-verified-modules-module-owners
 /avm/ptn/dev-ops/cicd-agents-and-runners/ @sebassem @Azure/azure-verified-modules-module-owners
-/avm/ptn/finops-toolkit/finops-hub/ @fallenhoot @Azure/azure-verified-modules-module-owners
+/avm/ptn/finops-toolkit/finops-hub/ @fallenhoot @arthurclares @Azure/azure-verified-modules-module-owners
 /avm/ptn/lz/sub-vending/ @jtracey93 @sebassem @Azure/azure-verified-modules-module-owners
 /avm/ptn/lza-shared/data-services/ @kpantos @Azure/azure-verified-modules-module-owners
 /avm/ptn/maintenance/azure-update-manager/ @akhilthomas011 @Azure/azure-verified-modules-module-owners
 /avm/ptn/mgmt-groups/subscription-placement/ @ozakari @Azure/azure-verified-modules-module-owners
 /avm/ptn/monitoring/amba/ @arjenhuitema @Azure/azure-verified-modules-module-owners
 /avm/ptn/monitoring/amba-alz/ @arjenhuitema @Azure/azure-verified-modules-module-owners
-/avm/ptn/network/hub-networking/ @Azure/azure-verified-modules-module-owners
+/avm/ptn/network/hub-networking/ @jtracey93 @Azure/azure-verified-modules-module-owners
 /avm/ptn/network/private-link-private-dns-zones/ @jtracey93 @Azure/azure-verified-modules-module-owners
 /avm/ptn/network/virtual-wan/ @ericscheffler @juancj @Azure/azure-verified-modules-module-owners
 /avm/ptn/network/vwan-connected-vnets/ @juancj @ericscheffler @Azure/azure-verified-modules-module-owners
@@ -74,28 +74,28 @@
 /avm/ptn/virtual-machine-images/azure-image-builder/ @alexandersehr @Azure/azure-verified-modules-module-owners
 /avm/res/aad/domain-service/ @renehezser @cryp70n1x @Azure/azure-verified-modules-module-owners
 /avm/res/alerts-management/action-rule/ @judyer28 @Azure/azure-verified-modules-module-owners
-/avm/res/analysis-services/server/ @Azure/azure-verified-modules-module-owners
+/avm/res/analysis-services/server/ @segraef @Azure/azure-verified-modules-module-owners
 /avm/res/api-center/service/ @maciejporebski @Azure/azure-verified-modules-module-owners
-/avm/res/api-management/service/ @abhishekaryams @Azure/azure-verified-modules-module-owners
+/avm/res/api-management/service/ @abhishekaryams @tony-box @Azure/azure-verified-modules-module-owners
 /avm/res/app-configuration/configuration-store/ @jfolberth @Azure/azure-verified-modules-module-owners
 /avm/res/app/agent/ @fallenhoot @Azure/azure-verified-modules-module-owners
 /avm/res/app/container-app/ @ozakari @Azure/azure-verified-modules-module-owners
 /avm/res/app/job/ @renehezser @Azure/azure-verified-modules-module-owners
 /avm/res/app/managed-environment/ @abhishekaryams @Azure/azure-verified-modules-module-owners
 /avm/res/app/session-pool/ @abhishekaryams @Azure/azure-verified-modules-module-owners
-/avm/res/authorization/policy-assignment/ @alexandersehr @Azure/azure-verified-modules-module-owners
+/avm/res/authorization/policy-assignment/ @alexandersehr @arnoldna @Azure/azure-verified-modules-module-owners
 /avm/res/authorization/role-assignment/ @arnoldna @Azure/azure-verified-modules-module-owners
 /avm/res/automation/automation-account/ @gpacetti @Azure/azure-verified-modules-module-owners
 /avm/res/avs/private-cloud/ @jchancellor-ms @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/cluster/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/logical-network/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/marketplace-gallery-image/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/network-interface/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/virtual-hard-disk/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/azure-stack-hci/virtual-machine-instance/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/cluster/ @chirag1603 @bniranjanbhat @prithwitech @premparekh @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/logical-network/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/marketplace-gallery-image/ @chirag1603 @bniranjanbhat @prithwitech @premparekh @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/network-interface/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/virtual-hard-disk/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
+/avm/res/azure-stack-hci/virtual-machine-instance/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
 /avm/res/batch/batch-account/ @didayal-msft @Azure/azure-verified-modules-module-owners
 /avm/res/bot-service/bot-service/ @Azure/azure-verified-modules-module-owners
-/avm/res/cache/redis/ @tomazmlakar @Azure/azure-verified-modules-module-owners
+/avm/res/cache/redis/ @tomazmlakar @segraef @Azure/azure-verified-modules-module-owners
 /avm/res/cache/redis-enterprise/ @jeffreyca @Azure/azure-verified-modules-module-owners
 /avm/res/cdn/profile/ @gbeaud @Azure/azure-verified-modules-module-owners
 /avm/res/chaos/experiment/ @Azure/azure-verified-modules-module-owners
@@ -105,13 +105,13 @@
 /avm/res/communication/email-service/ @donk-msft @Azure/azure-verified-modules-module-owners
 /avm/res/compute/availability-set/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
 /avm/res/compute/disk/ @segraef @Azure/azure-verified-modules-module-owners
-/avm/res/compute/disk-encryption-set/ @segraef @Azure/azure-verified-modules-module-owners
+/avm/res/compute/disk-encryption-set/ @segraef @krbar @Azure/azure-verified-modules-module-owners
 /avm/res/compute/gallery/ @renehezser @Azure/azure-verified-modules-module-owners
 /avm/res/compute/image/ @tony-box @Azure/azure-verified-modules-module-owners
 /avm/res/compute/proximity-placement-group/ @jeetgarg @Azure/azure-verified-modules-module-owners
 /avm/res/compute/ssh-public-key/ @chrissidebotham @Azure/azure-verified-modules-module-owners
-/avm/res/compute/virtual-machine/ @josunefon @Azure/azure-verified-modules-module-owners
-/avm/res/compute/virtual-machine-scale-set/ @josunefon @Azure/azure-verified-modules-module-owners
+/avm/res/compute/virtual-machine/ @josunefon @rahalan @Azure/azure-verified-modules-module-owners
+/avm/res/compute/virtual-machine-scale-set/ @josunefon @rahalan @Azure/azure-verified-modules-module-owners
 /avm/res/consumption/budget/ @segraef @Azure/azure-verified-modules-module-owners
 /avm/res/container-instance/container-group/ @jpeasier @Azure/azure-verified-modules-module-owners
 /avm/res/container-registry/registry/ @jpeasier @Azure/azure-verified-modules-module-owners
@@ -128,10 +128,10 @@
 /avm/res/desktop-virtualization/host-pool/ @Azure/azure-verified-modules-module-owners
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/azure-verified-modules-module-owners
 /avm/res/desktop-virtualization/workspace/ @reikor0x @Azure/azure-verified-modules-module-owners
-/avm/res/dev-center/devcenter/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
+/avm/res/dev-center/devcenter/ @ahmadabdalla @lohithgn @Azure/azure-verified-modules-module-owners
 /avm/res/dev-center/network-connection/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
 /avm/res/dev-center/project/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
-/avm/res/dev-ops-infrastructure/pool/ @elizatargithub7 @Azure/azure-verified-modules-module-owners
+/avm/res/dev-ops-infrastructure/pool/ @elizatargithub7 @matebarabas @Azure/azure-verified-modules-module-owners
 /avm/res/dev-test-lab/lab/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
 /avm/res/devices/iot-hub/ @tomazmlakar @Azure/azure-verified-modules-module-owners
 /avm/res/digital-twins/digital-twins-instance/ @ryanmstephens @Azure/azure-verified-modules-module-owners
@@ -140,22 +140,22 @@
 /avm/res/durable-task/scheduler/ @greenie-msft @Azure/azure-verified-modules-module-owners
 /avm/res/edge-order/order-item/ @chirag1603 @Azure/azure-verified-modules-module-owners
 /avm/res/edge/configuration/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/edge/site/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/edge/site/ @chirag1603 @bniranjanbhat @Azure/azure-verified-modules-module-owners
 /avm/res/elastic-san/elastic-san/ @jbinko @Azure/azure-verified-modules-module-owners
 /avm/res/event-grid/domain/ @fabmas @Azure/azure-verified-modules-module-owners
 /avm/res/event-grid/namespace/ @fabmas @Azure/azure-verified-modules-module-owners
 /avm/res/event-grid/system-topic/ @fabmas @Azure/azure-verified-modules-module-owners
 /avm/res/event-grid/topic/ @fabmas @Azure/azure-verified-modules-module-owners
-/avm/res/event-hub/namespace/ @abhishekaryams @Azure/azure-verified-modules-module-owners
+/avm/res/event-hub/namespace/ @abhishekaryams @elanzel @Azure/azure-verified-modules-module-owners
 /avm/res/fabric/capacity/ @mswantek68 @cmaneu @Azure/azure-verified-modules-module-owners
-/avm/res/health-bot/health-bot/ @tomazmlakar @Azure/azure-verified-modules-module-owners
-/avm/res/healthcare-apis/workspace/ @Azure/azure-verified-modules-module-owners
-/avm/res/hybrid-compute/gateway/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/hybrid-compute/license/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/hybrid-compute/machine/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/health-bot/health-bot/ @tomazmlakar @segraef @Azure/azure-verified-modules-module-owners
+/avm/res/healthcare-apis/workspace/ @krbar @Azure/azure-verified-modules-module-owners
+/avm/res/hybrid-compute/gateway/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
+/avm/res/hybrid-compute/license/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
+/avm/res/hybrid-compute/machine/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
 /avm/res/hybrid-compute/private-link-scope/ @chirag1603 @Azure/azure-verified-modules-module-owners
 /avm/res/hybrid-compute/setting/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/hybrid-container-service/provisioned-cluster-instance/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/hybrid-container-service/provisioned-cluster-instance/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
 /avm/res/insights/action-group/ @rahalan @Azure/azure-verified-modules-module-owners
 /avm/res/insights/activity-log-alert/ @donk-msft @Azure/azure-verified-modules-module-owners
 /avm/res/insights/autoscale-setting/ @fallenhoot @Azure/azure-verified-modules-module-owners
@@ -173,9 +173,9 @@
 /avm/res/kubernetes-configuration/extension/ @jpeasier @Azure/azure-verified-modules-module-owners
 /avm/res/kubernetes-configuration/flux-configuration/ @jpeasier @Azure/azure-verified-modules-module-owners
 /avm/res/kubernetes-runtime/bpg-peer/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/kubernetes-runtime/load-balancer/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/kubernetes-runtime/load-balancer/ @chirag1603 @bniranjanbhat @Azure/azure-verified-modules-module-owners
 /avm/res/kubernetes-runtime/service/ @chirag1603 @Azure/azure-verified-modules-module-owners
-/avm/res/kubernetes/connected-cluster/ @chirag1603 @Azure/azure-verified-modules-module-owners
+/avm/res/kubernetes/connected-cluster/ @chirag1603 @bniranjanbhat @prithwitech @Azure/azure-verified-modules-module-owners
 /avm/res/kusto/cluster/ @ozakari @Azure/azure-verified-modules-module-owners
 /avm/res/load-test-service/load-test/ @sebassem @Azure/azure-verified-modules-module-owners
 /avm/res/logic/integration-account/ @lsnoddy @Azure/azure-verified-modules-module-owners
@@ -185,7 +185,7 @@
 /avm/res/maintenance/configuration-assignment/ @eriqua @Azure/azure-verified-modules-module-owners
 /avm/res/maintenance/maintenance-configuration/ @arievanderwende @Azure/azure-verified-modules-module-owners
 /avm/res/managed-identity/user-assigned-identity/ @gpacetti @Azure/azure-verified-modules-module-owners
-/avm/res/managed-services/registration-definition/ @Azure/azure-verified-modules-module-owners
+/avm/res/managed-services/registration-definition/ @segraef @Azure/azure-verified-modules-module-owners
 /avm/res/management/management-group/ @fblix @Azure/azure-verified-modules-module-owners
 /avm/res/management/service-group/ @jtracey93 @Azure/azure-verified-modules-module-owners
 /avm/res/maps/account/ @jhueppauff @Azure/azure-verified-modules-module-owners
@@ -242,7 +242,7 @@
 /avm/res/power-bi-dedicated/capacity/ @chrissidebotham @Azure/azure-verified-modules-module-owners
 /avm/res/purview/account/ @abhishekaryams @Azure/azure-verified-modules-module-owners
 /avm/res/recovery-services/vault/ @alexanderojala @Azure/azure-verified-modules-module-owners
-/avm/res/relay/namespace/ @Azure/azure-verified-modules-module-owners
+/avm/res/relay/namespace/ @krbar @Azure/azure-verified-modules-module-owners
 /avm/res/resource-graph/query/ @sebassem @Azure/azure-verified-modules-module-owners
 /avm/res/resources/deployment-script/ @sebassem @Azure/azure-verified-modules-module-owners
 /avm/res/resources/resource-group/ @segraef @Azure/azure-verified-modules-module-owners
@@ -254,10 +254,10 @@
 /avm/res/service-bus/namespace/ @chrissidebotham @Azure/azure-verified-modules-module-owners
 /avm/res/service-fabric/cluster/ @lsnoddy @Azure/azure-verified-modules-module-owners
 /avm/res/service-networking/traffic-controller/ @krbar @Azure/azure-verified-modules-module-owners
-/avm/res/signal-r-service/signal-r/ @Azure/azure-verified-modules-module-owners
-/avm/res/signal-r-service/web-pub-sub/ @Azure/azure-verified-modules-module-owners
+/avm/res/signal-r-service/signal-r/ @krbar @Azure/azure-verified-modules-module-owners
+/avm/res/signal-r-service/web-pub-sub/ @krbar @Azure/azure-verified-modules-module-owners
 /avm/res/sql-virtual-machine/sql-virtual-machine/ @peterbud @Azure/azure-verified-modules-module-owners
-/avm/res/sql/instance-pool/ @gpacetti @Azure/azure-verified-modules-module-owners
+/avm/res/sql/instance-pool/ @gpacetti @matebarabas @Azure/azure-verified-modules-module-owners
 /avm/res/sql/managed-instance/ @chanakanissanka @Azure/azure-verified-modules-module-owners
 /avm/res/sql/server/ @peterbud @Azure/azure-verified-modules-module-owners
 /avm/res/storage/storage-account/ @fblix @Azure/azure-verified-modules-module-owners
@@ -265,7 +265,7 @@
 /avm/res/synapse/private-link-hub/ @tomazmlakar @Azure/azure-verified-modules-module-owners
 /avm/res/synapse/workspace/ @tomazmlakar @Azure/azure-verified-modules-module-owners
 /avm/res/virtual-machine-images/image-template/ @ahmadabdalla @Azure/azure-verified-modules-module-owners
-/avm/res/web/connection/ @abhishekaryams @Azure/azure-verified-modules-module-owners
+/avm/res/web/connection/ @abhishekaryams @krbar @Azure/azure-verified-modules-module-owners
 /avm/res/web/hosting-environment/ @tsc-buddy @pankajagrawal16 @Azure/azure-verified-modules-module-owners
 /avm/res/web/serverfarm/ @tsc-buddy @pankajagrawal16 @Azure/azure-verified-modules-module-owners
 /avm/res/web/site/ @tsc-buddy @pankajagrawal16 @Azure/azure-verified-modules-module-owners
@@ -275,4 +275,5 @@
 
 *avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors
 *.e2eignore @Azure/azure-verified-modules-tooling-contributors
+
 metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners
