@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "15920841578357904337"
+      "version": "0.47.16.16243",
+      "templateHash": "5525127904761961960"
     },
     "name": "Azd Machine Learning workspace",
     "description": "DEPRECATED - Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -149,7 +149,7 @@
   "resources": {
     "keyVault::keyVaultAccess": {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2026-02-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
       "properties": {
         "accessPolicies": [
@@ -192,7 +192,7 @@
     "keyVault": {
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2022-07-01",
+      "apiVersion": "2026-02-01",
       "name": "[parameters('keyVaultName')]"
     },
     "project": {

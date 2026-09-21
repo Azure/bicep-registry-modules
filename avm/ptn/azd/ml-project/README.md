@@ -34,7 +34,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
-| `Microsoft.KeyVault/vaults/accessPolicies` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies)</li></ul> |
+| `Microsoft.KeyVault/vaults/accessPolicies` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_accesspolicies.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/accessPolicies)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces` | 2024-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces/computes` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_computes.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes)</li></ul> |
 | `Microsoft.MachineLearningServices/workspaces/connections` | 2024-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.machinelearningservices_workspaces_connections.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections)</li></ul> |
@@ -50,88 +50,6 @@ The following section provides usage examples for the module, which were used to
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/ml-project:<version>`.
-
-- [Using only defaults](#example-1-using-only-defaults)
-
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
-You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
-  params: {
-    // Required parameters
-    hubResourceId: '<hubResourceId>'
-    keyVaultName: '<keyVaultName>'
-    name: 'mlpmin001'
-    userAssignedName: 'mlpminuai001'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "hubResourceId": {
-      "value": "<hubResourceId>"
-    },
-    "keyVaultName": {
-      "value": "<keyVaultName>"
-    },
-    "name": {
-      "value": "mlpmin001"
-    },
-    "userAssignedName": {
-      "value": "mlpminuai001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/azd/ml-project:<version>'
-
-// Required parameters
-param hubResourceId = '<hubResourceId>'
-param keyVaultName = '<keyVaultName>'
-param name = 'mlpmin001'
-param userAssignedName = 'mlpminuai001'
-// Non-required parameters
-param location = '<location>'
-```
-
-</details>
-<p>
 
 ## Parameters
 

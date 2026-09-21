@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "244443850836561521"
+      "templateHash": "1268833720401105663"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key."
@@ -185,7 +185,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KeyVault/vaults/keys@2024-11-01#properties/tags"
+          "source": "Microsoft.KeyVault/vaults/keys@2026-02-01#properties/tags"
         },
         "description": "Optional. Resource tags."
       },
