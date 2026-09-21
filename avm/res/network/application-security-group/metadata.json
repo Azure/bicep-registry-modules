@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Application Security Groups (ASG)",
+  "moduleDisplayName": "Application Security Group (ASG)",
   "moduleDescription": "This module deploys an Application Security Group (ASG).",
   "telemetryIdPrefix": "46d3xbcp.res.network-applicationsecuritygroup",
   "alternativeNames": ["ASG"],

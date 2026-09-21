@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Virtual Network Subnets",
+  "moduleDisplayName": "Virtual Network - Subnet",
   "moduleDescription": "This module deploys a Virtual Network Subnet.",
   "telemetryIdPrefix": "46d3xbcp.res.network-virtualnetworksubnet",
   "canonicalType": "Microsoft.Network/virtualNetworks/subnets"

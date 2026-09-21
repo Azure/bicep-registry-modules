@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "Application Gateway for Containers Association",
+  "moduleDisplayName": "Application Gateway for Containers (Traffic Controller) - Association",
   "moduleDescription": "This module deploys an Application Gateway for Containers Association",
   "telemetryIdPrefix": "46d3xbcp.res.servicenetworking-traffctrlassoc",
   "canonicalType": "Microsoft.ServiceNetworking/trafficControllers/associations"

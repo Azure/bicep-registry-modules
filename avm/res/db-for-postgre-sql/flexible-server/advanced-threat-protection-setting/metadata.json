@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
+  "moduleDisplayName": "DB for Postgre SQL Flexible Server - Adv Threat Protection Setting",
   "moduleDescription": "This module deploys a DBforPostgreSQL Advanced Threat Protection.",
   "telemetryIdPrefix": "46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg",
   "canonicalType": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings"

@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
-  "moduleDisplayName": "CDN Profiles Endpoints",
+  "moduleDisplayName": "CDN Profile - Endpoint",
   "moduleDescription": "This module deploys a CDN Profile Endpoint.",
   "telemetryIdPrefix": "46d3xbcp.res.cdn-profile-endpoint",
   "canonicalType": "Microsoft.Cdn/profiles/endpoints"
