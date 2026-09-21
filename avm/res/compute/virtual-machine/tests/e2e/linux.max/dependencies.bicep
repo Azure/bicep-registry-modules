@@ -208,7 +208,7 @@ resource recoveryServicesVault 'Microsoft.RecoveryServices/vaults@2025-02-01' = 
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -225,7 +225,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'encryptionKey'
     properties: {
       kty: 'RSA'

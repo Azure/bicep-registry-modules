@@ -343,7 +343,7 @@ resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
   )
 }
 
-resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
+resource kvExisting 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!createNewKV) {
   name: createNewKV ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
   scope: resourceGroup(
     createNewKV ? subscription().id : (split(keyVaultResourceId!, '/')[2]),

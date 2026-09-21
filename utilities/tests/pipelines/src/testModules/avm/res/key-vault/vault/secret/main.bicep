@@ -18,7 +18,7 @@ var aVariable string = 'oi'
 // Dependencies //
 // ============ //
 
-resource main 'Microsoft.KeyVault/vaults/secrets@2025-05-01' = {
+resource main 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   name: requiredParam
   properties: {
     value: requiredParam

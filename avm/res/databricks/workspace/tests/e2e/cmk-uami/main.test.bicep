@@ -76,10 +76,10 @@ module testDeployment '../../../main.bicep' = [
 // Post-Deployment //
 // =============== //
 // The managed-disk's disk-encryption-set requires its identity to have at least 'Key Vault Crypto Service Encryption User' permissions on the used key.
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
 
-  resource key 'keys@2025-05-01' existing = {
+  resource key 'keys@2026-02-01' existing = {
     name: nestedDependencies.outputs.keyVaultDiskKeyName
   }
 

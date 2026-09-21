@@ -76,7 +76,7 @@ resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' ex
   scope: resourceGroup(witnessStorageAccountSubscriptionId, witnessStorageAccountResourceGroup)
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
@@ -104,7 +104,7 @@ resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
 
@@ -118,7 +118,7 @@ resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-
   tags: azureStackLCMUserCredentialTags
 }
 
-resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-LocalAdminCredential-${cloudId}'
 
@@ -132,7 +132,7 @@ resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-prev
   tags: localAdminCredentialTags
 }
 
-resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-WitnessStorageKey-${cloudId}'
   properties: {
@@ -145,7 +145,7 @@ resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview
   tags: witnessStoragekeyTags
 }
 
-resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
+resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
   parent: keyVault
   name: '${clusterName}-DefaultARBApplication-${cloudId}'
   properties: {
@@ -158,7 +158,7 @@ resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2021-06-01-pre
   tags: defaultARBApplicationTags
 }
 
-resource partnerCreds 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = [
+resource partnerCreds 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = [
   for credential in partnerCredentialList: {
     parent: keyVault
     name: '${clusterName}-${credential.secretName}-${cloudId}'

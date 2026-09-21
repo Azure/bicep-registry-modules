@@ -10,7 +10,7 @@ param keyVaultName string
 param name string
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.KeyVault/vaults/secrets@2025-05-01'>.tags?
+param tags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true
@@ -100,11 +100,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2025-05-01' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   name: name
   parent: keyVault
   tags: tags

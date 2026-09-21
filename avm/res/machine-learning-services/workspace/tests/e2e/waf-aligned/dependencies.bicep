@@ -38,7 +38,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
