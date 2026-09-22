@@ -77,7 +77,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Insights/dataCollectionRuleAssociations` | 2024-03-11 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_datacollectionruleassociations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2024-03-11/dataCollectionRuleAssociations)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults/secrets` | 2024-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets)</li></ul> |
-| `Microsoft.KeyVault/vaults/secrets` | 2023-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets)</li></ul> |
+| `Microsoft.KeyVault/vaults/secrets` | 2026-02-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults_secrets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2026-02-01/vaults/secrets)</li></ul> |
 | `Microsoft.Maintenance/configurationAssignments` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_configurationassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments)</li></ul> |
 | `Microsoft.Maintenance/maintenanceConfigurations` | 2023-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.maintenance_maintenanceconfigurations.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/maintenanceConfigurations)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
@@ -571,23 +571,23 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app-configuration/configuration-store:0.9.2` | Remote reference |
-| `br/public:avm/res/app/container-app:0.19.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.3` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.13.2` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.20.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.9.3` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.18.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.6.1` | Remote reference |
-| `br/public:avm/res/maintenance/maintenance-configuration:0.3.2` | Remote reference |
+| `br/public:avm/res/app-configuration/configuration-store:0.10.0` | Remote reference |
+| `br/public:avm/res/app/container-app:0.23.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.15.0` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.22.3` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.12.1` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.21.1` | Remote reference |
+| `br/public:avm/res/insights/component:0.8.0` | Remote reference |
+| `br/public:avm/res/maintenance/maintenance-configuration:0.4.0` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.2` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.8.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.6.0` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.8.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.2` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.8.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
 | `br/public:avm/res/network/private-endpoint:0.11.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.1` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.12.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.28.0` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.33.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
