@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Virtual Enclaves - Virtual Enclave",
-  "moduleDescription": "This module deploys Virtual Enclave.",
-  "telemetryIdPrefix": "46d3xbcp.res.mission-virtual-enclave",
+  "moduleDescription": "AVM Resource Module for Azure Virtual Enclaves - Virtual Enclave",
+  "telemetryIdPrefix": "46d3xbcp.res.mission-virtualenclave",
   "canonicalType": "Microsoft.Mission/virtualEnclaves",
   "owners": ["SvenAelterman"]
 }

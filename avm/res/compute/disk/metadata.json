@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Compute Disk",
-  "moduleDescription": "This module deploys a Compute Disk",
+  "moduleDescription": "AVM Resource Module for Compute Disk",
   "telemetryIdPrefix": "46d3xbcp.res.compute-disk",
   "canonicalType": "Microsoft.Compute/disks",
   "owners": ["segraef"]
