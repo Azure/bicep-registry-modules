@@ -16,16 +16,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - None (all new properties are optional/additive)
 
-## 0.2.2
-
-### Changes
-
-- Recompiled template
-
-### Breaking Changes
-
-- None
-
 ## 0.2.1
 
 ### Changes
