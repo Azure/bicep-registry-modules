@@ -206,6 +206,12 @@ Describe 'Metadata workflow wiring' {
             Should -Match ([regex]::Escape(". (Join-Path `$PSScriptRoot 'metadata.tests.ps1')"))
     }
 
+    It 'does not validate ownership against legacy markers or lagging public index owners' {
+        $moduleTestPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1'
+        Get-Content -LiteralPath $moduleTestPath -Raw |
+            Should -Not -Match 'ORPHANED\.md|PrimaryModuleOwnerGHHandle'
+    }
+
     It 'treats a <Result> run with zero failed assertions as failure: <ShouldFail>' -ForEach @(
         @{ Result = 'Passed'; ShouldFail = $false }
         @{ Result = 'Failed'; ShouldFail = $true }
