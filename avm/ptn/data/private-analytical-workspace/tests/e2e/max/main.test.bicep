@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
       enableDatabricks: true
       advancedOptions: {
         networkAcls: { ipRules: ['104.43.16.94'] }
-        logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
+        logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: '1' }
         keyVault: {
           createMode: 'default'
           sku: 'standard'

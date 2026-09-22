@@ -49,15 +49,16 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/virtualNetworks` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks)</li></ul> |
 | `Microsoft.Network/virtualNetworks/subnets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets)</li></ul> |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/savedSearches)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/tables` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedServices)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedStorageAccounts)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/savedSearches)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/storageInsightConfigs)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
+| `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
 
 ## Usage examples
 
@@ -66,6 +67,1323 @@ The following section provides usage examples for the module, which were used to
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/data/private-analytical-workspace:<version>`.
+
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Minimal Deployment - fully private](#example-3-minimal-deployment---fully-private)
+- [Minimal Deployment - allowed IP address](#example-4-minimal-deployment---allowed-ip-address)
+- [Use Case 1 - fully private](#example-5-use-case-1---fully-private)
+- [Use Case 1 - allowed IP address](#example-6-use-case-1---allowed-ip-address)
+- [Use Case 2 - fully private](#example-7-use-case-2---fully-private)
+- [Use Case 2 - allowed IP address](#example-8-use-case-2---allowed-ip-address)
+- [Use Case 3 - fully private](#example-9-use-case-3---fully-private)
+- [Use Case 3 - allowed IP address](#example-10-use-case-3---allowed-ip-address)
+- [WAF-aligned](#example-11-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawmin002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawmin002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawmin002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawmax002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        createMode: 'default'
+        enablePurgeProtection: false
+        enableSoftDelete: false
+        sku: 'standard'
+        softDeleteRetentionInDays: 7
+      }
+      logAnalyticsWorkspace: {
+        dailyQuotaGb: '1'
+        dataRetention: 35
+      }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+    }
+    enableDatabricks: true
+    location: '<location>'
+    tags: {
+      CostCenter: '123459876'
+      Owner: 'Contoso MAX Team'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawmax002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "createMode": "default",
+          "enablePurgeProtection": false,
+          "enableSoftDelete": false,
+          "sku": "standard",
+          "softDeleteRetentionInDays": 7
+        },
+        "logAnalyticsWorkspace": {
+          "dailyQuotaGb": "1",
+          "dataRetention": 35
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123459876",
+        "Owner": "Contoso MAX Team"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawmax002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    createMode: 'default'
+    enablePurgeProtection: false
+    enableSoftDelete: false
+    sku: 'standard'
+    softDeleteRetentionInDays: 7
+  }
+  logAnalyticsWorkspace: {
+    dailyQuotaGb: '1'
+    dataRetention: 35
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = true
+param location = '<location>'
+param tags = {
+  CostCenter: '123459876'
+  Owner: 'Contoso MAX Team'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Minimal Deployment - fully private_
+
+Isolated network deployment (Minimalistic) - fully private.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/min-priv]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawminpriv002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
+    enableDatabricks: false
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawminpriv002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": false
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawminpriv002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
+param enableDatabricks = false
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Minimal Deployment - allowed IP address_
+
+Isolated network deployment (Minimalistic) - allowed IP address.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/min-pub]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawminpu002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+    }
+    enableDatabricks: false
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawminpu002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": false
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawminpu002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = false
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Use Case 1 - fully private_
+
+Isolated network deployment - fully private.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-priv]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu1pr002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu1pr002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu1pr002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Use Case 1 - allowed IP address_
+
+Isolated network deployment - allowed IP address.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc01-pub]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu1pu002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        enablePurgeProtection: false
+      }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu1pu002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu1pu002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    enablePurgeProtection: false
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Use Case 2 - fully private_
+
+Deployment in an Existing, Enterprise-Specific Virtual Network - fully private.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-priv]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu2pr002'
+    // Non-required parameters
+    advancedOptions: {
+      databricks: {
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
+      }
+      virtualNetwork: {
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu2pr002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "databricks": {
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
+        "virtualNetwork": {
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu2pr002'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 8: _Use Case 2 - allowed IP address_
+
+Deployment in an Existing, Enterprise-Specific Virtual Network - allowed IP address.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc02-pub]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu2pu002'
+    // Non-required parameters
+    advancedOptions: {
+      databricks: {
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
+      }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+      virtualNetwork: {
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
+      }
+    }
+    enableDatabricks: true
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu2pu002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "databricks": {
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        },
+        "virtualNetwork": {
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu2pu002'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
+  }
+}
+param enableDatabricks = true
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 9: _Use Case 3 - fully private_
+
+Integration with existing core Infrastructure - fully private.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-priv]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu3pr002'
+    // Non-required parameters
+    advancedOptions: {
+      databricks: {
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      keyVault: {
+        enablePurgeProtection: false
+      }
+      virtualNetwork: {
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
+      }
+    }
+    enableDatabricks: true
+    keyVaultResourceId: '<keyVaultResourceId>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu3pr002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "databricks": {
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "keyVault": {
+          "enablePurgeProtection": false
+        },
+        "virtualNetwork": {
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu3pr002'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  keyVault: {
+    enablePurgeProtection: false
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
+  }
+}
+param enableDatabricks = true
+param keyVaultResourceId = '<keyVaultResourceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 10: _Use Case 3 - allowed IP address_
+
+Integration with existing core Infrastructure - allowed IP address.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/uc03-pub]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawu3p002'
+    // Non-required parameters
+    advancedOptions: {
+      databricks: {
+        subnetNameBackend: '<subnetNameBackend>'
+        subnetNameFrontend: '<subnetNameFrontend>'
+      }
+      networkAcls: {
+        ipRules: [
+          '104.43.16.94'
+        ]
+      }
+      virtualNetwork: {
+        subnetNamePrivateLink: '<subnetNamePrivateLink>'
+      }
+    }
+    enableDatabricks: true
+    keyVaultResourceId: '<keyVaultResourceId>'
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawu3p002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "databricks": {
+          "subnetNameBackend": "<subnetNameBackend>",
+          "subnetNameFrontend": "<subnetNameFrontend>"
+        },
+        "networkAcls": {
+          "ipRules": [
+            "104.43.16.94"
+          ]
+        },
+        "virtualNetwork": {
+          "subnetNamePrivateLink": "<subnetNamePrivateLink>"
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "keyVaultResourceId": {
+      "value": "<keyVaultResourceId>"
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawu3p002'
+// Non-required parameters
+param advancedOptions = {
+  databricks: {
+    subnetNameBackend: '<subnetNameBackend>'
+    subnetNameFrontend: '<subnetNameFrontend>'
+  }
+  networkAcls: {
+    ipRules: [
+      '104.43.16.94'
+    ]
+  }
+  virtualNetwork: {
+    subnetNamePrivateLink: '<subnetNamePrivateLink>'
+  }
+}
+param enableDatabricks = true
+param keyVaultResourceId = '<keyVaultResourceId>'
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+```
+
+</details>
+<p>
+
+### Example 11: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dpawwaf002'
+    // Non-required parameters
+    advancedOptions: {
+      keyVault: {
+        createMode: 'default'
+        enablePurgeProtection: false
+        enableSoftDelete: true
+        sku: 'standard'
+        softDeleteRetentionInDays: 90
+      }
+      logAnalyticsWorkspace: {
+        dailyQuotaGb: '1'
+        dataRetention: 35
+        replication: {
+          enabled: true
+          location: 'westeurope'
+        }
+      }
+    }
+    enableDatabricks: true
+    enableTelemetry: true
+    location: '<location>'
+    tags: {
+      CostCenter: '123-456-789'
+      'hidden-title': 'This is visible in the resource name'
+      Owner: 'Contoso'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dpawwaf002"
+    },
+    // Non-required parameters
+    "advancedOptions": {
+      "value": {
+        "keyVault": {
+          "createMode": "default",
+          "enablePurgeProtection": false,
+          "enableSoftDelete": true,
+          "sku": "standard",
+          "softDeleteRetentionInDays": 90
+        },
+        "logAnalyticsWorkspace": {
+          "dailyQuotaGb": "1",
+          "dataRetention": 35,
+          "replication": {
+            "enabled": true,
+            "location": "westeurope"
+          }
+        }
+      }
+    },
+    "enableDatabricks": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "hidden-title": "This is visible in the resource name",
+        "Owner": "Contoso"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
+
+// Required parameters
+param name = 'dpawwaf002'
+// Non-required parameters
+param advancedOptions = {
+  keyVault: {
+    createMode: 'default'
+    enablePurgeProtection: false
+    enableSoftDelete: true
+    sku: 'standard'
+    softDeleteRetentionInDays: 90
+  }
+  logAnalyticsWorkspace: {
+    dailyQuotaGb: '1'
+    dataRetention: 35
+    replication: {
+      enabled: true
+      location: 'westeurope'
+    }
+  }
+}
+param enableDatabricks = true
+param enableTelemetry = true
+param location = '<location>'
+param tags = {
+  CostCenter: '123-456-789'
+  'hidden-title': 'This is visible in the resource name'
+  Owner: 'Contoso'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -219,16 +1537,16 @@ This parameter allows you to specify additional settings for Azure Log Analytics
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The default value is: '-1' (not limited). |
+| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | string | The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit). |
 | [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The default value is: '365'. |
+| [`replication`](#parameter-advancedoptionsloganalyticsworkspacereplication) | object | The workspace replication properties. |
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dailyQuotaGb`
 
-The workspace daily quota for ingestion. The default value is: '-1' (not limited).
+The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit).
 
 - Required: No
-- Type: int
-- MinValue: -1
+- Type: string
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
@@ -238,6 +1556,39 @@ Number of days data will be retained for. The default value is: '365'.
 - Type: int
 - MinValue: 0
 - MaxValue: 730
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication`
+
+The workspace replication properties.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-advancedoptionsloganalyticsworkspacereplicationlocation) | string | The location to which the workspace is replicated. Required if replication is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-advancedoptionsloganalyticsworkspacereplicationenabled) | bool | Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location. |
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication.location`
+
+The location to which the workspace is replicated. Required if replication is enabled.
+
+- Required: No
+- Type: string
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication.enabled`
+
+Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `advancedOptions.networkAcls`
 

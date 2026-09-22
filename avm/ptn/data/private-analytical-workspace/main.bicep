@@ -178,7 +178,7 @@ var nsgRulesDbw = [
 ]
 
 var logName = '${name}-log'
-var logDefaultDailyQuotaGb = -1
+var logDefaultDailyQuotaGb = '-1'
 var logDefaultDataRetention = 365
 
 var kvName = '${name}-kv'
@@ -484,7 +484,7 @@ module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (cr
   }
 }
 
-module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (createNewLog) {
+module log 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (createNewLog) {
   name: '${uniqueString(deployment().name, location)}-law-${logName}'
   params: {
     // Required parameters
@@ -492,6 +492,7 @@ module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (create
     // Non-required parameters
     dailyQuotaGb: advancedOptions.?logAnalyticsWorkspace.?dailyQuotaGb ?? logDefaultDailyQuotaGb
     dataRetention: advancedOptions.?logAnalyticsWorkspace.?dataRetention ?? logDefaultDataRetention
+    replication: advancedOptions.?logAnalyticsWorkspace.?replication
     diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
@@ -822,6 +823,8 @@ type virtualNetworkType = {
   subnetNamePrivateLink: string?
 }
 
+import { workspaceReplicationType } from 'br/public:avm/res/operational-insights/workspace:0.16.1'
+
 @export()
 type logAnalyticsWorkspaceType = {
   @description('Optional. Number of days data will be retained for. The default value is: \'365\'.')
@@ -829,9 +832,11 @@ type logAnalyticsWorkspaceType = {
   @maxValue(730)
   dataRetention: int?
 
-  @description('Optional. The workspace daily quota for ingestion. The default value is: \'-1\' (not limited).')
-  @minValue(-1)
-  dailyQuotaGb: int?
+  @description('Optional. The workspace daily quota for ingestion in GB. Supports decimal values. Example: \'0.5\' for 0.5 GB, \'2\' for 2 GB. Default is \'-1\' (no limit).')
+  dailyQuotaGb: string?
+
+  @description('Optional. The workspace replication properties.')
+  replication: workspaceReplicationType?
 }
 
 @export()

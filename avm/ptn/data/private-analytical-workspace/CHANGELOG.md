@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/data/private-analytical-workspace/CHANGELOG.md).
 
+## 0.2.0
+
+### Changes
+
+- Updated `avm/res/operational-insights/workspace` module version to `0.16.1`
+- Added support for replicas to optional `avm/res/operational-insights/workspace` deployment
+
+### Breaking Changes
+
+- As per the upgrade of the `avm/res/operational-insights/workspace` module, changed the type for `dailyQuotaGb` from int to string to allow for rational number values (e.g. `'0.5'`)
+
 ## 0.1.3
 
 ### Changes
