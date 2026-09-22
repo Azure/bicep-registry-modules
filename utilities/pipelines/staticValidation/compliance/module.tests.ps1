@@ -428,66 +428,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
     }
 }
 
-Describe 'Metadata tests' -Tag 'Metadata' {
-
-    BeforeDiscovery {
-        # Internal, non-publishable helper modules (e.g. nested under a `modules`/`tests`/`examples` folder) are not
-        # required to carry a `metadata.json` file, consistent with how the rest of the pipeline treats them.
-        $metadataExcludedSegments = @('tests', 'examples', 'test', 'modules', 'build', 'out', 'dist', 'node_modules')
-
-        $metadataModuleTestCases = [System.Collections.ArrayList] @()
-        foreach ($moduleFolderPath in $moduleFolderPaths) {
-            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
-            $pathSegments = $resourceTypeIdentifier -split '/'
-
-            $isExcluded = $pathSegments | Where-Object { $metadataExcludedSegments -contains $_ -or $_.StartsWith('.') }
-            if ($isExcluded) {
-                continue
-            }
-
-            $metadataModuleTestCases += @{
-                moduleFolderName = $resourceTypeIdentifier
-                moduleFolderPath = $moduleFolderPath
-                avmModuleType    = @{ res = 'resource'; ptn = 'pattern'; utl = 'utility' }[$moduleType]
-                isTopLevelModule = $pathSegments.Count -eq 2
-            }
-        }
-    }
-
-    BeforeAll {
-        # Use the latest published Avm.Authoring module from the PowerShell Gallery as the single source of truth
-        # for metadata validation (Test-AvmModuleMetadata). Install it on demand so the tests also work outside CI.
-        if (-not (Get-Module -ListAvailable -Name 'Avm.Authoring')) {
-            Install-Module -Name 'Avm.Authoring' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -SkipPublisherCheck -AllowClobber
-        }
-        Import-Module -Name 'Avm.Authoring' -Force
-    }
-
-    It '[<moduleFolderName>] Module must contain a valid [` metadata.json `] file.' -TestCases $metadataModuleTestCases {
-
-        param(
-            [string] $moduleFolderPath,
-            [string] $avmModuleType,
-            [bool] $isTopLevelModule
-        )
-
-        $testInput = @{
-            Path                   = $moduleFolderPath
-            Ecosystem              = 'bicep'
-            ModuleType             = $avmModuleType
-            SkipModuleVersionCheck = $true
-        }
-        if (-not $isTopLevelModule) {
-            $testInput['ChildModule'] = $true
-        }
-
-        $result = Test-AvmModuleMetadata @testInput
-
-        $issueSummary = ($result.Issues | ForEach-Object { "[$($_.Code)] $($_.Message)" }) -join '; '
-        $result.Status | Should -Be 'pass' -Because "metadata.json must satisfy the AVM Avm.Authoring schema. Issues: $issueSummary"
-    }
-}
+. (Join-Path $PSScriptRoot 'metadata.tests.ps1') -moduleFolderPaths $moduleFolderPaths -repoRootPath $repoRootPath
 
 Describe 'Pipeline tests' -Tag 'Pipeline' {
 
