@@ -136,6 +136,12 @@ module testDeployment '../../../main.bicep' = [
           storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
+      dotNetComponents: [
+        {
+          name: 'aspire-dashboard'
+          componentType: 'AspireDashboard'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
