@@ -73,7 +73,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.KeyVault/vaults@2026-02-01'>.tags?
+param tags resourceInput<'Microsoft.KeyVault/vaults@2025-05-01'>.tags?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service.')
@@ -183,7 +183,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   name: name
   location: location
   tags: tags

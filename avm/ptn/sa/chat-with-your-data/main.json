@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.47.16.16243",
-      "templateHash": "12268480562301846001"
+      "version": "0.43.8.12551",
+      "templateHash": "7452813292357135384"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -762,8 +762,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13770670400998964101"
+              "version": "0.43.8.12551",
+              "templateHash": "11896026034484125231"
             }
           },
           "definitions": {
@@ -15423,8 +15423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3744414430826876161"
+              "version": "0.43.8.12551",
+              "templateHash": "11341146322136411932"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone."
@@ -15658,8 +15658,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "11742602554000864225"
+                      "version": "0.43.8.12551",
+                      "templateHash": "2635983342365217282"
                     },
                     "name": "Private DNS Zone Virtual Network Link",
                     "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -15870,8 +15870,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "17499814553496217039"
+              "version": "0.43.8.12551",
+              "templateHash": "15348757588852882955"
             },
             "name": "Azure Cosmos DB account",
             "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -17173,8 +17173,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1486637775323848990"
+                      "version": "0.43.8.12551",
+                      "templateHash": "502070487598668797"
                     },
                     "name": "DocumentDB Database Account SQL Databases",
                     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -17305,8 +17305,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "10435716800478028638"
+                              "version": "0.43.8.12551",
+                              "templateHash": "9813313225465779444"
                             },
                             "name": "DocumentDB Database Account SQL Database Containers",
                             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -17559,8 +17559,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "1699024643065010078"
+                      "version": "0.43.8.12551",
+                      "templateHash": "6791751435495431820"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -17696,8 +17696,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "8069500349221391143"
+                              "version": "0.43.8.12551",
+                              "templateHash": "16393730201265874298"
                             },
                             "name": "DocumentDB Database Account SQL Role Assignments.",
                             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -18563,8 +18563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "10875250962273257589"
+              "version": "0.42.1.51946",
+              "templateHash": "6075719994263381022"
             },
             "name": "DBforPostgreSQL Flexible Servers",
             "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -19337,7 +19337,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/authConfig"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
                 },
                 "description": "Optional. The authentication configuration for the server."
               },
@@ -19430,7 +19430,18 @@
             "storageSizeGB": {
               "type": "int",
               "defaultValue": 32,
-              "minValue": 32,
+              "allowedValues": [
+                32,
+                64,
+                128,
+                256,
+                512,
+                1024,
+                2048,
+                4096,
+                8192,
+                16384
+              ],
               "metadata": {
                 "description": "Optional. Max storage allowed for a server."
               }
@@ -19444,55 +19455,6 @@
               ],
               "metadata": {
                 "description": "Optional. Flag to enable / disable Storage Auto grow for flexible server."
-              }
-            },
-            "storageType": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "Premium_LRS",
-                "PremiumV2_LRS",
-                "UltraSSD_LRS"
-              ],
-              "metadata": {
-                "description": "Optional. Type of storage assigned to a server. Allowed values are Premium_LRS, PremiumV2_LRS, or UltraSSD_LRS. If not specified, it defaults to Premium_LRS."
-              }
-            },
-            "storageTier": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "P1",
-                "P2",
-                "P3",
-                "P4",
-                "P6",
-                "P10",
-                "P15",
-                "P20",
-                "P30",
-                "P40",
-                "P50",
-                "P60",
-                "P70",
-                "P80"
-              ],
-              "metadata": {
-                "description": "Optional. Storage tier of a server."
-              }
-            },
-            "storageIops": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Maximum IOPS supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS."
-              }
-            },
-            "storageThroughput": {
-              "type": "int",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Maximum throughput supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS."
               }
             },
             "version": {
@@ -19556,7 +19518,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/maintenanceWindow"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/maintenanceWindow"
                 },
                 "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
               },
@@ -19678,7 +19640,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/tags"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -19698,7 +19660,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
+                "description": "Optional. The diagnostic settings of the service."
               }
             },
             "privateEndpoints": {
@@ -19746,8 +19708,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.dbforpostgresql-flexibleserver.{0}.{1}', replace('0.16.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.dbforpostgresql-flexibleserver.{0}.{1}', replace('0.15.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19774,7 +19736,7 @@
             },
             "flexibleServer": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2026-01-01-preview",
+              "apiVersion": "2025-06-01-preview",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -19806,11 +19768,7 @@
                 "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
                 "storage": {
                   "storageSizeGB": "[parameters('storageSizeGB')]",
-                  "autoGrow": "[parameters('autoGrow')]",
-                  "type": "[parameters('storageType')]",
-                  "tier": "[parameters('storageTier')]",
-                  "iops": "[parameters('storageIops')]",
-                  "throughput": "[parameters('storageThroughput')]"
+                  "autoGrow": "[parameters('autoGrow')]"
                 },
                 "version": "[parameters('version')]"
               },
@@ -19867,20 +19825,20 @@
                 "copy": [
                   {
                     "name": "metrics",
-                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
                     "input": {
-                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
-                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
                       "timeGrain": null
                     }
                   },
                   {
                     "name": "logs",
-                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
                     "input": {
-                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
-                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
-                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
                     }
                   }
                 ],
@@ -19932,8 +19890,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7168345819051965647"
+                      "version": "0.42.1.51946",
+                      "templateHash": "15093706878295844302"
                     },
                     "name": "DBforPostgreSQL Flexible Server Databases",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -19978,7 +19936,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-database.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-database.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -19997,12 +19955,12 @@
                     "flexibleServer": {
                       "existing": true,
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-                      "apiVersion": "2026-01-01-preview",
+                      "apiVersion": "2025-08-01",
                       "name": "[parameters('flexibleServerName')]"
                     },
                     "database": {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-                      "apiVersion": "2026-01-01-preview",
+                      "apiVersion": "2025-06-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "collation": "[parameters('collation')]",
@@ -20076,8 +20034,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "11458900348701508727"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10415411553567489102"
                     },
                     "name": "DBforPostgreSQL Flexible Server Firewall Rules",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -20120,7 +20078,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-fwrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-fwrule.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20138,7 +20096,7 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-                      "apiVersion": "2026-01-01-preview",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "endIpAddress": "[parameters('endIpAddress')]",
@@ -20215,8 +20173,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "3620798276702600127"
+                      "version": "0.42.1.51946",
+                      "templateHash": "4591693237508478257"
                     },
                     "name": "DBforPostgreSQL Flexible Server Configurations",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -20261,7 +20219,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-config.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-config.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20285,7 +20243,7 @@
                     },
                     "configuration": {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-                      "apiVersion": "2025-08-01",
+                      "apiVersion": "2025-06-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "source": "[parameters('source')]",
@@ -20362,8 +20320,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "15527987331755555730"
+                      "version": "0.42.1.51946",
+                      "templateHash": "15997652827199602742"
                     },
                     "name": "DBforPostgreSQL Flexible Server Administrators",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -20419,7 +20377,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-admin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-admin.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20437,7 +20395,7 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-                      "apiVersion": "2026-01-01-preview",
+                      "apiVersion": "2025-06-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
                       "properties": {
                         "principalName": "[parameters('principalName')]",
@@ -20503,8 +20461,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "7794342909995930988"
+                      "version": "0.42.1.51946",
+                      "templateHash": "10977866813085053474"
                     },
                     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
                     "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -20539,7 +20497,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20557,8 +20515,8 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
-                      "apiVersion": "2026-01-01-preview",
-                      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+                      "apiVersion": "2025-06-01-preview",
+                      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
                       "properties": {
                         "state": "[parameters('serverThreatProtection')]"
                       }
@@ -20570,21 +20528,21 @@
                       "metadata": {
                         "description": "The resource id of the advanced threat protection state for the flexible server."
                       },
-                      "value": "Default"
+                      "value": "PostgreSQL-advancedThreatProtection"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource id of the advanced threat protection state for the flexible server."
                       },
-                      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
+                      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]"
                     },
                     "advancedTreatProtectionState": {
                       "type": "string",
                       "metadata": {
                         "description": "The advanced threat protection state for the flexible server."
                       },
-                      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default'), '2026-01-01-preview').state]"
+                      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2025-06-01-preview').state]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -20664,8 +20622,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "4295240387232557710"
+                      "version": "0.38.5.1644",
+                      "templateHash": "16604612898799598358"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -20729,7 +20687,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     },
@@ -20828,7 +20786,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
                         }
                       }
                     }
@@ -20867,21 +20825,11 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
                         },
                         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
                       },
                       "nullable": true
-                    },
-                    "ipVersionType": {
-                      "type": "string",
-                      "metadata": {
-                        "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
-                        },
-                        "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
-                      },
-                      "defaultValue": "IPv4"
                     },
                     "privateDnsZoneGroup": {
                       "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -20918,7 +20866,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
                         },
                         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                       },
@@ -20928,7 +20876,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
                         },
                         "description": "Optional. Custom DNS configurations."
                       },
@@ -20938,7 +20886,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
                       },
@@ -20948,7 +20896,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
                       },
@@ -20981,15 +20929,14 @@
                       "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-                    },
-                    "enableReferencedModulesTelemetry": false
+                    }
                   },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -21007,7 +20954,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2024-10-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -21028,15 +20975,14 @@
                         "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                         "subnet": {
                           "id": "[parameters('subnetResourceId')]"
-                        },
-                        "ipVersionType": "[parameters('ipVersionType')]"
+                        }
                       }
                     },
                     "privateEndpoint_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
+                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -21053,7 +20999,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
+                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -21087,9 +21033,6 @@
                           },
                           "privateDnsZoneConfigs": {
                             "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
-                          },
-                          "enableTelemetry": {
-                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -21099,8 +21042,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "15830984844857508530"
+                              "version": "0.38.5.1644",
+                              "templateHash": "24141742673128945"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -21153,45 +21096,18 @@
                               "metadata": {
                                 "description": "Optional. The name of the private DNS zone group."
                               }
-                            },
-                            "enableTelemetry": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Enable/Disable usage telemetry for module."
-                              }
                             }
                           },
                           "resources": {
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2024-10-01",
                               "name": "[parameters('privateEndpointName')]"
-                            },
-                            "avmTelemetry": {
-                              "condition": "[parameters('enableTelemetry')]",
-                              "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2025-04-01",
-                              "name": "[format('46d3xbcp.res.network-privendpoint-privdnszonegrp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-                              "properties": {
-                                "mode": "Incremental",
-                                "template": {
-                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                                  "contentVersion": "1.0.0.0",
-                                  "resources": [],
-                                  "outputs": {
-                                    "telemetry": {
-                                      "type": "String",
-                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                                    }
-                                  }
-                                }
-                              }
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2024-10-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "copy": [
@@ -21266,13 +21182,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
+                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
                           "output": true
                         },
                         "description": "The custom DNS configurations of the private endpoint."
@@ -21332,7 +21248,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('flexibleServer', '2026-01-01-preview', 'full').location]"
+              "value": "[reference('flexibleServer', '2025-06-01-preview', 'full').location]"
             },
             "fqdn": {
               "type": "string",
@@ -21367,7 +21283,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned managed identity."
               },
-              "value": "[tryGet(tryGet(reference('flexibleServer', '2026-01-01-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('flexibleServer', '2025-06-01-preview', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -21452,8 +21368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "8467306425652870311"
+              "version": "0.43.8.12551",
+              "templateHash": "13237909562189853232"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault."
@@ -22243,7 +22159,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults@2026-02-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults@2025-05-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -22316,7 +22232,7 @@
             },
             "keyVault": {
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2026-02-01",
+              "apiVersion": "2025-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -22467,8 +22383,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "734330092098343032"
+                      "version": "0.43.8.12551",
+                      "templateHash": "12963016495741095470"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret."
@@ -22569,7 +22485,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.KeyVault/vaults/secrets@2026-02-01#properties/tags"
+                          "source": "Microsoft.KeyVault/vaults/secrets@2025-05-01#properties/tags"
                         },
                         "description": "Optional. Resource tags."
                       },
@@ -22672,12 +22588,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -23462,7 +23378,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('keyVault', '2026-02-01', 'full').location]"
+              "value": "[reference('keyVault', '2025-05-01', 'full').location]"
             }
           }
         }
@@ -23536,8 +23452,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11541445498081746491"
+              "version": "0.43.8.12551",
+              "templateHash": "12653713588479711259"
             }
           },
           "parameters": {
@@ -23755,8 +23671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5851137875542374705"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10505392154118396876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -24915,7 +24831,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -24944,7 +24860,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -26647,8 +26563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11541445498081746491"
+              "version": "0.43.8.12551",
+              "templateHash": "12653713588479711259"
             }
           },
           "parameters": {
@@ -26866,8 +26782,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5851137875542374705"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10505392154118396876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -28026,7 +27942,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -28055,7 +27971,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -29057,8 +28973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11541445498081746491"
+              "version": "0.43.8.12551",
+              "templateHash": "12653713588479711259"
             }
           },
           "parameters": {
@@ -29276,8 +29192,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5851137875542374705"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10505392154118396876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -30436,7 +30352,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -30465,7 +30381,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -34298,8 +34214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13851440538241313663"
+              "version": "0.43.8.12551",
+              "templateHash": "2796658249544009568"
             }
           },
           "parameters": {
@@ -34559,8 +34475,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "16500393509314426247"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10880888445788436921"
                     }
                   },
                   "definitions": {
@@ -35591,8 +35507,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "15539262977749803739"
+                              "version": "0.43.8.12551",
+                              "templateHash": "1009721598684973971"
                             },
                             "name": "Site App Settings",
                             "description": "This module deploys a Site App Setting."
@@ -36546,8 +36462,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9473505041822606153"
+              "version": "0.43.8.12551",
+              "templateHash": "3701385520679256642"
             }
           },
           "parameters": {
@@ -36807,8 +36723,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "16500393509314426247"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10880888445788436921"
                     }
                   },
                   "definitions": {
@@ -37839,8 +37755,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "15539262977749803739"
+                              "version": "0.43.8.12551",
+                              "templateHash": "1009721598684973971"
                             },
                             "name": "Site App Settings",
                             "description": "This module deploys a Site App Setting."
@@ -38798,8 +38714,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "3223716848947756514"
+              "version": "0.43.8.12551",
+              "templateHash": "7162627522702999554"
             }
           },
           "parameters": {
@@ -39039,8 +38955,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17528645734833032213"
+                      "version": "0.43.8.12551",
+                      "templateHash": "601336789356784685"
                     }
                   },
                   "parameters": {
@@ -39405,8 +39321,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "16500393509314426247"
+                              "version": "0.43.8.12551",
+                              "templateHash": "10880888445788436921"
                             }
                           },
                           "definitions": {
@@ -40437,8 +40353,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.47.16.16243",
-                                      "templateHash": "15539262977749803739"
+                                      "version": "0.43.8.12551",
+                                      "templateHash": "1009721598684973971"
                                     },
                                     "name": "Site App Settings",
                                     "description": "This module deploys a Site App Setting."
@@ -41417,8 +41333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "9508017103183501638"
+              "version": "0.43.8.12551",
+              "templateHash": "4194208281068271789"
             },
             "name": "monitoring-solution",
             "description": "AVM WAF-compliant monitoring solution that integrates Application Insights with Log Analytics for centralized telemetry, diagnostics, and observability."
@@ -47113,8 +47029,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11541445498081746491"
+              "version": "0.43.8.12551",
+              "templateHash": "12653713588479711259"
             }
           },
           "parameters": {
@@ -47332,8 +47248,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5851137875542374705"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10505392154118396876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -48492,7 +48408,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -48521,7 +48437,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -49520,8 +49436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11541445498081746491"
+              "version": "0.43.8.12551",
+              "templateHash": "12653713588479711259"
             }
           },
           "parameters": {
@@ -49739,8 +49655,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5851137875542374705"
+                      "version": "0.43.8.12551",
+                      "templateHash": "10505392154118396876"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -50899,7 +50815,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -50928,7 +50844,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2025-05-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -51990,8 +51906,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "13296273282001484041"
+              "version": "0.43.8.12551",
+              "templateHash": "14668382460138971383"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -52976,7 +52892,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2026-02-01",
+              "apiVersion": "2025-05-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -53005,7 +52921,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2026-02-01",
+              "apiVersion": "2025-05-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -53834,8 +53750,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "5254268021640269941"
+                      "version": "0.43.8.12551",
+                      "templateHash": "3153917987995545995"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -54299,8 +54215,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "1490903731413059794"
+                              "version": "0.43.8.12551",
+                              "templateHash": "16582885544266644657"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -54529,8 +54445,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.47.16.16243",
-                      "templateHash": "17687142975546265425"
+                      "version": "0.43.8.12551",
+                      "templateHash": "16586156582565436284"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -54844,8 +54760,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.47.16.16243",
-                              "templateHash": "1279997384833981420"
+                              "version": "0.43.8.12551",
+                              "templateHash": "11238605619276329338"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -54968,9 +54884,9 @@
         }
       },
       "dependsOn": [
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "virtualNetwork"
       ]
@@ -56243,8 +56159,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.47.16.16243",
-              "templateHash": "11075281805572575760"
+              "version": "0.43.8.12551",
+              "templateHash": "4482788370447199711"
             }
           },
           "parameters": {
