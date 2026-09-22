@@ -16,7 +16,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
-resource secrets 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = [
+resource secrets 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = [
   for secret in secretsToSet: {
     name: secret.name
     parent: keyVault
