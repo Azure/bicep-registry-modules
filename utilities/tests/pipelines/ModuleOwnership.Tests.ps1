@@ -36,6 +36,32 @@ Describe 'Module ownership automation' {
             Set-AvmGitHubPrLabels -Repo 'test-org/test-repo' -PrUrl 'https://github.com/test-org/test-repo/pull/42' -RepoRoot $script:mockRepoRoot
         }
 
+        function Invoke-TestReviewerSweep {
+            param (
+                [int] $UpdatedWithinMinutes = 0
+            )
+            Set-AvmGitHubPrLabels -Repo 'test-org/test-repo' -RepoRoot $script:mockRepoRoot -UpdatedWithinMinutes $UpdatedWithinMinutes
+        }
+
+        function New-TestOpenPr {
+            param (
+                [int] $Number,
+                [int] $UpdatedMinutesAgo = 0,
+                [string] $HeadRefOid = '0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c'
+            )
+            @{
+                number         = $Number
+                url            = "https://github.com/test-org/test-repo/pull/$Number"
+                author         = @{ login = 'contributor' }
+                isDraft        = $false
+                reviewRequests = @()
+                reviews        = @()
+                labels         = @()
+                headRefOid     = $HeadRefOid
+                updatedAt      = (Get-Date).ToUniversalTime().AddMinutes(-$UpdatedMinutesAgo).ToString('o')
+            }
+        }
+
         function Set-TestModuleMetadata {
             param (
                 [string] $ModulePath = 'avm/res/storage/storage-account',
@@ -66,6 +92,7 @@ Describe 'Module ownership automation' {
     BeforeEach {
         $script:ghCalls = [System.Collections.Generic.List[object]]::new()
         $script:prReadExitCode = 0
+        $script:prListExitCode = 0
         $script:filesExitCode = 0
         $script:editExitCode = 0
         $script:pr = @{
@@ -75,9 +102,13 @@ Describe 'Module ownership automation' {
             isDraft        = $false
             reviewRequests = @(@{ name = 'azure-verified-modules-module-contributors' })
             reviews        = @()
+            labels         = @()
             headRefOid     = '0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c'
+            updatedAt      = (Get-Date).ToUniversalTime().ToString('o')
         }
+        $script:openPrs = @($script:pr)
         $script:changedFiles = @('avm/res/storage/storage-account/main.bicep')
+        $script:changedFilesByPr = @{}
         $script:headMetadata = @{}
         Remove-TestModuleMetadata
         Set-TestModuleMetadata
@@ -120,13 +151,22 @@ Describe 'Module ownership automation' {
                 $global:LASTEXITCODE = $script:prReadExitCode
                 return $script:pr | ConvertTo-Json -Depth 10
             }
-            if ($args[0] -eq 'api' -and ($args -match '/pulls/42/files')) {
+            if ($args[0] -eq 'pr' -and $args[1] -eq 'list') {
+                $global:LASTEXITCODE = $script:prListExitCode
+                return @($script:openPrs) | ConvertTo-Json -Depth 10 -AsArray
+            }
+            if ($args[0] -eq 'api' -and ($args -join ' ') -match '/pulls/(\d+)/files') {
                 $global:LASTEXITCODE = $script:filesExitCode
+                $prNumber = [int]$matches[1]
+                if ($script:changedFilesByPr.ContainsKey($prNumber)) {
+                    return $script:changedFilesByPr[$prNumber]
+                }
                 return $script:changedFiles
             }
             if ($args[0] -eq 'api' -and ($args[1] -match '^repos/(.+)/contents/(.+)\?ref=(.+)$')) {
                 $sourceRepo, $metadataPath, $sourceRef = $matches[1], $matches[2], $matches[3]
-                if ($sourceRepo -ne 'test-org/test-repo' -or $sourceRef -ne $script:pr.headRefOid) {
+                $knownRefs = @(@($script:pr) + @($script:openPrs) | Where-Object { $_.headRefOid } | ForEach-Object { $_.headRefOid })
+                if ($sourceRepo -ne 'test-org/test-repo' -or $knownRefs -notcontains $sourceRef) {
                     throw "Unexpected metadata source [$sourceRepo@$sourceRef]."
                 }
                 if (-not $script:headMetadata.ContainsKey($metadataPath)) {
@@ -509,6 +549,82 @@ Describe 'Module ownership automation' {
             $script:editExitCode = 1
             { Invoke-TestReviewerRouting } | Should -Throw '*Unable to update reviewer routing*'
         }
+
+        It 'Makes no edits when the pull request is already routed' {
+            $script:pr.labels = @(@{ name = 'Needs: Module Owner :mega:' })
+            $script:pr.reviewRequests = @(@{ login = 'owner-one' }, @{ login = 'owner-two' })
+            Invoke-TestReviewerRouting
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 0
+        }
+
+        It 'Adds only the labels that are missing' {
+            $script:pr.labels = @(@{ name = 'Needs: Module Owner :mega:' })
+            Invoke-TestReviewerRouting
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Not -Contain 'Needs: Module Owner :mega:'
+            $edit.Arguments | Should -Contain '--add-reviewer'
+        }
+
+        It 'Performs no GitHub writes under WhatIf' {
+            Set-AvmGitHubPrLabels -Repo 'test-org/test-repo' -PrUrl 'https://github.com/test-org/test-repo/pull/42' -RepoRoot $script:mockRepoRoot -WhatIf
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 0
+        }
+    }
+
+    Context 'Scheduled reviewer sweep' {
+        It 'Routes every open pull request when no URL is supplied' {
+            $script:openPrs = @($script:pr, (New-TestOpenPr -Number 43))
+            Invoke-TestReviewerSweep
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 2
+        }
+
+        It 'Never calls pr view when sweeping' {
+            Invoke-TestReviewerSweep
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'view' }).Count | Should -Be 0
+        }
+
+        It 'Skips pull requests updated outside the lookback window' {
+            $script:openPrs = @($script:pr, (New-TestOpenPr -Number 43 -UpdatedMinutesAgo 240))
+            Invoke-TestReviewerSweep -UpdatedWithinMinutes 60
+            $edits = @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' })
+            $edits.Count | Should -Be 1
+            $edits[0].Arguments | Should -Contain 'https://github.com/test-org/test-repo/pull/42'
+        }
+
+        It 'Sweeps every open pull request when the window is zero' {
+            $script:openPrs = @($script:pr, (New-TestOpenPr -Number 43 -UpdatedMinutesAgo 10080))
+            Invoke-TestReviewerSweep
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 2
+        }
+
+        It 'Skips draft pull requests' {
+            $draft = New-TestOpenPr -Number 43
+            $draft.isDraft = $true
+            $script:openPrs = @($script:pr, $draft)
+            Invoke-TestReviewerSweep
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 1
+        }
+
+        It 'Keeps routing the remaining pull requests when one fails' {
+            $script:openPrs = @($script:pr, (New-TestOpenPr -Number 43))
+            $script:changedFilesByPr[42] = @('avm/res/storage/storage-account/main.bicep')
+            Set-TestModuleMetadata -ModulePath 'avm/res/network/virtual-network' -Owners @('invalid owner')
+            $script:changedFilesByPr[43] = @('avm/res/network/virtual-network/main.bicep')
+            { Invoke-TestReviewerSweep } | Should -Throw '*Invalid owner handle*'
+            $edits = @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' })
+            $edits.Count | Should -Be 1
+            $edits[0].Arguments | Should -Contain 'https://github.com/test-org/test-repo/pull/42'
+        }
+
+        It 'Throws when the open pull request lookup fails' {
+            $script:prListExitCode = 1
+            { Invoke-TestReviewerSweep } | Should -Throw '*Unable to retrieve the open pull requests*'
+        }
+
+        It 'Performs no GitHub writes under WhatIf' {
+            Set-AvmGitHubPrLabels -Repo 'test-org/test-repo' -RepoRoot $script:mockRepoRoot -WhatIf
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 0
+        }
     }
 
     Context 'Failed-workflow notifications' {
@@ -564,6 +680,51 @@ Describe 'Module ownership automation' {
         It 'Performs no GitHub writes under WhatIf' {
             Set-AvmGitHubIssueForWorkflow -RepositoryOwner 'test-org' -RepositoryName 'test-repo' -RepoRoot $script:mockRepoRoot -WhatIf
             $script:ghCalls.Count | Should -Be 0
+        }
+    }
+
+    Context 'Reviewer routing workflow safety' {
+        BeforeAll {
+            $script:prWorkflowPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.set-avm-github-pr-labels.yml'
+            $script:prWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $script:prWorkflowPath -Raw)
+            # ConvertFrom-Yaml resolves the 'on' key to the boolean true.
+            $onSection = $script:prWorkflow[$true] ?? $script:prWorkflow['on']
+            $script:prWorkflowTriggers = @($onSection.Keys)
+            $script:prWorkflowSteps = @(
+                foreach ($job in $script:prWorkflow['jobs'].Values) {
+                    foreach ($step in $job['steps']) { $step }
+                }
+            )
+        }
+
+        It 'Is not triggered by any pull request event' {
+            $script:prWorkflowTriggers | Should -Not -Contain 'pull_request'
+            $script:prWorkflowTriggers | Should -Not -Contain 'pull_request_target'
+        }
+
+        It 'Runs on a schedule and can be dispatched manually' {
+            $script:prWorkflowTriggers | Should -Contain 'schedule'
+            $script:prWorkflowTriggers | Should -Contain 'workflow_dispatch'
+        }
+
+        It 'Only ever checks out the trusted default ref' {
+            $checkoutSteps = @($script:prWorkflowSteps | Where-Object { "$($_['uses'])" -like 'actions/checkout*' })
+            $checkoutSteps.Count | Should -BeGreaterThan 0
+            foreach ($step in $checkoutSteps) {
+                $stepWith = $step['with']
+                if ($null -ne $stepWith) {
+                    @($stepWith.Keys) | Should -Not -Contain 'ref'
+                    @($stepWith.Keys) | Should -Not -Contain 'repository'
+                }
+            }
+        }
+
+        It 'Does not interpolate workflow expressions into script bodies' {
+            $runSteps = @($script:prWorkflowSteps | Where-Object { $null -ne $_['run'] })
+            $runSteps.Count | Should -BeGreaterThan 0
+            foreach ($step in $runSteps) {
+                $step['run'] | Should -Not -Match '\$\{\{'
+            }
         }
     }
 }

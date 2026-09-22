@@ -1,49 +1,93 @@
-# Workflow for labelling PRs and requesting reviews from the owners declared in metadata.json
+# Workflow for labelling PRs and requesting reviews from the owners declared in metadata.json.
+#
+# This runs on a schedule rather than on a pull request event on purpose. Routing needs a write
+# token and the AVM app credentials, which a 'pull_request' run from a fork never gets, and the
+# 'pull_request_target' alternative would grant those credentials to a run triggered by untrusted
+# input. A scheduled run is never triggered by a fork at all.
+#
+# For the same reason, nothing here may ever check out, build or execute pull request content.
+# Module metadata is read from the head commit through the API and parsed as data only.
 name: .Platform - Set AVM GitHub PR owner config
 
 on:
-  # Runs against the base branch so that pull requests from forks get the write token and app
-  # credentials this workflow needs. The checkout below must never be pointed at the pull request
-  # head, as that would execute untrusted code with those credentials.
-  pull_request_target:
-    types: [opened, reopened, ready_for_review, synchronize]
+  schedule:
+    # Offset from the round-minute marks on purpose. GitHub treats schedules as best effort and
+    # delays them most at the top of the hour and on round intervals, so odd minutes start closer
+    # to on time.
+    - cron: "7,22,37,52 * * * *" # Every 15 minutes; routes pull requests updated in the last hour
+    - cron: "13 3 * * *" # Daily backstop sweep across every open pull request
+  workflow_dispatch:
+    inputs:
+      prUrl:
+        type: string
+        description: "Route a single pull request by URL (leave empty to sweep open pull requests)"
+        required: false
+        default: ""
+      updatedWithinMinutes:
+        type: string
+        description: "Only route pull requests updated within this many minutes (0 sweeps all)"
+        required: false
+        default: "0"
+      whatIf:
+        type: boolean
+        description: "Simulate execution (no labels or reviewers are set)"
+        required: false
+        default: false
+
+# Avoid overlapping scans routing the same pull requests concurrently.
+concurrency:
+  group: ${{ github.workflow }}
+
+# Restrict the default GITHUB_TOKEN to read-only; the job requests any elevated scopes it needs.
+permissions:
+  contents: read
 
 jobs:
   SetAvmGitHubPrLabels:
     name: Set-AvmGitHubPrLabels
     runs-on: ubuntu-latest
-    if: github.repository == 'Azure/bicep-registry-modules'
+    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
     # Holds the Azure-Verified-Modules app credentials. Must not have deployment protection rules,
-    # as those would stall every pull request waiting for an approval.
+    # as those would stall every scheduled run waiting for an approval.
     environment: avm-management
     permissions:
+      contents: read
       pull-requests: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
-          fetch-depth: 0
           persist-credentials: false
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: generate-token
         with:
-          app-id: ${{ secrets.AVM_APP_CLIENT_ID }}
+          client-id: ${{ secrets.AVM_APP_CLIENT_ID }}
           private-key: ${{ secrets.AVM_APP_PRIVATE_KEY }}
       - name: "Run scripts"
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          # Event data is passed through the environment, never interpolated into the script body.
+          REPOSITORY: ${{ github.repository }}
+          PR_URL: ${{ inputs.prUrl }}
+          WHAT_IF: ${{ inputs.whatIf }}
+          # The frequent cron only looks an hour back, which absorbs a delayed or skipped run.
+          # The daily cron and manual runs default to sweeping every open pull request.
+          UPDATED_WITHIN_MINUTES: ${{ github.event.schedule == '7,22,37,52 * * * *' && '60' || inputs.updatedWithinMinutes || '0' }}
         run: |
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubPrLabels.ps1')
 
           $functionInput = @{
-            RepoRoot = $env:GITHUB_WORKSPACE
-            Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-            PrUrl = "${{ github.event.pull_request.url }}"
+            RepoRoot             = $env:GITHUB_WORKSPACE
+            Repo                 = $env:REPOSITORY
+            UpdatedWithinMinutes = [int] ($env:UPDATED_WITHIN_MINUTES ? $env:UPDATED_WITHIN_MINUTES : '0')
+          }
+          if (-not [string]::IsNullOrWhiteSpace($env:PR_URL)) {
+            $functionInput['PrUrl'] = $env:PR_URL
           }
 
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGitHubPrLabels @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubPrLabels @functionInput -WhatIf:($env:WHAT_IF -eq 'true') -Verbose
