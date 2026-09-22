@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "9598032375181081410"
+      "version": "0.47.16.16243",
+      "templateHash": "4988685040632403048"
     },
     "name": "Modernize Your Code Solution Accelerator",
     "description": "This module contains the resources required to deploy the [Modernize-your-code-solution-accelerator](https://github.com/microsoft/Modernize-your-code-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Modernize-your-code-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -5085,8 +5085,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "15498390557342347049"
+              "version": "0.47.16.16243",
+              "templateHash": "90803276168586295"
             }
           },
           "definitions": {
@@ -13153,11 +13153,11 @@
       },
       "dependsOn": [
         "applicationInsights",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').ods)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').agentSvc)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').monitor)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').oms)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').ods)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').monitor)]",
         "dataCollectionEndpoint",
         "logAnalyticsWorkspace",
         "virtualNetwork"
@@ -26231,8 +26231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17284042434205772039"
+              "version": "0.47.16.16243",
+              "templateHash": "15568375839808073734"
             },
             "name": "AI Services and Project Module",
             "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -27446,7 +27446,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -27475,7 +27475,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -27582,8 +27582,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "6367625466078325388"
+                      "version": "0.47.16.16243",
+                      "templateHash": "4938762979997200344"
                     }
                   },
                   "definitions": {
@@ -29321,8 +29321,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "11773384662737941789"
+                              "version": "0.47.16.16243",
+                              "templateHash": "12100764597579248443"
                             }
                           },
                           "definitions": {
@@ -29400,7 +29400,7 @@
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2026-02-01",
                               "name": "[parameters('keyVaultName')]"
                             },
                             "secrets": {
@@ -29409,7 +29409,7 @@
                                 "count": "[length(parameters('secretsToSet'))]"
                               },
                               "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2026-02-01",
                               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
                               "properties": {
                                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -29475,8 +29475,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "8855164199179816933"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8383903315777488248"
                             }
                           },
                           "definitions": {
@@ -29693,8 +29693,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "6367625466078325388"
+                      "version": "0.47.16.16243",
+                      "templateHash": "4938762979997200344"
                     }
                   },
                   "definitions": {
@@ -31432,8 +31432,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "11773384662737941789"
+                              "version": "0.47.16.16243",
+                              "templateHash": "12100764597579248443"
                             }
                           },
                           "definitions": {
@@ -31511,7 +31511,7 @@
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2026-02-01",
                               "name": "[parameters('keyVaultName')]"
                             },
                             "secrets": {
@@ -31520,7 +31520,7 @@
                                 "count": "[length(parameters('secretsToSet'))]"
                               },
                               "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2025-05-01",
+                              "apiVersion": "2026-02-01",
                               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
                               "properties": {
                                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -31586,8 +31586,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.42.1.51946",
-                              "templateHash": "8855164199179816933"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8383903315777488248"
                             }
                           },
                           "definitions": {
@@ -32508,8 +32508,8 @@
       },
       "dependsOn": [
         "aiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "virtualNetwork"
       ]
@@ -32566,8 +32566,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "3598447245043879538"
+              "version": "0.47.16.16243",
+              "templateHash": "10622580374871068721"
             }
           },
           "definitions": {
@@ -41025,8 +41025,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "18406833646069425594"
+              "version": "0.47.16.16243",
+              "templateHash": "9870175843401348359"
             }
           },
           "definitions": {
@@ -44888,8 +44888,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "9923942477179716522"
+              "version": "0.47.16.16243",
+              "templateHash": "5767172584114664735"
             }
           },
           "definitions": {
