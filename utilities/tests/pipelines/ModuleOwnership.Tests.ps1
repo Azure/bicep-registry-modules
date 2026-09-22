@@ -94,8 +94,6 @@ Describe 'Module ownership automation' {
             reviewRequests = @(@{ name = 'azure-verified-modules-module-contributors' })
             reviews        = @()
             headRefOid     = '0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c'
-            headRepository = @{ name = 'test-repo' }
-            headRepositoryOwner = @{ login = 'contributor-fork' }
         }
         $script:changedFiles = @('avm/res/storage/storage-account/main.bicep')
         $script:headMetadata = @{}
@@ -157,7 +155,7 @@ Describe 'Module ownership automation' {
             }
             if ($args[0] -eq 'api' -and ($args[1] -match '^repos/(.+)/contents/(.+)\?ref=(.+)$')) {
                 $sourceRepo, $metadataPath, $sourceRef = $matches[1], $matches[2], $matches[3]
-                if ($sourceRepo -ne 'contributor-fork/test-repo' -or $sourceRef -ne $script:pr.headRefOid) {
+                if ($sourceRepo -ne 'test-org/test-repo' -or $sourceRef -ne $script:pr.headRefOid) {
                     throw "Unexpected metadata source [$sourceRepo@$sourceRef]."
                 }
                 if (-not $script:headMetadata.ContainsKey($metadataPath)) {
@@ -476,6 +474,13 @@ Describe 'Module ownership automation' {
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'new-owner'
             $edit.Arguments | Should -Not -Contain 'Status: Module Orphaned :yellow_circle:'
+        }
+
+        It 'Reads head metadata through the base repository so the app installation token has access' {
+            Set-TestModuleMetadata -Owners @('updated-owner') -HeadOnly
+            Invoke-TestReviewerRouting
+            $contentsCall = $script:ghCalls | Where-Object { $_.Arguments[0] -eq 'api' -and $_.Arguments[1] -like 'repos/*/contents/*' } | Select-Object -First 1
+            $contentsCall.Arguments[1] | Should -BeLike 'repos/test-org/test-repo/contents/*'
         }
 
         It 'Prefers head metadata over the checked-out base copy' {

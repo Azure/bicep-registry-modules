@@ -40,7 +40,7 @@ function Set-AvmGitHubPrLabels {
     $fallbackTeam = 'Azure/azure-verified-modules-module-owners'
 
     $sanitizedPrUrl = $PrUrl.Replace('api.', '').Replace('repos/', '').Replace('pulls/', 'pull/')
-    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests,reviews,headRefOid,headRepository,headRepositoryOwner' --repo $Repo | ConvertFrom-Json -Depth 100
+    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests,reviews,headRefOid' --repo $Repo | ConvertFrom-Json -Depth 100
     if ($LASTEXITCODE -ne 0 -or $null -eq $pr.number) {
         throw "Unable to retrieve pull request [$sanitizedPrUrl]."
     }
@@ -68,10 +68,12 @@ function Set-AvmGitHubPrLabels {
     }
     $moduleFolderPaths = @($moduleFolderPaths | Sort-Object -Unique)
 
+    # Fork commits are reachable through the base repository, which keeps this read within the scope
+    # of the GitHub App installation token. The fork itself is not accessible to that token.
     $metadataSource = @{}
-    if (-not [string]::IsNullOrWhiteSpace($pr.headRefOid) -and -not [string]::IsNullOrWhiteSpace($pr.headRepository.name)) {
+    if (-not [string]::IsNullOrWhiteSpace($pr.headRefOid)) {
         $metadataSource = @{
-            SourceRepo = "$($pr.headRepositoryOwner.login)/$($pr.headRepository.name)"
+            SourceRepo = $Repo
             SourceRef  = $pr.headRefOid
         }
     }

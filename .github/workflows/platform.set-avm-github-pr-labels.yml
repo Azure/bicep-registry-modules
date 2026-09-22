@@ -13,6 +13,9 @@ jobs:
     name: Set-AvmGitHubPrLabels
     runs-on: ubuntu-latest
     if: github.repository == 'Azure/bicep-registry-modules'
+    # Holds the Azure-Verified-Modules app credentials. Must not have deployment protection rules,
+    # as those would stall every pull request waiting for an approval.
+    environment: avm-management
     permissions:
       pull-requests: write
     steps:
@@ -24,8 +27,8 @@ jobs:
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: generate-token
         with:
-          app-id: ${{ secrets.TEAM_LINTER_APP_ID }}
-          private-key: ${{ secrets.TEAM_LINTER_PRIVATE_KEY }}
+          app-id: ${{ secrets.AVM_APP_ID }}
+          private-key: ${{ secrets.AVM_APP_PRIVATE_KEY }}
       - name: "Run scripts"
         shell: pwsh
         env:
