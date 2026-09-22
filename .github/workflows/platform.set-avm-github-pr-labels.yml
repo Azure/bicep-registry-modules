@@ -1,9 +1,9 @@
-# Workflow for adding labels to newly created PRs
-name: .Platform - Set AVM GitHub PR labels
+# Workflow for labelling PRs and requesting reviews from the owners declared in metadata.json
+name: .Platform - Set AVM GitHub PR owner config
 
 on:
   pull_request: # Temporarily using `pull_request` while `pull_request_target` usage is under discussion
-    types: [opened, ready_for_review]
+    types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
   SetAvmGitHubPrLabels:

@@ -1,9 +1,9 @@
 ﻿<#
 .SYNOPSIS
-Checks new PRs and adds labels, depending if module owner can approve, or core team is needed
+Requests reviews from the module owners declared in metadata.json and labels the pull request accordingly.
 
 .DESCRIPTION
-Uses changed module paths and indexed individual owners to select reviewers. Tooling, cross-module, orphaned, and self-owned changes require the core team.
+Maps the files changed by a pull request to their top-level AVM modules and requests a review from the individuals and teams listed in each module's metadata.json file. Modules without declared owners fall back to the shared module owners team. Approval rights are governed by repository permissions, not by this function.
 
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
@@ -33,11 +33,12 @@ function Set-AvmGitHubPrLabels {
     )
 
     # Loading helper functions
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleOwnerLogin.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleMetadataOwner.ps1')
+
+    $fallbackTeam = 'Azure/azure-verified-modules-module-owners'
 
     $sanitizedPrUrl = $PrUrl.Replace('api.', '').Replace('repos/', '').Replace('pulls/', 'pull/')
-    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests' --repo $Repo | ConvertFrom-Json -Depth 100
+    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests,reviews' --repo $Repo | ConvertFrom-Json -Depth 100
     if ($LASTEXITCODE -ne 0 -or $null -eq $pr.number) {
         throw "Unable to retrieve pull request [$sanitizedPrUrl]."
     }
@@ -51,63 +52,51 @@ function Set-AvmGitHubPrLabels {
         throw "Unable to retrieve changed files for pull request [$($pr.url)]."
     }
 
-    $moduleNames = @()
-    $needsCoreTeam = @($pr.reviewRequests | Where-Object {
-            $_.slug -eq 'azure-verified-modules-tooling-contributors' -or $_.name -eq 'azure-verified-modules-tooling-contributors'
-        }).Count -gt 0
+    $moduleFolderPaths = @()
+    $needsCoreTeam = $false
     foreach ($filePath in $changedFilePaths) {
         if ($filePath -like '*avm.core.team.tests.ps1' -or $filePath -like '*.e2eignore') {
             $needsCoreTeam = $true
         }
-        if ($filePath -match '^(avm/(res|ptn|utl)/[^/]+/[^/]+)/') {
-            $moduleNames += $matches[1]
+        if ($filePath -match '^avm/(res|ptn|utl)/[^/]+/[^/]+(/.*)?/[^/]+$') {
+            $moduleFolderPaths += $filePath -replace '/[^/]+$', ''
         } else {
             $needsCoreTeam = $true
         }
     }
-    $moduleNames = @($moduleNames | Sort-Object -Unique)
-    $needsCoreTeam = $needsCoreTeam -or $moduleNames.Count -ne 1
-    $moduleIndexes = @{}
-    $reviewerLogins = @()
+    $moduleFolderPaths = @($moduleFolderPaths | Sort-Object -Unique)
+
+    $ownerHandles = @()
     $hasOrphanedModule = $false
-
-    foreach ($moduleName in $moduleNames) {
-        $moduleType = ($moduleName -split '/')[1]
-        if (-not $moduleIndexes.ContainsKey($moduleType)) {
-            $indexName = switch ($moduleType) {
-                'res' { 'Bicep-Resource' }
-                'ptn' { 'Bicep-Pattern' }
-                'utl' { 'Bicep-Utility' }
-            }
-            $moduleIndexes[$moduleType] = @(Get-AvmCsvData -ModuleIndex $indexName)
-        }
-        $matchingModules = @($moduleIndexes[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName })
-        if ($matchingModules.Count -gt 1) {
-            throw [System.IO.InvalidDataException]::new("Multiple index entries found for module [$moduleName].")
-        }
-        $module = $matchingModules.Count -eq 1 ? $matchingModules[0] : $null
-        if ($null -eq $module) {
-            Write-Warning "Module [$moduleName] is not in the index. Routing to the core team."
-            $needsCoreTeam = $true
-        } elseif ($module.ModuleStatus -eq 'Orphaned') {
+    foreach ($moduleFolderPath in $moduleFolderPaths) {
+        $moduleOwners = @(Get-AvmModuleMetadataOwner -ModulePath $moduleFolderPath -RepoRoot $RepoRoot)
+        if ($moduleOwners.Count -eq 0) {
+            Write-Warning "Module [$moduleFolderPath] does not declare any owners. Notifying [$fallbackTeam] instead."
             $hasOrphanedModule = $true
-            $needsCoreTeam = $true
-        } elseif (-not $needsCoreTeam) {
-            $reviewerLogins = @(Get-AvmModuleOwnerLogin -ModuleName $moduleName -ModuleIndexData $moduleIndexes[$moduleType] | Where-Object { $_ -ne $pr.author.login })
-            $needsCoreTeam = $reviewerLogins.Count -eq 0
+            $moduleOwners = @($fallbackTeam)
         }
+        $ownerHandles += $moduleOwners
     }
+    $ownerHandles = @($ownerHandles | Sort-Object -Unique)
 
-    $label = $needsCoreTeam ? 'Needs: Core Team :genie:' : 'Needs: Module Owner :mega:'
+    $requestedLogins = @($pr.reviewRequests | Where-Object { $_.login } | ForEach-Object { $_.login })
+    $requestedTeamSlugs = @($pr.reviewRequests | Where-Object { -not $_.login } | ForEach-Object { if ($_.slug) { $_.slug } else { $_.name } })
+    $reviewedLogins = @($pr.reviews.author | Where-Object { $_.login } | ForEach-Object { $_.login })
+
+    $newReviewers = @($ownerHandles | Where-Object {
+            if ($_.Contains('/')) {
+                return $requestedTeamSlugs -notcontains ($_ -split '/')[-1]
+            }
+            return $_ -ne $pr.author.login -and $requestedLogins -notcontains $_ -and $reviewedLogins -notcontains $_
+        })
+
+    $label = ($needsCoreTeam -or $hasOrphanedModule) ? 'Needs: Core Team :genie:' : 'Needs: Module Owner :mega:'
     $editArguments = @('pr', 'edit', $pr.url, '--add-label', $label, '--repo', $Repo)
     if ($hasOrphanedModule) {
         $editArguments += @('--add-label', 'Status: Module Orphaned :yellow_circle:')
     }
-    if (-not $needsCoreTeam) {
-        $newReviewers = @($reviewerLogins | Where-Object { $pr.reviewRequests.login -notcontains $_ })
-        if ($newReviewers.Count -gt 0) {
-            $editArguments += @('--add-reviewer', ($newReviewers -join ','))
-        }
+    if ($newReviewers.Count -gt 0) {
+        $editArguments += @('--add-reviewer', ($newReviewers -join ','))
     }
     $null = gh @editArguments
     if ($LASTEXITCODE -ne 0) {

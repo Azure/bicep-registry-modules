@@ -11,7 +11,7 @@ Describe 'Module ownership automation' {
         }
 
         $helperNames = @(
-            'Get-AvmCsvData', 'Get-AvmModuleOwnerLogin', 'Get-GitHubIssueList',
+            'Get-AvmCsvData', 'Get-AvmModuleOwnerLogin', 'Get-AvmModuleMetadataOwner', 'Get-GitHubIssueList',
             'Get-GitHubIssueTimeline', 'Get-GitHubIssueProjectAssignment', 'Add-GitHubIssueToProject',
             'Get-GitHubModuleWorkflowList', 'Get-GitHubModuleWorkflowLatestRun', 'Get-GitHubIssueCommentsList'
         )
@@ -53,6 +53,23 @@ Describe 'Module ownership automation' {
             Set-AvmGitHubPrLabels -Repo 'test-org/test-repo' -PrUrl 'https://github.com/test-org/test-repo/pull/42' -RepoRoot $script:mockRepoRoot
         }
 
+        function Set-TestModuleMetadata {
+            param (
+                [string] $ModulePath = 'avm/res/storage/storage-account',
+                [object[]] $Owners = @('owner-one', 'owner-two')
+            )
+            $moduleFolderPath = Join-Path $script:mockRepoRoot ($ModulePath -replace '/', [System.IO.Path]::DirectorySeparatorChar)
+            $null = New-Item -Path $moduleFolderPath -ItemType Directory -Force
+            @{ owners = $Owners } | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $moduleFolderPath 'metadata.json')
+        }
+
+        function Remove-TestModuleMetadata {
+            $moduleTreePath = Join-Path $script:mockRepoRoot 'avm'
+            if (Test-Path -Path $moduleTreePath) {
+                Remove-Item -Path $moduleTreePath -Recurse -Force
+            }
+        }
+
         function Invoke-TestFailureRouting {
             Set-AvmGitHubIssueForWorkflow -RepositoryOwner 'test-org' -RepositoryName 'test-repo' -RepoRoot $script:mockRepoRoot
         }
@@ -70,8 +87,11 @@ Describe 'Module ownership automation' {
             author         = @{ login = 'contributor' }
             isDraft        = $false
             reviewRequests = @(@{ name = 'azure-verified-modules-module-contributors' })
+            reviews        = @()
         }
         $script:changedFiles = @('avm/res/storage/storage-account/main.bicep')
+        Remove-TestModuleMetadata
+        Set-TestModuleMetadata
         $script:issues = @([pscustomobject]@{
                 number     = 17
                 title      = '[AVM Module Issue]: Storage issue'
@@ -320,17 +340,24 @@ Describe 'Module ownership automation' {
     }
 
     Context 'Reviewer routing' {
-        It 'Uses indexed owners instead of the shared contributors team' {
+        It 'Requests the owners declared in metadata.json' {
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[0] -eq 'pr' -and $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'Needs: Module Owner :mega:'
             $edit.Arguments | Should -Contain 'owner-one,owner-two'
             ($script:ghCalls.Arguments -join ' ') | Should -Not -Match '/teams/'
             ($script:ghCalls | Where-Object { $_.Arguments[0] -eq 'api' }).Arguments | Should -Contain '--paginate'
+            Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+        }
+
+        It 'Requests team handles declared in metadata.json' {
+            Set-TestModuleMetadata -Owners @('owner-one', '@Azure/example-team')
+            Invoke-TestReviewerRouting
+            ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'Azure/example-team,owner-one'
         }
 
         It 'Requests the other owner instead of the author' {
-            $script:pr.author.login = 'OWNER-ONE'
+            $script:pr.author.login = 'owner-one'
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'owner-two'
@@ -343,12 +370,20 @@ Describe 'Module ownership automation' {
             ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'owner-two'
         }
 
-        It 'Preserves explicit core-team review requests' {
-            $script:pr.reviewRequests += @{ slug = 'azure-verified-modules-tooling-contributors' }
+        It 'Does not duplicate an existing team review request' {
+            Set-TestModuleMetadata -Owners @('@Azure/example-team')
+            $script:pr.reviewRequests += @{ slug = 'example-team' }
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
-            $edit.Arguments | Should -Contain 'Needs: Core Team :genie:'
             $edit.Arguments | Should -Not -Contain '--add-reviewer'
+        }
+
+        It 'Does not re-request an owner who already reviewed' {
+            $script:pr.reviews = @(@{ author = @{ login = 'owner-one' }; state = 'APPROVED' })
+            Invoke-TestReviewerRouting
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Contain 'owner-two'
+            $edit.Arguments | Should -Not -Contain 'owner-one,owner-two'
         }
 
         It 'Keeps module-owner routing when all eligible reviewers are already requested' {
@@ -365,7 +400,7 @@ Describe 'Module ownership automation' {
             $script:ghCalls.Count | Should -Be 1
         }
 
-        It 'Routes tooling changes and protected files to the core team [<Path>]' -ForEach @(
+        It 'Labels tooling changes and protected files for the core team [<Path>]' -ForEach @(
             @{ Path = 'utilities/tools/example.ps1' }
             @{ Path = 'avm/res/storage/storage-account/tests/unit/avm.core.team.tests.ps1' }
             @{ Path = 'avm/res/storage/storage-account/tests/e2e/defaults/.e2eignore' }
@@ -375,56 +410,52 @@ Describe 'Module ownership automation' {
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'Needs: Core Team :genie:'
-            $edit.Arguments | Should -Not -Contain '--add-reviewer'
+            $edit.Arguments | Should -Contain 'owner-one,owner-two'
         }
 
-        It 'Routes cross-module changes, including rename source paths, to the core team' {
-            $script:moduleIndex += New-TestModule -Name 'avm/res/network/virtual-network'
+        It 'Notifies the owners of every changed module, including rename source paths' {
+            Set-TestModuleMetadata -ModulePath 'avm/res/network/virtual-network' -Owners @('network-owner')
             $script:changedFiles += 'avm/res/network/virtual-network/main.bicep'
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
-            $edit.Arguments | Should -Contain 'Needs: Core Team :genie:'
-            $edit.Arguments | Should -Not -Contain '--add-reviewer'
+            $edit.Arguments | Should -Contain 'Needs: Module Owner :mega:'
+            $edit.Arguments | Should -Contain 'network-owner,owner-one,owner-two'
             ($script:ghCalls | Where-Object { $_.Arguments[0] -eq 'api' }).Arguments | Should -Contain '.[] | .filename, (.previous_filename // empty)'
         }
 
-        It 'Routes orphaned modules to the core team and adds the orphan label' {
-            $script:moduleIndex[0].ModuleStatus = 'Orphaned'
+        It 'Falls back to the module owners team and adds the orphan label when <Reason>' -ForEach @(
+            @{ Reason = 'no owners are declared'; Owners = @() }
+            @{ Reason = 'the module has no metadata'; Owners = $null }
+        ) {
+            if ($null -eq $Owners) {
+                Remove-TestModuleMetadata
+            } else {
+                Set-TestModuleMetadata -Owners $Owners
+            }
             Invoke-TestReviewerRouting
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'Needs: Core Team :genie:'
             $edit.Arguments | Should -Contain 'Status: Module Orphaned :yellow_circle:'
-            $edit.Arguments | Should -Not -Contain '--add-reviewer'
+            $edit.Arguments | Should -Contain 'Azure/azure-verified-modules-module-owners'
         }
 
-        It 'Routes a sole-owner contribution to the core team' {
-            $script:moduleIndex[0].SecondaryModuleOwnerGHHandle = ''
-            $script:pr.author.login = 'owner-one'
-            Invoke-TestReviewerRouting
-            ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'Needs: Core Team :genie:'
-        }
-
-        It 'Routes an unindexed module to the core team' {
-            $script:changedFiles = @('avm/res/unknown/module/main.bicep')
-            Invoke-TestReviewerRouting
-            ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'Needs: Core Team :genie:'
-        }
-
-        It 'Maps child-module files to the top-level module owner' {
+        It 'Maps child-module files to the inherited top-level module owners' {
             $script:changedFiles = @('avm/res/storage/storage-account/blob-service/container/main.bicep')
+            Set-TestModuleMetadata -ModulePath 'avm/res/storage/storage-account/blob-service/container' -Owners @()
             Invoke-TestReviewerRouting
-            ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'owner-one,owner-two'
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Contain 'owner-one,owner-two'
+            $edit.Arguments | Should -Not -Contain 'Status: Module Orphaned :yellow_circle:'
         }
 
-        It 'Selects the correct index for [<ModuleName>]' -ForEach @(
-            @{ ModuleName = 'avm/ptn/example/pattern'; IndexType = 'ptn' }
-            @{ ModuleName = 'avm/utl/example/utility'; IndexType = 'utl' }
+        It 'Resolves owners for [<ModulePath>]' -ForEach @(
+            @{ ModulePath = 'avm/ptn/example/pattern' }
+            @{ ModulePath = 'avm/utl/example/utility' }
         ) {
-            $script:moduleIndex = @(New-TestModule -Name $ModuleName)
-            $script:changedFiles = @("$ModuleName/main.bicep")
+            Set-TestModuleMetadata -ModulePath $ModulePath
+            $script:changedFiles = @("$ModulePath/main.bicep")
             Invoke-TestReviewerRouting
             ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'owner-one,owner-two'
-            Should -Invoke Invoke-WebRequest -Times 1 -Exactly -ParameterFilter { $Uri -eq "https://aka.ms/avm/index/bicep/$IndexType/csv" }
         }
 
         It 'Makes no edits when pull request lookup fails' {
@@ -439,9 +470,9 @@ Describe 'Module ownership automation' {
             @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 0
         }
 
-        It 'Makes no edits when the module index has duplicate entries' {
-            $script:moduleIndex += New-TestModule -Status 'Orphaned'
-            { Invoke-TestReviewerRouting } | Should -Throw '*Multiple index entries*'
+        It 'Makes no edits when an owner handle is invalid' {
+            Set-TestModuleMetadata -Owners @('invalid owner')
+            { Invoke-TestReviewerRouting } | Should -Throw '*Invalid owner handle*'
             @($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Count | Should -Be 0
         }
 
