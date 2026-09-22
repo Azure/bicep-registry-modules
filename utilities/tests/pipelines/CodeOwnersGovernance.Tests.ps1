@@ -110,7 +110,7 @@ Describe 'CODEOWNERS governance' {
         @{ Path = 'avm/res/storage/storage-account/tests/unit/avm.core.team.tests.ps1' }
         @{ Path = 'avm/res/storage/storage-account/tests/e2e/defaults/.e2eignore' }
         @{ Path = 'utilities/script.ps1' }
-        @{ Path = '.github/workflows/platform.set-avm-github-pr-labels.yml' }
+        @{ Path = '.github/workflows/platform.toggle-avm-workflows.yml' }
     ) {
         $script:ownershipRules = @(Get-Content -Path (Join-Path $repoRootPath '.github' 'CODEOWNERS'))
         @(Get-TestCodeOwners -Path $Path) | Should -Be @('@Azure/azure-verified-modules-tooling-contributors')

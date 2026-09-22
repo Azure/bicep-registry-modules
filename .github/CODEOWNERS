@@ -1,5 +1,6 @@
-# Ownership of the module tree is resolved from each module's metadata.json by the
-# ".Platform - Set AVM GitHub PR owner config" workflow, so /avm intentionally has no code owners.
+# Reviewers for the module tree are resolved from each module's metadata.json by automation in
+# Azure/azure-verified-modules-tools, so /avm intentionally has no code owners. Approval rights
+# come from repository permissions instead.
 
 * @Azure/azure-verified-modules-tooling-contributors
 
