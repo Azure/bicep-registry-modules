@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "7452813292357135384"
+      "version": "0.47.16.16243",
+      "templateHash": "5087611408703699159"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -762,8 +762,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "11896026034484125231"
+              "version": "0.47.16.16243",
+              "templateHash": "13770670400998964101"
             }
           },
           "definitions": {
@@ -15423,8 +15423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "11341146322136411932"
+              "version": "0.47.16.16243",
+              "templateHash": "3744414430826876161"
             },
             "name": "Private DNS Zones",
             "description": "This module deploys a Private DNS zone."
@@ -15658,8 +15658,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "2635983342365217282"
+                      "version": "0.47.16.16243",
+                      "templateHash": "11742602554000864225"
                     },
                     "name": "Private DNS Zone Virtual Network Link",
                     "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -15870,8 +15870,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "15348757588852882955"
+              "version": "0.47.16.16243",
+              "templateHash": "17499814553496217039"
             },
             "name": "Azure Cosmos DB account",
             "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -17173,8 +17173,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "502070487598668797"
+                      "version": "0.47.16.16243",
+                      "templateHash": "1486637775323848990"
                     },
                     "name": "DocumentDB Database Account SQL Databases",
                     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -17305,8 +17305,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "9813313225465779444"
+                              "version": "0.47.16.16243",
+                              "templateHash": "10435716800478028638"
                             },
                             "name": "DocumentDB Database Account SQL Database Containers",
                             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -17559,8 +17559,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "6791751435495431820"
+                      "version": "0.47.16.16243",
+                      "templateHash": "1699024643065010078"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -17696,8 +17696,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "16393730201265874298"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8069500349221391143"
                             },
                             "name": "DocumentDB Database Account SQL Role Assignments.",
                             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -21368,8 +21368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "13237909562189853232"
+              "version": "0.47.16.16243",
+              "templateHash": "8467306425652870311"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault."
@@ -22159,7 +22159,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults@2025-05-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults@2026-02-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -22232,7 +22232,7 @@
             },
             "keyVault": {
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -22383,8 +22383,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "12963016495741095470"
+                      "version": "0.47.16.16243",
+                      "templateHash": "734330092098343032"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret."
@@ -22485,7 +22485,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.KeyVault/vaults/secrets@2025-05-01#properties/tags"
+                          "source": "Microsoft.KeyVault/vaults/secrets@2026-02-01#properties/tags"
                         },
                         "description": "Optional. Resource tags."
                       },
@@ -22588,12 +22588,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -23378,7 +23378,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('keyVault', '2025-05-01', 'full').location]"
+              "value": "[reference('keyVault', '2026-02-01', 'full').location]"
             }
           }
         }
@@ -23452,8 +23452,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12653713588479711259"
+              "version": "0.47.16.16243",
+              "templateHash": "11541445498081746491"
             }
           },
           "parameters": {
@@ -23671,8 +23671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10505392154118396876"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5851137875542374705"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -24831,7 +24831,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -24860,7 +24860,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -26563,8 +26563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12653713588479711259"
+              "version": "0.47.16.16243",
+              "templateHash": "11541445498081746491"
             }
           },
           "parameters": {
@@ -26782,8 +26782,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10505392154118396876"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5851137875542374705"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -27942,7 +27942,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -27971,7 +27971,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -28973,8 +28973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12653713588479711259"
+              "version": "0.47.16.16243",
+              "templateHash": "11541445498081746491"
             }
           },
           "parameters": {
@@ -29192,8 +29192,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10505392154118396876"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5851137875542374705"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -30352,7 +30352,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -30381,7 +30381,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -34214,8 +34214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "2796658249544009568"
+              "version": "0.47.16.16243",
+              "templateHash": "13851440538241313663"
             }
           },
           "parameters": {
@@ -34475,8 +34475,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10880888445788436921"
+                      "version": "0.47.16.16243",
+                      "templateHash": "16500393509314426247"
                     }
                   },
                   "definitions": {
@@ -35507,8 +35507,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "1009721598684973971"
+                              "version": "0.47.16.16243",
+                              "templateHash": "15539262977749803739"
                             },
                             "name": "Site App Settings",
                             "description": "This module deploys a Site App Setting."
@@ -36462,8 +36462,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "3701385520679256642"
+              "version": "0.47.16.16243",
+              "templateHash": "9473505041822606153"
             }
           },
           "parameters": {
@@ -36723,8 +36723,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10880888445788436921"
+                      "version": "0.47.16.16243",
+                      "templateHash": "16500393509314426247"
                     }
                   },
                   "definitions": {
@@ -37755,8 +37755,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "1009721598684973971"
+                              "version": "0.47.16.16243",
+                              "templateHash": "15539262977749803739"
                             },
                             "name": "Site App Settings",
                             "description": "This module deploys a Site App Setting."
@@ -38714,8 +38714,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "7162627522702999554"
+              "version": "0.47.16.16243",
+              "templateHash": "3223716848947756514"
             }
           },
           "parameters": {
@@ -38955,8 +38955,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "601336789356784685"
+                      "version": "0.47.16.16243",
+                      "templateHash": "17528645734833032213"
                     }
                   },
                   "parameters": {
@@ -39321,8 +39321,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "10880888445788436921"
+                              "version": "0.47.16.16243",
+                              "templateHash": "16500393509314426247"
                             }
                           },
                           "definitions": {
@@ -40353,8 +40353,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.43.8.12551",
-                                      "templateHash": "1009721598684973971"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "15539262977749803739"
                                     },
                                     "name": "Site App Settings",
                                     "description": "This module deploys a Site App Setting."
@@ -41333,8 +41333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "4194208281068271789"
+              "version": "0.47.16.16243",
+              "templateHash": "9508017103183501638"
             },
             "name": "monitoring-solution",
             "description": "AVM WAF-compliant monitoring solution that integrates Application Insights with Log Analytics for centralized telemetry, diagnostics, and observability."
@@ -47029,8 +47029,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12653713588479711259"
+              "version": "0.47.16.16243",
+              "templateHash": "11541445498081746491"
             }
           },
           "parameters": {
@@ -47248,8 +47248,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10505392154118396876"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5851137875542374705"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -48408,7 +48408,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -48437,7 +48437,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -49436,8 +49436,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "12653713588479711259"
+              "version": "0.47.16.16243",
+              "templateHash": "11541445498081746491"
             }
           },
           "parameters": {
@@ -49655,8 +49655,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10505392154118396876"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5851137875542374705"
                     },
                     "name": "Cognitive Services",
                     "description": "This module deploys a Cognitive Service."
@@ -50815,7 +50815,7 @@
                       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults/keys",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -50844,7 +50844,7 @@
                       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2025-05-01",
+                      "apiVersion": "2026-02-01",
                       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
                       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
                       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -51906,8 +51906,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "14668382460138971383"
+              "version": "0.47.16.16243",
+              "templateHash": "13296273282001484041"
             },
             "name": "Storage Accounts",
             "description": "This module deploys a Storage Account."
@@ -52892,7 +52892,7 @@
               "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults/keys",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -52921,7 +52921,7 @@
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -53750,8 +53750,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "3153917987995545995"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5254268021640269941"
                     },
                     "name": "Storage Account blob Services",
                     "description": "This module deploys a Storage Account Blob Service."
@@ -54215,8 +54215,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "16582885544266644657"
+                              "version": "0.47.16.16243",
+                              "templateHash": "1490903731413059794"
                             },
                             "name": "Storage Account Blob Containers",
                             "description": "This module deploys a Storage Account Blob Container."
@@ -54445,8 +54445,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "16586156582565436284"
+                      "version": "0.47.16.16243",
+                      "templateHash": "17687142975546265425"
                     },
                     "name": "Storage Account Queue Services",
                     "description": "This module deploys a Storage Account Queue Service."
@@ -54760,8 +54760,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "11238605619276329338"
+                              "version": "0.47.16.16243",
+                              "templateHash": "1279997384833981420"
                             },
                             "name": "Storage Account Queues",
                             "description": "This module deploys a Storage Account Queue."
@@ -54884,9 +54884,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "virtualNetwork"
       ]
@@ -56159,8 +56159,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "4482788370447199711"
+              "version": "0.47.16.16243",
+              "templateHash": "11075281805572575760"
             }
           },
           "parameters": {
