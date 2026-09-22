@@ -55,6 +55,7 @@ var formattedAccessPolicies = [
 resource storageRef 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
   name: storageAccountName
 }
+var storageKey = storageRef.listKeys().keys[0].value
 
 module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
@@ -75,7 +76,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
     secrets: [
       {
         name: storageRef.name
-        value: storageRef.listKeys().keys[0].value
+        value: storageKey
         attributes: {
           exp: 1702648632
           nbf: 10000
