@@ -52,6 +52,10 @@ var formattedAccessPolicies = [
 // Resources
 //==============================================================================
 
+resource storageRef 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
+  name: storageAccountName
+}
+
 module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
@@ -79,10 +83,6 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
       }
     ]
   }
-}
-
-resource storageRef 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
-  name: storageAccountName
 }
 
 //==============================================================================
