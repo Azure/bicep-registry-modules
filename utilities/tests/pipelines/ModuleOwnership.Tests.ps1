@@ -11,7 +11,7 @@ Describe 'Module ownership automation' {
         }
 
         $helperNames = @(
-            'Get-AvmCsvData', 'Get-AvmModuleOwnerLogin', 'Get-AvmModuleMetadataOwner', 'Get-GitHubIssueList',
+            'Get-AvmModuleMetadataOwner', 'Get-AvmModuleList', 'Get-GitHubIssueList',
             'Get-GitHubIssueTimeline', 'Get-GitHubIssueProjectAssignment', 'Add-GitHubIssueToProject',
             'Get-GitHubModuleWorkflowList', 'Get-GitHubModuleWorkflowLatestRun', 'Get-GitHubIssueCommentsList'
         )
@@ -26,23 +26,6 @@ Describe 'Module ownership automation' {
 
         function gh {
             throw 'The real GitHub CLI must never run in these tests.'
-        }
-
-        function New-TestModule {
-            param (
-                [string] $Name = 'avm/res/storage/storage-account',
-                [string] $Primary = 'owner-one',
-                [string] $Secondary = 'owner-two',
-                [string] $Status = 'Available',
-                [string] $Parent = ''
-            )
-            [pscustomobject]@{
-                ModuleName                   = $Name
-                ModuleStatus                 = $Status
-                ParentModule                 = $Parent
-                PrimaryModuleOwnerGHHandle   = $Primary
-                SecondaryModuleOwnerGHHandle = $Secondary
-            }
         }
 
         function Invoke-TestIssueRouting {
@@ -81,7 +64,6 @@ Describe 'Module ownership automation' {
     }
 
     BeforeEach {
-        $script:moduleIndex = @(New-TestModule)
         $script:ghCalls = [System.Collections.Generic.List[object]]::new()
         $script:prReadExitCode = 0
         $script:filesExitCode = 0
@@ -114,18 +96,7 @@ Describe 'Module ownership automation' {
         $script:timeline = @()
         $script:workflowName = 'avm.res.storage.storage-account'
 
-        Mock Invoke-WebRequest {
-            if ($Uri -notmatch '^https://aka.ms/avm/index/bicep/(res|ptn|utl)/csv$') {
-                throw "Unexpected web request [$Uri]."
-            }
-            $entries = @($script:moduleIndex | Where-Object { $_.ModuleName.StartsWith("avm/$($matches[1])/") })
-            $content = if ($entries.Count -gt 0) {
-                $entries | ConvertTo-Csv -NoTypeInformation
-            } else {
-                '"ModuleName","ModuleStatus","ParentModule","PrimaryModuleOwnerGHHandle","SecondaryModuleOwnerGHHandle"'
-            }
-            [pscustomobject]@{ Content = $content -join "`n" }
-        }
+        Mock Invoke-WebRequest { throw 'Unexpected web request.' }
         Mock Invoke-RestMethod { throw 'Unexpected REST request.' }
         Mock Get-GitHubIssueList { $script:issues }
         Mock Get-GitHubIssueTimeline { $script:timeline }
@@ -175,55 +146,40 @@ Describe 'Module ownership automation' {
         }
     }
 
-    Context 'Individual owner resolution' {
-        It 'Resolves primary and secondary owners without team metadata' {
-            Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex |
+    Context 'Metadata owner resolution' {
+        It 'Resolves the owners declared in metadata.json' {
+            Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot |
                 Should -Be @('owner-one', 'owner-two')
         }
 
-        It 'Normalizes handles and removes case-insensitive duplicates' {
-            $script:moduleIndex = @(New-TestModule -Primary ' @Owner-One ' -Secondary 'owner-one')
-            Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex |
-                Should -Be @('Owner-One')
+        It 'Normalizes team handles and removes duplicates' {
+            Set-TestModuleMetadata -Owners @('@Azure/module-owners', 'owner-one', 'owner-one')
+            Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot |
+                Should -Be @('Azure/module-owners', 'owner-one')
         }
 
-        It 'Supports a secondary owner when no primary handle is populated' {
-            $script:moduleIndex = @(New-TestModule -Primary '')
-            Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex |
-                Should -Be @('owner-two')
-        }
-
-        It 'Inherits child ownership from its indexed parent' {
-            $childName = 'avm/res/storage/storage-account/blob-service/container'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary '' -Parent 'avm/res/storage/storage-account'
-            Get-AvmModuleOwnerLogin -ModuleName $childName -ModuleIndexData $script:moduleIndex |
+        It 'Inherits ownership from the parent module' {
+            $childPath = 'avm/res/storage/storage-account/blob-service/container'
+            Set-TestModuleMetadata -ModulePath $childPath -Owners @()
+            Get-AvmModuleMetadataOwner -ModulePath $childPath -RepoRoot $script:mockRepoRoot |
                 Should -Be @('owner-one', 'owner-two')
         }
 
-        It 'Uses explicitly populated child owners instead of parent owners' {
-            $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary 'child-owner' -Secondary ''
-            Get-AvmModuleOwnerLogin -ModuleName $childName -ModuleIndexData $script:moduleIndex |
+        It 'Uses explicitly declared child owners instead of the parent owners' {
+            $childPath = 'avm/res/storage/storage-account/blob-service'
+            Set-TestModuleMetadata -ModulePath $childPath -Owners @('child-owner')
+            Get-AvmModuleMetadataOwner -ModulePath $childPath -RepoRoot $script:mockRepoRoot |
                 Should -Be @('child-owner')
         }
 
-        It 'Falls back to the immediate parent when ParentModule is absent' {
-            $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary ''
-            Get-AvmModuleOwnerLogin -ModuleName $childName -ModuleIndexData $script:moduleIndex |
-                Should -Be @('owner-one', 'owner-two')
+        It 'Returns no owners for an orphaned module' {
+            Set-TestModuleMetadata -Owners @()
+            @(Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot).Count | Should -Be 0
         }
 
-        It 'Returns no owners for an orphaned module even with stale handles' {
-            $script:moduleIndex[0].ModuleStatus = 'Orphaned'
-            @(Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex).Count | Should -Be 0
-        }
-
-        It 'Inherits an orphaned parent even when the child index status is still Available' {
-            $script:moduleIndex[0].ModuleStatus = 'Orphaned'
-            $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary '' -Parent 'avm/res/storage/storage-account'
-            @(Get-AvmModuleOwnerLogin -ModuleName $childName -ModuleIndexData $script:moduleIndex).Count | Should -Be 0
+        It 'Returns no owners when the parent metadata is missing' {
+            Remove-TestModuleMetadata
+            @(Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot).Count | Should -Be 0
         }
 
         It 'Rejects invalid owner handle [<Handle>]' -ForEach @(
@@ -233,37 +189,44 @@ Describe 'Module ownership automation' {
             @{ Handle = '@@owner-one' }
             @{ Handle = 'invalid--owner' }
         ) {
-            $script:moduleIndex[0].PrimaryModuleOwnerGHHandle = $Handle
-            { Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex } |
+            Set-TestModuleMetadata -Owners @($Handle)
+            { Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot } |
                 Should -Throw '*Invalid owner handle*'
         }
 
-        It 'Rejects missing owner metadata' {
-            $script:moduleIndex = @(New-TestModule -Primary '' -Secondary '')
-            { Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex } |
-                Should -Throw '*No individual owners*'
+        It 'Rejects an invalid module path [<Path>]' -ForEach @(
+            @{ Path = 'avm/res/storage' }
+            @{ Path = 'utilities/pipelines' }
+            @{ Path = 'avm/bad/storage/storage-account' }
+        ) {
+            { Get-AvmModuleMetadataOwner -ModulePath $Path -RepoRoot $script:mockRepoRoot } |
+                Should -Throw '*Invalid module path*'
         }
 
-        It 'Rejects missing or duplicate module entries' {
-            { Get-AvmModuleOwnerLogin -ModuleName 'avm/res/missing/module' -ModuleIndexData $script:moduleIndex } |
-                Should -Throw '*Expected one index entry*'
-            $script:moduleIndex += New-TestModule
-            { Get-AvmModuleOwnerLogin -ModuleName $script:moduleIndex[0].ModuleName -ModuleIndexData $script:moduleIndex } |
-                Should -Throw '*Expected one index entry*'
+        It 'Rejects metadata that is not valid JSON' {
+            $modulePath = Join-Path $script:mockRepoRoot 'avm' 'res' 'storage' 'storage-account' 'metadata.json'
+            'not json' | Set-Content -Path $modulePath
+            { Get-AvmModuleMetadataOwner -ModulePath 'avm/res/storage/storage-account' -RepoRoot $script:mockRepoRoot } |
+                Should -Throw '*Unable to read module metadata*'
+        }
+    }
+
+    Context 'Module listing' {
+        It 'Lists only top-level module folders' {
+            Set-TestModuleMetadata -ModulePath 'avm/res/storage/storage-account/blob-service' -Owners @()
+            Set-TestModuleMetadata -ModulePath 'avm/ptn/authorization/role-assignment'
+            Get-AvmModuleList -RepoRoot $script:mockRepoRoot |
+                Should -Be @('avm/ptn/authorization/role-assignment', 'avm/res/storage/storage-account')
         }
 
-        It 'Rejects a parent reference that does not identify an ancestor' {
-            $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary '' -Parent $childName
-            { Get-AvmModuleOwnerLogin -ModuleName $childName -ModuleIndexData $script:moduleIndex } |
-                Should -Throw '*Invalid parent module*'
+        It 'Restricts the result to a single module type' {
+            Set-TestModuleMetadata -ModulePath 'avm/ptn/authorization/role-assignment'
+            Get-AvmModuleList -RepoRoot $script:mockRepoRoot -ModuleType 'res' |
+                Should -Be @('avm/res/storage/storage-account')
         }
 
-        It 'Reads indexes that no longer contain ModuleOwnersGHTeam' {
-            $result = @(Get-AvmCsvData -ModuleIndex 'Bicep-Resource')
-            $result.Count | Should -Be 1
-            $result[0].PrimaryModuleOwnerGHHandle | Should -Be 'owner-one'
-            $result[0].PSObject.Properties.Name | Should -Not -Contain 'ModuleOwnersGHTeam'
+        It 'Returns nothing for a module type that has no modules' {
+            @(Get-AvmModuleList -RepoRoot $script:mockRepoRoot -ModuleType 'utl').Count | Should -Be 0
         }
     }
 
@@ -296,19 +259,21 @@ Describe 'Module ownership automation' {
             $assignments[0].Arguments | Should -Contain 'owner-one'
         }
 
-        It 'Makes no updates when individual owner metadata cannot be resolved' {
-            $script:moduleIndex = @(New-TestModule -Primary '' -Secondary '')
+        It 'Makes no updates when owner metadata cannot be read' {
+            Set-TestModuleMetadata -Owners @('invalid--owner')
             $script:issues[0].assignees = @(@{ login = 'owner-one' })
             Set-AvmGitHubIssueOwnerConfig -RepositoryOwner 'test-org' -RepositoryName 'test-repo' -RepoRoot $script:mockRepoRoot -WarningVariable warnings
             $script:ghCalls.Count | Should -Be 0
             ($warnings -join ' ') | Should -Match 'preserving existing assignees'
         }
 
-        It 'Makes no updates when duplicate entries disagree about orphaned status' {
-            $script:moduleIndex += New-TestModule -Status 'Orphaned'
-            $script:issues[0].assignees = @(@{ login = 'owner-one' })
+        It 'Mentions owning teams without attempting to assign them' {
+            Set-TestModuleMetadata -Owners @('@Azure/storage-owners')
             Invoke-TestIssueRouting
-            $script:ghCalls.Count | Should -Be 0
+            @($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Count | Should -Be 0
+            $comment = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'comment' }
+            ($comment.Arguments -join ' ') | Should -Match '@Azure/storage-owners'
+            ($comment.Arguments -join ' ') | Should -Not -Match 'currently orphaned'
         }
 
         It 'Preserves existing assignees for an unknown module' {
@@ -318,18 +283,18 @@ Describe 'Module ownership automation' {
             @($script:ghCalls | Where-Object { $_.Arguments -contains '--remove-assignee' }).Count | Should -Be 0
         }
 
-        It 'Resolves child issue owners from the parent index entry' {
+        It 'Resolves child issue owners from the parent metadata' {
             $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary '' -Parent 'avm/res/storage/storage-account'
+            Set-TestModuleMetadata -ModulePath $childName -Owners @()
             $script:issues[0].body = "### Module`n$childName`n"
             Invoke-TestIssueRouting
             @($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Count | Should -Be 2
         }
 
         It 'Notifies the tooling team when a child inherits an orphaned parent' {
-            $script:moduleIndex[0].ModuleStatus = 'Orphaned'
+            Set-TestModuleMetadata -Owners @()
             $childName = 'avm/res/storage/storage-account/blob-service'
-            $script:moduleIndex += New-TestModule -Name $childName -Primary '' -Secondary '' -Parent 'avm/res/storage/storage-account'
+            Set-TestModuleMetadata -ModulePath $childName -Owners @()
             $script:issues[0].body = "### Module`n$childName`n"
             Invoke-TestIssueRouting
             @($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Count | Should -Be 0
@@ -338,7 +303,7 @@ Describe 'Module ownership automation' {
         }
 
         It 'Does not reuse owners from the previous issue when processing an orphan' {
-            $script:moduleIndex += New-TestModule -Name 'avm/res/network/virtual-network' -Primary '' -Secondary '' -Status 'Orphaned'
+            Set-TestModuleMetadata -ModulePath 'avm/res/network/virtual-network' -Owners @()
             $orphanIssue = $script:issues[0].PSObject.Copy()
             $orphanIssue.number = 18
             $orphanIssue.body = "### Module`navm/res/network/virtual-network`n"
@@ -557,7 +522,7 @@ Describe 'Module ownership automation' {
         }
 
         It 'Notifies the tooling team for an orphaned module without assigning stale owners' {
-            $script:moduleIndex[0].ModuleStatus = 'Orphaned'
+            Set-TestModuleMetadata -Owners @()
             Invoke-TestFailureRouting
             @($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Count | Should -Be 0
             $comment = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'comment' }
@@ -573,7 +538,7 @@ Describe 'Module ownership automation' {
         }
 
         It 'Inherits child-module notifications and primary-owner assignment' {
-            $script:moduleIndex += New-TestModule -Name 'avm/res/storage/storage-account/blob-service' -Primary '' -Secondary '' -Parent 'avm/res/storage/storage-account'
+            Set-TestModuleMetadata -ModulePath 'avm/res/storage/storage-account/blob-service' -Owners @()
             $script:workflowName = 'avm.res.storage.storage-account.blob-service'
             Invoke-TestFailureRouting
             ($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Arguments | Should -Contain 'owner-one'
@@ -581,9 +546,18 @@ Describe 'Module ownership automation' {
             ($comment.Arguments -join ' ') | Should -Match '@owner-one, @owner-two'
         }
 
-        It 'Does not create an issue when owner metadata cannot be resolved' {
-            $script:moduleIndex = @(New-TestModule -Primary '' -Secondary '')
-            { Invoke-TestFailureRouting } | Should -Throw '*No individual owners*'
+        It 'Mentions an owning team without attempting to assign it' {
+            Set-TestModuleMetadata -Owners @('@Azure/storage-owners')
+            Invoke-TestFailureRouting
+            @($script:ghCalls | Where-Object { $_.Arguments -contains '--add-assignee' }).Count | Should -Be 0
+            $comment = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'comment' }
+            ($comment.Arguments -join ' ') | Should -Match '@Azure/storage-owners'
+            ($comment.Arguments -join ' ') | Should -Not -Match 'tooling-contributors'
+        }
+
+        It 'Does not create an issue when owner metadata cannot be read' {
+            Set-TestModuleMetadata -Owners @('invalid--owner')
+            { Invoke-TestFailureRouting } | Should -Throw '*Invalid owner handle*'
             $script:ghCalls.Count | Should -Be 0
         }
 

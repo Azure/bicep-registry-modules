@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-If module list is not in sync with CSV file, an issue is created
+If module list is not in sync with the modules in the repository, an issue is created
 
 .DESCRIPTION
-CSV data for moules and pattern is loaded and compared with the list in the issue template. If they are not in sync, an issue with the necessary changes is created
+The modules present in the repository are compared with the list in the issue template. If they are not in sync, an issue with the necessary changes is created
 
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
@@ -27,20 +27,13 @@ function Sync-AvmModulesList {
     )
 
     # Loading helper functions
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
 
-    # get CSV data
-    $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object {
-        (($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')) -and
-        ($_.ModuleName -split '\/').Count -eq 4 # only top level modules
-    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern' | Where-Object {
-        ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')
-    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
-    $targetUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility' | Where-Object {
-        ($_.ModuleStatus -eq 'Available') -or ($_.ModuleStatus -eq 'Orphaned')
-    } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
+    # get the modules present in the repository
+    $targetModules = Get-AvmModuleList -RepoRoot $RepoRoot -ModuleType 'res'
+    $targetPatterns = Get-AvmModuleList -RepoRoot $RepoRoot -ModuleType 'ptn'
+    $targetUtilities = Get-AvmModuleList -RepoRoot $RepoRoot -ModuleType 'utl'
 
     $issueTemplatePath = Join-Path $RepoRoot '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
     $issueTemplateContent = Get-Content $issueTemplatePath
@@ -199,7 +192,7 @@ $([Environment]::NewLine)
 
     $body = @"
 > [!IMPORTANT]
-> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the CSV files, that can be found under [resource modules](https://aka.ms/avm/index/bicep/res/csv), [pattern modules](https://aka.ms/avm/index/bicep/ptn/csv) and [utility modules](https://aka.ms/avm/index/bicep/utl/csv). These CSV files are the single source of truth regarding published modules. Please update the ``avm_module_issue.yml`` accordingly. Please see the following differences that were found.
+> The file [avm_module_issue.yml](https://github.com/Azure/bicep-registry-modules/blob/main/.github/ISSUE_TEMPLATE/avm_module_issue.yml?plain=1) which lists all modules when creating a new issue, is not in sync with the modules published in this repository. Please update the ``avm_module_issue.yml`` accordingly. Please see the following differences that were found.
 $([Environment]::NewLine)
 "@ + $body
 

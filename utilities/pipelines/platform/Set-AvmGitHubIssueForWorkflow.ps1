@@ -58,21 +58,13 @@ function Set-AvmGitHubIssueForWorkflow {
     )
 
     # Loading helper functions
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleOwnerLogin.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleMetadataOwner.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowLatestRun.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
 
-
-    ##################################
-    #   Loading module information   #
-    ##################################
-    $knownPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern'
-    $knownResources = Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
-    $knownUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility'
 
     #######################
     #    Get all issues   #
@@ -161,17 +153,15 @@ function Set-AvmGitHubIssueForWorkflow {
                 #       -  If the owner-assignment failed, add an extra comment to call this out
 
                 $module = $null
-                $moduleIndexData = @()
                 $moduleOwnerLogins = @()
+                $moduleOwnerTeams = @()
                 if ($workflowRun.name -match '^(avm\.(?:res|ptn|utl))') {
-                    switch ($matches[1]) {
-                        'avm.ptn' { $moduleIndexData = $knownPatterns; break }
-                        'avm.res' { $moduleIndexData = $knownResources; break }
-                        'avm.utl' { $moduleIndexData = $knownUtilities; break }
-                    }
-                    $module = $moduleIndexData | Where-Object { $_.ModuleName -eq $moduleName }
-                    if ($null -ne $module) {
-                        $moduleOwnerLogins = @(Get-AvmModuleOwnerLogin -ModuleName $moduleName -ModuleIndexData $moduleIndexData)
+                    if (Test-Path -Path (Join-Path $RepoRoot ($moduleName -replace '/', [System.IO.Path]::DirectorySeparatorChar) 'metadata.json') -PathType 'Leaf') {
+                        $module = $moduleName
+                        $moduleOwners = @(Get-AvmModuleMetadataOwner -ModulePath $moduleName -RepoRoot $RepoRoot)
+                        # Teams cannot be issue assignees, so they are only mentioned in the comment.
+                        $moduleOwnerLogins = @($moduleOwners | Where-Object { $_ -notlike '*/*' })
+                        $moduleOwnerTeams = @($moduleOwners | Where-Object { $_ -like '*/*' })
                     }
                 } else {
                     Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
@@ -205,8 +195,8 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 # CASE : Module workflow
                 # ----------------------
-                $moduleIsOrphaned = $moduleOwnerLogins.Count -eq 0
-                $ownerMentions = ($moduleOwnerLogins | ForEach-Object { "@$_" }) -join ', '
+                $moduleIsOrphaned = ($moduleOwnerLogins.Count + $moduleOwnerTeams.Count) -eq 0
+                $ownerMentions = (@($moduleOwnerLogins + $moduleOwnerTeams) | ForEach-Object { "@$_" }) -join ', '
 
                 $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
@@ -224,7 +214,7 @@ function Set-AvmGitHubIssueForWorkflow {
 > $ownerMentions, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
 
-                if (-not $moduleIsOrphaned) {
+                if ($moduleOwnerLogins.Count -gt 0) {
                     $primaryOwnerLogin = $moduleOwnerLogins[0]
                     # If not orphaned we should assign the issue to the module owner
                     # --------------------------------------------------------------

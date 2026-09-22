@@ -3,7 +3,7 @@
 Assigns issues to module owners and adds comments and labels
 
 .DESCRIPTION
-For the given issue, the module owner (according to the AVM CSV file) will be notified in a comment and assigned to the issue
+For the given issue, the module owner (according to the module's metadata.json file) will be notified in a comment and assigned to the issue
 
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
@@ -51,14 +51,17 @@ function Set-AvmGitHubIssueOwnerConfig {
     )
 
     # Loading helper functions
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueProjectAssignment.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueTimeline.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleOwnerLogin.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmModuleMetadataOwner.ps1')
 
     $fullRepositoryName = "$RepositoryOwner/$RepositoryName"
+
+    # Assignments made by these identities are treated as automated rather than manual. Includes the
+    # retired team linter app so that assignments made before the move to the AVM app still resolve.
+    $automationBotLogins = @('azure-verified-modules[bot]', 'avm-team-linter[bot]')
 
     $baseInputObject = @{
         RepositoryOwner = $RepositoryOwner
@@ -80,11 +83,6 @@ function Set-AvmGitHubIssueOwnerConfig {
     }
 
     # Fetch module data
-    $csvData = @{
-        res = (Get-AvmCsvData -ModuleIndex 'Bicep-Resource')
-        ptn = (Get-AvmCsvData -ModuleIndex 'Bicep-Pattern')
-        utl = (Get-AvmCsvData -ModuleIndex 'Bicep-Utility')
-    }
     $moduleDistributionData = [System.Collections.ArrayList]@()
     $statistics = [ordered]@{
         "Updates`n-------"                 = $null
@@ -114,6 +112,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         $anyUpdate = $false
         $moduleOwnerLogins = @()
+        $moduleOwnerTeams = @()
         $moduleIsOrphaned = $false
         $plainTitle = $issue.title -replace '^.+?]:? '
         $issueCategory = ($issue.title -replace [regex]::Escape($plainTitle)).Trim().TrimStart('[').TrimEnd(':').TrimEnd(']')
@@ -173,14 +172,17 @@ function Set-AvmGitHubIssueOwnerConfig {
         # ----------------
         $commentsOfIssue = @() + ($timelineEvents | Where-Object { $_.event -eq 'commented' })
 
-        # CSV
-        # ---
-        $moduleCsvData = $csvData[$moduleType] | Where-Object { $_.ModuleName -eq $moduleName }
+        # Module metadata
+        # ---------------
+        $moduleExists = Test-Path -Path (Join-Path $RepoRoot ($moduleName -replace '/', [System.IO.Path]::DirectorySeparatorChar) 'metadata.json') -PathType 'Leaf'
 
-        if ($null -ne $moduleCsvData) {
+        if ($moduleExists) {
             try {
-                $moduleOwnerLogins = @(Get-AvmModuleOwnerLogin -ModuleName $moduleName -ModuleIndexData $csvData[$moduleType])
-                $moduleIsOrphaned = $moduleOwnerLogins.Count -eq 0
+                $moduleOwners = @(Get-AvmModuleMetadataOwner -ModulePath $moduleName -RepoRoot $RepoRoot)
+                # Teams cannot be issue assignees, so they are only mentioned in the comment.
+                $moduleOwnerLogins = @($moduleOwners | Where-Object { $_ -notlike '*/*' })
+                $moduleOwnerTeams = @($moduleOwners | Where-Object { $_ -like '*/*' })
+                $moduleIsOrphaned = $moduleOwners.Count -eq 0
             } catch [System.IO.InvalidDataException] {
                 Write-Warning ('    Issue [{0}]: {1} Skipping updates and preserving existing assignees.' -f $issue.number, $_.Exception.Message)
                 $statistics.'Issues to review by core team'++
@@ -190,8 +192,8 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
 
         # new/unknown module
-        if ($null -eq $moduleCsvData) {
-            Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in CSV. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
+        if (-not $moduleExists) {
+            Write-Warning ('    ⚠️  Issue [{0}] {1}: Module [{2}] not found in the repository. Skipping assignment.' -f $issue.number, $shortTitle, $moduleName)
             $statistics.'Issues to review by core team'++
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
@@ -211,7 +213,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         }
         # existing module
         else {
-            $ownerMentions = ($moduleOwnerLogins | ForEach-Object { "@$_" }) -join ', '
+            $ownerMentions = (@($moduleOwnerLogins + $moduleOwnerTeams) | ForEach-Object { "@$_" }) -join ', '
             $reply = @"
 **@$($issue.user.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -328,12 +330,12 @@ function Set-AvmGitHubIssueOwnerConfig {
         # Remove assignees unless owner or manually added (i.e., not by bot)
         # ------------------------------------------------------------------
         $usersAssignedManually = ($timelineEvents | Where-Object {
-                ($_.event -eq 'assigned') -and ($_.actor.login -ne 'avm-team-linter[bot]')
+                ($_.event -eq 'assigned') -and ($_.actor.login -notin $automationBotLogins)
             }).assignee.login
         $assigneesToRemove = $existingAssignees | Where-Object {
             $wasManuallyAssigned = $usersAssignedManually -contains $_
             $isModuleOwner = $moduleOwnerLogins -contains $_
-            $null -ne $moduleCsvData -and -not $wasManuallyAssigned -and (-not $isModuleOwner -or $moduleIsOrphaned)
+            $moduleExists -and -not $wasManuallyAssigned -and (-not $isModuleOwner -or $moduleIsOrphaned)
         }
         foreach ($excessAssignee in $assigneesToRemove) {
             $anyUpdate = $true
