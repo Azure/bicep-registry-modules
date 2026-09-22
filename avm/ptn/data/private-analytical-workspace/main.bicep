@@ -351,7 +351,7 @@ resource kvExisting 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!creat
   )
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.5.0' = if (createNewVNET) {
+module vnet 'br/public:avm/res/network/virtual-network:0.10.2' = if (createNewVNET) {
   name: '${uniqueString(deployment().name, location)}-vnet-${vnetName}'
   params: {
     // Required parameters
@@ -592,7 +592,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (create
   }
 }
 
-module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = if (enableDatabricks) {
+module accessConnector 'br/public:avm/res/databricks/access-connector:0.4.3' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-connector-${dbwAccessConnectorName}'
   params: {
     // Required parameters
@@ -609,13 +609,13 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = i
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
+module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-workspace-${dbwName}'
   params: {
     // Required parameters
     name: dbwName
     // Conditional parameters
-    accessConnectorResourceId: accessConnector.outputs.resourceId
+    accessConnectorResourceId: accessConnector!.outputs.resourceId
     // Non-required parameters
     customPublicSubnetName: createNewVNET ? subnetNameDbwFrontend : advancedOptions.?databricks.?subnetNameFrontend
     customPrivateSubnetName: createNewVNET ? subnetNameDbwBackend : advancedOptions.?databricks.?subnetNameBackend
@@ -648,7 +648,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneDbw!.outputs.resourceId
                 }
               ]
             }
@@ -667,7 +667,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneDbw!.outputs.resourceId
                 }
               ]
             }
@@ -699,7 +699,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneSaBlob.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneSaBlob!.outputs.resourceId
                 }
               ]
             }
@@ -714,7 +714,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && enableDatabricks) {
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.8.1' = if (createNewVNET && enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-zone-${privateDnsZoneNameDbw}'
   params: {
     // Required parameters
@@ -728,7 +728,7 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (creat
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: vnet.outputs.resourceId
+        virtualNetworkResourceId: vnet!.outputs.resourceId
       }
     ]
   }
