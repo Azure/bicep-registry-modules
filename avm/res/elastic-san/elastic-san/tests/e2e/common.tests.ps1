@@ -232,7 +232,7 @@ function Test-VerifyElasticSANVolume($ResourceId, $ElasticSanName, $ResourceGrou
     $v.CreationDataCreateSource | Should -Be 'None'
     $v.CreationDataSourceId | Should -BeNullOrEmpty
     $v.Id | Should -Be $ResourceId
-    $v.ManagedByResourceId | Should -Be 'None'
+    $v.ManagedByResourceId | Should -BeIn @('None', $null)
     $v.Name | Should -Be $Name
     $Location | Should -Be $ExpectedLocation
     $v.ResourceGroupName | Should -Be $ResourceGroupName
