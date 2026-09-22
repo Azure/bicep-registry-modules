@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Azure SQL Server",
   "telemetryIdPrefix": "46d3xbcp.res.sql-server",
   "canonicalType": "Microsoft.Sql/servers",
-  "owners": ["peterbud"]
+  "owners": []
 }

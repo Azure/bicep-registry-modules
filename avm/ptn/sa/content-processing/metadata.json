@@ -3,7 +3,9 @@
   "moduleDisplayName": "SA - Content Processing",
   "moduleDescription": "AVM Pattern Module for SA - Content Processing",
   "telemetryIdPrefix": "46d3xbcp.ptn.sa-contentprocessing",
-  "alternativeNames": ["Solution Accelerator - Content Processing"],
+  "alternativeNames": [
+    "Solution Accelerator - Content Processing"
+  ],
   "canonicalType": "sa/content-processing",
-  "owners": ["brittneek", "aniaroramsft"]
+  "owners": []
 }

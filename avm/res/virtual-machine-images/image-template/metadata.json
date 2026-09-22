@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Virtual Machine Image Template",
   "telemetryIdPrefix": "46d3xbcp.res.virtualmachineimages-imagetemplate",
   "canonicalType": "Microsoft.VirtualMachineImages/imageTemplates",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }
