@@ -41,6 +41,1085 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/elastic-san/elastic-san:<version>`.
 
+- [Using encryption with Customer-Managed-Key](#example-1-using-encryption-with-customer-managed-key)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Private endpoint-enabled deployment](#example-4-private-endpoint-enabled-deployment)
+- [WAF-aligned](#example-5-waf-aligned)
+
+### Example 1: _Using encryption with Customer-Managed-Key_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 2
+    name: 'esancmk001'
+    // Non-required parameters
+    sku: 'Premium_LRS'
+    volumeGroups: [
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-01'
+      }
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-02'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 2
+    },
+    "name": {
+      "value": "esancmk001"
+    },
+    // Non-required parameters
+    "sku": {
+      "value": "Premium_LRS"
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-01"
+        },
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-02"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param availabilityZone = 2
+param name = 'esancmk001'
+// Non-required parameters
+param sku = 'Premium_LRS'
+param volumeGroups = [
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-01'
+  }
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-02'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'esanmin001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "esanmin001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'esanmin001'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 3
+    name: 'esanmax001'
+    // Non-required parameters
+    baseSizeTiB: 2
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: '<category>'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    extendedCapacitySizeTiB: 1
+    location: '<location>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Role Based Access Control Administrator'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'User Access Administrator'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Elastic SAN Network Admin'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Elastic SAN Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Elastic SAN Reader'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Elastic SAN Volume Group Owner'
+      }
+    ]
+    sku: 'Premium_LRS'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+      }
+      {
+        name: 'vol-grp-02'
+        volumes: [
+          {
+            name: 'vol-grp-02-vol-01'
+            sizeGiB: 1
+          }
+          {
+            name: 'vol-grp-02-vol-02'
+            sizeGiB: 2
+            snapshots: [
+              {
+                name: '<name>'
+              }
+              {
+                name: '<name>'
+              }
+            ]
+          }
+        ]
+      }
+      {
+        name: 'vol-grp-03'
+        virtualNetworkRules: [
+          {
+            virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+          }
+        ]
+      }
+      {
+        managedIdentities: {
+          systemAssigned: true
+        }
+        name: 'vol-grp-04'
+      }
+      {
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-05'
+      }
+      {
+        managedIdentities: {
+          systemAssigned: true
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-06'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 3
+    },
+    "name": {
+      "value": "esanmax001"
+    },
+    // Non-required parameters
+    "baseSizeTiB": {
+      "value": 2
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "<category>"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "extendedCapacitySizeTiB": {
+      "value": 1
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Role Based Access Control Administrator"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "User Access Administrator"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Elastic SAN Network Admin"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Elastic SAN Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Elastic SAN Reader"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Elastic SAN Volume Group Owner"
+        }
+      ]
+    },
+    "sku": {
+      "value": "Premium_LRS"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01"
+        },
+        {
+          "name": "vol-grp-02",
+          "volumes": [
+            {
+              "name": "vol-grp-02-vol-01",
+              "sizeGiB": 1
+            },
+            {
+              "name": "vol-grp-02-vol-02",
+              "sizeGiB": 2,
+              "snapshots": [
+                {
+                  "name": "<name>"
+                },
+                {
+                  "name": "<name>"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "vol-grp-03",
+          "virtualNetworkRules": [
+            {
+              "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
+            }
+          ]
+        },
+        {
+          "managedIdentities": {
+            "systemAssigned": true
+          },
+          "name": "vol-grp-04"
+        },
+        {
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-05"
+        },
+        {
+          "managedIdentities": {
+            "systemAssigned": true,
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-06"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param availabilityZone = 3
+param name = 'esanmax001'
+// Non-required parameters
+param baseSizeTiB = 2
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: '<category>'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param extendedCapacitySizeTiB = 1
+param location = '<location>'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Role Based Access Control Administrator'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'User Access Administrator'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Elastic SAN Network Admin'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Elastic SAN Owner'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Elastic SAN Reader'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Elastic SAN Volume Group Owner'
+  }
+]
+param sku = 'Premium_LRS'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+  }
+  {
+    name: 'vol-grp-02'
+    volumes: [
+      {
+        name: 'vol-grp-02-vol-01'
+        sizeGiB: 1
+      }
+      {
+        name: 'vol-grp-02-vol-02'
+        sizeGiB: 2
+        snapshots: [
+          {
+            name: '<name>'
+          }
+          {
+            name: '<name>'
+          }
+        ]
+      }
+    ]
+  }
+  {
+    name: 'vol-grp-03'
+    virtualNetworkRules: [
+      {
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
+      }
+    ]
+  }
+  {
+    managedIdentities: {
+      systemAssigned: true
+    }
+    name: 'vol-grp-04'
+  }
+  {
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-05'
+  }
+  {
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-06'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/pe]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: -1
+    name: 'esanpe001'
+    // Non-required parameters
+    sku: 'Premium_ZRS'
+    volumeGroups: [
+      {
+        name: 'vol-grp-01'
+        privateEndpoints: [
+          {
+            lock: {
+              kind: 'CanNotDelete'
+              name: 'myCustomLockName'
+            }
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              CostCenter: '123-456-789'
+              Owner: 'Contoso'
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
+    "name": {
+      "value": "esanpe001"
+    },
+    // Non-required parameters
+    "sku": {
+      "value": "Premium_ZRS"
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "name": "vol-grp-01",
+          "privateEndpoints": [
+            {
+              "lock": {
+                "kind": "CanNotDelete",
+                "name": "myCustomLockName"
+              },
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "CostCenter": "123-456-789",
+                "Owner": "Contoso"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param availabilityZone = -1
+param name = 'esanpe001'
+// Non-required parameters
+param sku = 'Premium_ZRS'
+param volumeGroups = [
+  {
+    name: 'vol-grp-01'
+    privateEndpoints: [
+      {
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          CostCenter: '123-456-789'
+          Owner: 'Contoso'
+        }
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module elasticSan 'br/public:avm/res/elastic-san/elastic-san:<version>' = {
+  params: {
+    // Required parameters
+    availabilityZone: 1
+    name: 'esanwaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: '<category>'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    sku: 'Premium_LRS'
+    tags: {
+      CostCenter: '123-456-789'
+      Owner: 'Contoso'
+    }
+    volumeGroups: [
+      {
+        customerManagedKey: {
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<managedIdentityResourceId>'
+          ]
+        }
+        name: 'vol-grp-01'
+        privateEndpoints: [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+                }
+              ]
+            }
+            subnetResourceId: '<subnetResourceId>'
+            tags: {
+              CostCenter: '123-456-789'
+              Owner: 'Contoso'
+            }
+          }
+        ]
+        volumes: [
+          {
+            name: 'vol-grp-01-vol-01'
+            sizeGiB: 1
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
+    "name": {
+      "value": "esanwaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "<category>"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
+    "sku": {
+      "value": "Premium_LRS"
+    },
+    "tags": {
+      "value": {
+        "CostCenter": "123-456-789",
+        "Owner": "Contoso"
+      }
+    },
+    "volumeGroups": {
+      "value": [
+        {
+          "customerManagedKey": {
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<managedIdentityResourceId>"
+            ]
+          },
+          "name": "vol-grp-01",
+          "privateEndpoints": [
+            {
+              "privateDnsZoneGroup": {
+                "privateDnsZoneGroupConfigs": [
+                  {
+                    "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+                  }
+                ]
+              },
+              "subnetResourceId": "<subnetResourceId>",
+              "tags": {
+                "CostCenter": "123-456-789",
+                "Owner": "Contoso"
+              }
+            }
+          ],
+          "volumes": [
+            {
+              "name": "vol-grp-01-vol-01",
+              "sizeGiB": 1
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/elastic-san/elastic-san:<version>'
+
+// Required parameters
+param availabilityZone = 1
+param name = 'esanwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: '<category>'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
+param sku = 'Premium_LRS'
+param tags = {
+  CostCenter: '123-456-789'
+  Owner: 'Contoso'
+}
+param volumeGroups = [
+  {
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    name: 'vol-grp-01'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          CostCenter: '123-456-789'
+          Owner: 'Contoso'
+        }
+      }
+    ]
+    volumes: [
+      {
+        name: 'vol-grp-01-vol-01'
+        sizeGiB: 1
+      }
+    ]
+  }
+]
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
