@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/databricks/workspace/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Updated the `Microsoft.Databricks/workspaces` API version from `2024-05-01` to `2026-01-01`. The earlier version rejects changes to `customPublicSubnetName` and `customPrivateSubnetName` on an existing workspace with `PublicSubnetNamePropertyChangeNotAllowed`, stating the operation is allowed from `2025-02-01-preview` onwards; `2026-01-01` is the first stable version that qualifies.
+- Added the optional parameter `computeMode`, which the newer API version declares as required. It is emitted only when supplied, so existing deployments are unaffected.
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes
