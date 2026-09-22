@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Web Test",
-  "moduleDescription": "This module deploys a Web Test.",
+  "moduleDescription": "AVM Resource Module for Web Test",
   "telemetryIdPrefix": "46d3xbcp.res.insights-webtest",
   "canonicalType": "Microsoft.Insights/webtests",
   "owners": ["Jfolberth"]

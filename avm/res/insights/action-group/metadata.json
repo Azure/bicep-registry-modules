@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Action Group",
-  "moduleDescription": "This module deploys an Action Group.",
+  "moduleDescription": "AVM Resource Module for Action Group",
   "telemetryIdPrefix": "46d3xbcp.res.insights-actiongroup",
   "canonicalType": "Microsoft.Insights/actionGroups",
   "owners": ["rahalan"]
