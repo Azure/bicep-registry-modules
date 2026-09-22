@@ -731,7 +731,7 @@ var allowAllIPsFirewall = false
 var allowAzureIPsFirewall = true
 var postgresResourceName = '${azurePostgresDBAccountName}-postgres'
 var postgresDBName = 'postgres'
-module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.15.3' = if (databaseType == 'PostgreSQL') {
+module postgresDBModule 'br/public:avm/res/db-for-postgre-sql/flexible-server:0.16.1' = if (databaseType == 'PostgreSQL') {
   name: take('avm.res.db-for-postgre-sql.flexible-server.${azurePostgresDBAccountName}', 64)
   params: {
     name: postgresResourceName

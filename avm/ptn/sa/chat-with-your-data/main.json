@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3802677476604239699"
+      "templateHash": "12268480562301846001"
     },
     "name": "Chat-with-your-data-Solution-Accelerator",
     "description": "This module contains the resources required to deploy the [Chat-with-your-data-solution-accelerator](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator) for both Sandbox environments and WAF aligned environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/Azure-Samples/chat-with-your-data-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -18563,8 +18563,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "6075719994263381022"
+              "version": "0.47.16.16243",
+              "templateHash": "10875250962273257589"
             },
             "name": "DBforPostgreSQL Flexible Servers",
             "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -19337,7 +19337,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/authConfig"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/authConfig"
                 },
                 "description": "Optional. The authentication configuration for the server."
               },
@@ -19430,18 +19430,7 @@
             "storageSizeGB": {
               "type": "int",
               "defaultValue": 32,
-              "allowedValues": [
-                32,
-                64,
-                128,
-                256,
-                512,
-                1024,
-                2048,
-                4096,
-                8192,
-                16384
-              ],
+              "minValue": 32,
               "metadata": {
                 "description": "Optional. Max storage allowed for a server."
               }
@@ -19455,6 +19444,55 @@
               ],
               "metadata": {
                 "description": "Optional. Flag to enable / disable Storage Auto grow for flexible server."
+              }
+            },
+            "storageType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Premium_LRS",
+                "PremiumV2_LRS",
+                "UltraSSD_LRS"
+              ],
+              "metadata": {
+                "description": "Optional. Type of storage assigned to a server. Allowed values are Premium_LRS, PremiumV2_LRS, or UltraSSD_LRS. If not specified, it defaults to Premium_LRS."
+              }
+            },
+            "storageTier": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "P1",
+                "P2",
+                "P3",
+                "P4",
+                "P6",
+                "P10",
+                "P15",
+                "P20",
+                "P30",
+                "P40",
+                "P50",
+                "P60",
+                "P70",
+                "P80"
+              ],
+              "metadata": {
+                "description": "Optional. Storage tier of a server."
+              }
+            },
+            "storageIops": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum IOPS supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS."
+              }
+            },
+            "storageThroughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum throughput supported for storage. Required when storage type is PremiumV2_LRS or UltraSSD_LRS."
               }
             },
             "version": {
@@ -19518,7 +19556,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/properties/properties/maintenanceWindow"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/properties/properties/maintenanceWindow"
                 },
                 "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
               },
@@ -19640,7 +19678,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2025-06-01-preview#properties/tags"
+                  "source": "Microsoft.DBforPostgreSQL/flexibleServers@2026-01-01-preview#properties/tags"
                 },
                 "description": "Optional. Tags of the resource."
               },
@@ -19660,7 +19698,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. The diagnostic settings of the service."
+                "description": "Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured."
               }
             },
             "privateEndpoints": {
@@ -19708,8 +19746,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.dbforpostgresql-flexibleserver.{0}.{1}', replace('0.15.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('46d3xbcp.res.dbforpostgresql-flexibleserver.{0}.{1}', replace('0.16.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -19736,7 +19774,7 @@
             },
             "flexibleServer": {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-              "apiVersion": "2025-06-01-preview",
+              "apiVersion": "2026-01-01-preview",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -19768,7 +19806,11 @@
                 "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
                 "storage": {
                   "storageSizeGB": "[parameters('storageSizeGB')]",
-                  "autoGrow": "[parameters('autoGrow')]"
+                  "autoGrow": "[parameters('autoGrow')]",
+                  "type": "[parameters('storageType')]",
+                  "tier": "[parameters('storageTier')]",
+                  "iops": "[parameters('storageIops')]",
+                  "throughput": "[parameters('storageThroughput')]"
                 },
                 "version": "[parameters('version')]"
               },
@@ -19825,20 +19867,20 @@
                 "copy": [
                   {
                     "name": "metrics",
-                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray())))]",
                     "input": {
-                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
-                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                      "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')].category]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups')), createArray(createObject('category', 'AllMetrics')), createArray()))[copyIndex('metrics')], 'enabled'), true())]",
                       "timeGrain": null
                     }
                   },
                   {
                     "name": "logs",
-                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                    "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray())))]",
                     "input": {
-                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
-                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
-                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                      "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'categoryGroup')]",
+                      "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'category')]",
+                      "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), if(empty(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories')), createArray(createObject('categoryGroup', 'allLogs')), createArray()))[copyIndex('logs')], 'enabled'), true())]"
                     }
                   }
                 ],
@@ -19890,8 +19932,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "15093706878295844302"
+                      "version": "0.47.16.16243",
+                      "templateHash": "7168345819051965647"
                     },
                     "name": "DBforPostgreSQL Flexible Server Databases",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -19936,7 +19978,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-database.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-database.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -19955,12 +19997,12 @@
                     "flexibleServer": {
                       "existing": true,
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-                      "apiVersion": "2025-08-01",
+                      "apiVersion": "2026-01-01-preview",
                       "name": "[parameters('flexibleServerName')]"
                     },
                     "database": {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-                      "apiVersion": "2025-06-01-preview",
+                      "apiVersion": "2026-01-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "collation": "[parameters('collation')]",
@@ -20034,8 +20076,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "10415411553567489102"
+                      "version": "0.47.16.16243",
+                      "templateHash": "11458900348701508727"
                     },
                     "name": "DBforPostgreSQL Flexible Server Firewall Rules",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -20078,7 +20120,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-fwrule.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-fwrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20096,7 +20138,7 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
-                      "apiVersion": "2025-08-01",
+                      "apiVersion": "2026-01-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "endIpAddress": "[parameters('endIpAddress')]",
@@ -20173,8 +20215,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "4591693237508478257"
+                      "version": "0.47.16.16243",
+                      "templateHash": "3620798276702600127"
                     },
                     "name": "DBforPostgreSQL Flexible Server Configurations",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -20219,7 +20261,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-config.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-config.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20243,7 +20285,7 @@
                     },
                     "configuration": {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-                      "apiVersion": "2025-06-01-preview",
+                      "apiVersion": "2025-08-01",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
                       "properties": {
                         "source": "[parameters('source')]",
@@ -20320,8 +20362,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "15997652827199602742"
+                      "version": "0.47.16.16243",
+                      "templateHash": "15527987331755555730"
                     },
                     "name": "DBforPostgreSQL Flexible Server Administrators",
                     "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -20377,7 +20419,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-admin.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-admin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20395,7 +20437,7 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-                      "apiVersion": "2025-06-01-preview",
+                      "apiVersion": "2026-01-01-preview",
                       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
                       "properties": {
                         "principalName": "[parameters('principalName')]",
@@ -20461,8 +20503,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "10977866813085053474"
+                      "version": "0.47.16.16243",
+                      "templateHash": "7794342909995930988"
                     },
                     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
                     "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -20497,7 +20539,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20515,8 +20557,8 @@
                     },
                     {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings",
-                      "apiVersion": "2025-06-01-preview",
-                      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]",
+                      "apiVersion": "2026-01-01-preview",
+                      "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
                       "properties": {
                         "state": "[parameters('serverThreatProtection')]"
                       }
@@ -20528,21 +20570,21 @@
                       "metadata": {
                         "description": "The resource id of the advanced threat protection state for the flexible server."
                       },
-                      "value": "PostgreSQL-advancedThreatProtection"
+                      "value": "Default"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource id of the advanced threat protection state for the flexible server."
                       },
-                      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection')]"
+                      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
                     },
                     "advancedTreatProtectionState": {
                       "type": "string",
                       "metadata": {
                         "description": "The advanced threat protection state for the flexible server."
                       },
-                      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'PostgreSQL-advancedThreatProtection'), '2025-06-01-preview').state]"
+                      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default'), '2026-01-01-preview').state]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -20622,8 +20664,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.38.5.1644",
-                      "templateHash": "16604612898799598358"
+                      "version": "0.43.8.12551",
+                      "templateHash": "4295240387232557710"
                     },
                     "name": "Private Endpoints",
                     "description": "This module deploys a Private Endpoint."
@@ -20687,7 +20729,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a lock.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     },
@@ -20786,7 +20828,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.6.1"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.7.0"
                         }
                       }
                     }
@@ -20825,11 +20867,21 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/ipConfigurations"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipConfigurations"
                         },
                         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
                       },
                       "nullable": true
+                    },
+                    "ipVersionType": {
+                      "type": "string",
+                      "metadata": {
+                        "__bicep_resource_derived_type!": {
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/ipVersionType"
+                        },
+                        "description": "Optional. Specifies the IP version type for the private IPs of the private endpoint. If not defined, this defaults to IPv4."
+                      },
+                      "defaultValue": "IPv4"
                     },
                     "privateDnsZoneGroup": {
                       "$ref": "#/definitions/privateDnsZoneGroupType",
@@ -20866,7 +20918,7 @@
                       "type": "object",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/tags"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/tags"
                         },
                         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
                       },
@@ -20876,7 +20928,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs"
                         },
                         "description": "Optional. Custom DNS configurations."
                       },
@@ -20886,7 +20938,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/manualPrivateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/manualPrivateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
                       },
@@ -20896,7 +20948,7 @@
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/privateLinkServiceConnections"
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/privateLinkServiceConnections"
                         },
                         "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
                       },
@@ -20929,14 +20981,15 @@
                       "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
                       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
                       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-                    }
+                    },
+                    "enableReferencedModulesTelemetry": false
                   },
                   "resources": {
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.12.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -20954,7 +21007,7 @@
                     },
                     "privateEndpoint": {
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2024-10-01",
+                      "apiVersion": "2025-05-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -20975,14 +21028,15 @@
                         "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
                         "subnet": {
                           "id": "[parameters('subnetResourceId')]"
-                        }
+                        },
+                        "ipVersionType": "[parameters('ipVersionType')]"
                       }
                     },
                     "privateEndpoint_lock": {
                       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
                       "type": "Microsoft.Authorization/locks",
                       "apiVersion": "2020-05-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
                       "properties": {
                         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
@@ -20999,7 +21053,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+                      "scope": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]",
                       "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
                       "properties": {
                         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -21033,6 +21087,9 @@
                           },
                           "privateDnsZoneConfigs": {
                             "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
                         },
                         "template": {
@@ -21042,8 +21099,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.38.5.1644",
-                              "templateHash": "24141742673128945"
+                              "version": "0.43.8.12551",
+                              "templateHash": "15830984844857508530"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
                             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -21096,18 +21153,45 @@
                               "metadata": {
                                 "description": "Optional. The name of the private DNS zone group."
                               }
+                            },
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Optional. Enable/Disable usage telemetry for module."
+                              }
                             }
                           },
                           "resources": {
                             "privateEndpoint": {
                               "existing": true,
                               "type": "Microsoft.Network/privateEndpoints",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[parameters('privateEndpointName')]"
+                            },
+                            "avmTelemetry": {
+                              "condition": "[parameters('enableTelemetry')]",
+                              "type": "Microsoft.Resources/deployments",
+                              "apiVersion": "2025-04-01",
+                              "name": "[format('46d3xbcp.res.network-privendpoint-privdnszonegrp.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "properties": {
+                                "mode": "Incremental",
+                                "template": {
+                                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                                  "contentVersion": "1.0.0.0",
+                                  "resources": [],
+                                  "outputs": {
+                                    "telemetry": {
+                                      "type": "String",
+                                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                                    }
+                                  }
+                                }
+                              }
                             },
                             "privateDnsZoneGroup": {
                               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                              "apiVersion": "2024-10-01",
+                              "apiVersion": "2025-05-01",
                               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                               "properties": {
                                 "copy": [
@@ -21182,13 +21266,13 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateEndpoint', '2024-10-01', 'full').location]"
+                      "value": "[reference('privateEndpoint', '2025-05-01', 'full').location]"
                     },
                     "customDnsConfigs": {
                       "type": "array",
                       "metadata": {
                         "__bicep_resource_derived_type!": {
-                          "source": "Microsoft.Network/privateEndpoints@2024-01-01#properties/properties/properties/customDnsConfigs",
+                          "source": "Microsoft.Network/privateEndpoints@2025-05-01#properties/properties/properties/customDnsConfigs",
                           "output": true
                         },
                         "description": "The custom DNS configurations of the private endpoint."
@@ -21248,7 +21332,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('flexibleServer', '2025-06-01-preview', 'full').location]"
+              "value": "[reference('flexibleServer', '2026-01-01-preview', 'full').location]"
             },
             "fqdn": {
               "type": "string",
@@ -21283,7 +21367,7 @@
               "metadata": {
                 "description": "The principal ID of the system assigned managed identity."
               },
-              "value": "[tryGet(tryGet(reference('flexibleServer', '2025-06-01-preview', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('flexibleServer', '2026-01-01-preview', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -54884,9 +54968,9 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageBlob)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageQueue)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').storageFile)]",
         "managedIdentityModule",
         "virtualNetwork"
       ]

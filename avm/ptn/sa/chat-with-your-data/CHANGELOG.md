@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `Microsoft.KeyVault/vaults`, `Microsoft.KeyVault/vaults/keys`, and `Microsoft.KeyVault/vaults/secrets` API versions from `2025-05-01` to `2026-02-01`.
+- Updated `avm/res/db-for-postgre-sql/flexible-server` deployment to version `0.16.1`
 
 ### Breaking Changes
 
