@@ -5,6 +5,8 @@ Requests reviews from the module owners declared in metadata.json and labels the
 .DESCRIPTION
 Maps the files changed by a pull request to their top-level AVM modules and requests a review from the individuals and teams listed in each module's metadata.json file. Modules without declared owners fall back to the shared module owners team. Approval rights are governed by repository permissions, not by this function.
 
+Metadata is read from the pull request head so that modules added or updated by the pull request resolve to the intended owners. Only the metadata is read from the head; no pull request content is executed.
+
 .PARAMETER Repo
 Mandatory. The name of the respository to scan. Needs to have the structure "<owner>/<repositioryName>", like 'Azure/bicep-registry-modules/'
 
@@ -38,7 +40,7 @@ function Set-AvmGitHubPrLabels {
     $fallbackTeam = 'Azure/azure-verified-modules-module-owners'
 
     $sanitizedPrUrl = $PrUrl.Replace('api.', '').Replace('repos/', '').Replace('pulls/', 'pull/')
-    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests,reviews' --repo $Repo | ConvertFrom-Json -Depth 100
+    $pr = gh pr view $sanitizedPrUrl --json 'author,number,url,isDraft,reviewRequests,reviews,headRefOid,headRepository,headRepositoryOwner' --repo $Repo | ConvertFrom-Json -Depth 100
     if ($LASTEXITCODE -ne 0 -or $null -eq $pr.number) {
         throw "Unable to retrieve pull request [$sanitizedPrUrl]."
     }
@@ -66,10 +68,18 @@ function Set-AvmGitHubPrLabels {
     }
     $moduleFolderPaths = @($moduleFolderPaths | Sort-Object -Unique)
 
+    $metadataSource = @{}
+    if (-not [string]::IsNullOrWhiteSpace($pr.headRefOid) -and -not [string]::IsNullOrWhiteSpace($pr.headRepository.name)) {
+        $metadataSource = @{
+            SourceRepo = "$($pr.headRepositoryOwner.login)/$($pr.headRepository.name)"
+            SourceRef  = $pr.headRefOid
+        }
+    }
+
     $ownerHandles = @()
     $hasOrphanedModule = $false
     foreach ($moduleFolderPath in $moduleFolderPaths) {
-        $moduleOwners = @(Get-AvmModuleMetadataOwner -ModulePath $moduleFolderPath -RepoRoot $RepoRoot)
+        $moduleOwners = @(Get-AvmModuleMetadataOwner -ModulePath $moduleFolderPath -RepoRoot $RepoRoot @metadataSource)
         if ($moduleOwners.Count -eq 0) {
             Write-Warning "Module [$moduleFolderPath] does not declare any owners. Notifying [$fallbackTeam] instead."
             $hasOrphanedModule = $true

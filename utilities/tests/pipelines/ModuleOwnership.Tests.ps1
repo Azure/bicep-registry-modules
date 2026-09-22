@@ -56,8 +56,13 @@ Describe 'Module ownership automation' {
         function Set-TestModuleMetadata {
             param (
                 [string] $ModulePath = 'avm/res/storage/storage-account',
-                [object[]] $Owners = @('owner-one', 'owner-two')
+                [object[]] $Owners = @('owner-one', 'owner-two'),
+                [switch] $HeadOnly
             )
+            if ($HeadOnly) {
+                $script:headMetadata["$ModulePath/metadata.json"] = @{ owners = $Owners } | ConvertTo-Json -Depth 5
+                return
+            }
             $moduleFolderPath = Join-Path $script:mockRepoRoot ($ModulePath -replace '/', [System.IO.Path]::DirectorySeparatorChar)
             $null = New-Item -Path $moduleFolderPath -ItemType Directory -Force
             @{ owners = $Owners } | ConvertTo-Json -Depth 5 | Set-Content -Path (Join-Path $moduleFolderPath 'metadata.json')
@@ -88,8 +93,12 @@ Describe 'Module ownership automation' {
             isDraft        = $false
             reviewRequests = @(@{ name = 'azure-verified-modules-module-contributors' })
             reviews        = @()
+            headRefOid     = '0f1e2d3c4b5a69788796a5b4c3d2e1f00f1e2d3c'
+            headRepository = @{ name = 'test-repo' }
+            headRepositoryOwner = @{ login = 'contributor-fork' }
         }
         $script:changedFiles = @('avm/res/storage/storage-account/main.bicep')
+        $script:headMetadata = @{}
         Remove-TestModuleMetadata
         Set-TestModuleMetadata
         $script:issues = @([pscustomobject]@{
@@ -145,6 +154,17 @@ Describe 'Module ownership automation' {
             if ($args[0] -eq 'api' -and ($args -match '/pulls/42/files')) {
                 $global:LASTEXITCODE = $script:filesExitCode
                 return $script:changedFiles
+            }
+            if ($args[0] -eq 'api' -and ($args[1] -match '^repos/(.+)/contents/(.+)\?ref=(.+)$')) {
+                $sourceRepo, $metadataPath, $sourceRef = $matches[1], $matches[2], $matches[3]
+                if ($sourceRepo -ne 'contributor-fork/test-repo' -or $sourceRef -ne $script:pr.headRefOid) {
+                    throw "Unexpected metadata source [$sourceRepo@$sourceRef]."
+                }
+                if (-not $script:headMetadata.ContainsKey($metadataPath)) {
+                    $global:LASTEXITCODE = 1
+                    return $null
+                }
+                return $script:headMetadata[$metadataPath]
             }
             if ($args[0] -eq 'pr' -and $args[1] -eq 'edit') {
                 $global:LASTEXITCODE = $script:editExitCode
@@ -446,6 +466,45 @@ Describe 'Module ownership automation' {
             $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
             $edit.Arguments | Should -Contain 'owner-one,owner-two'
             $edit.Arguments | Should -Not -Contain 'Status: Module Orphaned :yellow_circle:'
+        }
+
+        It 'Resolves owners of a module added by the pull request from the head commit' {
+            Remove-TestModuleMetadata
+            $script:changedFiles = @('avm/res/example/new-module/main.bicep')
+            Set-TestModuleMetadata -ModulePath 'avm/res/example/new-module' -Owners @('new-owner') -HeadOnly
+            Invoke-TestReviewerRouting
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Contain 'new-owner'
+            $edit.Arguments | Should -Not -Contain 'Status: Module Orphaned :yellow_circle:'
+        }
+
+        It 'Prefers head metadata over the checked-out base copy' {
+            Set-TestModuleMetadata -Owners @('updated-owner') -HeadOnly
+            Invoke-TestReviewerRouting
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Contain 'updated-owner'
+            $edit.Arguments | Should -Not -Contain 'owner-one,owner-two'
+        }
+
+        It 'Falls back to the checked-out base copy when the head lookup fails' {
+            Invoke-TestReviewerRouting
+            ($script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }).Arguments | Should -Contain 'owner-one,owner-two'
+            ($script:ghCalls | Where-Object { $_.Arguments[0] -eq 'api' -and $_.Arguments[1] -like 'repos/*/contents/*' }).Count | Should -BeGreaterThan 0
+        }
+
+        It 'Reads metadata from the base copy only when the head commit is unknown' {
+            $script:pr.headRefOid = ''
+            Set-TestModuleMetadata -Owners @('head-owner') -HeadOnly
+            Invoke-TestReviewerRouting
+            $edit = $script:ghCalls | Where-Object { $_.Arguments[1] -eq 'edit' }
+            $edit.Arguments | Should -Contain 'owner-one,owner-two'
+            @($script:ghCalls | Where-Object { $_.Arguments[1] -like 'repos/*/contents/*' }).Count | Should -Be 0
+        }
+
+        It 'Never checks out or executes pull request head content' {
+            Invoke-TestReviewerRouting
+            $invokedCommands = ($script:ghCalls.Arguments | ForEach-Object { $_ }) -join ' '
+            $invokedCommands | Should -Not -Match 'checkout|clone|\bfetch\b'
         }
 
         It 'Resolves owners for [<ModulePath>]' -ForEach @(

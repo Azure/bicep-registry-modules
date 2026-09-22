@@ -2,13 +2,17 @@
 name: .Platform - Set AVM GitHub PR owner config
 
 on:
-  pull_request: # Temporarily using `pull_request` while `pull_request_target` usage is under discussion
+  # Runs against the base branch so that pull requests from forks get the write token and app
+  # credentials this workflow needs. The checkout below must never be pointed at the pull request
+  # head, as that would execute untrusted code with those credentials.
+  pull_request_target:
     types: [opened, reopened, ready_for_review, synchronize]
 
 jobs:
   SetAvmGitHubPrLabels:
     name: Set-AvmGitHubPrLabels
     runs-on: ubuntu-latest
+    if: github.repository == 'Azure/bicep-registry-modules'
     permissions:
       pull-requests: write
     steps:
@@ -16,6 +20,7 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: generate-token
         with:
