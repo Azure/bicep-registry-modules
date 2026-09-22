@@ -24,7 +24,7 @@ param keyvaultSubscriptionId string?
 
 @description('Conditional. Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.')
 param keyvaultResourceGroup string?
-module test 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:'
+
 @description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
 param keyVaultName string?
 
