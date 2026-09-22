@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Network Security Perimeter",
   "telemetryIdPrefix": "46d3xbcp.res.network-nwsecurityperimeter",
   "canonicalType": "Microsoft.Network/networkSecurityPerimeters",
-  "owners": ["peterbud"]
+  "owners": []
 }
