@@ -7,7 +7,7 @@ param publicKeySecretName string
 @description('Required. The name of the secret for the private key in the key vault.')
 param privateKeySecretName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 

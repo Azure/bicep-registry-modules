@@ -1,7 +1,7 @@
 metadata name = 'Finops-hub'
 metadata description = 'This module deploys a Finops hub from the Finops toolkit.'
 
-@description('Optional. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
+@description('Required. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
 param hubName string
 
 @description('Optional. Location for all Resources.')

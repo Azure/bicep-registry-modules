@@ -143,7 +143,7 @@ resource blobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@
 }
 
 // Key Vault for registry adapter and storage mount secrets
-resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -188,7 +188,7 @@ resource kvSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@20
 }
 
 // Key Vault secrets for registry adapter values
-resource registryStringSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+resource registryStringSecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: 'registry-string-value'
   properties: {
@@ -196,7 +196,7 @@ resource registryStringSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
   }
 }
 
-resource registryDwordSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+resource registryDwordSecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: 'registry-dword-value'
   properties: {
@@ -205,7 +205,7 @@ resource registryDwordSecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
 }
 
 // Store the storage account connection string for the H: drive AzureFiles mount
-resource storageAccountKeySecret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
+resource storageAccountKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: 'storage-account-key'
   properties: {

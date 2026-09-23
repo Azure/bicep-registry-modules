@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "14741026516635071314"
+      "version": "0.47.16.16243",
+      "templateHash": "8318589209871386297"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n\n**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**\n\n| Date | Description |\n| --- | --- |\n| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n\n**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**\n\n| Date | Description |\n| --- | --- |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n"
@@ -1260,8 +1260,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "3690683927688770257"
+              "version": "0.47.16.16243",
+              "templateHash": "5361658534979019475"
             },
             "name": "Redis Cache Access Policy",
             "description": "This module deploys an access policy for Redis Cache."
@@ -1363,8 +1363,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "11995958719781632587"
+              "version": "0.47.16.16243",
+              "templateHash": "7199290341526827610"
             },
             "name": "Redis Cache Access Policy Assignment",
             "description": "This module deploys an access policy assignment for Redis Cache."
@@ -2148,8 +2148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "3128508046817503738"
+              "version": "0.47.16.16243",
+              "templateHash": "6040993446842135099"
             },
             "name": "Redis Cache Firewall Rules",
             "description": "This module creates a firewall rule for Redis Cache."
@@ -2251,8 +2251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "16394352227331017284"
+              "version": "0.47.16.16243",
+              "templateHash": "3477412789054511421"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2377,8 +2377,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "14107140194501193039"
+              "version": "0.47.16.16243",
+              "templateHash": "15014180728870331637"
             }
           },
           "definitions": {
@@ -2456,7 +2456,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -2465,7 +2465,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2025-05-01",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"

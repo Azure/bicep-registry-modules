@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "15302670612863973385"
+      "version": "0.47.16.16243",
+      "templateHash": "14649929880309905643"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -776,8 +776,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "4560873164126119917"
+              "version": "0.47.16.16243",
+              "templateHash": "17515602153742881319"
             }
           },
           "definitions": {
@@ -3734,8 +3734,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "13872317876523441704"
+              "version": "0.47.16.16243",
+              "templateHash": "2692735394080255994"
             }
           },
           "definitions": {
@@ -3987,7 +3987,7 @@
               "condition": "[not(empty(parameters('existingResourceId')))]",
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2024-11-01",
+              "apiVersion": "2026-02-01",
               "subscriptionId": "[variables('existingSubscriptionId')]",
               "resourceGroup": "[variables('existingResourceGroupName')]",
               "name": "[variables('existingName')]"
@@ -7526,8 +7526,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "4865480242401465222"
+              "version": "0.47.16.16243",
+              "templateHash": "5036941218626531688"
             }
           },
           "definitions": {
@@ -9973,8 +9973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "3139835544848328705"
+              "version": "0.47.16.16243",
+              "templateHash": "5453447899308568482"
             }
           },
           "definitions": {
@@ -18487,8 +18487,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "9167495511349696094"
+              "version": "0.47.16.16243",
+              "templateHash": "11639296185979376043"
             }
           },
           "definitions": {
@@ -24800,8 +24800,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "17771797741022052749"
+              "version": "0.47.16.16243",
+              "templateHash": "14769608498987839423"
             },
             "name": "AI Foundry Project",
             "description": "Creates an AI Foundry project and any associated Azure service connections."
@@ -25167,8 +25167,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "15379001796842702797"
+                      "version": "0.47.16.16243",
+                      "templateHash": "17200224943645191747"
                     }
                   },
                   "parameters": {
@@ -25230,8 +25230,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "1306363036412563357"
+                      "version": "0.47.16.16243",
+                      "templateHash": "13065792564353351624"
                     }
                   },
                   "parameters": {
@@ -25293,8 +25293,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "14387581484372336820"
+                      "version": "0.47.16.16243",
+                      "templateHash": "17642323173492771442"
                     }
                   },
                   "parameters": {
@@ -25370,8 +25370,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "8745791481729924045"
+                      "version": "0.47.16.16243",
+                      "templateHash": "6980253785932858738"
                     }
                   },
                   "parameters": {
@@ -25457,8 +25457,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.42.1.51946",
-                      "templateHash": "4078163703480267510"
+                      "version": "0.47.16.16243",
+                      "templateHash": "7502832477035962053"
                     }
                   },
                   "parameters": {

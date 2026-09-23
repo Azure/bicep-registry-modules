@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "7594701555428625855"
+      "version": "0.47.16.16243",
+      "templateHash": "16655751431308899203"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -1089,8 +1089,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14344572073250782696"
+              "version": "0.47.16.16243",
+              "templateHash": "11913795046786283149"
             }
           },
           "parameters": {
@@ -1114,21 +1114,21 @@
               "metadata": {
                 "description": "The URI of the Key Vault containing the Customer-Managed Key."
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2025-05-01').vaultUri]"
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2026-02-01').vaultUri]"
             },
             "keyUriWithVersion": {
               "type": "string",
               "metadata": {
                 "description": "The URI of the Customer-Managed Key with version."
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion]"
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2026-02-01').keyUriWithVersion]"
             },
             "keyVersion": {
               "type": "string",
               "metadata": {
                 "description": "The version of the Customer-Managed Key."
               },
-              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion, '/'))]"
+              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2026-02-01').keyUriWithVersion, '/'))]"
             }
           }
         }
@@ -1160,8 +1160,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14344572073250782696"
+              "version": "0.47.16.16243",
+              "templateHash": "11913795046786283149"
             }
           },
           "parameters": {
@@ -1185,21 +1185,21 @@
               "metadata": {
                 "description": "The URI of the Key Vault containing the Customer-Managed Key."
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2025-05-01').vaultUri]"
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/'))), '2026-02-01').vaultUri]"
             },
             "keyUriWithVersion": {
               "type": "string",
               "metadata": {
                 "description": "The URI of the Customer-Managed Key with version."
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion]"
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2026-02-01').keyUriWithVersion]"
             },
             "keyVersion": {
               "type": "string",
               "metadata": {
                 "description": "The version of the Customer-Managed Key."
               },
-              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2025-05-01').keyUriWithVersion, '/'))]"
+              "value": "[last(split(reference(resourceId('Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('keyName')), '2026-02-01').keyUriWithVersion, '/'))]"
             }
           }
         }

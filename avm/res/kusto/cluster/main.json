@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "9695425525317976645"
+      "version": "0.47.16.16243",
+      "templateHash": "6476446114284372857"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -1250,7 +1250,7 @@
       "condition": "[and(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKey'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1279,7 +1279,7 @@
       "condition": "[not(empty(parameters('customerManagedKey')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2025-05-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1442,8 +1442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "5825282149646664938"
+              "version": "0.47.16.16243",
+              "templateHash": "7245375870217388134"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -2246,8 +2246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "2576525731501526611"
+              "version": "0.47.16.16243",
+              "templateHash": "9876887275826912653"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database."
@@ -2472,8 +2472,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.44.1.10279",
-                      "templateHash": "1004584587980461098"
+                      "version": "0.47.16.16243",
+                      "templateHash": "8278841755061912194"
                     },
                     "name": "Kusto Cluster Database Principal Assignments",
                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."

@@ -52,7 +52,11 @@ var formattedAccessPolicies = [
 // Resources
 //==============================================================================
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.5.1' = {
+resource storageRef 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
+  name: storageAccountName
+}
+
+module keyVault 'br/public:avm/res/key-vault/vault:0.14.2' = {
   name: '${uniqueString(deployment().name, location)}-keyvault'
   params: {
     name: keyVaultName
@@ -68,21 +72,17 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.5.1' = {
     createMode: 'default'
     sku: startsWith(location, 'china') ? 'standard' : sku
     accessPolicies: formattedAccessPolicies
-    secrets: {
-      secureList: [
-        {
-          name: storageRef.name
-          value: storageRef.listKeys().keys[0].value
-          attributesExp: 1702648632
-          attributesNbf: 10000
+    secrets: [
+      {
+        name: storageRef.name
+        value: storageRef.listKeys().keys[0].value
+        attributes: {
+          exp: 1702648632
+          nbf: 10000
         }
-      ]
-    }
+      }
+    ]
   }
-}
-
-resource storageRef 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
-  name: storageAccountName
 }
 
 //==============================================================================

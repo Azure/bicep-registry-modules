@@ -40,7 +40,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = {
   }
 }
 
-resource main 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource main 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: requiredParam
   location: aVariable
   properties: {

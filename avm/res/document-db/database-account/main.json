@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "9940150185041213455"
+      "version": "0.47.16.16243",
+      "templateHash": "12874351003654225137"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -2120,7 +2120,7 @@
       "condition": "[and(and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))), and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[2]]",
       "resourceGroup": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[4]]",
       "name": "[format('{0}/{1}', last(split(parameters('customerManagedKey').keyVaultResourceId, '/')), parameters('customerManagedKey').keyName)]"
@@ -2149,7 +2149,7 @@
       "condition": "[and(not(empty(parameters('customerManagedKey'))), not(variables('isHSMManagedCMK')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2026-02-01",
       "subscriptionId": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[2]]",
       "resourceGroup": "[split(parameters('customerManagedKey').keyVaultResourceId, '/')[4]]",
       "name": "[last(split(parameters('customerManagedKey').keyVaultResourceId, '/'))]"
@@ -2284,8 +2284,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "13132458688459691925"
+              "version": "0.47.16.16243",
+              "templateHash": "2421384590572724586"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2612,8 +2612,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "536282762867917042"
+                      "version": "0.47.16.16243",
+                      "templateHash": "4939967367718434733"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2937,8 +2937,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "867120861778426024"
+              "version": "0.47.16.16243",
+              "templateHash": "8725283262313549949"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -3114,8 +3114,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "8817254137811788105"
+                      "version": "0.47.16.16243",
+                      "templateHash": "12331525433030618340"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3313,8 +3313,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "8817254137811788105"
+              "version": "0.47.16.16243",
+              "templateHash": "12331525433030618340"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3483,8 +3483,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "1840262284581142474"
+              "version": "0.47.16.16243",
+              "templateHash": "11231478864054651265"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -3673,8 +3673,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "11712498461322399240"
+                      "version": "0.47.16.16243",
+                      "templateHash": "1911969485855786022"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3857,8 +3857,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "11712498461322399240"
+              "version": "0.47.16.16243",
+              "templateHash": "1911969485855786022"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -4016,8 +4016,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "14083682077354645612"
+              "version": "0.47.16.16243",
+              "templateHash": "14491749618390333218"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -4209,8 +4209,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "9337233891881353251"
+                      "version": "0.47.16.16243",
+                      "templateHash": "16017610938939847848"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -4404,8 +4404,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "2227205006573569893"
+              "version": "0.47.16.16243",
+              "templateHash": "16121716946905427012"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -4597,8 +4597,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "10789722211756623291"
+                      "version": "0.47.16.16243",
+                      "templateHash": "63454063002275347"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -4808,8 +4808,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "6947738326636712431"
+              "version": "0.47.16.16243",
+              "templateHash": "8155216726376263581"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -4977,8 +4977,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "8090577224272530137"
+              "version": "0.47.16.16243",
+              "templateHash": "13779281338240699088"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -5254,8 +5254,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "16311742136567641063"
+                      "version": "0.47.16.16243",
+                      "templateHash": "10541675693431967511"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -5461,8 +5461,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "8118529642876441843"
+                      "version": "0.47.16.16243",
+                      "templateHash": "13142909414143891351"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."

@@ -109,10 +109,10 @@ module project 'br/public:avm/res/machine-learning-services/workspace:0.7.0' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 
-  resource keyVaultAccess 'accessPolicies@2023-07-01' = {
+  resource keyVaultAccess 'accessPolicies@2026-02-01' = {
     name: 'add'
     properties: {
       accessPolicies: [

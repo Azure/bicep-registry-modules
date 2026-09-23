@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/cluster/CHANGELOG.md).
 
+## 0.5.1
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` API versions from `2021-06-01-preview` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.5.0
 
 ### Changes

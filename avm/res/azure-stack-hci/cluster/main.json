@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "6955271080612914449"
+      "version": "0.47.16.16243",
+      "templateHash": "10213537158765174321"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1308,8 +1308,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "10924270425690537805"
+              "version": "0.47.16.16243",
+              "templateHash": "1194120024064837290"
             }
           },
           "parameters": {
@@ -1478,7 +1478,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "KeyVaultSecretsUserPermissions": {
@@ -1499,7 +1499,7 @@
             },
             "azureStackLCMUserCredential": {
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-AzureStackLCMUserCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('azureStackLCMUserCredentialContentType')]",
@@ -1512,7 +1512,7 @@
             },
             "localAdminCredential": {
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-LocalAdminCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('localAdminCredentialContentType')]",
@@ -1525,7 +1525,7 @@
             },
             "witnessStorageKey": {
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
@@ -1539,7 +1539,7 @@
             "defaultARBApplication": {
               "condition": "[and(not(empty(parameters('servicePrincipalId'))), not(empty(parameters('servicePrincipalSecret'))))]",
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-DefaultARBApplication-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('defaultARBApplicationContentType')]",
@@ -1556,7 +1556,7 @@
                 "count": "[length(parameters('partnerCredentialList'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2021-06-01-preview",
+              "apiVersion": "2026-02-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-{1}-{2}', parameters('clusterName'), parameters('partnerCredentialList')[copyIndex()].secretName, parameters('cloudId')))]",
               "properties": {
                 "value": "[parameters('partnerCredentialList')[copyIndex()].secretValue]",

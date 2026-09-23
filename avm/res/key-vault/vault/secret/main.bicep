@@ -10,7 +10,7 @@ param keyVaultName string
 param name string
 
 @description('Optional. Resource tags.')
-param tags resourceInput<'Microsoft.KeyVault/vaults/secrets@2024-11-01'>.tags?
+param tags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true

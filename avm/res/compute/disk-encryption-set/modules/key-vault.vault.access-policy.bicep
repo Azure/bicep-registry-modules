@@ -16,11 +16,11 @@ var formattedAccessPolicies = [
   }
 ]
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
-resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2025-05-01' = {
+resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2026-02-01' = {
   name: 'add'
   parent: keyVault
   properties: {

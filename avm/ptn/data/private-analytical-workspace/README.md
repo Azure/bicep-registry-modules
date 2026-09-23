@@ -26,7 +26,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/locks` | 2020-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_locks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks)</li></ul> |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.Databricks/accessConnectors` | 2022-10-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.databricks_accessconnectors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2022-10-01-preview/accessConnectors)</li></ul> |
+| `Microsoft.Databricks/accessConnectors` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.databricks_accessconnectors.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2024-05-01/accessConnectors)</li></ul> |
 | `Microsoft.Databricks/workspaces` | 2024-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.databricks_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Databricks/2024-05-01/workspaces)</li></ul> |
 | `Microsoft.Insights/diagnosticSettings` | 2021-05-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.insights_diagnosticsettings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings)</li></ul> |
 | `Microsoft.KeyVault/vaults` | 2022-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.keyvault_vaults.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults)</li></ul> |
@@ -44,20 +44,24 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | `Microsoft.Network/privateDnsZones/SRV` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_srv.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV)</li></ul> |
 | `Microsoft.Network/privateDnsZones/TXT` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_txt.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT)</li></ul> |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2020-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | 2024-06-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privatednszones_virtualnetworklinks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks)</li></ul> |
 | `Microsoft.Network/privateEndpoints` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints)</li></ul> |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2024-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-10-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | 2023-11-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_privateendpoints_privatednszonegroups.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups)</li></ul> |
-| `Microsoft.Network/virtualNetworks` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks)</li></ul> |
-| `Microsoft.Network/virtualNetworks/subnets` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets)</li></ul> |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/savedSearches)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2020-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs)</li></ul> |
-| `Microsoft.OperationalInsights/workspaces/tables` | 2022-10-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables)</li></ul> |
+| `Microsoft.Network/virtualNetworks` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks)</li></ul> |
+| `Microsoft.Network/virtualNetworks/subnets` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_subnets.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/subnets)</li></ul> |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | 2025-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.network_virtualnetworks_virtualnetworkpeerings.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2025-05-01/virtualNetworks/virtualNetworkPeerings)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_dataexports.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataExports)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_datasources.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/dataSources)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedservices.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedServices)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_linkedstorageaccounts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/linkedStorageAccounts)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_savedsearches.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/savedSearches)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_storageinsightconfigs.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/storageInsightConfigs)</li></ul> |
+| `Microsoft.OperationalInsights/workspaces/tables` | 2025-07-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationalinsights_workspaces_tables.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2025-07-01/workspaces/tables)</li></ul> |
 | `Microsoft.OperationsManagement/solutions` | 2015-11-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.operationsmanagement_solutions.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions)</li></ul> |
+| `Microsoft.SecurityInsights/onboardingStates` | 2025-09-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.securityinsights_onboardingstates.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-09-01/onboardingStates)</li></ul> |
 
 ## Usage examples
 
@@ -182,7 +186,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         softDeleteRetentionInDays: 7
       }
       logAnalyticsWorkspace: {
-        dailyQuotaGb: 1
+        dailyQuotaGb: '1'
         dataRetention: 35
       }
       networkAcls: {
@@ -228,7 +232,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
           "softDeleteRetentionInDays": 7
         },
         "logAnalyticsWorkspace": {
-          "dailyQuotaGb": 1,
+          "dailyQuotaGb": "1",
           "dataRetention": 35
         },
         "networkAcls": {
@@ -276,7 +280,7 @@ param advancedOptions = {
     softDeleteRetentionInDays: 7
   }
   logAnalyticsWorkspace: {
-    dailyQuotaGb: 1
+    dailyQuotaGb: '1'
     dataRetention: 35
   }
   networkAcls: {
@@ -1265,8 +1269,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
         softDeleteRetentionInDays: 90
       }
       logAnalyticsWorkspace: {
-        dailyQuotaGb: 1
+        dailyQuotaGb: '1'
         dataRetention: 35
+        replication: {
+          enabled: true
+          location: 'westeurope'
+        }
       }
     }
     enableDatabricks: true
@@ -1308,8 +1316,12 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
           "softDeleteRetentionInDays": 90
         },
         "logAnalyticsWorkspace": {
-          "dailyQuotaGb": 1,
-          "dataRetention": 35
+          "dailyQuotaGb": "1",
+          "dataRetention": 35,
+          "replication": {
+            "enabled": true,
+            "location": "westeurope"
+          }
         }
       }
     },
@@ -1355,8 +1367,12 @@ param advancedOptions = {
     softDeleteRetentionInDays: 90
   }
   logAnalyticsWorkspace: {
-    dailyQuotaGb: 1
+    dailyQuotaGb: '1'
     dataRetention: 35
+    replication: {
+      enabled: true
+      location: 'westeurope'
+    }
   }
 }
 param enableDatabricks = true
@@ -1524,16 +1540,16 @@ This parameter allows you to specify additional settings for Azure Log Analytics
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | int | The workspace daily quota for ingestion. The default value is: '-1' (not limited). |
+| [`dailyQuotaGb`](#parameter-advancedoptionsloganalyticsworkspacedailyquotagb) | string | The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit). |
 | [`dataRetention`](#parameter-advancedoptionsloganalyticsworkspacedataretention) | int | Number of days data will be retained for. The default value is: '365'. |
+| [`replication`](#parameter-advancedoptionsloganalyticsworkspacereplication) | object | The workspace replication properties. |
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dailyQuotaGb`
 
-The workspace daily quota for ingestion. The default value is: '-1' (not limited).
+The workspace daily quota for ingestion in GB. Supports decimal values. Example: '0.5' for 0.5 GB, '2' for 2 GB. Default is '-1' (no limit).
 
 - Required: No
-- Type: int
-- MinValue: -1
+- Type: string
 
 ### Parameter: `advancedOptions.logAnalyticsWorkspace.dataRetention`
 
@@ -1543,6 +1559,39 @@ Number of days data will be retained for. The default value is: '365'.
 - Type: int
 - MinValue: 0
 - MaxValue: 730
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication`
+
+The workspace replication properties.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-advancedoptionsloganalyticsworkspacereplicationlocation) | string | The location to which the workspace is replicated. Required if replication is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-advancedoptionsloganalyticsworkspacereplicationenabled) | bool | Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location. |
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication.location`
+
+The location to which the workspace is replicated. Required if replication is enabled.
+
+- Required: No
+- Type: string
+
+### Parameter: `advancedOptions.logAnalyticsWorkspace.replication.enabled`
+
+Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `advancedOptions.networkAcls`
 
@@ -1738,14 +1787,15 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/databricks/access-connector:0.3.0` | Remote reference |
-| `br/public:avm/res/databricks/workspace:0.8.5` | Remote reference |
+| `br/public:avm/res/databricks/access-connector:0.4.3` | Remote reference |
+| `br/public:avm/res/databricks/workspace:0.12.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.9.0` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.5.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.8.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.10.2` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.16.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes

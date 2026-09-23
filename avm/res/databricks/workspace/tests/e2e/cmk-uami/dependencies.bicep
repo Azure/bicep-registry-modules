@@ -7,7 +7,7 @@ param keyVaultName string
 @description('Required. The object ID of the Databricks Enterprise Application. Required for Customer-Managed-Keys.')
 param databricksApplicationObjectId string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -25,13 +25,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2025-05-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'
     }
   }
-  resource keyDisk 'keys@2025-05-01' = {
+  resource keyDisk 'keys@2026-02-01' = {
     name: 'keyEncryptionKeyDisk'
     properties: {
       kty: 'RSA'
