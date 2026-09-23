@@ -34,9 +34,6 @@ BeforeDiscovery {
     $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
     $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
     $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
-    $script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
-    $script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
-    $script:telemetryUtlCsvLink = 'https://aka.ms/avm/index/bicep/utl/csv'
     $script:moduleFolderPaths = $moduleFolderPaths
 
     # Shared exception messages
@@ -1358,9 +1355,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 param(
                     [string] $templateFilePath,
-                    [string] $moduleType,
-                    [hashtable] $templateFileContent,
-                    [bool] $isMultiScopeChildModule
+                    [hashtable] $templateFileContent
                 )
 
                 # With the introduction of user-defined types, the way resources are configured in the schema slightly changed. We have to account for that.
@@ -1377,45 +1372,10 @@ Describe 'Module tests' -Tag 'Module' {
                     return
                 }
 
-                # Use correct telemetry link based on file path
-                switch ($moduleType) {
-                    'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                    'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                    'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                    default {}
-                }
-
-                # Fetch CSV
-                # =========
-                try {
-                    $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-                } catch {
-                    $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                    Write-Error $errorMessage
-                    throw $errorMessage
-                }
-                $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-                # Get correct row item & expected identifier
-                # ==========================================
-                # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
-                $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeChildModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
-                $relevantCSVRow = $csvData | Where-Object {
-                    $_.ModuleName -eq $moduleName
-                }
-
-                if (-not $relevantCSVRow) {
-                    $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
-                    Write-Error $errorMessage
-                    throw $errorMessage
-                }
-                $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
-
-                # Collect resource & compare
-                # ==========================
-
-                $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
-                $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+                $metadataPath = Join-Path (Split-Path $templateFilePath -Parent) 'metadata.json'
+                $metadata = Get-Content -LiteralPath $metadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+                $metadata.telemetryIdPrefix | Should -Not -BeNullOrEmpty -Because "published module [$templateFilePath] must have a telemetry ID prefix in metadata.json."
+                $telemetryDeployment.name | Should -Match ([regex]::Escape($metadata.telemetryIdPrefix))
             }
 
             It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
