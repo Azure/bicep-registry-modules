@@ -3,7 +3,9 @@
   "moduleDisplayName": "Availability Set",
   "moduleDescription": "AVM Resource Module for Availability Set",
   "telemetryIdPrefix": "46d3xbcp.res.compute-availabilityset",
-  "alternativeNames": ["AS"],
+  "alternativeNames": [
+    "AS"
+  ],
   "canonicalType": "Microsoft.Compute/availabilitySets",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

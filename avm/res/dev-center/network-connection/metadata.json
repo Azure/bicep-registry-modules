@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Dev Center Network Connection",
   "telemetryIdPrefix": "46d3xbcp.res.devcenter-networkconnection",
   "canonicalType": "Microsoft.DevCenter/networkConnections",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }
