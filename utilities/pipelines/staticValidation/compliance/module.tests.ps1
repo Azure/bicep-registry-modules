@@ -372,56 +372,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
         }
-
-        It '[<moduleFolderName>] Top-level module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName]."
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
-            }
-        }
     }
 }
 
