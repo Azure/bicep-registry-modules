@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Proximity Placement Group",
   "telemetryIdPrefix": "46d3xbcp.res.compute-proximityplacementgroup",
   "canonicalType": "Microsoft.Compute/proximityPlacementGroups",
-  "owners": ["jeetgarg"]
+  "owners": []
 }

@@ -1,6 +1,6 @@
 name: ".Platform - Check Module Metadata"
 
-# Fast, read-only PR gate: validates every affected AVM module's `metadata.json` with the public
+# Fast, read-only PR gate: validates metadata.json without compiling Bicep, using the public
 # Test-AvmModuleMetadata cmdlet (Avm.Authoring, latest from PSGallery). Runs independently of the
 # per-module deployment/PSRule workflows so metadata-only changes (which are excluded from those
 # workflows' triggers) are still checked automatically on every PR, including from forks.
@@ -80,7 +80,7 @@ jobs:
           Write-Output '::group::Run metadata.json validation'
           $pesterConfiguration = @{
             Run    = @{
-              Container = New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'module.tests.ps1') -Data @{
+              Container = New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'metadata.tests.ps1') -Data @{
                 moduleFolderPaths = $moduleFolderPaths
                 RepoRootPath      = $env:GITHUB_WORKSPACE
               }
@@ -98,14 +98,15 @@ jobs:
           Write-Output '::endgroup::'
 
           Write-Output ('### Module metadata.json validation{0}{0}' -f [Environment]::NewLine) >> $env:GITHUB_STEP_SUMMARY
+          Write-Output ('- Result: {0}' -f $testResults.Result) >> $env:GITHUB_STEP_SUMMARY
           Write-Output ('- Modules checked: {0}' -f $modulePaths.Count) >> $env:GITHUB_STEP_SUMMARY
           Write-Output ('- Passed: {0}' -f $testResults.PassedCount) >> $env:GITHUB_STEP_SUMMARY
           Write-Output ('- Failed: {0}' -f $testResults.FailedCount) >> $env:GITHUB_STEP_SUMMARY
 
-          if ($testResults.FailedCount -gt 0) {
+          if ($testResults.Result -ne 'Passed') {
             Write-Output '' >> $env:GITHUB_STEP_SUMMARY
             Write-Output '#### Failed checks' >> $env:GITHUB_STEP_SUMMARY
             $testResults.Failed | ForEach-Object { Write-Output "- $_" >> $env:GITHUB_STEP_SUMMARY }
-            Write-Error "$($testResults.FailedCount) module(s) have an invalid or missing metadata.json. See the job summary for details."
+            Write-Error 'Module metadata.json validation did not pass. See the job summary and Pester output for details.'
             exit 1
           }

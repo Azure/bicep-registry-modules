@@ -3,7 +3,11 @@
   "moduleDisplayName": "Azure AI Services (Cognitive Services)",
   "moduleDescription": "AVM Resource Module for Azure AI Services (Cognitive Services)",
   "telemetryIdPrefix": "46d3xbcp.res.cognitiveservices-account",
-  "alternativeNames": ["AI Foundry"],
+  "alternativeNames": [
+    "AI Foundry"
+  ],
   "canonicalType": "Microsoft.CognitiveServices/accounts",
-  "owners": ["mswantek68", "chanakanissanka"]
+  "owners": [
+    "chanakanissanka"
+  ]
 }

@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Dev Center Project",
   "telemetryIdPrefix": "46d3xbcp.res.devcenter-project",
   "canonicalType": "Microsoft.DevCenter/projects",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

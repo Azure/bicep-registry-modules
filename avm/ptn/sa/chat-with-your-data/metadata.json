@@ -3,7 +3,9 @@
   "moduleDisplayName": "SA - Chat with your data",
   "moduleDescription": "AVM Pattern Module for SA - Chat with your data",
   "telemetryIdPrefix": "46d3xbcp.ptn.sa-chatwithyourdata",
-  "alternativeNames": ["Solution Accelerator - Chat with your data (CWYD)"],
+  "alternativeNames": [
+    "Solution Accelerator - Chat with your data (CWYD)"
+  ],
   "canonicalType": "sa/chat-with-your-data",
-  "owners": ["aniaroramsft", "alguadam"]
+  "owners": []
 }
