@@ -72,6 +72,7 @@ module testDeployment '../../../main.bicep' = [
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
+        SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions
       }
     }
   }

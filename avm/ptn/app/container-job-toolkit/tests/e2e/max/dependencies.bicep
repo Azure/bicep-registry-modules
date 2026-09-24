@@ -10,7 +10,7 @@ param appInsightsName string
 @description('Required. The name of the User Assigned Identity.')
 param userIdentityName string
 
-resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource law 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: lawName
   location: location
 }

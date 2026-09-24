@@ -4,7 +4,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the Log Analytics Workspace.')
 param lawName string
 
-resource law 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource law 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
   name: lawName
   location: location
 }

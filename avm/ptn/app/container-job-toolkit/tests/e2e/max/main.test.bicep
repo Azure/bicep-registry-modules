@@ -36,7 +36,7 @@ module dependencies './dependencies.bicep' = {
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: location
 }
@@ -122,6 +122,7 @@ module testDeployment '../../../main.bicep' = [
       deployDnsZoneKeyVault: false
       tags: {
         environment: 'test'
+        SecurityControl: 'Ignore' // ignore security policies imposed on testing subscriptions.
       }
       lock: { kind: 'None', name: 'No lock for testing' }
     }
