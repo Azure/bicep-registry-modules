@@ -99,6 +99,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-10-01' = {
         }
       }
       {
+        name: 'podSubnet'
+        properties: {
+          addressPrefix: '10.0.32.0/19'
+        }
+      }
+      {
         name: 'appGatewaySubnet'
         properties: {
           addressPrefix: '10.0.16.0/24'
@@ -359,6 +365,9 @@ output publicIPAKSResourceId string = publicIPAKS.id
 
 @description('The resource ID of the API Server VNet Integration subnet.')
 output apiServerSubnetResourceId string = '${virtualNetwork.id}/subnets/apiServerSubnet'
+
+@description('The resource ID of the pod subnet.')
+output podSubnetResourceId string = '${virtualNetwork.id}/subnets/podSubnet'
 
 @description('The Public Key of the created SSH Key.')
 output SSHKeyPublicKey string = sshKey.properties.publicKey

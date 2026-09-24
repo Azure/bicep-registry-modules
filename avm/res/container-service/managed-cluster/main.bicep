@@ -150,6 +150,9 @@ param dnsZoneResourceId string?
 @description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
 param defaultIngressControllerType resourceInput<'Microsoft.ContainerService/managedClusters@2025-10-01'>.properties.ingressProfile.webAppRouting.nginx.defaultIngressControllerType?
 
+@description('Optional. Gateway API profile for the managed cluster.')
+param gatewayAPI resourceInput<'Microsoft.ContainerService/managedClusters@2026-03-01'>.properties.ingressProfile.gatewayAPI?
+
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
 
@@ -379,6 +382,11 @@ var formattedRoleAssignments = [
   })
 ]
 
+var usesPodSubnet = contains(
+  map(concat(primaryAgentPoolProfiles, agentPools ?? []), profile => !empty(profile.?podSubnetResourceId)),
+  true
+)
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -406,7 +414,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2026-03-01' = {
   name: name
   location: location
   tags: tags
@@ -492,6 +500,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       }
     }
     ingressProfile: {
+      gatewayAPI: gatewayAPI
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
         dnsZoneResourceIds: !empty(dnsZoneResourceId)
@@ -581,7 +590,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2025-10-01' 
       staticEgressGatewayProfile: staticEgressGatewayProfile
       networkDataplane: networkDataplane
       networkPlugin: networkPlugin
-      networkPluginMode: networkDataplane == 'cilium' ? 'overlay' : networkPluginMode
+      networkPluginMode: usesPodSubnet ? null : (networkDataplane == 'cilium' ? 'overlay' : networkPluginMode)
       networkPolicy: networkDataplane == 'cilium' ? 'cilium' : networkPolicy
       podCidr: podCidr
       serviceCidr: serviceCidr
