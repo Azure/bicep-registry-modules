@@ -211,7 +211,7 @@ var clusterWitnessStorageAccountNameVar = witnessType == 'No Witness' ? '' : clu
 var azureServiceEndpointVar = witnessType == 'No Witness' ? '' : environment().suffixes.storage
 
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2025-10-01' existing = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2026-04-30' existing = {
   name: clusterName
 }
 
@@ -223,7 +223,7 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2025-10-01' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2026-04-30' = {
   name: name
   parent: cluster
   properties: {
@@ -284,7 +284,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
               for (hciNode, index) in arcNodeResourceIds: {
                 name: !empty(physicalNodesSettings)
                   ? physicalNodesSettings[index].name
-                  : reference(hciNode, '2022-12-27', 'Full').properties.displayName
+                  : reference(hciNode, '2026-07-15', 'Full').properties.displayName
                 // Getting the IP from the first NIC of the node with a default gateway. Only the first management pNIC should have a gateway defined.
                 // This reference call requires that the 'DeviceManagementExtension' extension be fully initialized on each node, which creates the
                 // edgeDevices sub-resource queried below, containing the IP configuration. View the edgedevice to troubleshoot by appending
@@ -292,7 +292,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                 ipv4Address: !empty(physicalNodesSettings)
                   ? physicalNodesSettings[index].ipv4Address
                   : (filter(
-                      reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails,
+                      reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2026-04-30', 'Full').properties.deviceConfiguration.nicDetails,
                       nic => nic.?defaultGateway != null
                     ))[0].ip4Address
               }
