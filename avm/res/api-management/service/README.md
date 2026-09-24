@@ -3674,7 +3674,7 @@ param virtualNetworkType = 'None'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
+| [`skuCapacity`](#parameter-skucapacity) | int | The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. Note: the `Basic` SKU supports a maximum capacity of `2`, so the default of `3` is automatically clamped to `2` for `Basic`. For the range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. VNet injection (External/Internal) is supported with Developer, Premium, and PremiumV2 SKUs only. Required if `subnetResourceId` is used and must be set to `External` or `Internal`. |
 
 **Optional parameters**
@@ -3743,7 +3743,7 @@ The name of the owner of the service.
 
 ### Parameter: `skuCapacity`
 
-The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.
+The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. Note: the `Basic` SKU supports a maximum capacity of `2`, so the default of `3` is automatically clamped to `2` for `Basic`. For the range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.
 
 - Required: No
 - Type: int
