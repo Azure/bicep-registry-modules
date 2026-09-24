@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "680670246491842326"
+      "version": "0.47.16.16243",
+      "templateHash": "201257878849506851"
     },
     "name": "Registration Definitions",
     "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.\nThis type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.\nThe templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant."
@@ -108,12 +108,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.managedservices-registrationdef",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.managedservices-registrationdef.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('metadataLocation')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('metadataLocation')), 0, 4))]",
       "location": "[parameters('metadataLocation')]",
       "properties": {
         "mode": "Incremental",
@@ -178,8 +182,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "3761057832109903613"
+              "version": "0.47.16.16243",
+              "templateHash": "554511177086981283"
             },
             "name": "Registration Assignment",
             "description": "Create a registration assignment.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "16084887594944242945"
+      "version": "0.47.16.16243",
+      "templateHash": "15647476317808448365"
     },
     "name": "Dev Center Project Pool",
     "description": "This module deploys a Dev Center Project Pool."
@@ -282,14 +282,16 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false
+    "$fxv#0": "46d3xbcp.res.devcenter-project-pool",
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.devcenter-project-pool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -369,8 +371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "5292193150038945059"
+              "version": "0.47.16.16243",
+              "templateHash": "2887270605542678921"
             },
             "name": "Dev Center Project Pool Schedule",
             "description": "This module deploys a Dev Center Project Pool Schedule."
@@ -432,6 +434,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.devcenter-project-poolschedule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "project::pool": {
               "existing": true,
@@ -443,7 +449,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.devcenter-project-poolschedule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "1616731095060977926"
+      "version": "0.47.16.16243",
+      "templateHash": "14659031722703471449"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -126,6 +126,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.dataprot-backupvault-backupinst",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "backupVault::backupPolicy": {
       "existing": true,
@@ -137,7 +141,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.dataprot-backupvault-backupinst.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -216,8 +220,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "17957143557599300715"
+              "version": "0.47.16.16243",
+              "templateHash": "13758461221288698628"
             }
           },
           "parameters": {

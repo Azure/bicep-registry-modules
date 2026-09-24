@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "10004757968446333684"
+      "version": "0.47.16.16243",
+      "templateHash": "11894141367396366126"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -829,6 +829,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.documentdb-mongocluster",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -837,14 +838,15 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "firewallRules": "[union(map(coalesce(tryGet(parameters('networkAcls'), 'customRules'), createArray()), lambda('customRule', createObject('name', coalesce(tryGet(lambdaVariables('customRule'), 'firewallRuleName'), format('allow-{0}-to-{1}', replace(lambdaVariables('customRule').startIpAddress, '.', '_'), replace(lambdaVariables('customRule').endIpAddress, '.', '_'))), 'startIpAddress', lambdaVariables('customRule').startIpAddress, 'endIpAddress', lambdaVariables('customRule').endIpAddress))), if(coalesce(tryGet(parameters('networkAcls'), 'allowAllIPs'), false()), createArray(createObject('name', 'allow-all-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '255.255.255.255')), createArray()), if(coalesce(tryGet(parameters('networkAcls'), 'allowAzureIPs'), false()), createArray(createObject('name', 'allow-all-azure-internal-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '0.0.0.0')), createArray()))]"
+    "firewallRules": "[union(map(coalesce(tryGet(parameters('networkAcls'), 'customRules'), createArray()), lambda('customRule', createObject('name', coalesce(tryGet(lambdaVariables('customRule'), 'firewallRuleName'), format('allow-{0}-to-{1}', replace(lambdaVariables('customRule').startIpAddress, '.', '_'), replace(lambdaVariables('customRule').endIpAddress, '.', '_'))), 'startIpAddress', lambdaVariables('customRule').startIpAddress, 'endIpAddress', lambdaVariables('customRule').endIpAddress))), if(coalesce(tryGet(parameters('networkAcls'), 'allowAllIPs'), false()), createArray(createObject('name', 'allow-all-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '255.255.255.255')), createArray()), if(coalesce(tryGet(parameters('networkAcls'), 'allowAzureIPs'), false()), createArray(createObject('name', 'allow-all-azure-internal-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '0.0.0.0')), createArray()))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.documentdb-mongocluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -986,8 +988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "8164306825113105277"
+              "version": "0.47.16.16243",
+              "templateHash": "13649346542070509640"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
@@ -1092,8 +1094,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "17622698538854927541"
+              "version": "0.47.16.16243",
+              "templateHash": "2104081852786968598"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
             "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."

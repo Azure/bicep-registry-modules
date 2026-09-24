@@ -1,7 +1,7 @@
 name: ".Platform - Check Module Metadata"
 
-# Fast, read-only PR gate: validates metadata.json without compiling Bicep, using the public
-# Test-AvmModuleMetadata cmdlet (Avm.Authoring, latest from PSGallery). Runs independently of the
+# Fast, read-only PR gate: validates metadata.json and compiled telemetry prefixes without compiling Bicep,
+# using the public Test-AvmModuleMetadata cmdlet (Avm.Authoring, latest from PSGallery). Runs independently of the
 # per-module deployment/PSRule workflows so metadata-only changes (which are excluded from those
 # workflows' triggers) are still checked automatically on every PR, including from forks.
 # No secrets are used and the default GITHUB_TOKEN is not requested beyond read access.

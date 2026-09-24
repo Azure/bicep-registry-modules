@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "2551117701353859235"
+      "version": "0.47.16.16243",
+      "templateHash": "5513749582689509828"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -932,6 +932,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.devopsinfrastructure-pool",
     "daysData": "[tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData')]",
     "hasAllWeekScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'allWeekScheme'))]",
     "hasWeekDaysScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'weekDaysScheme'))]",
@@ -946,14 +947,15 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createArray(createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount)), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'weekDaysScheme'), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', 'index', if(and(greaterOrEquals(lambdaVariables('index'), 1), lessOrEquals(lambdaVariables('index'), 5)), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endAgentCount), createObject()))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))))), null())]"
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createArray(createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount)), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'weekDaysScheme'), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', 'index', if(and(greaterOrEquals(lambdaVariables('index'), 1), lessOrEquals(lambdaVariables('index'), 5)), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endTime), parameters('agentProfile').resourcePredictions.daysData.weekDaysScheme.endAgentCount), createObject()))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))))), null())]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.devopsinfrastructure-pool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

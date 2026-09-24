@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10363351882271364841"
+      "version": "0.47.16.16243",
+      "templateHash": "3123087948990714054"
     },
     "name": "Azd AKS",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -821,6 +821,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.azd-aks",
     "systemPoolsConfig": "[if(not(empty(parameters('systemPoolConfig'))), parameters('systemPoolConfig'), createArray(union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('systemPoolSize')])))]",
     "agentPoolsConfig": "[if(not(empty(parameters('agentPoolConfig'))), parameters('agentPoolConfig'), if(empty(parameters('agentPoolSize')), null(), createArray(union(createObject('name', 'npuser', 'mode', 'User'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('agentPoolSize')]))))]",
     "aksClusterAdminRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b')]",
@@ -867,14 +868,15 @@
         "maxSurge": "33%"
       }
     },
-    "roleAssignments": "[if(or(parameters('enableAzureRbac'), parameters('disableLocalAccounts')), createArray(createObject('name', parameters('aksClusterRoleAssignmentName'), 'principalId', parameters('principalId'), 'principalType', parameters('principalType'), 'roleDefinitionIdOrName', variables('aksClusterAdminRole'))), createArray())]"
+    "roleAssignments": "[if(or(parameters('enableAzureRbac'), parameters('disableLocalAccounts')), createArray(createObject('name', parameters('aksClusterRoleAssignmentName'), 'principalId', parameters('principalId'), 'principalType', parameters('principalType'), 'roleDefinitionIdOrName', variables('aksClusterAdminRole'))), createArray())]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.ptn.azd-aks.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

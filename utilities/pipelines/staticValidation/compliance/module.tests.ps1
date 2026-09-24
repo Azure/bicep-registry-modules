@@ -1250,8 +1250,11 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
-                $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
+                $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'a telemetry deployment using the module telemetry prefix must be present in the template.'
             }
 
             It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
@@ -1267,7 +1270,10 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
@@ -1290,7 +1296,10 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
@@ -1315,7 +1324,10 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
@@ -1325,7 +1337,16 @@ Describe 'Module tests' -Tag 'Module' {
                 $metadataPath = Join-Path (Split-Path $templateFilePath -Parent) 'metadata.json'
                 $metadata = Get-Content -LiteralPath $metadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
                 $metadata.telemetryIdPrefix | Should -Not -BeNullOrEmpty -Because "published module [$templateFilePath] must have a telemetry ID prefix in metadata.json."
-                $telemetryDeployment.name | Should -Match ([regex]::Escape($metadata.telemetryIdPrefix))
+                $compiledPrefix = $templateFileContent.variables.telemetryIdPrefix
+                if ($compiledPrefix -match '^\[variables\(''([^'']+)''\)\]$') {
+                    $compiledPrefix = $templateFileContent.variables[$Matches[1]]
+                }
+                $compiledPrefix | Should -Be $metadata.telemetryIdPrefix -Because 'the compiled telemetry prefix must match metadata.json.'
+                $telemetryDeployment.name | Should -Match ([regex]::Escape("variables('telemetryIdPrefix')"))
+
+                $source = Get-Content -LiteralPath $templateFilePath -Raw -ErrorAction Stop
+                $source | Should -Match ([regex]::Escape("var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')")) -Because 'the telemetry prefix must be read from metadata.json.'
+                $source | Should -Not -Match '46d3xbcp\.' -Because 'the source must not duplicate the assigned telemetry prefix.'
             }
 
             It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
