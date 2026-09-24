@@ -4,7 +4,8 @@
 # ==============================================================================
 # This script handles the complete deployment lifecycle inside the ACI container:
 #   1. Idempotency check: skip if Deploy+Succeeded already exists
-#   2. Cleanup of stale deploymentSettings resources (e.g., leftover Validate mode)
+#   2. Preserve a succeeded Validate resource (redeploy Deploy in place to keep
+#      validationStatus); only delete a non-succeeded/stale Validate resource
 #   3. Decode base64-encoded Bicep files
 #   4. Execute az deployment group create for Validate then Deploy
 # ==============================================================================
@@ -136,12 +137,22 @@ if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; th
     echo "Existing resource — Mode: $DEPLOYMENT_MODE, State: $PROVISIONING_STATE"
 
     if [ "$DEPLOYMENT_MODE" = "Validate" ]; then
-        echo "Removing stale Validate-mode resource..."
-        if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
-            echo "Validation resource deleted. Proceeding with deployment..."
+        if [ "$PROVISIONING_STATE" = "Succeeded" ]; then
+            # Validate already succeeded on this singleton. Do NOT delete it; redeploy
+            # Deploy over the same 'default' resource so the RP-reported validationStatus
+            # is preserved. This matches the documented Validate -> Deploy flow, which
+            # updates the resource in place (ARM incremental) rather than deleting it.
+            echo "Validate succeeded; preserving resource and proceeding with Deploy over it (keeps validationStatus)."
         else
-            echo "Failed to delete validation resource."
-            exit 1
+            # Validate did not reach a terminal success state (e.g. Failed or stuck).
+            # Remove the stale resource so the next create starts from a clean state.
+            echo "Validate in non-succeeded state ($PROVISIONING_STATE); removing stale resource..."
+            if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
+                echo "Stale validation resource deleted. Proceeding with deployment..."
+            else
+                echo "Failed to delete validation resource."
+                exit 1
+            fi
         fi
     elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" = "Succeeded" ]; then
         echo "Deploy+Succeeded already exists. Skipping deployment."

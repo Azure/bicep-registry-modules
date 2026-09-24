@@ -6,6 +6,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+- Fixed the cluster deployment script so a **succeeded** `Validate` deploymentSettings resource is no longer deleted before `Deploy`. The script now redeploys `Deploy` over the same `default` resource in place (matching the documented `Validate` → `Deploy` flow), preserving the RP-reported `validationStatus` so the portal "Validate input" tile stays populated. A non-succeeded/stale `Validate` resource is still removed to allow a clean retry.
 - Updated API version for `Microsoft.AzureStackHCI/clusters` to `2026-04-30`.
 - Updated API version for `Microsoft.AzureStackHCI/clusters/deploymentSettings` to `2026-04-30`.
 - Updated API version for `Microsoft.AzureStackHCI/edgeDevices` to `2026-04-30`.
