@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "7594701555428625855"
+      "version": "0.46.1.21595",
+      "templateHash": "13014917864527535490"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -703,7 +703,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.Databricks/workspaces@2024-05-01#properties/tags"
+          "source": "Microsoft.Databricks/workspaces@2026-01-01#properties/tags"
         },
         "description": "Optional. Tags of the resource."
       },
@@ -938,6 +938,13 @@
       "metadata": {
         "description": "Optional. The value for enabling or configuring enhanced security monitoring."
       }
+    },
+    "computeMode": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The compute mode of the workspace. Required by the resource provider from API version 2026-01-01; leave unset to let the service apply its own default."
+      }
     }
   },
   "variables": {
@@ -982,14 +989,14 @@
     },
     "workspace": {
       "type": "Microsoft.Databricks/workspaces",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2026-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'))), tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.')))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
+      "properties": "[shallowMerge(createArray(if(not(equals(parameters('computeMode'), null())), createObject('computeMode', parameters('computeMode')), createObject()), createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKKeyVaultRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.vaultUri.value, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')))), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'))), tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVersion'), if(not(variables('isHSMManagedCMK')), reference('cMKManagedKeyVaultDiskRef').outputs.keyVersion.value, fail('Managed HSM CMK encryption requires specifying the ''keyVersion''.')))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), shallowMerge(createArray(createObject('defaultStorageFirewall', parameters('privateStorageAccount')), if(not(empty(parameters('accessConnectorResourceId'))), createObject('accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()))), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
       "dependsOn": [
         "cMKKeyVaultRef",
         "cMKManagedKeyVaultDiskRef"
@@ -1089,8 +1096,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14344572073250782696"
+              "version": "0.46.1.21595",
+              "templateHash": "1018069060963333634"
             }
           },
           "parameters": {
@@ -1160,8 +1167,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14344572073250782696"
+              "version": "0.46.1.21595",
+              "templateHash": "1018069060963333634"
             }
           },
           "parameters": {
@@ -2558,7 +2565,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('workspace', '2024-05-01', 'full').location]"
+      "value": "[reference('workspace', '2026-01-01', 'full').location]"
     },
     "managedResourceGroupResourceId": {
       "type": "string",

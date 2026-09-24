@@ -31,7 +31,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Databricks/workspaces@2024-05-01'>.tags?
+param tags resourceInput<'Microsoft.Databricks/workspaces@2026-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -149,6 +149,9 @@ param complianceSecurityProfileValue string = ''
 ])
 param enhancedSecurityMonitoring string = ''
 
+@description('Optional. The compute mode of the workspace. Required by the resource provider from API version 2026-01-01; leave unset to let the service apply its own default.')
+param computeMode string?
+
 var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
@@ -221,7 +224,7 @@ module cMKManagedKeyVaultDiskRef 'modules/cmkReferences.bicep' = if (!empty(cust
   )
 }
 
-resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
+resource workspace 'Microsoft.Databricks/workspaces@2026-01-01' = {
   name: name
   location: location
   tags: tags
@@ -229,6 +232,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     name: skuName
   }
   properties: {
+    ...(computeMode != null ? { computeMode: computeMode! } : {})
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId!
       : '${subscription().id}/resourceGroups/rg-${name}-managed'
