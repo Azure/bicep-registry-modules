@@ -321,6 +321,7 @@
     "avm/res/synapse/workspace/integration-runtime",
     "avm/res/synapse/workspace/key",
     "avm/res/synapse/workspace/sql-pool",
+    "avm/res/web/hosting-environment/configuration",
     "avm/res/web/site/basic-publishing-credentials-policy",
     "avm/res/web/site/config",
     "avm/res/web/site/extension",
