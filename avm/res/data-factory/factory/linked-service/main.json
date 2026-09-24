@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "16961971490542634597"
+      "version": "0.47.16.16243",
+      "templateHash": "7579074446869258283"
     },
     "name": "Data Factory Linked Service",
     "description": "This module deploys a Data Factory Linked Service."
