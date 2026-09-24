@@ -19,7 +19,7 @@ param clusterADName string?
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AzureStackHCI/clusters@2026-04-30'>.tags?
 
 @description('Optional. The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".')
 @allowed([
@@ -75,16 +75,16 @@ param witnessStoragekeyContentType string = 'Secret'
 param defaultARBApplicationContentType string = 'Secret'
 
 @description('Optional. Tags of azure stack LCM user credential.')
-param azureStackLCMUserCredentialTags object?
+param azureStackLCMUserCredentialTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the local admin credential.')
-param localAdminCredentialTags object?
+param localAdminCredentialTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the witness storage key.')
-param witnessStoragekeyTags object?
+param witnessStoragekeyTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the default ARB application.')
-param defaultARBApplicationTags object?
+param defaultARBApplicationTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster.')
 param keyvaultSubscriptionId string?
@@ -190,7 +190,7 @@ resource nodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Auth
     )
     properties: {
       roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
       principalType: 'ServicePrincipal'
       description: 'Created by Azure Stack HCI deployment template'
     }
@@ -208,7 +208,7 @@ resource nodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssi
     )
     properties: {
       roleDefinitionId: azureStackHCIDeviceManagementRole
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
       principalType: 'ServicePrincipal'
       description: 'Created by Azure Stack HCI deployment template'
     }
@@ -220,7 +220,7 @@ resource nodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@20
     name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
     properties: {
       roleDefinitionId: readerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
       principalType: 'ServicePrincipal'
       description: 'Created by Azure Stack HCI deployment template'
     }
@@ -235,7 +235,7 @@ var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymen
 // ============= //
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.azurestackhci-cluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -263,14 +263,14 @@ var arcNodeResourceIds = [
   )
 ]
 
-resource arcMachines 'Microsoft.HybridCompute/machines@2024-07-10' existing = [
+resource arcMachines 'Microsoft.HybridCompute/machines@2026-07-15' existing = [
   for nodeName in deploymentSettings!.clusterNodeNames: {
     name: nodeName
   }
 ]
 
 @batchSize(1) // Serialize edgeDevice creation to avoid HCI RP race condition when provisioning multiple nodes simultaneously
-resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2025-10-01' = [
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2026-04-30' = [
   for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
     name: 'default'
     scope: arcMachines[index]
@@ -284,7 +284,7 @@ resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2025-10-01' = [
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2025-10-01' = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2026-04-30' = {
   name: name
   identity: {
     type: 'SystemAssigned'

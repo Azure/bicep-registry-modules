@@ -44,16 +44,16 @@ param witnessStoragekeyContentType string = 'Secret'
 param defaultARBApplicationContentType string = 'Secret'
 
 @description('Optional. Tags of azure stack LCM user credential.')
-param azureStackLCMUserCredentialTags object?
+param azureStackLCMUserCredentialTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the local admin credential.')
-param localAdminCredentialTags object?
+param localAdminCredentialTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the witness storage key.')
-param witnessStoragekeyTags object?
+param witnessStoragekeyTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Tags of the default ARB application.')
-param defaultARBApplicationTags object?
+param defaultARBApplicationTags resourceInput<'Microsoft.KeyVault/vaults/secrets@2026-02-01'>.tags?
 
 @description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
 param witnessStorageAccountSubscriptionId string
@@ -71,12 +71,12 @@ param arcNodeResourceIds array
 @description('Optional. Solution builder extension (SBE) partner credential properties.')
 param partnerCredentialList array = []
 
-resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' existing = {
   name: storageAccountName
   scope: resourceGroup(witnessStorageAccountSubscriptionId, witnessStorageAccountResourceGroup)
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: keyVaultName
 }
 
@@ -97,14 +97,14 @@ resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments
     scope: keyVault
     properties: {
       roleDefinitionId: keyVaultSecretUserRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalId: reference(hciNode, '2026-07-15', 'Full').identity.principalId
       principalType: 'ServicePrincipal'
       description: 'Created by Azure Stack HCI deployment template'
     }
   }
 ]
 
-resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
 
@@ -118,7 +118,7 @@ resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-
   tags: azureStackLCMUserCredentialTags
 }
 
-resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-LocalAdminCredential-${cloudId}'
 
@@ -132,7 +132,7 @@ resource localAdminCredential 'Microsoft.KeyVault/vaults/secrets@2021-06-01-prev
   tags: localAdminCredentialTags
 }
 
-resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = {
+resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {
   parent: keyVault
   name: '${clusterName}-WitnessStorageKey-${cloudId}'
   properties: {
@@ -145,7 +145,7 @@ resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview
   tags: witnessStoragekeyTags
 }
 
-resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
+resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
   parent: keyVault
   name: '${clusterName}-DefaultARBApplication-${cloudId}'
   properties: {
@@ -158,7 +158,7 @@ resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2021-06-01-pre
   tags: defaultARBApplicationTags
 }
 
-resource partnerCreds 'Microsoft.KeyVault/vaults/secrets@2021-06-01-preview' = [
+resource partnerCreds 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = [
   for credential in partnerCredentialList: {
     parent: keyVault
     name: '${clusterName}-${credential.secretName}-${cloudId}'
