@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "6558048148288981126"
+      "version": "0.47.16.16243",
+      "templateHash": "2181797208840289176"
     },
     "name": "API Management Workspace API Version Sets",
     "description": "This module deploys an API Version Set in an API Management Workspace."
@@ -83,6 +83,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapiverset",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "service::workspace": {
       "existing": true,
@@ -100,7 +104,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapiverset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

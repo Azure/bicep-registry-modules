@@ -174,6 +174,50 @@ Export-ModuleMember -Function Test-AvmModuleMetadata
         $result.Result | Should -Be 'Passed'
         $result.PassedCount | Should -Be 6
     }
+
+    It 'rejects a metadata-only telemetry change when the compiled template still has the previous prefix' {
+        $modulePath = $script:moduleFixtures[0].Path
+        $sourcePath = Join-Path $modulePath 'main.bicep'
+        $metadataPath = Join-Path $modulePath 'metadata.json'
+        $templatePath = Join-Path $modulePath 'main.json'
+        $originalSource = Get-Content -LiteralPath $sourcePath -Raw
+        $originalMetadata = Get-Content -LiteralPath $metadataPath -Raw
+
+        try {
+            Set-Content -LiteralPath $sourcePath -Value @"
+This is deliberately invalid Bicep.
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+"@
+            $metadata = $originalMetadata | ConvertFrom-Json -AsHashtable
+            $metadata.telemetryIdPrefix = '46d3xbcp.res.test-module'
+            $metadata | ConvertTo-Json | Set-Content -LiteralPath $metadataPath
+
+            @{
+                variables = @{
+                    '$fxv#0'          = '46d3xbcp.res.test-module'
+                    telemetryIdPrefix = "[variables('`$fxv#0')]"
+                }
+            } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $templatePath
+
+            $result = Invoke-MetadataTestFixture
+            $result.Result | Should -Be 'Passed'
+            $result.PassedCount | Should -Be 7
+
+            $metadata.telemetryIdPrefix = '46d3xbcp.res.updated-module'
+            $metadata | ConvertTo-Json | Set-Content -LiteralPath $metadataPath
+
+            $result = Invoke-MetadataTestFixture
+            $result.Result | Should -Be 'Failed'
+            $result.FailedCount | Should -Be 1
+            $result.Errors | Should -Not -BeNullOrEmpty
+        } finally {
+            Set-Content -LiteralPath $sourcePath -Value $originalSource -NoNewline
+            Set-Content -LiteralPath $metadataPath -Value $originalMetadata -NoNewline
+            if (Test-Path -LiteralPath $templatePath) {
+                Remove-Item -LiteralPath $templatePath
+            }
+        }
+    }
 }
 
 Describe 'Metadata workflow wiring' {

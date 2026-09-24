@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "8402604330285094389"
+      "version": "0.47.16.16243",
+      "templateHash": "3439958793447821525"
     },
     "name": "Azure Stack HCI Network Interface",
     "description": "This module deploys an Azure Stack HCI network interface."
@@ -179,6 +179,20 @@
         "description": "Optional. DNS servers array for NIC. These are only applied during NIC creation."
       }
     },
+    "macAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The MAC address of the network interface."
+      }
+    },
+    "networkSecurityGroupResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The resource ID of the network security group to associate with the network interface."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -205,6 +219,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.azurestackhci-networkinterface",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -212,14 +227,15 @@
       "Azure Stack HCI VM Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '874d1c73-6003-4e60-a13a-cb31ea190a85')]",
       "Azure Stack HCI VM Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b3fe76c-f777-4d24-a2d7-b027b0f7b273')]",
       "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.azurestackhci-networkinterface.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -237,7 +253,7 @@
     },
     "networkInterface": {
       "type": "Microsoft.AzureStackHCI/networkInterfaces",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -247,7 +263,9 @@
       },
       "properties": {
         "ipConfigurations": "[parameters('ipConfigurations')]",
-        "dnsSettings": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', parameters('dnsServers')), null())]"
+        "dnsSettings": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', parameters('dnsServers')), null())]",
+        "macAddress": "[parameters('macAddress')]",
+        "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]"
       }
     },
     "networkinterface_roleAssignments": {
@@ -300,7 +318,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkInterface', '2024-01-01', 'full').location]"
+      "value": "[reference('networkInterface', '2025-04-01-preview', 'full').location]"
     }
   }
 }
