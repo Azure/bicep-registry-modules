@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Azure Stack HCI Cluster",
   "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-cluster",
   "canonicalType": "Microsoft.AzureStackHCI/clusters",
-  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech", "premparekh"]
+  "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech", "premparekh", "abhisheksharma-ops"]
 }
