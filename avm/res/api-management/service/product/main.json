@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "6404600791534456902"
+      "templateHash": "17446094151857588618"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -136,9 +136,9 @@
     },
     "subscriptionsLimit": {
       "type": "int",
-      "defaultValue": 1,
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+        "description": "Optional. The number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
       }
     },
     "terms": {
