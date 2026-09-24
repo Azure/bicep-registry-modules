@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/databricks/workspace/CHANGELOG.md).
 
+## 0.13.0
+
+### Changes
+
+- Added the parameter `customerManagedKeyDbfsRoot` to encrypt the DBFS root storage account with a customer-managed key
+- Added the output `storageAccountIdentityPrincipalId`, the identity that needs access to the DBFS root key, which is available if `prepareEncryption` is enabled
+
+### Breaking Changes
+
+- None
+
 ## 0.12.0
 
 ### Changes

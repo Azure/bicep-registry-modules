@@ -39,13 +39,93 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/workspace:<version>`.
 
-- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-1-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
-- [With encryption](#example-2-with-encryption)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned](#example-5-waf-aligned)
+- [With DBFS root encryption](#example-1-with-dbfs-root-encryption)
+- [Using managed HSM Customer-Managed-Keys with User-Assigned identity](#example-2-using-managed-hsm-customer-managed-keys-with-user-assigned-identity)
+- [With encryption](#example-3-with-encryption)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
+### Example 1: _With DBFS root encryption_
+
+This instance deploys the module with a customer-managed key for the DBFS root storage account. The workspace is first prepared for encryption, which creates the storage account identity, then that identity is granted access to the key, and finally the key is applied.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/cmk-dbfs]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dwdbfs001'
+    // Non-required parameters
+    customerManagedKeyDbfsRoot: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    prepareEncryption: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dwdbfs001"
+    },
+    // Non-required parameters
+    "customerManagedKeyDbfsRoot": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "prepareEncryption": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/databricks/workspace:<version>'
+
+// Required parameters
+param name = 'dwdbfs001'
+// Non-required parameters
+param customerManagedKeyDbfsRoot = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param prepareEncryption = true
+```
+
+</details>
+<p>
+
+### Example 2: _Using managed HSM Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.
 
@@ -143,7 +223,7 @@ param customerManagedKeyManagedDisk = {
 </details>
 <p>
 
-### Example 2: _With encryption_
+### Example 3: _With encryption_
 
 This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.
 
@@ -231,7 +311,7 @@ param customerManagedKeyManagedDisk = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -285,7 +365,7 @@ param name = 'dwmin002'
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 5: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -740,7 +820,7 @@ param vnetAddressPrefix = '10.100'
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1142,6 +1222,7 @@ param vnetAddressPrefix = '10.100'
 | [`complianceSecurityProfileValue`](#parameter-compliancesecurityprofilevalue) | string | The value to Enable or Disable for the compliance security profile. |
 | [`complianceStandards`](#parameter-compliancestandards) | array | The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS". |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition to use for the managed service. |
+| [`customerManagedKeyDbfsRoot`](#parameter-customermanagedkeydbfsroot) | object | The customer managed key definition to use for the DBFS root storage account. Requires `prepareEncryption` to be enabled and the storage account identity (see output `storageAccountIdentityPrincipalId`) to have at least 'Key Vault Crypto Service Encryption User' permissions on the key before this is set. If no `keyVersion` is provided, the latest key version is used. |
 | [`customerManagedKeyManagedDisk`](#parameter-customermanagedkeymanageddisk) | object | The customer managed key definition to use for the managed disk.<p>Action Required: A role assignment needs to be added to the key that is used by the Disk Encryption Set created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks)). |
 | [`customPrivateSubnetName`](#parameter-customprivatesubnetname) | string | The name of the Private Subnet within the Virtual Network. |
 | [`customPublicSubnetName`](#parameter-custompublicsubnetname) | string | The name of a Public Subnet within the Virtual Network. |
@@ -1278,6 +1359,55 @@ The version of the customer managed key to reference for encryption. If not prov
 - Type: string
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKeyDbfsRoot`
+
+The customer managed key definition to use for the DBFS root storage account. Requires `prepareEncryption` to be enabled and the storage account identity (see output `storageAccountIdentityPrincipalId`) to have at least 'Key Vault Crypto Service Encryption User' permissions on the key before this is set. If no `keyVersion` is provided, the latest key version is used.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeydbfsrootkeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeydbfsrootkeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeydbfsrootkeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeydbfsrootuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKeyDbfsRoot.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKeyDbfsRoot.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKeyDbfsRoot.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKeyDbfsRoot.userAssignedIdentityResourceId`
 
 User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
@@ -2689,6 +2819,7 @@ Address prefix for Managed virtual network.
 | `privateEndpoints` | array | The private endpoints of the Databricks Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed databricks workspace. |
 | `resourceId` | string | The resource ID of the deployed databricks workspace. |
+| `storageAccountIdentityPrincipalId` | string | The principal ID of the DBFS root storage account identity created by the workspace if `prepareEncryption` is enabled. |
 | `storageAccountName` | string | The name of the DBFS storage account. |
 | `storageAccountResourceId` | string | The resource ID of the DBFS storage account. |
 | `storagePrivateEndpoints` | array | The private endpoints of the Databricks Workspace Storage. |

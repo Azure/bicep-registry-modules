@@ -60,6 +60,9 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 Action Required: A role assignment needs to be added to the key that is used by the Disk Encryption Set created during workspace deployment. After your workspace is created, please follow the steps outlined in the documentation. If this action is not taken, cluster creation will fail ([learn more](https://learn.microsoft.com/azure/databricks/security/keys/cmk-managed-disks-azure?WT.mc_id=Portal-Microsoft_Azure_Databricks)).''')
 param customerManagedKeyManagedDisk customerManagedKeyWithAutoRotateType?
 
+@description('''Optional. The customer managed key definition to use for the DBFS root storage account. Requires `prepareEncryption` to be enabled and the storage account identity (see output `storageAccountIdentityPrincipalId`) to have at least 'Key Vault Crypto Service Encryption User' permissions on the key before this is set. If no `keyVersion` is provided, the latest key version is used.''')
+param customerManagedKeyDbfsRoot customerManagedKeyType?
+
 @description('Optional. Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP).')
 param loadBalancerBackendPoolName string = ''
 
@@ -221,6 +224,19 @@ module cMKManagedKeyVaultDiskRef 'modules/cmkReferences.bicep' = if (!empty(cust
   )
 }
 
+var isHSMManagedCMKDbfs = split(customerManagedKeyDbfsRoot.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
+module cMKDbfsKeyVaultRef 'modules/cmkReferences.bicep' = if (!empty(customerManagedKeyDbfsRoot) && !isHSMManagedCMKDbfs) {
+  name: '${uniqueString(deployment().name)}-cmkDbfsKeyVault'
+  params: {
+    keyVaultResourceId: customerManagedKeyDbfsRoot!.keyVaultResourceId
+    keyName: customerManagedKeyDbfsRoot!.keyName
+  }
+  scope: resourceGroup(
+    split(customerManagedKeyDbfsRoot.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyDbfsRoot.?keyVaultResourceId!, '/')[4]
+  )
+}
+
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
@@ -245,6 +261,22 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
       requireInfrastructureEncryption: {
         value: requireInfrastructureEncryption
       }
+      ...(!empty(customerManagedKeyDbfsRoot)
+        ? {
+            encryption: {
+              value: {
+                keySource: 'Microsoft.Keyvault'
+                KeyName: customerManagedKeyDbfsRoot!.keyName
+                keyvaulturi: !isHSMManagedCMKDbfs
+                  ? cMKDbfsKeyVaultRef!.outputs.vaultUri
+                  : 'https://${last(split((customerManagedKeyDbfsRoot.?keyVaultResourceId!), '/'))}.managedhsm.azure.net/'
+                ...(!empty(customerManagedKeyDbfsRoot.?keyVersion)
+                  ? { keyversion: customerManagedKeyDbfsRoot!.?keyVersion! }
+                  : {})
+              }
+            }
+          }
+        : {})
       ...(!empty(customVirtualNetworkResourceId)
         ? {
             customVirtualNetworkId: {
@@ -603,6 +635,9 @@ output workspaceResourceId string = workspace.properties.workspaceId
 
 @description('The principal ID of the managed disk identity created by the workspace if CMK for managed disks is enabled.')
 output managedDiskIdentityPrincipalId string? = workspace.properties.?managedDiskIdentity.?principalId
+
+@description('The principal ID of the DBFS root storage account identity created by the workspace if `prepareEncryption` is enabled.')
+output storageAccountIdentityPrincipalId string? = workspace.properties.?storageAccountIdentity.?principalId
 
 @description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
