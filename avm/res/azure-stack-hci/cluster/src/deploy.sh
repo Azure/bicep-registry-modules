@@ -2,12 +2,20 @@
 # ==============================================================================
 # HCI Deployment Script - Full Inline Deployment
 # ==============================================================================
-# This script handles the complete deployment lifecycle inside the ACI container:
-#   1. Idempotency check: skip if Deploy+Succeeded already exists
-#   2. Preserve a succeeded Validate resource (redeploy Deploy in place to keep
-#      validationStatus); only delete a non-succeeded/stale Validate resource
-#   3. Decode base64-encoded Bicep files
-#   4. Execute az deployment group create for Validate then Deploy
+# This script handles the complete deployment lifecycle inside the ACI container.
+# It mirrors the documented Azure Stack HCI "Validate first, then Deploy" flow
+# (as used by the ARM quickstart) so that BOTH portal tiles stay green:
+#   1. Idempotency check: skip if Deploy+Succeeded already exists.
+#   2. Decode base64-encoded Bicep files.
+#   3. Run each requested operation as its OWN, sequential deployment in
+#      Validate -> Deploy order (never both fused in a single deployment).
+#   4. After Validate, wait until the RP-reported validationStatus is committed
+#      before starting Deploy, then Deploy IN PLACE over the same 'default'
+#      resource (no delete) so validationStatus is preserved.
+#   5. Only a non-succeeded / stale Validate resource is ever deleted.
+# This supports every deploymentOperations combination: ['Validate'],
+# ['Deploy'], and ['Validate','Deploy'] - with no regression and full
+# backward compatibility (the module's public interface is unchanged).
 # ==============================================================================
 
 set -e
@@ -62,6 +70,16 @@ for i in "${!OPERATIONS[@]}"; do
 done
 OPERATIONS_JSON+="]"
 
+# Determine which operations are requested (order is enforced Validate -> Deploy below)
+DO_VALIDATE="false"
+DO_DEPLOY="false"
+for op in "${OPERATIONS[@]}"; do
+    case "$op" in
+        Validate) DO_VALIDATE="true" ;;
+        Deploy) DO_DEPLOY="true" ;;
+    esac
+done
+
 # Convert boolean values
 USE_SHARED_KEYVAULT_JSON=$(echo "$USE_SHARED_KEYVAULT" | tr '[:upper:]' '[:lower:]')
 if [ "$USE_SHARED_KEYVAULT_JSON" = "true" ] || [ "$USE_SHARED_KEYVAULT_JSON" = "1" ]; then
@@ -83,15 +101,47 @@ if ! echo "$DEPLOYMENT_SETTINGS" | jq empty 2>/dev/null; then
     exit 1
 fi
 
-# Create parameter file
+DEPLOYMENT_SETTINGS_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.AzureStackHCI/clusters/$CLUSTER_NAME/deploymentSettings/default"
 PARAM_FILE="deployment-params.json"
-cat > "$PARAM_FILE" << EOF
+
+# ------------------------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------------------------
+
+resource_exists() {
+    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1
+}
+
+get_mode() {
+    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.deploymentMode" --output tsv 2>/dev/null || true
+}
+
+get_state() {
+    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.provisioningState" --output tsv 2>/dev/null || true
+}
+
+write_output() {
+    # $1 = message
+    cat > "$AZ_SCRIPTS_OUTPUT_PATH" << EOF
+{
+  "status": "success",
+  "message": "$1",
+  "operations": $OPERATIONS_JSON
+}
+EOF
+}
+
+# Write the ARM parameter file for a single deployment operation.
+# $1 = JSON array of operations for this pass, e.g. ["Validate"] or ["Deploy"].
+write_param_file() {
+    local ops_json="$1"
+    cat > "$PARAM_FILE" << EOF
 {
   "\$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentOperations": {
-      "value": $OPERATIONS_JSON
+      "value": $ops_json
     },
     "deploymentSettings": {
       "value": $DEPLOYMENT_SETTINGS
@@ -117,87 +167,137 @@ cat > "$PARAM_FILE" << EOF
   }
 }
 EOF
-
-if ! jq empty "$PARAM_FILE" 2>/dev/null; then
-    echo "Error: Generated parameter file is not valid JSON"
-    cat "$PARAM_FILE"
-    exit 1
-fi
-
-echo "Parameter file created and validated"
-
-# Check if deployment-settings resource already exists
-DEPLOYMENT_SETTINGS_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.AzureStackHCI/clusters/$CLUSTER_NAME/deploymentSettings/default"
-echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
-
-if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; then
-    PROVISIONING_STATE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.provisioningState" --output tsv 2>/dev/null)
-    DEPLOYMENT_MODE=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.deploymentMode" --output tsv 2>/dev/null)
-
-    echo "Existing resource — Mode: $DEPLOYMENT_MODE, State: $PROVISIONING_STATE"
-
-    if [ "$DEPLOYMENT_MODE" = "Validate" ]; then
-        if [ "$PROVISIONING_STATE" = "Succeeded" ]; then
-            # Validate already succeeded on this singleton. Do NOT delete it; redeploy
-            # Deploy over the same 'default' resource so the RP-reported validationStatus
-            # is preserved. This matches the documented Validate -> Deploy flow, which
-            # updates the resource in place (ARM incremental) rather than deleting it.
-            echo "Validate succeeded; preserving resource and proceeding with Deploy over it (keeps validationStatus)."
-        else
-            # Validate did not reach a terminal success state (e.g. Failed or stuck).
-            # Remove the stale resource so the next create starts from a clean state.
-            echo "Validate in non-succeeded state ($PROVISIONING_STATE); removing stale resource..."
-            if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
-                echo "Stale validation resource deleted. Proceeding with deployment..."
-            else
-                echo "Failed to delete validation resource."
-                exit 1
-            fi
-        fi
-    elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" = "Succeeded" ]; then
-        echo "Deploy+Succeeded already exists. Skipping deployment."
-        cat > $AZ_SCRIPTS_OUTPUT_PATH << EOF
-{
-  "status": "success",
-  "message": "Deployment already succeeded - skipped",
-  "operations": $OPERATIONS_JSON
-}
-EOF
-        exit 0
-    elif [ "$DEPLOYMENT_MODE" = "Deploy" ] && [ "$PROVISIONING_STATE" != "Succeeded" ]; then
-        echo "Deploy mode in state: $PROVISIONING_STATE (not Succeeded). Failing."
-        exit 1
-    else
-        echo "Unknown deployment mode: $DEPLOYMENT_MODE. Failing."
+    if ! jq empty "$PARAM_FILE" 2>/dev/null; then
+        echo "Error: Generated parameter file is not valid JSON"
+        cat "$PARAM_FILE"
         exit 1
     fi
+}
+
+# Run a single-operation deployment ($1 = "Validate" or "Deploy").
+run_deployment() {
+    local op="$1"
+    write_param_file "[\"$op\"]"
+    local op_lower
+    op_lower=$(echo "$op" | tr '[:upper:]' '[:lower:]')
+    local deployment_name="hci-deployment-${op_lower}-$(date +%s)"
+    echo "Starting ${op} deployment: ${deployment_name}"
+
+    if az deployment group create \
+        --resource-group "$RESOURCE_GROUP_NAME" \
+        --name "$deployment_name" \
+        --template-file "nested/deployment-setting.bicep" \
+        --parameters "@$PARAM_FILE" \
+        --verbose; then
+        echo "${op} deployment completed successfully"
+    else
+        local rc=$?
+        echo "${op} deployment failed with status: $rc"
+        az deployment group show \
+            --resource-group "$RESOURCE_GROUP_NAME" \
+            --name "$deployment_name" \
+            --query "properties.error" \
+            --output json 2>/dev/null || true
+        exit $rc
+    fi
+}
+
+# After a successful Validate, wait until the RP-reported validationStatus is
+# committed (non-empty) so the subsequent in-place Deploy preserves it. This is
+# best-effort: it never fails the deployment, it only avoids the race where a
+# Deploy PUT lands before the validation record is durably written.
+wait_for_validation_commit() {
+    echo "Waiting for validationStatus to be committed before Deploy..."
+    local attempts=0
+    local max_attempts=12   # ~3 minutes at 15s intervals
+    local vs committed
+    while [ $attempts -lt $max_attempts ]; do
+        vs=$(az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "properties.reportedProperties.validationStatus" --output json 2>/dev/null || echo '{}')
+        committed=$(echo "$vs" | jq -r 'if (type=="object" and (length>0)) then "yes" else "no" end' 2>/dev/null || echo "no")
+        if [ "$committed" = "yes" ]; then
+            echo "validationStatus committed."
+            return 0
+        fi
+        attempts=$((attempts + 1))
+        sleep 15
+    done
+    echo "WARNING: validationStatus not observed as committed after wait; proceeding with Deploy."
+    return 0
+}
+
+# ------------------------------------------------------------------------------
+# Pre-flight state check (preserves original Deploy-state semantics)
+# ------------------------------------------------------------------------------
+echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
+
+if resource_exists; then
+    CURRENT_MODE=$(get_mode)
+    CURRENT_STATE=$(get_state)
+    echo "Existing resource — Mode: $CURRENT_MODE, State: $CURRENT_STATE"
+
+    if [ "$CURRENT_MODE" = "Deploy" ] && [ "$CURRENT_STATE" = "Succeeded" ]; then
+        echo "Deploy+Succeeded already exists. Skipping deployment."
+        write_output "Deployment already succeeded - skipped"
+        exit 0
+    elif [ "$CURRENT_MODE" = "Deploy" ] && [ "$CURRENT_STATE" != "Succeeded" ]; then
+        echo "Deploy mode in state: $CURRENT_STATE (not Succeeded). Failing."
+        exit 1
+    fi
+    # Otherwise the resource is in Validate mode and is handled by the phases below.
 else
     echo "No existing deploymentSettings resource. Proceeding with deployment..."
 fi
 
-# Execute Bicep deployment
-DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
-echo "Starting deployment: $DEPLOYMENT_NAME"
+# ------------------------------------------------------------------------------
+# Validate phase
+# ------------------------------------------------------------------------------
+if [ "$DO_VALIDATE" = "true" ]; then
+    if resource_exists; then
+        CURRENT_MODE=$(get_mode)
+        CURRENT_STATE=$(get_state)
+        if [ "$CURRENT_MODE" = "Validate" ] && [ "$CURRENT_STATE" = "Succeeded" ]; then
+            echo "Validate already succeeded; skipping re-validation (preserving validationStatus)."
+        else
+            # Stale / failed Validate resource: remove it so validation starts clean.
+            echo "Validate in non-succeeded state ($CURRENT_STATE); removing stale resource..."
+            if az resource delete --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --only-show-errors; then
+                echo "Stale validation resource deleted. Proceeding with validation..."
+            else
+                echo "Failed to delete validation resource."
+                exit 1
+            fi
+            run_deployment "Validate"
+        fi
+    else
+        run_deployment "Validate"
+    fi
 
-az deployment group create \
-    --resource-group "$RESOURCE_GROUP_NAME" \
-    --name "$DEPLOYMENT_NAME" \
-    --template-file "nested/deployment-setting.bicep" \
-    --parameters "@$PARAM_FILE" \
-    --verbose
+    # Only wait for the validation record when we will subsequently Deploy over it.
+    if [ "$DO_DEPLOY" = "true" ]; then
+        wait_for_validation_commit
+    fi
+fi
 
-DEPLOYMENT_STATUS=$?
-
-if [ $DEPLOYMENT_STATUS -eq 0 ]; then
-    echo "Deployment completed successfully"
-else
-    echo "Deployment failed with status: $DEPLOYMENT_STATUS"
-    az deployment group show \
-        --resource-group "$RESOURCE_GROUP_NAME" \
-        --name "$DEPLOYMENT_NAME" \
-        --query "properties.error" \
-        --output json 2>/dev/null || true
-    exit $DEPLOYMENT_STATUS
+# ------------------------------------------------------------------------------
+# Deploy phase (in place; never deletes a succeeded Validate)
+# ------------------------------------------------------------------------------
+if [ "$DO_DEPLOY" = "true" ]; then
+    if resource_exists; then
+        CURRENT_MODE=$(get_mode)
+        CURRENT_STATE=$(get_state)
+        if [ "$CURRENT_MODE" = "Deploy" ] && [ "$CURRENT_STATE" = "Succeeded" ]; then
+            echo "Deploy+Succeeded already exists. Skipping Deploy."
+            rm -f "$PARAM_FILE"
+            rm -rf "nested" "deployment-setting"
+            write_output "Deployment already succeeded - skipped"
+            exit 0
+        elif [ "$CURRENT_MODE" = "Validate" ] && [ "$CURRENT_STATE" = "Succeeded" ]; then
+            echo "Preserving succeeded Validate; deploying in place over 'default' (keeps validationStatus)."
+        else
+            echo "Proceeding to Deploy over existing resource (Mode: $CURRENT_MODE, State: $CURRENT_STATE)."
+        fi
+    fi
+    run_deployment "Deploy"
 fi
 
 # Clean up temporary files
@@ -207,10 +307,4 @@ rm -rf "nested" "deployment-setting"
 echo "HCI deployment completed successfully!"
 
 # Set output for Bicep usage
-cat > $AZ_SCRIPTS_OUTPUT_PATH << EOF
-{
-  "status": "success",
-  "message": "Deployment completed successfully",
-  "operations": $OPERATIONS_JSON
-}
-EOF
+write_output "Deployment completed successfully"
