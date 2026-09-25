@@ -99,6 +99,7 @@ body:
         - "avm/res/cache/redis"
         - "avm/res/cache/redis-enterprise"
         - "avm/res/cdn/profile"
+        - "avm/res/code-signing/code-signing-account"
         - "avm/res/cognitive-services/account"
         - "avm/res/communication/communication-service"
         - "avm/res/communication/email-service"
