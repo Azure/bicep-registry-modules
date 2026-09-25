@@ -33,6 +33,9 @@ Optional. The number of parallel threads to use for the generation.
 .PARAMETER SkipVersionCheck
 Optional. Do not check for the latest Bicep CLI version.
 
+.PARAMETER SkipModuleVersionCheck
+Optional. Skip the Avm.Authoring version check only when using a trusted source checkout.
+
 .PARAMETER InvokeForDiff
 Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
 
@@ -96,6 +99,9 @@ function Set-AVMModule {
         [switch] $SkipVersionCheck,
 
         [Parameter(Mandatory = $false)]
+        [switch] $SkipModuleVersionCheck,
+
+        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
@@ -146,7 +152,7 @@ function Set-AVMModule {
         # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
         if (-not $SkipFileAndFolderSetup -and (($resolvedPath -split '[\\|\/]avm[\\|\/](res|ptn|utl)[\\|\/].+?[\\|\/].+').count -gt 1)) {
             if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", 'Setup')) {
-                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
+                Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath -SkipModuleVersionCheck:$SkipModuleVersionCheck
             }
         }
 
