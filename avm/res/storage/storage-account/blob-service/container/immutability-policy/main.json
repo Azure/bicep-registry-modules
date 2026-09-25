@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "375598541085838165"
+      "templateHash": "16244704411188044638"
     },
     "name": "Storage Account Blob Container Immutability Policies",
     "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -54,7 +54,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.storage-containerimmutpolicy",
+    "$fxv#0": "46d3xbcp.res.a952347",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

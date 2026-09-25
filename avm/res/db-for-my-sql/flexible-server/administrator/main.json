@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14133272245857848896"
+      "templateHash": "2163176566963366517"
     },
     "name": "DBforMySQL Flexible Server Administrators",
     "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -51,7 +51,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-administrator",
+    "$fxv#0": "46d3xbcp.res.c6d0414",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

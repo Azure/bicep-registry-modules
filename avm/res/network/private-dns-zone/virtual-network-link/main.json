@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5584517441911839105"
+      "templateHash": "11162234120696231220"
     },
     "name": "Private DNS Zone Virtual Network Link",
     "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.nw-privdnszonevnetlink",
+    "$fxv#0": "46d3xbcp.res.7afe16d",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

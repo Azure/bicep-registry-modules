@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15652695209640104557"
+      "templateHash": "14786438094510200713"
     },
     "name": "Data Factory Managed Virtual Networks",
     "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -81,7 +81,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.datafactory-factory-managedvnet",
+    "$fxv#0": "46d3xbcp.res.b01e8ef",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -162,7 +162,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17513133760611910724"
+              "templateHash": "12616458124780572896"
             },
             "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
             "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -216,7 +216,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.datafactory-factory-managedvnetmgdpe",
+            "$fxv#0": "46d3xbcp.res.eaef528",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Kubernetes Service (AKS) Managed Cluster - Agent Pool",
   "moduleDescription": "AVM Child Module for Azure Kubernetes Service (AKS) Managed Cluster - Agent Pool",
-  "telemetryIdPrefix": "46d3xbcp.res.consvc-mgdcluster-agentpool",
+  "telemetryIdPrefix": "46d3xbcp.res.8833d4b",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.consvc-mgdcluster-agentpool"],
   "canonicalType": "Microsoft.ContainerService/managedClusters/agentPools"
 }

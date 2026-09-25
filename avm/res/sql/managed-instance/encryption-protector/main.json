@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2309259193304442473"
+      "templateHash": "17294778531569243698"
     },
     "name": "SQL Managed Instance Encryption Protector",
     "description": "This module deploys a SQL Managed Instance Encryption Protector."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-encryptionprotecor",
+    "$fxv#0": "46d3xbcp.res.8478b31",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

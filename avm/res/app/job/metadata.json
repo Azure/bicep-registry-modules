@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "App Job",
   "moduleDescription": "AVM Resource Module for App Job",
-  "telemetryIdPrefix": "46d3xbcp.res.app-job",
+  "telemetryIdPrefix": "46d3xbcp.res.d647c79",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.app-job"],
   "canonicalType": "Microsoft.App/Jobs",
   "owners": ["ReneHezser"]
 }

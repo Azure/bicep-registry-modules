@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - Container App Upsert",
   "moduleDescription": "AVM Pattern Module for AZD - Container App Upsert",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-containerappupsert",
+  "telemetryIdPrefix": "46d3xbcp.ptn.06bba38",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-containerappupsert"],
   "alternativeNames": ["Azure Developer CLI - Container Apps Upsert"],
   "canonicalType": "azd/container-app-upsert",
   "owners": ["JeffreyCA"]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7095714114811365001"
+      "templateHash": "15415534570389463212"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2290,7 +2290,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.sql-server",
+    "$fxv#0": "46d3xbcp.res.31e070f",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
@@ -2588,7 +2588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14859578916383480299"
+              "templateHash": "7822195020058646192"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3315,7 +3315,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-serverdb",
+            "$fxv#0": "46d3xbcp.res.3254c50",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
@@ -3503,7 +3503,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "208668397440519635"
+                      "templateHash": "6638102118403877124"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3544,7 +3544,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.sql-server-dbbckpshorttermretpolicy",
+                    "$fxv#0": "46d3xbcp.res.b99866e",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -3654,7 +3654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "4087306760226524641"
+                      "templateHash": "10272308555566155293"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3731,7 +3731,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.sql-server-dbbckplongtermretpolicy",
+                    "$fxv#0": "46d3xbcp.res.55b299c",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -3923,7 +3923,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11621858940489991813"
+              "templateHash": "18396524707997357554"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4288,7 +4288,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.sql-server-elasticpool",
+            "$fxv#0": "46d3xbcp.res.3f3ea8c",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -5166,7 +5166,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16025061842016711860"
+              "templateHash": "9024132313228368973"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -5207,7 +5207,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-firewallrule",
+            "$fxv#0": "46d3xbcp.res.f391d10",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -5307,7 +5307,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "512528714858252527"
+              "templateHash": "4678038433683668128"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5347,7 +5347,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-virtualnetworkrule",
+            "$fxv#0": "46d3xbcp.res.2ad5c9f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -5463,7 +5463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14954869457680971705"
+              "templateHash": "15447449966364222619"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5557,7 +5557,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-securityalertpolicy",
+            "$fxv#0": "46d3xbcp.res.63d577a",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -5672,7 +5672,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8918109527362980423"
+              "templateHash": "3943743294635385406"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5764,7 +5764,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-vulnerabilityassessment",
+            "$fxv#0": "46d3xbcp.res.6d8c193",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -5930,7 +5930,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10309888564681707655"
+              "templateHash": "7791739841364384823"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5976,7 +5976,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-key",
+            "$fxv#0": "46d3xbcp.res.a9991c5",
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
             "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]",
@@ -6078,7 +6078,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10309888564681707655"
+              "templateHash": "7791739841364384823"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -6124,7 +6124,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-key",
+            "$fxv#0": "46d3xbcp.res.a9991c5",
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
             "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]",
@@ -6231,7 +6231,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "985587233205240946"
+              "templateHash": "16846337031868277873"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -6276,7 +6276,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-encryptionprotector",
+            "$fxv#0": "46d3xbcp.res.7fa5222",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -6397,7 +6397,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7148996292641911729"
+              "templateHash": "12925585819649971906"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -6498,7 +6498,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-auditingsetting",
+            "$fxv#0": "46d3xbcp.res.21c74d4",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -6828,7 +6828,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1033104011194057541"
+              "templateHash": "14639222289876912597"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6959,7 +6959,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-failovergroup",
+            "$fxv#0": "46d3xbcp.res.87c6eca",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

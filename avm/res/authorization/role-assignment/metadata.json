@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - Role Assignment",
   "moduleDescription": "AVM Resource Module for Authorization - Role Assignment",
-  "telemetryIdPrefix": "46d3xbcp.res.authz-roleassignment",
+  "telemetryIdPrefix": "46d3xbcp.res.cae0fee",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.authz-roleassignment"],
   "canonicalType": "Microsoft.Authorization/roleAssignments",
   "owners": ["arnoldna"]
 }

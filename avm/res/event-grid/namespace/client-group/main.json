@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2931723135592504343"
+      "templateHash": "16649121749874437547"
     },
     "name": "Eventgrid Namespace Client Groups",
     "description": "This module deploys an Eventgrid Namespace Client Group."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-clientgroup",
+    "$fxv#0": "46d3xbcp.res.04f3723",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

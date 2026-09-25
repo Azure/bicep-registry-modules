@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1892137557705323645"
+      "templateHash": "17316046271599907191"
     },
     "name": "Event Hub Namespace Authorization Rule",
     "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventhub-namespace-authorizationrule",
+    "$fxv#0": "46d3xbcp.res.bf7eb28",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Resource Graph Query",
   "moduleDescription": "AVM Resource Module for Resource Graph Query",
-  "telemetryIdPrefix": "46d3xbcp.resourcegraph-query",
+  "telemetryIdPrefix": "46d3xbcp.res.fc1a458",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.resourcegraph-query"],
   "canonicalType": "Microsoft.ResourceGraph/queries",
   "owners": ["sebassem"]
 }

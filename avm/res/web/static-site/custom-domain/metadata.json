@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Static Web App - Custom Domain",
   "moduleDescription": "AVM Child Module for Static Web App - Custom Domain",
-  "telemetryIdPrefix": "46d3xbcp.res.web-staticsite-customdomain",
+  "telemetryIdPrefix": "46d3xbcp.res.c990862",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.web-staticsite-customdomain"],
   "canonicalType": "Microsoft.Web/staticSites/customDomains"
 }

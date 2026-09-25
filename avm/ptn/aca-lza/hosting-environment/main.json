@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "813641053550257654"
+      "templateHash": "18150437698884275798"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -258,7 +258,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.acalza-hostingenvironment",
+    "$fxv#0": "46d3xbcp.ptn.0010ec8",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

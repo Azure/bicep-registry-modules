@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "SA - Content Generation",
   "moduleDescription": "AVM Pattern Module for SA - Content Generation",
-  "telemetryIdPrefix": "46d3xbcp.ptn.sa-contentgeneration",
+  "telemetryIdPrefix": "46d3xbcp.ptn.e470844",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.sa-contentgeneration"],
   "alternativeNames": ["Solution Accelerator - Content Generation"],
   "canonicalType": "sa/content-generation",
   "owners": ["aniaroramsft", "alguadam"]

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Container App",
   "moduleDescription": "AVM Resource Module for Container App",
-  "telemetryIdPrefix": "46d3xbcp.res.app-containerapp",
+  "telemetryIdPrefix": "46d3xbcp.res.b757ba7",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.app-containerapp"],
   "canonicalType": "Microsoft.App/containerApps",
   "owners": ["oZakari"]
 }

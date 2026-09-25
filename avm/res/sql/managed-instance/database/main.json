@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2001829088900204972"
+      "templateHash": "17637500977625375785"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -372,7 +372,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-database",
+    "$fxv#0": "46d3xbcp.res.c5ddd72",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -502,7 +502,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3562867664416103186"
+              "templateHash": "10050786793259804881"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -543,7 +543,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-dbbckpshortermretpolicy",
+            "$fxv#0": "46d3xbcp.res.5d29f4a",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -648,7 +648,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1052709867837814831"
+              "templateHash": "5729713481220739386"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -721,7 +721,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-dbbckplongermretpolicy",
+            "$fxv#0": "46d3xbcp.res.53243b5",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

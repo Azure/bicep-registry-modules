@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5657022849179584473"
+      "templateHash": "4580496686712607357"
     },
     "name": "Azure Cosmos DB account tables",
     "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -57,7 +57,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.documentdb-databaseaccounttable",
+    "$fxv#0": "46d3xbcp.res.1b4a5bb",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

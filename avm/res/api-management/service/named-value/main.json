@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10543050854810418745"
+      "templateHash": "13429492575276257215"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-namedvalue",
+    "$fxv#0": "46d3xbcp.res.5af41aa",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

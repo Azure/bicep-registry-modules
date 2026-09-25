@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - Workspace - API - Operation - Policy",
   "moduleDescription": "AVM Child Module for API Management Service - Workspace - API - Operation - Policy",
-  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-service-workspaceapioppol",
+  "telemetryIdPrefix": "46d3xbcp.res.03ea72b",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-service-workspaceapioppol"],
   "canonicalType": "Microsoft.ApiManagement/service/workspaces/apis/operations/policies"
 }

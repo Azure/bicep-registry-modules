@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure SQL Server - Failover Group",
   "moduleDescription": "AVM Child Module for Azure SQL Server - Failover Group",
-  "telemetryIdPrefix": "46d3xbcp.res.sql-server-failovergroup",
+  "telemetryIdPrefix": "46d3xbcp.res.87c6eca",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.sql-server-failovergroup"],
   "canonicalType": "Microsoft.Sql/servers/failoverGroups"
 }

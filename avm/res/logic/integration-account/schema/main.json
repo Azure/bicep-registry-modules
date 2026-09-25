@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4176652451977472643"
+      "templateHash": "13764922380151911313"
     },
     "name": "Integration Account Schemas",
     "description": "This module deploys an Integration Account Schema."
@@ -103,7 +103,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.logic-integrationaccount-schema",
+    "$fxv#0": "46d3xbcp.res.ded2958",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

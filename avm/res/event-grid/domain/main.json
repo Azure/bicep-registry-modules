@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9398949037356130805"
+      "templateHash": "8833674763770388032"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain."
@@ -851,7 +851,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.eventgrid-domain",
+    "$fxv#0": "46d3xbcp.res.02abba2",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -873,7 +873,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1013,7 +1013,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6470612935462880930"
+              "templateHash": "12562237504116642189"
             },
             "name": "Event Grid Domain Topics",
             "description": "This module deploys an Event Grid Domain Topic."
@@ -1040,7 +1040,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-domain-topic",
+            "$fxv#0": "46d3xbcp.res.73eb303",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1158,7 +1158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14506478688145588530"
+              "templateHash": "11814294076053688913"
             },
             "name": "Event Grid Domain Event Subscriptions",
             "description": "This module deploys an Event Grid Domain Event Subscription."
@@ -1253,7 +1253,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-domain-eventsubscription",
+            "$fxv#0": "46d3xbcp.res.46c7e21",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

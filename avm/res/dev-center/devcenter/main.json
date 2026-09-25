@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3084464004912511618"
+      "templateHash": "5017253391053858080"
     },
     "name": "Dev Center",
     "description": "This module deploys an Azure Dev Center."
@@ -1457,7 +1457,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter",
+    "$fxv#0": "46d3xbcp.res.1686064",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1635,7 +1635,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11256424559378124630"
+              "templateHash": "12473645236891713711"
             },
             "name": "Dev Center Catalog",
             "description": "This module deploys a Dev Center Catalog."
@@ -1744,7 +1744,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-catalog",
+            "$fxv#0": "46d3xbcp.res.a802133",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1860,7 +1860,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8773747515698263240"
+              "templateHash": "11868871365970819044"
             },
             "name": "Dev Center Environment Type",
             "description": "This module deploys a Dev Center Environment Type."
@@ -1904,7 +1904,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-environmenttype",
+            "$fxv#0": "46d3xbcp.res.7b0babb",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2011,7 +2011,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6347347247115988714"
+              "templateHash": "4709732039012651889"
             },
             "name": "Dev Center Gallery",
             "description": "This module deploys a Dev Center Gallery."
@@ -2053,7 +2053,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-gallery",
+            "$fxv#0": "46d3xbcp.res.465613c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2217,7 +2217,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "29835095771890126"
+              "templateHash": "5806516146191207868"
             },
             "name": "Dev Center Attached Network",
             "description": "This module deploys a Dev Center Attached Network."
@@ -2252,7 +2252,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-attachednetwork",
+            "$fxv#0": "46d3xbcp.res.69e6af5",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2361,7 +2361,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2638336082644472212"
+              "templateHash": "5052255750424972139"
             },
             "name": "Dev Center DevBox Definition",
             "description": "This module deploys a Dev Center DevBox Definition."
@@ -2468,7 +2468,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-devboxdefinition",
+            "$fxv#0": "46d3xbcp.res.9795c9c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2590,7 +2590,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3084664579828429553"
+              "templateHash": "1697682800070560745"
             },
             "name": "Dev Center Project Policy",
             "description": "This module deploys a Dev Center Project Policy."
@@ -2693,7 +2693,7 @@
                 "input": "[if(startsWith(coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], '/subscriptions/'), coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], resourceId('Microsoft.DevCenter/projects', coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')]))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.devcenter-devcenter-projectpolicy",
+            "$fxv#0": "46d3xbcp.res.48acde1",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

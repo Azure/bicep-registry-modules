@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Automation Account - Python3 Package",
   "moduleDescription": "AVM Child Module for Automation Account - Python3 Package",
-  "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-python3package",
+  "telemetryIdPrefix": "46d3xbcp.res.e3d4040",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.aut-autacct-python3package"],
   "canonicalType": "Microsoft.Automation/automationAccounts/python3Packages"
 }

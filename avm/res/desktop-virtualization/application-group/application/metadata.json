@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Virtual Desktop (AVD) Application Group - Application",
   "moduleDescription": "AVM Child Module for Azure Virtual Desktop (AVD) Application Group - Application",
-  "telemetryIdPrefix": "46d3xbcp.res.desktopvirtualization-appgroup-app",
+  "telemetryIdPrefix": "46d3xbcp.res.9de8a29",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.desktopvirtualization-appgroup-app"],
   "canonicalType": "Microsoft.DesktopVirtualization/applicationGroups/applications"
 }

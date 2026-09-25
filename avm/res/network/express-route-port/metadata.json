@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "ExpressRoute Port",
   "moduleDescription": "AVM Resource Module for ExpressRoute Port",
-  "telemetryIdPrefix": "46d3xbcp.res.network-expressrouteport",
+  "telemetryIdPrefix": "46d3xbcp.res.1b215f8",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-expressrouteport"],
   "alternativeNames": ["ER Port"],
   "canonicalType": "Microsoft.Network/expressRoutePorts",
   "owners": ["arnoldna"]

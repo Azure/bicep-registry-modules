@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11161746346705297313"
+      "templateHash": "3620037588941143351"
     },
     "name": "Sender Usernames",
     "description": "This module deploys an Sender"
@@ -51,7 +51,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.comm-emailservice-domsndrusrname",
+    "$fxv#0": "46d3xbcp.res.ad18516",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

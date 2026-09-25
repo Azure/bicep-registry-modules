@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18419740308521198417"
+      "templateHash": "11165076538529007918"
     },
     "name": "Role Assignments (Resource Group scope)",
     "description": "This module deploys a Role Assignment at a Resource Group scope."
@@ -85,7 +85,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.authz-roleassignment_rgscope",
+    "$fxv#0": "46d3xbcp.res.4838972",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.177.2456",
-      "templateHash": "10901426357168758931"
+      "templateHash": "1478931755284054106"
     },
     "name": "Container job toolkit",
     "description": "This module deploys a container to run as a job."
@@ -606,7 +606,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.app-containerjobtoolkit",
+    "$fxv#0": "46d3xbcp.ptn.aa30000",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

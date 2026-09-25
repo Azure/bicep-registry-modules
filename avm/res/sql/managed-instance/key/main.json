@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3376868513712244053"
+      "templateHash": "12849950681150922110"
     },
     "name": "SQL Managed Instance Keys",
     "description": "This module deploys a SQL Managed Instance Key."
@@ -51,7 +51,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-key",
+    "$fxv#0": "46d3xbcp.res.3867c32",
     "splittedKeyUri": "[split(coalesce(parameters('uri'), ''), '/')]",
     "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"

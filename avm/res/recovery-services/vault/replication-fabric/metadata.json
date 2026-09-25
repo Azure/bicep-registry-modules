@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Recovery Services Vault - Replication Fabric",
   "moduleDescription": "AVM Child Module for Recovery Services Vault - Replication Fabric",
-  "telemetryIdPrefix": "46d3xbcp.res.recsvcs-vault-repfab",
+  "telemetryIdPrefix": "46d3xbcp.res.434e615",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.recsvcs-vault-repfab"],
   "canonicalType": "Microsoft.RecoveryServices/vaults/replicationFabrics"
 }

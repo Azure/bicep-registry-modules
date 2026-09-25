@@ -3,5 +3,6 @@
   "canonicalType": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
   "moduleDisplayName": "Storage Account - Object Replication Policy",
   "moduleDescription": "AVM Child Module for Storage Account - Object Replication Policy",
-  "telemetryIdPrefix": "46d3xbcp.res.storage-storacct-objectreplpolicy"
+  "telemetryIdPrefix": "46d3xbcp.res.994992f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.storage-storacct-objectreplpolicy"]
 }

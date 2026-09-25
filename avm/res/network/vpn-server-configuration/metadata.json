@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "VPN Server Configuration",
   "moduleDescription": "AVM Resource Module for VPN Server Configuration",
-  "telemetryIdPrefix": "46d3xbcp.res.network-vpnserverconfiguration",
+  "telemetryIdPrefix": "46d3xbcp.res.bb808ce",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-vpnserverconfiguration"],
   "canonicalType": "Microsoft.Network/vpnServerConfigurations",
   "owners": ["ericscheffler"]
 }

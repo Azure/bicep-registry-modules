@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5660875531449373535"
+      "templateHash": "11952141707997546054"
     },
     "name": "Storage Account Management Policies",
     "description": "This module deploys a Storage Account Management Policy."
@@ -36,7 +36,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.storage-mgmtpolicy",
+    "$fxv#0": "46d3xbcp.res.a1e1fef",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

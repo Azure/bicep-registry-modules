@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4151804247581943373"
+      "templateHash": "1036037741991791339"
     },
     "name": "NSG Flow Logs",
     "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
@@ -116,7 +116,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-networkwatcher-flowlog",
+    "$fxv#0": "46d3xbcp.res.98131fc",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

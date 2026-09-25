@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5219150820691019731"
+      "templateHash": "14743184090676111654"
     },
     "name": "DNS Resolver Inbound Endpoint",
     "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -71,7 +71,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-dnsresolver-inboundendpoint",
+    "$fxv#0": "46d3xbcp.res.2669321",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14659031722703471449"
+      "templateHash": "7658876000950188529"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -127,7 +127,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dataprot-backupvault-backupinst",
+    "$fxv#0": "46d3xbcp.res.a38eed2",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

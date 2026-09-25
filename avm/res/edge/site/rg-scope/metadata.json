@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Edge Site - Resource Group Scope",
   "moduleDescription": "AVM Resource Module for Edge Site - Resource Group Scope",
-  "telemetryIdPrefix": "46d3xbcp.res.edge-site_rgscope",
+  "telemetryIdPrefix": "46d3xbcp.res.6a45d55",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.edge-site_rgscope"],
   "canonicalType": "Microsoft.Edge/sites"
 }

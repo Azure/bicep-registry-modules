@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10143593699935410041"
+      "templateHash": "17649921427922319273"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -957,7 +957,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.elasticsan-elasticsan",
+    "$fxv#0": "46d3xbcp.res.3cd952e",
     "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), -1)), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
     "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null()), null())]",
     "totalVirtualNetworkRules": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'virtualNetworkRules'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -982,7 +982,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1128,7 +1128,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17101741752719136955"
+              "templateHash": "6227264034845139911"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1907,7 +1907,7 @@
                 }
               }
             ],
-            "$fxv#0": "46d3xbcp.res.elsan-elsan-volumegroup",
+            "$fxv#0": "46d3xbcp.res.c9afb93",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false,
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -2028,7 +2028,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "6698461119640885766"
+                      "templateHash": "1530967667235091520"
                     },
                     "name": "Elastic SAN Volumes",
                     "description": "This module deploys an Elastic SAN Volume."
@@ -2143,7 +2143,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.elsan-elsan-volumegroupvolume",
+                    "$fxv#0": "46d3xbcp.res.29c2399",
                     "telemetryIdPrefix": "[variables('$fxv#0')]",
                     "enableReferencedModulesTelemetry": false
                   },
@@ -2228,7 +2228,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.47.16.16243",
-                              "templateHash": "11261059957540189963"
+                              "templateHash": "7245068298357676029"
                             },
                             "name": "Elastic SAN Volume Snapshots",
                             "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -2283,7 +2283,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "46d3xbcp.res.elsan-elsan-volumegroupsnapshot",
+                            "$fxv#0": "46d3xbcp.res.10903e7",
                             "telemetryIdPrefix": "[variables('$fxv#0')]"
                           },
                           "resources": [

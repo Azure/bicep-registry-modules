@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3562867664416103186"
+      "templateHash": "10050786793259804881"
     },
     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-dbbckpshortermretpolicy",
+    "$fxv#0": "46d3xbcp.res.5d29f4a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

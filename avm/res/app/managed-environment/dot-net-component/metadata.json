@@ -3,5 +3,6 @@
   "moduleDescription": "AVM Child Module for App Managed Environment - .NET Component",
   "moduleDisplayName": "App Managed Environment - .NET Component",
   "canonicalType": "Microsoft.App/managedEnvironments/dotNetComponents",
-  "telemetryIdPrefix": "46d3xbcp.res.app-managedenvironment-dotnetcomp"
+  "telemetryIdPrefix": "46d3xbcp.res.d11fde2",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.app-managedenvironment-dotnetcomp"]
 }

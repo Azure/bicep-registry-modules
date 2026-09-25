@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "App Managed Environment",
   "moduleDescription": "AVM Resource Module for App Managed Environment",
-  "telemetryIdPrefix": "46d3xbcp.res.app-managedenvironment",
+  "telemetryIdPrefix": "46d3xbcp.res.237a91e",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.app-managedenvironment"],
   "canonicalType": "Microsoft.App/managedEnvironments",
   "owners": ["abhishekaryams"]
 }

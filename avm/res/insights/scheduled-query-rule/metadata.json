@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Scheduled Query Rule",
   "moduleDescription": "AVM Resource Module for Scheduled Query Rule",
-  "telemetryIdPrefix": "46d3xbcp.res.insights-scheduledqueryrule",
+  "telemetryIdPrefix": "46d3xbcp.res.09c5243",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.insights-scheduledqueryrule"],
   "canonicalType": "Microsoft.Insights/scheduledQueryRules",
   "owners": ["abhishekaryams"]
 }

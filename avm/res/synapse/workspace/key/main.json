@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13559456073189016675"
+      "templateHash": "3146586038779568110"
     },
     "name": "Synapse Workspaces Keys",
     "description": "This module deploys a Synapse Workspaces Key."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.synapse-workspace-key",
+    "$fxv#0": "46d3xbcp.res.1254be8",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

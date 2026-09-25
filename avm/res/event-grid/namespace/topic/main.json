@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9684970500178279317"
+      "templateHash": "12858032047216561147"
     },
     "name": "Eventgrid Namespace Topics",
     "description": "This module deploys an Eventgrid Namespace Topic."
@@ -201,7 +201,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-topic",
+    "$fxv#0": "46d3xbcp.res.1f0f44e",
     "builtInRoleNames": {
       "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -340,7 +340,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11447515032853755257"
+              "templateHash": "9346912445048798480"
             },
             "name": "Event Subscriptions",
             "description": "This module deploys an Event Subscription."
@@ -488,7 +488,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-topiceventsub",
+            "$fxv#0": "46d3xbcp.res.abf676d",
             "builtInRoleNames": {
               "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",

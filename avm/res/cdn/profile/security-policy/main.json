@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3302067231292179248"
+      "templateHash": "4141480670154071449"
     },
     "name": "CDN Profiles Security Policy",
     "description": "This module deploys a CDN Profile Security Policy."
@@ -85,7 +85,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.cdn-profile-securitypolicy",
+    "$fxv#0": "46d3xbcp.res.40315b9",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

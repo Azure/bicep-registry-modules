@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6954696904135496627"
+      "templateHash": "11237540287236421065"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access."
@@ -934,7 +934,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.aiplatform-baseline",
+    "$fxv#0": "46d3xbcp.ptn.cdf37fe",
     "createVirtualNetwork": "[not(equals(tryGet(parameters('virtualNetworkConfiguration'), 'enabled'), false()))]",
     "createBastion": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('bastionConfiguration'), 'enabled'), false())))]",
     "createVirtualMachine": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('virtualMachineConfiguration'), 'enabled'), false())))]",

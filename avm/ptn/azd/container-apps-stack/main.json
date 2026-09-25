@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3795737849947310617"
+      "templateHash": "17870168339182485374"
     },
     "name": "avm/ptn/azd/container-apps-stack",
     "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -215,7 +215,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-containerappsstack",
+    "$fxv#0": "46d3xbcp.ptn.efdf44a",
     "containerRegistryRG": "[if(empty(parameters('containerRegistryResourceGroupName')), resourceGroup(), createObject())]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },

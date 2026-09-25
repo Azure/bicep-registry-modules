@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4446579001463287138"
+      "templateHash": "14723889957598945111"
     },
     "name": "Virtual Hub Virtual Network Connections",
     "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -53,7 +53,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-virtualhub-hubvirtualnetwork",
+    "$fxv#0": "46d3xbcp.res.9d361c9",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
@@ -61,7 +61,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

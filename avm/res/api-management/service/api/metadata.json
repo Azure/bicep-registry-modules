@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - API",
   "moduleDescription": "AVM Child Module for API Management Service - API",
-  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-api",
+  "telemetryIdPrefix": "46d3xbcp.res.99c1bf1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-api"],
   "canonicalType": "Microsoft.ApiManagement/service/apis"
 }

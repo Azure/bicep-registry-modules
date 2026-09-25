@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16853194403413379334"
+      "templateHash": "6451732451433459658"
     },
     "name": "Azd ACR Linked Container App",
     "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -643,7 +643,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-acrcontainerapp",
+    "$fxv#0": "46d3xbcp.ptn.1b7ad93",
     "usePrivateRegistry": "[and(not(empty(parameters('identityName'))), not(empty(parameters('containerRegistryName'))))]",
     "normalizedIdentityType": "[if(not(empty(parameters('identityName'))), 'UserAssigned', parameters('identityType'))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"

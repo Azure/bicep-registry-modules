@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - PIM Role Assignment",
   "moduleDescription": "AVM Pattern Module for Authorization - PIM Role Assignment",
-  "telemetryIdPrefix": "46d3xbcp.ptn.authorization-pimroleassignment",
+  "telemetryIdPrefix": "46d3xbcp.ptn.1413b00",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.authorization-pimroleassignment"],
   "canonicalType": "authorization/pim-role-assignment",
   "owners": ["sebassem"]
 }

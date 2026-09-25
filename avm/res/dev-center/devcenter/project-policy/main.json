@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3084664579828429553"
+      "templateHash": "1697682800070560745"
     },
     "name": "Dev Center Project Policy",
     "description": "This module deploys a Dev Center Project Policy."
@@ -109,7 +109,7 @@
         "input": "[if(startsWith(coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], '/subscriptions/'), coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')], resourceId('Microsoft.DevCenter/projects', coalesce(parameters('projectsResourceIdOrName'), createArray())[copyIndex('projectResourceIds')]))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter-projectpolicy",
+    "$fxv#0": "46d3xbcp.res.48acde1",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

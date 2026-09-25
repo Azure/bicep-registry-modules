@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3442789872582746351"
+      "templateHash": "1415160608116903428"
     },
     "name": "WCF Relay Authorization Rules",
     "description": "This module deploys a WCF Relay Authorization Rule."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.relay-namespace-wcfrelayauthzrule",
+    "$fxv#0": "46d3xbcp.res.96b27b7",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

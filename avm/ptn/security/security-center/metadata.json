@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Security Center (Defender for Cloud)",
   "moduleDescription": "AVM Pattern Module for Azure Security Center (Defender for Cloud)",
-  "telemetryIdPrefix": "46d3xbcp.ptn.security-securitycenter",
+  "telemetryIdPrefix": "46d3xbcp.ptn.8191344",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.security-securitycenter"],
   "canonicalType": "security/security-center",
   "owners": ["oZakari", "jtracey93"]
 }

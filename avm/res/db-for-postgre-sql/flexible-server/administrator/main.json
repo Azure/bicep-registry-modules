@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2832599881078339471"
+      "templateHash": "10930783981151933153"
     },
     "name": "DBforPostgreSQL Flexible Server Administrators",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -57,7 +57,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-admin",
+    "$fxv#0": "46d3xbcp.res.c095a98",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14068549451064457554"
+      "templateHash": "1180959922444391725"
     },
     "name": "Service Fabric Cluster Application Types",
     "description": "This module deploys a Service Fabric Cluster Application Type."
@@ -41,7 +41,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicefabric-cluster-apptype",
+    "$fxv#0": "46d3xbcp.res.2917c6c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

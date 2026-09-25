@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Service Bus Namespace - Disaster Recovery Config",
   "moduleDescription": "AVM Child Module for Service Bus Namespace - Disaster Recovery Config",
-  "telemetryIdPrefix": "46d3xbcp.res.servicebus-namespace-drconfig",
+  "telemetryIdPrefix": "46d3xbcp.res.7890384",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.servicebus-namespace-drconfig"],
   "canonicalType": "Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs"
 }

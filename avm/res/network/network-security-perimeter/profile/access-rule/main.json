@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13418581803696942034"
+      "templateHash": "1552677994657058989"
     },
     "name": "Network Security Perimeter Access Rule",
     "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -117,7 +117,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwsecperim-profileaccessrule",
+    "$fxv#0": "46d3xbcp.res.70ab7cf",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8282597802116422532"
+      "templateHash": "15432723842338152115"
     },
     "name": "Azure NetApp Files Volume Backup Vault",
     "description": "This module deploys a NetApp Files Backup Vault."
@@ -95,7 +95,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.netapp-netappaccount-backupvault",
+    "$fxv#0": "46d3xbcp.res.83bd19f",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -180,7 +180,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7683168100285784473"
+              "templateHash": "1719649230976763293"
             },
             "name": "Azure NetApp Files Volume Backup",
             "description": "This module deploys a backup of a NetApp Files Volume."
@@ -240,7 +240,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.netapp-netappaccount-backupvaultbckp",
+            "$fxv#0": "46d3xbcp.res.8ed37bb",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

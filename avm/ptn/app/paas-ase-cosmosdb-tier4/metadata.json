@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Workload - PaaS ASE Cosmos DB - Tier 4",
   "moduleDescription": "AVM Pattern Module for Workload - PaaS ASE Cosmos DB - Tier 4",
-  "telemetryIdPrefix": "46d3xbcp.ptn.app-paasasecosmosdbt4",
+  "telemetryIdPrefix": "46d3xbcp.ptn.6d7b452",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.app-paasasecosmosdbt4"],
   "canonicalType": "app/paas-ase-cosmosdb-tier4",
   "owners": ["mikestiers", "andbron"]
 }

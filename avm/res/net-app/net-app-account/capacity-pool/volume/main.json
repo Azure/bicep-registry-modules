@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4006682816413038354"
+      "templateHash": "6505178330035586370"
     },
     "name": "Azure NetApp Files Capacity Pool Volumes",
     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -612,7 +612,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.netapp-netappaccount-capacitypoolvol",
+    "$fxv#0": "46d3xbcp.res.28bf2fd",
     "remoteCapacityPoolName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10], '')]",
     "remoteNetAppName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], '')]",
     "builtInRoleNames": {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10606778533446514473"
+      "templateHash": "8832619595941105655"
     },
     "name": "Static Web App Site Config",
     "description": "This module deploys a Static Web App Site Config."
@@ -42,7 +42,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-staticsite-config",
+    "$fxv#0": "46d3xbcp.res.431d2df",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

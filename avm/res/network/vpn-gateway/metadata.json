@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "VPN Gateway",
   "moduleDescription": "AVM Resource Module for VPN Gateway",
-  "telemetryIdPrefix": "46d3xbcp.res.network-vpngateway",
+  "telemetryIdPrefix": "46d3xbcp.res.49fcbf5",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-vpngateway"],
   "alternativeNames": ["VPN GW"],
   "canonicalType": "Microsoft.Network/vpnGateways",
   "owners": ["fabmas"]

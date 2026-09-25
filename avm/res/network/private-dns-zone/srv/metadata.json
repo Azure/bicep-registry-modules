@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Private DNS Zone - SRV",
   "moduleDescription": "AVM Child Module for Private DNS Zone - SRV",
-  "telemetryIdPrefix": "46d3xbcp.res.nw-privdnszonesrv",
+  "telemetryIdPrefix": "46d3xbcp.res.794d8a6",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.nw-privdnszonesrv"],
   "canonicalType": "Microsoft.Network/privateDnsZones/SRV"
 }

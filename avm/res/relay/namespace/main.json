@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2636144113377672739"
+      "templateHash": "7478935066225127955"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace"
@@ -802,7 +802,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.relay-namespace",
+    "$fxv#0": "46d3xbcp.res.68e2ca1",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
@@ -959,7 +959,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5587139186738732915"
+              "templateHash": "16777730168458795422"
             },
             "name": "Relay Namespace Authorization Rules",
             "description": "This module deploys a Relay Namespace Authorization Rule."
@@ -1000,7 +1000,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.relay-namespace-authorizationrule",
+            "$fxv#0": "46d3xbcp.res.c8c2ede",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1097,7 +1097,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1562904179362388897"
+              "templateHash": "4307732075926232094"
             },
             "name": "Relay Namespace Network Rules Sets",
             "description": "This module deploys a Relay Namespace Network Rule Set."
@@ -1149,7 +1149,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.relay-namespace-networkruleset",
+            "$fxv#0": "46d3xbcp.res.9e0a826",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1260,7 +1260,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5299324251464132192"
+              "templateHash": "4283238814481526180"
             },
             "name": "Relay Namespace Hybrid Connections",
             "description": "This module deploys a Relay Namespace Hybrid Connection."
@@ -1470,7 +1470,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.relay-namespace-hybconn",
+            "$fxv#0": "46d3xbcp.res.50e35a4",
             "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
@@ -1593,7 +1593,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "6555120503940425663"
+                      "templateHash": "7596914641541682313"
                     },
                     "name": "Hybrid Connection Authorization Rules",
                     "description": "This module deploys a Hybrid Connection Authorization Rule."
@@ -1638,7 +1638,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.relay-namespace-hybconnautzrule",
+                    "$fxv#0": "46d3xbcp.res.fa3a6b8",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -1777,7 +1777,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7221611696471440553"
+              "templateHash": "16069269399238987374"
             },
             "name": "Relay Namespace WCF Relays",
             "description": "This module deploys a Relay Namespace WCF Relay."
@@ -2005,7 +2005,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.relay-namespace-wcfrelay",
+            "$fxv#0": "46d3xbcp.res.f234d33",
             "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
@@ -2130,7 +2130,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3442789872582746351"
+                      "templateHash": "1415160608116903428"
                     },
                     "name": "WCF Relay Authorization Rules",
                     "description": "This module deploys a WCF Relay Authorization Rule."
@@ -2175,7 +2175,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.relay-namespace-wcfrelayauthzrule",
+                    "$fxv#0": "46d3xbcp.res.96b27b7",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [

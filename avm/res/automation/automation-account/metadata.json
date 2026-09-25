@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Automation Account",
   "moduleDescription": "AVM Resource Module for Automation Account",
-  "telemetryIdPrefix": "46d3xbcp.res.automation-automationaccount",
+  "telemetryIdPrefix": "46d3xbcp.res.1fc724c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.automation-automationaccount"],
   "canonicalType": "Microsoft.Automation/automationAccounts",
   "owners": ["gpacetti"]
 }

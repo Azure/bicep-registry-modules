@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10681056523342973428"
+      "templateHash": "502274898323318112"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -340,7 +340,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-vpngateway",
+    "$fxv#0": "46d3xbcp.res.49fcbf5",
     "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
@@ -350,7 +350,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -443,7 +443,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14976150563683987630"
+              "templateHash": "9031682983259875679"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -519,7 +519,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-vpngateway-natrule",
+            "$fxv#0": "46d3xbcp.res.6a9b38e",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -665,7 +665,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14974093211744303513"
+              "templateHash": "3895798121115673249"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
@@ -806,7 +806,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-vpngateway-vpnconnection",
+            "$fxv#0": "46d3xbcp.res.a23bc37",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7017937089692353647"
+      "templateHash": "13339641463105256062"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -251,7 +251,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.netapp-netappaccount-snapshotpolicy",
+    "$fxv#0": "46d3xbcp.res.0558523",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2942218479613182353"
+      "templateHash": "9726868742314408332"
     },
     "name": "Service Bus Namespace Network Rule Sets",
     "description": "This module deploys a ServiceBus Namespace Network Rule Set."
@@ -81,7 +81,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.res.servicebus-namespace-netruleset",
+    "$fxv#0": "46d3xbcp.res.cf8c79f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

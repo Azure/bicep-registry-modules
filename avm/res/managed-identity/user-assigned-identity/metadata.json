@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "User Assigned Identity",
   "moduleDescription": "AVM Resource Module for User Assigned Identity",
-  "telemetryIdPrefix": "46d3xbcp.res.managedidentity-userassignedidentity",
+  "telemetryIdPrefix": "46d3xbcp.res.58b78a1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.managedidentity-userassignedidentity"],
   "alternativeNames": ["MSI"],
   "canonicalType": "Microsoft.ManagedIdentity/userAssignedIdentities",
   "owners": ["gpacetti"]

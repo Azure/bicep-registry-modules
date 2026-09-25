@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Logic Apps Integration Account - Map",
   "moduleDescription": "AVM Child Module for Logic Apps Integration Account - Map",
-  "telemetryIdPrefix": "46d3xbcp.res.logic-integrationaccount-map",
+  "telemetryIdPrefix": "46d3xbcp.res.ccc9a8d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.logic-integrationaccount-map"],
   "canonicalType": "Microsoft.Logic/integrationAccounts/maps"
 }

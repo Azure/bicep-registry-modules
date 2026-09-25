@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13168756038475170133"
+      "templateHash": "393293925795894470"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -1497,7 +1497,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.recoveryservices-vault",
+    "$fxv#0": "46d3xbcp.res.90ce500",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(or(not(empty(parameters('managedIdentities'))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1708,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10045954562920141900"
+              "templateHash": "2871428758846322053"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -1833,7 +1833,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-repfab",
+            "$fxv#0": "46d3xbcp.res.434e615",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1913,7 +1913,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "6944576573686481453"
+                      "templateHash": "13144141816853497437"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2009,7 +2009,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.recsvcs-vault-repfabrepprotcontainer",
+                    "$fxv#0": "46d3xbcp.res.87b1027",
                     "enableReferencedModulesTelemetry": false,
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
@@ -2111,7 +2111,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.47.16.16243",
-                              "templateHash": "7040754155774341272"
+                              "templateHash": "6313426968010491323"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2186,7 +2186,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "46d3xbcp.res.recsvcs-vault-repfabrepprotcontmap",
+                            "$fxv#0": "46d3xbcp.res.0d0f866",
                             "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
                             "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
                             "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]",
@@ -2377,7 +2377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7978934245603630766"
+              "templateHash": "14339499590550285478"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2436,7 +2436,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-replicationpolicy",
+            "$fxv#0": "46d3xbcp.res.91801e1",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2550,7 +2550,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7158310838884373506"
+              "templateHash": "6585492465964960473"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -2620,7 +2620,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-bckpfabprotcontprotitm",
+            "$fxv#0": "46d3xbcp.res.f7faa7c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2720,7 +2720,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6589794687552471752"
+              "templateHash": "94195443694611875"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -2753,7 +2753,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-backuppolicy",
+            "$fxv#0": "46d3xbcp.res.03d6f97",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2858,7 +2858,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3146342112903170892"
+              "templateHash": "1858477198018108177"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2970,7 +2970,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-backupconfig",
+            "$fxv#0": "46d3xbcp.res.b525419",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -3074,7 +3074,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "12587613122398010737"
+              "templateHash": "2343695749033723200"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -3130,7 +3130,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-replalertsetting",
+            "$fxv#0": "46d3xbcp.res.88b7529",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

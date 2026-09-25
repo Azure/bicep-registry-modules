@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15215764072163825511"
+      "templateHash": "11078663592828487491"
     },
     "name": "PaaS ASE with CosmosDB Tier 4",
     "description": "Creates a PaaS ASE with CosmosDB Tier 4 resiliency configuration."
@@ -72,7 +72,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.app-paasasecosmosdbt4",
+    "$fxv#0": "46d3xbcp.ptn.6d7b452",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

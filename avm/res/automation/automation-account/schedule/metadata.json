@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Automation Account - Schedule",
   "moduleDescription": "AVM Child Module for Automation Account - Schedule",
-  "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-schedule",
+  "telemetryIdPrefix": "46d3xbcp.res.da796a3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.aut-autacct-schedule"],
   "canonicalType": "Microsoft.Automation/automationAccounts/schedules"
 }

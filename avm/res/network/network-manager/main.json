@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "962908563951700702"
+      "templateHash": "18159667632462989776"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager."
@@ -964,7 +964,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.network-networkmanager",
+    "$fxv#0": "46d3xbcp.res.804a6dc",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "IPAM Pool User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7b3e853f-ad5d-4fb5-a7b8-56a3581c7037')]",
@@ -1089,7 +1089,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15791617710600621750"
+              "templateHash": "9551084400283256659"
             },
             "name": "Network Manager Network Groups",
             "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
@@ -1168,7 +1168,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-networkgroup",
+            "$fxv#0": "46d3xbcp.res.c90b79c",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1245,7 +1245,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11445955478454200685"
+                      "templateHash": "15875488374773072796"
                     },
                     "name": "Network Manager Network Group Static Members",
                     "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."
@@ -1284,7 +1284,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.network-nwmgr-nwgrpstaticmember",
+                    "$fxv#0": "46d3xbcp.res.f743f4a",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -1429,7 +1429,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2494931150902124674"
+              "templateHash": "5836268812480899009"
             },
             "name": "Network Manager Connectivity Configurations",
             "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -1582,7 +1582,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-connectivityconfig",
+            "$fxv#0": "46d3xbcp.res.be731b8",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1697,7 +1697,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "518829630386514907"
+              "templateHash": "7585843974960381373"
             },
             "name": "Network Manager Scope Connections",
             "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
@@ -1745,7 +1745,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-scopeconnection",
+            "$fxv#0": "46d3xbcp.res.4773af6",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1850,7 +1850,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10351239235352849448"
+              "templateHash": "2698691054177610975"
             },
             "name": "Network Manager Security Admin Configurations",
             "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -2136,7 +2136,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-secadmcfg",
+            "$fxv#0": "46d3xbcp.res.f4e9b71",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -2221,7 +2221,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3439827316635373912"
+                      "templateHash": "15819918478409492498"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -2458,7 +2458,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.network-nwmgr-secadmcfgrulecoll",
+                    "$fxv#0": "46d3xbcp.res.88637c4",
                     "enableReferencedModulesTelemetry": false,
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
@@ -2569,7 +2569,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.47.16.16243",
-                              "templateHash": "5539873287657952115"
+                              "templateHash": "13073742466436592318"
                             },
                             "name": "Network Manager Security Admin Configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -2752,7 +2752,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "46d3xbcp.res.network-nwmgr-secadmcfgrulecollrule",
+                            "$fxv#0": "46d3xbcp.res.b51899a",
                             "telemetryIdPrefix": "[variables('$fxv#0')]"
                           },
                           "resources": {
@@ -2943,7 +2943,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8694054242652206977"
+              "templateHash": "15203801830038544165"
             },
             "name": "Network Manager Routing Configurations",
             "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -3158,7 +3158,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfg",
+            "$fxv#0": "46d3xbcp.res.6782796",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -3245,7 +3245,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "8550621230108552240"
+                      "templateHash": "17735060288287812297"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -3420,7 +3420,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecoll",
+                    "$fxv#0": "46d3xbcp.res.ba36f4f",
                     "enableReferencedModulesTelemetry": false,
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
@@ -3514,7 +3514,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.47.16.16243",
-                              "templateHash": "8436937529064924293"
+                              "templateHash": "8434472910094230562"
                             },
                             "name": "Network Manager Routing configuration Rule Collection Rules",
                             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -3630,7 +3630,7 @@
                             }
                           },
                           "variables": {
-                            "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecollrule",
+                            "$fxv#0": "46d3xbcp.res.029f8d4",
                             "telemetryIdPrefix": "[variables('$fxv#0')]"
                           },
                           "resources": {

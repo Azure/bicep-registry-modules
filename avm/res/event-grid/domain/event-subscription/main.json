@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14506478688145588530"
+      "templateHash": "11814294076053688913"
     },
     "name": "Event Grid Domain Event Subscriptions",
     "description": "This module deploys an Event Grid Domain Event Subscription."
@@ -101,7 +101,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-domain-eventsubscription",
+    "$fxv#0": "46d3xbcp.res.46c7e21",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

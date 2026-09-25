@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3395726360607620502"
+      "templateHash": "6280575124835945052"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1143,7 +1143,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.cdn-profile",
+    "$fxv#0": "46d3xbcp.res.dc7975a",
     "builtInRoleNames": {
       "CDN Endpoint Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '426e0c7f-0c7e-4658-b36f-ff54d6c29b45')]",
       "CDN Endpoint Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '871e35f6-b5c1-49cc-a043-bde969a0f2cd')]",
@@ -1310,7 +1310,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13694008342121012274"
+              "templateHash": "14547170585435257121"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1363,7 +1363,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-endpoint",
+            "$fxv#0": "46d3xbcp.res.f95ae8a",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1467,7 +1467,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "16527632504735445448"
+                      "templateHash": "3462167441055855362"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1570,7 +1570,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.cdn-profile-endpointorigin",
+                    "$fxv#0": "46d3xbcp.res.3ca1712",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -1747,7 +1747,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14606456548140675378"
+              "templateHash": "17838849997600044157"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1818,7 +1818,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-secret",
+            "$fxv#0": "46d3xbcp.res.aef38a0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1945,7 +1945,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3711704335627339431"
+              "templateHash": "633778306252864518"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -2081,7 +2081,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-domain",
+            "$fxv#0": "46d3xbcp.res.3612bd5",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2228,7 +2228,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14006462717632087106"
+              "templateHash": "10341093685459010783"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2471,7 +2471,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-origingroup",
+            "$fxv#0": "46d3xbcp.res.af852d8",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -2574,7 +2574,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "16139429313275944142"
+                      "templateHash": "1212764520660118167"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2676,7 +2676,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.cdn-profile-origingroup-origin",
+                    "$fxv#0": "46d3xbcp.res.aa074ae",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -2830,7 +2830,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14396874389835406928"
+              "templateHash": "1348859689420343612"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2921,7 +2921,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-ruleset",
+            "$fxv#0": "46d3xbcp.res.5d425cc",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -3004,7 +3004,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "17236033640467851161"
+                      "templateHash": "18374560137847118231"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -3074,7 +3074,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.cdn-profile-rulesetrule",
+                    "$fxv#0": "46d3xbcp.res.8f9e857",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -3226,7 +3226,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16837953198286900429"
+              "templateHash": "15010922217113699609"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3426,7 +3426,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-afdendpoint",
+            "$fxv#0": "46d3xbcp.res.7db313d",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -3536,7 +3536,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11407258432278615085"
+                      "templateHash": "6880686173081899912"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3681,7 +3681,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.cdn-profile-afdendpointroute",
+                    "$fxv#0": "46d3xbcp.res.86a5b13",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -3899,7 +3899,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3302067231292179248"
+              "templateHash": "4141480670154071449"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."
@@ -3978,7 +3978,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-securitypolicy",
+            "$fxv#0": "46d3xbcp.res.40315b9",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

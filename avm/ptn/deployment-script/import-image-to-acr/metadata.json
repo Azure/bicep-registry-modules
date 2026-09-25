@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Deployment Script - Import Container Image to ACR",
   "moduleDescription": "AVM Pattern Module for Deployment Script - Import Container Image to ACR",
-  "telemetryIdPrefix": "46d3xbcp.ptn.deploymentscript-importimagetoacr",
+  "telemetryIdPrefix": "46d3xbcp.ptn.a7e96ce",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.deploymentscript-importimagetoacr"],
   "canonicalType": "deployment-script/import-image-to-acr",
   "owners": ["ReneHezser"]
 }

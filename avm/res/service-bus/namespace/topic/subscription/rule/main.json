@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5724159720446084798"
+      "templateHash": "13257050455721514365"
     },
     "name": "Service Bus Namespace Topic Subscription Rule",
     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -267,7 +267,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicebus-namespace-topicsubrule",
+    "$fxv#0": "46d3xbcp.res.d20bda8",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

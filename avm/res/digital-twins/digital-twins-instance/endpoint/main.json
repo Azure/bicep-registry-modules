@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12222914210538065068"
+      "templateHash": "4359680349745841537"
     },
     "name": "Digital Twins Instance Endpoint",
     "description": "This module deploys a Digital Twins Instance Endpoint."
@@ -338,7 +338,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.digitaltwins-digitaltwinsinstance-en",
+    "$fxv#0": "46d3xbcp.res.d9f341d",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "identity": "[if(not(empty(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'))), createObject('type', if(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId'), ''))), 'UserAssigned', null())), 'userAssignedIdentity', tryGet(tryGet(tryGet(parameters('properties'), 'authentication'), 'managedIdentities'), 'userAssignedResourceId')), null())]"
   },

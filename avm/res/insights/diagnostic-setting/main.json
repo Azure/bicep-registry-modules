@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16308870772047480180"
+      "templateHash": "11524750827761930456"
     },
     "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
     "description": "This module deploys a Subscription wide export of the Activity Log."
@@ -156,7 +156,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.insights-diagnosticsetting",
+    "$fxv#0": "46d3xbcp.res.c66c375",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

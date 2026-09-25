@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DevTest Lab - Artifactsource",
   "moduleDescription": "AVM Child Module for DevTest Lab - Artifactsource",
-  "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab-artifactsource",
+  "telemetryIdPrefix": "46d3xbcp.res.2da64a7",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.devtestlab-lab-artifactsource"],
   "canonicalType": "Microsoft.DevTestLab/labs/artifactsources"
 }

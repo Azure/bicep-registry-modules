@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12800347648942083070"
+      "templateHash": "4002817823020801425"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope."
@@ -726,7 +726,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.insights-privatelinkscope",
+    "$fxv#0": "46d3xbcp.res.d2c24a9",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -847,7 +847,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "9577821464078779768"
+              "templateHash": "15388902877637260510"
             },
             "name": "Private Link Scope Scoped Resources",
             "description": "This module deploys a Private Link Scope Scoped Resource."
@@ -882,7 +882,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.insights-privatelinkscope-scopedres",
+            "$fxv#0": "46d3xbcp.res.238e132",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

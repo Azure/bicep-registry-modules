@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "User Assigned Identity - Federated Identity Credential",
   "moduleDescription": "AVM Child Module for User Assigned Identity - Federated Identity Credential",
-  "telemetryIdPrefix": "46d3xbcp.res.managedid-userassignedidcredential",
+  "telemetryIdPrefix": "46d3xbcp.res.3d14061",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.managedid-userassignedidcredential"],
   "canonicalType": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials"
 }

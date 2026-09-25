@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13754938978102887310"
+      "templateHash": "15701377357841828227"
     },
     "name": "DBforMySQL Flexible Server Firewall Rules",
     "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-firewallrule",
+    "$fxv#0": "46d3xbcp.res.55b5c3f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

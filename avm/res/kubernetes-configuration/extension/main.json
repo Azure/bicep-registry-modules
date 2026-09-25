@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1623683737486475322"
+      "templateHash": "6129444751223242932"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension."
@@ -120,7 +120,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.kubernetesconfiguration-extension",
+    "$fxv#0": "46d3xbcp.res.9f9589a",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "extensionProperties": {

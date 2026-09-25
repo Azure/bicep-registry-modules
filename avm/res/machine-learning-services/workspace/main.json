@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16148118770029430824"
+      "templateHash": "10448947956403217740"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -2193,7 +2193,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.machinelearningservices-workspace",
+    "$fxv#0": "46d3xbcp.res.2273aaa",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(or(not(empty(parameters('managedIdentities'))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -2417,7 +2417,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "12333927544429208805"
+              "templateHash": "5977078088342713688"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2570,7 +2570,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.mlservices-workspace-compute",
+            "$fxv#0": "46d3xbcp.res.4a87cb1",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
@@ -2715,7 +2715,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4276153775416548100"
+              "templateHash": "12601683907696755493"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3470,7 +3470,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.mlservices-workspace-connection",
+            "$fxv#0": "46d3xbcp.res.a9b5094",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -3570,7 +3570,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15136062158490549384"
+              "templateHash": "3390380406234937570"
             },
             "name": "Machine Learning Services Workspaces Datastores",
             "description": "This module creates a datastore in a Machine Learning Services workspace."
@@ -3606,7 +3606,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.mlservices-workspace-datastore",
+            "$fxv#0": "46d3xbcp.res.43c99cb",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

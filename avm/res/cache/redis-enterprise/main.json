@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17945952156870824516"
+      "templateHash": "14188156777374208990"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache."
@@ -1250,7 +1250,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.cache-redisenterprise",
+    "$fxv#0": "46d3xbcp.res.09fcb89",
     "enableReferencedModulesTelemetry": false,
     "isAmr": "[or(or(or(startsWith(parameters('skuName'), 'Balanced'), startsWith(parameters('skuName'), 'ComputeOptimized')), startsWith(parameters('skuName'), 'FlashOptimized')), startsWith(parameters('skuName'), 'MemoryOptimized'))]",
     "isEnterprise": "[or(startsWith(parameters('skuName'), 'Enterprise'), startsWith(parameters('skuName'), 'EnterpriseFlash'))]",

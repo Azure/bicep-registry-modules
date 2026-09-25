@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18113793935771808142"
+      "templateHash": "7862198853520542377"
     },
     "name": "User Assigned Identity Federated Identity Credential",
     "description": "This module deploys a User Assigned Identity Federated Identity Credential."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.managedid-userassignedidcredential",
+    "$fxv#0": "46d3xbcp.res.3d14061",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "208668397440519635"
+      "templateHash": "6638102118403877124"
     },
     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-dbbckpshorttermretpolicy",
+    "$fxv#0": "46d3xbcp.res.b99866e",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [
