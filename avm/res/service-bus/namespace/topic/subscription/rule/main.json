@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "2116154237325061488"
+      "version": "0.47.16.16243",
+      "templateHash": "5724159720446084798"
     },
     "name": "Service Bus Namespace Topic Subscription Rule",
     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -266,6 +266,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.servicebus-namespace-topicsubrule",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "namespace::topic::subscription": {
       "existing": true,
@@ -283,7 +287,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.servicebus-namespace-topicsubrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, resourceGroup().location), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Deployment Script",
-  "moduleDescription": "This module deploys Deployment Scripts.",
+  "moduleDescription": "AVM Resource Module for Deployment Script",
   "telemetryIdPrefix": "46d3xbcp.res.resources-deploymentscript",
   "canonicalType": "Microsoft.Resources/deploymentScripts",
   "owners": ["sebassem"]

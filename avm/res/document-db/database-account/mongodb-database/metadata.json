@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Cosmos DB Database Account - Mongodb Database",
-  "moduleDescription": "This module deploys a MongoDB Database within a CosmosDB Account.",
+  "moduleDescription": "AVM Child Module for Cosmos DB Database Account - Mongodb Database",
   "telemetryIdPrefix": "46d3xbcp.res.doctdb-dbacct-mongodbdatabase",
   "canonicalType": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases"
 }

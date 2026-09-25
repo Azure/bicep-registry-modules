@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/consumption/budget/rg-scope/CHANGELOG.md).
 
+## 0.1.1
+
+### Changes
+
+- Corrected the telemetry identifier to use the resource group scope
+
+### Breaking Changes
+
+- None
+
 ## 0.1.0
 
 ### Changes

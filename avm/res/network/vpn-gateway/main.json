@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "5094911030868713882"
+      "version": "0.47.16.16243",
+      "templateHash": "10681056523342973428"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -340,15 +340,17 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.network-vpngateway",
     "finalBgpSettings": "[if(not(equals(parameters('bgpSettings'), null())), createObject('asn', parameters('bgpSettings').asn, 'peerWeight', tryGet(parameters('bgpSettings'), 'peerWeight'), 'bgpPeeringAddress', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), 'bgpPeeringAddresses', if(equals(tryGet(parameters('bgpSettings'), 'bgpPeeringAddress'), null()), tryGet(parameters('bgpSettings'), 'bgpPeeringAddresses'), null())), null())]",
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -440,8 +442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "4013426704939609421"
+              "version": "0.47.16.16243",
+              "templateHash": "14976150563683987630"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -516,12 +518,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.network-vpngateway-natrule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-vpngateway-natrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -658,8 +664,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "10146357056750221331"
+              "version": "0.47.16.16243",
+              "templateHash": "14974093211744303513"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
@@ -799,12 +805,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.network-vpngateway-vpnconnection",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-vpngateway-vpnconnection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

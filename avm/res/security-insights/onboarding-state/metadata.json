@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Security Insights - Onboarding State",
-  "moduleDescription": "This module deploys Onboarding State.",
-  "telemetryIdPrefix": "46d3xbcp.res.security-insights-onboarding-state",
+  "moduleDescription": "AVM Resource Module for Security Insights - Onboarding State",
+  "telemetryIdPrefix": "46d3xbcp.res.securityinsights-onboardingstate",
   "canonicalType": "Microsoft.SecurityInsights/onboardingStates",
   "owners": []
 }

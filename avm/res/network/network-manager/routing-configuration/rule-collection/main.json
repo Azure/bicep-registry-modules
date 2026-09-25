@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "17243379447974655448"
+      "version": "0.47.16.16243",
+      "templateHash": "8550621230108552240"
     },
     "name": "Network Manager Routing Configuration Rule Collections",
     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -181,7 +181,9 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false
+    "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecoll",
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "networkManager::routingConfiguration": {
@@ -194,7 +196,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.network-nwmgr-routingcfgrulecoll.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -272,8 +274,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "5334537838932650922"
+              "version": "0.47.16.16243",
+              "templateHash": "8436937529064924293"
             },
             "name": "Network Manager Routing configuration Rule Collection Rules",
             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -388,6 +390,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecollrule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "networkManager::routingConfiguration::ruleCollection": {
               "existing": true,
@@ -405,7 +411,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-nwmgr-routingcfgrulecollrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

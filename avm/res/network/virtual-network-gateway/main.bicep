@@ -508,10 +508,12 @@ resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2025-01-01' exist
 // Deployments     //
 // ================//
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
-    '46d3xbcp.res.network-virtualnetworkgateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
   )
   properties: {

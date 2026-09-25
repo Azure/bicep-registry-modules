@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10626129195403054324"
+      "version": "0.47.16.16243",
+      "templateHash": "5439367342584163440"
     },
     "name": "Finops-hub",
     "description": "This module deploys a Finops hub from the Finops toolkit."
@@ -94,6 +94,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.finopstoolkit-finopshub",
     "safeHubName": "[replace(replace(toLower(parameters('hubName')), '-', ''), '_', '')]",
     "storageAccountSuffix": "[variables('uniqueSuffix')]",
     "storageAccountName": "[format('{0}{1}', take(variables('safeHubName'), sub(24, length(variables('storageAccountSuffix')))), variables('storageAccountSuffix'))]",
@@ -103,7 +104,8 @@
     "dataFactoryPrefix": "[format('{0}-engine', replace(parameters('hubName'), '_', '-'))]",
     "dataFactorySuffix": "[format('-{0}', variables('uniqueSuffix'))]",
     "dataFactoryName": "[replace(format('{0}{1}', take(variables('dataFactoryPrefix'), sub(63, length(variables('dataFactorySuffix')))), variables('dataFactorySuffix')), '--', '-')]",
-    "telemetryId": "00f120b5-2007-6120-0000-40b000000000"
+    "telemetryId": "00f120b5-2007-6120-0000-40b000000000",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "dataFactory": {
@@ -125,7 +127,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.finopstoolkit-finopshub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -209,8 +211,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1390296371747146784"
+              "version": "0.47.16.16243",
+              "templateHash": "16064381995268853379"
             }
           },
           "parameters": {
@@ -5613,8 +5615,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1969333731498327196"
+              "version": "0.47.16.16243",
+              "templateHash": "12915367206900526093"
             }
           },
           "parameters": {
@@ -8373,8 +8375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "17863923437662829415"
+              "version": "0.47.16.16243",
+              "templateHash": "9838503731319896405"
             }
           },
           "parameters": {

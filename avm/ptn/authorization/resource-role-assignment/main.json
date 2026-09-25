@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5782983759205718666"
+      "version": "0.47.16.16243",
+      "templateHash": "10964973179482857566"
     },
     "name": "Resource-scoped role assignment",
     "description": "This module deploys a Role Assignment for a specific resource."
@@ -74,7 +74,8 @@
     }
   },
   "variables": {
-    "$fxv#0": {
+    "$fxv#0": "46d3xbcp.ptn.authorization-resourceroleassignment",
+    "$fxv#1": {
       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0",
       "parameters": {
@@ -129,14 +130,15 @@
           "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
         }
       }
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.authorization-resourceroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -161,7 +163,7 @@
         "expressionEvaluationOptions": {
           "scope": "Outer"
         },
-        "template": "[variables('$fxv#0')]",
+        "template": "[variables('$fxv#1')]",
         "parameters": {
           "scope": {
             "value": "[parameters('resourceId')]"

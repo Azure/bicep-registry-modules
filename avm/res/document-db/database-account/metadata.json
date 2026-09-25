@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Cosmos DB Database Account",
-  "moduleDescription": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.",
+  "moduleDescription": "AVM Resource Module for Cosmos DB Database Account",
   "telemetryIdPrefix": "46d3xbcp.res.documentdb-databaseaccount",
   "canonicalType": "Microsoft.DocumentDB/databaseAccounts",
   "owners": ["cmaneu"]

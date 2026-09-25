@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "8808211988949224536"
+      "version": "0.47.16.16243",
+      "templateHash": "11213387608922697399"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -334,6 +334,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.network-expressrouteport",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -343,14 +344,15 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.network-expressrouteport.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
