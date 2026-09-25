@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+NOTE: This is the last published version and the module has since been deprecated.
+
 - Upgraded the default Azure OpenAI model to `gpt-5.1` (version `2025-11-13`) and updated the AI Services location guidance and `usageName` accordingly.
 - Consolidated Content Understanding onto the shared AI Foundry (`aif-`) AIServices account and removed the separate `aicu-` Cognitive Services account, fixing PDF extraction DNS resolution failures.
 - Added a Content Processor Workflow container app (`ca-<suffix>-wkfl`) with its system-assigned identity, storage (Blob/Queue) and AI Services role assignments.

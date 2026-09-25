@@ -1,0 +1,112 @@
+name: ".Platform - Check Module Metadata"
+
+# Fast, read-only PR gate: validates metadata.json without compiling Bicep, using the public
+# Test-AvmModuleMetadata cmdlet (Avm.Authoring, latest from PSGallery). Runs independently of the
+# per-module deployment/PSRule workflows so metadata-only changes (which are excluded from those
+# workflows' triggers) are still checked automatically on every PR, including from forks.
+# No secrets are used and the default GITHUB_TOKEN is not requested beyond read access.
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - "avm/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-module-metadata-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  job_check_metadata:
+    name: "Validate metadata.json"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+
+      - name: "Run metadata.json validation for affected modules"
+        shell: pwsh
+        env:
+          BASE_SHA: "${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA: "${{ github.event.pull_request.head.sha }}"
+        run: |
+          # Grouping task logs
+          Write-Output '::group::Resolve affected modules'
+
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1')
+
+          $changedFilePaths = @(git diff --no-renames --name-only --diff-filter=ACMRTD $env:BASE_SHA $env:HEAD_SHA -- avm)
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Failed to identify changed module files.'
+          }
+
+          $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -RepoRoot $env:GITHUB_WORKSPACE
+          $modulePaths = @($moduleMatrix.include | ForEach-Object { $_.modulePath } | Sort-Object -Unique)
+
+          Write-Verbose "Affected top-level module(s): $($modulePaths.Count)" -Verbose
+          $modulePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
+          Write-Output '::endgroup::'
+
+          if ($modulePaths.Count -eq 0) {
+            Write-Output 'No AVM modules were affected by this pull request. Nothing to validate.' >> $env:GITHUB_STEP_SUMMARY
+            return
+          }
+
+          Write-Output '::group::Install dependencies'
+          if (-not (Get-Module -ListAvailable -Name 'Avm.Authoring')) {
+            Install-Module -Name 'Avm.Authoring' -Repository 'PSGallery' -Scope 'CurrentUser' -Force -SkipPublisherCheck -AllowClobber
+          }
+          Write-Output '::endgroup::'
+
+          Write-Output '::group::Collect module folder paths'
+          $moduleFolderPaths = [System.Collections.Generic.List[string]]::new()
+          foreach ($modulePath in $modulePaths) {
+            $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE $modulePath
+            $moduleFolderPaths.Add($moduleFolderPath)
+            (Get-ChildItem $moduleFolderPath -Recurse -Directory -Force).FullName | Where-Object {
+              (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
+            } | ForEach-Object { $moduleFolderPaths.Add($_) }
+          }
+          Write-Output '::endgroup::'
+
+          Write-Output '::group::Run metadata.json validation'
+          $pesterConfiguration = @{
+            Run    = @{
+              Container = New-PesterContainer -Path (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'metadata.tests.ps1') -Data @{
+                moduleFolderPaths = $moduleFolderPaths
+                RepoRootPath      = $env:GITHUB_WORKSPACE
+              }
+              PassThru  = $true
+            }
+            Filter = @{
+              Tag = 'Metadata'
+            }
+            Output = @{
+              Verbosity = 'Detailed'
+            }
+          }
+
+          $testResults = Invoke-Pester -Configuration $pesterConfiguration
+          Write-Output '::endgroup::'
+
+          Write-Output ('### Module metadata.json validation{0}{0}' -f [Environment]::NewLine) >> $env:GITHUB_STEP_SUMMARY
+          Write-Output ('- Result: {0}' -f $testResults.Result) >> $env:GITHUB_STEP_SUMMARY
+          Write-Output ('- Modules checked: {0}' -f $modulePaths.Count) >> $env:GITHUB_STEP_SUMMARY
+          Write-Output ('- Passed: {0}' -f $testResults.PassedCount) >> $env:GITHUB_STEP_SUMMARY
+          Write-Output ('- Failed: {0}' -f $testResults.FailedCount) >> $env:GITHUB_STEP_SUMMARY
+
+          if ($testResults.Result -ne 'Passed') {
+            Write-Output '' >> $env:GITHUB_STEP_SUMMARY
+            Write-Output '#### Failed checks' >> $env:GITHUB_STEP_SUMMARY
+            $testResults.Failed | ForEach-Object { Write-Output "- $_" >> $env:GITHUB_STEP_SUMMARY }
+            Write-Error 'Module metadata.json validation did not pass. See the job summary and Pester output for details.'
+            exit 1
+          }

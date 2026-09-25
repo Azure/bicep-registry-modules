@@ -4,5 +4,8 @@
   "moduleDescription": "AVM Pattern Module for AI-ML - AI Foundry",
   "telemetryIdPrefix": "46d3xbcp.ptn.aiml-aifoundry",
   "canonicalType": "ai-ml/ai-foundry",
-  "owners": ["mswantek68", "sethsteenken"]
+  "owners": [
+    "mbilalamjad",
+    "placerda"
+  ]
 }

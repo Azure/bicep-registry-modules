@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "8944427053144847794"
+      "version": "0.47.16.16243",
+      "templateHash": "7683168100285784473"
     },
     "name": "Azure NetApp Files Volume Backup",
     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -65,6 +65,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.netapp-netappaccount-backupvaultbckp",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "netAppAccount::remoteCapacityPool::volume": {
       "existing": true,
@@ -88,7 +92,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.netapp-netappaccount-backupvaultbckp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

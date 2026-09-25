@@ -64,9 +64,11 @@ var roleDefinitionIdVar = builtInRoleNames[?roleDefinitionIdOrName] ?? (contains
   ? roleDefinitionIdOrName
   : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIdOrName))
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.authz-roleassignment_subscope.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

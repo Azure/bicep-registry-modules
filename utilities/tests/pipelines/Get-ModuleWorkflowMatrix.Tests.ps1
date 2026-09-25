@@ -60,6 +60,26 @@ Describe 'Get-ModuleWorkflowMatrix' {
         $result.include.modulePath | Should -Be @($ModulePath)
     }
 
+    It 'Excludes metadata-only modules from preview when other modules have source changes' {
+        $result = Get-ModuleWorkflowMatrix -ChangedFilePath @(
+            'avm/res/storage/storage-account/metadata.json'
+            'avm/ptn/network/hub-networking/child/metadata.json'
+            'avm/utl/types/avm-common-types/child/nested/metadata.json'
+            'avm/res/network/virtual-network/main.bicep'
+        ) -ExcludeMetadataChanges -RepoRoot $repoRootPath
+
+        $result.include.modulePath | Should -Be @('avm/res/network/virtual-network')
+    }
+
+    It 'Returns an empty preview matrix for metadata-only changes' {
+        $result = Get-ModuleWorkflowMatrix -ChangedFilePath @(
+            'avm/res/storage/storage-account/metadata.json'
+            'avm/res/storage/storage-account/blob-service/metadata.json'
+        ) -ExcludeMetadataChanges -RepoRoot $repoRootPath
+
+        $result.include.Count | Should -Be 0
+    }
+
     It 'Rejects a missing manual module path' {
         {
             Get-ModuleWorkflowMatrix -ModulePathInput 'avm/res/example/missing'
@@ -81,6 +101,12 @@ Describe 'Get-ModuleWorkflowMatrix' {
     It 'Rejects parent-directory traversal' {
         {
             Get-ModuleWorkflowMatrix -ModulePathInput 'avm/res/storage/storage-account/../../network/virtual-network'
+        } | Should -Throw '*contains a parent-directory segment.'
+    }
+
+    It 'Rejects parent-directory traversal even when excluding metadata changes' {
+        {
+            Get-ModuleWorkflowMatrix -ChangedFilePath 'avm/res/storage/../metadata.json' -ExcludeMetadataChanges -RepoRoot $repoRootPath
         } | Should -Throw '*contains a parent-directory segment.'
     }
 }

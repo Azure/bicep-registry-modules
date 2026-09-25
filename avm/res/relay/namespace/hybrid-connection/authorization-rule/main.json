@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "10441572755617546150"
+      "version": "0.47.16.16243",
+      "templateHash": "6555120503940425663"
     },
     "name": "Hybrid Connection Authorization Rules",
     "description": "This module deploys a Hybrid Connection Authorization Rule."
@@ -49,12 +49,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.relay-namespace-hybconnautzrule",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": [
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.relay-namespace-hybconnautzrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

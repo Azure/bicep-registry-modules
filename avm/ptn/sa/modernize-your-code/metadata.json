@@ -3,7 +3,9 @@
   "moduleDisplayName": "SA - Modernize your code",
   "moduleDescription": "AVM Pattern Module for SA - Modernize your code",
   "telemetryIdPrefix": "46d3xbcp.ptn.sa-modernizeyourcode",
-  "alternativeNames": ["Solution Accelerator - Modernize your code"],
+  "alternativeNames": [
+    "Solution Accelerator - Modernize your code"
+  ],
   "canonicalType": "sa/modernize-your-code",
-  "owners": ["sethsteenken", "aniaroramsft"]
+  "owners": []
 }

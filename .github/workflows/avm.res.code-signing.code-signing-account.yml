@@ -1,4 +1,4 @@
-name: "avm.ptn.sa.multi-agent-custom-automation-engine"
+name: "avm.res.code-signing.code-signing-account"
 
 on:
   workflow_dispatch:
@@ -26,14 +26,14 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/avm.ptn.sa.multi-agent-custom-automation-engine.yml"
-      - "avm/ptn/sa/multi-agent-custom-automation-engine/**"
+      - ".github/workflows/avm.res.code-signing.code-signing-account.yml"
+      - "avm/res/code-signing/code-signing-account/**"
       - "!*/**/README.md"
       - "!avm/**/metadata.json"
 
 env:
-  modulePath: "avm/ptn/sa/multi-agent-custom-automation-engine"
-  workflowPath: ".github/workflows/avm.ptn.sa.multi-agent-custom-automation-engine.yml"
+  modulePath: "avm/res/code-signing/code-signing-account"
+  workflowPath: ".github/workflows/avm.res.code-signing.code-signing-account.yml"
 
 concurrency:
   group: ${{ github.workflow }}

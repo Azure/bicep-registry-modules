@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Network Manager",
   "telemetryIdPrefix": "46d3xbcp.res.network-networkmanager",
   "canonicalType": "Microsoft.Network/networkManagers",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

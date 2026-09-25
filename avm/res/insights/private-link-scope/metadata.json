@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Azure Monitor Private Link Scope",
   "telemetryIdPrefix": "46d3xbcp.res.insights-privatelinkscope",
   "canonicalType": "Microsoft.Insights/privateLinkScopes",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "18423021046416689050"
+      "version": "0.47.16.16243",
+      "templateHash": "8367122497424242780"
     },
     "name": "Policy Assignments (Management Group scope)",
     "description": "This module deploys a Policy Assignment at a Management Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity."
@@ -205,7 +205,9 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.authz-policyassignment_mgscope",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', parameters('managedIdentities').userAssignedResourceId), createObject()), null())), null())]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "expandedMgRoleAssignments": "[reduce(union(coalesce(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray()), createArray(managementGroup().name)), createArray(), lambda('currMangementGroupId', 'nextMangementGroupId', concat(lambdaVariables('currMangementGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('managementGroupId', lambdaVariables('nextMangementGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
     "expandedSubRoleAssignments": "[reduce(coalesce(parameters('additionalSubscriptionIDsToAssignRbacTo'), createArray()), createArray(), lambda('currSubscriptionId', 'nextSubscriptionId', concat(lambdaVariables('currSubscriptionId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('subscriptionId', lambdaVariables('nextSubscriptionId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",
     "expandedRgRoleAssignments": "[reduce(coalesce(parameters('additionalResourceGroupResourceIDsToAssignRbacTo'), createArray()), createArray(), lambda('currResourceGroupId', 'nextResourceGroupId', concat(lambdaVariables('currResourceGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('resourceGroupId', lambdaVariables('nextResourceGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]"
@@ -224,7 +226,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.authz-policyassignment_mgscope.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -294,8 +296,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11079781275568976155"
+              "version": "0.47.16.16243",
+              "templateHash": "3807539009811003916"
             }
           },
           "parameters": {
@@ -371,8 +373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8163845298911809426"
+              "version": "0.47.16.16243",
+              "templateHash": "17491038217964150555"
             }
           },
           "parameters": {
@@ -455,8 +457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "2352196448303122044"
+              "version": "0.47.16.16243",
+              "templateHash": "16366376169343727851"
             }
           },
           "parameters": {
