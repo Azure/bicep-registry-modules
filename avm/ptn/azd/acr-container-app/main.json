@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "12455006466085533388"
+      "version": "0.47.16.16243",
+      "templateHash": "16853194403413379334"
     },
     "name": "Azd ACR Linked Container App",
     "description": "Creates a container app in an Azure Container App environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -643,15 +643,17 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.azd-acrcontainerapp",
     "usePrivateRegistry": "[and(not(empty(parameters('identityName'))), not(empty(parameters('containerRegistryName'))))]",
-    "normalizedIdentityType": "[if(not(empty(parameters('identityName'))), 'UserAssigned', parameters('identityType'))]"
+    "normalizedIdentityType": "[if(not(empty(parameters('identityName'))), 'UserAssigned', parameters('identityType'))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.azd-acrcontainerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2310,8 +2312,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "9658301726569042954"
+              "version": "0.47.16.16243",
+              "templateHash": "18422789613374205186"
             },
             "name": "ACR Pull permissions",
             "description": "Assigns ACR Pull permissions to access an Azure Container Registry."

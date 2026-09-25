@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "1860718588717434139"
+      "version": "0.47.16.16243",
+      "templateHash": "9611813209678274200"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -398,12 +398,12 @@
     "cluster": {
       "existing": true,
       "type": "Microsoft.AzureStackHCI/clusters",
-      "apiVersion": "2025-10-01",
+      "apiVersion": "2026-04-30",
       "name": "[parameters('clusterName')]"
     },
     "deploymentSettings": {
       "type": "Microsoft.AzureStackHCI/clusters/deploymentSettings",
-      "apiVersion": "2025-10-01",
+      "apiVersion": "2026-04-30",
       "name": "[format('{0}/{1}', parameters('clusterName'), parameters('name'))]",
       "properties": {
         "arcNodeResourceIds": "[variables('arcNodeResourceIds')]",
@@ -419,8 +419,8 @@
                     "name": "physicalNodes",
                     "count": "[length(variables('arcNodeResourceIds'))]",
                     "input": {
-                      "name": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].name, reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2022-12-27', 'Full').properties.displayName)]",
-                      "ipv4Address": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].ipv4Address, filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address)]"
+                      "name": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].name, reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2026-07-15', 'Full').properties.displayName)]",
+                      "ipv4Address": "[if(not(empty(parameters('physicalNodesSettings'))), parameters('physicalNodesSettings')[copyIndex('physicalNodes')].ipv4Address, filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2026-04-30', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address)]"
                     }
                   },
                   {

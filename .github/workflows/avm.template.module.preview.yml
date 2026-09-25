@@ -191,6 +191,7 @@ jobs:
       contents: read
     if: |
       !cancelled() &&
+      github.event_name == 'push' &&
       needs.job_module_static_validation.result == 'success' &&
       (needs.job_module_deploy_validation.result == 'success' || (
         (inputs.includeAllVersionedModules || inputs.moduleTestFilePaths == '[]') &&

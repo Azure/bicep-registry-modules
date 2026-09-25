@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3504319607874832551"
+      "version": "0.47.16.16243",
+      "templateHash": "3711704335627339431"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -141,6 +141,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.cdn-profile-domain",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "profile::secret": {
       "condition": "[not(empty(parameters('secretName')))]",
@@ -153,7 +157,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.cdn-profile-domain.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

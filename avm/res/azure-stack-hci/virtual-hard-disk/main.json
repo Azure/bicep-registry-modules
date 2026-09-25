@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "12377921716259172606"
+      "version": "0.47.16.16243",
+      "templateHash": "16233959380830961242"
     },
     "name": "Azure Stack HCI Virtual Hard Disk",
     "description": "This module deploys an Azure Stack HCI virtual hard disk."
@@ -141,6 +141,49 @@
         "description": "Optional. Storage ContainerID of the storage container to be used for VHD."
       }
     },
+    "blockSizeBytes": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Block size in bytes."
+      }
+    },
+    "diskFileFormat": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "vhd",
+        "vhdx"
+      ],
+      "metadata": {
+        "description": "Optional. The disk file format. Supported values are VHDX and VHD."
+      }
+    },
+    "hyperVGeneration": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "V1",
+        "V2"
+      ],
+      "metadata": {
+        "description": "Optional. The hypervisor generation of the Virtual Machine."
+      }
+    },
+    "logicalSectorBytes": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Logical sector size in bytes for the disk."
+      }
+    },
+    "physicalSectorBytes": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Physical sector size in bytes for the disk."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -160,20 +203,22 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.azurestackhci-virtualharddisk",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.azurestackhci-virtualharddisk.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -191,7 +236,7 @@
     },
     "virtualHardDisk": {
       "type": "Microsoft.AzureStackHCI/virtualHardDisks",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "extendedLocation": {
@@ -202,7 +247,12 @@
       "properties": {
         "diskSizeGB": "[parameters('diskSizeGB')]",
         "dynamic": "[parameters('dynamic')]",
-        "containerId": "[parameters('containerId')]"
+        "containerId": "[parameters('containerId')]",
+        "blockSizeBytes": "[parameters('blockSizeBytes')]",
+        "diskFileFormat": "[parameters('diskFileFormat')]",
+        "hyperVGeneration": "[parameters('hyperVGeneration')]",
+        "logicalSectorBytes": "[parameters('logicalSectorBytes')]",
+        "physicalSectorBytes": "[parameters('physicalSectorBytes')]"
       }
     },
     "virtualHardDisk_roleAssignments": {
@@ -255,7 +305,7 @@
       "metadata": {
         "description": "The location of the virtual hard disk."
       },
-      "value": "[reference('virtualHardDisk', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('virtualHardDisk', '2025-04-01-preview', 'full').location]"
     }
   }
 }

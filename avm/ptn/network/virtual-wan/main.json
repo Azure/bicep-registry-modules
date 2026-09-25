@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.40.2.10011",
-      "templateHash": "3040887102734423709"
+      "version": "0.47.16.16243",
+      "templateHash": "9333804245190779690"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1560,10 +1560,12 @@
         }
       }
     ],
+    "$fxv#0": "46d3xbcp.ptn.network-virtualwan",
     "combinedTags": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('virtualWanParameters'), 'tags'), createObject()))]",
     "computedLock": "[coalesce(coalesce(tryGet(parameters('virtualWanParameters'), 'lock'), parameters('lock')), createObject())]",
     "virtualWanLocation": "[coalesce(tryGet(parameters('virtualWanParameters'), 'location'), parameters('location'))]",
-    "createP2sVpnServerConfig": "[coalesce(tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'createP2sVpnServerConfiguration'), false())]"
+    "createP2sVpnServerConfig": "[coalesce(tryGet(tryGet(parameters('virtualWanParameters'), 'p2sVpnParameters'), 'createP2sVpnServerConfiguration'), false())]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "routingIntent": {
@@ -1592,7 +1594,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.ptn.network-virtualwan.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

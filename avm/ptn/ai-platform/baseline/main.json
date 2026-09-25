@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "12895251269641494775"
+      "version": "0.47.16.16243",
+      "templateHash": "6954696904135496627"
     },
     "name": "AI Platform Baseline",
     "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access."
@@ -934,6 +934,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.aiplatform-baseline",
     "createVirtualNetwork": "[not(equals(tryGet(parameters('virtualNetworkConfiguration'), 'enabled'), false()))]",
     "createBastion": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('bastionConfiguration'), 'enabled'), false())))]",
     "createVirtualMachine": "[and(variables('createVirtualNetwork'), not(equals(tryGet(parameters('virtualMachineConfiguration'), 'enabled'), false())))]",
@@ -995,14 +996,15 @@
       "australiasoutheast": "australiaeast",
       "southafricanorth": "southafricawest",
       "southafricawest": "southafricanorth"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.ptn.aiplatform-baseline.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

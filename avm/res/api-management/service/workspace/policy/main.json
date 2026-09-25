@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "1109330876683291095"
+      "version": "0.47.16.16243",
+      "templateHash": "5183257530128400484"
     },
     "name": "API Management Workspace Policies",
     "description": "This module deploys a Policy at API Management Workspace scope."
@@ -57,12 +57,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacepolicy",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": [
     {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apimgmt-service-workspacepolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

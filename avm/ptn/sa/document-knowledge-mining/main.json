@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "12736935935078813223"
+      "version": "0.47.16.16243",
+      "templateHash": "17320581090659070749"
     },
     "name": "Document Knowledge Mining Solution",
     "description": "This module contains the resources required to deploy the [Document Knowledge Mining Solution](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator) for both Sandbox environments and enterprise-grade environments.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Document-Knowledge-Mining-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n"
@@ -202,6 +202,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.sa-documentknowledgemining",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueToken')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "replicaRegionPairs": {
@@ -302,7 +303,8 @@
     "aiSearchName": "[format('srch-{0}', variables('solutionSuffix'))]",
     "openAiAccountName": "[format('oai-{0}', variables('solutionSuffix'))]",
     "docIntelAccountName": "[format('di-{0}', variables('solutionSuffix'))]",
-    "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]"
+    "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "resourceGroupTags": {
@@ -361,7 +363,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-11-01",
-      "name": "[take(format('46d3xbcp.ptn.sa-documentknowledgeminingsolution.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -7163,8 +7165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "12782207569935014109"
+              "version": "0.47.16.16243",
+              "templateHash": "16486261678476395206"
             }
           },
           "definitions": {
@@ -22330,8 +22332,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "3330420429040615968"
+              "version": "0.47.16.16243",
+              "templateHash": "991574034455866397"
             },
             "name": "Container Registry Module"
           },

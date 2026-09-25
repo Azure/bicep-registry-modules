@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "13971864283264605337"
+      "version": "0.47.16.16243",
+      "templateHash": "16045845647140790487"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -2264,6 +2264,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.appsvclza-hostingenvironment",
     "vnetSpokeAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'vnetAddressSpace'), '10.240.0.0/20')]",
     "subnetSpokeAppSvcAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'appSvcSubnetAddressSpace'), '10.240.0.0/26')]",
     "subnetSpokePrivateEndpointAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'privateEndpointSubnetAddressSpace'), '10.240.11.0/24')]",
@@ -2451,14 +2452,15 @@
     "containerRegistryAppSettings": "[if(and(variables('isContainer'), not(empty(variables('containerRegistryUrl')))), shallowMerge(createArray(createObject('DOCKER_REGISTRY_SERVER_URL', variables('containerRegistryUrl')), if(not(empty(variables('containerRegistryUsername'))), createObject('DOCKER_REGISTRY_SERVER_USERNAME', variables('containerRegistryUsername'), 'DOCKER_REGISTRY_SERVER_PASSWORD', variables('containerRegistryPassword')), createObject()))), createObject())]",
     "resolvedAppServiceDiagnosticSettings": "[if(not(empty(variables('appserviceDiagnosticSettings'))), variables('appserviceDiagnosticSettings'), createArray(createObject('name', 'appservice-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs')), 'metricCategories', createArray(createObject('category', 'AllMetrics')))))]",
     "resolvedServicePlanDiagnosticSettings": "[if(not(empty(variables('servicePlanDiagnosticSettings'))), variables('servicePlanDiagnosticSettings'), createArray(createObject('name', 'servicePlan-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'metricCategories', createArray(createObject('category', 'AllMetrics')))))]",
-    "resolvedAseDiagnosticSettings": "[if(not(empty(variables('aseDiagnosticSettings'))), variables('aseDiagnosticSettings'), createArray(createObject('name', 'ase-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs')))))]"
+    "resolvedAseDiagnosticSettings": "[if(not(empty(variables('aseDiagnosticSettings'))), variables('aseDiagnosticSettings'), createArray(createObject('name', 'ase-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs')))))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.appsvclza-hostingenvironment.{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}', variables('telemetryIdPrefix'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -3011,8 +3013,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11448484785498671045"
+              "version": "0.47.16.16243",
+              "templateHash": "16656620592591645659"
             },
             "name": "Azure Naming module",
             "description": "Module to maintain a consistent naming of Azure resources.",
@@ -3626,8 +3628,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "11228658540421834164"
+              "version": "0.47.16.16243",
+              "templateHash": "12074714138742942457"
             }
           },
           "definitions": {
@@ -9261,8 +9263,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14078210385996520604"
+              "version": "0.47.16.16243",
+              "templateHash": "17860432840331106220"
             }
           },
           "parameters": {
@@ -31790,8 +31792,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1450745778563181172"
+              "version": "0.47.16.16243",
+              "templateHash": "8700016486682300143"
             }
           },
           "definitions": {
@@ -37001,8 +37003,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14056618751406378383"
+              "version": "0.47.16.16243",
+              "templateHash": "13334162336923441939"
             }
           },
           "parameters": {
@@ -38300,8 +38302,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "6700134790213374469"
+              "version": "0.47.16.16243",
+              "templateHash": "15793669065577278242"
             }
           },
           "definitions": {
@@ -42168,8 +42170,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "18433900481572696147"
+              "version": "0.47.16.16243",
+              "templateHash": "9236164826770507742"
             }
           },
           "definitions": {

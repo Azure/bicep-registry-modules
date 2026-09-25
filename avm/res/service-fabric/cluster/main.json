@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "10614940490423836738"
+      "version": "0.47.16.16243",
+      "templateHash": "17006279922855441694"
     },
     "name": "Service Fabric Clusters",
     "description": "This module deploys a Service Fabric Cluster."
@@ -606,6 +606,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.servicefabric-cluster",
     "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', coalesce(tryGet(parameters('upgradeDescription'), 'forceRestart'), false()), 'healthCheckRetryTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), '00:45:00'), 'healthCheckStableDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckStableDuration'), '00:01:00'), 'healthCheckWaitDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckWaitDuration'), '00:00:30'), 'upgradeDomainTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeDomainTimeout'), '02:00:00'), 'upgradeReplicaSetCheckTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), '1.00:00:00'), 'upgradeTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeTimeout'), '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), createObject()), 'maxPercentUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), 0), 'maxPercentUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), 0))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -614,14 +615,15 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.servicefabric-cluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -745,8 +747,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "14275007010956857541"
+              "version": "0.47.16.16243",
+              "templateHash": "14068549451064457554"
             },
             "name": "Service Fabric Cluster Application Types",
             "description": "This module deploys a Service Fabric Cluster Application Type."
@@ -780,12 +782,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.servicefabric-cluster-apptype",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.servicefabric-cluster-apptype.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('serviceFabricClusterName')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('serviceFabricClusterName')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "15032468180306699703"
+      "version": "0.47.16.16243",
+      "templateHash": "5893140300622755714"
     },
     "name": "API Management Workspace APIs Diagnostics",
     "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -139,6 +139,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapidiag",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "service::workspace::api": {
       "existing": true,
@@ -168,7 +172,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapidiag.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

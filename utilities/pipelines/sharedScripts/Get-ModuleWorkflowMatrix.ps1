@@ -17,6 +17,9 @@ function Get-ModuleWorkflowMatrix {
         [AllowEmptyCollection()]
         [string[]] $ChangedFilePath,
 
+        [Parameter(ParameterSetName = 'ChangedFiles')]
+        [switch] $ExcludeMetadataChanges,
+
         [Parameter()]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
     )
@@ -51,6 +54,10 @@ function Get-ModuleWorkflowMatrix {
         }
         if ($normalizedPath.Split('/') -contains '..') {
             throw "Path [$requestedPath] contains a parent-directory segment."
+        }
+        if ($PSCmdlet.ParameterSetName -eq 'ChangedFiles' -and $ExcludeMetadataChanges -and
+            $normalizedPath.EndsWith('/metadata.json', [System.StringComparison]::OrdinalIgnoreCase)) {
+            continue
         }
 
         $pathSegments = $normalizedPath.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)

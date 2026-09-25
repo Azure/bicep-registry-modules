@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "3921497591696173669"
+      "version": "0.47.16.16243",
+      "templateHash": "10388702421212800442"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -713,14 +713,16 @@
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
         "input": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex('hubVirtualNetworkPeerings')].value, 'peeringSettings'), createArray())]"
       }
-    ]
+    ],
+    "$fxv#0": "46d3xbcp.ptn.network-hubnetworking",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.ptn.network-hubnetworking.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2489,8 +2491,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8289716204471605167"
+              "version": "0.47.16.16243",
+              "templateHash": "6420679360716303712"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network."
@@ -6943,8 +6945,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "1468897205944459169"
+              "version": "0.47.16.16243",
+              "templateHash": "10658611256042537178"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet."
@@ -7023,8 +7025,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10526258731817610334"
+              "version": "0.47.16.16243",
+              "templateHash": "16030498202134051973"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."

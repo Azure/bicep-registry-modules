@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "5061933363497485536"
+      "version": "0.47.16.16243",
+      "templateHash": "14006462717632087106"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group."
@@ -249,6 +249,8 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.cdn-profile-origingroup",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -256,7 +258,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.cdn-profile-origingroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -349,8 +351,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "5162864735965281576"
+              "version": "0.47.16.16243",
+              "templateHash": "16139429313275944142"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin."
@@ -451,6 +453,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.cdn-profile-origingroup-origin",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "profile::originGroup": {
               "existing": true,
@@ -462,7 +468,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.cdn-profile-origingroup-origin.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -268,7 +268,7 @@ function Copy-CIKeyVaultSecretsToGitHub {
     . (Join-Path $PSScriptRoot '..' 'pipelines' 'sharedScripts' 'Select-CIParameterAlias.ps1')
 
     try {
-        $ghPath = (Get-Command -Name gh -CommandType Application -ErrorAction Stop).Path
+        $ghPath = (Get-Command -Name gh -CommandType Application -ErrorAction Stop | Select-Object -First 1).Path
     } catch [System.Management.Automation.CommandNotFoundException] {
         throw 'GitHub CLI (gh) must be installed on PATH and authenticated to github.com.'
     }

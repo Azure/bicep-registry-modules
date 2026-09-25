@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "2967430012839274211"
+      "version": "0.47.16.16243",
+      "templateHash": "17146975892179068966"
     },
     "name": "Policy Exemptions (All scopes)",
     "description": "This module deploys a Policy Exemption at a Management Group, Subscription, Resource Group, or Resource scope."
@@ -137,12 +137,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.ptn.authorization-policyexemption",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.ptn.authorization-policyexemption.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -210,8 +214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "14133512742309046426"
+              "version": "0.47.16.16243",
+              "templateHash": "1891674461486572149"
             },
             "name": "Policy Exemptions (Management Group scope)",
             "description": "This module deploys a policy exemption at a Management Group scope."
@@ -388,8 +392,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "4502631200331263035"
+              "version": "0.47.16.16243",
+              "templateHash": "13142799333559466631"
             },
             "name": "Policy Exemptions (Subscription scope)",
             "description": "This module deploys a policy exemption at a Subscription scope."
@@ -566,8 +570,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "8357534651170749390"
+              "version": "0.47.16.16243",
+              "templateHash": "8508677976186955266"
             },
             "name": "Policy Exemptions (Resource Group scope)",
             "description": "This module deploys a policy exemption at a Resource Group scope."
@@ -744,8 +748,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "4597859642502134857"
+              "version": "0.47.16.16243",
+              "templateHash": "12358504494118345170"
             },
             "name": "Policy Exemptions (Resource scope)",
             "description": "This module deploys a policy exemption at a resource scope."

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "6031003060031049246"
+      "version": "0.47.16.16243",
+      "templateHash": "5088657114984906210"
     },
     "name": "Intelligent Content Generation Accelerator",
     "description": "This module deploys the [Content Generation Solution Accelerator](https://github.com/microsoft/content-generation-solution-accelerator).\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/content-generation-solution-accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -214,6 +214,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.sa-contentgeneration",
     "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueText')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "replicaRegionPairs": {
@@ -269,6 +270,7 @@
     "imageModelDeployment": "[if(not(equals(parameters('imageModelChoice'), 'none')), createArray(createObject('format', 'OpenAI', 'name', variables('imageModelConfig')[parameters('imageModelChoice')].name, 'model', variables('imageModelConfig')[parameters('imageModelChoice')].name, 'sku', createObject('name', variables('imageModelConfig')[parameters('imageModelChoice')].sku, 'capacity', parameters('imageModelCapacity')), 'version', variables('imageModelConfig')[parameters('imageModelChoice')].version, 'raiPolicyName', 'Microsoft.Default')), createArray())]",
     "aiFoundryAiServicesModelDeployment": "[concat(variables('baseModelDeployments'), variables('imageModelDeployment'))]",
     "aiFoundryAiProjectDescription": "Content Generation AI Foundry Project",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', variables('solutionSuffix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', variables('solutionSuffix'))]",
     "userAssignedIdentityResourceName": "[format('id-{0}', variables('solutionSuffix'))]",
@@ -307,7 +309,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.ptn.sa-contentgeneration.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -4803,8 +4805,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "7966638595216954280"
+              "version": "0.47.16.16243",
+              "templateHash": "5001640260541374120"
             }
           },
           "definitions": {
@@ -8884,8 +8886,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "7795848506863263975"
+              "version": "0.47.16.16243",
+              "templateHash": "16888642466102488147"
             }
           },
           "parameters": {
@@ -18126,8 +18128,8 @@
       },
       "dependsOn": [
         "aiFoundryAiServices",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "virtualNetwork"
       ]
     },
@@ -18164,8 +18166,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "8174995757186161556"
+              "version": "0.47.16.16243",
+              "templateHash": "4834137630949445289"
             }
           },
           "parameters": {
@@ -35352,8 +35354,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "13431680799545848424"
+              "version": "0.47.16.16243",
+              "templateHash": "2568796246122981881"
             }
           },
           "definitions": {
@@ -36391,8 +36393,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.46.1.21595",
-                      "templateHash": "15477346472279691349"
+                      "version": "0.47.16.16243",
+                      "templateHash": "11772492060757686355"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -37428,8 +37430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.46.1.21595",
-              "templateHash": "11257702604681551477"
+              "version": "0.47.16.16243",
+              "templateHash": "8953095902012072866"
             }
           },
           "parameters": {

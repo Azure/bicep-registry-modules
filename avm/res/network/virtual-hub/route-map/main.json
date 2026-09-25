@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "4667181888475273658"
+      "version": "0.47.16.16243",
+      "templateHash": "17758463393335456147"
     },
     "name": "Virtual Hub Route Maps",
     "description": "This module deploys a Virtual Hub Route Map."
@@ -62,12 +62,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.network-virtualhubroutemap",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.network-virtualhubroutemap.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {

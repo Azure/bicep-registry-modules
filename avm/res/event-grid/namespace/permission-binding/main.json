@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "9915278853166075938"
+      "version": "0.47.16.16243",
+      "templateHash": "4312427540592711301"
     },
     "name": "Eventgrid Namespace Permissions Bindings",
     "description": "This module deploys an Eventgrid Namespace Permission Binding."
@@ -61,12 +61,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-permbinding",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.eventgrid-namespace-permbinding.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, 'eastus'), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

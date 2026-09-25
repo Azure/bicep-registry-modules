@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "14162484264758982465"
+      "version": "0.47.16.16243",
+      "templateHash": "16661731305044770138"
     },
     "name": "Service Groups",
     "description": "This module will allow you to create a service group and also associate resource to this service group, if you have permissions upon those resources."
@@ -199,6 +199,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, tenantResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.management-servicegroup",
     "builtInRoleNames": {
       "Contributor": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -208,14 +209,15 @@
       "Service Group Administrator": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', '4e50c84c-c78e-4e37-b47e-e60ffea0a775')]",
       "Service Group Contributor": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', '32e6a4ec-6095-4e37-b54b-12aa350ba81f')]",
       "Service Group Reader": "[tenantResourceId('Microsoft.Authorization/roleDefinitions', 'de754d53-652d-4c75-a67f-1e48d8b49c97')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.management-servicegroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, deployment().location), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, deployment().location), 0, 4))]",
       "location": "[deployment().location]",
       "properties": {
         "mode": "Incremental",
@@ -305,8 +307,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "12136987525897587291"
+              "version": "0.47.16.16243",
+              "templateHash": "1290564665774234224"
             }
           },
           "parameters": {
@@ -362,8 +364,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.41.2.15936",
-              "templateHash": "10604161265332960803"
+              "version": "0.47.16.16243",
+              "templateHash": "7608650229048821466"
             }
           },
           "parameters": {

@@ -110,6 +110,19 @@ Describe 'Copy-CIKeyVaultSecretsToGitHub' {
         Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ArgumentList[1] -eq 'set' }
     }
 
+    It 'Uses only the first GitHub CLI executable when multiple applications are found on PATH' {
+        Mock Get-Command {
+            [pscustomobject]@{ Path = 'mock-gh-first' }
+            [pscustomobject]@{ Path = 'mock-gh-second' }
+        } -ParameterFilter { $Name -eq 'gh' -and $CommandType -eq 'Application' }
+
+        $result = Copy-CIKeyVaultSecretsToGitHub -VaultName 'ci-vault' -Repository 'owner/repo'
+
+        $result.Status | Should -Be 'Planned'
+        Should -Invoke Invoke-CIGitHubCommand -Times 2 -Exactly -ParameterFilter { $ExecutablePath -eq 'mock-gh-first' }
+        Should -Invoke Invoke-CIGitHubCommand -Times 0 -Exactly -ParameterFilter { $ExecutablePath -ne 'mock-gh-first' }
+    }
+
     It 'Does not retrieve values or write with Apply and WhatIf, including overwrite previews' {
         $script:secretNames = @('CI_CLIENTSECRET')
 

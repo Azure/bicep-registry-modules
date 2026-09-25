@@ -53,6 +53,12 @@ Describe 'Set-ModuleFileAndFolderSetup' {
             $metadataContent.telemetryIdPrefix.Length | Should -BeLessOrEqual 50
         }
 
+        It 'Should load the telemetry prefix from the local [metadata.json] in the scaffolded template' {
+            $mainBicepContent = Get-Content -LiteralPath (Join-Path $moduleFolderPath 'main.bicep') -Raw
+            $mainBicepContent | Should -Match ([regex]::Escape("var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')"))
+            $mainBicepContent | Should -Not -Match '46d3xbcp\.'
+        }
+
         It 'Should set an (empty) [owners] array' {
             $metadataContent.PSObject.Properties.Name | Should -Contain 'owners'
             @($metadataContent.owners).Count | Should -Be 0

@@ -34,6 +34,11 @@ Describe 'Metadata tests' -Tag 'Metadata' {
                 isTopLevelModule = $pathSegments.Count -eq 2
             }
         }
+
+        $telemetryModuleTestCases = $metadataModuleTestCases | Where-Object {
+            $source = Get-Content -LiteralPath (Join-Path $_.moduleFolderPath 'main.bicep') -Raw -ErrorAction Stop
+            $source -match [regex]::Escape("var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')")
+        }
     }
 
     BeforeAll {
@@ -65,5 +70,22 @@ Describe 'Metadata tests' -Tag 'Metadata' {
 
         $issueSummary = ($result.Issues | ForEach-Object { "[$($_.Code)] $($_.Message)" }) -join '; '
         $result.Status | Should -Be 'pass' -Because "metadata.json must satisfy the AVM Avm.Authoring schema. Issues: $issueSummary"
+    }
+
+    It '[<moduleFolderName>] Compiled telemetry prefix must match [` metadata.json `].' -TestCases $telemetryModuleTestCases {
+        param(
+            [string] $moduleFolderPath
+        )
+
+        $metadata = Get-Content -LiteralPath (Join-Path $moduleFolderPath 'metadata.json') -Raw -ErrorAction Stop |
+            ConvertFrom-Json -ErrorAction Stop
+        $template = Get-Content -LiteralPath (Join-Path $moduleFolderPath 'main.json') -Raw -ErrorAction Stop |
+            ConvertFrom-Json -AsHashtable -ErrorAction Stop
+        $compiledPrefix = $template.variables.telemetryIdPrefix
+        if ($compiledPrefix -match '^\[variables\(''([^'']+)''\)\]$') {
+            $compiledPrefix = $template.variables[$Matches[1]]
+        }
+
+        $compiledPrefix | Should -Be $metadata.telemetryIdPrefix -Because 'changes to telemetryIdPrefix require rebuilding main.json.'
     }
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "14500522314908357696"
+      "version": "0.47.16.16243",
+      "templateHash": "5882682230039438087"
     },
     "name": "Azure Security Center (Defender for Cloud)",
     "description": "This module deploys an Azure Security Center (Defender for Cloud) Configuration.\n\nFor the associated policy assignments (e.g., Deploy-MDFC-Config), use the [ALZ Bicep Accelerator](https://aka.ms/alz/acc/bicep) or reference the [Deploy-MDFC-Config policy initiative](https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config_20240319.html) directly.\n"
@@ -973,6 +973,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.security-securitycenter",
     "defaultDefenderPlans": [
       {
         "name": "VirtualMachines",
@@ -1023,14 +1024,15 @@
         "pricingTier": "Free"
       }
     ],
-    "effectiveDefenderPlans": "[coalesce(parameters('defenderPlans'), variables('defaultDefenderPlans'))]"
+    "effectiveDefenderPlans": "[coalesce(parameters('defenderPlans'), variables('defaultDefenderPlans'))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-07-01",
-      "name": "[take(format('46d3xbcp.ptn.security-securitycenter.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -1249,8 +1251,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "12522133032823585948"
+              "version": "0.47.16.16243",
+              "templateHash": "10695780485861796991"
             }
           },
           "parameters": {
@@ -1360,8 +1362,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.42.1.51946",
-              "templateHash": "16895363066633330588"
+              "version": "0.47.16.16243",
+              "templateHash": "17873324117625622014"
             }
           },
           "parameters": {
