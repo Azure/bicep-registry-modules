@@ -1,5 +1,6 @@
 ---
 # Synopsis: Flex Consumption scales dynamically; the instance-count rule does not recognize FC1.
+# Upstream fix: https://github.com/Azure/PSRule.Rules.Azure/issues/3929
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
