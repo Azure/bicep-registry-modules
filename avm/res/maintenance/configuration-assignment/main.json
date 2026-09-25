@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17589993724100518462"
+      "templateHash": "2686296267547282699"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -141,7 +141,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.maintenance-configurationassignment",
+    "$fxv#0": "46d3xbcp.res.fb1acb6",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

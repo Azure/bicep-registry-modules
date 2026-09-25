@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6172868943800591232"
+      "templateHash": "6455073930054409245"
     },
     "name": "Application Gateway for Containers Security Policy",
     "description": "This module deploys an Application Gateway for Containers Security Policy"
@@ -45,7 +45,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlsecpolicy",
+    "$fxv#0": "46d3xbcp.res.b3a8473",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

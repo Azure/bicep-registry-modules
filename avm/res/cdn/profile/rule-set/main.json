@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14396874389835406928"
+      "templateHash": "1348859689420343612"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set."
@@ -97,7 +97,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.cdn-profile-ruleset",
+    "$fxv#0": "46d3xbcp.res.5d425cc",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -180,7 +180,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17236033640467851161"
+              "templateHash": "18374560137847118231"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule."
@@ -250,7 +250,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-rulesetrule",
+            "$fxv#0": "46d3xbcp.res.8f9e857",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

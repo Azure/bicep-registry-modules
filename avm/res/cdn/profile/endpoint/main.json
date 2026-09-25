@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13694008342121012274"
+      "templateHash": "14547170585435257121"
     },
     "name": "CDN Profiles Endpoints",
     "description": "This module deploys a CDN Profile Endpoint."
@@ -59,7 +59,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.cdn-profile-endpoint",
+    "$fxv#0": "46d3xbcp.res.f95ae8a",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -163,7 +163,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16527632504735445448"
+              "templateHash": "3462167441055855362"
             },
             "name": "CDN Profiles Endpoints Origins",
             "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -266,7 +266,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.cdn-profile-endpointorigin",
+            "$fxv#0": "46d3xbcp.res.3ca1712",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

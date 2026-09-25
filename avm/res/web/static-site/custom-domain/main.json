@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11328499134612742777"
+      "templateHash": "532334733967108873"
     },
     "name": "Static Web App Site Custom Domains",
     "description": "This module deploys a Static Web App Site Custom Domain."
@@ -39,7 +39,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-staticsite-customdomain",
+    "$fxv#0": "46d3xbcp.res.c990862",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

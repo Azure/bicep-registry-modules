@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Managed Hsm",
   "moduleDescription": "AVM Resource Module for Managed HSM",
-  "telemetryIdPrefix": "46d3xbcp.res.keyvault-managedhsm",
+  "telemetryIdPrefix": "46d3xbcp.res.2b5eb51",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.keyvault-managedhsm"],
   "canonicalType": "Microsoft.KeyVault/managedHSMs",
   "owners": ["ns-github-design"]
 }

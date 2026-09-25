@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12587613122398010737"
+      "templateHash": "2343695749033723200"
     },
     "name": "Recovery Services Vault Replication Alert Settings",
     "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -62,7 +62,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.recsvcs-vault-replalertsetting",
+    "$fxv#0": "46d3xbcp.res.88b7529",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

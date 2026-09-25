@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Edge Site",
   "moduleDescription": "AVM Resource Module for Edge Site",
-  "telemetryIdPrefix": "46d3xbcp.res.edge-site",
+  "telemetryIdPrefix": "46d3xbcp.res.685b936",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.edge-site"],
   "canonicalType": "Microsoft.Edge/sites",
   "owners": ["chirag1603", "bniranjanbhat"]
 }

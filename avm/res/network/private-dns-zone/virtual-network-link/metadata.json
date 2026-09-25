@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Virtual Network Links",
   "moduleDescription": "AVM Child Module for Virtual Network Links",
-  "telemetryIdPrefix": "46d3xbcp.res.nw-privdnszonevnetlink",
+  "telemetryIdPrefix": "46d3xbcp.res.7afe16d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.nw-privdnszonevnetlink"],
   "canonicalType": "Microsoft.Network/privateDnsZones/virtualNetworkLinks"
 }

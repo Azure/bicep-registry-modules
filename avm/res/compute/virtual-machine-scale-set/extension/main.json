@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14618480060422448413"
+      "templateHash": "3606302749923315654"
     },
     "name": "Virtual Machine Scale Set Extensions",
     "description": "This module deploys a Virtual Machine Scale Set Extension."
@@ -111,7 +111,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.compute-vmss-extension",
+    "$fxv#0": "46d3xbcp.res.fd9d361",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

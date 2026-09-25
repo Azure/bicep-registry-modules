@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6579413608398382849"
+      "templateHash": "13121052137614230111"
     },
     "name": "Microsoft Edge Site Resources",
     "description": "Subscription scoped resources for Microsoft Edge Site."
@@ -66,7 +66,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.edge-site_subscope",
+    "$fxv#0": "46d3xbcp.res.b45c538",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

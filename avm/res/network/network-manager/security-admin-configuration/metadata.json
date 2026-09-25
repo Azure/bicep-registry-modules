@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Network Manager - Security Admin Configuration",
   "moduleDescription": "AVM Child Module for Network Manager - Security Admin Configuration",
-  "telemetryIdPrefix": "46d3xbcp.res.network-nwmgr-secadmcfg",
+  "telemetryIdPrefix": "46d3xbcp.res.f4e9b71",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-nwmgr-secadmcfg"],
   "canonicalType": "Microsoft.Network/networkManagers/securityAdminConfigurations"
 }

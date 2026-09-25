@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Virtual Enclaves - Approval",
   "moduleDescription": "AVM Resource Module for Azure Virtual Enclaves - Approval",
-  "telemetryIdPrefix": "46d3xbcp.res.mission-approval",
+  "telemetryIdPrefix": "46d3xbcp.res.c182573",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.mission-approval"],
   "canonicalType": "Microsoft.Mission/approvals",
   "owners": ["SvenAelterman"]
 }

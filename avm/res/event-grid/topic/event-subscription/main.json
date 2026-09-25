@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3510648928839759616"
+      "templateHash": "13230714642740962039"
     },
     "name": "EventGrid Topic Event Subscriptions",
     "description": "This module deploys an Event Grid Topic Event Subscription."
@@ -123,7 +123,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-topic-eventsub",
+    "$fxv#0": "46d3xbcp.res.a72ff23",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Cosmos DB Database Account - Gremlin Database",
   "moduleDescription": "AVM Child Module for Cosmos DB Database Account - Gremlin Database",
-  "telemetryIdPrefix": "46d3xbcp.res.doctdb-dbacct-gremlindb",
+  "telemetryIdPrefix": "46d3xbcp.res.8753e0c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.doctdb-dbacct-gremlindb"],
   "canonicalType": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases"
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1309052716256330864"
+      "templateHash": "9074431541129226070"
     },
     "name": "API Management Workspace API Operations",
     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -150,7 +150,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapiop",
+    "$fxv#0": "46d3xbcp.res.9f915a4",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -253,7 +253,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18020303070942837116"
+              "templateHash": "5531977160897538441"
             },
             "name": "API Management Workspace API Operation Policies",
             "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -318,7 +318,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapioppol",
+            "$fxv#0": "46d3xbcp.res.03ea72b",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

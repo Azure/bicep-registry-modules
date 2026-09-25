@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15679051758185811455"
+      "templateHash": "9999100150634844146"
     },
     "name": "Event Hub Namespace Disaster Recovery Configs",
     "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -39,7 +39,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventhub-namespace-drconfig",
+    "$fxv#0": "46d3xbcp.res.491c72c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

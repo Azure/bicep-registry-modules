@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Static Web App",
   "moduleDescription": "AVM Resource Module for Static Web App",
-  "telemetryIdPrefix": "46d3xbcp.res.web-staticsite",
+  "telemetryIdPrefix": "46d3xbcp.res.11ea834",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.web-staticsite"],
   "canonicalType": "Microsoft.Web/staticSites",
   "owners": [
     "maciejporebski"

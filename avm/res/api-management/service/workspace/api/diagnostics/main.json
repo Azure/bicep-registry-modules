@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5893140300622755714"
+      "templateHash": "4620181838018168449"
     },
     "name": "API Management Workspace APIs Diagnostics",
     "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -140,7 +140,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapidiag",
+    "$fxv#0": "46d3xbcp.res.6e2da08",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

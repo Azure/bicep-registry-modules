@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3146342112903170892"
+      "templateHash": "1858477198018108177"
     },
     "name": "Recovery Services Vault Backup Config",
     "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -118,7 +118,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.recsvcs-vault-backupconfig",
+    "$fxv#0": "46d3xbcp.res.b525419",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

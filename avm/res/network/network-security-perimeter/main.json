@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "867690743973150824"
+      "templateHash": "17224408261360042210"
     },
     "name": "Network Security Perimeter",
     "description": "This module deploys a Network Security Perimeter (NSP)."
@@ -484,7 +484,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.network-nwsecurityperimeter",
+    "$fxv#0": "46d3xbcp.res.dc662c3",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -651,7 +651,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6172681595644154389"
+              "templateHash": "2623914535438791306"
             },
             "name": "Network Security Perimeter Profile",
             "description": "This module deploys a Network Security Perimeter Profile."
@@ -791,7 +791,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwsecperim-profile",
+            "$fxv#0": "46d3xbcp.res.671d98f",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -883,7 +883,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "13418581803696942034"
+                      "templateHash": "1552677994657058989"
                     },
                     "name": "Network Security Perimeter Access Rule",
                     "description": "This module deploys a Network Security Perimeter Access Rule."
@@ -994,7 +994,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.network-nwsecperim-profileaccessrule",
+                    "$fxv#0": "46d3xbcp.res.70ab7cf",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {

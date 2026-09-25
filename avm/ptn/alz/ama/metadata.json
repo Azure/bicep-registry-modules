@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Landing Zones (ALZ) - Azure Monitoring Agent (AMA)",
   "moduleDescription": "AVM Pattern Module for Azure Landing Zones (ALZ) - Azure Monitoring Agent (AMA)",
-  "telemetryIdPrefix": "46d3xbcp.ptn.alz-ama",
+  "telemetryIdPrefix": "46d3xbcp.ptn.ae60b19",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.alz-ama"],
   "canonicalType": "alz/ama",
   "owners": ["yeddlapurishivasai", "akshayrohilla", "jtracey93"]
 }

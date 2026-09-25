@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Digital Twins Instance",
   "moduleDescription": "AVM Resource Module for Digital Twins Instance",
-  "telemetryIdPrefix": "46d3xbcp.res.digitaltwins-digitaltwinsinstance",
+  "telemetryIdPrefix": "46d3xbcp.res.b619933",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.digitaltwins-digitaltwinsinstance"],
   "canonicalType": "Microsoft.DigitalTwins/digitalTwinsInstances",
   "owners": ["ryanmstephens"]
 }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17585126412432521503"
+      "templateHash": "13905759557603166694"
     },
     "name": "Synapse Workspaces Administrators",
     "description": "This module deploys Synapse Workspaces Administrators."
@@ -51,7 +51,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.synapse-workspace-administrator",
+    "$fxv#0": "46d3xbcp.res.f81aaa3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

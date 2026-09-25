@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "29835095771890126"
+      "templateHash": "5806516146191207868"
     },
     "name": "Dev Center Attached Network",
     "description": "This module deploys a Dev Center Attached Network."
@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter-attachednetwork",
+    "$fxv#0": "46d3xbcp.res.69e6af5",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

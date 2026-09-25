@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14049499052478146285"
+      "templateHash": "15637745744791521858"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy."
@@ -174,7 +174,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.keyvault-accesspolicy",
+    "$fxv#0": "46d3xbcp.res.44a8e20",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

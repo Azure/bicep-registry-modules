@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13561414625212336495"
+      "templateHash": "16903133978221304687"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -37,7 +37,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-advdthreatprot",
+    "$fxv#0": "46d3xbcp.res.5a9e8b0",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

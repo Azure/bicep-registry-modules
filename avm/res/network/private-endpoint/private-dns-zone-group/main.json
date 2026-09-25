@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5272415127376794004"
+      "templateHash": "14265073358636020849"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -69,7 +69,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-privendpoint-privdnszonegrp",
+    "$fxv#0": "46d3xbcp.res.df88b8c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

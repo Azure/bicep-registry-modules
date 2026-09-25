@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2351084920181700780"
+      "templateHash": "2376171257007244578"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -1232,7 +1232,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.devtestlab-lab",
+    "$fxv#0": "46d3xbcp.res.3392a5a",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), createObject())), createObject('type', 'SystemAssigned'))]",
     "formattedManagementIdentities": "[if(not(empty(parameters('managementIdentitiesResourceIds'))), reduce(map(coalesce(parameters('managementIdentitiesResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next')))), createObject())]",
@@ -1382,7 +1382,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15463512592423385770"
+              "templateHash": "7061351535872390800"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
@@ -1572,7 +1572,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-virtualnetwork",
+            "$fxv#0": "46d3xbcp.res.44b6d99",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1693,7 +1693,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8006178831696520707"
+              "templateHash": "12622043975477726712"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
@@ -1779,7 +1779,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-policysetpolicy",
+            "$fxv#0": "46d3xbcp.res.5476bf0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1905,7 +1905,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5295053779228623592"
+              "templateHash": "6854366009842388982"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -2110,7 +2110,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-schedule",
+            "$fxv#0": "46d3xbcp.res.2e79b13",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2236,7 +2236,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3828453341199167214"
+              "templateHash": "17945582298143822802"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
@@ -2308,7 +2308,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-notificationchannel",
+            "$fxv#0": "46d3xbcp.res.1c1f0d6",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2448,7 +2448,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8874994572157515103"
+              "templateHash": "1273277060861917205"
             },
             "name": "DevTest Lab Artifact Sources",
             "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
@@ -2546,7 +2546,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-artifactsource",
+            "$fxv#0": "46d3xbcp.res.2da64a7",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2699,7 +2699,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7677139416581181234"
+              "templateHash": "12625018619272834668"
             },
             "name": "DevTest Lab Costs",
             "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold."
@@ -2886,7 +2886,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-cost",
+            "$fxv#0": "46d3xbcp.res.9d6e564",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -3046,7 +3046,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3399995513015675613"
+              "templateHash": "3904011260809769278"
             },
             "name": "DevTest Lab Secrets",
             "description": "This module deploys a DevTest Lab Secret.\n\nLab secrets will be accessible to all lab users. Depending on their scope, secrets can be used to securely provide credentials when creating formulas, virtual machines, artifacts, or ARM templates."
@@ -3093,7 +3093,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.devtestlab-lab-secret",
+            "$fxv#0": "46d3xbcp.res.cb331da",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

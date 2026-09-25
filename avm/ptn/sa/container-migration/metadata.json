@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "SA - Container migration",
   "moduleDescription": "AVM Pattern Module for SA - Container migration",
-  "telemetryIdPrefix": "46d3xbcp.ptn.sa-containermigration",
+  "telemetryIdPrefix": "46d3xbcp.ptn.5fa01c5",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.sa-containermigration"],
   "canonicalType": "sa/container-migration",
   "owners": ["aniaroramsft", "alguadam"]
 }

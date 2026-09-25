@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - ML Hub Dependencies",
   "moduleDescription": "AVM Pattern Module for AZD - ML Hub Dependencies",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-mlhubdependencies",
+  "telemetryIdPrefix": "46d3xbcp.ptn.9a7c621",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-mlhubdependencies"],
   "alternativeNames": [
     "Azure Developer CLI - Machine Learning Hub Dependencies"
   ],

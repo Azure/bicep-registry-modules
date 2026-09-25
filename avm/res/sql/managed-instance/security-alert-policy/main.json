@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6400310409760028455"
+      "templateHash": "14065786600656180115"
     },
     "name": "SQL Managed Instance Security Alert Policies",
     "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -90,7 +90,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-securityalertpolicy",
+    "$fxv#0": "46d3xbcp.res.003a699",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

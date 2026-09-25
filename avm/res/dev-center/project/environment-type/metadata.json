@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Dev Center Project - Environment Type",
   "moduleDescription": "AVM Child Module for Dev Center Project - Environment Type",
-  "telemetryIdPrefix": "46d3xbcp.res.devcenter-project-environmenttype",
+  "telemetryIdPrefix": "46d3xbcp.res.a303e8d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.devcenter-project-environmenttype"],
   "canonicalType": "Microsoft.DevCenter/projects/environmentTypes"
 }

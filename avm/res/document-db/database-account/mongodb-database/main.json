@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16516898025322714594"
+      "templateHash": "10623401449739710610"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -112,7 +112,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-mongodbdatabase",
+    "$fxv#0": "46d3xbcp.res.d03fe8a",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
@@ -201,7 +201,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8820587585045694306"
+              "templateHash": "9685797720552305674"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection."
@@ -259,7 +259,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-mongodbdbcollection",
+            "$fxv#0": "46d3xbcp.res.f02ef01",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

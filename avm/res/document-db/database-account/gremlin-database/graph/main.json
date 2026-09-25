@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11428303057972465747"
+      "templateHash": "14952591836662231999"
     },
     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -69,7 +69,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-gremlindbgraph",
+    "$fxv#0": "46d3xbcp.res.7af8208",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

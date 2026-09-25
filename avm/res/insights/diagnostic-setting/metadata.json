@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Diagnostic Setting",
   "moduleDescription": "AVM Resource Module for Diagnostic Setting",
-  "telemetryIdPrefix": "46d3xbcp.res.insights-diagnosticsetting",
+  "telemetryIdPrefix": "46d3xbcp.res.c66c375",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.insights-diagnosticsetting"],
   "canonicalType": "Microsoft.Insights/diagnosticSettings",
   "owners": ["krbar"]
 }

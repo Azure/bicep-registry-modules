@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6470612935462880930"
+      "templateHash": "12562237504116642189"
     },
     "name": "Event Grid Domain Topics",
     "description": "This module deploys an Event Grid Domain Topic."
@@ -32,7 +32,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-domain-topic",
+    "$fxv#0": "46d3xbcp.res.73eb303",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

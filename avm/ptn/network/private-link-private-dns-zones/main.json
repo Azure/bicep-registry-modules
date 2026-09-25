@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2745025996555996292"
+      "templateHash": "5389383223685872373"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -278,7 +278,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.ptn.network-privatelinkprivatednszones",
+    "$fxv#0": "46d3xbcp.ptn.98cabd6",
     "combinedPrivateLinkPrivateDnsZonesProvided": "[union(parameters('privateLinkPrivateDnsZones'), coalesce(parameters('additionalPrivateLinkPrivateDnsZonesToInclude'), createArray()))]",
     "privateLinkPrivateDnsZonesWithExclusions": "[filter(variables('combinedPrivateLinkPrivateDnsZonesProvided'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
     "azureRegionGeoCodeShortNameAsKey": {

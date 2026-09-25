@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure AI Services (Cognitive Services)",
   "moduleDescription": "AVM Resource Module for Azure AI Services (Cognitive Services)",
-  "telemetryIdPrefix": "46d3xbcp.res.cognitiveservices-account",
+  "telemetryIdPrefix": "46d3xbcp.res.7b531a1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.cognitiveservices-account"],
   "alternativeNames": [
     "AI Foundry"
   ],

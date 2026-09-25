@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13745461998836187928"
+      "templateHash": "1049955440012329769"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -93,7 +93,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-site-slotconfig",
+    "$fxv#0": "46d3xbcp.res.59566fd",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5155539378655332372"
+      "templateHash": "9543443546771580749"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts."
@@ -372,7 +372,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.res.resources-deploymentscript",
+    "$fxv#0": "46d3xbcp.res.7f47eaa",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",

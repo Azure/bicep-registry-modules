@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4941970162101051803"
+      "templateHash": "17551000749832731491"
     },
     "name": "Container Registries Tokens",
     "description": "Deploys an Azure Container Registry (ACR) Token."
@@ -62,7 +62,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.containerregistry-registry-token",
+    "$fxv#0": "46d3xbcp.res.df8bac7",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

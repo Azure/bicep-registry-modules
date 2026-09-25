@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "SQL Managed Instance",
   "moduleDescription": "AVM Resource Module for SQL Managed Instance",
-  "telemetryIdPrefix": "46d3xbcp.res.sql-managedinstance",
+  "telemetryIdPrefix": "46d3xbcp.res.9f9c4a3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.sql-managedinstance"],
   "alternativeNames": ["SQL MI"],
   "canonicalType": "Microsoft.Sql/managedInstances",
   "owners": ["chanakanissanka"]

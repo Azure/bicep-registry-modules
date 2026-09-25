@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6303035606206372289"
+      "templateHash": "16547638608441665033"
     },
     "name": "API Management Service Products APIs",
     "description": "This module deploys an API Management Service Product API."
@@ -38,7 +38,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-productapi",
+    "$fxv#0": "46d3xbcp.res.d7ff2bd",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

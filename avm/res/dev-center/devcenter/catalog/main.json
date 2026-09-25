@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11256424559378124630"
+      "templateHash": "12473645236891713711"
     },
     "name": "Dev Center Catalog",
     "description": "This module deploys a Dev Center Catalog."
@@ -115,7 +115,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter-catalog",
+    "$fxv#0": "46d3xbcp.res.a802133",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

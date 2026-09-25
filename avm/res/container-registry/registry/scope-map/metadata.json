@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Container Registry (ACR) - Scope Map",
   "moduleDescription": "AVM Child Module for Azure Container Registry (ACR) - Scope Map",
-  "telemetryIdPrefix": "46d3xbcp.res.containerregistry-registry-scopemap",
+  "telemetryIdPrefix": "46d3xbcp.res.a858589",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.containerregistry-registry-scopemap"],
   "canonicalType": "Microsoft.ContainerRegistry/registries/scopeMaps"
 }

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DB for Postgre SQL Flexible Server",
   "moduleDescription": "AVM Resource Module for DB for Postgre SQL Flexible Server",
-  "telemetryIdPrefix": "46d3xbcp.res.dbforpostgresql-flexibleserver",
+  "telemetryIdPrefix": "46d3xbcp.res.568937f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.dbforpostgresql-flexibleserver"],
   "canonicalType": "Microsoft.DBforPostgreSQL/flexibleServers",
   "owners": ["arnoldna"]
 }

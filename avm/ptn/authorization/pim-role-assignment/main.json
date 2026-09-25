@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16382596840061093058"
+      "templateHash": "7200359356446559991"
     },
     "name": "PIM Role Assignments (All scopes)",
     "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -369,7 +369,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.authorization-pimroleassignment",
+    "$fxv#0": "46d3xbcp.ptn.1413b00",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12894319541290724863"
+      "templateHash": "14424858198980453783"
     },
     "name": "Storage Account Local Users",
     "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -128,7 +128,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.storage-localuser",
+    "$fxv#0": "46d3xbcp.res.d917d5c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

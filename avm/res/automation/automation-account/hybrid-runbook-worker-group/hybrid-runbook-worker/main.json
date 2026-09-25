@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11820486064985425961"
+      "templateHash": "7542107436877816551"
     },
     "name": "Automation Account Hybrid Runbook Worker Group Workers",
     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo",
+    "$fxv#0": "46d3xbcp.res.d5e33fe",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

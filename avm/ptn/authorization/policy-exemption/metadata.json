@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - Policy Exemption",
   "moduleDescription": "AVM Pattern Module for Authorization - Policy Exemption",
-  "telemetryIdPrefix": "46d3xbcp.ptn.authorization-policyexemption",
+  "telemetryIdPrefix": "46d3xbcp.ptn.736245b",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.authorization-policyexemption"],
   "canonicalType": "authorization/policy-exemption",
   "owners": ["oZakari"]
 }

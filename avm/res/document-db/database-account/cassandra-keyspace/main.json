@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5743103135760693641"
+      "templateHash": "3527870440101863549"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces",
     "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -186,7 +186,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspace",
+    "$fxv#0": "46d3xbcp.res.4685d75",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
@@ -285,7 +285,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6092906697301798997"
+              "templateHash": "16596329162635800511"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
             "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -365,7 +365,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspacetable",
+            "$fxv#0": "46d3xbcp.res.05cb934",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -496,7 +496,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16598669613904297333"
+              "templateHash": "12836718812769425590"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces Views",
             "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -566,7 +566,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview",
+            "$fxv#0": "46d3xbcp.res.5ee2d3f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

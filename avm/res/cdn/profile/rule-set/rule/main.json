@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17236033640467851161"
+      "templateHash": "18374560137847118231"
     },
     "name": "CDN Profiles Rules",
     "description": "This module deploys a CDN Profile rule."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.cdn-profile-rulesetrule",
+    "$fxv#0": "46d3xbcp.res.8f9e857",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

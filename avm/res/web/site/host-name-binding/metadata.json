@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Web/Function App - Host Name Binding",
   "moduleDescription": "AVM Child Module for Web/Function App - Host Name Binding",
-  "telemetryIdPrefix": "46d3xbcp.res.web-site-hostnamebinding",
+  "telemetryIdPrefix": "46d3xbcp.res.e5091d9",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.web-site-hostnamebinding"],
   "canonicalType": "Microsoft.Web/sites/hostNameBindings"
 }

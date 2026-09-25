@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4683505315484553605"
+      "templateHash": "12530462067768487385"
     },
     "name": "Log Analytics Workspace Linked Services",
     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -57,7 +57,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.opins-worksp-linkedservice",
+    "$fxv#0": "46d3xbcp.res.6a0029a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

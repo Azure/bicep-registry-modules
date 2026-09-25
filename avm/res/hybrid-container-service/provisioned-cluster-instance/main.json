@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2235458722366423264"
+      "templateHash": "12222240304754840211"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -696,7 +696,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.hybcontsvc-provclustinst",
+    "$fxv#0": "46d3xbcp.res.c5e30c6",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },

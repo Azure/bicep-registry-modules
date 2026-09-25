@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "SA - Multi Agent Custom Automation Engine",
   "moduleDescription": "AVM Pattern Module for SA - Multi Agent Custom Automation Engine",
-  "telemetryIdPrefix": "46d3xbcp.ptn.sa-multiagentcustauteng",
+  "telemetryIdPrefix": "46d3xbcp.ptn.b94ba5d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.sa-multiagentcustauteng"],
   "alternativeNames": [
     "Solution Accelerator - Multi Agent Custom Automation Engine"
   ],

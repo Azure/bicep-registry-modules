@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Maintenance Configuration Assignment",
   "moduleDescription": "AVM Resource Module for Maintenance Configuration Assignment",
-  "telemetryIdPrefix": "46d3xbcp.res.maintenance-configurationassignment",
+  "telemetryIdPrefix": "46d3xbcp.res.fb1acb6",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.maintenance-configurationassignment"],
   "canonicalType": "Microsoft.Maintenance/configurationAssignments",
   "owners": ["eriqua"]
 }

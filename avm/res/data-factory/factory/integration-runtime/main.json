@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13343475495710032657"
+      "templateHash": "709875539459263214"
     },
     "name": "Data Factory Integration RunTimes",
     "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -63,7 +63,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.datafactory-factory-integrruntime",
+    "$fxv#0": "46d3xbcp.res.02c2140",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

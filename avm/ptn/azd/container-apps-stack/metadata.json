@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - Container Apps Stack",
   "moduleDescription": "AVM Pattern Module for AZD - Container Apps Stack",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-containerappsstack",
+  "telemetryIdPrefix": "46d3xbcp.ptn.efdf44a",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-containerappsstack"],
   "alternativeNames": ["Azure Developer CLI - Container Apps Stack"],
   "canonicalType": "azd/container-apps-stack",
   "owners": ["JeffreyCA"]

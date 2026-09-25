@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Service Group",
   "moduleDescription": "AVM Resource Module for Service Group",
-  "telemetryIdPrefix": "46d3xbcp.res.management-servicegroup",
+  "telemetryIdPrefix": "46d3xbcp.res.8054f81",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.management-servicegroup"],
   "canonicalType": "Microsoft.Management/serviceGroups",
   "owners": ["jtracey93"]
 }

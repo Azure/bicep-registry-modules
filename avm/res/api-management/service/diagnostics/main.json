@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14645392524683829424"
+      "templateHash": "7750309575951648375"
     },
     "name": "API Management Service Diagnostics",
     "description": "This module deploys an API Management Service Diagnostic."
@@ -122,7 +122,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-diag",
+    "$fxv#0": "46d3xbcp.res.e1fc71d",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

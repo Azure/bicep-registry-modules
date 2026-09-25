@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DB for Postgre SQL Flexible Server - Adv Threat Protection Setting",
   "moduleDescription": "AVM Child Module for DB for Postgre SQL Flexible Server - Adv Threat Protection Setting",
-  "telemetryIdPrefix": "46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg",
+  "telemetryIdPrefix": "46d3xbcp.res.f67fc6a",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg"],
   "canonicalType": "Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings"
 }

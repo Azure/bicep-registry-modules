@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18018449701334568178"
+      "templateHash": "14411199217202402559"
     },
     "name": "Policy Insights Remediations",
     "description": "This module deploys a Policy Insights Remediation."
@@ -124,7 +124,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.policyinsights-remediation",
+    "$fxv#0": "46d3xbcp.ptn.d920702",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
@@ -132,7 +132,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-11-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",

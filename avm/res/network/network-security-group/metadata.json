@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Network Security Group",
   "moduleDescription": "AVM Resource Module for Network Security Group",
-  "telemetryIdPrefix": "46d3xbcp.res.network-networksecuritygroup",
+  "telemetryIdPrefix": "46d3xbcp.res.dd6a433",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-networksecuritygroup"],
   "alternativeNames": [
     "NSG"
   ],

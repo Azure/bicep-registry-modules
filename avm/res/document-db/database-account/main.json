@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10575543833045246186"
+      "templateHash": "3051976306862837865"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -2098,7 +2098,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInControlPlaneRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.documentdb-databaseaccount",
+    "$fxv#0": "46d3xbcp.res.2507273",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -2287,7 +2287,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3646157126408976653"
+              "templateHash": "17837204040877576821"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -2499,7 +2499,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.documentdb-databaseaccountsqldb",
+            "$fxv#0": "46d3xbcp.res.bedc4d0",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -2617,7 +2617,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3250509771060378754"
+                      "templateHash": "14810436902678920641"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -2791,7 +2791,7 @@
                         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
                       }
                     ],
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqldbcontainer",
+                    "$fxv#0": "46d3xbcp.res.9b7d4de",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -2944,7 +2944,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17942310117920507733"
+              "templateHash": "9311240602010477778"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -3039,7 +3039,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqlroledefinition",
+            "$fxv#0": "46d3xbcp.res.41bc8aa",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -3123,7 +3123,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "13809048633721245899"
+                      "templateHash": "2272167982153466409"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3170,7 +3170,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqlroleassignment",
+                    "$fxv#0": "46d3xbcp.res.37bfd91",
                     "builtInDataPlaneRoleNames": {
                       "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
                       "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
@@ -3324,7 +3324,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13809048633721245899"
+              "templateHash": "2272167982153466409"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -3371,7 +3371,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqlroleassignment",
+            "$fxv#0": "46d3xbcp.res.37bfd91",
             "builtInDataPlaneRoleNames": {
               "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
               "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
@@ -3496,7 +3496,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1688547287043078440"
+              "templateHash": "9050465549751762584"
             },
             "name": "DocumentDB Database Account Cassandra Role Definitions.",
             "description": "This module deploys a Cassandra Role Definition in a CosmosDB Account."
@@ -3600,7 +3600,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrroledefinition",
+            "$fxv#0": "46d3xbcp.res.3647d17",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -3688,7 +3688,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3641183021625290781"
+                      "templateHash": "10354243878496822055"
                     },
                     "name": "DocumentDB Database Account Cassandra Role Assignments.",
                     "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3735,7 +3735,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrroleassignment",
+                    "$fxv#0": "46d3xbcp.res.c907ed9",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -3876,7 +3876,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3641183021625290781"
+              "templateHash": "10354243878496822055"
             },
             "name": "DocumentDB Database Account Cassandra Role Assignments.",
             "description": "This module deploys a Cassandra Role Assignment in a CosmosDB Account."
@@ -3923,7 +3923,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrroleassignment",
+            "$fxv#0": "46d3xbcp.res.c907ed9",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -4039,7 +4039,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16516898025322714594"
+              "templateHash": "10623401449739710610"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -4145,7 +4145,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-mongodbdatabase",
+            "$fxv#0": "46d3xbcp.res.d03fe8a",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -4234,7 +4234,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "8820587585045694306"
+                      "templateHash": "9685797720552305674"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -4292,7 +4292,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-mongodbdbcollection",
+                    "$fxv#0": "46d3xbcp.res.f02ef01",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -4433,7 +4433,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2422156585018642691"
+              "templateHash": "14957581293671837693"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -4541,7 +4541,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-gremlindb",
+            "$fxv#0": "46d3xbcp.res.8753e0c",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -4628,7 +4628,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11428303057972465747"
+                      "templateHash": "14952591836662231999"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -4691,7 +4691,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-gremlindbgraph",
+                    "$fxv#0": "46d3xbcp.res.7af8208",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -4843,7 +4843,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5657022849179584473"
+              "templateHash": "4580496686712607357"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -4894,7 +4894,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.documentdb-databaseaccounttable",
+            "$fxv#0": "46d3xbcp.res.1b4a5bb",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -5016,7 +5016,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5743103135760693641"
+              "templateHash": "3527870440101863549"
             },
             "name": "DocumentDB Database Account Cassandra Keyspaces",
             "description": "This module deploys a Cassandra Keyspace within a CosmosDB Account."
@@ -5196,7 +5196,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspace",
+            "$fxv#0": "46d3xbcp.res.4685d75",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -5295,7 +5295,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "6092906697301798997"
+                      "templateHash": "16596329162635800511"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
                     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -5375,7 +5375,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspacetable",
+                    "$fxv#0": "46d3xbcp.res.05cb934",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -5506,7 +5506,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "16598669613904297333"
+                      "templateHash": "12836718812769425590"
                     },
                     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
                     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -5576,7 +5576,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview",
+                    "$fxv#0": "46d3xbcp.res.5ee2d3f",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {

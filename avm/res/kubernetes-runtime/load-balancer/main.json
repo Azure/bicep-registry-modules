@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3515055314522075676"
+      "templateHash": "13673527029511258966"
     },
     "name": "Kubernetes Runtime Load Balancers",
     "description": "This module deploys a Kubernetes Runtime Load Balancer for MetalLB and related networking services."
@@ -85,7 +85,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.kubernetesruntime-loadbalancer",
+    "$fxv#0": "46d3xbcp.res.6f3fefa",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2006610898110927106"
+      "templateHash": "4640253910446685738"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -1133,7 +1133,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.dbformysql-flexibleserver",
+    "$fxv#0": "46d3xbcp.res.67b5df5",
     "enableReferencedModulesTelemetry": false,
     "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray()), if(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1386,7 +1386,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18383947457141780031"
+              "templateHash": "4941302355967845340"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1427,7 +1427,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-database",
+            "$fxv#0": "46d3xbcp.res.4264cd6",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1527,7 +1527,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13754938978102887310"
+              "templateHash": "15701377357841828227"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1566,7 +1566,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-firewallrule",
+            "$fxv#0": "46d3xbcp.res.55b5c3f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1669,7 +1669,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14133272245857848896"
+              "templateHash": "2163176566963366517"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1715,7 +1715,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-administrator",
+            "$fxv#0": "46d3xbcp.res.c6d0414",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1819,7 +1819,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11483229304286183088"
+              "templateHash": "4891417038035082191"
             },
             "name": "DBforMySQL Flexible Server Configurations",
             "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -1864,7 +1864,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-configuration",
+            "$fxv#0": "46d3xbcp.res.0ef9df0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1960,7 +1960,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13561414625212336495"
+              "templateHash": "16903133978221304687"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -1992,7 +1992,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-advdthreatprot",
+            "$fxv#0": "46d3xbcp.res.5a9e8b0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9577821464078779768"
+      "templateHash": "15388902877637260510"
     },
     "name": "Private Link Scope Scoped Resources",
     "description": "This module deploys a Private Link Scope Scoped Resource."
@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.insights-privatelinkscope-scopedres",
+    "$fxv#0": "46d3xbcp.res.238e132",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

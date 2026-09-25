@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "VPN Gateway - Vpn Connection",
   "moduleDescription": "AVM Child Module for VPN Gateway - Vpn Connection",
-  "telemetryIdPrefix": "46d3xbcp.res.network-vpngateway-vpnconnection",
+  "telemetryIdPrefix": "46d3xbcp.res.a23bc37",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-vpngateway-vpnconnection"],
   "canonicalType": "Microsoft.Network/vpnGateways/vpnConnections"
 }

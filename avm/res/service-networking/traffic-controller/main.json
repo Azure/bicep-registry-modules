@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9754314857602855538"
+      "templateHash": "16961081392882256406"
     },
     "name": "Application Gateway for Containers",
     "description": "This module deploys an Application Gateway for Containers"
@@ -402,7 +402,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.servicenetworking-trafficcontroller",
+    "$fxv#0": "46d3xbcp.res.74ac655",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -553,7 +553,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3682066734050233121"
+              "templateHash": "18152540901099762360"
             },
             "name": "Application Gateway for Containers Frontend",
             "description": "This module deploys an Application Gateway for Containers Frontend"
@@ -587,7 +587,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlfrontend",
+            "$fxv#0": "46d3xbcp.res.1b6e627",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -692,7 +692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10430147995707697523"
+              "templateHash": "12820069719981616899"
             },
             "name": "Application Gateway for Containers Association",
             "description": "This module deploys an Application Gateway for Containers Association"
@@ -732,7 +732,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlassoc",
+            "$fxv#0": "46d3xbcp.res.87d82f0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -842,7 +842,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6172868943800591232"
+              "templateHash": "6455073930054409245"
             },
             "name": "Application Gateway for Containers Security Policy",
             "description": "This module deploys an Application Gateway for Containers Security Policy"
@@ -882,7 +882,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlsecpolicy",
+            "$fxv#0": "46d3xbcp.res.b3a8473",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

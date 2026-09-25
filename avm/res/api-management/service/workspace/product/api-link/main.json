@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1447694614270785401"
+      "templateHash": "13650155963304210158"
     },
     "name": "API Management Workspace Product API Links",
     "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodapilink",
+    "$fxv#0": "46d3xbcp.res.b91eee6",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

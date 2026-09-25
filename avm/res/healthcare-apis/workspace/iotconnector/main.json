@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16472119251219989418"
+      "templateHash": "17632461738580198461"
     },
     "name": "Healthcare API Workspace IoT Connectors",
     "description": "This module deploys a Healthcare API Workspace IoT Connector."
@@ -298,7 +298,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.healthcapis-workspace-iotconn",
+    "$fxv#0": "46d3xbcp.res.f80d4ab",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
@@ -447,7 +447,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3872333191631626918"
+              "templateHash": "3801787886324939302"
             },
             "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
             "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
@@ -515,7 +515,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.healthcapis-workspace-iotconnfhirdst",
+            "$fxv#0": "46d3xbcp.res.bec37d0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

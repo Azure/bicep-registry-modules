@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16428510152982792723"
+      "templateHash": "9691666196958825207"
     },
     "name": "Integration Account Agreements",
     "description": "This module deploys an Integration Account Agreement."
@@ -110,7 +110,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.logic-integrationaccount-agreement",
+    "$fxv#0": "46d3xbcp.res.81b7962",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

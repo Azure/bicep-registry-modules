@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2884489081399274154"
+      "templateHash": "4430311077336354521"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -4753,7 +4753,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.web-siteslot",
+    "$fxv#0": "46d3xbcp.res.5b43f28",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -4966,7 +4966,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17916935854419486221"
+              "templateHash": "8336761301306417999"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -5017,7 +5017,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.web-site-slotbasicpubcredpolicy",
+            "$fxv#0": "46d3xbcp.res.e4adffd",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -5124,7 +5124,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10734656173233847926"
+              "templateHash": "2498996548656408267"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -5164,7 +5164,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.web-site-slothybconnnamespacerelay",
+            "$fxv#0": "46d3xbcp.res.1dae351",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -5951,7 +5951,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13745461998836187928"
+              "templateHash": "1049955440012329769"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -6038,7 +6038,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.web-site-slotconfig",
+            "$fxv#0": "46d3xbcp.res.59566fd",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -6174,7 +6174,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7772012586749047656"
+              "templateHash": "17109451070818458117"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -6231,7 +6231,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.web-site-slotextension",
+            "$fxv#0": "46d3xbcp.res.fe2009c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

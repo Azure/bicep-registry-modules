@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3782622514255174148"
+      "templateHash": "2360839407352741277"
     },
     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
     "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -36,7 +36,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg",
+    "$fxv#0": "46d3xbcp.res.f67fc6a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

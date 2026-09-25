@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12803462314019142282"
+      "templateHash": "13446593670926219943"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n\n**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**\n\n| Date | Description |\n| --- | --- |\n| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n\n**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**\n\n| Date | Description |\n| --- | --- |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n"
@@ -1089,7 +1089,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.cache-redis",
+    "$fxv#0": "46d3xbcp.res.23583fc",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",

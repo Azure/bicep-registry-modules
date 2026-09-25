@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7148996292641911729"
+      "templateHash": "12925585819649971906"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -107,7 +107,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-auditingsetting",
+    "$fxv#0": "46d3xbcp.res.21c74d4",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

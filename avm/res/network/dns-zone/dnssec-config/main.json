@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3706500098135430239"
+      "templateHash": "3550114397748071585"
     },
     "name": "Public DNS Zone DNSSEC Config",
     "description": "This module deploys a Public DNS Zone DNSSEC configuration."
@@ -26,7 +26,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-dnszone-dnssecconfig",
+    "$fxv#0": "46d3xbcp.res.52d5e0e",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

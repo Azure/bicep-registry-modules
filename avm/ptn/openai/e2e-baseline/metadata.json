@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure OpenAI End-to-End Baseline Implementation",
   "moduleDescription": "AVM Pattern Module for Azure OpenAI End-to-End Baseline Implementation",
-  "telemetryIdPrefix": "46d3xbcp.ptn.openai-e2ebaseline",
+  "telemetryIdPrefix": "46d3xbcp.ptn.0357857",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.openai-e2ebaseline"],
   "canonicalType": "openai/e2e-baseline",
   "owners": []
 }

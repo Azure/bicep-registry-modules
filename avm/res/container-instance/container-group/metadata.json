@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Container Instance",
   "moduleDescription": "AVM Resource Module for Container Instance",
-  "telemetryIdPrefix": "46d3xbcp.res.containerinstance-containergroup",
+  "telemetryIdPrefix": "46d3xbcp.res.68a25c7",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.containerinstance-containergroup"],
   "alternativeNames": ["ACI"],
   "canonicalType": "Microsoft.ContainerInstance/containerGroups",
   "owners": ["JPEasier"]

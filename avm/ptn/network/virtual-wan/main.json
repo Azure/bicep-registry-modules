@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9333804245190779690"
+      "templateHash": "7620492219353150376"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1560,7 +1560,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.ptn.network-virtualwan",
+    "$fxv#0": "46d3xbcp.ptn.e673d51",
     "combinedTags": "[union(coalesce(parameters('tags'), createObject()), coalesce(tryGet(parameters('virtualWanParameters'), 'tags'), createObject()))]",
     "computedLock": "[coalesce(coalesce(tryGet(parameters('virtualWanParameters'), 'lock'), parameters('lock')), createObject())]",
     "virtualWanLocation": "[coalesce(tryGet(parameters('virtualWanParameters'), 'location'), parameters('location'))]",

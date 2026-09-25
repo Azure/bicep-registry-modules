@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Workload - IaaS VM Cosmos DB - Tier 4",
   "moduleDescription": "AVM Pattern Module for Workload - IaaS VM Cosmos DB - Tier 4",
-  "telemetryIdPrefix": "46d3xbcp.ptn.app-iaasvmcosmosdbt4",
+  "telemetryIdPrefix": "46d3xbcp.ptn.ca7f6a1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.app-iaasvmcosmosdbt4"],
   "canonicalType": "app/iaas-vm-cosmosdb-tier4",
   "owners": ["mikestiers", "andbron"]
 }

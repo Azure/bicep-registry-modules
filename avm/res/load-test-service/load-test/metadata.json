@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Load Testing Service",
   "moduleDescription": "AVM Resource Module for Load Testing Service",
-  "telemetryIdPrefix": "46d3xbcp.res.loadtestservice-loadtest",
+  "telemetryIdPrefix": "46d3xbcp.res.20bfb77",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.loadtestservice-loadtest"],
   "canonicalType": "Microsoft.LoadTestService/loadTests",
   "owners": ["sebassem"]
 }

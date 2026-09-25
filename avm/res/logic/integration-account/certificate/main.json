@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12729743480632123349"
+      "templateHash": "2070355690699208101"
     },
     "name": "Integration Account Certificates",
     "description": "This module deploys an Integration Account Certificate."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.logic-integrationaccount-certificate",
+    "$fxv#0": "46d3xbcp.res.be5f3ed",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

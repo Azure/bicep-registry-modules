@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4087306760226524641"
+      "templateHash": "10272308555566155293"
     },
     "name": "SQL Server Database Long Term Backup Retention Policies",
     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -83,7 +83,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-dbbckplongtermretpolicy",
+    "$fxv#0": "46d3xbcp.res.55b299c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

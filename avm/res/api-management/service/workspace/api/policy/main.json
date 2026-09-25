@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16278917142603363912"
+      "templateHash": "11820152653395138426"
     },
     "name": "API Management Workspace APIs Policies",
     "description": "This module deploys an API Policy in an API Management Workspace."
@@ -64,7 +64,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapipol",
+    "$fxv#0": "46d3xbcp.res.ea04ee7",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

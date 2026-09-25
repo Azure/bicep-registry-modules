@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4276153775416548100"
+      "templateHash": "12601683907696755493"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -761,7 +761,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.mlservices-workspace-connection",
+    "$fxv#0": "46d3xbcp.res.a9b5094",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

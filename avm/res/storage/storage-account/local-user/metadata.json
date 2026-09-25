@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Storage Account - Local User",
   "moduleDescription": "AVM Child Module for Storage Account - Local User",
-  "telemetryIdPrefix": "46d3xbcp.res.storage-localuser",
+  "telemetryIdPrefix": "46d3xbcp.res.d917d5c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.storage-localuser"],
   "canonicalType": "Microsoft.Storage/storageAccounts/localUsers"
 }

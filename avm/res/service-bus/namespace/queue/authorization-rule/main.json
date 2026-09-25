@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3344432594562478601"
+      "templateHash": "11121966646013549319"
     },
     "name": "Service Bus Namespace Queue Authorization Rules",
     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicebus-namespace-queueauthzrule",
+    "$fxv#0": "46d3xbcp.res.04ca6ca",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

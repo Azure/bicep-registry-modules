@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8678103900283635826"
+      "templateHash": "7381772402194009873"
     },
     "name": "API Management Workspace Subscriptions",
     "description": "This module deploys a Subscription in an API Management Workspace."
@@ -101,7 +101,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacesub",
+    "$fxv#0": "46d3xbcp.res.1d4a32f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

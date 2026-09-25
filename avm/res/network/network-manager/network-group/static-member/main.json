@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11445955478454200685"
+      "templateHash": "15875488374773072796"
     },
     "name": "Network Manager Network Group Static Members",
     "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-nwgrpstaticmember",
+    "$fxv#0": "46d3xbcp.res.f743f4a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11570673567358735684"
+      "templateHash": "18039379051644042918"
     },
     "name": "Eventgrid Namespace CA Certificates",
     "description": "This module deploys an Eventgrid Namespace CA Certificate."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-cacertificate",
+    "$fxv#0": "46d3xbcp.res.2959fdf",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
