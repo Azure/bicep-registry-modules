@@ -44,6 +44,7 @@ on:
     paths:
       - "avm/**"
       - "!avm/**/README.md"
+      - "!avm/**/metadata.json"
 
 permissions: {}
 
@@ -123,7 +124,7 @@ jobs:
               throw 'Failed to identify changed module files.'
             }
 
-            $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -RepoRoot $env:GITHUB_WORKSPACE
+            $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges -RepoRoot $env:GITHUB_WORKSPACE
           }
 
           if ($moduleMatrix.include.Count -gt 256) {

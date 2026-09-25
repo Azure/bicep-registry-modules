@@ -38,8 +38,10 @@ Describe 'Generic module workflow' {
         $previewWorkflow.jobs.ContainsKey('job_publish_module') | Should -BeFalse
     }
 
-    It 'keeps metadata changes eligible for automatic validation, not publishing' {
-        $workflow.on.push.paths | Should -Be @('avm/**', '!avm/**/README.md')
+    It 'excludes metadata-only pushes without changing manual publishing' {
+        $workflow.on.push.paths | Should -Be @('avm/**', '!avm/**/README.md', '!avm/**/metadata.json')
+        $matrixStep = $workflow.jobs.job_initialize_pipeline.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+        $matrixStep.run | Should -Match ([regex]::Escape('Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges'))
         $workflow.jobs.call_module_preview.if | Should -Match "github.event_name == 'push'"
         foreach ($jobName in @('call_module_publish', 'call_module_publish_only')) {
             $workflow.jobs[$jobName].if | Should -Match "github.event_name == 'workflow_dispatch'"
@@ -124,7 +126,7 @@ Describe 'Generic module workflow' {
     }
 }
 
-Describe 'Module publishing workflow path filters' {
+Describe 'Module workflow path filters' {
 
     BeforeDiscovery {
         $moduleWorkflows = @(
@@ -142,6 +144,8 @@ Describe 'Module publishing workflow path filters' {
     }
 
     BeforeAll {
+        $genericWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath (Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml') -Raw)
+
         function Test-ModulePushPaths {
             param (
                 [string[]] $Patterns,
@@ -161,6 +165,21 @@ Describe 'Module publishing workflow path filters' {
             }
             return $false
         }
+    }
+
+    It 'skips generic workflow for metadata-only changes while retaining source changes' {
+        $paths = $genericWorkflow.on.push.paths
+        foreach ($metadataPath in @('metadata.json', 'child/metadata.json', 'child/nested/metadata.json')) {
+            Test-ModulePushPaths -Patterns $paths -ChangedFiles @("avm/res/storage/storage-account/$metadataPath") |
+                Should -BeFalse
+            Test-ModulePushPaths -Patterns $paths -ChangedFiles @("avm/res/storage/storage-account/$metadataPath", 'avm/res/storage/storage-account/README.md') |
+                Should -BeFalse
+            Test-ModulePushPaths -Patterns $paths -ChangedFiles @("avm/res/storage/storage-account/$metadataPath", 'avm/res/storage/storage-account/main.bicep') |
+                Should -BeTrue
+        }
+
+        Test-ModulePushPaths -Patterns $paths -ChangedFiles @('avm/res/storage/storage-account/metadata.json', 'avm/res/network/virtual-network/main.bicep') |
+            Should -BeTrue
     }
 
     It 'preserves source and manual triggers while excluding metadata-only pushes in <WorkflowFileName>' -ForEach $moduleWorkflows {
