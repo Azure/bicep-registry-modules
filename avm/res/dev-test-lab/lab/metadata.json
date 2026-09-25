@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for DevTest Lab",
   "telemetryIdPrefix": "46d3xbcp.res.devtestlab-lab",
   "canonicalType": "Microsoft.DevTestLab/labs",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

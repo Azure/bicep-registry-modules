@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "10055610537208187731"
+      "version": "0.47.16.16243",
+      "templateHash": "18419740308521198417"
     },
     "name": "Role Assignments (Resource Group scope)",
     "description": "This module deploys a Role Assignment at a Resource Group scope."
@@ -85,6 +85,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.authz-roleassignment_rgscope",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -92,14 +93,15 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionIdOrName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName'))))]"
+    "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionIdOrName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName'))))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.authz-roleassignment_rgscope.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

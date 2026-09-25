@@ -3,7 +3,9 @@
   "moduleDisplayName": "Network Security Group",
   "moduleDescription": "AVM Resource Module for Network Security Group",
   "telemetryIdPrefix": "46d3xbcp.res.network-networksecuritygroup",
-  "alternativeNames": ["NSG"],
+  "alternativeNames": [
+    "NSG"
+  ],
   "canonicalType": "Microsoft.Network/networkSecurityGroups",
-  "owners": ["ahmadabdalla"]
+  "owners": []
 }

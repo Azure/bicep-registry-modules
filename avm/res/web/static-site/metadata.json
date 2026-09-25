@@ -4,5 +4,7 @@
   "moduleDescription": "AVM Resource Module for Static Web App",
   "telemetryIdPrefix": "46d3xbcp.res.web-staticsite",
   "canonicalType": "Microsoft.Web/staticSites",
-  "owners": ["ChrisSidebotham"]
+  "owners": [
+    "maciejporebski"
+  ]
 }

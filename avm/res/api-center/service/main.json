@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "18109051126186606037"
+      "version": "0.47.16.16243",
+      "templateHash": "10772804186528606191"
     },
     "name": "API Center Services",
     "description": "This module deploys an API Center Service."
@@ -957,6 +957,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.apicenter-service",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": {
       "type": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'))]",
@@ -972,7 +973,8 @@
       "Azure API Center Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7244dfb-f447-457d-b2ba-3999044d1706')]",
       "Azure API Center Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'dd24193f-ef65-44e5-8a7e-6fa6e03f7713')]",
       "Azure API Center Service Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6cba8790-29c5-48e5-bab1-c7541b01cb04')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "service": {
@@ -1026,7 +1028,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apicenter-service.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1076,8 +1078,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "10767660738388525669"
+              "version": "0.47.16.16243",
+              "templateHash": "244754756955007937"
             },
             "name": "API Center Service Metadata Schemas",
             "description": "This module deploys an API Center Service Metadata Schema."
@@ -1264,8 +1266,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "10810784346965083415"
+              "version": "0.47.16.16243",
+              "templateHash": "5440506546912824745"
             },
             "name": "API Center Service Workspaces",
             "description": "This module deploys an API Center Service Workspace."
@@ -2009,8 +2011,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "12213803849239914091"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2113819937584046969"
                     },
                     "name": "API Center Service Workspace Environments",
                     "description": "This module deploys an API Center Service Workspace Environment."
@@ -2259,8 +2261,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "5523416152894020194"
+                      "version": "0.47.16.16243",
+                      "templateHash": "14001660642716308393"
                     },
                     "name": "API Center Service Workspace APIs",
                     "description": "This module deploys an API Center Service Workspace API."
@@ -2744,8 +2746,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "6828602755365429711"
+                              "version": "0.47.16.16243",
+                              "templateHash": "16207919601685014878"
                             },
                             "name": "API Center Service Workspace API Versions",
                             "description": "This module deploys an API Center Service Workspace API Version."
@@ -2912,8 +2914,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.43.8.12551",
-                                      "templateHash": "3710889989242840994"
+                                      "version": "0.47.16.16243",
+                                      "templateHash": "10161678119252581582"
                                     },
                                     "name": "API Center Service Workspace API Version Definitions",
                                     "description": "This module deploys an API Center Service Workspace API Version Definition."
@@ -3119,8 +3121,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "6960390122367995473"
+                              "version": "0.47.16.16243",
+                              "templateHash": "3062393670156721783"
                             },
                             "name": "API Center Service Workspace API Deployments",
                             "description": "This module deploys an API Center Service Workspace API Deployment."
@@ -3373,8 +3375,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "10692998070425916305"
+                      "version": "0.47.16.16243",
+                      "templateHash": "8852908814336592144"
                     },
                     "name": "API Center Service Workspace API Sources",
                     "description": "This module deploys an API Center Service Workspace API Source for importing APIs from external sources like Azure API Management."
@@ -3522,8 +3524,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "17538220331800953571"
+                              "version": "0.47.16.16243",
+                              "templateHash": "8834957109244747392"
                             }
                           },
                           "parameters": {

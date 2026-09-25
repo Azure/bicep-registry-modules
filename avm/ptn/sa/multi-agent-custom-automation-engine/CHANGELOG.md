@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+NOTE: This is the last published version and the module has since been deprecated.
+
 - Added Azure Container Registry resource deployment with managed identity-based ACR Pull role assignments and private endpoint support
 - Updated default GPT models from gpt-4.1-mini/gpt-4.1 to gpt-5.4-mini/gpt-5.4 with updated model versions
 - Updated default container image references from custom registry to MCR placeholder images

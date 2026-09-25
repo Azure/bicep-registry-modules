@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "3037054147075883897"
+      "version": "0.47.16.16243",
+      "templateHash": "3989774702047553561"
     },
     "name": "Automation Account Hybrid Runbook Worker Groups",
     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
@@ -66,6 +66,8 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -73,7 +75,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -139,8 +141,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.1.21952",
-              "templateHash": "12156807073167829303"
+              "version": "0.47.16.16243",
+              "templateHash": "11820486064985425961"
             },
             "name": "Automation Account Hybrid Runbook Worker Group Workers",
             "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
@@ -178,12 +180,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

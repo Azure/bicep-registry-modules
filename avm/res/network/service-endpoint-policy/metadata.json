@@ -4,5 +4,5 @@
   "moduleDescription": "AVM Resource Module for Service Endpoint Policy",
   "telemetryIdPrefix": "46d3xbcp.res.network-serviceendpointpolicy",
   "canonicalType": "Microsoft.Network/serviceEndpointPolicies",
-  "owners": ["jeetgarg"]
+  "owners": []
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.42.1.51946",
-      "templateHash": "5091965340897189324"
+      "version": "0.47.16.16243",
+      "templateHash": "11914273096549636250"
     },
     "name": "Container App Auth Configs",
     "description": "This module deploys Container App Auth Configs."
@@ -86,12 +86,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.app-containerapp-authconfig",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.app-containerapp-authconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

@@ -6,6 +6,8 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
+NOTE: This is the last published version and the module has since been deprecated.
+
 - Restructured `main.bicep` into a pure orchestrator pattern: all resources are now deployed via local wrapper modules under `modules/{ai,compute,data,identity,monitoring,networking}/`, each wrapping exactly one published `avm/res/...` module, replacing the previous flat `modules/*.bicep` files.
 - Added parameters `deployCosmos` (Cosmos DB is now optional; SQL is the primary database), `azureAdTenantId`, `azureAdClientId`, `adminApiKey`, `existingLogAnalyticsWorkspaceId`, `existingFoundryProjectResourceId`, `deployingUserPrincipalType`, `containerRegistryName`, `appServicePlanSku`, and `kind`.
 - Backend and frontend App Services now use a system-assigned managed identity instead of a user-assigned identity.
