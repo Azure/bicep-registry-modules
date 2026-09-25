@@ -1,5 +1,3 @@
-# This workflow is a work in progress to test whether workflow consolidation is possible.
-# It should not be used yet.
 name: ".Module - Check and Publish [EXPERIMENTAL]"
 
 on:
@@ -38,6 +36,10 @@ on:
         description: "Skip validation and run only the publish step"
         required: false
         default: false
+  pull_request:
+    types:
+      - labeled
+      - synchronize
   push:
     branches:
       - main
@@ -54,7 +56,13 @@ jobs:
     name: "Initialize pipeline"
     permissions:
       contents: read
-    if: ${{ !cancelled() && !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') }}
+    if: |
+      !cancelled() &&
+      !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') &&
+      (github.event_name != 'pull_request' || (
+        contains(github.event.pull_request.labels.*.name, 'PR: Run Checks') &&
+        (github.event.action != 'labeled' || github.event.label.name == 'PR: Run Checks')
+      ))
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -64,7 +72,7 @@ jobs:
         id: get-module-matrix
         shell: pwsh
         env:
-          BASE_SHA: "${{ github.event.before }}"
+          BASE_SHA: "${{ case(github.event_name == 'pull_request', github.event.pull_request.base.sha, github.event.before) }}"
           CREATE_RELEASE_TAG: "${{ inputs.createReleaseTag }}"
           CUSTOM_LOCATION: "${{ inputs.customLocation }}"
           DEPLOYMENT_VALIDATION: "${{ case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, true) }}"
@@ -99,12 +107,12 @@ jobs:
             $moduleMatrix = Get-ModuleWorkflowMatrix -ModulePathInput $env:MODULE_PATH_INPUT -RepoRoot $env:GITHUB_WORKSPACE
           } else {
             $baseCommit = $env:BASE_SHA
-            $baseCommitAvailable = $baseCommit -notmatch '^0+$'
+            $baseCommitAvailable = -not [string]::IsNullOrWhiteSpace($baseCommit) -and $baseCommit -notmatch '^0+$'
             if ($baseCommitAvailable) {
               git cat-file -e "${baseCommit}^{commit}" 2>$null
               $baseCommitAvailable = $LASTEXITCODE -eq 0
             }
-            if (-not $baseCommitAvailable -and $baseCommit -notmatch '^0+$') {
+            if (-not $baseCommitAvailable -and -not [string]::IsNullOrWhiteSpace($baseCommit) -and $baseCommit -notmatch '^0+$') {
               git fetch --no-tags origin $baseCommit 2>$null
               if ($LASTEXITCODE -eq 0) {
                 git cat-file -e "${baseCommit}^{commit}" 2>$null
@@ -112,6 +120,9 @@ jobs:
               }
             }
 
+            if (-not $baseCommitAvailable -and $env:EVENT_NAME -eq 'pull_request') {
+              throw "Pull request base commit [$baseCommit] is unavailable."
+            }
             if ($baseCommitAvailable) {
               $changedFilePaths = @(git diff --no-renames --name-only --diff-filter=ACMRTD $baseCommit $env:HEAD_SHA -- avm)
             } else {
@@ -124,7 +135,7 @@ jobs:
               throw 'Failed to identify changed module files.'
             }
 
-            $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges -RepoRoot $env:GITHUB_WORKSPACE
+            $moduleMatrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFilePaths -ExcludeMetadataChanges:($env:EVENT_NAME -ne 'pull_request') -RepoRoot $env:GITHUB_WORKSPACE
           }
 
           if ($moduleMatrix.include.Count -gt 256) {
@@ -160,7 +171,7 @@ jobs:
 
   call_module_preview:
     name: "Check [${{ matrix.modulePath }}]"
-    if: ${{ github.event_name == 'push' && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    if: ${{ (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
     needs:
       - job_initialize_pipeline
     strategy:
@@ -183,6 +194,24 @@ jobs:
       targetCommit: "${{ needs.job_initialize_pipeline.outputs.targetCommit }}"
       includeAllVersionedModules: ${{ needs.job_initialize_pipeline.outputs.includeAllVersionedModules == 'true' }}
     secrets: inherit
+
+  call_module_fork_static:
+    name: "Static check [${{ matrix.modulePath }}] (fork)"
+    if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository && needs.job_initialize_pipeline.outputs.hasModules == 'true' }}
+    needs:
+      - job_initialize_pipeline
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
+    concurrency:
+      group: generic-module-${{ matrix.modulePath }}
+      queue: max
+    permissions:
+      contents: read
+    uses: ./.github/workflows/avm.template.module.static.yml
+    with:
+      modulePath: "${{ matrix.modulePath }}"
 
   call_module_publish:
     name: "Check and publish [${{ matrix.modulePath }}]"
