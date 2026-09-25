@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Batch Account",
-  "moduleDescription": "This module deploys a Batch Account.",
+  "moduleDescription": "AVM Resource Module for Batch Account",
   "telemetryIdPrefix": "46d3xbcp.res.batch-batchaccount",
   "canonicalType": "Microsoft.Batch/batchAccounts",
   "owners": ["didayal-msft"]

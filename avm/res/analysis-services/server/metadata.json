@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Analysis Services Server",
-  "moduleDescription": "This module deploys an Analysis Services Server.",
+  "moduleDescription": "AVM Resource Module for Analysis Services Server",
   "telemetryIdPrefix": "46d3xbcp.res.analysisservices-server",
   "canonicalType": "Microsoft.AnalysisServices/servers",
   "owners": ["segraef"]

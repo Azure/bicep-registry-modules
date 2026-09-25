@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Service Health Alerts",
-  "moduleDescription": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services.",
+  "moduleDescription": "AVM Pattern Module for Service Health Alerts",
   "telemetryIdPrefix": "46d3xbcp.ptn.subscription-svchealthalerts",
   "canonicalType": "subscription/service-health-alerts",
   "owners": ["sebassem"]

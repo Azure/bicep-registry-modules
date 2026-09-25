@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.46.1.21595",
-      "templateHash": "536282762867917042"
+      "version": "0.47.16.16243",
+      "templateHash": "3250509771060378754"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -179,7 +179,9 @@
         "count": "[length(parameters('paths'))]",
         "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
       }
-    ]
+    ],
+    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqldbcontainer",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "databaseAccount::sqlDatabase": {
@@ -192,7 +194,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.doctdb-dbacct-sqldbcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

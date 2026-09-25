@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Application Gateway Web Application Firewall (WAF) Policy",
-  "moduleDescription": "This module deploys an Application Gateway Web Application Firewall (WAF) Policy.",
+  "moduleDescription": "AVM Resource Module for Application Gateway Web Application Firewall (WAF) Policy",
   "telemetryIdPrefix": "46d3xbcp.res.network-appgwwebappfirewallpolicy",
   "canonicalType": "Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies",
   "owners": ["toddbeauchemin"]

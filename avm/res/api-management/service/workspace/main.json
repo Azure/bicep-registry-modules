@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.8.12551",
-      "templateHash": "7325360733109072268"
+      "version": "0.47.16.16243",
+      "templateHash": "13156113228117712593"
     },
     "name": "API Management Service Workspace",
     "description": "This module deploys an API Management Service Workspace."
@@ -1604,6 +1604,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.apimgmt-workspace",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -1621,7 +1622,8 @@
       "API Management Workspace Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0c34c906-8d99-4cb7-8bb7-33f5b0a1a799')]",
       "API Management Workspace Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ef1c2c96-4a77-49e8-b9a4-6179fe1d2fd2')]"
     },
-    "enableReferencedModulesTelemetry": false
+    "enableReferencedModulesTelemetry": false,
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "service": {
@@ -1634,7 +1636,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.apimgmt-workspace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -1816,8 +1818,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "11031755075499903131"
+              "version": "0.47.16.16243",
+              "templateHash": "14938562044638000570"
             },
             "name": "API Management Workspace APIs",
             "description": "This module deploys an API in an API Management Workspace."
@@ -2351,7 +2353,9 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapi",
+            "enableReferencedModulesTelemetry": false,
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "service::workspace::apiVersionSet": {
@@ -2377,7 +2381,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapi.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2459,8 +2463,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "5980991102197274208"
+                      "version": "0.47.16.16243",
+                      "templateHash": "16278917142603363912"
                     },
                     "name": "API Management Workspace APIs Policies",
                     "description": "This module deploys an API Policy in an API Management Workspace."
@@ -2518,12 +2522,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapipol",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapipol.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2645,8 +2653,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "15032468180306699703"
+                      "version": "0.47.16.16243",
+                      "templateHash": "5893140300622755714"
                     },
                     "name": "API Management Workspace APIs Diagnostics",
                     "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -2779,6 +2787,10 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapidiag",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": {
                     "service::workspace::api": {
                       "existing": true,
@@ -2808,7 +2820,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapidiag.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -2935,8 +2947,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "6163208646596351509"
+                      "version": "0.47.16.16243",
+                      "templateHash": "1309052716256330864"
                     },
                     "name": "API Management Workspace API Operations",
                     "description": "This module deploys an API Operation under an API Management Workspace."
@@ -3080,7 +3092,9 @@
                     }
                   },
                   "variables": {
-                    "enableReferencedModulesTelemetry": false
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapiop",
+                    "enableReferencedModulesTelemetry": false,
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
                     "service::workspace::api": {
@@ -3105,7 +3119,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapiop.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3180,8 +3194,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.43.8.12551",
-                              "templateHash": "16921901218007297275"
+                              "version": "0.47.16.16243",
+                              "templateHash": "18020303070942837116"
                             },
                             "name": "API Management Workspace API Operation Policies",
                             "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -3245,12 +3259,16 @@
                               }
                             }
                           },
+                          "variables": {
+                            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapioppol",
+                            "telemetryIdPrefix": "[variables('$fxv#0')]"
+                          },
                           "resources": [
                             {
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2025-04-01",
-                              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapioppol.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -3416,8 +3434,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "6558048148288981126"
+              "version": "0.47.16.16243",
+              "templateHash": "2181797208840289176"
             },
             "name": "API Management Workspace API Version Sets",
             "description": "This module deploys an API Version Set in an API Management Workspace."
@@ -3494,6 +3512,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapiverset",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -3511,7 +3533,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceapiverset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3639,8 +3661,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "8489261232884532000"
+              "version": "0.47.16.16243",
+              "templateHash": "2324334690024349608"
             },
             "name": "API Management Workspace Backends",
             "description": "This module deploys a Backend in an API Management Workspace."
@@ -3780,6 +3802,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacebackend",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -3797,7 +3823,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacebackend.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3913,8 +3939,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "13615014754933533446"
+              "version": "0.47.16.16243",
+              "templateHash": "6446101037014047702"
             },
             "name": "API Management Workspace Diagnostics",
             "description": "This module deploys a Diagnostic at API Management Workspace scope."
@@ -4035,6 +4061,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacediag",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -4052,7 +4082,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacediag.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4168,8 +4198,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "17015527199002126562"
+              "version": "0.47.16.16243",
+              "templateHash": "16862915427636161324"
             },
             "name": "API Management Workspace Loggers",
             "description": "This module deploys a Logger in an API Management Workspace."
@@ -4244,6 +4274,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacelogger",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -4261,7 +4295,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacelogger.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4363,8 +4397,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "15850162644833869373"
+              "version": "0.47.16.16243",
+              "templateHash": "7906516354082895115"
             },
             "name": "API Management Workspace Named Values",
             "description": "This module deploys a Named Value in an API Management Workspace."
@@ -4439,6 +4473,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacenamedval",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -4456,7 +4494,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacenamedval.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4553,8 +4591,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "1109330876683291095"
+              "version": "0.47.16.16243",
+              "templateHash": "5183257530128400484"
             },
             "name": "API Management Workspace Policies",
             "description": "This module deploys a Policy at API Management Workspace scope."
@@ -4606,12 +4644,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacepolicy",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacepolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4730,8 +4772,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "3517063021717500432"
+              "version": "0.47.16.16243",
+              "templateHash": "14375549905615931877"
             },
             "name": "API Management Workspace Products",
             "description": "This module deploys a Product in an API Management Workspace."
@@ -4930,7 +4972,9 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceproduct",
+            "enableReferencedModulesTelemetry": false,
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "service::workspace": {
@@ -4949,7 +4993,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspaceproduct.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5018,8 +5062,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "3216344338570878007"
+                      "version": "0.47.16.16243",
+                      "templateHash": "1447694614270785401"
                     },
                     "name": "API Management Workspace Product API Links",
                     "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -5063,12 +5107,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodapilink",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspprodapilink.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5161,8 +5209,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "2286955869723323139"
+                      "version": "0.47.16.16243",
+                      "templateHash": "6947667146446849773"
                     },
                     "name": "API Management Workspace Product Group Links",
                     "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -5206,12 +5254,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodgrplink",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspprodgrplink.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5307,8 +5359,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.43.8.12551",
-                      "templateHash": "9043711511873546814"
+                      "version": "0.47.16.16243",
+                      "templateHash": "2943466741471485278"
                     },
                     "name": "API Management Workspace Product Policies",
                     "description": "This module deploys a Policy for a Product in an API Management Workspace."
@@ -5366,12 +5418,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodpolicy",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.apimgmt-service-workspprodpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5512,8 +5568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "6350020031061925092"
+              "version": "0.47.16.16243",
+              "templateHash": "8678103900283635826"
             },
             "name": "API Management Workspace Subscriptions",
             "description": "This module deploys a Subscription in an API Management Workspace."
@@ -5607,6 +5663,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacesub",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "service::workspace": {
               "existing": true,
@@ -5624,7 +5684,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.apimgmt-service-workspacesub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5722,8 +5782,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.43.8.12551",
-              "templateHash": "847244549925399675"
+              "version": "0.47.16.16243",
+              "templateHash": "17430965159529275593"
             }
           },
           "parameters": {

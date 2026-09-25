@@ -34,9 +34,6 @@ BeforeDiscovery {
     $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
     $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
     $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
-    $script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
-    $script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
-    $script:telemetryUtlCsvLink = 'https://aka.ms/avm/index/bicep/utl/csv'
     $script:moduleFolderPaths = $moduleFolderPaths
 
     # Shared exception messages
@@ -375,58 +372,10 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
         }
-
-        It '[<moduleFolderName>] Top-level module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName]."
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
-            }
-        }
     }
 }
+
+. (Join-Path $PSScriptRoot 'metadata.tests.ps1') -moduleFolderPaths $moduleFolderPaths -repoRootPath $repoRootPath
 
 Describe 'Pipeline tests' -Tag 'Pipeline' {
 
@@ -1301,8 +1250,11 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
-                $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
+                $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'a telemetry deployment using the module telemetry prefix must be present in the template.'
             }
 
             It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
@@ -1318,7 +1270,10 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
@@ -1341,7 +1296,10 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
@@ -1356,9 +1314,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 param(
                     [string] $templateFilePath,
-                    [string] $moduleType,
-                    [hashtable] $templateFileContent,
-                    [bool] $isMultiScopeChildModule
+                    [hashtable] $templateFileContent
                 )
 
                 # With the introduction of user-defined types, the way resources are configured in the schema slightly changed. We have to account for that.
@@ -1368,52 +1324,29 @@ Describe 'Module tests' -Tag 'Module' {
                     $templateResources = $templateFileContent.resources.Keys | ForEach-Object { $templateFileContent.resources[$_] }
                 }
 
-                $telemetryDeployment = $templateResources | Where-Object { $_.condition -like '*telemetry*' -and $_.name -like '*46d3xbcp*' } # The AVM telemetry prefix
+                $telemetryDeployment = $templateResources | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    ($_.name -like '*46d3xbcp*' -or $_.name -like "*variables('telemetryIdPrefix')*")
+                }
 
                 if (-not $telemetryDeployment) {
                     Set-ItResult -Skipped -Because 'telemetry was not implemented in template'
                     return
                 }
 
-                # Use correct telemetry link based on file path
-                switch ($moduleType) {
-                    'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                    'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                    'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                    default {}
+                $metadataPath = Join-Path (Split-Path $templateFilePath -Parent) 'metadata.json'
+                $metadata = Get-Content -LiteralPath $metadataPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
+                $metadata.telemetryIdPrefix | Should -Not -BeNullOrEmpty -Because "published module [$templateFilePath] must have a telemetry ID prefix in metadata.json."
+                $compiledPrefix = $templateFileContent.variables.telemetryIdPrefix
+                if ($compiledPrefix -match '^\[variables\(''([^'']+)''\)\]$') {
+                    $compiledPrefix = $templateFileContent.variables[$Matches[1]]
                 }
+                $compiledPrefix | Should -Be $metadata.telemetryIdPrefix -Because 'the compiled telemetry prefix must match metadata.json.'
+                $telemetryDeployment.name | Should -Match ([regex]::Escape("variables('telemetryIdPrefix')"))
 
-                # Fetch CSV
-                # =========
-                try {
-                    $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-                } catch {
-                    $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                    Write-Error $errorMessage
-                    throw $errorMessage
-                }
-                $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-                # Get correct row item & expected identifier
-                # ==========================================
-                # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
-                $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeChildModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
-                $relevantCSVRow = $csvData | Where-Object {
-                    $_.ModuleName -eq $moduleName
-                }
-
-                if (-not $relevantCSVRow) {
-                    $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
-                    Write-Error $errorMessage
-                    throw $errorMessage
-                }
-                $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
-
-                # Collect resource & compare
-                # ==========================
-
-                $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
-                $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+                $source = Get-Content -LiteralPath $templateFilePath -Raw -ErrorAction Stop
+                $source | Should -Match ([regex]::Escape("var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')")) -Because 'the telemetry prefix must be read from metadata.json.'
+                $source | Should -Not -Match '46d3xbcp\.' -Because 'the source must not duplicate the assigned telemetry prefix.'
             }
 
             It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.isMultiScopeParentModule }) {
@@ -2123,27 +2056,10 @@ Describe 'Module tests' -Tag 'Module' {
 Describe 'Governance tests' {
 
     BeforeDiscovery {
-        $governanceTestCases = [System.Collections.ArrayList] @()
-        foreach ($moduleFolderPath in $moduleFolderPaths) {
-
-            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-            $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
-            $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
-
-            $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-            if ($isTopLevelModule) {
-
-                $governanceTestCases += @{
-                    relativeModulePath = $relativeModulePath
-                    repoRootPath       = $repoRootPath
-                    moduleFolderName   = $resourceTypeIdentifier
-                    moduleType         = $moduleType
-                }
-            }
-        }
+        $codeOwnersTestCases = @(@{ repoRootPath = $repoRootPath })
     }
 
-    It '[<moduleFolderName>] Module and tooling ownership should be specified correctly in CODEOWNERS file.' -TestCases $governanceTestCases {
+    It 'Module and tooling ownership should be specified correctly in CODEOWNERS file.' -TestCases $codeOwnersTestCases {
 
         param(
             [string] $repoRootPath
@@ -2151,78 +2067,20 @@ Describe 'Governance tests' {
 
         $codeownersFilePath = Join-Path $repoRootPath '.github' 'CODEOWNERS'
         $ownershipRules = @(Get-Content $codeownersFilePath | ForEach-Object { $_.Trim() -replace '\s+', ' ' } | Where-Object { $_ -and -not $_.StartsWith('#') })
-        $metadataOwnershipRule = 'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
-        $ownershipRules.Count | Should -BeGreaterOrEqual 5
-        $ownershipRules[0] | Should -Be '* @Azure/azure-verified-modules-tooling-contributors'
-        $ownershipRules[1] | Should -BeIn @(
-            '/avm/ @Azure/azure-verified-modules-module-contributors'
-            '/avm/ @Azure/azure-verified-modules-module-owners'
-        )
-        $ownershipRules[-1] | Should -Be $metadataOwnershipRule -Because 'metadata files must allow approval from engineering owners or module owners after all other rules.'
-        $ownershipRules[-3..-2] | Should -Be @(
+
+        $ownershipRules[0] | Should -Be '* @Azure/azure-verified-modules-tooling-contributors' -Because 'the repository default must stay with the tooling team.'
+        $ownershipRules[1] | Should -Be '/avm/' -Because 'module reviewers are resolved from metadata.json, so the module tree must have no code owners.'
+        $ownershipRules[-3..-1] | Should -Be @(
             '*avm.core.team.tests.ps1 @Azure/azure-verified-modules-tooling-contributors'
             '*.e2eignore @Azure/azure-verified-modules-tooling-contributors'
-        ) -Because 'tooling overrides must take precedence over module ownership.'
+            'metadata.json @Azure/azure-verified-modules-engineering-owners @Azure/azure-verified-modules-module-owners'
+        ) -Because 'tooling and metadata overrides must take precedence over the ownerless module tree.'
 
-        $modulePathPattern = '^/avm/(res|ptn|utl)/'
-        $moduleOwnershipRules = @($ownershipRules | Where-Object { $_ -match $modulePathPattern })
-        $invalidStaticRules = @($ownershipRules | Where-Object {
-                $_ -notmatch $modulePathPattern -and $_ -ne $ownershipRules[1] -and
-                $_ -ne $metadataOwnershipRule -and
-                $_ -cnotmatch '^\S+ @Azure/azure-verified-modules-tooling-contributors$'
-            })
-        $invalidStaticRules | Should -BeNullOrEmpty -Because 'non-module rules must preserve tooling ownership.'
-
-        $individualOwnerPattern = '@(?=[a-zA-Z0-9-]{1,39}(?: |$))[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*'
-        $moduleOwnershipPattern = "^/avm/(res|ptn|utl)/(?:[a-z0-9-]+/){2} ($individualOwnerPattern )*@Azure/azure-verified-modules-module-owners$"
-        $invalidModuleRules = @($moduleOwnershipRules | Where-Object { $_ -cnotmatch $moduleOwnershipPattern })
-        $invalidModuleRules | Should -BeNullOrEmpty -Because 'per-module entries must use a top-level module path and include the module-owners team, optionally preceded by individual owners.'
+        $moduleOwnershipRules = @($ownershipRules | Where-Object { $_ -cmatch '^/avm/\S' })
+        $moduleOwnershipRules | Should -BeNullOrEmpty -Because 'per-module entries must not be reintroduced into CODEOWNERS.'
 
         $ownershipPatterns = @($ownershipRules | ForEach-Object { ($_ -split ' ')[0] })
         @($ownershipPatterns | Sort-Object -Unique).Count | Should -Be $ownershipPatterns.Count -Because 'each ownership pattern must have a single entry.'
-    }
-
-    It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
-
-        param(
-            [string] $relativeModulePath,
-            [string] $repoRootPath
-        )
-
-        $issueTemplatePath = Join-Path $repoRootPath '.github' 'ISSUE_TEMPLATE' 'avm_module_issue.yml'
-        $issueTemplateContent = Get-Content $issueTemplatePath
-
-        # Identify listed modules
-        $startIndex = 0
-        while ($issueTemplateContent[$startIndex] -notmatch '^\s*#?\s*\-\s+\"avm\/.+\"' -and $startIndex -ne $issueTemplateContent.Length) {
-            $startIndex++
-        }
-
-        $endIndex = $startIndex
-        while ($issueTemplateContent[$endIndex] -match '.*- "avm\/.*' -and $endIndex -ne $issueTemplateContent.Length) {
-            $endIndex++
-        }
-        $endIndex-- # Go one back to last module line
-
-        $listedModules = $issueTemplateContent[$startIndex..$endIndex] | ForEach-Object { $_ -replace '.*- "(avm\/.*)".*', '$1' }
-
-        # Should exist
-        $listedModules | Should -Contain ($relativeModulePath -replace '\\', '/') -Because 'the module should be listed in the issue template in the correct alphabetical position ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).'
-
-        # Should not be commented
-        $entry = $issueTemplateContent | Where-Object { $_ -match ('.*- "{0}".*' -f $relativeModulePath -replace '\\', '\/') }
-        $entry.Trim() | Should -Not -Match '^\s*#.*' -Because 'the module should not be commented out in the issue template.'
-
-        # Should be at correct location
-        $incorrectLines = @()
-        foreach ($finding in (Compare-Object $listedModules ($listedModules | Sort-Object -Culture 'en-US') -SyncWindow 0)) {
-            if ($finding.SideIndicator -eq '<=') {
-                $incorrectLines += $finding.InputObject
-            }
-        }
-        $incorrectLines = $incorrectLines | Sort-Object -Culture 'en-US' -Unique
-
-        $incorrectLines.Count | Should -Be 0 -Because ('the number of modules that are not in the correct alphabetical order in the issue template should be zero ([ref](https://azure.github.io/Azure-Verified-Modules/spec/BCPNFR15)).</br>However, the following incorrectly located lines were found:</br><pre>{0}</pre>' -f ($incorrectLines -join '</br>'))
     }
 }
 

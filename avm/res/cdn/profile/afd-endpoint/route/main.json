@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "4729616825439135911"
+      "version": "0.47.16.16243",
+      "templateHash": "11407258432278615085"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -150,6 +150,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.cdn-profile-afdendpointroute",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "profile::afdEndpoint": {
       "existing": true,
@@ -187,7 +191,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.cdn-profile-afdendpointroute.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

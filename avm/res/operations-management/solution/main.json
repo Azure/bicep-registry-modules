@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.41.2.15936",
-      "templateHash": "11584433860145401872"
+      "version": "0.47.16.16243",
+      "templateHash": "10830762714056457604"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution."
@@ -75,12 +75,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.operationsmanagement-solution",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

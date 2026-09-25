@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Logic Apps Workflow",
-  "moduleDescription": "This module deploys a Logic App (Workflow).",
+  "moduleDescription": "AVM Resource Module for Logic Apps Workflow",
   "telemetryIdPrefix": "46d3xbcp.res.logic-workflow",
   "canonicalType": "Microsoft.Logic/workflows",
   "owners": ["lsnoddy"]

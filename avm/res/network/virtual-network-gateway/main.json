@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.44.1.10279",
-      "templateHash": "10886251374843362588"
+      "version": "0.47.16.16243",
+      "templateHash": "17704616192144932542"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -1051,6 +1051,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.network-virtualnetworkgateway",
     "enableReferencedModulesTelemetry": false,
     "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
     "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
@@ -1072,7 +1073,8 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "primaryPublicIP": {
@@ -1106,7 +1108,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.network-virtualnetworkgateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2032,8 +2034,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.44.1.10279",
-              "templateHash": "1510014804095193828"
+              "version": "0.47.16.16243",
+              "templateHash": "2740041431225047854"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
@@ -2132,12 +2134,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.network-vnetgw-natrule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.network-vnetgw-natrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.43.1.21952",
-      "templateHash": "15057814777787607098"
+      "version": "0.47.16.16243",
+      "templateHash": "13527956693209613041"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -87,12 +87,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.res.web-siteconfig",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.web-siteconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

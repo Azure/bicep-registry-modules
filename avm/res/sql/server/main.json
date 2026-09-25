@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3603617569810478716"
+      "templateHash": "7095714114811365001"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2290,6 +2290,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.sql-server",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "enableReferencedModulesTelemetry": false,
@@ -2309,7 +2310,8 @@
       "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
       "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
     },
-    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]"
+    "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -2334,7 +2336,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.sql-server.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2586,7 +2588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13455909605717675263"
+              "templateHash": "14859578916383480299"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3313,10 +3315,12 @@
             }
           },
           "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-serverdb",
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
-            "enableReferencedModulesTelemetry": false
+            "enableReferencedModulesTelemetry": false,
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "cMKKeyVault::cMKKey": {
@@ -3347,7 +3351,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-serverdb.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3499,7 +3503,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3541467167014441850"
+                      "templateHash": "208668397440519635"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3539,12 +3543,16 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.sql-server-dbbckpshorttermretpolicy",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": [
                     {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.sql-server-dbbckpshorttermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3646,7 +3654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "6997827881370512696"
+                      "templateHash": "4087306760226524641"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3722,6 +3730,10 @@
                       }
                     }
                   },
+                  "variables": {
+                    "$fxv#0": "46d3xbcp.res.sql-server-dbbckplongtermretpolicy",
+                    "telemetryIdPrefix": "[variables('$fxv#0')]"
+                  },
                   "resources": {
                     "server::database": {
                       "existing": true,
@@ -3739,7 +3751,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2025-04-01",
-                      "name": "[format('46d3xbcp.res.sql-server-dbbckplongtermretpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -3911,7 +3923,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15297118934034356675"
+              "templateHash": "11621858940489991813"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4276,6 +4288,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.sql-server-elasticpool",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -4291,14 +4304,15 @@
               "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
               "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
               "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-elasticpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5152,7 +5166,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "9564158200028970369"
+              "templateHash": "16025061842016711860"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -5192,12 +5206,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-firewallrule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-firewallrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5289,7 +5307,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15167994303993623207"
+              "templateHash": "512528714858252527"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -5328,12 +5346,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-virtualnetworkrule",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-virtualnetworkrule.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5441,7 +5463,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6807353281384412591"
+              "templateHash": "14954869457680971705"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5534,12 +5556,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-securityalertpolicy",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-securityalertpolicy.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5646,7 +5672,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15880150483449432897"
+              "templateHash": "8918109527362980423"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5737,6 +5763,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-vulnerabilityassessment",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "server": {
               "existing": true,
@@ -5748,7 +5778,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-vulnerabilityassessment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -5900,7 +5930,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "894741858305445706"
+              "templateHash": "10309888564681707655"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5946,16 +5976,18 @@
             }
           },
           "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-key",
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
-            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6046,7 +6078,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "894741858305445706"
+              "templateHash": "10309888564681707655"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -6092,16 +6124,18 @@
             }
           },
           "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-key",
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
-            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]"
+            "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-key.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6197,7 +6231,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11019577209819404381"
+              "templateHash": "985587233205240946"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -6241,12 +6275,16 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-encryptionprotector",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": [
             {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-encryptionprotector.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6359,7 +6397,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1691819432853819015"
+              "templateHash": "7148996292641911729"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -6459,6 +6497,10 @@
               }
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-auditingsetting",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "server": {
               "existing": true,
@@ -6470,7 +6512,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-auditingsetting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -6786,7 +6828,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14420004826286101391"
+              "templateHash": "1033104011194057541"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6916,12 +6958,16 @@
               "nullable": true
             }
           },
+          "variables": {
+            "$fxv#0": "46d3xbcp.res.sql-server-failovergroup",
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
+          },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2025-04-01",
-              "name": "[format('46d3xbcp.res.sql-server-failovergroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
