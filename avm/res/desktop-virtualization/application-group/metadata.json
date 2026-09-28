@@ -3,7 +3,12 @@
   "moduleDisplayName": "Azure Virtual Desktop (AVD) Application Group",
   "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Application Group",
   "telemetryIdPrefix": "46d3xbcp.res.8c7df9a",
-  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.desktopvirtualization-appgroup"],
+  "alternativeTelemetryIdPrefixes": [
+    "46d3xbcp.res.desktopvirtualization-appgroup"
+  ],
   "canonicalType": "Microsoft.DesktopVirtualization/applicationGroups",
-  "owners": []
+  "owners": [
+    "reikor0x",
+    "awillows"
+  ]
 }
