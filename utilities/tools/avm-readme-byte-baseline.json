@@ -1,0 +1,2892 @@
+{
+  "schemaVersion": 1,
+  "gitCommit": "063eb890ad676ffb7202490b39b2500d0e12645e",
+  "count": 577,
+  "files": [
+    {
+      "relativePath": "avm/ptn/aca-lza/hosting-environment/README.md",
+      "length": 60110,
+      "sha256": "89cb624020fdd5ad57ca0329b5039e2fc3162c8c0bdaf8654442ff56719cabdf"
+    },
+    {
+      "relativePath": "avm/ptn/aca-lza/hosting-environment/modules/container-apps-environment/README.md",
+      "length": 3323,
+      "sha256": "52b01a41bcd80824358b3062038a8e57fb9c301d221c1923adb22a46ce69f29e"
+    },
+    {
+      "relativePath": "avm/ptn/aca-lza/hosting-environment/modules/spoke/README.md",
+      "length": 3217,
+      "sha256": "b00a9be3bcfe1a2babb20ce8ee3fdad96094601ecfc58c9199ed8297b5ef2864"
+    },
+    {
+      "relativePath": "avm/ptn/aca-lza/hosting-environment/modules/supporting-services/README.md",
+      "length": 3632,
+      "sha256": "fcf377212ed8602f6bec9e95a2d4ba832e9777b3be99f07c5d6c84f65a83cfd6"
+    },
+    {
+      "relativePath": "avm/ptn/ai-ml/ai-foundry/README.md",
+      "length": 88659,
+      "sha256": "e82533b1d995ddb46a80a9d8ff9cad022d4d8c27cfa35dd5e1b81404813fdb46"
+    },
+    {
+      "relativePath": "avm/ptn/ai-ml/ai-foundry/modules/project/README.md",
+      "length": 11194,
+      "sha256": "baee26b24777a25de60adeaff489f1c7870d3a60a4ec613e3bd9c9a02a98c38a"
+    },
+    {
+      "relativePath": "avm/ptn/ai-platform/baseline/README.md",
+      "length": 82101,
+      "sha256": "d94143ddf49afa942fbe80241be3d55c0cfb1aa968c4fd46eca878f073c197a2"
+    },
+    {
+      "relativePath": "avm/ptn/alz/ama/README.md",
+      "length": 13295,
+      "sha256": "3579ab06380d6603fb3f37b6db1188ff5bf33fff5c0045a48e0bb2d9ae969b4f"
+    },
+    {
+      "relativePath": "avm/ptn/alz/empty/README.md",
+      "length": 51630,
+      "sha256": "88a5c53c98cfa4a5d68815524c9668d8e9ca2b4b28f83f90ca90a83a22a3f33b"
+    },
+    {
+      "relativePath": "avm/ptn/app-service-lza/hosting-environment/README.md",
+      "length": 201417,
+      "sha256": "3b796166648bae8585704db2b8cd1aee7f1cf9520f5bca01a14ed64f5ded5f9d"
+    },
+    {
+      "relativePath": "avm/ptn/app/container-job-toolkit/README.md",
+      "length": 59151,
+      "sha256": "d22ef83aa13a2a99e949d068eb067bce8dae4e022976dadb0e68520228ac883e"
+    },
+    {
+      "relativePath": "avm/ptn/app/iaas-vm-cosmosdb-tier4/README.md",
+      "length": 58784,
+      "sha256": "b7caf2b8fa7effa3d944c0bf1c77aabd23de50bf27a888fa097090f006da926c"
+    },
+    {
+      "relativePath": "avm/ptn/app/paas-ase-cosmosdb-tier4/README.md",
+      "length": 21457,
+      "sha256": "7960990f6475d7f5f58d67c5223d22d7a3fd6f66c4ea89b9b4a09ad0d839725e"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/pim-role-assignment/README.md",
+      "length": 31268,
+      "sha256": "f27c9df6d35c2ae9f3de13d1faaa6827bbe574ec2ffb1c2f836668a7d5577e2f"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/policy-assignment/README.md",
+      "length": 43238,
+      "sha256": "5614ea663ec02e81b0d989c2e16ab9d2132592565ca34e3a4141d830950ed8c9"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/policy-exemption/README.md",
+      "length": 30632,
+      "sha256": "c4f238e30c8aacec220264bb8d31b3351a45f3b0c856984c4a373e4b8a3b5f3e"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/resource-role-assignment/README.md",
+      "length": 8652,
+      "sha256": "a1b8ecc3455f6a097bdfa339fe47c8714b5921dabe9a36cd8f74927ebdae293f"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/role-assignment/README.md",
+      "length": 19201,
+      "sha256": "2ca8282eb46ca951527828c9c49b92724258361fe9a7ddc8a707cd2e1059a1d5"
+    },
+    {
+      "relativePath": "avm/ptn/authorization/role-definition/README.md",
+      "length": 9197,
+      "sha256": "f6530f7d38d755ebebb2e7bbe6c28a01d2b18be4626f5d946ca310a5df0a7c95"
+    },
+    {
+      "relativePath": "avm/ptn/azd/acr-container-app/README.md",
+      "length": 32691,
+      "sha256": "7962b9100d1dcbc2558b44857ef41e5406e85416e38716752c2ea4c1823481ed"
+    },
+    {
+      "relativePath": "avm/ptn/azd/aks-automatic-cluster/README.md",
+      "length": 10848,
+      "sha256": "fe5bd7d497ad81d74369dae22db6d4e8091e12eb3d2155c2ce64ed6fbd58c974"
+    },
+    {
+      "relativePath": "avm/ptn/azd/aks/README.md",
+      "length": 58272,
+      "sha256": "a3aedf97bae089aa4072cbd3fc2cfb3161769c19cae95f398f15b2c18d4762e2"
+    },
+    {
+      "relativePath": "avm/ptn/azd/apim-api/README.md",
+      "length": 8610,
+      "sha256": "1851c3c315f844838a77b09046712f56b40aa28c9837f07c5d98d8e0e65de169"
+    },
+    {
+      "relativePath": "avm/ptn/azd/container-app-upsert/README.md",
+      "length": 32670,
+      "sha256": "e980f009526fea46f454033fb7b5622cb463b3424c8ae29179b99acbf13f94f2"
+    },
+    {
+      "relativePath": "avm/ptn/azd/container-apps-stack/README.md",
+      "length": 24339,
+      "sha256": "0bcfa6157b0d8bd88b878c6ebd8ee29b4892fb7dcb48b5851c7b830cdd2f3a6d"
+    },
+    {
+      "relativePath": "avm/ptn/azd/insights-dashboard/README.md",
+      "length": 11106,
+      "sha256": "e697ddc528e4f4fe8e7ef4bb0139a4051010990b65b50e03ea72bea87e0fe68f"
+    },
+    {
+      "relativePath": "avm/ptn/azd/ml-ai-environment/README.md",
+      "length": 33814,
+      "sha256": "bba9519d73c609870c16e0f42eb6255baa373bb1fa1baffbf0d63e757f62424e"
+    },
+    {
+      "relativePath": "avm/ptn/azd/ml-hub-dependencies/README.md",
+      "length": 47024,
+      "sha256": "d92f24c88b300abe87a03ef79d1a644734a9726c051e77d138bf11ca40e9abfe"
+    },
+    {
+      "relativePath": "avm/ptn/azd/ml-project/README.md",
+      "length": 14866,
+      "sha256": "12cb2cca533005876b8cf3d634987a2189fdb22544e6d1b95b1060ba4df94a6f"
+    },
+    {
+      "relativePath": "avm/ptn/azd/monitoring/README.md",
+      "length": 12425,
+      "sha256": "20b099a52a01d542f83d92f7176886439db78e41ff2695c513246ea2e2a8e9d2"
+    },
+    {
+      "relativePath": "avm/ptn/data/private-analytical-workspace/README.md",
+      "length": 78410,
+      "sha256": "bf5301931131e8a8204a201ae751a51f322ac3380bb77efa7c4209bfe4a27c20"
+    },
+    {
+      "relativePath": "avm/ptn/deployment-script/import-image-to-acr/README.md",
+      "length": 21467,
+      "sha256": "4de66df5e6e64e8c03655a35d1f68c258cd30d52dd98d6e78091bf3048fa11a5"
+    },
+    {
+      "relativePath": "avm/ptn/dev-ops/cicd-agents-and-runners/README.md",
+      "length": 96898,
+      "sha256": "52abdca38606bb4baf90c3f087ab6843503a7dae119739e801139452ee57643c"
+    },
+    {
+      "relativePath": "avm/ptn/finops-toolkit/finops-hub/README.md",
+      "length": 17953,
+      "sha256": "7ff5c5e41fb72e429b6a96976053b5d05e061b1ea17e857a7d3982479620b912"
+    },
+    {
+      "relativePath": "avm/ptn/lz/sub-vending/README.md",
+      "length": 239873,
+      "sha256": "bf112db87b341cdefd658ad56d21cfcd6818633236c586056c85086ebf273f52"
+    },
+    {
+      "relativePath": "avm/ptn/mgmt-groups/subscription-placement/README.md",
+      "length": 6827,
+      "sha256": "9b6e11d62c1436a1bfaa82e7f477025e3bf8ab307869eb0c0f45dc1da54cbe13"
+    },
+    {
+      "relativePath": "avm/ptn/network/hub-networking/README.md",
+      "length": 82250,
+      "sha256": "cdea5c11235bae251f2ea9db589a3bccf77b7bc660a0b9c60afb6c36df04b077"
+    },
+    {
+      "relativePath": "avm/ptn/network/private-link-private-dns-zones/README.md",
+      "length": 27107,
+      "sha256": "16bd4e13c78ae17ed2605d09c3829578c0c1eada778490d2f981063d692eff7d"
+    },
+    {
+      "relativePath": "avm/ptn/network/virtual-wan/README.md",
+      "length": 115410,
+      "sha256": "9c37d99470eade24308da4a2a9aade9684b4076cb76a30692e79455ee0bec1e7"
+    },
+    {
+      "relativePath": "avm/ptn/policy-insights/remediation/README.md",
+      "length": 22226,
+      "sha256": "d4338b4356f526f86cd9179dc45690c37cf529a084e28fbc192aa6d0f796d3ac"
+    },
+    {
+      "relativePath": "avm/ptn/sa/build-your-own-copilot/README.md",
+      "length": 63655,
+      "sha256": "03e9ce7594ef35d26886a4e2476bb73b6b38e271dac2ec9dd4982b3eb82d7799"
+    },
+    {
+      "relativePath": "avm/ptn/sa/chat-with-your-data/README.md",
+      "length": 63422,
+      "sha256": "59d404fd767695c9b05803486a3aa9d11abf8f46317889a72f3e2c6b96a456b0"
+    },
+    {
+      "relativePath": "avm/ptn/sa/content-generation/README.md",
+      "length": 50441,
+      "sha256": "75ade65d484c43b4cc23cc643b28d63f12ffd110966a2525d652cea9fac8dc78"
+    },
+    {
+      "relativePath": "avm/ptn/sa/content-processing/README.md",
+      "length": 54724,
+      "sha256": "a4bf8ca89b9d2c4372409b5533ef71ad3002c1892ee920f7563c3cb5fd1edac3"
+    },
+    {
+      "relativePath": "avm/ptn/sa/conversation-knowledge-mining/README.md",
+      "length": 62146,
+      "sha256": "8dc2b153d2472fbf7b526a8d10baaa829ceea6bdf9a86c0729b1c3d91b2cc422"
+    },
+    {
+      "relativePath": "avm/ptn/sa/customer-chatbot/README.md",
+      "length": 50077,
+      "sha256": "db0121c690055f62fb4ca35ba99377a1cdaae5478b396906bf1feec7463e642b"
+    },
+    {
+      "relativePath": "avm/ptn/sa/document-knowledge-mining/README.md",
+      "length": 57857,
+      "sha256": "09126a2a5130f1cc6ea741ee8a7ba8ae16c30fdd81bba40c69f3f2c814831c85"
+    },
+    {
+      "relativePath": "avm/ptn/sa/modernize-your-code/README.md",
+      "length": 57913,
+      "sha256": "36d441e98edc08fea9701bd219da7b6998141566823c8ab0ee20ff39e0649844"
+    },
+    {
+      "relativePath": "avm/ptn/sa/multi-agent-custom-automation-engine/README.md",
+      "length": 67313,
+      "sha256": "aa1f500fba7c25a5aa317b43fa43b8388b897127338d5d53f55eb9f2b45984d5"
+    },
+    {
+      "relativePath": "avm/ptn/security/security-center/README.md",
+      "length": 56325,
+      "sha256": "ea9d4d6857a2e42d2d8ec3780fc07d227fadafafe86135900c6188e1d5b5b68b"
+    },
+    {
+      "relativePath": "avm/ptn/subscription/service-health-alerts/README.md",
+      "length": 42805,
+      "sha256": "04d3d4493d043297f2ad5e22f33bc937d41bc2cf6a1d2aed163f35ae7ac17a6c"
+    },
+    {
+      "relativePath": "avm/ptn/virtual-machine-images/azure-image-builder/README.md",
+      "length": 75251,
+      "sha256": "5951cf1db72821ff28e25f0cc78c5aaa8663dbe555367bd3742a7c781f48ec1b"
+    },
+    {
+      "relativePath": "avm/res/aad/domain-service/README.md",
+      "length": 38011,
+      "sha256": "c50d1ebe7514072dc333a713bc08f47a09452decc4843125e79ae345a94dd830"
+    },
+    {
+      "relativePath": "avm/res/alerts-management/action-rule/README.md",
+      "length": 23840,
+      "sha256": "088bc64deafbc1068d19bfdb2be86be7f0b2d92a78b90b538c3eb46463ca226a"
+    },
+    {
+      "relativePath": "avm/res/analysis-services/server/README.md",
+      "length": 28800,
+      "sha256": "8a107d55f7fe87abe21fbb04de815ed56d2e86884e4eeb69981fe5ef38999959"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/README.md",
+      "length": 57270,
+      "sha256": "1b84efe791422299f11da267a323d097b08c157fd37566ed2170d5f7e5d48c8d"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/metadata-schema/README.md",
+      "length": 2956,
+      "sha256": "ee45539e10ac996bda3bf7e8d3ff7cd92ca3708705a26a8756fce517acd16c56"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/README.md",
+      "length": 19972,
+      "sha256": "c698550949c42d58d7960c2ca828f40f7dfccd1ebe3fd308ef83f56d0d4a84cd"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/api-source/README.md",
+      "length": 4793,
+      "sha256": "06a67b1bad804e29213b9d21fd9b221acef03da57ff61a30bcda506f6de0b910"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/api/README.md",
+      "length": 11880,
+      "sha256": "5715a5bf71b33e1238415ac78d8cd658ca791c639001ec3f55ad0947d5bebbd9"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/api/deployment/README.md",
+      "length": 4209,
+      "sha256": "21e1d2c031817199b6c4fd9e2cfdebf7d45e4987b2e02cbd67d290edcfb15d95"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/api/version/README.md",
+      "length": 4227,
+      "sha256": "68cf1492cc9539a4fd73a1b56d82fa3addc5e5c71e71db805a31a9228e885d0a"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/api/version/definition/README.md",
+      "length": 3116,
+      "sha256": "4f95478f4076363fbef21eb751d75f097cbacbedc99ed0a8dc71e346fef21b5b"
+    },
+    {
+      "relativePath": "avm/res/api-center/service/workspace/environment/README.md",
+      "length": 4260,
+      "sha256": "78040500842cc823f1dc113d70735180e41d7f65e0daf026079538b8a3c6091c"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/README.md",
+      "length": 279028,
+      "sha256": "0d3bb7248457af28c270ad640d1a53987935508fef34749a1cf6aaa7bfada21f"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api-version-set/README.md",
+      "length": 4606,
+      "sha256": "761ccd22f00d589801048a0a63aa1be0d1e59e73f4c5b09f05529b78e286f882"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api/README.md",
+      "length": 19153,
+      "sha256": "53280f3915ad9d20d3f305e07f4f084b3e6d9759df610e2bf99069c6436ea0b5"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api/diagnostics/README.md",
+      "length": 6442,
+      "sha256": "474d988b9c311e419c7fbb4353eeec107740c9f13f8bdfedc53e599f49fcbf40"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api/operation/README.md",
+      "length": 6562,
+      "sha256": "cb6f32e74efe07df8c47efeb84cd92a80cebfab29011aafc9702fdaef64d7c54"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api/operation/policy/README.md",
+      "length": 4281,
+      "sha256": "55e74b25862fcbf1d669843f8d763d0f48c0a2cdb4f9c4d092925a61966e8d27"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/api/policy/README.md",
+      "length": 3908,
+      "sha256": "112885941434288cc88c95dd6b1311233eb1714c09fed97f948fb9fb4e885a99"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/authorization-server/README.md",
+      "length": 10288,
+      "sha256": "82dbeb119bae90be79bad37edaf66f2e46ab2f0e96637e85606bc3b2ed1dd1f3"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/backend/README.md",
+      "length": 8252,
+      "sha256": "235f3e82edc15dedbfe24e03ada5ca31ff9beb7ad7bc60eb52aa35e398dec629"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/cache/README.md",
+      "length": 4367,
+      "sha256": "3cc49eb764492dbe27c4064b7714d0480bd2a85c878aaf4efc86297449454d44"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/diagnostics/README.md",
+      "length": 6089,
+      "sha256": "fa3ab829f33e9ee02d6aa2f8a99e33ed71cd853d8cb5c0001c0447733f2ef70b"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/identity-provider/README.md",
+      "length": 6704,
+      "sha256": "c1a081da5fab489c8c89156bc78e9355de3c27c4218efd26765a36a94ec573c6"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/logger/README.md",
+      "length": 4782,
+      "sha256": "a2c6334f4f9688b47c2257ff4d5c0f2f1af830fe7739b78c955f4b482772f40c"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/named-value/README.md",
+      "length": 5391,
+      "sha256": "8dba75a079c47441927b71ba2fc24f173206f3b26cb37bacc9d56235e7faa094"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/policy/README.md",
+      "length": 3648,
+      "sha256": "d67847734fc06198d4f5b0a05b311bb8f3b58b1b41cfbe640860b94f160bbe9e"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/portalsetting/README.md",
+      "length": 3468,
+      "sha256": "d2c67429a788b31303a3b98a30b0808d4d0e9652d89ddf3622e1f8119df55cdf"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/product/README.md",
+      "length": 9830,
+      "sha256": "353911470c2c5212509da7a29ac0ccf3c8a5bc58682b66e5ba5a6068dbde7328"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/product/api/README.md",
+      "length": 3443,
+      "sha256": "bbff4fc10f58560df80e0dd84c7dac8cc917f827741ce88e98351f8de493213e"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/product/group/README.md",
+      "length": 3467,
+      "sha256": "65e3906153c7ab9e03c3a3b3a1721218c084a4e2346318be83e8914e974069b3"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/product/policy/README.md",
+      "length": 3965,
+      "sha256": "03bac47ad25d9a8220b327dc8fbf9789433f430b64625bdec614acd610f0395c"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/subscription/README.md",
+      "length": 6251,
+      "sha256": "cb06759795fed7bf65e97575f2588cdbd602a8a188f154201c0801fee031ebfc"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/README.md",
+      "length": 64800,
+      "sha256": "4ab275eb09a1e5d268d371fb2585a01ba09fee3c689351e323a0ed641db5e518"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api-version-set/README.md",
+      "length": 4984,
+      "sha256": "02d73be60afe4c27dd96d3c29e312c440ad35a911caa27cc5907bf601f3da569"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api/README.md",
+      "length": 19608,
+      "sha256": "2a932fe4f7dee1dc99d0878138357ed4c3b6b8044dcde4a4d27c2f915a2e28a8"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api/diagnostics/README.md",
+      "length": 6851,
+      "sha256": "982d998e4e9ba8b57e8d50a98bfc8b5deff76c91898bd57e4fc960b859d3e46b"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api/operation/README.md",
+      "length": 6975,
+      "sha256": "ce2e7297c556581ddf78ff6f9e54903dc8ec7ac39bc3f55367f8dddaae22a750"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api/operation/policy/README.md",
+      "length": 4731,
+      "sha256": "4b3d9e8d178a49778f5f2f9b31e273f5872217e45b6246f03a5b51a9c35f1da3"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/api/policy/README.md",
+      "length": 4314,
+      "sha256": "858a655c8f8b5c483e889787e2554b79a363027742ce6236da79c95b95561fd5"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/backend/README.md",
+      "length": 6919,
+      "sha256": "220e0800102ec6554c60cdbb4b65fd09cfbb109cd9e8912bd1b7223d0fb4e982"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/diagnostics/README.md",
+      "length": 6445,
+      "sha256": "b140736568f4a5a3716616e4464e1929eb1499cb0a7749d3e2a980e2e5a4b27f"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/logger/README.md",
+      "length": 5189,
+      "sha256": "3e49b3e6d0adf395f6d9ca3e0c83be8fef2a0bc0f5dc551e77d39794c2f552d0"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/named-value/README.md",
+      "length": 5122,
+      "sha256": "9b6b334bfd4bf57042c49faf762ff7e3e309bdc32aa1c426a62699de3f94efa2"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/policy/README.md",
+      "length": 3987,
+      "sha256": "02c659b3b04e506d826ab4b044ac5a4609fd9b9bcc1937ad12215728adb0f7be"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/product/README.md",
+      "length": 10946,
+      "sha256": "0f96663f1d37dcbcf812062742c3ec964a4a609961f3c35747870325cfb4a0c7"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/product/api-link/README.md",
+      "length": 4086,
+      "sha256": "be799babe5e926582f9b03b6d8d9ba4de2c261a7a96a48680671eb07f081366a"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/product/group-link/README.md",
+      "length": 4125,
+      "sha256": "b30e4a7808464c6b99aa5c662a62257486b6a62fd30f3dc7768a8d8c63850922"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/product/policy/README.md",
+      "length": 4378,
+      "sha256": "87137e870484c221b4031490a5486921c9966ca4e35a9599db86cec6be827434"
+    },
+    {
+      "relativePath": "avm/res/api-management/service/workspace/subscription/README.md",
+      "length": 6591,
+      "sha256": "1636c1ebd235645b518c6401236215070c04e3c43c104177e135ca2bade47620"
+    },
+    {
+      "relativePath": "avm/res/app-configuration/configuration-store/README.md",
+      "length": 63122,
+      "sha256": "7d751d1f3d1f9f9701c358f0e2ba8b3e6510cd6ce1e99f684f97cbfcc7ec97a0"
+    },
+    {
+      "relativePath": "avm/res/app-configuration/configuration-store/key-value/README.md",
+      "length": 3912,
+      "sha256": "81527ae86017c894aac9c04f68e01304733f48c6e7c7a5e767372550e0fd629e"
+    },
+    {
+      "relativePath": "avm/res/app-configuration/configuration-store/replica/README.md",
+      "length": 3460,
+      "sha256": "e1f874649c18ee241d6eeb6fe7238398ef22f4ac20183bd8cbde64692bb408bf"
+    },
+    {
+      "relativePath": "avm/res/app/container-app/README.md",
+      "length": 61765,
+      "sha256": "6ecd2672a2781154add94b06ab0b1eeb07e21ef183355085dfc23254a96fda7b"
+    },
+    {
+      "relativePath": "avm/res/app/container-app/auth-config/README.md",
+      "length": 5137,
+      "sha256": "fb93532ddafb86fb3d9f56dcb7831c7ce7c0aa4399ad06775743d4b3314eaa1c"
+    },
+    {
+      "relativePath": "avm/res/app/job/README.md",
+      "length": 65487,
+      "sha256": "14a3b14855eb644a5f61ee7c81c022d049f35de4a75b77326eeb47fcf54374f7"
+    },
+    {
+      "relativePath": "avm/res/app/managed-environment/README.md",
+      "length": 80197,
+      "sha256": "bd94fe3d4557cedb64c0ef2b0e6581ebfced2461e8afbde4d99d0192869d0838"
+    },
+    {
+      "relativePath": "avm/res/app/managed-environment/certificate/README.md",
+      "length": 5171,
+      "sha256": "3b616a6da1cbc4d78cb48918bcbf7c678be870840f3880b309e352d38a8f0a6c"
+    },
+    {
+      "relativePath": "avm/res/app/managed-environment/storage/README.md",
+      "length": 3717,
+      "sha256": "3d4e2ebc8eb46250b94ae793f6c87cf74c285e5abe03fd13ff293852dd781068"
+    },
+    {
+      "relativePath": "avm/res/app/session-pool/README.md",
+      "length": 19495,
+      "sha256": "ac0a3a4603961edcb864fa48550b0df7cf04807ebbbd95dd00473fd018fabb7d"
+    },
+    {
+      "relativePath": "avm/res/authorization/policy-assignment/README.md",
+      "length": 839,
+      "sha256": "e1b301e2d65dfb716c5685155f075725979181bf526e4574cbb8f0aaf08c1fe8"
+    },
+    {
+      "relativePath": "avm/res/authorization/policy-assignment/mg-scope/README.md",
+      "length": 23941,
+      "sha256": "759f761a765c488635733d2a4af1352fe774e7301b7f212872a0dadc4a92571f"
+    },
+    {
+      "relativePath": "avm/res/authorization/policy-assignment/rg-scope/README.md",
+      "length": 22765,
+      "sha256": "be408fcba5c17856af0d1643186c4cdc9a5f0b8249af5911f16fec4fe097cd68"
+    },
+    {
+      "relativePath": "avm/res/authorization/policy-assignment/sub-scope/README.md",
+      "length": 23176,
+      "sha256": "54919f1d379c19a227d58ad553c6233b085e5e01a5ee49d042eb5e5aff4162c1"
+    },
+    {
+      "relativePath": "avm/res/authorization/role-assignment/README.md",
+      "length": 833,
+      "sha256": "45526e2b39ba880f5845eecde00cd6b73ce59ba6da07889eb9cbccda9d659455"
+    },
+    {
+      "relativePath": "avm/res/authorization/role-assignment/mg-scope/README.md",
+      "length": 11846,
+      "sha256": "1683c333aff7726943c7f2b29ddce2044b9fe08c1a21163ae554d986a87e712f"
+    },
+    {
+      "relativePath": "avm/res/authorization/role-assignment/rg-scope/README.md",
+      "length": 11115,
+      "sha256": "1628b8c0579d78c6cd74d55d73bea9ed36460a44b355a659b24718ab16562d26"
+    },
+    {
+      "relativePath": "avm/res/authorization/role-assignment/sub-scope/README.md",
+      "length": 10924,
+      "sha256": "7cf8853122323c7bdadf73d7db6eb22a661467fb2665855ce4f29e0d04d0098a"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/README.md",
+      "length": 90590,
+      "sha256": "5cb072f29b8bc40e84060870abe396dcf047ed959adfe6fc104224f8c56501e7"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/credential/README.md",
+      "length": 3807,
+      "sha256": "4553ea59fbc54ab0e31fb8c3f4a3258f7027b525218e9bd326ea65f4a36a5a9c"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/hybrid-runbook-worker-group/README.md",
+      "length": 4778,
+      "sha256": "1d42b3daaeff06c2b37b9836497ce143e19933775b134c5c3bdbea3a57247a74"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/hybrid-runbook-worker-group/hybrid-runbook-worker/README.md",
+      "length": 4086,
+      "sha256": "022a5030058c55ff489c02fdfa0c6433b363a0a9f8a4c6cdf5bf9266ff2037ad"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/job-schedule/README.md",
+      "length": 4318,
+      "sha256": "f447efad253d6f1005b40f63f80d2c464f2362a4331fd1401b7fd62bf3202e12"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/module/README.md",
+      "length": 4098,
+      "sha256": "5a76982b83a2ec6525540c39809e851fb34f6a399d83065a9aa1a6bf461ec658"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/powershell72-module/README.md",
+      "length": 4215,
+      "sha256": "d009c54bd1f49a7c8f8b9bd1737a3c6b0cdb2c7dd9feaec518c1ebc2195b7ee5"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/python2-package/README.md",
+      "length": 3963,
+      "sha256": "b54aae19292e4f486cfef473a43e2ac9b793474ab6519adda322801c6742f799"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/python3-package/README.md",
+      "length": 3963,
+      "sha256": "3b7709c81b5d6b3b0d21bf14f57455064f13eeba60d783484f8c437b03eae509"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/runbook/README.md",
+      "length": 5638,
+      "sha256": "cdec5a8481832dc8783005e50f0dbd32e7ae37b8b55fba8c2e53403af482fe2b"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/schedule/README.md",
+      "length": 4955,
+      "sha256": "f036dee67392942be9d0071fd01f2e580bf2ac4edf1f6bab6d6bbd55519b36be"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/source-control/README.md",
+      "length": 5401,
+      "sha256": "4ccf502d15a91fafad1c30308d5938bf440873fd00bb9641787f51a97b5f7d29"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/variable/README.md",
+      "length": 4172,
+      "sha256": "8944552ebccbc4ec30843ab9ffa4e4377ee0bbaa2e8819d693dc1de5aaf28e03"
+    },
+    {
+      "relativePath": "avm/res/automation/automation-account/webhook/README.md",
+      "length": 4031,
+      "sha256": "a6b3a10ab61d8ad330a9b987f4fd47d0f3b0a4b37c63680a6098f8d4fb4fa9e8"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/cluster/README.md",
+      "length": 65912,
+      "sha256": "e2b79bee8a93106cdc865b43ba6e3a8b53dff125987aedbc22f51b462832bd13"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/cluster/deployment-setting/README.md",
+      "length": 17783,
+      "sha256": "663eac23ef347526c247b982b863797f837f6668e68d514549c82005f429f02c"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/logical-network/README.md",
+      "length": 17179,
+      "sha256": "e17ad407e1a87b80e05a3c0b489544c28988ac25bfca8d854cc6153894db93b5"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/marketplace-gallery-image/README.md",
+      "length": 15796,
+      "sha256": "7117588d90e14430ba1b21c660a5d145e34ec9aa181e4cb78200a7beaf612c1d"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/network-interface/README.md",
+      "length": 16134,
+      "sha256": "f8186a573a5c048c624f6fdf3ad4a31a92943f85a0c0b8c8ea3f4914e2076e32"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/virtual-hard-disk/README.md",
+      "length": 18716,
+      "sha256": "f7de86b391c3f59d822329362b091ba97417b1c85491a4ebac31e701094a3b3c"
+    },
+    {
+      "relativePath": "avm/res/azure-stack-hci/virtual-machine-instance/README.md",
+      "length": 18659,
+      "sha256": "a7d68e9f78c12fada00d4c3ccd8590a2a31741f222709ba28cf455c747cdc9ef"
+    },
+    {
+      "relativePath": "avm/res/batch/batch-account/README.md",
+      "length": 63712,
+      "sha256": "9fc018fe486d85e6c8c79bd55bff401ca142259b3bd9f5e5000feea119c1fee9"
+    },
+    {
+      "relativePath": "avm/res/cache/redis-enterprise/README.md",
+      "length": 82040,
+      "sha256": "6f787a00b861374cb98dc46284169ffd1c2ceb32e4f55ba54603a7d37a4fd925"
+    },
+    {
+      "relativePath": "avm/res/cache/redis-enterprise/database/README.md",
+      "length": 18417,
+      "sha256": "0824fddfe121fd75330f238c56cf6dac69f989ea8a617f70a43602df14dd6de3"
+    },
+    {
+      "relativePath": "avm/res/cache/redis-enterprise/database/access-policy-assignment/README.md",
+      "length": 2875,
+      "sha256": "9498c822f11fbbc2496834a80450d88c183780699846a87d8359676d13c664ce"
+    },
+    {
+      "relativePath": "avm/res/cache/redis/README.md",
+      "length": 89654,
+      "sha256": "8f087072de3a74ac04ee1f59ef03bcf681824097b22e1199cc542ef63c3f9cf7"
+    },
+    {
+      "relativePath": "avm/res/cache/redis/access-policy-assignment/README.md",
+      "length": 2346,
+      "sha256": "db43a8186e696bc859861248f6f84242148c6008e831705e70873803a2ea7c2b"
+    },
+    {
+      "relativePath": "avm/res/cache/redis/access-policy/README.md",
+      "length": 1581,
+      "sha256": "87a7185205d7762be626a90db574598db0a2498cd46799dcdf605e0a9737b460"
+    },
+    {
+      "relativePath": "avm/res/cache/redis/firewall-rule/README.md",
+      "length": 2154,
+      "sha256": "8efe3ab799e5e6d71fabb7f5d737aac432c541b29b8ea544ce58b3dea05aee4b"
+    },
+    {
+      "relativePath": "avm/res/cache/redis/linked-server/README.md",
+      "length": 2670,
+      "sha256": "388381636cfdf57bd31097c5c29c073e695a884d8fa1ca0b64e7a0c0efdb7fdf"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/README.md",
+      "length": 111682,
+      "sha256": "e6b0a10de210c6979b8b1d92a0f29818595661e673e56ddb181375f8a70f57e1"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/afd-endpoint/README.md",
+      "length": 8415,
+      "sha256": "057d95dab529bcb27d5a0816e61d2e634a6155de49f75af2eb64446050ff42cd"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/afd-endpoint/route/README.md",
+      "length": 6497,
+      "sha256": "b275260e671f1ce6d15736678c4bd1c7bc72c05b36c094e00c7248200817b66c"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/custom-domain/README.md",
+      "length": 5661,
+      "sha256": "836da9aeaa61c601f967804af3e35e270d778fbdfb776f8472491ef8e10e3bf2"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/endpoint/README.md",
+      "length": 4369,
+      "sha256": "5e24212c0171f97e0af830fb34954ad4d627b2817bff6db25a96589ef52b0d59"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/endpoint/origin/README.md",
+      "length": 5615,
+      "sha256": "1c694d642ab199984b7b29495c24550437104fe074e581d5efc95ec646378eee"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/origin-group/README.md",
+      "length": 9029,
+      "sha256": "b1caed4f8f51ec73c9442295ca18cca188d9c160197dbbd3f827fc8827ee053a"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/origin-group/origin/README.md",
+      "length": 6799,
+      "sha256": "30462f81451b9b0e0e4c13e7a5cb63037fdce1793bd27a01aef9a7963d312dfc"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/rule-set/README.md",
+      "length": 4934,
+      "sha256": "7934137e4078e9aa635a28226d04ac1760d0d5b71204e4abd20ad1b89e5df75d"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/rule-set/rule/README.md",
+      "length": 4297,
+      "sha256": "70f813669e32a449a7e0cfc5fb267bdb55cb765f7c265f2144e42bb09be2779e"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/secret/README.md",
+      "length": 4355,
+      "sha256": "e3526e6adb88fbd64107c313487ec3339bd1dec17872bcbd1e7d39424dee2abd"
+    },
+    {
+      "relativePath": "avm/res/cdn/profile/security-policy/README.md",
+      "length": 4627,
+      "sha256": "53f404dbabe7b2b60259bb90001acef7cceb52915f4d933b1e9733f93da0b325"
+    },
+    {
+      "relativePath": "avm/res/code-signing/code-signing-account/README.md",
+      "length": 27942,
+      "sha256": "b173e556ae0b007eac01c103d79ac5317a44a376aa9dae0357a949af5dd499e2"
+    },
+    {
+      "relativePath": "avm/res/cognitive-services/account/README.md",
+      "length": 105055,
+      "sha256": "a7236520b3ef3928d48704e88b46cd190e33fd57743f13665edf9c8e8b206b70"
+    },
+    {
+      "relativePath": "avm/res/cognitive-services/account/deployment/README.md",
+      "length": 4995,
+      "sha256": "a0039b9650138e0379852f2044f2149a63f0ec2428972fe08109549ce704ef98"
+    },
+    {
+      "relativePath": "avm/res/communication/communication-service/README.md",
+      "length": 29841,
+      "sha256": "4de815f570a8b21abc30f38432f26a7c7b03c2e94e90cb500abd73cd5f64c42b"
+    },
+    {
+      "relativePath": "avm/res/communication/email-service/README.md",
+      "length": 28706,
+      "sha256": "c603eb56a883d0d83a7b821d475898d9c63f7006fa3d389ef949431433e52048"
+    },
+    {
+      "relativePath": "avm/res/communication/email-service/domain/README.md",
+      "length": 11356,
+      "sha256": "3d7d5a9ff4caebbbf2a750c2609efef9b7b399714439576af77e06d10663b23d"
+    },
+    {
+      "relativePath": "avm/res/communication/email-service/domain/sender-username/README.md",
+      "length": 3945,
+      "sha256": "6aab3ff05f67994cac6a04ac53a7a8c71a4cd4f6d5146ff08870955189357353"
+    },
+    {
+      "relativePath": "avm/res/compute/availability-set/README.md",
+      "length": 17959,
+      "sha256": "cca3ee21b52f7dc07698c6106711118f332e29947110e4ea09344101052247e5"
+    },
+    {
+      "relativePath": "avm/res/compute/disk-encryption-set/README.md",
+      "length": 31665,
+      "sha256": "98b0ee069e8380c9fd6aced2fdc843b772fa143bad57220d301777a4ff341efd"
+    },
+    {
+      "relativePath": "avm/res/compute/disk/README.md",
+      "length": 32964,
+      "sha256": "e81fc570d9d5c7b37dd129ef3b41a446e81689f4e4fdb71c93b85d92b597bfa3"
+    },
+    {
+      "relativePath": "avm/res/compute/gallery/README.md",
+      "length": 51451,
+      "sha256": "4ca8af43f3595a0cf5d6ff7ff53b74eb39cd5b7deaacc6343345796f5b43f729"
+    },
+    {
+      "relativePath": "avm/res/compute/gallery/application/README.md",
+      "length": 16952,
+      "sha256": "52ba6b06ed29b77bd9b82757590ee32af088f882b0b50202ea02cafd0072367f"
+    },
+    {
+      "relativePath": "avm/res/compute/gallery/image/README.md",
+      "length": 16342,
+      "sha256": "e7792da151ad3947ee7b06bec7ead26a3f83cff7085e25a4d3906b9135727560"
+    },
+    {
+      "relativePath": "avm/res/compute/image/README.md",
+      "length": 21084,
+      "sha256": "00f2ffa9eb25a07ef8b105d227443466b79d03cfa0a7f02b7fec100855228b49"
+    },
+    {
+      "relativePath": "avm/res/compute/proximity-placement-group/README.md",
+      "length": 20476,
+      "sha256": "2c1cb3b7d72b4fc6d3ef900ad7bc56e8a60494e045083ee80a9390f56598f288"
+    },
+    {
+      "relativePath": "avm/res/compute/ssh-public-key/README.md",
+      "length": 18779,
+      "sha256": "67bdc20f213491357bb321a981f316df7d7effa3a286d75ddbd8d2e8281398ba"
+    },
+    {
+      "relativePath": "avm/res/compute/virtual-machine-scale-set/README.md",
+      "length": 124595,
+      "sha256": "c5a5b1027b3d4587c26d4eedbba7a5b1f65449b5bce344e0f2430bef58692925"
+    },
+    {
+      "relativePath": "avm/res/compute/virtual-machine-scale-set/extension/README.md",
+      "length": 7108,
+      "sha256": "f137d83144a63ba56f47c742ee4e5dc026684bc0f5f6655f96f882ab6a05ce1d"
+    },
+    {
+      "relativePath": "avm/res/compute/virtual-machine/README.md",
+      "length": 283269,
+      "sha256": "5215388c5677a847960d560f94e20ef91ffeb524d29e2398b96311a7367bfa42"
+    },
+    {
+      "relativePath": "avm/res/compute/virtual-machine/extension/README.md",
+      "length": 7420,
+      "sha256": "672498945802db9a29ffd8ced1ee271d5cdcc440908cf300db088b6cb8ba10bb"
+    },
+    {
+      "relativePath": "avm/res/consumption/budget/README.md",
+      "length": 829,
+      "sha256": "8393bef0193d7427c09c639a5f1584a249fac7f3454ac0432946a5c9034f89e7"
+    },
+    {
+      "relativePath": "avm/res/consumption/budget/mg-scope/README.md",
+      "length": 13589,
+      "sha256": "fb47bff4c17a679df267fafe034878da2a52706dc861249b5ba26a1b0820d11a"
+    },
+    {
+      "relativePath": "avm/res/consumption/budget/rg-scope/README.md",
+      "length": 13353,
+      "sha256": "0649aa3f6ad58c4e4033ead793cfec1df78c56b1a65442e728eb8d13a2144793"
+    },
+    {
+      "relativePath": "avm/res/consumption/budget/sub-scope/README.md",
+      "length": 13650,
+      "sha256": "7d8aad021182e1b3410565439a71838e3f67b8c8087aa0a964dc7af15b1b0d16"
+    },
+    {
+      "relativePath": "avm/res/container-instance/container-group/README.md",
+      "length": 73996,
+      "sha256": "3e7bf6a6a6beda97937dd672217b262a6802ba3c32ac82464061f382b80c3c9d"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/README.md",
+      "length": 87782,
+      "sha256": "093bbfb5bd82b9ab017cdab9df12665418934510cd612bee183d94c062c9ae95"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/cache-rule/README.md",
+      "length": 4800,
+      "sha256": "ed11fefacacd24729c3de8eff9ea1a02cdc7ffc0f9fcd8af7fd72fd6363a36fa"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/credential-set/README.md",
+      "length": 5679,
+      "sha256": "000431ed423c9a3e1ef84cec4ae92b588547b248d97c3d16d934d2a354fd380a"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/replication/README.md",
+      "length": 4500,
+      "sha256": "101b7187c463eca26f3c7fa75d598c3121ad5caee490c2dc7592c9ad0e10af62"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/scope-map/README.md",
+      "length": 3592,
+      "sha256": "35c1bb6e91468c2bbe749efec97aa012439a7b71e61c4995bd6fe4558d6efc81"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/task/README.md",
+      "length": 7662,
+      "sha256": "19318f8a681b3298de807efe88c63957af050037ddc5f8ab16bd603daf914c9f"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/token/README.md",
+      "length": 3857,
+      "sha256": "948faafb05772c1b3a8bd18ea7447ff9f6dc1d938f8f84ba28e18a66d521634f"
+    },
+    {
+      "relativePath": "avm/res/container-registry/registry/webhook/README.md",
+      "length": 5470,
+      "sha256": "77338892a09c9a424fac8c9b00333f267117e58bbc620d2e73003ceae0af90ac"
+    },
+    {
+      "relativePath": "avm/res/container-service/managed-cluster/README.md",
+      "length": 148601,
+      "sha256": "0d685b97a5736e95f17d6902f3bba2fc6dadbc3ee692ad24cad6926082af7e6c"
+    },
+    {
+      "relativePath": "avm/res/container-service/managed-cluster/agent-pool/README.md",
+      "length": 21255,
+      "sha256": "2040a228a48077b464e8d7485f86df7a9dd6779c7bb46dfc53b54640f4321d01"
+    },
+    {
+      "relativePath": "avm/res/container-service/managed-cluster/maintenance-configuration/README.md",
+      "length": 4124,
+      "sha256": "9c0017cb1f865b763c10dc0f6d812f04f21d85ceec92f640aba6109a496aabf1"
+    },
+    {
+      "relativePath": "avm/res/data-factory/factory/README.md",
+      "length": 73341,
+      "sha256": "5af9aa853e514fd3f7f804dbbbac2daa5aed596c5cd53d1de2e70486dba817f7"
+    },
+    {
+      "relativePath": "avm/res/data-factory/factory/integration-runtime/README.md",
+      "length": 4795,
+      "sha256": "cbeb25e9783a342b103afaaa35b25615a9a1988ca9d67bd79854d8f2ef8b9fd7"
+    },
+    {
+      "relativePath": "avm/res/data-factory/factory/linked-service/README.md",
+      "length": 4707,
+      "sha256": "f47fca546da57e5f4e4a995ce9218839ecb254041001677e2ea90026d09797e7"
+    },
+    {
+      "relativePath": "avm/res/data-factory/factory/managed-virtual-network/README.md",
+      "length": 7025,
+      "sha256": "5116ae2d7c91f3e4fbb60eedc00f4975f305d99191c97c5e38c5a4c4727db5ae"
+    },
+    {
+      "relativePath": "avm/res/data-factory/factory/managed-virtual-network/managed-private-endpoint/README.md",
+      "length": 4363,
+      "sha256": "32bd402f87c4b64825bb097dfe2a755a36fe7f3c3c0549425546620b76c9408e"
+    },
+    {
+      "relativePath": "avm/res/data-protection/backup-vault/README.md",
+      "length": 66567,
+      "sha256": "473cf1881ced4667b4026a52ba94abde23399a3cf71f4dabba94374d06eb4f52"
+    },
+    {
+      "relativePath": "avm/res/data-protection/backup-vault/backup-instance/README.md",
+      "length": 7926,
+      "sha256": "d9dbd712026e6023d846715a9dc523b0c6a1e16cafa035f5f3fe60aeadf14e59"
+    },
+    {
+      "relativePath": "avm/res/data-protection/backup-vault/backup-policy/README.md",
+      "length": 7228,
+      "sha256": "b87465d3428d0f72d82053a71f8d3b5de9bf038aa6b1019acc9924a993c6dd2e"
+    },
+    {
+      "relativePath": "avm/res/databricks/access-connector/README.md",
+      "length": 17919,
+      "sha256": "7dc52d642954d33f5c51d16b8d5f84d94ccad27005adf16f0462a0cb708edd3f"
+    },
+    {
+      "relativePath": "avm/res/databricks/workspace/README.md",
+      "length": 91341,
+      "sha256": "3af09dcab81d020e71c1115205075fe49c52f2401d01b5b82ec8059d3c2ddb62"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/README.md",
+      "length": 81267,
+      "sha256": "5b02870cb160091badb6a86fe8e212145221a29fe1d8514fec5b231d8bf2a472"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/administrator/README.md",
+      "length": 3920,
+      "sha256": "7e170ee2b8ed4d48bc12efffbbeaadb573b5f7352c9c817935dae49174b938c3"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/advanced-threat-protection/README.md",
+      "length": 3394,
+      "sha256": "d2de74734da0334b1fa458aa45bf9bd96be50bc286df72e564f3ee38cf7b53fc"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/configuration/README.md",
+      "length": 3596,
+      "sha256": "85c07626765708e492a9f75d1aae9943680da4b842663362efbaab5a7e6c9510"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/database/README.md",
+      "length": 3526,
+      "sha256": "7053f05740e77db17e80ff4181e9e4bde4c4b7d5bd983e3c9a5c0e392a3bb2bc"
+    },
+    {
+      "relativePath": "avm/res/db-for-my-sql/flexible-server/firewall-rule/README.md",
+      "length": 4065,
+      "sha256": "47186b1155809fb1d1ba8ac71a515ade3ac1e3d27e8be819b06ed4776d5f931f"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/README.md",
+      "length": 93339,
+      "sha256": "085d533dc533cd56812fa74217f24c658b733ee5e0557701959fae5a7412d327"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/administrator/README.md",
+      "length": 4159,
+      "sha256": "89328914c52abb7f358219985f10db25d8c108ec55f0e61671f6355a8641acab"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/advanced-threat-protection-setting/README.md",
+      "length": 3882,
+      "sha256": "7c7094cf3eaa3f8dd115dda7fab28b991d20123d273763ca14a346980e15cd13"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/configuration/README.md",
+      "length": 3564,
+      "sha256": "d42a3905bb1342c50d595fac4b95ed3c57041a99f429bfafdd49dd1256caf5b4"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/database/README.md",
+      "length": 3541,
+      "sha256": "d0fc63e90467e08cb61224981103ae17a476b11bd38f6dc975bdee14ed7b13f6"
+    },
+    {
+      "relativePath": "avm/res/db-for-postgre-sql/flexible-server/firewall-rule/README.md",
+      "length": 4136,
+      "sha256": "3e17ee65d97438e3463d0266e7cbd8e23f01a8c3e81362cad20d78a5b69d92b8"
+    },
+    {
+      "relativePath": "avm/res/desktop-virtualization/application-group/README.md",
+      "length": 32444,
+      "sha256": "5391c04d4897255b9d934e9a54095af6b2a36d53c2d2aa2f4cf2dcdb627f5ce8"
+    },
+    {
+      "relativePath": "avm/res/desktop-virtualization/application-group/application/README.md",
+      "length": 6270,
+      "sha256": "97301ef1703c7d827a3ea94ab4f1d9aa36d2b431d59b8760c9b7feef175f32ef"
+    },
+    {
+      "relativePath": "avm/res/desktop-virtualization/host-pool/README.md",
+      "length": 58527,
+      "sha256": "f5effc1d0a856291ade275dcc12179e5ded804c31c3ddf9894a4766cdfdcb3ff"
+    },
+    {
+      "relativePath": "avm/res/desktop-virtualization/scaling-plan/README.md",
+      "length": 36928,
+      "sha256": "aad2df23a71b28086352d9891bb10333ebfff17cfe3cfe9f97971aa089e7e9f0"
+    },
+    {
+      "relativePath": "avm/res/desktop-virtualization/workspace/README.md",
+      "length": 52051,
+      "sha256": "e16bf024f7d47aabc3e0272b789343bd2831e171a6b7737ab4be68e95c215104"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/README.md",
+      "length": 114508,
+      "sha256": "6dacd6aa4a100b6e60c8323c051232f14d481cf59c800c1661ad9173a44ee50d"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/attachednetwork/README.md",
+      "length": 3478,
+      "sha256": "ee3bad7095cefac3600319519df3fd3dfd346becf18c358a70b08441bf18f2b7"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/catalog/README.md",
+      "length": 7083,
+      "sha256": "da52253a0214a4616f3c90c4d504099c2098d40d596d7e95e30346c1c9714dc2"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/devboxdefinition/README.md",
+      "length": 7517,
+      "sha256": "43b9a9c6d9d6d0ee06672169b1582ab950da3a5dade20eb41e3ca206aac604cc"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/environment-type/README.md",
+      "length": 3494,
+      "sha256": "54ce0eca4bce8d21c5e8ba0c7a6c17fba43f818ad01cb7778d75a5ac9164dfce"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/gallery/README.md",
+      "length": 5218,
+      "sha256": "19fbfdba8e27ac602a6f6265f78e4ac85eb187ea45cce1e4c26dd0022b84c2df"
+    },
+    {
+      "relativePath": "avm/res/dev-center/devcenter/project-policy/README.md",
+      "length": 6614,
+      "sha256": "9d4c5f62e71d4edb267deac3bcf5a3680148aad1cc984e8809944a79965ff71e"
+    },
+    {
+      "relativePath": "avm/res/dev-center/network-connection/README.md",
+      "length": 19656,
+      "sha256": "a71f74d971018d473da14a971f5e485f9ae49eba1126d0c5f226f1ab29654f2f"
+    },
+    {
+      "relativePath": "avm/res/dev-center/project/README.md",
+      "length": 65541,
+      "sha256": "92d2d6d7ac8936dad89288a46c477233e0a607c006f19f9278d016f9a316b1d0"
+    },
+    {
+      "relativePath": "avm/res/dev-center/project/catalog/README.md",
+      "length": 7097,
+      "sha256": "75c32dcf2e85f00d6265c9495f4420f3be088e366009f8c7d3795b8a595d7d8c"
+    },
+    {
+      "relativePath": "avm/res/dev-center/project/environment-type/README.md",
+      "length": 13597,
+      "sha256": "8748650a2052009931a290d74e75b3bb29d9410d84ec871e88363228bd98cd74"
+    },
+    {
+      "relativePath": "avm/res/dev-center/project/pool/README.md",
+      "length": 17575,
+      "sha256": "84ecc4bcc062395f9e332c547cda2044978b36d5d3cc007cb873d89d09835efb"
+    },
+    {
+      "relativePath": "avm/res/dev-center/project/pool/schedule/README.md",
+      "length": 4603,
+      "sha256": "d1a1bda81d96e1e684373163ecc8633142b77625336028622cdf6eedc5f955c6"
+    },
+    {
+      "relativePath": "avm/res/dev-ops-infrastructure/pool/README.md",
+      "length": 90786,
+      "sha256": "fad5427e84b4d43bcff8b145a7359d94906189c7e3369873e5e18d09764fdfe1"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/README.md",
+      "length": 80780,
+      "sha256": "cc8b9c5bf3c767a20e5feadfb6942c341acacf16e4353f6bff7d694e3c3b9103"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/artifactsource/README.md",
+      "length": 5782,
+      "sha256": "a03206e48f8947a406a74d59444334bf1f48fd64c9a0b616a643834bcb3b2cf7"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/cost/README.md",
+      "length": 10517,
+      "sha256": "c55c297eda25e65eb13fe71b9649c134b30a8eeca8b439cc1f14de1986fa1a66"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/notificationchannel/README.md",
+      "length": 4926,
+      "sha256": "5eb93fafadb78d961bf2a071084e9134429b0b74ed8956246e8a50ceabf2fa3c"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/policyset/policy/README.md",
+      "length": 4977,
+      "sha256": "7a80067cb7d661f276d0a13bc001a333b521694eee8223fccabd08bab4f5e554"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/schedule/README.md",
+      "length": 8845,
+      "sha256": "01cf67b5e008fe4c0be8fc90073a14b0be637274c06664528af82be293560323"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/secret/README.md",
+      "length": 4500,
+      "sha256": "1102eb1ab6fc6330bd0e1cc4cac05c251ceaab3cb453852d1d07621b998230c2"
+    },
+    {
+      "relativePath": "avm/res/dev-test-lab/lab/virtualnetwork/README.md",
+      "length": 8740,
+      "sha256": "4b7943386f7f77727f43380a3a60544408478940544825d5e57b2cf2cdc56861"
+    },
+    {
+      "relativePath": "avm/res/devices/iot-hub/README.md",
+      "length": 53356,
+      "sha256": "ee684149521efb249e3b7436bd12643fc6de172b9e82212ce842d5f4cb5a522c"
+    },
+    {
+      "relativePath": "avm/res/devices/iot-hub/consumergroup/README.md",
+      "length": 2855,
+      "sha256": "128b8671261d05df3c33a4bcb03cc3f1a6aecb5e36580990cc81754fc7ce8229"
+    },
+    {
+      "relativePath": "avm/res/digital-twins/digital-twins-instance/README.md",
+      "length": 72612,
+      "sha256": "eb50c5459ed383d28dad567790eea1cabc4a24161978cc514776e327a95a5ccf"
+    },
+    {
+      "relativePath": "avm/res/digital-twins/digital-twins-instance/endpoint/README.md",
+      "length": 19234,
+      "sha256": "d761d765a8866573157e08575fa08ec8ad3e7622a73fe3655a0e146c7541fa40"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/README.md",
+      "length": 180702,
+      "sha256": "a580f9ed03e3e43ad79b8d95130f5dd673b6fdf0dfe94a4e9056e18b1a1a5014"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/cassandra-keyspace/README.md",
+      "length": 9581,
+      "sha256": "c1aaddb480e4f0cef75143de38f4232503c7ab0c6bf4ffe4865ec3f403a61080"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/cassandra-keyspace/table/README.md",
+      "length": 5705,
+      "sha256": "d0e94c7c6591d4578aa23af0b034a324a25b09a56f63a1050cf0e4f9f996752c"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/cassandra-keyspace/view/README.md",
+      "length": 4953,
+      "sha256": "d11f8e4139f931e6cfd19244919f67210e799977a57c5cb6bc735704dbda0256"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/cassandra-role-assignment/README.md",
+      "length": 4577,
+      "sha256": "6e7640770eac7810013b0c3f10a134b913054154bd075adda38c7e246e2073c1"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/cassandra-role-definition/README.md",
+      "length": 8068,
+      "sha256": "742a2741318349f6048190f4dfff52f65513289e7c980c3dea959088570af49f"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/gremlin-database/README.md",
+      "length": 7883,
+      "sha256": "8d3f4600decda4e559af653e73638e3dc531d4602ccabe86f77ba815fd78bd2d"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/gremlin-database/graph/README.md",
+      "length": 4650,
+      "sha256": "4ab3a36454c04079950915ec3dab636f2701a256e9b9703a372721ef2fbad9d7"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/mongodb-database/README.md",
+      "length": 6472,
+      "sha256": "8c3cfec5ed3ba46e2e9e29369e27565b272febbc31731a58497bf3607202df53"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/mongodb-database/collection/README.md",
+      "length": 6601,
+      "sha256": "963d3a8d3b96eafc24e12c74b6459d00d89fd1c8790fbe45616f2810203f565e"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/sql-database/README.md",
+      "length": 13309,
+      "sha256": "5d55188d5a657bcfd79c040a26c6659d7dd956d3bc4482c41c6fee009f5daab7"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/sql-database/container/README.md",
+      "length": 10558,
+      "sha256": "497e55f54fedbb2166c6599264503e5c83f7ce09c519a2d17988c4484ccc2a80"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/sql-role-assignment/README.md",
+      "length": 4645,
+      "sha256": "799e54d6e54815f079f35b9a2837cbd0e91ba7a39df537970ab17709879f86b4"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/sql-role-definition/README.md",
+      "length": 7551,
+      "sha256": "594b01728d59187fd4807b74c18b0a8b349c55f4741a7fe215b486c978e3a59d"
+    },
+    {
+      "relativePath": "avm/res/document-db/database-account/table/README.md",
+      "length": 4060,
+      "sha256": "4cffe9ef71ff7106b0320ac3321c7b8185dabf7a5236eafa3e91b84b65623374"
+    },
+    {
+      "relativePath": "avm/res/document-db/mongo-cluster/README.md",
+      "length": 53040,
+      "sha256": "0129a5c57e9846b9f97e9ed8fdb5dcd52c9e2f1590c77ba1299e358b020e1b60"
+    },
+    {
+      "relativePath": "avm/res/document-db/mongo-cluster/firewall-rule/README.md",
+      "length": 2592,
+      "sha256": "3523a725d38e85559bfd5cf5c03ec0504603b5111fe9e4c8d11d63744630cd0f"
+    },
+    {
+      "relativePath": "avm/res/document-db/mongo-cluster/user/README.md",
+      "length": 4012,
+      "sha256": "85848abac5d5b8f22231fd88c9567e8a25d8bb0ef9ec50e02111ac14d5c931d3"
+    },
+    {
+      "relativePath": "avm/res/edge/site/README.md",
+      "length": 754,
+      "sha256": "2315fb998019ddff62dc069494a0f151acd660e36a2aa06f6c6042eebdf90acd"
+    },
+    {
+      "relativePath": "avm/res/edge/site/rg-scope/README.md",
+      "length": 8027,
+      "sha256": "9587277a3b56e058b7a9ef37f3ebbac039b8c67040ae7d52a25a73f5ea99dce6"
+    },
+    {
+      "relativePath": "avm/res/edge/site/sub-scope/README.md",
+      "length": 8475,
+      "sha256": "6c7c0a383e0a1bc8718b1b40b043f3036c199374ef9dc1448c957a6a39799efa"
+    },
+    {
+      "relativePath": "avm/res/elastic-san/elastic-san/README.md",
+      "length": 71225,
+      "sha256": "3a16fec6a22c17c94f174cb1199740625fe88eace2d1fbc2d3336497db34241b"
+    },
+    {
+      "relativePath": "avm/res/elastic-san/elastic-san/volume-group/README.md",
+      "length": 31173,
+      "sha256": "8e43e10667dd95fc6b2109c0c5fe8a40db800d5f63afeadaa632e28e0af5eaeb"
+    },
+    {
+      "relativePath": "avm/res/elastic-san/elastic-san/volume-group/snapshot/README.md",
+      "length": 5859,
+      "sha256": "7d2862fd03502d20ca7cb638d55f3cd2f923341cecad8dee39ab32ca14f003fe"
+    },
+    {
+      "relativePath": "avm/res/elastic-san/elastic-san/volume-group/volume/README.md",
+      "length": 7760,
+      "sha256": "63bd22a0aaec82f9d4f0fd76b34b0120df543c96faee1536e47f36f1e0048e62"
+    },
+    {
+      "relativePath": "avm/res/event-grid/domain/README.md",
+      "length": 52169,
+      "sha256": "1b9df6d8c1500b81b53e49e9693737643e258c683aa91bdf7e0dc9fed765852b"
+    },
+    {
+      "relativePath": "avm/res/event-grid/domain/event-subscription/README.md",
+      "length": 6038,
+      "sha256": "eb8629816b68dfe13c0e4d30b0831940d652820f4bc19c47863dc375d9d10ef7"
+    },
+    {
+      "relativePath": "avm/res/event-grid/domain/topic/README.md",
+      "length": 3067,
+      "sha256": "666a6697349136d6efdf2e6a1e6b57cce80afee08775545df793c7f3a874c505"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/README.md",
+      "length": 92929,
+      "sha256": "3fe14f9b25a4a3a77f715474a28baf69566c91c4ae43b85bcaa1e422ed20e13e"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/ca-certificate/README.md",
+      "length": 3624,
+      "sha256": "b3ec19e2797fc21758f71d49f6a97901afe7166d9cf1aa677c40391040f0c291"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/client-group/README.md",
+      "length": 3473,
+      "sha256": "f78b7d5668266fd7afed78d5b7e99e2b410be68b20ad45a91dc128254e81b661"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/client/README.md",
+      "length": 5217,
+      "sha256": "e74fe8d6208c7abfcbe67f5268203f814827236489ce15de87bedbf972eab68c"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/permission-binding/README.md",
+      "length": 4563,
+      "sha256": "3d21d7d5f4ab84884ecb6223493ce3ba5742dccc7ed9209469c5dbedb065d1b7"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/topic-space/README.md",
+      "length": 8182,
+      "sha256": "476ccdcf860695c9a019afe7baa8534f3d3a3396381934458eb5fd6b6370bca8"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/topic/README.md",
+      "length": 10424,
+      "sha256": "a103f9fafd60f02636479189cbd755715c60614134e46cc4a02781f1ecf2cc41"
+    },
+    {
+      "relativePath": "avm/res/event-grid/namespace/topic/event-subscription/README.md",
+      "length": 9066,
+      "sha256": "db4a57db6befb3406a845d9302eec15a464e55a92cbfc96db5b18b0f75060293"
+    },
+    {
+      "relativePath": "avm/res/event-grid/system-topic/README.md",
+      "length": 45007,
+      "sha256": "3fc62d2a9f473bb16362e45edb8b76c2e3420b9db06b3a5a5182626473ab5bb7"
+    },
+    {
+      "relativePath": "avm/res/event-grid/system-topic/event-subscription/README.md",
+      "length": 5449,
+      "sha256": "3750923771f0e0cf864ad62f00ca73f1cb84ea95e40471d43b29411886177e56"
+    },
+    {
+      "relativePath": "avm/res/event-grid/topic/README.md",
+      "length": 64911,
+      "sha256": "756be60c8ae282543c35df853a9551fcacb5419f6a1373e7b9cea9af6f5c29f0"
+    },
+    {
+      "relativePath": "avm/res/event-grid/topic/event-subscription/README.md",
+      "length": 7429,
+      "sha256": "0d976802a203b110aa9bc371c2a6a7c268bcc2b63c5f4b4df4662eb6cf1feaf2"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/README.md",
+      "length": 103552,
+      "sha256": "d1030c2d38fc560ac0a8c5914715f282cad22bf95be17ea2fed57c98d4a7c970"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/authorization-rule/README.md",
+      "length": 3439,
+      "sha256": "dfd84897f000d5350b012b78a06282d9374fa2771ea93effbc83329ab5240210"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/disaster-recovery-config/README.md",
+      "length": 3615,
+      "sha256": "13642a103280af338f47ce93799588f2bec7f8b250789e2a15afe087030a30a6"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/eventhub/README.md",
+      "length": 20481,
+      "sha256": "7a0b327e59186b7e84be63386b80cad352d6df5912a9082106d5cfc0855d22cb"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/eventhub/authorization-rule/README.md",
+      "length": 3860,
+      "sha256": "2442ec8c872864ab4ce4d427429bffdb838202e9f96c54f344ad98f6062796fe"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/eventhub/consumergroup/README.md",
+      "length": 4180,
+      "sha256": "42ea1f2a54f6b9b220276fbbc8f073c6b62ec02de788e661438b45c876e13e68"
+    },
+    {
+      "relativePath": "avm/res/event-hub/namespace/network-rule-set/README.md",
+      "length": 6950,
+      "sha256": "a9b0d2c44d56759d01b54a0a30e5f66f95fe456cce27919bbf898cbf4804d313"
+    },
+    {
+      "relativePath": "avm/res/fabric/capacity/README.md",
+      "length": 10520,
+      "sha256": "097eba44a15da75f0ee6b85c3d98481592d4704079e2f96036b63fbf2e0d27f2"
+    },
+    {
+      "relativePath": "avm/res/health-bot/health-bot/README.md",
+      "length": 17356,
+      "sha256": "2e079a277aa402a5fdf172ea79b4448b7ca33510e799e2c25b47ffa88f704856"
+    },
+    {
+      "relativePath": "avm/res/healthcare-apis/workspace/README.md",
+      "length": 30019,
+      "sha256": "d12c4cdb0c0d1f8cd28c9cc71d79d7740bb5c642f0356d97af702b353a669410"
+    },
+    {
+      "relativePath": "avm/res/healthcare-apis/workspace/dicomservice/README.md",
+      "length": 15883,
+      "sha256": "98e95c1a24dadc7ef55b85141942713629433ebb9c0d5512e5fabe96f50cc5ef"
+    },
+    {
+      "relativePath": "avm/res/healthcare-apis/workspace/fhirservice/README.md",
+      "length": 24448,
+      "sha256": "8cfa55db542f5ed5fa70bb249f8801f331889e2e2ef08d95f3074cbf7c4d7b62"
+    },
+    {
+      "relativePath": "avm/res/healthcare-apis/workspace/iotconnector/README.md",
+      "length": 18861,
+      "sha256": "ede1e52878ef40f26393be287919ebc860eff4ce0f0473e62c9c6568db1635c8"
+    },
+    {
+      "relativePath": "avm/res/healthcare-apis/workspace/iotconnector/fhirdestination/README.md",
+      "length": 6585,
+      "sha256": "e99c249f81685f84d01947eba52a6c965867b4ab277a0ed40414940b3d06ce65"
+    },
+    {
+      "relativePath": "avm/res/hybrid-compute/gateway/README.md",
+      "length": 7676,
+      "sha256": "3309de9dc1bf5606c631ca8427b685589371f25c340a356ee58611a9ac6b976c"
+    },
+    {
+      "relativePath": "avm/res/hybrid-compute/license/README.md",
+      "length": 8981,
+      "sha256": "c9970bc8df6cf91b089dd7f90b04278d1a2c67c3640e2a5f86a35b457295059b"
+    },
+    {
+      "relativePath": "avm/res/hybrid-compute/machine/README.md",
+      "length": 22517,
+      "sha256": "bde8d75f599dd9cf531e5764ba08117b50b7fe833527e3890954901c707e78bc"
+    },
+    {
+      "relativePath": "avm/res/hybrid-compute/machine/extension/README.md",
+      "length": 6110,
+      "sha256": "d14eec834ba8a61aa7d1bf822d2efe8abd06be44434698ddf94639a154c76289"
+    },
+    {
+      "relativePath": "avm/res/hybrid-container-service/provisioned-cluster-instance/README.md",
+      "length": 37601,
+      "sha256": "df9ee5ca84bd2cbc3524fa016bb144bba29c0b0617ca0ec2145a0d32ae0fa1a2"
+    },
+    {
+      "relativePath": "avm/res/insights/action-group/README.md",
+      "length": 22546,
+      "sha256": "0b04058a3bb5954a8c6a384663d00e3d68260c917b717591ec2194d1978a40d3"
+    },
+    {
+      "relativePath": "avm/res/insights/activity-log-alert/README.md",
+      "length": 24182,
+      "sha256": "87a33ddcd9e52417d4fb27c7da7e41d309d2d4f71db5b6351013254ec27affa2"
+    },
+    {
+      "relativePath": "avm/res/insights/component/README.md",
+      "length": 33774,
+      "sha256": "9dcb88cbe73ef359163bc2c06d58364499c47b0102ec3905109827ffcc8e5f0f"
+    },
+    {
+      "relativePath": "avm/res/insights/component/linked-storage-account/README.md",
+      "length": 3309,
+      "sha256": "5ed32a33874e4e7a4c5b45ee4f653e266e4c2e6efde6f57b3e14a50942f64db4"
+    },
+    {
+      "relativePath": "avm/res/insights/data-collection-endpoint/README.md",
+      "length": 17542,
+      "sha256": "32225870f1847edaee5583eb3e008cd20d92105588c0286b0b8b6f49bf755fe9"
+    },
+    {
+      "relativePath": "avm/res/insights/data-collection-rule/README.md",
+      "length": 121460,
+      "sha256": "31050f30a89a93c19c48b030388e9de0c892ff462151a2c955278140fb32bf79"
+    },
+    {
+      "relativePath": "avm/res/insights/diagnostic-setting/README.md",
+      "length": 14071,
+      "sha256": "02bf4cd038c3f0910ac056048aeede6edf60781c8deca5bc01fa2bf6d26ceccc"
+    },
+    {
+      "relativePath": "avm/res/insights/metric-alert/README.md",
+      "length": 28654,
+      "sha256": "35010f3f90ff57755bb2ba64ed1eda33823962c4ca93efe5663d4f2540e37ae0"
+    },
+    {
+      "relativePath": "avm/res/insights/private-link-scope/README.md",
+      "length": 57671,
+      "sha256": "6aea692d90644cc4130fa5e75979313cf501468cd592d7cafced4142a22de30c"
+    },
+    {
+      "relativePath": "avm/res/insights/private-link-scope/scoped-resource/README.md",
+      "length": 3499,
+      "sha256": "dc788676d0c48083f1c6f67e40c928229c908b3e6a00ac235cd40f08d06bec0f"
+    },
+    {
+      "relativePath": "avm/res/insights/scheduled-query-rule/README.md",
+      "length": 37160,
+      "sha256": "374ef934dc01341c319f16ee803f156ae20e8a2e6c893d4079b6ef7caa2d9e49"
+    },
+    {
+      "relativePath": "avm/res/insights/webtest/README.md",
+      "length": 21511,
+      "sha256": "bbfa189e3b435f898b0e61da3d7d3d87cb0533f6df5f60fba7bf804653809a85"
+    },
+    {
+      "relativePath": "avm/res/key-vault/vault/README.md",
+      "length": 94325,
+      "sha256": "72befb145543d707ba849143eccb8d4b17efe2b09385156e6a5cc1b7060d8e01"
+    },
+    {
+      "relativePath": "avm/res/key-vault/vault/access-policy/README.md",
+      "length": 6523,
+      "sha256": "eccf9c4f9a0fbd9710cf14f5571a3c7263b9ddbb3cda86d394d9b341003fb93a"
+    },
+    {
+      "relativePath": "avm/res/key-vault/vault/key/README.md",
+      "length": 12874,
+      "sha256": "f0fa0d5e3c8bcfe6e81879a86e78829fa95f762598c75b391d30bd0d683b4256"
+    },
+    {
+      "relativePath": "avm/res/key-vault/vault/secret/README.md",
+      "length": 9474,
+      "sha256": "46f795c878aa9e16eca59ad3f47114af21d17722c8190a46f742eeb9d33f6320"
+    },
+    {
+      "relativePath": "avm/res/kubernetes-configuration/extension/README.md",
+      "length": 21735,
+      "sha256": "cf2b36bece0ddc6040eb5098098910ddf6518df149f3170ff1d37d709903e60d"
+    },
+    {
+      "relativePath": "avm/res/kubernetes-configuration/flux-configuration/README.md",
+      "length": 20171,
+      "sha256": "ffc27d7602225c2037f30136accafc18cc65dcc8b79bf3876ed0c000591da52e"
+    },
+    {
+      "relativePath": "avm/res/kubernetes-runtime/load-balancer/README.md",
+      "length": 10857,
+      "sha256": "a1c9ab0b9c88bd076667903b7422c2f5b2b2fe286f2c009c92884923ecb71d28"
+    },
+    {
+      "relativePath": "avm/res/kubernetes/connected-cluster/README.md",
+      "length": 22985,
+      "sha256": "20f716b86f192356cdf1cd0327ebeece7b186cbd5572437636f40880918e1761"
+    },
+    {
+      "relativePath": "avm/res/kusto/cluster/README.md",
+      "length": 74156,
+      "sha256": "23f0a93135a69e45ef01eef9b30e1146c1d349bec64e03e9633439e5c180d2b8"
+    },
+    {
+      "relativePath": "avm/res/kusto/cluster/database/README.md",
+      "length": 6875,
+      "sha256": "009b9d20f33ed8e3cb87768737c1360f6fcb4e697485540a4c17dfe4fcf9f578"
+    },
+    {
+      "relativePath": "avm/res/kusto/cluster/database/principal-assignment/README.md",
+      "length": 3076,
+      "sha256": "d3fb4da8a4927ef502672a17f732e94bb047968bd56e20af79cb116d5ee0afa3"
+    },
+    {
+      "relativePath": "avm/res/kusto/cluster/principal-assignment/README.md",
+      "length": 2814,
+      "sha256": "6efe52e55e59587f56942067fe34591212197bfc15540129f556d524568be99e"
+    },
+    {
+      "relativePath": "avm/res/load-test-service/load-test/README.md",
+      "length": 21575,
+      "sha256": "14396ea0c4191f5d8a18c79a145c3ff27b36455c0ed60e299f502e4b0ced0eca"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/README.md",
+      "length": 75020,
+      "sha256": "17faf6e1036902728b915a89207c5cdb7085eb9849654e87c9bb5e92066092c4"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/agreement/README.md",
+      "length": 5049,
+      "sha256": "8b38b5c540e208371b0efe551a8f8a42c35d23f2844ea0e004e505818b91dcc1"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/assembly/README.md",
+      "length": 4217,
+      "sha256": "8bec5345d49735bbac19868fdaa106059dd0435f0d76883b2f692fcf5d568309"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/certificate/README.md",
+      "length": 4036,
+      "sha256": "19c3f9df34a9615eb2524cf2ad1f65f0e6905b8d3a69259a0d828beab3706783"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/map/README.md",
+      "length": 4699,
+      "sha256": "00039e5b088037f0a179274c0431b21cedaf7a7165bf621b11dea93ad796c4a3"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/partner/README.md",
+      "length": 4081,
+      "sha256": "2d29731b0c61eb1b805263937633644141bee9e0099ad14c2a5cef7212dad6b3"
+    },
+    {
+      "relativePath": "avm/res/logic/integration-account/schema/README.md",
+      "length": 4851,
+      "sha256": "c168be933a0eea9847276fb94977889a4c07e03cf86d91e9779fa4751c300e15"
+    },
+    {
+      "relativePath": "avm/res/logic/workflow/README.md",
+      "length": 40642,
+      "sha256": "bf92cf35fab4883c8f32c25f78571fa6a35381d272f0015872eb93bb7deeee59"
+    },
+    {
+      "relativePath": "avm/res/machine-learning-services/registry/README.md",
+      "length": 39757,
+      "sha256": "4f603aba3a12ecf870f9162d8cea612d9a22d97370df29f5d22d176c69c7c85f"
+    },
+    {
+      "relativePath": "avm/res/machine-learning-services/workspace/README.md",
+      "length": 124718,
+      "sha256": "71a7edeb543f829a6edef93be740044fb7465a6756c75119ce92bc8870d9a60f"
+    },
+    {
+      "relativePath": "avm/res/machine-learning-services/workspace/compute/README.md",
+      "length": 8405,
+      "sha256": "2ca186ced6203fceaab7fc64bc0f23904079b264e2829d95249835472a64a8db"
+    },
+    {
+      "relativePath": "avm/res/machine-learning-services/workspace/connection/README.md",
+      "length": 27225,
+      "sha256": "3b5f36795f17b31ebb88442ec461200be9b84e1aaf2ba16ac54b882854a4a8cd"
+    },
+    {
+      "relativePath": "avm/res/machine-learning-services/workspace/datastore/README.md",
+      "length": 3232,
+      "sha256": "b1f713649d3c97d691dec50375e6ac435da8fa98c69ea0cd4b4bb36346e83470"
+    },
+    {
+      "relativePath": "avm/res/maintenance/configuration-assignment/README.md",
+      "length": 14876,
+      "sha256": "36f8740a5bd4de7b33732bf73812a2c523f6c9fc1310430a112812cb5d665bc8"
+    },
+    {
+      "relativePath": "avm/res/maintenance/maintenance-configuration/README.md",
+      "length": 22721,
+      "sha256": "44548953a5097f3db5fbd6f41801d9d4059fa8cef10fd66f6fb43291892ba6cd"
+    },
+    {
+      "relativePath": "avm/res/managed-identity/user-assigned-identity/README.md",
+      "length": 22422,
+      "sha256": "f266af2d68745cdbc0185a30f3238fd84a6697d10bc7ec8e0a7d62c05fd9bab7"
+    },
+    {
+      "relativePath": "avm/res/managed-identity/user-assigned-identity/federated-identity-credential/README.md",
+      "length": 5476,
+      "sha256": "7e8268788963f1b98bf130d236a97b6bd6c3b180e53ee910c63934d7f46f237c"
+    },
+    {
+      "relativePath": "avm/res/managed-services/registration-definition/README.md",
+      "length": 21598,
+      "sha256": "65c3052e49064e673ed268c7a45a8efac8d4ffcbe37c61204b662710c3685aed"
+    },
+    {
+      "relativePath": "avm/res/management/management-group/README.md",
+      "length": 9294,
+      "sha256": "ef7640a01a9bed93d88cd0c6dfcd61048b486cc51fca420a68796f2304d1c852"
+    },
+    {
+      "relativePath": "avm/res/management/service-group/README.md",
+      "length": 17399,
+      "sha256": "4a45ddd515532fe0526a01554a1e2bba391371cc8079cbc1bcb66e8b714b7108"
+    },
+    {
+      "relativePath": "avm/res/maps/account/README.md",
+      "length": 27300,
+      "sha256": "949f4357cad891f59c156a47407559dac71111abf188cc63e16555555b7b5e8a"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/README.md",
+      "length": 94085,
+      "sha256": "5524bb2af74c965516471972e1a7b767de40b2f40348b205011b4a441a854ec9"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/backup-policy/README.md",
+      "length": 4971,
+      "sha256": "4ee00a5231c34d9ef8502e28851519e0a65cb9682a3c51baa89fcc7fc7460406"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/backup-vault/README.md",
+      "length": 4995,
+      "sha256": "241a921991516991b3645d01012d441334ba8b7ca3d64c8add2bef631a838761"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/backup-vault/backup/README.md",
+      "length": 4205,
+      "sha256": "d87e877c01b5fd8b9e9c18c8e1f8490dd65ba470e69ac8f24a69f861145f8769"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/capacity-pool/README.md",
+      "length": 32134,
+      "sha256": "93c6eeaec9adaffe4721aebd73ea98db3873059c099f9af6606c034176c0d38a"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/capacity-pool/volume/README.md",
+      "length": 25852,
+      "sha256": "683a4bf44b220f7a4b49fecc06a24ef6dc08dc0d07efdc04a6495f6d253f9209"
+    },
+    {
+      "relativePath": "avm/res/net-app/net-app-account/snapshot-policy/README.md",
+      "length": 9177,
+      "sha256": "0235de74a885c8b0199fb07a831c4c40ebc2267fa3a734ea81624fc02c0b3781"
+    },
+    {
+      "relativePath": "avm/res/network/application-gateway-web-application-firewall-policy/README.md",
+      "length": 20819,
+      "sha256": "323f945bd610263f8eeb099d90ea27d64abdfde814f5a1dce9f040474437738e"
+    },
+    {
+      "relativePath": "avm/res/network/application-gateway/README.md",
+      "length": 126358,
+      "sha256": "c081a53c7ebbf755d8ea33c2684c7e564c8cba4783b4d67f344777db20d9f763"
+    },
+    {
+      "relativePath": "avm/res/network/application-security-group/README.md",
+      "length": 16233,
+      "sha256": "6285999d87c04cce6ef286f5a755e84835fd4d44c71d5075691b9ea4c3455302"
+    },
+    {
+      "relativePath": "avm/res/network/azure-firewall/README.md",
+      "length": 69383,
+      "sha256": "448b06dfca34103ea2a5d3b941f1a8f7f20b6e0958dcf579a9fd0d5ebc4018ae"
+    },
+    {
+      "relativePath": "avm/res/network/bastion-host/README.md",
+      "length": 60701,
+      "sha256": "1627b24312574dfab4f5858f003d44b21c79780497693e5db20f601f2ddf0736"
+    },
+    {
+      "relativePath": "avm/res/network/connection/README.md",
+      "length": 31528,
+      "sha256": "42705b7026736aa52f9b6b2a750622c5ca11bbd5f4687ca7b3f23f4f0e7f10db"
+    },
+    {
+      "relativePath": "avm/res/network/ddos-protection-plan/README.md",
+      "length": 16054,
+      "sha256": "66739f74a1aa4bc14cb80a009034191ad0e43f369f2593fff29df465abe4f453"
+    },
+    {
+      "relativePath": "avm/res/network/dns-forwarding-ruleset/README.md",
+      "length": 22701,
+      "sha256": "f8d20f076a572e854674720e47fc1fbb3766192c4420a6d9f41a2ddd58cd9642"
+    },
+    {
+      "relativePath": "avm/res/network/dns-forwarding-ruleset/forwarding-rule/README.md",
+      "length": 4031,
+      "sha256": "2501beb4d9a46947e07ed98415be376226304865f09bf27818d1586e1addf542"
+    },
+    {
+      "relativePath": "avm/res/network/dns-forwarding-ruleset/virtual-network-link/README.md",
+      "length": 3750,
+      "sha256": "7929b54eb417b688526de5097967001039087fa91db1aa2cfbbf5f13338b3f9c"
+    },
+    {
+      "relativePath": "avm/res/network/dns-resolver/README.md",
+      "length": 22258,
+      "sha256": "0bcdb9cf16aa1991038600e154af762762e22da359869aa8f4c8a1fa123bb8bb"
+    },
+    {
+      "relativePath": "avm/res/network/dns-resolver/inbound-endpoint/README.md",
+      "length": 3957,
+      "sha256": "acb66df10680d81d0eb7cef1454283a099b42983d7852ab2ab538a3729d780f0"
+    },
+    {
+      "relativePath": "avm/res/network/dns-resolver/outbound-endpoint/README.md",
+      "length": 3438,
+      "sha256": "39f7bf251d2bd9afd1475f2a6ad7e27bf1d0b0ad8037d471e889fba5e746da53"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/README.md",
+      "length": 101184,
+      "sha256": "0799b2911e78575a715cc48a183198109033cf36ee23b4be4bbbcc2f16ba31bb"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/a/README.md",
+      "length": 9218,
+      "sha256": "31e2073542ee4f27a354833c189d633c4cb2fe61b6b5e135188d1e1f95dec52f"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/aaaa/README.md",
+      "length": 9269,
+      "sha256": "797bd0ac5788e5530617a34dfa519f02600c5c100a19a0bfe412117e33dc906f"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/caa/README.md",
+      "length": 8176,
+      "sha256": "d9ba50dc5465a6ab8fc707cf2efc827ace4b78d12637799a0c2f444b4564ebc2"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/cname/README.md",
+      "length": 9227,
+      "sha256": "c3e939ad2f1977f1debd0ad80613a136658e880240f35c5e8e25071b7f465408"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/dnssec-config/README.md",
+      "length": 2931,
+      "sha256": "96dfcda57af3b2a6c1646578e6f08b3d4368f5fb094686b97696445b8cb4540a"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/ds/README.md",
+      "length": 8175,
+      "sha256": "81c5a06471b2d0cb9ad5d201948d9da64e48e2913880087359cbbc6d162f56fc"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/mx/README.md",
+      "length": 8159,
+      "sha256": "aa8d18e03b1bb2f231e4f16033deee37a27ce344bb71677de2dd67f6461882c7"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/ns/README.md",
+      "length": 8159,
+      "sha256": "64236314af82a6a64a3856441e055ca21aeb4c850678a5a32048d965c326877f"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/ptr/README.md",
+      "length": 8176,
+      "sha256": "91da66def9d0690239d1556d7bfdd1f19fe2a2a868d1f9f34eaa1b83d6631c1f"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/soa/README.md",
+      "length": 8117,
+      "sha256": "3915c0057e00d7bffecdf7587aee5840ba3eb6da06ff42e9eeffa1a5ffa4e166"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/srv/README.md",
+      "length": 8176,
+      "sha256": "38dacface53d482ab74c5641a5f59787c581636b011bec6001d75b89eeab9927"
+    },
+    {
+      "relativePath": "avm/res/network/dns-zone/txt/README.md",
+      "length": 8176,
+      "sha256": "b579f8de03803cd129a587e3d2e1c78371c09155007320335a528b3b87f5976f"
+    },
+    {
+      "relativePath": "avm/res/network/express-route-circuit/README.md",
+      "length": 46032,
+      "sha256": "e216c3e8ff68d619feaf831bfc675088a7e441d779a81e0d35c207c9fc2cf2b0"
+    },
+    {
+      "relativePath": "avm/res/network/express-route-gateway/README.md",
+      "length": 18175,
+      "sha256": "c5e7e2969871fc8e6418828195ca1f6160d365239b8c935706dc2a61fe000d69"
+    },
+    {
+      "relativePath": "avm/res/network/express-route-port/README.md",
+      "length": 21688,
+      "sha256": "d6209c3b173bf70ab65d0cf336f3be31e8b768c763d54a9c75a6c4ecd52d91b9"
+    },
+    {
+      "relativePath": "avm/res/network/firewall-policy/README.md",
+      "length": 34715,
+      "sha256": "b61db33db2ceb9b10b2d3be666eef459667bbbe032d3cedf6fdefdbf053f7a70"
+    },
+    {
+      "relativePath": "avm/res/network/firewall-policy/rule-collection-group/README.md",
+      "length": 3703,
+      "sha256": "a40a7932972375a4215aa5fbd822dff6b786af5f2c3a075c7f4ba3210ae86110"
+    },
+    {
+      "relativePath": "avm/res/network/front-door-web-application-firewall-policy/README.md",
+      "length": 33244,
+      "sha256": "976125d89666067e7fbca04ffd85dc24bf7c8fff0c70681d43745cc81037d959"
+    },
+    {
+      "relativePath": "avm/res/network/front-door/README.md",
+      "length": 46277,
+      "sha256": "57ae676756b7a2f2727a75444a983139114746e74692be7d938f1983e30d951a"
+    },
+    {
+      "relativePath": "avm/res/network/ip-group/README.md",
+      "length": 16280,
+      "sha256": "dd69f3042b77b51d22ee4fa4b283e90adc43b5908730ea8a43c4b68b0049c143"
+    },
+    {
+      "relativePath": "avm/res/network/load-balancer/README.md",
+      "length": 117004,
+      "sha256": "09dce5a6594b63cca232fff00372e2b60e6d506cbe40115505952556e2ebb264"
+    },
+    {
+      "relativePath": "avm/res/network/load-balancer/backend-address-pool/README.md",
+      "length": 5404,
+      "sha256": "3d1daffd44d64ebd218b65369105c69c00f2e26374b2b55bf825734a0752eafd"
+    },
+    {
+      "relativePath": "avm/res/network/load-balancer/inbound-nat-rule/README.md",
+      "length": 7816,
+      "sha256": "e01ab2be96cd282d2943effaf57a8092c2ed1ad01f0d2f267b7f469429a4fa3f"
+    },
+    {
+      "relativePath": "avm/res/network/local-network-gateway/README.md",
+      "length": 19585,
+      "sha256": "38a6285293e498dd0fb6c90f61d08c59503cd316b0b620595c02b0351a97a997"
+    },
+    {
+      "relativePath": "avm/res/network/nat-gateway/README.md",
+      "length": 92569,
+      "sha256": "b3d990c9ea25c55dbd03fbba7289449f58631521b19ebe1d85e6f79048e67668"
+    },
+    {
+      "relativePath": "avm/res/network/network-interface/README.md",
+      "length": 46437,
+      "sha256": "01dc2c3bb724b7aa3ee3624a3d6d0b72ffd847dc2af14b8042c8c850fde19849"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/README.md",
+      "length": 80318,
+      "sha256": "a2076b78812658cab899fb557d3bd06d16d2b73ff5582130266765941e4dd545"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/connectivity-configuration/README.md",
+      "length": 7993,
+      "sha256": "79721745a237d443ff28e6245ac016ed149af247f23750248822bf6ca5a9490c"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/network-group/README.md",
+      "length": 5084,
+      "sha256": "d408111b6f638107de710bd2a86dbdeb544db2a55c5d1656371ec600e6d6d3df"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/network-group/static-member/README.md",
+      "length": 3891,
+      "sha256": "bedead65259f6ede0eea27101460376647cb9da3e85908bd13aadd2a6c5abd76"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/routing-configuration/README.md",
+      "length": 12786,
+      "sha256": "dae832c54b11bb36e15b8bb54827e95c9a5a587e6fddde4b8cb6ca1f46fb8693"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/routing-configuration/rule-collection/README.md",
+      "length": 11299,
+      "sha256": "c1a1e21c059811483d029ab7b2364b082c040cbca8653aa2604d76ecd13ef3b0"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/routing-configuration/rule-collection/rule/README.md",
+      "length": 8852,
+      "sha256": "c8e37ab75a11daf0166ffb846f283e92f953b381082f0230ee921288b8501e50"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/scope-connection/README.md",
+      "length": 4063,
+      "sha256": "22de0dabec23d33308b2e3ac4ee467771414cb3ac66386844f5ea0205cdf4de1"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/security-admin-configuration/README.md",
+      "length": 14511,
+      "sha256": "4ce90e9af0dcce95b12ddcbf6018c4d373a647e27a10b22c2240cf5c38e281c4"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/security-admin-configuration/rule-collection/README.md",
+      "length": 12419,
+      "sha256": "e66977cb8824062d0597df1896347dc8475852c63b3ed8ae608d4d7c5ebe4286"
+    },
+    {
+      "relativePath": "avm/res/network/network-manager/security-admin-configuration/rule-collection/rule/README.md",
+      "length": 10012,
+      "sha256": "73433b5a456690add04bff7246b1f4d57fe201466b60cf753ef008567886012c"
+    },
+    {
+      "relativePath": "avm/res/network/network-security-group/README.md",
+      "length": 38148,
+      "sha256": "656e23abc296658dbdbd70ef1e24dda945c72c963e0b54b21fa3b8aebf50b42c"
+    },
+    {
+      "relativePath": "avm/res/network/network-security-perimeter/README.md",
+      "length": 34096,
+      "sha256": "a96744f98ad948ed9bca8d5bd75745417be90ac6e4b1a8fd3771376898236751"
+    },
+    {
+      "relativePath": "avm/res/network/network-security-perimeter/profile/README.md",
+      "length": 6427,
+      "sha256": "d082ece32da45017bfb9b5dbe094a293ecac85b02529a3a8b640e13ef75bedbb"
+    },
+    {
+      "relativePath": "avm/res/network/network-security-perimeter/profile/access-rule/README.md",
+      "length": 5340,
+      "sha256": "daa3619e844921b7df1eb36020d6b97c0a580ae2dcc8bc181332555a66b841b4"
+    },
+    {
+      "relativePath": "avm/res/network/network-watcher/README.md",
+      "length": 32168,
+      "sha256": "20766f292492f0e17b193d98223badaf85e155c0c9871c520d479a1dcb6d4101"
+    },
+    {
+      "relativePath": "avm/res/network/network-watcher/connection-monitor/README.md",
+      "length": 5660,
+      "sha256": "be218eefc5c3f353a724e0e1f11045c948c4bf6b21f9c0c57bfdeb6f7870a048"
+    },
+    {
+      "relativePath": "avm/res/network/network-watcher/flow-log/README.md",
+      "length": 6205,
+      "sha256": "7fb8e43ebb8a4d5dbb675b4edf68bbdc93f3b481d19fac93790fc2cff81da1fd"
+    },
+    {
+      "relativePath": "avm/res/network/p2s-vpn-gateway/README.md",
+      "length": 21990,
+      "sha256": "9d8673e2de19b2f0873b7a09d72be04c12f5ff95c08d9ee66758e2c977f06646"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/README.md",
+      "length": 76351,
+      "sha256": "79db789fc337d95f90025f3dcccfaf79ad89a333491a2ee6da6c030578341d58"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/a/README.md",
+      "length": 8095,
+      "sha256": "2ae47389edaa62762be4484ffd2d27a31341741fcd0cd835d7f1e274e4975f58"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/aaaa/README.md",
+      "length": 8146,
+      "sha256": "0962fa90e433f02f1fa23cda681b82b692bfd326592e50e58e9cb3e8c2608fee"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/cname/README.md",
+      "length": 8104,
+      "sha256": "40ce99501a0d0d3c6af184de6dfbd1de4b824fb66159875ede16bd6a19f479ec"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/mx/README.md",
+      "length": 8112,
+      "sha256": "ecb9e76fdeee272a4b35536befd30523b0f0c8918eabb1704b94a3833a1e27f5"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/ptr/README.md",
+      "length": 8129,
+      "sha256": "058e9cf061332fb785cc15059d256f6afab869a80c9f64e776fb253abc2e93c7"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/soa/README.md",
+      "length": 8070,
+      "sha256": "86f140cba347c8472c380e6f0a32d2acc9fd9fba738f73da432718b2bda63f49"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/srv/README.md",
+      "length": 8129,
+      "sha256": "4efa3f16eb791f03ebde527bdbc3f637531874f9b418dc9ba645d12d60c8c82b"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/txt/README.md",
+      "length": 8129,
+      "sha256": "6041325bb5b7765764118fb5f046a0aad004192e557b8a463f71e7ee5f508a87"
+    },
+    {
+      "relativePath": "avm/res/network/private-dns-zone/virtual-network-link/README.md",
+      "length": 5212,
+      "sha256": "3957b6c685cb984bc52c4f3e72f06ffc371b0be9041c8ce5118ebd18bd4f882b"
+    },
+    {
+      "relativePath": "avm/res/network/private-endpoint/README.md",
+      "length": 30442,
+      "sha256": "f4a5ab39c6531e06fb8b42eb3da1c3e5139fd0c09f2edea5472b70fc75afda38"
+    },
+    {
+      "relativePath": "avm/res/network/private-endpoint/private-dns-zone-group/README.md",
+      "length": 4356,
+      "sha256": "0fe6e1660c3fc0d6dfc606c4911764cacec11298e4f22b6ff145e8a3a58475fe"
+    },
+    {
+      "relativePath": "avm/res/network/private-link-service/README.md",
+      "length": 27059,
+      "sha256": "1fe1618a6397431f931babc63b654628e892890c65484b4c39412257df366b4c"
+    },
+    {
+      "relativePath": "avm/res/network/public-ip-address/README.md",
+      "length": 32030,
+      "sha256": "f836902395f369eb1043e7abc8c326477ad462c67126a1fc5c36bbed9b39801e"
+    },
+    {
+      "relativePath": "avm/res/network/public-ip-prefix/README.md",
+      "length": 22481,
+      "sha256": "e09126aa4cadd1f1cd036100e70a1054547758036db230dadda9e0f696d7dcf8"
+    },
+    {
+      "relativePath": "avm/res/network/route-table/README.md",
+      "length": 17044,
+      "sha256": "dd1079e7cd4c4d957addafdfead95c0f9b6f214457a0e3f0144668bc58685ae9"
+    },
+    {
+      "relativePath": "avm/res/network/service-endpoint-policy/README.md",
+      "length": 16347,
+      "sha256": "d2b1d690dcd8563811251efd58e913610882fca0a5b474fd79e0939146c5a764"
+    },
+    {
+      "relativePath": "avm/res/network/trafficmanagerprofile/README.md",
+      "length": 31476,
+      "sha256": "45011cd7a506100556fcca0e8ef3a73ab347fb5be4fcfd92eeb20a287f8b426e"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-hub/README.md",
+      "length": 34111,
+      "sha256": "da58fee11575faf197325453cd8c97018793d8c5b5c5e98115030da9d36d76ba"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-hub/hub-route-table/README.md",
+      "length": 3449,
+      "sha256": "96439b5380d72841baa3b6963ab54b98b5bfbdab2c88ee9a734e42c782b5c4fa"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-hub/hub-virtual-network-connection/README.md",
+      "length": 4012,
+      "sha256": "4437621e5e2f646091644180ae40b56a42064b616d27e0cf359b65b0dfb252fe"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-hub/route-map/README.md",
+      "length": 3873,
+      "sha256": "4d0deae614c30fd2cc4241cd97c1eefcefbd78e11f07a4ab0740188304bcecb4"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-hub/routing-intent/README.md",
+      "length": 4719,
+      "sha256": "e2603e6636b19b404bd4494a198f6c21126ba07a0293631279658a75679dce9a"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-network-gateway/README.md",
+      "length": 121859,
+      "sha256": "dd6ff4dcd6bf6e44640be8b2adcccb7aba7597ec574e0107e641c7940db2aa5b"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-network-gateway/nat-rule/README.md",
+      "length": 7316,
+      "sha256": "adad8e27e9fc5497ed34d16828fb99786e7fce78ac547d8882cd16a25f8c8998"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-network/README.md",
+      "length": 73587,
+      "sha256": "07f4596265d9b07f58e0288f10459a7bcca91ebd37d4a82b4ed37c734a1f9c38"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-network/subnet/README.md",
+      "length": 13407,
+      "sha256": "8c9040d4cd85ea693c6bf63bee1a735503a86d3786dba2fb94686c2888ad08a6"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-network/virtual-network-peering/README.md",
+      "length": 6632,
+      "sha256": "df2724ba8f3a3afdd0980e35ff73932a02eecbe6ad0342885a5e90434f441635"
+    },
+    {
+      "relativePath": "avm/res/network/virtual-wan/README.md",
+      "length": 16177,
+      "sha256": "0e08a607c8c8b82f2555b3e66b5a549971621398e15c5bf819378e6a87ad87e4"
+    },
+    {
+      "relativePath": "avm/res/network/vpn-gateway/README.md",
+      "length": 31873,
+      "sha256": "eddbcf1b51971500062016e4077ae70c04b58566ec61f3cab0fcfc6455cc74f5"
+    },
+    {
+      "relativePath": "avm/res/network/vpn-gateway/nat-rule/README.md",
+      "length": 5824,
+      "sha256": "af52cf2e33f402b2f541ea063b8d13ed9714e28981653251c747995a5c95bbcc"
+    },
+    {
+      "relativePath": "avm/res/network/vpn-gateway/vpn-connection/README.md",
+      "length": 8184,
+      "sha256": "4781f0bee37b9ef8630e83d455f28cde360a3c38f74ee6a9ec51dbd3a523b4e1"
+    },
+    {
+      "relativePath": "avm/res/network/vpn-server-configuration/README.md",
+      "length": 38226,
+      "sha256": "1deb3c709b20ee48f13226371816f4276c9d71e8547345bb757fcc7a54a990bb"
+    },
+    {
+      "relativePath": "avm/res/network/vpn-site/README.md",
+      "length": 24095,
+      "sha256": "82cedb5971b90b5ca92990fb7819d67f5982f75bd8a1c5b2d485031a08a84ca2"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/cluster/README.md",
+      "length": 22533,
+      "sha256": "66c205eaf76cfd0111e82727c22f487c8099a3348e13500d0d02f96fc02f0a3d"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/README.md",
+      "length": 117836,
+      "sha256": "3a7b78992e1aae8d36366117231ac723ba6342df5290749c7e6c7685b6e7c872"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/data-export/README.md",
+      "length": 4678,
+      "sha256": "20dee60abc59b2ff9228542fb168cc5640c2427e378445e6b3c66403aa58d98f"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/data-source/README.md",
+      "length": 6774,
+      "sha256": "6da283b23a2f744e6378b8a66110e624013ce681bf34718ba17fe9d3e5c14ff7"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/linked-service/README.md",
+      "length": 4201,
+      "sha256": "24fe500e6476d97281ff1b050da8b066572748a581889729f50759afff2186a0"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/linked-storage-account/README.md",
+      "length": 3600,
+      "sha256": "0d3d4dfcb59e62cdceecd56086fae92ef4f544cf13375b2dac8429f8453b576b"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/saved-search/README.md",
+      "length": 5317,
+      "sha256": "f637933f6bc5f726ce4f4f1721a345170ce20caeee532e598415990b641e9bc7"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/storage-insight-config/README.md",
+      "length": 4365,
+      "sha256": "e26634f608b2169a44e1b336927f1a021706317a87fe722ee77838094a85375b"
+    },
+    {
+      "relativePath": "avm/res/operational-insights/workspace/table/README.md",
+      "length": 13330,
+      "sha256": "a5275cb31b444aa3d34c19ed6f6aaa0005f5dafe17f0e70a6c41166c1923d503"
+    },
+    {
+      "relativePath": "avm/res/operations-management/solution/README.md",
+      "length": 15474,
+      "sha256": "c56a6464d291fb16355f0cbd4dd610aa3f0c4e9929898fb79ebca8f32cf65974"
+    },
+    {
+      "relativePath": "avm/res/portal/dashboard/README.md",
+      "length": 32138,
+      "sha256": "b21873a35f14c7ff5914576e0ebdd83a35e1eb1d0dff8b665f39ccc839420ccc"
+    },
+    {
+      "relativePath": "avm/res/power-bi-dedicated/capacity/README.md",
+      "length": 17864,
+      "sha256": "b62cb67139e5c192346bbd3b66048ee2d84eba04710fc3977397c19c1b2cbc8d"
+    },
+    {
+      "relativePath": "avm/res/purview/account/README.md",
+      "length": 123440,
+      "sha256": "dd17594c1609ba82beedf7d204ec500f1050c5fb8f8715064d0b969e61e0f233"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/README.md",
+      "length": 143854,
+      "sha256": "06c7bd1a64162644775d2a18222f4229c2f57a383a6f3f8ccb5ae94696c98b94"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/backup-config/README.md",
+      "length": 5961,
+      "sha256": "f7b70eeba252ea5ae2cddf95d7b9e8ab881074748fa615c8692e4ec0f9411797"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/backup-fabric/protection-container/protected-item/README.md",
+      "length": 4982,
+      "sha256": "992b4a6b71a6b3f3e03a39ec298007f01d677fdb43cc02d5e74d9d55618ce7b7"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/backup-policy/README.md",
+      "length": 3470,
+      "sha256": "839e95b8ff93c6783c6c11333313edf988efa61e1e810e7da4720fdb99f0331a"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/replication-alert-setting/README.md",
+      "length": 4040,
+      "sha256": "34bb7c3dacbee9599ae9468fd708b0180b4fb6197bb5110222c784393b283424"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/replication-fabric/README.md",
+      "length": 8330,
+      "sha256": "71eafe869f2d7f20ce17046e7b80ea1dfc5fec3b4f430744a2c92809c2ed387f"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/replication-fabric/replication-protection-container/README.md",
+      "length": 7330,
+      "sha256": "f314ba4e21805cc485f9f9e930a1869e7ab10b418e5308b73ace8f7769d44266"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/replication-fabric/replication-protection-container/replication-protection-container-mapping/README.md",
+      "length": 6871,
+      "sha256": "c005734fd00aa737f8e64ae9c40a40d876d8516a077faa9116cd3a6bc6bf71a2"
+    },
+    {
+      "relativePath": "avm/res/recovery-services/vault/replication-policy/README.md",
+      "length": 4593,
+      "sha256": "d6377e9174aec9eb36ef64d7b6019f7bcd0a1b28808b3d415c19b2082430cb61"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/README.md",
+      "length": 55420,
+      "sha256": "17fa4f559eb3b8e8ce7eb5e5f1f7d989acb79eebb08fc179ba995e73d2606b2f"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/authorization-rule/README.md",
+      "length": 3471,
+      "sha256": "467d8c071d52abae68e685455682e40461d095de8ad73f9267ec527317f73b23"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/hybrid-connection/README.md",
+      "length": 10833,
+      "sha256": "b2f19273053e226af320fa6ad7306b6ebfce92f77af7802ddaf77777d1f1e2ae"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/hybrid-connection/authorization-rule/README.md",
+      "length": 3884,
+      "sha256": "692b4c18a57ac304131ad6a5811ff9d9307e6debc41012a504f1dff69eb8eb2e"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/network-rule-set/README.md",
+      "length": 4564,
+      "sha256": "07770bedb140b702b9c853bc9a6f5b6d4f18a61ff8862e4a2280135145cd27d5"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/wcf-relay/README.md",
+      "length": 10675,
+      "sha256": "7403cec4b26bd04da58be326769b80980a3262a17b0e402bf56b0c7cad621618"
+    },
+    {
+      "relativePath": "avm/res/relay/namespace/wcf-relay/authorization-rule/README.md",
+      "length": 3788,
+      "sha256": "6e9a7d838c5bc8a39303ed39f30832ed80b6668d23fc335e4d1df505393fef7f"
+    },
+    {
+      "relativePath": "avm/res/resource-graph/query/README.md",
+      "length": 16618,
+      "sha256": "2e587c475a6154458dad87a88748d5c955ccf327ed7828180cd68cd034628963"
+    },
+    {
+      "relativePath": "avm/res/resources/deployment-script/README.md",
+      "length": 41386,
+      "sha256": "37ab11c7b77101c3df39c1886f44280e8cc02a449a3de36b6fa46b802a15c694"
+    },
+    {
+      "relativePath": "avm/res/resources/resource-group/README.md",
+      "length": 15478,
+      "sha256": "b7166e5ea924a2379f95390c836510998897cc6ae48b5c8cabf927bdb79e30c6"
+    },
+    {
+      "relativePath": "avm/res/search/search-service/README.md",
+      "length": 63982,
+      "sha256": "0992358a4cae5b9d41af4a6e6998ebf16977918173517961712baf9746617fe1"
+    },
+    {
+      "relativePath": "avm/res/search/search-service/shared-private-link-resource/README.md",
+      "length": 4906,
+      "sha256": "084bb054a6958908bdd983cc2b185e5be22f00198ee0c7beb0eef07f1dacabb5"
+    },
+    {
+      "relativePath": "avm/res/security-insights/data-connector/README.md",
+      "length": 77937,
+      "sha256": "9bae6302f416c29653ec6936aa293b7abd4f494cf975110a92e88675faf93ac5"
+    },
+    {
+      "relativePath": "avm/res/security-insights/setting/README.md",
+      "length": 12945,
+      "sha256": "a9aabaf3ae6f4b4608bac2f56897be9bfc90835901214d74332486cf37ee2c49"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/README.md",
+      "length": 127752,
+      "sha256": "1170285f070ab3583d3d9aaf4e156a68bd5ed52ea4edf9f455c1231961e979b1"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/authorization-rule/README.md",
+      "length": 3509,
+      "sha256": "fb4c48fdd8cc1dde01aa9bff484b110f02de65a9201dd8cdbc9726555cc1009c"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/disaster-recovery-config/README.md",
+      "length": 3915,
+      "sha256": "361a66b7cca1d22735f60b55f18240b956fa738e9f92a5bc9bae37b5f2c9926b"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/migration-configuration/README.md",
+      "length": 3704,
+      "sha256": "d1c8457a1f111b72261823182253907466b901f04b4bf1bedd8f9644e43c5f54"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/network-rule-set/README.md",
+      "length": 5556,
+      "sha256": "170168a825d475e604d658a4933fbe7999592ddf974022d50463114f9fba0de4"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/queue/README.md",
+      "length": 16032,
+      "sha256": "2394cc1076cb73a4d7fec93013a2eb05b670f96fefaabbac987ad31c86ad0cf8"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/queue/authorization-rule/README.md",
+      "length": 3857,
+      "sha256": "a4211c154bf65843fcf8aee5a84035f3c2a9d3897a4ac3b2225e0dabdc897b10"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/topic/README.md",
+      "length": 29220,
+      "sha256": "9336f443a8b357dd50b39f247fade988e0c332b3973e1c2a4bf48d178540761b"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/topic/authorization-rule/README.md",
+      "length": 3859,
+      "sha256": "9718f7e06a2305386bc359bf872f69a43f530d19921a0feda434406ecb0a8325"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/topic/subscription/README.md",
+      "length": 16639,
+      "sha256": "283553689bc8175f76cda27b80c2c19c3e6e2d2c0bae12c33145c22b8dbd505c"
+    },
+    {
+      "relativePath": "avm/res/service-bus/namespace/topic/subscription/rule/README.md",
+      "length": 9514,
+      "sha256": "e04b81e1955f7069abaa204f60a29d4a5d723f586a3dab303437ffbadaacebdc"
+    },
+    {
+      "relativePath": "avm/res/service-fabric/cluster/README.md",
+      "length": 60439,
+      "sha256": "63e50cd991236c82c1ee9b23ae4d57884975f538380b114d9fa733dda11a7691"
+    },
+    {
+      "relativePath": "avm/res/service-fabric/cluster/application-type/README.md",
+      "length": 3269,
+      "sha256": "64daa3a0059b8b555eecdc88f72de4c5fefbf98e0ed85a93cdb8351b26e6a763"
+    },
+    {
+      "relativePath": "avm/res/service-networking/traffic-controller/README.md",
+      "length": 32008,
+      "sha256": "29ae006e39204ba4196e77aa14e3c7a52d3c872f28947d8456ed13357ddda544"
+    },
+    {
+      "relativePath": "avm/res/service-networking/traffic-controller/association/README.md",
+      "length": 3857,
+      "sha256": "1ead7ca7f04317cb93f893a1db60c3f60a14bf36f15f4f67f1206bd2c51c08fc"
+    },
+    {
+      "relativePath": "avm/res/service-networking/traffic-controller/frontend/README.md",
+      "length": 3519,
+      "sha256": "0e8cb6e423d69bca90117a0adeedfd5c5361859681908cc7d732650ed4b19455"
+    },
+    {
+      "relativePath": "avm/res/service-networking/traffic-controller/security-policy/README.md",
+      "length": 3836,
+      "sha256": "113d58a31ee9857fa4870575d7fb613c00c7d22600f89ea75191395a97cf9ea2"
+    },
+    {
+      "relativePath": "avm/res/signal-r-service/signal-r/README.md",
+      "length": 55456,
+      "sha256": "c7d15229d35ce2e8e4a849200b7e6f4f683a11f5f10d4ee75865a4031d4e9e27"
+    },
+    {
+      "relativePath": "avm/res/signal-r-service/web-pub-sub/README.md",
+      "length": 43396,
+      "sha256": "f12d403dac76e0bfabeaf99daf1ccc326d1dd4c6b83a4d03f81727cbe919ec1e"
+    },
+    {
+      "relativePath": "avm/res/sql/instance-pool/README.md",
+      "length": 8369,
+      "sha256": "4b9e9f31ebf58a680d7fe91e84bae350b86d79d619b261b76b6262c55a989815"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/README.md",
+      "length": 81969,
+      "sha256": "de9dcf9d4f27ee2123a135b37e4bdf0db518f2b2fb1f9ec631b1253f42476c20"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/database/README.md",
+      "length": 20678,
+      "sha256": "96159a772eabcb45837397665450d4a8c95a9a0b22973514f814d0155b67959f"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/database/backup-long-term-retention-policy/README.md",
+      "length": 5219,
+      "sha256": "8fb946ff311e0b91f6bbee98499f60986578567f6914f3b82b43dac55785cf84"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/database/backup-short-term-retention-policy/README.md",
+      "length": 4132,
+      "sha256": "ea14a17f905c034c63af82d031c9328f6d504c0e188e24d9fe6646700f7d6a1f"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/encryption-protector/README.md",
+      "length": 3921,
+      "sha256": "cc7a1bca33d58c1cc7a8697324ee140c7c51f419007b51476cc790dfe44e231b"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/key/README.md",
+      "length": 3960,
+      "sha256": "14448aad297b4d27c5573c1a628d10299661ed1430d2824875c86eb8734e7e1b"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/security-alert-policy/README.md",
+      "length": 5328,
+      "sha256": "b9c461836e365f184098cabc39d065b4d17db2134b20824148cc916e2cc4b248"
+    },
+    {
+      "relativePath": "avm/res/sql/managed-instance/vulnerability-assessment/README.md",
+      "length": 5278,
+      "sha256": "9246625a47ca5f2e8ca79922a9e347f3384da7c54d371efdd58261039acc9f9b"
+    },
+    {
+      "relativePath": "avm/res/sql/server/README.md",
+      "length": 168008,
+      "sha256": "5844332ca10467c17af3573782bc3c1824ee638ce29304c95ef3e154cc773894"
+    },
+    {
+      "relativePath": "avm/res/sql/server/auditing-setting/README.md",
+      "length": 6418,
+      "sha256": "fd82409697f1a35d986960dd417fcaf12bbaff383b1c2569ca6ceee421463c4c"
+    },
+    {
+      "relativePath": "avm/res/sql/server/database/README.md",
+      "length": 33691,
+      "sha256": "2f9f1190404735232f35837bb17e1d3e2d515adde0d2b82bd361fd784fcfb697"
+    },
+    {
+      "relativePath": "avm/res/sql/server/database/backup-long-term-retention-policy/README.md",
+      "length": 5114,
+      "sha256": "6233cb4aec3141971e400e9538653d54d32d60d2f48d66c5fc12bc8f4de86a31"
+    },
+    {
+      "relativePath": "avm/res/sql/server/database/backup-short-term-retention-policy/README.md",
+      "length": 3611,
+      "sha256": "acf6bb88f6961c1ccacefff182826fc120b90c52c2548b98b193fdf39557d799"
+    },
+    {
+      "relativePath": "avm/res/sql/server/elastic-pool/README.md",
+      "length": 16531,
+      "sha256": "11169a98b209bbacd65a7823f01a2151c0c8c67f4d7f64a6bfa49d24afb05499"
+    },
+    {
+      "relativePath": "avm/res/sql/server/encryption-protector/README.md",
+      "length": 3624,
+      "sha256": "72542b352ccc257b8536ee393c3e76c6c0e8365c770455be26f8d298e012f3a6"
+    },
+    {
+      "relativePath": "avm/res/sql/server/failover-group/README.md",
+      "length": 6212,
+      "sha256": "0f7a545c1630088e4861df09da5f5e3312eb6deeb7077e1bf2294592329f4579"
+    },
+    {
+      "relativePath": "avm/res/sql/server/firewall-rule/README.md",
+      "length": 3926,
+      "sha256": "affe2298794676e53a5997ccb867680eaa0d9041f3c903eaca90ce77c9dbd4da"
+    },
+    {
+      "relativePath": "avm/res/sql/server/key/README.md",
+      "length": 4015,
+      "sha256": "04d83e63d79f5ab8b37a1e86cedef7e44ff81c9c5aa83773d48d6ad738590dc4"
+    },
+    {
+      "relativePath": "avm/res/sql/server/security-alert-policy/README.md",
+      "length": 5416,
+      "sha256": "4e70940fdf1d5e00d95b28bb5dc7a9648933791a600419dcab75f685fb866b2c"
+    },
+    {
+      "relativePath": "avm/res/sql/server/virtual-network-rule/README.md",
+      "length": 3787,
+      "sha256": "1c277806909fdebce93e9c2cc1d817c87d0ff1dcd1c0262cb8cc3812ffb32fc7"
+    },
+    {
+      "relativePath": "avm/res/sql/server/vulnerability-assessment/README.md",
+      "length": 6242,
+      "sha256": "f273123317b671312aab38585a63d04ab377efb8ff82e89786f4fa98286f1068"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/README.md",
+      "length": 233177,
+      "sha256": "a1d9c9d8fb3563322f31679dbaa33958eab271ab174e094d66fc5704976371b0"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/blob-service/README.md",
+      "length": 29980,
+      "sha256": "df4012fba01a10f49f66e3861a7698266b49d73ce7cdf64fb3bb2aa116cde4a4"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/blob-service/container/README.md",
+      "length": 13903,
+      "sha256": "4723ddae0328c888359c35efffdd63c504693ed6181b4e9df0169ac90af5a80d"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/blob-service/container/immutability-policy/README.md",
+      "length": 6130,
+      "sha256": "e3925d702e600345140fa4ab8e65f8460819a1544ef8e2d372722000e5e9d032"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/file-service/README.md",
+      "length": 21509,
+      "sha256": "afe7886c62f2147e63ec711c21c90c46d8bc92efb633847835f066b26d1cc4f4"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/file-service/share/README.md",
+      "length": 11223,
+      "sha256": "955039e349769a9dc47de742d9d4ccaf544a731bfa00fd4566db78919db0d7c4"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/local-user/README.md",
+      "length": 6541,
+      "sha256": "ec712cca86fa81bbc0edeb7d377fea8789389caa4c3b8da43d8e507f64f43bdd"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/management-policy/README.md",
+      "length": 3219,
+      "sha256": "8829e5449eecbd808a240b4c52726718e684dc5137c69c27170650b8a6047013"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/object-replication-policy/README.md",
+      "length": 5729,
+      "sha256": "a5bca389863e0e0f20d36863a4a68c773c53215a7925aa63c4cce3cd0b20f117"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/object-replication-policy/policy/README.md",
+      "length": 6078,
+      "sha256": "2c28aa446b24bd6b0ef3dc81e3fceb0ddb07178d9c2ccdea92426bb9cf5ec20f"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/queue-service/README.md",
+      "length": 17869,
+      "sha256": "813a11a7244638566c61004d68aa2dd3d122a7af1cbb4147294d91687967ce0a"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/queue-service/queue/README.md",
+      "length": 8082,
+      "sha256": "66bfa786cb658d5939a39bfefc4a1934a81c94a104ab42b2cc55336893f2fc5f"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/table-service/README.md",
+      "length": 17672,
+      "sha256": "914e4695829252cc74a1e0f39bc5ad3b49aaf723ccaca65d1faab679fa9594a7"
+    },
+    {
+      "relativePath": "avm/res/storage/storage-account/table-service/table/README.md",
+      "length": 7726,
+      "sha256": "b97500f84edc3f3fd870b7bb01bf23f8ea1bf3dd0a05773ee2c3ec6765e3f090"
+    },
+    {
+      "relativePath": "avm/res/synapse/private-link-hub/README.md",
+      "length": 34076,
+      "sha256": "2a6d36b9644c7228a6d676779e71c6f587e96a5b9e6a4df4cf3cf1c68af6c327"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/README.md",
+      "length": 119874,
+      "sha256": "5d5f5bd32a221fcdadce311c5bf8c6e69dbe292e18f070c8728937bdba4d1c4a"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/administrator/README.md",
+      "length": 3886,
+      "sha256": "42c4a2b332abd9a2d9e35da5f050c6ae976ef4470c07ea46c3bd2ee203fd5970"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/big-data-pool/README.md",
+      "length": 21346,
+      "sha256": "d040e3ae383a684a9fdadf4bed67510a48507a67178a73711f744d2fba934991"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/firewall-rule/README.md",
+      "length": 3704,
+      "sha256": "461f2408af45d2a412820545b6d19578fd8475f3d714bc7eb9228e45844f2cf7"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/integration-runtime/README.md",
+      "length": 3682,
+      "sha256": "fb0720b8ecb375c9763db0153f20679080216d4355b0b26cec8f67383031d5ec"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/key/README.md",
+      "length": 3604,
+      "sha256": "779ab840916067368a3e1b8d22a6bbc1f25791b67ee5b3ace636ae0754cf600f"
+    },
+    {
+      "relativePath": "avm/res/synapse/workspace/sql-pool/README.md",
+      "length": 18976,
+      "sha256": "52d9144543101b661fc1336fad0624cc9dce45b93c06f450149326967edca65b"
+    },
+    {
+      "relativePath": "avm/res/virtual-machine-images/image-template/README.md",
+      "length": 53122,
+      "sha256": "4976db305a238bb22908594e9c3668a193fc6b60df754ab3bccd5defc69eca2c"
+    },
+    {
+      "relativePath": "avm/res/web/connection/README.md",
+      "length": 23873,
+      "sha256": "8a7c10d9e84aea01f71673022d57a0e9d2359a6c3a59e1496abae16b58d52597"
+    },
+    {
+      "relativePath": "avm/res/web/hosting-environment/README.md",
+      "length": 36306,
+      "sha256": "c22381d99066c017740d4b4dc16b9ca56d3b13c33f8dd1051d7754323087ab23"
+    },
+    {
+      "relativePath": "avm/res/web/hosting-environment/configuration--customdnssuffix/README.md",
+      "length": 2758,
+      "sha256": "b3cabf88c7460574a295252175b9f218c4e7a5d7b691a89f136756c626a4e944"
+    },
+    {
+      "relativePath": "avm/res/web/serverfarm/README.md",
+      "length": 45802,
+      "sha256": "657d66c399b391724fcea007f58f1c12fe7f6f39e1b56e849adc31ee8f3b2005"
+    },
+    {
+      "relativePath": "avm/res/web/site/README.md",
+      "length": 561698,
+      "sha256": "30303f2536b5e748c8d25a576c8753ba74e70a923ed317d6185af3b6b65c1f01"
+    },
+    {
+      "relativePath": "avm/res/web/site/basic-publishing-credentials-policy/README.md",
+      "length": 3784,
+      "sha256": "835c9e663b3c25c2f1cedc1aa505a4d45bc63eedd4e3eb5ee95d544c52a91641"
+    },
+    {
+      "relativePath": "avm/res/web/site/config/README.md",
+      "length": 6383,
+      "sha256": "e49cd6b89cd066a9d0276c2b5657e1da4910098d8f52b583bbd519b112b2c27b"
+    },
+    {
+      "relativePath": "avm/res/web/site/extension/README.md",
+      "length": 3212,
+      "sha256": "67d20cf80d94ebb53c37009bf40dafc364046eb11e3913856e0b6c795728dfcf"
+    },
+    {
+      "relativePath": "avm/res/web/site/host-name-binding/README.md",
+      "length": 7450,
+      "sha256": "ca38228f00c63e206314e405f6cb3ad6bf8d6a6a16138fbf2e98b3dbcd21da44"
+    },
+    {
+      "relativePath": "avm/res/web/site/hybrid-connection-namespace/relay/README.md",
+      "length": 3513,
+      "sha256": "c7819d1074f605f937d18af92e418a145613eb69dc14c187fc910f2db5c74a8c"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/README.md",
+      "length": 230912,
+      "sha256": "9d00868ebde0bb9678f119cd472e79baee85d4657d7d9aa375a5384cd0f39626"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/basic-publishing-credentials-policy/README.md",
+      "length": 4121,
+      "sha256": "b54c4de87f382cf3d674a0036a756e2e61b9f3b98a9317cb12f89e445c8dbce4"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/config/README.md",
+      "length": 6697,
+      "sha256": "7f2bc77a6e0c015bf1a8e52fa3230ec5056d2aa6d19210238ef260c72e65a8e7"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/extension/README.md",
+      "length": 3673,
+      "sha256": "2431cb42f326ada718fdc97bfcb144bc63ed255913d85c3f53ae6d8b50c40c11"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/host-name-binding/README.md",
+      "length": 7759,
+      "sha256": "c9068f615baa9addaecdc304fde1a345f2d2da2e4de74d3625338c43ba4ae54b"
+    },
+    {
+      "relativePath": "avm/res/web/site/slot/hybrid-connection-namespace/relay/README.md",
+      "length": 3837,
+      "sha256": "1fb972f7fdf1348f0417d72b6e9bb3dc234d51b730701d6ada7041d3f653848b"
+    },
+    {
+      "relativePath": "avm/res/web/static-site/README.md",
+      "length": 50639,
+      "sha256": "efe2a8ad21a625a6e4d90772d947abdae69f9581fc3d24cc5deeb75800d2c81b"
+    },
+    {
+      "relativePath": "avm/res/web/static-site/config/README.md",
+      "length": 3234,
+      "sha256": "0adb5772933fac8628fabfb6d13bed6cb273e9f1562580461b5906a5055b1a08"
+    },
+    {
+      "relativePath": "avm/res/web/static-site/custom-domain/README.md",
+      "length": 3359,
+      "sha256": "3698b52fa253653f12c65e9c0d8c50b1dd0011267e50d16d8ef9621adfb356c3"
+    },
+    {
+      "relativePath": "avm/res/web/static-site/linked-backend/README.md",
+      "length": 3768,
+      "sha256": "b73ea526b68d8145d3e99f898d5d81a015fc77dbb2f834f9780710ba97d461e3"
+    },
+    {
+      "relativePath": "avm/utl/types/avm-common-types/README.md",
+      "length": 14095,
+      "sha256": "426e357ee00382615b73d5d49865c4066fe08d5b4b47a11af198f02c38418834"
+    }
+  ]
+}
