@@ -6,6 +6,7 @@ param(
 Describe 'CI parameter workflow integration' {
 
     BeforeAll {
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeploymentWithRetry.ps1')
         $workflows = @{}
         foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
             $workflowPath = Join-Path $repoRootPath '.github' 'workflows' "$workflowName.yml"
@@ -47,7 +48,10 @@ Describe 'CI parameter workflow integration' {
             $script = $script.Replace('${{ inputs.deploymentMetadataLocation }}', 'westeurope')
             $script = $script.Replace('${{ inputs.managementGroupId }}', '')
             $script = $script.Replace('${{ steps.get-test-subscription.outputs.subscriptionId }}', '11111111-1111-1111-1111-111111111111')
-            $script = $script.Replace('${{ steps.get-resource-location.outputs.resourceLocation }}', 'westus')
+            $script = $script.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
+            $script = $script.Replace('${{ inputs.customLocation }}', '')
+            $script = $script.Replace('${{ steps.replace-tokens.outputs.resourceLocation }}', '')
+            $script = $script.Replace('${{ steps.validate-template.outputs.resourceLocation }}', 'eastus')
             return [scriptblock]::Create($script)
         }
     }
@@ -66,6 +70,7 @@ Describe 'CI parameter workflow integration' {
 
         $templatePath = Join-Path $TestDrive 'template.json'
         @{
+            '$schema' = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
             parameters = @{
                 adminMembersSecret = @{ type = 'secureString' }
                 secureConfig       = @{ type = 'secureObject' }
