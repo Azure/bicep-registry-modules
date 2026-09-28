@@ -3,7 +3,12 @@
   "moduleDisplayName": "Azure Virtual Desktop (AVD) Workspace",
   "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Workspace",
   "telemetryIdPrefix": "46d3xbcp.res.58997fb",
-  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.desktopvirtualization-workspace"],
+  "alternativeTelemetryIdPrefixes": [
+    "46d3xbcp.res.desktopvirtualization-workspace"
+  ],
   "canonicalType": "Microsoft.DesktopVirtualization/workspaces",
-  "owners": ["reikor0x"]
+  "owners": [
+    "reikor0x",
+    "awillows"
+  ]
 }
