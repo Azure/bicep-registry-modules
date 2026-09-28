@@ -70,6 +70,96 @@ function Test-AvmReadmeApprovedHistoricalDrift {
     return $true
 }
 
+function Test-AvmReadmeApprovedCanonicalHeadingDrift {
+    [CmdletBinding()]
+    [OutputType([bool])]
+    param(
+        [Parameter(Mandatory)]
+        [string] $RelativePath,
+
+        [Parameter(Mandatory)]
+        [byte[]] $ExpectedBytes,
+
+        [Parameter(Mandatory)]
+        [byte[]] $ActualBytes,
+
+        [Parameter(Mandatory)]
+        [string] $ExpectedSha256,
+
+        [Parameter(Mandatory)]
+        [string] $MetadataFilePath
+    )
+
+    # Remove these interim allowances when the corrected READMEs and baseline are merged.
+    $allowances = [Collections.Generic.Dictionary[string, object]]::new([StringComparer]::Ordinal)
+    $allowances.Add('avm/res/db-for-my-sql/flexible-server/advanced-threat-protection/README.md', @{
+            ExpectedLength = 3394
+            ExpectedSha256 = 'd2de74734da0334b1fa458aa45bf9bd96be50bc286df72e564f3ee38cf7b53fc'
+            OldHeading = '# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers]`'
+            NewHeading = '# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings]`'
+            CanonicalType = 'Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings'
+        })
+    $allowances.Add('avm/res/dev-test-lab/lab/secret/README.md', @{
+            ExpectedLength = 4500
+            ExpectedSha256 = '1102eb1ab6fc6330bd0e1cc4cac05c251ceaab3cb453852d1d07621b998230c2'
+            OldHeading = '# DevTest Lab Secrets `[Microsoft.DevTestLab/labs]`'
+            NewHeading = '# DevTest Lab Secrets `[Microsoft.DevTestLab/labs/secrets]`'
+            CanonicalType = 'Microsoft.DevTestLab/labs/secrets'
+        })
+    $allowances.Add('avm/res/devices/iot-hub/consumergroup/README.md', @{
+            ExpectedLength = 2855
+            ExpectedSha256 = '128b8671261d05df3c33a4bcb03cc3f1a6aecb5e36580990cc81754fc7ce8229'
+            OldHeading = '# IoT Hub Consumer Groups `[Microsoft.Devices/IotHubs]`'
+            NewHeading = '# IoT Hub Consumer Groups `[Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups]`'
+            CanonicalType = 'Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups'
+        })
+    $allowances.Add('avm/res/storage/storage-account/object-replication-policy/policy/README.md', @{
+            ExpectedLength = 6078
+            ExpectedSha256 = '2c28aa446b24bd6b0ef3dc81e3fceb0ddb07178d9c2ccdea92426bb9cf5ec20f'
+            OldHeading = '# Storage Account Object Replication Policy `[Microsoft.Storage/storageaccount/objectreplicationpolicy/policy]`'
+            NewHeading = '# Storage Account Object Replication Policy `[Microsoft.Storage/storageAccounts/objectReplicationPolicies]`'
+            CanonicalType = 'Microsoft.Storage/storageAccounts/objectReplicationPolicies'
+        })
+    if (-not $allowances.ContainsKey($RelativePath)) {
+        return $false
+    }
+    $approval = $allowances[$RelativePath]
+    if ($ExpectedBytes.LongLength -ne $approval.ExpectedLength -or
+        $ExpectedSha256 -cne $approval.ExpectedSha256 -or
+        [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($ExpectedBytes)).ToLowerInvariant() -cne
+        $approval.ExpectedSha256) {
+        return $false
+    }
+
+    $utf8 = [Text.UTF8Encoding]::new($false, $true)
+    $oldHeading = $utf8.GetBytes($approval.OldHeading + "`n")
+    $newHeading = $utf8.GetBytes($approval.NewHeading + "`n")
+    if ($ExpectedBytes.LongLength -le $oldHeading.Length -or
+        $ActualBytes.LongLength -ne $ExpectedBytes.LongLength + $newHeading.Length - $oldHeading.Length) {
+        return $false
+    }
+    for ($index = 0; $index -lt $oldHeading.Length; $index++) {
+        if ($ExpectedBytes[$index] -ne $oldHeading[$index]) {
+            return $false
+        }
+    }
+    for ($index = 0; $index -lt $newHeading.Length; $index++) {
+        if ($ActualBytes[$index] -ne $newHeading[$index]) {
+            return $false
+        }
+    }
+    $shift = $newHeading.Length - $oldHeading.Length
+    for ($index = $oldHeading.Length; $index -lt $ExpectedBytes.Length; $index++) {
+        if ($ExpectedBytes[$index] -ne $ActualBytes[$index + $shift]) {
+            return $false
+        }
+    }
+
+    $metadata = Get-Content -LiteralPath $MetadataFilePath -Raw -Encoding utf8 -ErrorAction Stop |
+        ConvertFrom-Json -AsHashtable -Depth 5 -ErrorAction Stop
+    return $metadata.canonicalType -ceq $approval.CanonicalType
+}
+
 <#
 .SYNOPSIS
 Checks the 577 tracked AVM README files against independently rendered UTF-8 bytes.
@@ -479,6 +569,10 @@ function Invoke-AvmReadmeByteParity {
                 if (Test-AvmReadmeApprovedHistoricalDrift -RelativePath $path `
                         -ExpectedBytes $expected -ActualBytes $actual -ExpectedSha256 $file.sha256) {
                     'approved_historical_drift'
+                } elseif (Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $path `
+                        -ExpectedBytes $expected -ActualBytes $actual -ExpectedSha256 $file.sha256 `
+                        -MetadataFilePath (Join-Path (Split-Path (Join-Path $work $path.Replace('/', $separator)) -Parent) 'metadata.json')) {
+                    'approved_canonical_heading_drift'
                 } else {
                     'mismatch'
                 }
@@ -505,13 +599,19 @@ function Invoke-AvmReadmeByteParity {
                     Error             = $failure
                     ApprovalReason    = if ($status -eq 'approved_historical_drift') {
                         'Checked-in Vault JSON usage examples omit eight comments emitted by the current legacy generator; this is historical drift, not a new docs regression.'
+                    } elseif ($status -eq 'approved_canonical_heading_drift') {
+                        'Only the first-line resource type title changes to the module metadata canonicalType; remove this allowance after the README and baseline are updated.'
                     } else { $null }
                 })
         }
 
         $rows = @($comparison.ToArray() | Sort-Object Path)
-        $approved = @($rows | Where-Object Status -eq 'approved_historical_drift')
-        $failures = @($rows | Where-Object { $_.Status -notin @('match', 'preserved', 'approved_historical_drift') })
+        $approvedVault = @($rows | Where-Object Status -eq 'approved_historical_drift')
+        $approvedHeadings = @($rows | Where-Object Status -eq 'approved_canonical_heading_drift')
+        $approved = @($approvedVault) + @($approvedHeadings)
+        $failures = @($rows | Where-Object {
+                $_.Status -notin @('match', 'preserved', 'approved_historical_drift', 'approved_canonical_heading_drift')
+            })
         $unexpectedNotRendered = @($notRenderedPaths | Where-Object { -not $supportingSet.Contains($_) })
         $missingNotRendered = @($supportingSet | Where-Object { -not $notRenderedPaths.Contains($_) })
         $selected = if ($null -ne $renderResult) { $renderResult.FilesSelected } else { 0 }
@@ -546,8 +646,10 @@ function Invoke-AvmReadmeByteParity {
             FileFailures          = $failures.Count
             ExactBytes            = @($rows | Where-Object { $_.Status -in @('match', 'preserved') }).Count
             ApprovedException     = $approved.Count
+            ApprovedVaultException = $approvedVault.Count
+            ApprovedCanonicalHeadingExceptions = $approvedHeadings.Count
             Failures              = $failures.Count
-            ApprovedExceptionDetails = @($approved | ForEach-Object {
+            ApprovedExceptionDetails = @($approvedVault | ForEach-Object {
                     [pscustomobject]@{
                         Path                        = $_.Path
                         Reason                      = $_.ApprovalReason
@@ -556,6 +658,16 @@ function Invoke-AvmReadmeByteParity {
                         ActualBytes                 = $_.ActualBytes
                         ExpectedSha256              = $_.ExpectedSha256
                         ActualSha256                = $_.ActualSha256
+                    }
+                })
+            ApprovedCanonicalHeadingDetails = @($approvedHeadings | ForEach-Object {
+                    [pscustomobject]@{
+                        Path           = $_.Path
+                        Reason         = $_.ApprovalReason
+                        ExpectedBytes  = $_.ExpectedBytes
+                        ActualBytes    = $_.ActualBytes
+                        ExpectedSha256 = $_.ExpectedSha256
+                        ActualSha256   = $_.ActualSha256
                     }
                 })
             UnexpectedOutputs     = $invalidOutputs.ToArray()

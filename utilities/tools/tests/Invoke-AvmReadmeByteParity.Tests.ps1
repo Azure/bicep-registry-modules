@@ -97,3 +97,64 @@ Describe 'Approved historical Vault README drift' {
             -ExpectedSha256 $script:vaultEntry.sha256 | Should -BeFalse
     }
 }
+
+Describe 'Approved canonical README heading drift' {
+    It 'accepts only the pinned first-line correction for <RelativePath>' -ForEach @(
+        @{
+            RelativePath = 'avm/res/db-for-my-sql/flexible-server/advanced-threat-protection/README.md'
+            NewHeading = '# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings]`'
+        },
+        @{
+            RelativePath = 'avm/res/dev-test-lab/lab/secret/README.md'
+            NewHeading = '# DevTest Lab Secrets `[Microsoft.DevTestLab/labs/secrets]`'
+        },
+        @{
+            RelativePath = 'avm/res/devices/iot-hub/consumergroup/README.md'
+            NewHeading = '# IoT Hub Consumer Groups `[Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups]`'
+        },
+        @{
+            RelativePath = 'avm/res/storage/storage-account/object-replication-policy/policy/README.md'
+            NewHeading = '# Storage Account Object Replication Policy `[Microsoft.Storage/storageAccounts/objectReplicationPolicies]`'
+        }
+    ) {
+        $entry = $script:baseline.files | Where-Object relativePath -CEQ $RelativePath
+        $readmePath = Join-Path $script:repositoryRoot $RelativePath.Replace('/', '\')
+        $metadataPath = Join-Path (Split-Path $readmePath -Parent) 'metadata.json'
+        $expected = [IO.File]::ReadAllBytes($readmePath)
+        $firstLineEnd = [Array]::IndexOf($expected, [byte]10)
+        $newHeadingBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes($NewHeading + "`n")
+        $corrected = [byte[]]::new($newHeadingBytes.Length + $expected.Length - $firstLineEnd - 1)
+        [Array]::Copy($newHeadingBytes, $corrected, $newHeadingBytes.Length)
+        [Array]::Copy($expected, $firstLineEnd + 1, $corrected, $newHeadingBytes.Length,
+            $expected.Length - $firstLineEnd - 1)
+
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath `
+            -ExpectedBytes $expected -ActualBytes $corrected -ExpectedSha256 $entry.sha256 `
+            -MetadataFilePath $metadataPath | Should -BeTrue
+
+        $wrongHeading = [byte[]]$corrected.Clone()
+        $wrongHeading[3] = $wrongHeading[3] -bxor 1
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath `
+            -ExpectedBytes $expected -ActualBytes $wrongHeading -ExpectedSha256 $entry.sha256 `
+            -MetadataFilePath $metadataPath | Should -BeFalse
+
+        $wrongRemainder = [byte[]]$corrected.Clone()
+        $wrongRemainder[$wrongRemainder.Length - 5] = $wrongRemainder[$wrongRemainder.Length - 5] -bxor 1
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath `
+            -ExpectedBytes $expected -ActualBytes $wrongRemainder -ExpectedSha256 $entry.sha256 `
+            -MetadataFilePath $metadataPath | Should -BeFalse
+
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath.ToUpperInvariant() `
+            -ExpectedBytes $expected -ActualBytes $corrected -ExpectedSha256 $entry.sha256 `
+            -MetadataFilePath $metadataPath | Should -BeFalse
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath `
+            -ExpectedBytes $expected -ActualBytes $corrected -ExpectedSha256 ('0' * 64) `
+            -MetadataFilePath $metadataPath | Should -BeFalse
+
+        $wrongMetadataPath = Join-Path $TestDrive 'wrong-metadata.json'
+        Set-Content -LiteralPath $wrongMetadataPath -Value '{"canonicalType":"incorrect"}'
+        Test-AvmReadmeApprovedCanonicalHeadingDrift -RelativePath $RelativePath `
+            -ExpectedBytes $expected -ActualBytes $corrected -ExpectedSha256 $entry.sha256 `
+            -MetadataFilePath $wrongMetadataPath | Should -BeFalse
+    }
+}
