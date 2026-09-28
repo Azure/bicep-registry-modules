@@ -1,4 +1,4 @@
-# Storage Account Object Replication Policy `[Microsoft.Storage/storageaccount/objectreplicationpolicy/policy]`
+# Storage Account Object Replication Policy `[Microsoft.Storage/storageAccounts/objectReplicationPolicies]`
 
 This module deploys a Storage Account Object Replication Policy for a provided storage account.
 
