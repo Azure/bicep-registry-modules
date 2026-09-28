@@ -46,3 +46,6 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@description('The resource ID of the lab after the idempotency deployment.')
+output resourceId string = testDeployment[1].outputs.resourceId
