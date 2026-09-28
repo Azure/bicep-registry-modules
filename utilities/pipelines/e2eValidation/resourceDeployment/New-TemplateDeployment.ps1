@@ -291,6 +291,10 @@ function New-TemplateDeploymentInner {
                     throw "Deployed failed with provisioning state [Failed]. Error Message: [$exceptionMessage]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                 }
                 $Stoploop = $true
+            } catch [System.OperationCanceledException] {
+                throw
+            } catch [System.Management.Automation.PipelineStoppedException] {
+                throw
             } catch {
                 if ($retryCount -ge $RetryLimit) {
                     if ($DoNotThrow) {
