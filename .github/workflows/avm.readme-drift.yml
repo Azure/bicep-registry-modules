@@ -1,0 +1,77 @@
+name: ".Platform - Bicep README drift (manual preview)"
+
+on:
+  workflow_dispatch:
+    inputs:
+      baseCommit:
+        type: string
+        description: "Optional base commit SHA; omit to validate all 574 source-backed READMEs"
+        required: false
+
+permissions:
+  contents: read
+
+env:
+  AVM_AUTHORING_SHA: "4962cd619347e2c111e50a3db0ae591081092ecd"
+
+jobs:
+  job_readme_drift:
+    name: "Validate Bicep README drift"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout registry"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: "Checkout pinned AVM authoring source"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          repository: Azure/azure-verified-modules-tools
+          ref: "${{ env.AVM_AUTHORING_SHA }}"
+          path: .avm-authoring-source
+          persist-credentials: false
+
+      - name: "Validate README bytes against pinned authoring source"
+        shell: pwsh
+        env:
+          BASE_COMMIT: "${{ inputs.baseCommit }}"
+          HEAD_COMMIT: "${{ github.sha }}"
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $source = Join-Path $env:GITHUB_WORKSPACE '.avm-authoring-source'
+          $checkoutCommit = git -C $source rev-parse HEAD
+          if ($LASTEXITCODE -ne 0 -or $checkoutCommit -cne $env:AVM_AUTHORING_SHA) {
+            throw "The authoring checkout does not match the pinned source commit [$env:AVM_AUTHORING_SHA]."
+          }
+
+          Import-Module -Name (Join-Path $source 'src' 'Avm.Authoring' 'Avm.Authoring.psd1') -Force -ErrorAction Stop
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Test-AvmReadmeDrift.ps1')
+
+          $input = @{ RepoRootPath = $env:GITHUB_WORKSPACE; DisposableCheckout = $true; Confirm = $false }
+          if ([string]::IsNullOrWhiteSpace($env:BASE_COMMIT)) {
+            $input.FullScan = $true
+          } else {
+            foreach ($commit in @($env:BASE_COMMIT, $env:HEAD_COMMIT)) {
+              if ($commit -cnotmatch '^[0-9a-fA-F]{40}$') {
+                throw "A base or head commit is not a full 40-character SHA: [$commit]."
+              }
+              git -C $env:GITHUB_WORKSPACE cat-file -e "$commit^{commit}"
+              if ($LASTEXITCODE -ne 0) {
+                throw "Commit [$commit] is unavailable in the checkout."
+              }
+            }
+            $input.ChangedFilePath = @(git -C $env:GITHUB_WORKSPACE diff --no-renames --name-only --diff-filter=ACMRTD $env:BASE_COMMIT $env:HEAD_COMMIT --)
+            if ($LASTEXITCODE -ne 0) {
+              throw 'Cannot identify changed README documentation files.'
+            }
+          }
+          $result = Test-AvmReadmeDrift @input
+          if ($result.Status -eq 'skipped') {
+            Write-Output 'No relevant Bicep documentation changed.' >> $env:GITHUB_STEP_SUMMARY
+          } elseif ($result.Status -eq 'pass') {
+            Write-Output "Bicep READMEs checked: $($result.FilesProcessed); source-less files preserved: $($result.SourceLessCount); historical Vault exception: $($result.VaultExceptions)." >> $env:GITHUB_STEP_SUMMARY
+          } else {
+            throw "Unexpected Bicep README validation status: [$($result.Status)]."
+          }
