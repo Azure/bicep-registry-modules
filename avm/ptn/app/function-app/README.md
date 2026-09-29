@@ -103,7 +103,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: '<functionAppName>'
+    functionAppName: 'afaded001'
     // Non-required parameters
     appServicePlanSkuName: 'B1'
     functionAppKind: 'functionapp'
@@ -127,7 +127,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "<functionAppName>"
+      "value": "afaded001"
     },
     // Non-required parameters
     "appServicePlanSkuName": {
@@ -157,7 +157,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = '<functionAppName>'
+param functionAppName = 'afaded001'
 // Non-required parameters
 param appServicePlanSkuName = 'B1'
 param functionAppKind = 'functionapp'
@@ -183,10 +183,10 @@ You can find the full example and the setup of its dependencies in the deploymen
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
     // Required parameters
-    functionAppName: '<functionAppName>'
+    functionAppName: 'afamax001'
     // Non-required parameters
-    applicationInsightsName: '<applicationInsightsName>'
-    appServicePlanName: '<appServicePlanName>'
+    applicationInsightsName: 'dep-ai-afamax'
+    appServicePlanName: 'afamax-asp'
     appServicePlanSkuCapacity: 2
     appServicePlanSkuName: 'EP1'
     appServicePlanZoneRedundant: true
@@ -247,14 +247,14 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "parameters": {
     // Required parameters
     "functionAppName": {
-      "value": "<functionAppName>"
+      "value": "afamax001"
     },
     // Non-required parameters
     "applicationInsightsName": {
-      "value": "<applicationInsightsName>"
+      "value": "dep-ai-afamax"
     },
     "appServicePlanName": {
-      "value": "<appServicePlanName>"
+      "value": "afamax-asp"
     },
     "appServicePlanSkuCapacity": {
       "value": 2
@@ -351,10 +351,10 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 using 'br/public:avm/ptn/app/function-app:<version>'
 
 // Required parameters
-param functionAppName = '<functionAppName>'
+param functionAppName = 'afamax001'
 // Non-required parameters
-param applicationInsightsName = '<applicationInsightsName>'
-param appServicePlanName = '<appServicePlanName>'
+param applicationInsightsName = 'dep-ai-afamax'
+param appServicePlanName = 'afamax-asp'
 param appServicePlanSkuCapacity = 2
 param appServicePlanSkuName = 'EP1'
 param appServicePlanZoneRedundant = true
@@ -416,7 +416,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   params: {
-    functionAppName: '<functionAppName>'
+    functionAppName: 'afamin001'
   }
 }
 ```
@@ -434,7 +434,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "functionAppName": {
-      "value": "<functionAppName>"
+      "value": "afamin001"
     }
   }
 }
@@ -450,7 +450,7 @@ module functionApp 'br/public:avm/ptn/app/function-app:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/app/function-app:<version>'
 
-param functionAppName = '<functionAppName>'
+param functionAppName = 'afamin001'
 ```
 
 </details>
