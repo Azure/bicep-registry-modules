@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Sandbox configuration with default parameter values'
-metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
+metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) with the required AI service location and an explicit solution name and primary location. All other optional parameters use their defaults for a Sandbox environment.'
 
 // ========== //
 // Parameters //
