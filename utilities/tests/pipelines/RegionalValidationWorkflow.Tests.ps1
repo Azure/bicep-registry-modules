@@ -45,7 +45,10 @@ Describe 'Regional validation workflow runtime integration' {
         }
         function Initialize-DeploymentRemoval {
             [CmdletBinding()]
-            param([string] $TemplateFilePath, [string[]] $DeploymentNames, [string] $ManagementGroupId, [string] $SubscriptionId)
+            param(
+                [string] $TemplateFilePath, [string[]] $DeploymentNames, [string[]] $PreflightRejectedDeploymentNames,
+                [string] $ManagementGroupId, [string] $SubscriptionId
+            )
             throw 'Unexpected Azure cleanup.'
         }
 
@@ -73,18 +76,19 @@ Describe 'Regional validation workflow runtime integration' {
                 "'{0}'" -f $templatePath.Replace("'", "''")
             )
             $values = @{
-                '${{ inputs.modulePath }}'                                  = 'avm/res/dev-test-lab/lab'
-                '${{ inputs.customLocation }}'                              = $CustomLocation
-                '${{ inputs.customTokens }}'                                = $CustomTokensInput
-                '${{  inputs.customTokens }}'                               = $CustomTokensInput
-                '${{ inputs.managementGroupId }}'                           = 'test-management-group'
-                '${{ inputs.deploymentMetadataLocation }}'                  = 'WestEurope'
-                '${{ env.VALIDATE_TENANT_ID }}'                             = 'test-tenant'
-                '${{ env.TOKEN_NAMEPREFIX }}'                               = 'testprefix'
-                '${{ steps.get-test-subscription.outputs.subscriptionId }}' = '11111111-1111-1111-1111-111111111111'
-                '${{ steps.replace-tokens.outputs.resourceLocation }}'      = $Outputs.tokenLocation ?? ''
-                '${{ steps.validate-template.outputs.resourceLocation }}'   = $Outputs.validatedLocation ?? ''
-                '${{ steps.deploy_step.outputs.deploymentNames }}'          = $Outputs.deploymentNames ?? ''
+                '${{ inputs.modulePath }}'                                          = 'avm/res/dev-test-lab/lab'
+                '${{ inputs.customLocation }}'                                      = $CustomLocation
+                '${{ inputs.customTokens }}'                                        = $CustomTokensInput
+                '${{  inputs.customTokens }}'                                       = $CustomTokensInput
+                '${{ inputs.managementGroupId }}'                                   = 'test-management-group'
+                '${{ inputs.deploymentMetadataLocation }}'                          = 'WestEurope'
+                '${{ env.VALIDATE_TENANT_ID }}'                                     = 'test-tenant'
+                '${{ env.TOKEN_NAMEPREFIX }}'                                       = 'testprefix'
+                '${{ steps.get-test-subscription.outputs.subscriptionId }}'         = '11111111-1111-1111-1111-111111111111'
+                '${{ steps.replace-tokens.outputs.resourceLocation }}'              = $Outputs.tokenLocation ?? ''
+                '${{ steps.validate-template.outputs.resourceLocation }}'           = $Outputs.validatedLocation ?? ''
+                '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
+                '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
             }
             foreach ($key in $values.Keys) {
                 $script = $script.Replace($key, $values[$key])
