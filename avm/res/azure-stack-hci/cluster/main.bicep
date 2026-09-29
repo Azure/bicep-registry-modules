@@ -19,7 +19,7 @@ param clusterADName string?
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.AzureStackHCI/clusters@2026-04-30'>.tags?
+param tags resourceInput<'Microsoft.AzureStackHCI/clusters@2026-10-01'>.tags?
 
 @description('Optional. The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".')
 @allowed([
@@ -269,7 +269,7 @@ resource arcMachines 'Microsoft.HybridCompute/machines@2026-07-15' existing = [
 ]
 
 @batchSize(1) // Serialize edgeDevice creation to avoid HCI RP race condition when provisioning multiple nodes simultaneously
-resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2026-04-30' = [
+resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2026-10-01' = [
   for (nodeName, index) in deploymentSettings!.clusterNodeNames: {
     name: 'default'
     scope: arcMachines[index]
@@ -283,7 +283,7 @@ resource edgeDevices 'Microsoft.AzureStackHCI/edgeDevices@2026-04-30' = [
   }
 ]
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2026-04-30' = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2026-10-01' = {
   name: name
   identity: {
     type: 'SystemAssigned'
