@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18112910946326163143"
+      "templateHash": "3070427123485884560"
     },
     "name": "Automation Account Schedules",
     "description": "This module deploys an Azure Automation Account Schedule."
@@ -99,7 +99,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-schedule",
+    "$fxv#0": "46d3xbcp.res.da796a3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

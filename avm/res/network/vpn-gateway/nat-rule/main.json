@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14976150563683987630"
+      "templateHash": "9031682983259875679"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a VPN Gateway NAT Rule."
@@ -82,7 +82,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-vpngateway-natrule",
+    "$fxv#0": "46d3xbcp.res.6a9b38e",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

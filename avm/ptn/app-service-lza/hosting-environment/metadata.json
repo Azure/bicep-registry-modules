@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "App Service LZA - Hosting Environment",
   "moduleDescription": "AVM Pattern Module for App Service LZA - Hosting Environment",
-  "telemetryIdPrefix": "46d3xbcp.ptn.appsvclza-hostingenvironment",
+  "telemetryIdPrefix": "46d3xbcp.ptn.be3d912",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.appsvclza-hostingenvironment"],
   "canonicalType": "app-service-lza/hosting-environment",
   "owners": ["MikeTB-Microsoft"]
 }

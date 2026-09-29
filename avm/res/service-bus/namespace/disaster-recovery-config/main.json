@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4821801963495493710"
+      "templateHash": "511457452721926550"
     },
     "name": "Service Bus Namespace Disaster Recovery Configs",
     "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
@@ -49,7 +49,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicebus-namespace-drconfig",
+    "$fxv#0": "46d3xbcp.res.7890384",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9479666029405402846"
+      "templateHash": "2504170583929474007"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -1162,7 +1162,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexibleserver",
+    "$fxv#0": "46d3xbcp.res.568937f",
     "enableReferencedModulesTelemetry": false,
     "standByAvailabilityZone": "[tryGet(createObject('Disabled', -1, 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1377,7 +1377,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8171598509998511023"
+              "templateHash": "11838259906953131333"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1418,7 +1418,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-database",
+            "$fxv#0": "46d3xbcp.res.a5f6742",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1525,7 +1525,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17777148902592713637"
+              "templateHash": "17244042844283911652"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1564,7 +1564,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-fwrule",
+            "$fxv#0": "46d3xbcp.res.9cd4126",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1668,7 +1668,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10230646893670986597"
+              "templateHash": "12871567971823234519"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1709,7 +1709,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-config",
+            "$fxv#0": "46d3xbcp.res.729f641",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1819,7 +1819,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2832599881078339471"
+              "templateHash": "10930783981151933153"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1871,7 +1871,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-admin",
+            "$fxv#0": "46d3xbcp.res.c095a98",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1964,7 +1964,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3782622514255174148"
+              "templateHash": "2360839407352741277"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1995,7 +1995,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-adthprotstg",
+            "$fxv#0": "46d3xbcp.res.f67fc6a",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

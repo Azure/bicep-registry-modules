@@ -839,7 +839,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
           ? law_new!.outputs.logAnalyticsWorkspaceId
           : law_existing!.properties.customerId
         sharedKey: empty(logAnalyticsWorkspaceResourceId)
-          ? law_new!.outputs.primarySharedKey
+          ? law_new.?outputs.primarySharedKey!
           : listKeys(law_existing!.id, law_existing!.apiVersion).primarySharedKey
       }
     }

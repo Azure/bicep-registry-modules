@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17643115771971521869"
+      "templateHash": "17033477830838173718"
     },
     "name": "Network Watchers",
     "description": "This module deploys a Network Watcher."
@@ -413,7 +413,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.network-networkwatcher",
+    "$fxv#0": "46d3xbcp.res.9e30b7f",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -555,7 +555,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3830841991522698487"
+              "templateHash": "12261002895857792956"
             },
             "name": "Network Watchers Connection Monitors",
             "description": "This module deploys a Network Watcher Connection Monitor."
@@ -680,7 +680,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-networkwatcher-connmonitor",
+            "$fxv#0": "46d3xbcp.res.60e65e7",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -827,7 +827,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4151804247581943373"
+              "templateHash": "1036037741991791339"
             },
             "name": "NSG Flow Logs",
             "description": "This module controls the Network Security Group Flow Logs and analytics settings.\n**Note: this module must be run on the Resource Group where Network Watcher is deployed**"
@@ -937,7 +937,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-networkwatcher-flowlog",
+            "$fxv#0": "46d3xbcp.res.98131fc",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

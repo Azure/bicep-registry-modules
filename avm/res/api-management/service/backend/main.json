@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8799791815897006845"
+      "templateHash": "5470786501543887950"
     },
     "name": "API Management Service Backends",
     "description": "This module deploys an API Management Service Backend."
@@ -141,7 +141,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-backend",
+    "$fxv#0": "46d3xbcp.res.c45f4e6",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

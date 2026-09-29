@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10430147995707697523"
+      "templateHash": "12820069719981616899"
     },
     "name": "Application Gateway for Containers Association",
     "description": "This module deploys an Application Gateway for Containers Association"
@@ -45,7 +45,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlassoc",
+    "$fxv#0": "46d3xbcp.res.87d82f0",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

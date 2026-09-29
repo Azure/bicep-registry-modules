@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8550621230108552240"
+      "templateHash": "17735060288287812297"
     },
     "name": "Network Manager Routing Configuration Rule Collections",
     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -181,7 +181,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecoll",
+    "$fxv#0": "46d3xbcp.res.ba36f4f",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -275,7 +275,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8436937529064924293"
+              "templateHash": "8434472910094230562"
             },
             "name": "Network Manager Routing configuration Rule Collection Rules",
             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -391,7 +391,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecollrule",
+            "$fxv#0": "46d3xbcp.res.029f8d4",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

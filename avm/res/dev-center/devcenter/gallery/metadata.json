@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Dev Center - Gallery",
   "moduleDescription": "AVM Child Module for Dev Center - Gallery",
-  "telemetryIdPrefix": "46d3xbcp.res.devcenter-devcenter-gallery",
+  "telemetryIdPrefix": "46d3xbcp.res.465613c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.devcenter-devcenter-gallery"],
   "canonicalType": "Microsoft.DevCenter/devcenters/galleries"
 }

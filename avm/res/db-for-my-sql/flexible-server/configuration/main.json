@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11483229304286183088"
+      "templateHash": "4891417038035082191"
     },
     "name": "DBforMySQL Flexible Server Configurations",
     "description": "This module deploys a DBforMySQL Flexible Server Configuration."
@@ -51,7 +51,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbformysql-flexisrv-configuration",
+    "$fxv#0": "46d3xbcp.res.0ef9df0",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

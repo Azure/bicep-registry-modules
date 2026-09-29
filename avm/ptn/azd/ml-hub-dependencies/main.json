@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14131461879034391270"
+      "templateHash": "7024573757239534738"
     },
     "name": "Azd Azure Machine Learning Dependencies",
     "description": "DEPRECATED - Creates all the dependencies required for a Machine Learning Service.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -484,7 +484,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-mlhubdependencies",
+    "$fxv#0": "46d3xbcp.ptn.9a7c621",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

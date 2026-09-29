@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - Workspace - Diagnostics",
   "moduleDescription": "AVM Child Module for API Management Service - Workspace - Diagnostics",
-  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-service-workspacediag",
+  "telemetryIdPrefix": "46d3xbcp.res.13a0b6c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-service-workspacediag"],
   "canonicalType": "Microsoft.ApiManagement/service/workspaces/diagnostics"
 }

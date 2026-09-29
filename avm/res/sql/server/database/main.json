@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14859578916383480299"
+      "templateHash": "7822195020058646192"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -733,7 +733,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-serverdb",
+    "$fxv#0": "46d3xbcp.res.3254c50",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "isHSMManagedCMK": "[equals(tryGet(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), ''), '/'), 7), 'managedHSMs')]",
@@ -921,7 +921,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "208668397440519635"
+              "templateHash": "6638102118403877124"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -962,7 +962,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-dbbckpshorttermretpolicy",
+            "$fxv#0": "46d3xbcp.res.b99866e",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1072,7 +1072,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4087306760226524641"
+              "templateHash": "10272308555566155293"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -1149,7 +1149,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-server-dbbckplongtermretpolicy",
+            "$fxv#0": "46d3xbcp.res.55b299c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

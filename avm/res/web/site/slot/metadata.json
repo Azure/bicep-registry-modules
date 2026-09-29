@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Web Site Slot",
   "moduleDescription": "AVM Child Module for Web Site Slot",
-  "telemetryIdPrefix": "46d3xbcp.res.web-siteslot",
+  "telemetryIdPrefix": "46d3xbcp.res.5b43f28",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.web-siteslot"],
   "canonicalType": "Microsoft.Web/sites/slots"
 }

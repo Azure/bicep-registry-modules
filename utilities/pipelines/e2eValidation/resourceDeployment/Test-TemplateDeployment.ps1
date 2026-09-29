@@ -107,13 +107,11 @@ function Test-TemplateDeployment {
         $DeploymentInputs = @{
             TemplateFile = $TemplateFilePath
             Verbose      = $true
-            OutVariable  = 'ValidationErrors'
+            ErrorAction  = 'Stop'
         }
         if (-not [String]::IsNullOrEmpty($ParameterFilePath)) {
             $DeploymentInputs['TemplateParameterFile'] = $ParameterFilePath
         }
-        $ValidationErrors = $null
-
         # Additional parameter object provided yes/no
         if ($AdditionalParameters) {
             $DeploymentInputs += $AdditionalParameters
@@ -178,14 +176,18 @@ function Test-TemplateDeployment {
                 throw "[$deploymentScope] is a non-supported template scope"
             }
         }
-        if ($ValidationErrors -and ($res | ConvertTo-Json | ConvertFrom-Json -AsHashtable).Keys -Contains 'Code') {
-            # Only contains a 'code' if there is an 'error code' attached
-            # Note: Ideally this would even show the `-Debug` information, but there seems to be no way of getting it in an automated fashion.
-            # So. errors that are rooted in a location conflict will continue to just show 'Conflict conflict: See inner error' without actually returning it.
-            # This comment is just here for reference if anybody else wants to tag a stab
-            Write-Warning 'Errors found:' -Verbose
-            Write-Warning ($res | ConvertTo-Json -Depth 10 | Out-String)
-            Write-Error 'Template is not valid.'
+        $errors = @($res | Where-Object {
+                $properties = $_ -is [System.Collections.IDictionary] ? @($_.psbase.Keys) : @($_.PSObject.Properties.Name)
+                'Code' -in $properties -or 'Error' -in $properties
+            })
+        if ($errors.Count -gt 0) {
+            $validationError = [System.Management.Automation.ErrorRecord]::new(
+                [System.InvalidOperationException]::new('Template is not valid.'),
+                'TemplateValidationFailed',
+                [System.Management.Automation.ErrorCategory]::InvalidResult,
+                $res
+            )
+            $PSCmdlet.ThrowTerminatingError($validationError)
         } else {
             Write-Verbose 'Template is valid' -Verbose
             Write-Verbose ($res | Out-String) -Verbose # May show diagnostic warnings

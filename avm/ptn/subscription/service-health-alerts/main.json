@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9724555751665775319"
+      "templateHash": "16273313311452922590"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -794,7 +794,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.subscription-svchealthalerts",
+    "$fxv#0": "46d3xbcp.ptn.e34d442",
     "serviceHealthAlertsMap": [
       {
         "serviceHealthAlert": "Resource Health Unhealthy",

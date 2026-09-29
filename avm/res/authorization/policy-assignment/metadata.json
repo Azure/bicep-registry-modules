@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - Policy Assignment",
   "moduleDescription": "AVM Resource Module for Authorization - Policy Assignment",
-  "telemetryIdPrefix": "46d3xbcp.res.authz-policyassignment",
+  "telemetryIdPrefix": "46d3xbcp.res.278b004",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.authz-policyassignment"],
   "canonicalType": "Microsoft.Authorization/policyAssignments",
   "owners": ["AlexanderSehr", "arnoldna"]
 }

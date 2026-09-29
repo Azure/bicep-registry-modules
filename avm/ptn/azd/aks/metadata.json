@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - AKS",
   "moduleDescription": "AVM Pattern Module for AZD - AKS",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-aks",
+  "telemetryIdPrefix": "46d3xbcp.ptn.6bdddee",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-aks"],
   "alternativeNames": ["Azure Developer CLI - Azure Kubernetes Services"],
   "canonicalType": "azd/aks",
   "owners": ["JeffreyCA"]

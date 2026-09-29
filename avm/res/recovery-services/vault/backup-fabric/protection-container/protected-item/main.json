@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7158310838884373506"
+      "templateHash": "6585492465964960473"
     },
     "name": "Recovery Service Vaults Protection Container Protected Item",
     "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -75,7 +75,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.recsvcs-vault-bckpfabprotcontprotitm",
+    "$fxv#0": "46d3xbcp.res.f7faa7c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1255617380562156688"
+      "templateHash": "7956762809536012649"
     },
     "name": "Automation Account Webhook",
     "description": "This module deploys an Azure Automation Account Webhook."
@@ -59,7 +59,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-webhook",
+    "$fxv#0": "46d3xbcp.res.996f3d1",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

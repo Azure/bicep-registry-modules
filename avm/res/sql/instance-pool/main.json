@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3013543626360633170"
+      "templateHash": "14684999995057927461"
     },
     "name": "SQL Server Instance Pool",
     "description": "This module deploys an Azure SQL Server Instance Pool."
@@ -118,7 +118,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-instancepool",
+    "$fxv#0": "46d3xbcp.res.3ff645a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

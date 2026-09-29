@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Network Interface",
   "moduleDescription": "AVM Resource Module for Network Interface",
-  "telemetryIdPrefix": "46d3xbcp.res.network-networkinterface",
+  "telemetryIdPrefix": "46d3xbcp.res.295eac1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-networkinterface"],
   "alternativeNames": ["NIC"],
   "canonicalType": "Microsoft.Network/networkInterfaces",
   "owners": ["rahalan"]

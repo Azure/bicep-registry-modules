@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DNS Resolver",
   "moduleDescription": "AVM Resource Module for DNS Resolver",
-  "telemetryIdPrefix": "46d3xbcp.res.network-dnsresolver",
+  "telemetryIdPrefix": "46d3xbcp.res.00a7d7f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-dnsresolver"],
   "canonicalType": "Microsoft.Network/dnsResolvers",
   "owners": ["ChrisSidebotham"]
 }

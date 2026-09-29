@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Event Grid Namespace - Client Group",
   "moduleDescription": "AVM Child Module for Event Grid Namespace - Client Group",
-  "telemetryIdPrefix": "46d3xbcp.res.eventgrid-namespace-clientgroup",
+  "telemetryIdPrefix": "46d3xbcp.res.04f3723",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.eventgrid-namespace-clientgroup"],
   "canonicalType": "Microsoft.EventGrid/namespaces/clientGroups"
 }

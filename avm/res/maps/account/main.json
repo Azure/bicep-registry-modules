@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14176445402656599417"
+      "templateHash": "6888575209703970775"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
@@ -342,7 +342,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.res.maps-account",
+    "$fxv#0": "46d3xbcp.res.9c9cb37",
     "builtInRoleNames": {
       "Azure Maps Search and Render Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6be48352-4f82-47c9-ad5e-0acacefdb005')]",
       "Azure Maps Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '423170ca-a8f6-4b0f-8487-9e4eb8f49bfa')]",

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17540877663374693668"
+      "templateHash": "16603766366194102839"
     },
     "name": "Data Factory Linked Service",
     "description": "This module deploys a Data Factory Linked Service."
@@ -66,7 +66,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.datafactory-factory-linkedservice",
+    "$fxv#0": "46d3xbcp.res.91840fa",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8171598509998511023"
+      "templateHash": "11838259906953131333"
     },
     "name": "DBforPostgreSQL Flexible Server Databases",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -47,7 +47,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-database",
+    "$fxv#0": "46d3xbcp.res.a5f6742",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

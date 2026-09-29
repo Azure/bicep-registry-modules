@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16560059366999218802"
+      "templateHash": "18156483199250518837"
     },
     "name": "API Management Service API Operation Policies",
     "description": "This module deploys an API Management Service API Operation Policy."
@@ -64,7 +64,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-apioperationpolicy",
+    "$fxv#0": "46d3xbcp.res.a128384",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

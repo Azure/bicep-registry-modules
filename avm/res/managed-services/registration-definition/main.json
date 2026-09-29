@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "201257878849506851"
+      "templateHash": "15373219037969679862"
     },
     "name": "Registration Definitions",
     "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.\nThis type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.\nThe templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant."
@@ -109,7 +109,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.managedservices-registrationdef",
+    "$fxv#0": "46d3xbcp.res.be4fd5f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

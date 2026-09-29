@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5587139186738732915"
+      "templateHash": "16777730168458795422"
     },
     "name": "Relay Namespace Authorization Rules",
     "description": "This module deploys a Relay Namespace Authorization Rule."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.relay-namespace-authorizationrule",
+    "$fxv#0": "46d3xbcp.res.c8c2ede",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7207301579046680509"
+      "templateHash": "18396588253074195085"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups."
@@ -70,7 +70,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.mgmtgroup-subplacement",
+    "$fxv#0": "46d3xbcp.ptn.1da4742",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

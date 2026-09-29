@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "9354318530444513801"
+      "templateHash": "1065522613970543712"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -70,7 +70,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.opins-worksp-stginsightconfig",
+    "$fxv#0": "46d3xbcp.res.a1f2ebb",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

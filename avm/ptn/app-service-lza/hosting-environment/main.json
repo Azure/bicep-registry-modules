@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16045845647140790487"
+      "templateHash": "17905194561666618503"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -2264,7 +2264,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.appsvclza-hostingenvironment",
+    "$fxv#0": "46d3xbcp.ptn.be3d912",
     "vnetSpokeAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'vnetAddressSpace'), '10.240.0.0/20')]",
     "subnetSpokeAppSvcAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'appSvcSubnetAddressSpace'), '10.240.0.0/26')]",
     "subnetSpokePrivateEndpointAddressSpace": "[coalesce(tryGet(parameters('spokeNetworkConfig'), 'privateEndpointSubnetAddressSpace'), '10.240.11.0/24')]",

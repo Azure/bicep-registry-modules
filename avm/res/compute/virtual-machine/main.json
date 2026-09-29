@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4242715582489426123"
+      "templateHash": "11402950168123546449"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2812,7 +2812,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.compute-virtualmachine",
+    "$fxv#0": "46d3xbcp.res.db70358",
     "enableReferencedModulesTelemetry": false,
     "linuxConfiguration": {
       "disablePasswordAuthentication": "[parameters('disablePasswordAuthentication')]",
@@ -6062,7 +6062,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6184,7 +6184,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -6323,7 +6323,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6445,7 +6445,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -6589,7 +6589,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6711,7 +6711,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -6853,7 +6853,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6975,7 +6975,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -7119,7 +7119,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7241,7 +7241,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -7380,7 +7380,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7502,7 +7502,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -7649,7 +7649,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7771,7 +7771,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -7923,7 +7923,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8045,7 +8045,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -8190,7 +8190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8312,7 +8312,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -8453,7 +8453,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8575,7 +8575,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -8733,7 +8733,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -8855,7 +8855,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -9001,7 +9001,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13851601243892991801"
+              "templateHash": "17228641431695704985"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -9123,7 +9123,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.compute-vm-extension",
+            "$fxv#0": "46d3xbcp.res.8b3c43c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

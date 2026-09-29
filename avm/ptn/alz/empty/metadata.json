@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Landing Zones (ALZ) - Empty",
   "moduleDescription": "AVM Pattern Module for Azure Landing Zones (ALZ) - Empty",
-  "telemetryIdPrefix": "46d3xbcp.ptn.alz-empty",
+  "telemetryIdPrefix": "46d3xbcp.ptn.f8021f3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.alz-empty"],
   "canonicalType": "alz/empty",
   "owners": ["yeddlapurishivasai", "akshayrohilla", "jtracey93"]
 }

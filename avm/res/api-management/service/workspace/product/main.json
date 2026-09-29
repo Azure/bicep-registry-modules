@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14375549905615931877"
+      "templateHash": "14082566164845710093"
     },
     "name": "API Management Workspace Products",
     "description": "This module deploys a Product in an API Management Workspace."
@@ -205,7 +205,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceproduct",
+    "$fxv#0": "46d3xbcp.res.b36ab19",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -296,7 +296,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1447694614270785401"
+              "templateHash": "13650155963304210158"
             },
             "name": "API Management Workspace Product API Links",
             "description": "This module deploys an Product API Link in an API Management Workspace."
@@ -341,7 +341,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodapilink",
+            "$fxv#0": "46d3xbcp.res.b91eee6",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -443,7 +443,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6947667146446849773"
+              "templateHash": "16283693892686569198"
             },
             "name": "API Management Workspace Product Group Links",
             "description": "This module deploys a Product Group Link in an API Management Workspace."
@@ -488,7 +488,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodgrplink",
+            "$fxv#0": "46d3xbcp.res.ecb803f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -593,7 +593,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2943466741471485278"
+              "templateHash": "13194024346563845368"
             },
             "name": "API Management Workspace Product Policies",
             "description": "This module deploys a Policy for a Product in an API Management Workspace."
@@ -652,7 +652,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspprodpolicy",
+            "$fxv#0": "46d3xbcp.res.619cdb0",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

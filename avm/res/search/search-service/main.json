@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12541760075166812330"
+      "templateHash": "7022399176033672399"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -878,7 +878,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.search-searchservice",
+    "$fxv#0": "46d3xbcp.res.25823ee",
     "enableReferencedModulesTelemetry": false,
     "shouldExportSecrets": "[and(not(equals(parameters('secretsExportConfiguration'), null())), not(parameters('disableLocalAuth')))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1736,7 +1736,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13059355327525816406"
+              "templateHash": "293631800242657123"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1788,7 +1788,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.search-searchsvc-sharedprivlinkres",
+            "$fxv#0": "46d3xbcp.res.0ba7be3",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

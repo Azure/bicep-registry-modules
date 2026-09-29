@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Service Bus Namespace - Topic - Subscription",
   "moduleDescription": "AVM Child Module for Service Bus Namespace - Topic - Subscription",
-  "telemetryIdPrefix": "46d3xbcp.res.servicebus-namespace-topicsub",
+  "telemetryIdPrefix": "46d3xbcp.res.9b4690c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.servicebus-namespace-topicsub"],
   "canonicalType": "Microsoft.ServiceBus/namespaces/topics/subscriptions"
 }

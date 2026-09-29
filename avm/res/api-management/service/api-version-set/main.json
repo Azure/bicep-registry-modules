@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10353352495652780403"
+      "templateHash": "10101373997407685973"
     },
     "name": "API Management Service API Version Sets",
     "description": "This module deploys an API Management Service API Version Set."
@@ -78,7 +78,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-apiversionset",
+    "$fxv#0": "46d3xbcp.res.20b5847",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

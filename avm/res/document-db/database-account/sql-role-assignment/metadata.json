@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Cosmos DB - SQL Role Assignment",
   "moduleDescription": "AVM Child Module for Cosmos DB - SQL Role Assignment",
-  "telemetryIdPrefix": "46d3xbcp.res.doctdb-dbacct-sqlroleassignment",
+  "telemetryIdPrefix": "46d3xbcp.res.37bfd91",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.doctdb-dbacct-sqlroleassignment"],
   "canonicalType": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments"
 }

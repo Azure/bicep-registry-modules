@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4832324427780964661"
+      "templateHash": "6632607736268892832"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -702,7 +702,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.aiml-aifoundry",
+    "$fxv#0": "46d3xbcp.ptn.0cdb388",
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]",

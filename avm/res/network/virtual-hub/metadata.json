@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Virtual Hub",
   "moduleDescription": "AVM Resource Module for Virtual Hub",
-  "telemetryIdPrefix": "46d3xbcp.res.network-virtualhub",
+  "telemetryIdPrefix": "46d3xbcp.res.f97f98e",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-virtualhub"],
   "canonicalType": "Microsoft.Network/virtualHubs",
   "owners": ["arnoldna"]
 }

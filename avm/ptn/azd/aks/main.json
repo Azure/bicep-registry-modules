@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3123087948990714054"
+      "templateHash": "10169117431523746938"
     },
     "name": "Azd AKS",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -821,7 +821,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-aks",
+    "$fxv#0": "46d3xbcp.ptn.6bdddee",
     "systemPoolsConfig": "[if(not(empty(parameters('systemPoolConfig'))), parameters('systemPoolConfig'), createArray(union(createObject('name', 'npsystem', 'mode', 'System'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('systemPoolSize')])))]",
     "agentPoolsConfig": "[if(not(empty(parameters('agentPoolConfig'))), parameters('agentPoolConfig'), if(empty(parameters('agentPoolSize')), null(), createArray(union(createObject('name', 'npuser', 'mode', 'User'), variables('nodePoolBase'), variables('nodePoolPresets')[parameters('agentPoolSize')]))))]",
     "aksClusterAdminRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b')]",

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3646157126408976653"
+      "templateHash": "17837204040877576821"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -218,7 +218,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.documentdb-databaseaccountsqldb",
+    "$fxv#0": "46d3xbcp.res.bedc4d0",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
@@ -336,7 +336,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3250509771060378754"
+              "templateHash": "14810436902678920641"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -510,7 +510,7 @@
                 "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqldbcontainer",
+            "$fxv#0": "46d3xbcp.res.9b7d4de",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

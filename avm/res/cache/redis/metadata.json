@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Redis Cache",
   "moduleDescription": "AVM Resource Module for Redis Cache",
-  "telemetryIdPrefix": "46d3xbcp.res.cache-redis",
+  "telemetryIdPrefix": "46d3xbcp.res.23583fc",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.cache-redis"],
   "canonicalType": "Microsoft.Cache/Redis",
   "owners": ["TomazMlakar", "segraef"]
 }

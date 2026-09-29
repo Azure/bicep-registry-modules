@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10964973179482857566"
+      "templateHash": "9616363371100376341"
     },
     "name": "Resource-scoped role assignment",
     "description": "This module deploys a Role Assignment for a specific resource."
@@ -74,7 +74,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.authorization-resourceroleassignment",
+    "$fxv#0": "46d3xbcp.ptn.a8c1893",
     "$fxv#1": {
       "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
       "contentVersion": "1.0.0.0",

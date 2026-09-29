@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2494931150902124674"
+      "templateHash": "5836268812480899009"
     },
     "name": "Network Manager Connectivity Configurations",
     "description": "This module deploys a Network Manager Connectivity Configuration.\nConnectivity configurations define hub-and-spoke or mesh topologies applied to one or more network groups."
@@ -159,7 +159,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-connectivityconfig",
+    "$fxv#0": "46d3xbcp.res.be731b8",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
