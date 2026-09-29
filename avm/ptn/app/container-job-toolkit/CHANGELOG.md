@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/app/container-job-toolkit/CHANGELOG.md).
 
+## 0.1.4
+
+### Changes
+
+- Fixed compilation when retrieving the secure shared key from a newly created Log Analytics workspace.
+
+### Breaking Changes
+
+- None
+
 ## 0.1.3
 
 ### Changes

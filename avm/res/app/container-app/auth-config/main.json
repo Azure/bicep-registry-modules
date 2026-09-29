@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11914273096549636250"
+      "templateHash": "9107013935602241477"
     },
     "name": "Container App Auth Configs",
     "description": "This module deploys Container App Auth Configs."
@@ -87,7 +87,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.app-containerapp-authconfig",
+    "$fxv#0": "46d3xbcp.res.6100a34",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

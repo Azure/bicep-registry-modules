@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13905166741627933058"
+      "templateHash": "3131519850629896063"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -431,7 +431,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.eventhub-nseventhub",
+    "$fxv#0": "46d3xbcp.res.37f9a80",
     "builtInRoleNames": {
       "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
       "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
@@ -552,7 +552,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10559035543026447255"
+              "templateHash": "17941916867999728617"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
             "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -593,7 +593,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventhub-namespace-eventhubconsgrp",
+            "$fxv#0": "46d3xbcp.res.cb59a3d",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -692,7 +692,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16766485206768416061"
+              "templateHash": "510686048412952583"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
             "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -737,7 +737,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventhub-namespace-eventhubauthrule",
+            "$fxv#0": "46d3xbcp.res.d15e56f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

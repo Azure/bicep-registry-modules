@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4738369634097523179"
+      "templateHash": "14677255147422011053"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
@@ -95,7 +95,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-subscription",
+    "$fxv#0": "46d3xbcp.res.31b128c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

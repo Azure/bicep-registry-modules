@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1052709867837814831"
+      "templateHash": "5729713481220739386"
     },
     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -78,7 +78,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-mi-dbbckplongermretpolicy",
+    "$fxv#0": "46d3xbcp.res.53243b5",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

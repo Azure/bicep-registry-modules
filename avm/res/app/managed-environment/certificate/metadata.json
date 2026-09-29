@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "App Managed Environment - Certificate",
   "moduleDescription": "AVM Child Module for App Managed Environment - Certificate",
-  "telemetryIdPrefix": "46d3xbcp.res.app-managedenvironment-certificate",
+  "telemetryIdPrefix": "46d3xbcp.res.46ffa7a",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.app-managedenvironment-certificate"],
   "canonicalType": "Microsoft.App/managedEnvironments/certificates"
 }

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - Insights Dashboard",
   "moduleDescription": "AVM Pattern Module for AZD - Insights Dashboard",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-insightsdashboard",
+  "telemetryIdPrefix": "46d3xbcp.ptn.27f2ddb",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-insightsdashboard"],
   "alternativeNames": ["Azure Developer CLI - Inishgts Dashboard"],
   "canonicalType": "azd/insights-dashboard",
   "owners": ["JeffreyCA"]

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Monitor Baseline Alerts (AMBA) - ALZ",
   "moduleDescription": "AVM Pattern Module for Azure Monitor Baseline Alerts (AMBA) - ALZ",
-  "telemetryIdPrefix": "46d3xbcp.ptn.monitoring-ambaalz",
+  "telemetryIdPrefix": "46d3xbcp.ptn.81170b4",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.monitoring-ambaalz"],
   "canonicalType": "monitoring/amba-alz",
   "owners": ["arjenhuitema"]
 }

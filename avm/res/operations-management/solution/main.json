@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10830762714056457604"
+      "templateHash": "13800331920708235834"
     },
     "name": "Operations Management Solutions",
     "description": "This module deploys an Operations Management Solution."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.operationsmanagement-solution",
+    "$fxv#0": "46d3xbcp.res.9e4e67d",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

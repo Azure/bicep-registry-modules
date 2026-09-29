@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "512528714858252527"
+      "templateHash": "4678038433683668128"
     },
     "name": "Azure SQL Server Virtual Network Rules",
     "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -45,7 +45,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-virtualnetworkrule",
+    "$fxv#0": "46d3xbcp.res.2ad5c9f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

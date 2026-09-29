@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Healthcare API Workspace",
   "moduleDescription": "AVM Resource Module for Healthcare API Workspace",
-  "telemetryIdPrefix": "46d3xbcp.res.healthcareapis-workspace",
+  "telemetryIdPrefix": "46d3xbcp.res.11bab7d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.healthcareapis-workspace"],
   "canonicalType": "Microsoft.HealthcareApis/workspaces",
   "owners": ["krbar"]
 }

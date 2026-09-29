@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15284533884612761541"
+      "templateHash": "2513541379934222531"
     },
     "name": "private-analytical-workspace",
     "description": "This pattern module enables you to use Azure services that are typical for data analytics solutions. The goal is to help data scientists establish an environment for data analysis simply. It is secure by default for enterprise use. Data scientists should not spend much time on how to build infrastructure solution. They should mainly concentrate on the data analytics components they require for the solution."
@@ -359,7 +359,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.ptn.data-privateanalyticalworkspace",
+    "$fxv#0": "46d3xbcp.ptn.077c40d",
     "diagnosticSettingsName": "avm-diagnostic-settings",
     "vnetName": "[format('{0}-vnet', parameters('name'))]",
     "vnetDefaultAddressPrefix": "192.168.224.0/19",
@@ -543,7 +543,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

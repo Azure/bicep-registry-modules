@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Load Balancer - Inbound Nat Rule",
   "moduleDescription": "AVM Child Module for Load Balancer - Inbound Nat Rule",
-  "telemetryIdPrefix": "46d3xbcp.res.network-loadbalancer-inboundnatrule",
+  "telemetryIdPrefix": "46d3xbcp.res.95857d3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-loadbalancer-inboundnatrule"],
   "canonicalType": "Microsoft.Network/loadBalancers/inboundNatRules"
 }

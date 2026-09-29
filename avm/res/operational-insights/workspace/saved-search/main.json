@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5625461937180990186"
+      "templateHash": "11655814665352283570"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -89,7 +89,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.opins-worksp-savedsearch",
+    "$fxv#0": "46d3xbcp.res.5cca2d3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

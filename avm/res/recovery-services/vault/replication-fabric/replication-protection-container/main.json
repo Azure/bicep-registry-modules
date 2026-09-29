@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6944576573686481453"
+      "templateHash": "13144141816853497437"
     },
     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -102,7 +102,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.recsvcs-vault-repfabrepprotcontainer",
+    "$fxv#0": "46d3xbcp.res.87b1027",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -204,7 +204,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7040754155774341272"
+              "templateHash": "6313426968010491323"
             },
             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -279,7 +279,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.recsvcs-vault-repfabrepprotcontmap",
+            "$fxv#0": "46d3xbcp.res.0d0f866",
             "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
             "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
             "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]",

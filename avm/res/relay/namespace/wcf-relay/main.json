@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7221611696471440553"
+      "templateHash": "16069269399238987374"
     },
     "name": "Relay Namespace WCF Relays",
     "description": "This module deploys a Relay Namespace WCF Relay."
@@ -234,7 +234,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.relay-namespace-wcfrelay",
+    "$fxv#0": "46d3xbcp.res.f234d33",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
@@ -359,7 +359,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3442789872582746351"
+              "templateHash": "1415160608116903428"
             },
             "name": "WCF Relay Authorization Rules",
             "description": "This module deploys a WCF Relay Authorization Rule."
@@ -404,7 +404,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.relay-namespace-wcfrelayauthzrule",
+            "$fxv#0": "46d3xbcp.res.96b27b7",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

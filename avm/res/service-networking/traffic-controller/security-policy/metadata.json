@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Application Gateway for Containers (Traffic Controller) - Sec Policy",
   "moduleDescription": "AVM Child Module for Application Gateway for Containers (Traffic Controller) - Sec Policy",
-  "telemetryIdPrefix": "46d3xbcp.res.servicenetworking-traffctrlsecpolicy",
+  "telemetryIdPrefix": "46d3xbcp.res.b3a8473",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.servicenetworking-traffctrlsecpolicy"],
   "canonicalType": "Microsoft.ServiceNetworking/trafficControllers/securityPolicies"
 }

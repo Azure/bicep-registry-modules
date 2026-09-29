@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3132524172774662070"
+      "templateHash": "1005084121195204974"
     },
     "name": "Service Bus Namespace Migration Configuration",
     "description": "This module deploys a Service Bus Namespace Migration Configuration."
@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicebus-namespace-migrconfig",
+    "$fxv#0": "46d3xbcp.res.d773672",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

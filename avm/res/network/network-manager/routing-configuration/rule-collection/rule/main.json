@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8436937529064924293"
+      "templateHash": "8434472910094230562"
     },
     "name": "Network Manager Routing configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -122,7 +122,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-routingcfgrulecollrule",
+    "$fxv#0": "46d3xbcp.res.029f8d4",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

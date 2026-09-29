@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.43.8.12551",
-      "templateHash": "16135001582060161875"
+      "templateHash": "7433671319627319139"
     },
     "name": "Function App Pattern",
     "description": "Deploys an Azure Function App together with its supporting resources: an App Service Plan, a Storage Account for the Function runtime, an Application Insights component, a Log Analytics workspace, and a User-Assigned Managed Identity used for runtime storage access and Application Insights ingestion. Secure defaults are always applied (HTTPS-only, TLS 1.2 minimum, FTP/FTPS deployment disabled, no anonymous blob access, and identity-based runtime storage access wherever the selected plan family supports it).\n\nApplication Insights requires Microsoft Entra authentication. The Function App's managed identity receives the Monitoring Metrics Publisher role on the Application Insights resource, and the Functions host is configured to use that identity. Local authentication is disabled. Application code that sends telemetry directly through an SDK, such as a .NET isolated worker, must also configure Microsoft Entra credentials; the host setting alone does not configure every SDK. The Functions host's managed-identity authentication setting does not support local development. Use a separate development telemetry resource or an appropriately authenticated SDK for local telemetry. See [Configure monitoring for Azure Functions](https://learn.microsoft.com/azure/azure-functions/configure-monitoring#require-microsoft-entra-authentication).\n"
@@ -440,7 +440,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.ptn.app-functionapp",
+    "$fxv#0": "46d3xbcp.ptn.4f5e5ce",
     "isLinux": "[endsWith(parameters('functionAppKind'), 'linux')]",
     "isConsumption": "[startsWith(parameters('appServicePlanSkuName'), 'Y')]",
     "isFlexConsumption": "[startsWith(parameters('appServicePlanSkuName'), 'FC')]",

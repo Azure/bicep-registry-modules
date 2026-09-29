@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6092906697301798997"
+      "templateHash": "16596329162635800511"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Tables",
     "description": "This module deploys a Cassandra Table within a Cassandra Keyspace in a CosmosDB Account."
@@ -86,7 +86,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspacetable",
+    "$fxv#0": "46d3xbcp.res.05cb934",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

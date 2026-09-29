@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3701832057537083719"
+      "templateHash": "15869209511481764296"
     },
     "name": "Dns Forwarding Rulesets Forwarding Rules",
     "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."
@@ -60,7 +60,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-dnsforwardingruleset-fwdrule",
+    "$fxv#0": "46d3xbcp.res.de1debd",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

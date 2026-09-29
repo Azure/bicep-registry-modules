@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17521984151001578755"
+      "templateHash": "899101759019511042"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -114,7 +114,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-loadbalancer-inboundnatrule",
+    "$fxv#0": "46d3xbcp.res.95857d3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

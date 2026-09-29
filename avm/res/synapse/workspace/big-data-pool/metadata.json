@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Synapse Analytics Workspace - Big Data Pool",
   "moduleDescription": "AVM Child Module for Azure Synapse Analytics Workspace - Big Data Pool",
-  "telemetryIdPrefix": "46d3xbcp.res.synapse-workspace-bigdatapool",
+  "telemetryIdPrefix": "46d3xbcp.res.95ea72f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.synapse-workspace-bigdatapool"],
   "canonicalType": "Microsoft.Synapse/workspaces/bigDataPools"
 }

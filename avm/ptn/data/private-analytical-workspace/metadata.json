@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Private Analytical Workspace",
   "moduleDescription": "AVM Pattern Module for Private Analytical Workspace",
-  "telemetryIdPrefix": "46d3xbcp.ptn.data-privateanalyticalworkspace",
+  "telemetryIdPrefix": "46d3xbcp.ptn.077c40d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.data-privateanalyticalworkspace"],
   "alternativeNames": ["Data Analytics", "Data Lake", "Databricks", "Database"],
   "canonicalType": "data/private-analytical-workspace",
   "owners": ["jbinko"]

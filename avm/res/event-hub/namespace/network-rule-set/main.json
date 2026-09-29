@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17478933925726000385"
+      "templateHash": "10180109985267456962"
     },
     "name": "Event Hub Namespace Network Rule Sets",
     "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -117,7 +117,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.res.eventhub-namespace-networkruleset",
+    "$fxv#0": "46d3xbcp.res.b728dd2",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

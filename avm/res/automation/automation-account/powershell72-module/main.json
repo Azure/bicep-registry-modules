@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13836604088488188914"
+      "templateHash": "2479633964515038127"
     },
     "name": "Automation Account Powershell72 Modules",
     "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -60,7 +60,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-powersh72module",
+    "$fxv#0": "46d3xbcp.res.01a7a3f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13809048633721245899"
+      "templateHash": "2272167982153466409"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -53,7 +53,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-sqlroleassignment",
+    "$fxv#0": "46d3xbcp.res.37bfd91",
     "builtInDataPlaneRoleNames": {
       "Cosmos DB Built-in Data Reader": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]",
       "Cosmos DB Built-in Data Contributor": "[format('{0}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"

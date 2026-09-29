@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10752749716649816717"
+      "templateHash": "9382766911836372332"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group."
@@ -175,7 +175,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.resources-resourcegroup",
+    "$fxv#0": "46d3xbcp.res.97c6994",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

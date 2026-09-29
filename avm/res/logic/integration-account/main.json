@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1412161078935642357"
+      "templateHash": "16869460008624666470"
     },
     "name": "Logic App Integration Account",
     "description": "This module deploys a Logic App Integration Account."
@@ -821,7 +821,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.logic-integrationaccount",
+    "$fxv#0": "46d3xbcp.res.dd14392",
     "builtInRoleNames": {
       "App Compliance Automation Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f37683f-2463-46b6-9ce7-9b788b988ba2')]",
       "App Compliance Automation Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f37683f-2463-46b6-9ce7-9b788b988ba2')]",
@@ -1000,7 +1000,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17040233736609362119"
+              "templateHash": "9150275448899157583"
             },
             "name": "Integration Account Partners",
             "description": "This module deploys an Integration Account Partner."
@@ -1069,7 +1069,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-partner",
+            "$fxv#0": "46d3xbcp.res.8f1abe8",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1199,7 +1199,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4176652451977472643"
+              "templateHash": "13764922380151911313"
             },
             "name": "Integration Account Schemas",
             "description": "This module deploys an Integration Account Schema."
@@ -1296,7 +1296,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-schema",
+            "$fxv#0": "46d3xbcp.res.ded2958",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1424,7 +1424,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6444141976652822954"
+              "templateHash": "10022079303329624741"
             },
             "name": "Integration Account Maps",
             "description": "This module deploys an Integration Account Map."
@@ -1520,7 +1520,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-map",
+            "$fxv#0": "46d3xbcp.res.ccc9a8d",
             "defaultContentType": "[if(equals(parameters('mapType'), 'Liquid'), 'application/liquid', 'application/xml')]",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1645,7 +1645,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "14713238367376965598"
+              "templateHash": "9856063483367444375"
             },
             "name": "Integration Account Assemblies",
             "description": "This module deploys an Integration Account Assembly."
@@ -1717,7 +1717,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-assembly",
+            "$fxv#0": "46d3xbcp.res.f21f024",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1837,7 +1837,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "12729743480632123349"
+              "templateHash": "2070355690699208101"
             },
             "name": "Integration Account Certificates",
             "description": "This module deploys an Integration Account Certificate."
@@ -1907,7 +1907,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-certificate",
+            "$fxv#0": "46d3xbcp.res.be5f3ed",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2038,7 +2038,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16428510152982792723"
+              "templateHash": "9691666196958825207"
             },
             "name": "Integration Account Agreements",
             "description": "This module deploys an Integration Account Agreement."
@@ -2142,7 +2142,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.logic-integrationaccount-agreement",
+            "$fxv#0": "46d3xbcp.res.81b7962",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

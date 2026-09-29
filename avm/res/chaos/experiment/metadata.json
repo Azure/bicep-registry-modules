@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Chaos Experiment",
   "moduleDescription": "AVM Resource Module for Chaos Experiment",
-  "telemetryIdPrefix": "46d3xbcp.res.chaos-experiment",
+  "telemetryIdPrefix": "46d3xbcp.res.e3c56a8",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.chaos-experiment"],
   "canonicalType": "Microsoft.Chaos/experiments",
   "owners": []
 }

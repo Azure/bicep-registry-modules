@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5375921671469255347"
+      "templateHash": "6872880293251289861"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -84,7 +84,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-loadbalancer-beaddresspool",
+    "$fxv#0": "46d3xbcp.res.4ad6614",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

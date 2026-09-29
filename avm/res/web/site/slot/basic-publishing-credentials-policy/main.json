@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17916935854419486221"
+      "templateHash": "8336761301306417999"
     },
     "name": "Web Site Slot Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -56,7 +56,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-site-slotbasicpubcredpolicy",
+    "$fxv#0": "46d3xbcp.res.e4adffd",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14938562044638000570"
+      "templateHash": "5769340833206429584"
     },
     "name": "API Management Workspace APIs",
     "description": "This module deploys an API in an API Management Workspace."
@@ -540,7 +540,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapi",
+    "$fxv#0": "46d3xbcp.res.7964366",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -651,7 +651,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16278917142603363912"
+              "templateHash": "11820152653395138426"
             },
             "name": "API Management Workspace APIs Policies",
             "description": "This module deploys an API Policy in an API Management Workspace."
@@ -710,7 +710,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapipol",
+            "$fxv#0": "46d3xbcp.res.ea04ee7",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -841,7 +841,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5893140300622755714"
+              "templateHash": "4620181838018168449"
             },
             "name": "API Management Workspace APIs Diagnostics",
             "description": "This module deploys an API Diagnostic in an API Management Workspace."
@@ -975,7 +975,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapidiag",
+            "$fxv#0": "46d3xbcp.res.6e2da08",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1135,7 +1135,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1309052716256330864"
+              "templateHash": "9074431541129226070"
             },
             "name": "API Management Workspace API Operations",
             "description": "This module deploys an API Operation under an API Management Workspace."
@@ -1279,7 +1279,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapiop",
+            "$fxv#0": "46d3xbcp.res.9f915a4",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1382,7 +1382,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "18020303070942837116"
+                      "templateHash": "5531977160897538441"
                     },
                     "name": "API Management Workspace API Operation Policies",
                     "description": "This module deploys an API Operation Policy in an API Management Workspace."
@@ -1447,7 +1447,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspaceapioppol",
+                    "$fxv#0": "46d3xbcp.res.03ea72b",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [

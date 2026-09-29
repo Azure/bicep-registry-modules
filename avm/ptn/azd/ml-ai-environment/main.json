@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7954321235586172123"
+      "templateHash": "13890317142591758680"
     },
     "name": "Azd Azure Machine Learning Environment",
     "description": "DEPRECATED - Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -128,7 +128,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-mlaienvironment",
+    "$fxv#0": "46d3xbcp.ptn.62a6703",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

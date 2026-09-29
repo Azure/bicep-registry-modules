@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6555120503940425663"
+      "templateHash": "7596914641541682313"
     },
     "name": "Hybrid Connection Authorization Rules",
     "description": "This module deploys a Hybrid Connection Authorization Rule."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.relay-namespace-hybconnautzrule",
+    "$fxv#0": "46d3xbcp.res.fa3a6b8",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

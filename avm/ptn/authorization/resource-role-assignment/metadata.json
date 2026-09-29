@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - Resource Role Assignment",
   "moduleDescription": "AVM Pattern Module for Authorization - Resource Role Assignment",
-  "telemetryIdPrefix": "46d3xbcp.ptn.authorization-resourceroleassignment",
+  "telemetryIdPrefix": "46d3xbcp.ptn.a8c1893",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.authorization-resourceroleassignment"],
   "canonicalType": "authorization/resource-role-assignment",
   "owners": ["peterbud"]
 }

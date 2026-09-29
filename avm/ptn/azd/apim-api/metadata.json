@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - APIM API",
   "moduleDescription": "AVM Pattern Module for AZD - APIM API",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-apimapi",
+  "telemetryIdPrefix": "46d3xbcp.ptn.19330bf",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-apimapi"],
   "alternativeNames": ["Azure Developer CLI - API Management"],
   "canonicalType": "azd/apim-api",
   "owners": ["JeffreyCA"]

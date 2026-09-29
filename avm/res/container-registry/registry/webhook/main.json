@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "753916868681841910"
+      "templateHash": "10125751542653631245"
     },
     "name": "Azure Container Registry (ACR) Webhooks",
     "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -100,7 +100,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.containerregistry-registry-webhook",
+    "$fxv#0": "46d3xbcp.res.b9502ae",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

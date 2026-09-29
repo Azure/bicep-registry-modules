@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5513749582689509828"
+      "templateHash": "14253927926052124532"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -932,7 +932,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.devopsinfrastructure-pool",
+    "$fxv#0": "46d3xbcp.res.597d3fe",
     "daysData": "[tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData')]",
     "hasAllWeekScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'allWeekScheme'))]",
     "hasWeekDaysScheme": "[and(not(empty(variables('daysData'))), contains(variables('daysData'), 'weekDaysScheme'))]",

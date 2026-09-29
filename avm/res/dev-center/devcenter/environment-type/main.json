@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8773747515698263240"
+      "templateHash": "11868871365970819044"
     },
     "name": "Dev Center Environment Type",
     "description": "This module deploys a Dev Center Environment Type."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter-environmenttype",
+    "$fxv#0": "46d3xbcp.res.7b0babb",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

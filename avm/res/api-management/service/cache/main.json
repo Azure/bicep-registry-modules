@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2277130185285984137"
+      "templateHash": "10207732047978764384"
     },
     "name": "API Management Service Caches",
     "description": "This module deploys an API Management Service Cache."
@@ -59,7 +59,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-cache",
+    "$fxv#0": "46d3xbcp.res.57ad95a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

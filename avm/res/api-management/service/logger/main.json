@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14471933579531299965"
+      "templateHash": "10254946480361645883"
     },
     "name": "API Management Service Loggers",
     "description": "This module deploys an API Management Service Logger."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-logger",
+    "$fxv#0": "46d3xbcp.res.9585b26",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
