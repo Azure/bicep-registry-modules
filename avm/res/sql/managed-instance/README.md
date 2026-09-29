@@ -279,12 +279,14 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlmimax"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
@@ -897,12 +899,14 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlmiwaf"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
