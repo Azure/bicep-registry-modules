@@ -8,6 +8,9 @@ Remove deployed resources based on their deploymentName(s)
 .PARAMETER DeploymentName(s)
 Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
 
+.PARAMETER PreflightRejectedDeploymentNames
+Optional. Attempt names rejected by preflight validation. Only a confirmed DeploymentNotFound skips their lookup retries.
+
 .PARAMETER ResourceId(s)
 Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
@@ -35,6 +38,9 @@ function Initialize-DeploymentRemoval {
         [Parameter(Mandatory = $false)]
         [Alias('DeploymentName')]
         [string[]] $DeploymentNames = @(),
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $PreflightRejectedDeploymentNames = @(),
 
         [Parameter(Mandatory = $false)]
         [Alias('ResourceId')]
@@ -66,7 +72,7 @@ function Initialize-DeploymentRemoval {
 
         if (-not [String]::IsNullOrEmpty($subscriptionId)) {
             Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
-            $null = Set-AzContext -Subscription $subscriptionId
+            $null = Set-AzContext -Subscription $subscriptionId -ErrorAction Stop
         }
 
         # The initial sequence is a general order-recommendation
@@ -165,11 +171,12 @@ function Initialize-DeploymentRemoval {
 
         # Invoke removal
         $inputObject = @{
-            DeploymentNames     = $DeploymentNames
-            ResourceIds         = $ResourceIds
-            TemplateFilePath    = $TemplateFilePath
-            RemoveFirstSequence = $removeFirstSequence
-            RemoveLastSequence  = $removeLastSequence
+            DeploymentNames                  = $DeploymentNames
+            PreflightRejectedDeploymentNames = $PreflightRejectedDeploymentNames
+            ResourceIds                      = $ResourceIds
+            TemplateFilePath                 = $TemplateFilePath
+            RemoveFirstSequence              = $removeFirstSequence
+            RemoveLastSequence               = $removeLastSequence
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath

@@ -33,7 +33,8 @@ description: >-
   may select up to three distinct supported, allowed resource regions. Custom, CI and
   token locations are pinned; global resources and resource-group-scope validation
   do not relocate. Deployment metadata keeps its original location. Deployment
-  retries stay in the validated region, and existing deployment cleanup is unchanged.
+  retries stay in the validated region. Cleanup retains all attempt names and only
+  skips missing records after confirmed preflight rejection and DeploymentNotFound.
 
 inputs:
   modulePath:
@@ -465,6 +466,7 @@ runs:
 
           # Get deployment name
           Write-Output ('{0}={1}' -f 'deploymentNames', ($res.deploymentNames | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+          Write-Output ('{0}={1}' -f 'preflightRejectedDeploymentNames', (ConvertTo-Json -InputObject @($res.preflightRejectedDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
           $deploymentOutput = ($res.deploymentOutput | ConvertTo-Json -Depth 99 -Compress) -replace "'", "''" # Escaping single quotes for resilient access in subsequent steps
@@ -610,6 +612,11 @@ runs:
             TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
             DeploymentNames   = '${{ steps.deploy_step.outputs.deploymentNames }}' | ConvertFrom-Json
             ManagementGroupId = '${{ inputs.managementGroupId }}'
+          }
+
+          $preflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
+          if (-not [string]::IsNullOrWhiteSpace($preflightRejectedDeploymentNames)) {
+            $functionInput['PreflightRejectedDeploymentNames'] = @($preflightRejectedDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
           }
 
           if (-not [String]::IsNullOrEmpty('${{ steps.get-test-subscription.outputs.subscriptionId }}')) {
