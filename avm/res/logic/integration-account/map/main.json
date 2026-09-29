@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6444141976652822954"
+      "templateHash": "10022079303329624741"
     },
     "name": "Integration Account Maps",
     "description": "This module deploys an Integration Account Map."
@@ -102,7 +102,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.logic-integrationaccount-map",
+    "$fxv#0": "46d3xbcp.res.ccc9a8d",
     "defaultContentType": "[if(equals(parameters('mapType'), 'Liquid'), 'application/liquid', 'application/xml')]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },

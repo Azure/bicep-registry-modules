@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14655839004927709958"
+      "templateHash": "11614347311320649941"
     },
     "name": "Azure Virtual Desktop Application Group Application",
     "description": "This module deploys an Azure Virtual Desktop Application Group Application."
@@ -117,7 +117,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.desktopvirtualization-appgroup-app",
+    "$fxv#0": "46d3xbcp.res.9de8a29",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

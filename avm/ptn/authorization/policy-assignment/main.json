@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7528512351581952284"
+      "templateHash": "9268993096707231617"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -190,7 +190,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.authorization-policyassignment",
+    "$fxv#0": "46d3xbcp.ptn.323d983",
     "parametersMerged": "[union(parameters('parameters'), parameters('parameterOverrides'))]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -199,7 +199,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",

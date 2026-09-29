@@ -3,7 +3,9 @@
 Set the location for the resource deployment.
 
 .DESCRIPTION
-This script is used to set the location for the resource deployment.
+Select a supported, allowed resource region without using excluded or previously rejected regions.
+Query the provider namespace explicitly: provider enumeration otherwise includes only registered providers.
+Only an explicit global location uses GlobalResourceGroupLocation. Missing metadata and empty candidate sets fail.
 
 .PARAMETER AllowedRegionsList
 Optional. The list of regions to be considered for the selection.
@@ -20,13 +22,23 @@ Optional. The root path of the repository.
 .PARAMETER GlobalResourceGroupLocation
 Required. The location of the resource group where the global resources will be deployed.
 
+.PARAMETER UnavailableRegions
+Optional. Regions already rejected by template validation. These do not replace the excluded region list.
+
+.PARAMETER AsObject
+Optional. Return the location and whether the resource explicitly reports global availability.
+
 .EXAMPLE
 Get-AvailableResourceLocation -ModuleRoot ".\avm\res\resources\resource-group" -repoRoot .\
 
 Get the recommended paired regions available for the service.
+
+.LINK
+https://learn.microsoft.com/powershell/module/az.resources/get-azresourceprovider
 #>
 
 function Get-AvailableResourceLocation {
+    [CmdletBinding()]
     param (
 
         [Parameter(Mandatory = $false)]
@@ -67,7 +79,13 @@ function Get-AvailableResourceLocation {
             'uaenorth',
             'westeurope',
             'westus2'
-        )
+        ),
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $UnavailableRegions = @(),
+
+        [Parameter(Mandatory = $false)]
+        [switch] $AsObject
     )
 
     # Load used functions
@@ -76,49 +94,69 @@ function Get-AvailableResourceLocation {
     # Configure Resource Type
     $fullModuleIdentifier = ($ModuleRoot -split '[\/|\\]{0,1}avm[\/|\\]{1}(res|ptn|utl)[\/|\\]{1}')[2] -replace '\\', '/'
 
-    if ($ModuleRoot -like 'avm/res*') {
+    $isGlobal = $false
+    $excludedLocations = @($ExcludedRegions + $UnavailableRegions | ForEach-Object { ($_ -replace '\s', '').ToLowerInvariant() })
+    $allowedLocations = @($AllowedRegionsList | ForEach-Object { ($_ -replace '\s', '').ToLowerInvariant() })
+
+    if ($ModuleRoot -match '(^|[\\/])avm[\\/]res[\\/]') {
 
         Write-Verbose "Full module identifier: $fullModuleIdentifier"
         $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $fullModuleIdentifier -Verbose
         Write-Verbose "Formatted resource type: $formattedResourceType"
 
         # Get the resource provider and resource name
-        $formattedResourceProvider = ($formattedResourceType -split '[\/|\\]{1}')[0]
+        $formattedResourceProvider, $formattedServiceName = $formattedResourceType -split '[\\/]', 2
         Write-Verbose "Resource type: $formattedResourceProvider"
-        $formattedServiceName = ($formattedResourceType -split '[\/|\\]{1}')[1]
         Write-Verbose "Resource: $formattedServiceName"
 
-        $resourceRegionList = @()
-        $ResourceRegionList = (Get-AzResourceProvider | Where-Object { $_.ProviderNamespace -eq $formattedResourceProvider }).ResourceTypes | Where-Object { $_.ResourceTypeName -eq $formattedServiceName } | Select-Object -ExpandProperty Locations
+        $provider = Get-AzResourceProvider -ProviderNamespace $formattedResourceProvider -ErrorAction Stop
+        $resourceRegionList = @($provider.ResourceTypes | Where-Object {
+                $_.ResourceTypeName -eq $formattedServiceName
+            } | Select-Object -ExpandProperty Locations | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
         Write-Verbose "Region list: $($resourceRegionList | ConvertTo-Json)"
 
-        if ($resourceRegionList -eq 'global' -or $null -eq $resourceRegionList) {
-            Write-Verbose "Resource is global or does not have a location in the Resource Providers API, default region [$GlobalResourceGroupLocation] will be used for resource group creation"
-            $location = $GlobalResourceGroupLocation # Set Location to resource group location. Globabl resources should have hardocded location in `main.bicep`
-        } else {
+        if ($resourceRegionList.Count -eq 0) {
+            throw "No location metadata was returned for [$formattedResourceType]. Specify customLocation instead of assuming global availability."
+        }
 
-            $locations = Get-AzLocation | Where-Object {
-                $_.DisplayName -in $ResourceRegionList -and
-                $_.Location -notin $ExcludedRegions -and
+        $providerLocations = @($resourceRegionList | ForEach-Object { ($_ -replace '\s', '').ToLowerInvariant() } | Sort-Object -Unique)
+        if ($providerLocations.Count -eq 1 -and $providerLocations[0] -eq 'global') {
+            if ([string]::IsNullOrWhiteSpace($GlobalResourceGroupLocation)) {
+                throw "A resource group location is required for global resource [$formattedResourceType]."
+            }
+            if (($GlobalResourceGroupLocation -replace '\s', '').ToLowerInvariant() -in @($UnavailableRegions | ForEach-Object { ($_ -replace '\s', '').ToLowerInvariant() })) {
+                throw "The global resource's resource group location has already failed validation."
+            }
+            $isGlobal = $true
+            $location = $GlobalResourceGroupLocation
+            Write-Verbose "Resource explicitly reports global availability; using resource group location [$location]."
+        } else {
+            $locations = Get-AzLocation -ErrorAction Stop | Where-Object {
+                (($_.DisplayName -replace '\s', '').ToLowerInvariant() -in $providerLocations -or $_.Location -in $providerLocations) -and
+                $_.Location -notin $excludedLocations -and
                 $_.PairedRegion -ne '{}' -and
                 $_.RegionCategory -eq 'Recommended'
             } | Select-Object -ExpandProperty Location
             Write-Verbose "Available Locations: $($locations | ConvertTo-Json)"
 
-            $filteredAllowedLocations = @($locations | Where-Object { $_ -in $AllowedRegionsList })
-            Write-Verbose "Filtered allowed locations: $($filteredAllowedLocations | ConvertTo-Json)"
-            $index = Get-Random -Maximum ($filteredAllowedLocations.Count)
-            Write-Verbose "Generated random index [$index]"
-            $location = $filteredAllowedLocations[$index]
+            $candidates = @($locations | Where-Object { $_ -in $allowedLocations } | Sort-Object -Unique)
         }
     } else {
-        Write-Verbose 'Module is not resource so defaulting to the allowed region list'
-        $index = Get-Random -Maximum ($AllowedRegionsList.Count)
-        Write-Verbose "Generated random index [$index]"
-        $location = $AllowedRegionsList[$index]
+        Write-Verbose 'Module is not a resource module; selecting from the allowed region list.'
+        $candidates = @($allowedLocations | Where-Object { $_ -notin $excludedLocations } | Sort-Object -Unique)
+    }
+
+    if (-not $isGlobal) {
+        if ($candidates.Count -eq 0) {
+            throw "No supported, allowed regions remain for [$ModuleRoot] after exclusions and previous validation attempts."
+        }
+        $location = $candidates[(Get-Random -Maximum $candidates.Count)]
     }
 
     Write-Verbose "Selected location [$location]" -Verbose
 
+    if ($AsObject) {
+        return @{ Location = $location; IsGlobal = $isGlobal }
+    }
     return $location
 }

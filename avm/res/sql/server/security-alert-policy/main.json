@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14954869457680971705"
+      "templateHash": "15447449966364222619"
     },
     "name": "Azure SQL Server Security Alert Policies",
     "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -100,7 +100,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-securityalertpolicy",
+    "$fxv#0": "46d3xbcp.res.63d577a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

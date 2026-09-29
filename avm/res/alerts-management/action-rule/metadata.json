@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Action Rules",
   "moduleDescription": "AVM Resource Module for Action Rules",
-  "telemetryIdPrefix": "46d3xbcp.res.alertsmanagement-actionrule",
+  "telemetryIdPrefix": "46d3xbcp.res.b28e644",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.alertsmanagement-actionrule"],
   "canonicalType": "Microsoft.AlertsManagement/actionRules",
   "owners": ["judyer28"]
 }

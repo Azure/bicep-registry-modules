@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure NetApp File - Capacity Pool",
   "moduleDescription": "AVM Child Module for Azure NetApp File - Capacity Pool",
-  "telemetryIdPrefix": "46d3xbcp.res.netapp-netappaccount-capacitypool",
+  "telemetryIdPrefix": "46d3xbcp.res.73c84a7",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.netapp-netappaccount-capacitypool"],
   "canonicalType": "Microsoft.NetApp/netAppAccounts/capacityPools"
 }

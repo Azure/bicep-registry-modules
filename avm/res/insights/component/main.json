@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7462239540598179435"
+      "templateHash": "17428951321406906429"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance."
@@ -448,7 +448,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.insights-component",
+    "$fxv#0": "46d3xbcp.res.a36a93f",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -612,7 +612,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16961110415658336771"
+              "templateHash": "3665297473031529344"
             },
             "name": "Application Insights Linked Storage Account",
             "description": "This component deploys an Application Insights Linked Storage Account."
@@ -639,7 +639,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.insights-component-linkedstoracct",
+            "$fxv#0": "46d3xbcp.res.48ecdbe",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

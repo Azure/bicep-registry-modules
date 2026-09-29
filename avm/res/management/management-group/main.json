@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6605868315724262956"
+      "templateHash": "14114017645589637447"
     },
     "name": "Management Groups",
     "description": "This template will prepare the management group structure based on the provided parameter.\n\nThis module has some known **limitations**:\n- It's not possible to change the display name of the root management group (the one that has the tenant GUID as ID)\n- It can't manage the Root (/) management group"
@@ -48,7 +48,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.management-managementgroup",
+    "$fxv#0": "46d3xbcp.res.07588e9",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

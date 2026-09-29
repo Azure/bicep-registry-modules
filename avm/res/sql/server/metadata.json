@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure SQL Server",
   "moduleDescription": "AVM Resource Module for Azure SQL Server",
-  "telemetryIdPrefix": "46d3xbcp.res.sql-server",
+  "telemetryIdPrefix": "46d3xbcp.res.31e070f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.sql-server"],
   "canonicalType": "Microsoft.Sql/servers",
   "owners": []
 }

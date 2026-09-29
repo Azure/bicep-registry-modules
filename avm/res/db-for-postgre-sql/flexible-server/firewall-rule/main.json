@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17777148902592713637"
+      "templateHash": "17244042844283911652"
     },
     "name": "DBforPostgreSQL Flexible Server Firewall Rules",
     "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -44,7 +44,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dbforpostgresql-flexisrv-fwrule",
+    "$fxv#0": "46d3xbcp.res.9cd4126",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

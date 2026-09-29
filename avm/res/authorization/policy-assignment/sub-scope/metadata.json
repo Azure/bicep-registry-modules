@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Authorization - Policy Assignment - Subscription Scope",
   "moduleDescription": "AVM Child Module for Authorization - Policy Assignment - Subscription Scope",
-  "telemetryIdPrefix": "46d3xbcp.res.authz-policyassignment_subscope",
+  "telemetryIdPrefix": "46d3xbcp.res.b242ce4",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.authz-policyassignment_subscope"],
   "canonicalType": "Microsoft.Authorization/policyAssignments"
 }

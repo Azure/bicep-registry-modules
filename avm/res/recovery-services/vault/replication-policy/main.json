@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7978934245603630766"
+      "templateHash": "14339499590550285478"
     },
     "name": "Recovery Services Vault Replication Policies",
     "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -64,7 +64,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.recsvcs-vault-replicationpolicy",
+    "$fxv#0": "46d3xbcp.res.91801e1",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

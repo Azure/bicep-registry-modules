@@ -3,5 +3,6 @@
   "moduleDisplayName": "IoT Hub Consumer Groups",
   "moduleDescription": "This module deploys an IoT Hub Consumer Group.",
   "canonicalType": "Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups",
-  "telemetryIdPrefix": "46d3xbcp.res.iot-hub-consumer-group"
+  "telemetryIdPrefix": "46d3xbcp.res.1d02abb",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.iot-hub-consumer-group"]
 }

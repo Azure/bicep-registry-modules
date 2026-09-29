@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6200679921773837228"
+      "templateHash": "3433539769180886409"
     },
     "name": "Synapse Workspace Integration Runtimes",
     "description": "This module deploys a Synapse Workspace Integration Runtime."
@@ -49,7 +49,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.synapse-workspace-integrationruntime",
+    "$fxv#0": "46d3xbcp.res.4b1c438",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

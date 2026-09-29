@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8611555224254939846"
+      "templateHash": "8340414260305197441"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -148,7 +148,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.hybridcompute-license",
+    "$fxv#0": "46d3xbcp.res.9da63ec",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

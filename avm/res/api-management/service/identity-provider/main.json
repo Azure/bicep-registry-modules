@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5731836089640025864"
+      "templateHash": "11670304870814614604"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider."
@@ -125,7 +125,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-identityprovider",
+    "$fxv#0": "46d3xbcp.res.deef1dc",
     "isAadB2C": "[equals(parameters('type'), 'aadB2C')]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },

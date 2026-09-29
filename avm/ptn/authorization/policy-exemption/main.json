@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17146975892179068966"
+      "templateHash": "2791585445640690510"
     },
     "name": "Policy Exemptions (All scopes)",
     "description": "This module deploys a Policy Exemption at a Management Group, Subscription, Resource Group, or Resource scope."
@@ -138,7 +138,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.authorization-policyexemption",
+    "$fxv#0": "46d3xbcp.ptn.736245b",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
@@ -146,7 +146,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15136062158490549384"
+      "templateHash": "3390380406234937570"
     },
     "name": "Machine Learning Services Workspaces Datastores",
     "description": "This module creates a datastore in a Machine Learning Services workspace."
@@ -41,7 +41,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.mlservices-workspace-datastore",
+    "$fxv#0": "46d3xbcp.res.43c99cb",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

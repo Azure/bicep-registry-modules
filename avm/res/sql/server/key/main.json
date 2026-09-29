@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10309888564681707655"
+      "templateHash": "7791739841364384823"
     },
     "name": "Azure SQL Server Keys",
     "description": "This module deploys an Azure SQL Server Key."
@@ -52,7 +52,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-key",
+    "$fxv#0": "46d3xbcp.res.a9991c5",
     "splittedKeyUri": "[split(parameters('uri'), '/')]",
     "keyVersion": "[tryGet(variables('splittedKeyUri'), 5)]",
     "serverKeyName": "[if(not(empty(parameters('name'))), parameters('name'), if(empty(parameters('uri')), 'ServiceManaged', if(not(empty(variables('keyVersion'))), format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('keyVersion')), format('{0}_{1}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4]))))]",

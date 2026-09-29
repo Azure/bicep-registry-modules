@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3348231404428113259"
+      "templateHash": "5091640449353723874"
     },
     "name": "Data Protection Backup Vault Backup Policies",
     "description": "This module deploys a Data Protection Backup Vault Backup Policy."
@@ -40,7 +40,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.dataprot-backupvault-backuppolicy",
+    "$fxv#0": "46d3xbcp.res.439b59e",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

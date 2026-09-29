@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13957686919514656507"
+      "templateHash": "21965757079745090"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -157,7 +157,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-product",
+    "$fxv#0": "46d3xbcp.res.e04b6c5",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -236,7 +236,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6303035606206372289"
+              "templateHash": "16547638608441665033"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -269,7 +269,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-productapi",
+            "$fxv#0": "46d3xbcp.res.d7ff2bd",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -362,7 +362,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7750204794213646550"
+              "templateHash": "777421721479539789"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -395,7 +395,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-productgroup",
+            "$fxv#0": "46d3xbcp.res.1bda9da",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -494,7 +494,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17762154719180422649"
+              "templateHash": "16104403097070640826"
             },
             "name": "API Management Service Product Policies",
             "description": "This module deploys an API Management Service Product Policy."
@@ -547,7 +547,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-productpolicy",
+            "$fxv#0": "46d3xbcp.res.d791832",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5295053779228623592"
+      "templateHash": "6854366009842388982"
     },
     "name": "DevTest Lab Schedules",
     "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -211,7 +211,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.devtestlab-lab-schedule",
+    "$fxv#0": "46d3xbcp.res.2e79b13",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

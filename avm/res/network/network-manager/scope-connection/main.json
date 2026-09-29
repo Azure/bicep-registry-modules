@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "518829630386514907"
+      "templateHash": "7585843974960381373"
     },
     "name": "Network Manager Scope Connections",
     "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
@@ -53,7 +53,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-scopeconnection",
+    "$fxv#0": "46d3xbcp.res.4773af6",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

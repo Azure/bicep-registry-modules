@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Data Collection Rule",
   "moduleDescription": "AVM Resource Module for Data Collection Rule",
-  "telemetryIdPrefix": "46d3xbcp.res.insights-datacollectionrule",
+  "telemetryIdPrefix": "46d3xbcp.res.743c7d9",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.insights-datacollectionrule"],
   "alternativeNames": ["DCR"],
   "canonicalType": "Microsoft.Insights/dataCollectionRules",
   "owners": ["krbar"]

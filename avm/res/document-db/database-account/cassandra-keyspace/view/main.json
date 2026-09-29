@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16598669613904297333"
+      "templateHash": "12836718812769425590"
     },
     "name": "DocumentDB Database Account Cassandra Keyspaces Views",
     "description": "This module deploys a Cassandra View (Materialized View) within a Cassandra Keyspace in a CosmosDB Account."
@@ -76,7 +76,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.doctdb-dbacct-cassandrkeyspaceview",
+    "$fxv#0": "46d3xbcp.res.5ee2d3f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

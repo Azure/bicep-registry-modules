@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18059869867337410503"
+      "templateHash": "2856584312892907601"
     },
     "name": "Automation Account Python 2 Packages",
     "description": "This module deploys a Python2 Package in the Automation Account."
@@ -53,7 +53,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-python2package",
+    "$fxv#0": "46d3xbcp.res.f531ab4",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

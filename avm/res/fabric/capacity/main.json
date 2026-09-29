@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18275481747270492517"
+      "templateHash": "12843591393612163681"
     },
     "name": "Fabric Capacities",
     "description": "This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric."
@@ -129,7 +129,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.fabric-capacity",
+    "$fxv#0": "46d3xbcp.res.d4aabaa",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

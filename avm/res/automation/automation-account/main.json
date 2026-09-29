@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13447374759738077493"
+      "templateHash": "16026018928128254529"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -1148,7 +1148,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.automation-automationaccount",
+    "$fxv#0": "46d3xbcp.res.1fc724c",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(or(and(not(empty(parameters('managedIdentities'))), or(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), not(empty(variables('formattedUserAssignedIdentities'))))), not(empty(variables('formattedUserAssignedIdentities')))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(variables('formattedUserAssignedIdentities'))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(variables('formattedUserAssignedIdentities'))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1351,7 +1351,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4929570343267325714"
+              "templateHash": "8212803426032657063"
             },
             "name": "Automation Account Credential",
             "description": "This module deploys Azure Automation Account Credential."
@@ -1397,7 +1397,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-credential",
+            "$fxv#0": "46d3xbcp.res.9d7ad03",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1511,7 +1511,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10184526341359491759"
+              "templateHash": "2861673837947038659"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module."
@@ -1565,7 +1565,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-module",
+            "$fxv#0": "46d3xbcp.res.07d043f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1689,7 +1689,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13836604088488188914"
+              "templateHash": "2479633964515038127"
             },
             "name": "Automation Account Powershell72 Modules",
             "description": "This module deploys a Powershell72 Module in the Automation Account."
@@ -1743,7 +1743,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-powersh72module",
+            "$fxv#0": "46d3xbcp.res.01a7a3f",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1864,7 +1864,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11563827877025003126"
+              "templateHash": "5141850404285509649"
             },
             "name": "Automation Account Python 3 Packages",
             "description": "This module deploys a Python3 Package in the Automation Account."
@@ -1911,7 +1911,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-python3package",
+            "$fxv#0": "46d3xbcp.res.e3d4040",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2031,7 +2031,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18059869867337410503"
+              "templateHash": "2856584312892907601"
             },
             "name": "Automation Account Python 2 Packages",
             "description": "This module deploys a Python2 Package in the Automation Account."
@@ -2078,7 +2078,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-python2package",
+            "$fxv#0": "46d3xbcp.res.f531ab4",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2209,7 +2209,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "18112910946326163143"
+              "templateHash": "3070427123485884560"
             },
             "name": "Automation Account Schedules",
             "description": "This module deploys an Azure Automation Account Schedule."
@@ -2303,7 +2303,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-schedule",
+            "$fxv#0": "46d3xbcp.res.da796a3",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2427,7 +2427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16140618746936249559"
+              "templateHash": "11938995930554317054"
             },
             "name": "Automation Account Runbooks",
             "description": "This module deploys an Azure Automation Account Runbook."
@@ -2527,7 +2527,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-runbook",
+            "$fxv#0": "46d3xbcp.res.497cce1",
             "accountSasProperties": {
               "signedServices": "b",
               "signedPermission": "r",
@@ -2662,7 +2662,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1740602413292650451"
+              "templateHash": "13608833568972038396"
             },
             "name": "Automation Account Job Schedules",
             "description": "This module deploys an Azure Automation Account Job Schedule."
@@ -2716,7 +2716,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-jobschedule",
+            "$fxv#0": "46d3xbcp.res.d98ec5c",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2827,7 +2827,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8333407186533452429"
+              "templateHash": "11130175575463208730"
             },
             "name": "Automation Account Variables",
             "description": "This module deploys an Azure Automation Account Variable."
@@ -2874,7 +2874,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-variable",
+            "$fxv#0": "46d3xbcp.res.510c433",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2981,7 +2981,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1255617380562156688"
+              "templateHash": "7956762809536012649"
             },
             "name": "Automation Account Webhook",
             "description": "This module deploys an Azure Automation Account Webhook."
@@ -3035,7 +3035,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-webhook",
+            "$fxv#0": "46d3xbcp.res.996f3d1",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -3167,7 +3167,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10049376942537356208"
+              "templateHash": "15130821332346684314"
             },
             "name": "Automation Account Source Controls",
             "description": "This module deploys an Azure Automation Account Source Control."
@@ -3257,7 +3257,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-sourcecontrol",
+            "$fxv#0": "46d3xbcp.res.e66c4ad",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -3681,7 +3681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3989774702047553561"
+              "templateHash": "18145839711960548350"
             },
             "name": "Automation Account Hybrid Runbook Worker Groups",
             "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group."
@@ -3741,7 +3741,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.aut-autacct-hybrunbookwrkrgrp",
+            "$fxv#0": "46d3xbcp.res.0a00e91",
             "telemetryIdPrefix": "[variables('$fxv#0')]",
             "enableReferencedModulesTelemetry": false
           },
@@ -3817,7 +3817,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11820486064985425961"
+                      "templateHash": "7542107436877816551"
                     },
                     "name": "Automation Account Hybrid Runbook Worker Group Workers",
                     "description": "This module deploys an Azure Automation Account Hybrid Runbook Worker Group Worker."
@@ -3856,7 +3856,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo",
+                    "$fxv#0": "46d3xbcp.res.d5e33fe",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [

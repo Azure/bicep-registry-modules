@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Security Insights - Data Connector",
   "moduleDescription": "AVM Resource Module for Security Insights - Data Connector",
-  "telemetryIdPrefix": "46d3xbcp.res.securityinsights-dataconnector",
+  "telemetryIdPrefix": "46d3xbcp.res.0068f11",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.securityinsights-dataconnector"],
   "canonicalType": "Microsoft.SecurityInsights/dataConnectors",
   "owners": []
 }

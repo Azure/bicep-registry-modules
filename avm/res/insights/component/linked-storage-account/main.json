@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16961110415658336771"
+      "templateHash": "3665297473031529344"
     },
     "name": "Application Insights Linked Storage Account",
     "description": "This component deploys an Application Insights Linked Storage Account."
@@ -32,7 +32,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.insights-component-linkedstoracct",
+    "$fxv#0": "46d3xbcp.res.48ecdbe",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

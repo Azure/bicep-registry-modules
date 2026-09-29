@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16862915427636161324"
+      "templateHash": "3151713488724578957"
     },
     "name": "API Management Workspace Loggers",
     "description": "This module deploys a Logger in an API Management Workspace."
@@ -82,7 +82,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacelogger",
+    "$fxv#0": "46d3xbcp.res.efca6dc",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

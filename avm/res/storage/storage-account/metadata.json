@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Storage Account",
   "moduleDescription": "AVM Resource Module for Storage Account",
-  "telemetryIdPrefix": "46d3xbcp.res.storage-storageaccount",
+  "telemetryIdPrefix": "46d3xbcp.res.c73d079",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.storage-storageaccount"],
   "canonicalType": "Microsoft.Storage/storageAccounts",
   "owners": ["fblix"]
 }

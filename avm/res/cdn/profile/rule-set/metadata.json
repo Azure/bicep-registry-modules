@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "CDN Profile - Rule Set",
   "moduleDescription": "AVM Child Module for CDN Profile - Rule Set",
-  "telemetryIdPrefix": "46d3xbcp.res.cdn-profile-ruleset",
+  "telemetryIdPrefix": "46d3xbcp.res.5d425cc",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.cdn-profile-ruleset"],
   "canonicalType": "Microsoft.Cdn/profiles/ruleSets"
 }

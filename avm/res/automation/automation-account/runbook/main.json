@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16140618746936249559"
+      "templateHash": "11938995930554317054"
     },
     "name": "Automation Account Runbooks",
     "description": "This module deploys an Azure Automation Account Runbook."
@@ -106,7 +106,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-runbook",
+    "$fxv#0": "46d3xbcp.res.497cce1",
     "accountSasProperties": {
       "signedServices": "b",
       "signedPermission": "r",

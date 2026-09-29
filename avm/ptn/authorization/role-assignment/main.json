@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "18155104921566808892"
+      "templateHash": "9306824986472808183"
     },
     "name": "Role Assignments (All scopes)",
     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -106,7 +106,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.authorization-roleassignment",
+    "$fxv#0": "46d3xbcp.ptn.86670f3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

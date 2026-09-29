@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12550739481452096864"
+      "templateHash": "15686368176066717645"
     },
     "name": "API Management Service Portal Settings",
     "description": "This module deploys an API Management Service Portal Setting."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-portalsetting",
+    "$fxv#0": "46d3xbcp.res.ab98503",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

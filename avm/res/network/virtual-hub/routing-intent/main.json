@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3024388258146965766"
+      "templateHash": "12377599172909381488"
     },
     "name": "Virtual Hub Routing Intent",
     "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -56,7 +56,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-virtualhub-routingintent",
+    "$fxv#0": "46d3xbcp.res.3e9625d",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [
@@ -64,7 +64,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

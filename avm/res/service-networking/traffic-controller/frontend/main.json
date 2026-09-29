@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3682066734050233121"
+      "templateHash": "18152540901099762360"
     },
     "name": "Application Gateway for Containers Frontend",
     "description": "This module deploys an Application Gateway for Containers Frontend"
@@ -39,7 +39,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.servicenetworking-traffctrlfrontend",
+    "$fxv#0": "46d3xbcp.res.1b6e627",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

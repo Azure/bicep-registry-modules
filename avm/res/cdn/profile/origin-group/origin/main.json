@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16139429313275944142"
+      "templateHash": "1212764520660118167"
     },
     "name": "CDN Profiles Origin",
     "description": "This module deploys a CDN Profile Origin."
@@ -108,7 +108,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.cdn-profile-origingroup-origin",
+    "$fxv#0": "46d3xbcp.res.aa074ae",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

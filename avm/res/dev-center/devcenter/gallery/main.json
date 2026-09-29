@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6347347247115988714"
+      "templateHash": "4709732039012651889"
     },
     "name": "Dev Center Gallery",
     "description": "This module deploys a Dev Center Gallery."
@@ -48,7 +48,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.devcenter-devcenter-gallery",
+    "$fxv#0": "46d3xbcp.res.465613c",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

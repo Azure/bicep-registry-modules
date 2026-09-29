@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16195794663123956238"
+      "templateHash": "13334967628535029519"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 resiliency configuration."
@@ -476,7 +476,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.app-iaasvmcosmosdbt4",
+    "$fxv#0": "46d3xbcp.ptn.ca7f6a1",
     "$fxv#1": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "managedIdentityName": "sshKeyGenIdentity",

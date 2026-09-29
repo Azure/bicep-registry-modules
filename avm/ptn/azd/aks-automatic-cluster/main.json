@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17650398970705906824"
+      "templateHash": "14230575760787767670"
     },
     "name": "Azd AKS Automatic Cluster",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -104,7 +104,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-aksautomaticcluster",
+    "$fxv#0": "46d3xbcp.ptn.29be120",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

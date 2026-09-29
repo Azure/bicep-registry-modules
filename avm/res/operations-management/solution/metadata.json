@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Operations Management Solution",
   "moduleDescription": "AVM Resource Module for Operations Management Solution",
-  "telemetryIdPrefix": "46d3xbcp.res.operationsmanagement-solution",
+  "telemetryIdPrefix": "46d3xbcp.res.9e4e67d",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.operationsmanagement-solution"],
   "canonicalType": "Microsoft.OperationsManagement/solutions",
   "owners": ["krbar"]
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3758869093394383139"
+      "templateHash": "8120590578335767012"
     },
     "name": "Container Registries scope maps",
     "description": "This module deploys an Azure Container Registry (ACR) scope map."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.containerregistry-registry-scopemap",
+    "$fxv#0": "46d3xbcp.res.a858589",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

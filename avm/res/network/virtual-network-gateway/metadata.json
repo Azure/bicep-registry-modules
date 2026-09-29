@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Virtual Network Gateway",
   "moduleDescription": "AVM Resource Module for Virtual Network Gateway",
-  "telemetryIdPrefix": "46d3xbcp.res.network-virtualnetworkgateway",
+  "telemetryIdPrefix": "46d3xbcp.res.b1a096c",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-virtualnetworkgateway"],
   "alternativeNames": ["VNET GW"],
   "canonicalType": "Microsoft.Network/virtualNetworkGateways",
   "owners": ["fabmas"]

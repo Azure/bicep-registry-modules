@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "4312427540592711301"
+      "templateHash": "89754318346620530"
     },
     "name": "Eventgrid Namespace Permissions Bindings",
     "description": "This module deploys an Eventgrid Namespace Permission Binding."
@@ -62,7 +62,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-permbinding",
+    "$fxv#0": "46d3xbcp.res.39b81e7",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

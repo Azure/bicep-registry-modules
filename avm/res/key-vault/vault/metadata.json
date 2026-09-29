@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Key Vault",
   "moduleDescription": "AVM Resource Module for Key Vault",
-  "telemetryIdPrefix": "46d3xbcp.res.keyvault-vault",
+  "telemetryIdPrefix": "46d3xbcp.res.4019a57",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.keyvault-vault"],
   "alternativeNames": ["KV"],
   "canonicalType": "Microsoft.KeyVault/vaults",
   "owners": ["fblix"]
