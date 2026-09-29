@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17205254483875188934"
+      "templateHash": "17189783041879286275"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."
@@ -94,7 +94,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.app-managedenvironment-certificate",
+    "$fxv#0": "46d3xbcp.res.46ffa7a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

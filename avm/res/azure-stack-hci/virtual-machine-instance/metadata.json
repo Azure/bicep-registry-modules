@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Stack HCI Virtual Machine Instance",
   "moduleDescription": "AVM Resource Module for Azure Stack HCI Virtual Machine Instance",
-  "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-virtualmachineinstance",
+  "telemetryIdPrefix": "46d3xbcp.res.aed03ed",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.azurestackhci-virtualmachineinstance"],
   "canonicalType": "Microsoft.AzureStackHCI/virtualMachineInstances",
   "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
 }

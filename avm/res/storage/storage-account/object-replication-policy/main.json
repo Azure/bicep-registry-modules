@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10712094590315542205"
+      "templateHash": "12825447910121940613"
     },
     "name": "Storage Account Object Replication Policy",
     "description": "This module deploys a Storage Account Object Replication Policy for both the source account and destination account."
@@ -116,7 +116,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.storage-storacct-objectreplpolicy",
+    "$fxv#0": "46d3xbcp.res.994992f",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false,
     "destAccountResourceIdParts": "[split(parameters('destinationAccountResourceId'), '/')]",
@@ -193,7 +193,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "9853098262509966612"
+              "templateHash": "4665383193426697350"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -306,7 +306,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.storage-storacct-objectreplpolicypol",
+            "$fxv#0": "46d3xbcp.res.206269b",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -444,7 +444,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "9853098262509966612"
+              "templateHash": "4665383193426697350"
             },
             "name": "Storage Account Object Replication Policy",
             "description": "This module deploys a Storage Account Object Replication Policy for a provided storage account."
@@ -557,7 +557,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.storage-storacct-objectreplpolicypol",
+            "$fxv#0": "46d3xbcp.res.206269b",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

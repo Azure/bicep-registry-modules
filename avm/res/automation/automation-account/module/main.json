@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10184526341359491759"
+      "templateHash": "2861673837947038659"
     },
     "name": "Automation Account Modules",
     "description": "This module deploys an Azure Automation Account Module."
@@ -60,7 +60,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.aut-autacct-module",
+    "$fxv#0": "46d3xbcp.res.07d043f",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

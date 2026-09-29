@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17232948707956823780"
+      "templateHash": "12467972398236705433"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service."
@@ -342,7 +342,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.storage-storageaccount-tableservice",
+    "$fxv#0": "46d3xbcp.res.080f8f8",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "name": "default",
     "enableReferencedModulesTelemetry": false
@@ -458,7 +458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "7773252519680442896"
+              "templateHash": "6066033809434182903"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table."
@@ -580,7 +580,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.storage-table",
+            "$fxv#0": "46d3xbcp.res.80a6d32",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",

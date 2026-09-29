@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14974093211744303513"
+      "templateHash": "3895798121115673249"
     },
     "name": "VPN Gateway VPN Connections",
     "description": "This module deploys a VPN Gateway VPN Connection."
@@ -147,7 +147,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-vpngateway-vpnconnection",
+    "$fxv#0": "46d3xbcp.res.a23bc37",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

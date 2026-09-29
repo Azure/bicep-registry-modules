@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8607995055864251270"
+      "templateHash": "5803343456396733312"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy."
@@ -57,7 +57,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-site-extension",
+    "$fxv#0": "46d3xbcp.res.bfc27c2",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

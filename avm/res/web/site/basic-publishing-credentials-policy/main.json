@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13459401278200130628"
+      "templateHash": "4153762679031264439"
     },
     "name": "Web Site Basic Publishing Credentials Policies",
     "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-site-basicpublishingcredpolicy",
+    "$fxv#0": "46d3xbcp.res.2c6d950",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5767903306025077011"
+      "templateHash": "17055456450709802874"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -137,7 +137,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.opins-worksp-datasource",
+    "$fxv#0": "46d3xbcp.res.c396156",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

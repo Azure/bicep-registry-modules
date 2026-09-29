@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - Workspace - Backend",
   "moduleDescription": "AVM Child Module for API Management Service - Workspace - Backend",
-  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-service-workspacebackend",
+  "telemetryIdPrefix": "46d3xbcp.res.2bb4abb",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-service-workspacebackend"],
   "canonicalType": "Microsoft.ApiManagement/service/workspaces/backends"
 }

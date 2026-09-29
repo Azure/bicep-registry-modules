@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "11100816263552470219"
+      "templateHash": "7005368868370677801"
     },
     "name": "Web/Function Apps Hybrid Connection Relay",
     "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -39,7 +39,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.web-site-hybconnnamespacerelay",
+    "$fxv#0": "46d3xbcp.res.c082e51",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

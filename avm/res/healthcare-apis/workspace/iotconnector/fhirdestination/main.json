@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3872333191631626918"
+      "templateHash": "3801787886324939302"
     },
     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
@@ -73,7 +73,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.healthcapis-workspace-iotconnfhirdst",
+    "$fxv#0": "46d3xbcp.res.bec37d0",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

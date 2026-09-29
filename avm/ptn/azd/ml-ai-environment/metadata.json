@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - ML AI Environment",
   "moduleDescription": "AVM Pattern Module for AZD - ML AI Environment",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-mlaienvironment",
+  "telemetryIdPrefix": "46d3xbcp.ptn.62a6703",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-mlaienvironment"],
   "alternativeNames": ["Azure Developer CLI - Machine Learning AI Environment"],
   "canonicalType": "azd/ml-ai-environment",
   "owners": []

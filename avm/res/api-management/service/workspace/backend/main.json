@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2324334690024349608"
+      "templateHash": "16046230489222855494"
     },
     "name": "API Management Workspace Backends",
     "description": "This module deploys a Backend in an API Management Workspace."
@@ -147,7 +147,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-service-workspacebackend",
+    "$fxv#0": "46d3xbcp.res.2bb4abb",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

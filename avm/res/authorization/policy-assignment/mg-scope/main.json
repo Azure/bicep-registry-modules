@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8367122497424242780"
+      "templateHash": "14650589787057978989"
     },
     "name": "Policy Assignments (Management Group scope)",
     "description": "This module deploys a Policy Assignment at a Management Group scope. Optionally, it further assigns permissions to the policy's identity (if configured) to various scopes. Note, if you provide any role definition ids and or define additional scopes to assign permissions to, set permissions are deployled as a permutation of the provided parameters. In other words, each role would be provided to each scope for the assignment's identity."
@@ -205,7 +205,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.authz-policyassignment_mgscope",
+    "$fxv#0": "46d3xbcp.res.5a0bcb4",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceId'))), createObject(format('{0}', parameters('managedIdentities').userAssignedResourceId), createObject()), null())), null())]",
     "telemetryIdPrefix": "[variables('$fxv#0')]",
     "expandedMgRoleAssignments": "[reduce(union(coalesce(parameters('additionalManagementGroupsIDsToAssignRbacTo'), createArray()), createArray(managementGroup().name)), createArray(), lambda('currMangementGroupId', 'nextMangementGroupId', concat(lambdaVariables('currMangementGroupId'), map(coalesce(parameters('roleDefinitionIds'), createArray()), lambda('roleDefinitionId', createObject('managementGroupId', lambdaVariables('nextMangementGroupId'), 'roleDefinitionId', lambdaVariables('roleDefinitionId')))))))]",

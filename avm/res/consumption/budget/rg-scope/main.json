@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "556654699070456863"
+      "templateHash": "13105564716482250050"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for a Resource Group."
@@ -180,7 +180,7 @@
         }
       }
     ],
-    "$fxv#0": "46d3xbcp.res.consumption-budget_rgscope",
+    "$fxv#0": "46d3xbcp.res.5039583",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - ACR Container App",
   "moduleDescription": "AVM Pattern Module for AZD - ACR Container App",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-acrcontainerapp",
+  "telemetryIdPrefix": "46d3xbcp.ptn.1b7ad93",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-acrcontainerapp"],
   "alternativeNames": ["Azure Developer CLI - ACR Container App"],
   "canonicalType": "azd/acr-container-app",
   "owners": ["JeffreyCA"]

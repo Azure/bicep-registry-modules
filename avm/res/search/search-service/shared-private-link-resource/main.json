@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13059355327525816406"
+      "templateHash": "293631800242657123"
     },
     "name": "Search Services Private Link Resources",
     "description": "This module deploys a Search Service Private Link Resource."
@@ -58,7 +58,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.search-searchsvc-sharedprivlinkres",
+    "$fxv#0": "46d3xbcp.res.0ba7be3",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DB for MySQL Flexible Server - Firewall Rule",
   "moduleDescription": "AVM Child Module for DB for MySQL Flexible Server - Firewall Rule",
-  "telemetryIdPrefix": "46d3xbcp.res.dbformysql-flexisrv-firewallrule",
+  "telemetryIdPrefix": "46d3xbcp.res.55b5c3f",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.dbformysql-flexisrv-firewallrule"],
   "canonicalType": "Microsoft.DBforMySQL/flexibleServers/firewallRules"
 }

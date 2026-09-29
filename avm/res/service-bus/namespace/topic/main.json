@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6286783417714993621"
+      "templateHash": "14245372971628139488"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic."
@@ -637,7 +637,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.servicebus-namespacetopic",
+    "$fxv#0": "46d3xbcp.res.28051fc",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
@@ -760,7 +760,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11005767813274705168"
+              "templateHash": "17999232906924038498"
             },
             "name": "Service Bus Namespace Topic Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Topic Authorization Rule."
@@ -805,7 +805,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.servicebus-namespace-topicauthzrule",
+            "$fxv#0": "46d3xbcp.res.fc0fe40",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -947,7 +947,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4358516059121220196"
+              "templateHash": "2740648982109013302"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -1333,7 +1333,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.servicebus-namespace-topicsub",
+            "$fxv#0": "46d3xbcp.res.9b4690c",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1441,7 +1441,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "5724159720446084798"
+                      "templateHash": "13257050455721514365"
                     },
                     "name": "Service Bus Namespace Topic Subscription Rule",
                     "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -1702,7 +1702,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.servicebus-namespace-topicsubrule",
+                    "$fxv#0": "46d3xbcp.res.d20bda8",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {

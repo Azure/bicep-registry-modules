@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "985587233205240946"
+      "templateHash": "16846337031868277873"
     },
     "name": "Azure SQL Server Encryption Protector",
     "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -50,7 +50,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.sql-server-encryptionprotector",
+    "$fxv#0": "46d3xbcp.res.7fa5222",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": [

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "DDoS Protection Plan",
   "moduleDescription": "AVM Resource Module for DDoS Protection Plan",
-  "telemetryIdPrefix": "46d3xbcp.res.network-ddosprotectionplan",
+  "telemetryIdPrefix": "46d3xbcp.res.20024aa",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-ddosprotectionplan"],
   "canonicalType": "Microsoft.Network/ddosProtectionPlans",
   "owners": ["segraef"]
 }

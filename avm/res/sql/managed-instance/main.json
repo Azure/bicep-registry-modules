@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13255990535612194706"
+      "templateHash": "11250836320080498395"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -1028,7 +1028,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.sql-managedinstance",
+    "$fxv#0": "46d3xbcp.res.9f9c4a3",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1257,7 +1257,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2001829088900204972"
+              "templateHash": "17637500977625375785"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1623,7 +1623,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-database",
+            "$fxv#0": "46d3xbcp.res.c5ddd72",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1753,7 +1753,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "3562867664416103186"
+                      "templateHash": "10050786793259804881"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -1794,7 +1794,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.sql-mi-dbbckpshortermretpolicy",
+                    "$fxv#0": "46d3xbcp.res.5d29f4a",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -1899,7 +1899,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "1052709867837814831"
+                      "templateHash": "5729713481220739386"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -1972,7 +1972,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.sql-mi-dbbckplongermretpolicy",
+                    "$fxv#0": "46d3xbcp.res.53243b5",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [
@@ -2123,7 +2123,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6400310409760028455"
+              "templateHash": "14065786600656180115"
             },
             "name": "SQL Managed Instance Security Alert Policies",
             "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -2207,7 +2207,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-securityalertpolicy",
+            "$fxv#0": "46d3xbcp.res.003a699",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2334,7 +2334,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4989088677689178555"
+              "templateHash": "9912814974174905590"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -2391,7 +2391,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-vulnerabilityassessment",
+            "$fxv#0": "46d3xbcp.res.329624e",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2570,7 +2570,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3376868513712244053"
+              "templateHash": "12849950681150922110"
             },
             "name": "SQL Managed Instance Keys",
             "description": "This module deploys a SQL Managed Instance Key."
@@ -2615,7 +2615,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-key",
+            "$fxv#0": "46d3xbcp.res.3867c32",
             "splittedKeyUri": "[split(coalesce(parameters('uri'), ''), '/')]",
             "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
@@ -2720,7 +2720,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2309259193304442473"
+              "templateHash": "17294778531569243698"
             },
             "name": "SQL Managed Instance Encryption Protector",
             "description": "This module deploys a SQL Managed Instance Encryption Protector."
@@ -2765,7 +2765,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.sql-mi-encryptionprotecor",
+            "$fxv#0": "46d3xbcp.res.8478b31",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

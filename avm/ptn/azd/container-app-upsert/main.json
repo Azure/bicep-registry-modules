@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13287398224286919332"
+      "templateHash": "14000361403765774721"
     },
     "name": "Azd Container App Upsert",
     "description": "Creates or updates an existing Azure Container App.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
@@ -620,7 +620,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.azd-containerappupsert",
+    "$fxv#0": "46d3xbcp.ptn.06bba38",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

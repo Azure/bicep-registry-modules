@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5287530181018167736"
+      "templateHash": "2828384685272299321"
     },
     "name": "Firewall Policy Rule Collection Groups",
     "description": "This module deploys a Firewall Policy Rule Collection Group."
@@ -46,7 +46,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-fwpolicy-rulecollection",
+    "$fxv#0": "46d3xbcp.res.a39a871",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "SA - Document knowledge mining",
   "moduleDescription": "AVM Pattern Module for SA - Document knowledge mining",
-  "telemetryIdPrefix": "46d3xbcp.ptn.sa-documentknowledgemining",
+  "telemetryIdPrefix": "46d3xbcp.ptn.e41f334",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.sa-documentknowledgemining"],
   "alternativeNames": [
     "Solution Accelerator - Document knowledge mining (DKM)"
   ],

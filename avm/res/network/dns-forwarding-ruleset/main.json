@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "3467198957273237234"
+      "templateHash": "4491121796844090792"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset."
@@ -303,7 +303,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.network-dnsforwardingruleset",
+    "$fxv#0": "46d3xbcp.res.393d3ea",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -436,7 +436,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3701832057537083719"
+              "templateHash": "15869209511481764296"
             },
             "name": "Dns Forwarding Rulesets Forwarding Rules",
             "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."
@@ -490,7 +490,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-dnsforwardingruleset-fwdrule",
+            "$fxv#0": "46d3xbcp.res.de1debd",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -594,7 +594,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15970343998968166626"
+              "templateHash": "5363885707902400830"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset."
@@ -635,7 +635,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-dnsfwdruleset-vnetlink",
+            "$fxv#0": "46d3xbcp.res.fb5dc48",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

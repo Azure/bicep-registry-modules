@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8289849810450189530"
+      "templateHash": "4284300617448338050"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry."
@@ -202,7 +202,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.ptn.deploymentscript-importimagetoacr",
+    "$fxv#0": "46d3xbcp.ptn.a7e96ce",
     "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 0)]",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },

@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Azure Stack HCI Hard Disk",
   "moduleDescription": "AVM Resource Module for Azure Stack HCI Hard Disk",
-  "telemetryIdPrefix": "46d3xbcp.res.azurestackhci-virtualharddisk",
+  "telemetryIdPrefix": "46d3xbcp.res.39216cc",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.azurestackhci-virtualharddisk"],
   "canonicalType": "Microsoft.AzureStackHCI/virtualHardDisks",
   "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
 }

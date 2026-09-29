@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "835637587228491660"
+      "templateHash": "15714492707759308056"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -534,7 +534,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.apimgmt-api",
+    "$fxv#0": "46d3xbcp.res.99c1bf1",
     "enableReferencedModulesTelemetry": false,
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
@@ -636,7 +636,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "897813207162127367"
+              "templateHash": "12331554381702803980"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -689,7 +689,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-apipolicy",
+            "$fxv#0": "46d3xbcp.res.ad75024",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -817,7 +817,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16869720075855151642"
+              "templateHash": "16287713778551546393"
             },
             "name": "API Management Service API Diagnostics",
             "description": "This module deploys an API Management Service API Diagnostic."
@@ -945,7 +945,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgm-apidiagnostics",
+            "$fxv#0": "46d3xbcp.res.dd11f50",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -1096,7 +1096,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2446309585882028033"
+              "templateHash": "4062427820372709308"
             },
             "name": "API Management Service APIs Operations",
             "description": "This module deploys an API Management Service API Operation."
@@ -1234,7 +1234,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.apimgmt-service-apioperation",
+            "$fxv#0": "46d3xbcp.res.11e8dae",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1328,7 +1328,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "16560059366999218802"
+                      "templateHash": "18156483199250518837"
                     },
                     "name": "API Management Service API Operation Policies",
                     "description": "This module deploys an API Management Service API Operation Policy."
@@ -1387,7 +1387,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.apimgmt-service-apioperationpolicy",
+                    "$fxv#0": "46d3xbcp.res.a128384",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": [

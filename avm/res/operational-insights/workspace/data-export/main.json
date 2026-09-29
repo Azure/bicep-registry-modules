@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "16177719645333062486"
+      "templateHash": "215214736434488843"
     },
     "name": "Log Analytics Workspace Data Exports",
     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -92,7 +92,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.opins-worksp-dataexport",
+    "$fxv#0": "46d3xbcp.res.c700d65",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

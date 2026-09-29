@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "2753184086870884157"
+      "templateHash": "10057085331125204597"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
@@ -1022,7 +1022,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.datafactory-factory",
+    "$fxv#0": "46d3xbcp.res.bcaecd2",
     "formattedUserAssignedIdentities": "[reduce(map(union(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createArray(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')), createArray())), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "sharedSelfHostedIntegrationRuntimes": "[filter(coalesce(parameters('integrationRuntimes'), createArray()), lambda('integrationRuntime', and(and(equals(lambdaVariables('integrationRuntime').type, 'SelfHosted'), not(empty(coalesce(tryGet(tryGet(tryGet(lambdaVariables('integrationRuntime'), 'typeProperties'), 'linkedInfo'), 'resourceId'), '')))), equals(coalesce(tryGet(tryGet(tryGet(lambdaVariables('integrationRuntime'), 'typeProperties'), 'linkedInfo'), 'authorizationType'), ''), 'RBAC'))))]",
     "sharedSHIRRequiresSystemAssignedIdentity": "[if(and(not(empty(variables('sharedSelfHostedIntegrationRuntimes'))), not(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()))), fail('When one or more Self-Hosted Integration Runtimes are configured with a linked resource using RBAC authorization (shared SHIR), a system-assigned managed identity must be enabled on the Data Factory by setting ''managedIdentities.systemAssigned'' to true.'), null())]",
@@ -1215,7 +1215,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15652695209640104557"
+              "templateHash": "14786438094510200713"
             },
             "name": "Data Factory Managed Virtual Networks",
             "description": "This module deploys a Data Factory Managed Virtual Network."
@@ -1290,7 +1290,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.datafactory-factory-managedvnet",
+            "$fxv#0": "46d3xbcp.res.b01e8ef",
             "enableReferencedModulesTelemetry": false,
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
@@ -1371,7 +1371,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "17513133760611910724"
+                      "templateHash": "12616458124780572896"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
                     "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
@@ -1425,7 +1425,7 @@
                     }
                   },
                   "variables": {
-                    "$fxv#0": "46d3xbcp.res.datafactory-factory-managedvnetmgdpe",
+                    "$fxv#0": "46d3xbcp.res.eaef528",
                     "telemetryIdPrefix": "[variables('$fxv#0')]"
                   },
                   "resources": {
@@ -1829,7 +1829,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13343475495710032657"
+              "templateHash": "709875539459263214"
             },
             "name": "Data Factory Integration RunTimes",
             "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
@@ -1887,7 +1887,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.datafactory-factory-integrruntime",
+            "$fxv#0": "46d3xbcp.res.02c2140",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -1995,7 +1995,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17540877663374693668"
+              "templateHash": "16603766366194102839"
             },
             "name": "Data Factory Linked Service",
             "description": "This module deploys a Data Factory Linked Service."
@@ -2056,7 +2056,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.datafactory-factory-linkedservice",
+            "$fxv#0": "46d3xbcp.res.91840fa",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [

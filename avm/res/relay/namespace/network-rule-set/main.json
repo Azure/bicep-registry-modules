@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "1562904179362388897"
+      "templateHash": "4307732075926232094"
     },
     "name": "Relay Namespace Network Rules Sets",
     "description": "This module deploys a Relay Namespace Network Rule Set."
@@ -58,7 +58,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.relay-namespace-networkruleset",
+    "$fxv#0": "46d3xbcp.res.9e0a826",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {

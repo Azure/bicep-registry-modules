@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14407805165918421802"
+      "templateHash": "14854801809668697102"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer."
@@ -931,7 +931,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.network-loadbalancer",
+    "$fxv#0": "46d3xbcp.res.99a8336",
     "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2334,7 +2334,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "5375921671469255347"
+              "templateHash": "6872880293251289861"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools."
@@ -2413,7 +2413,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-loadbalancer-beaddresspool",
+            "$fxv#0": "46d3xbcp.res.4ad6614",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": [
@@ -2542,7 +2542,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "17521984151001578755"
+              "templateHash": "899101759019511042"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules."
@@ -2650,7 +2650,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.network-loadbalancer-inboundnatrule",
+            "$fxv#0": "46d3xbcp.res.95857d3",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

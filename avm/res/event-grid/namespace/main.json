@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "15913494067939878873"
+      "templateHash": "3381298470244161410"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace."
@@ -920,7 +920,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "$fxv#0": "46d3xbcp.res.eventgrid-namespace",
+    "$fxv#0": "46d3xbcp.res.8eb4666",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1857,7 +1857,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "9684970500178279317"
+              "templateHash": "12858032047216561147"
             },
             "name": "Eventgrid Namespace Topics",
             "description": "This module deploys an Eventgrid Namespace Topic."
@@ -2052,7 +2052,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-topic",
+            "$fxv#0": "46d3xbcp.res.1f0f44e",
             "builtInRoleNames": {
               "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2191,7 +2191,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "11447515032853755257"
+                      "templateHash": "9346912445048798480"
                     },
                     "name": "Event Subscriptions",
                     "description": "This module deploys an Event Subscription."
@@ -2339,7 +2339,7 @@
                         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
                       }
                     ],
-                    "$fxv#0": "46d3xbcp.res.eventgrid-namespace-topiceventsub",
+                    "$fxv#0": "46d3xbcp.res.abf676d",
                     "builtInRoleNames": {
                       "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -2521,7 +2521,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11570673567358735684"
+              "templateHash": "18039379051644042918"
             },
             "name": "Eventgrid Namespace CA Certificates",
             "description": "This module deploys an Eventgrid Namespace CA Certificate."
@@ -2561,7 +2561,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-cacertificate",
+            "$fxv#0": "46d3xbcp.res.2959fdf",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2681,7 +2681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16439654942996108346"
+              "templateHash": "15970548028296437377"
             },
             "name": "Eventgrid Namespace Clients",
             "description": "This module deploys an Eventgrid Namespace Client."
@@ -2763,7 +2763,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-client",
+            "$fxv#0": "46d3xbcp.res.3279456",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -2877,7 +2877,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2931723135592504343"
+              "templateHash": "16649121749874437547"
             },
             "name": "Eventgrid Namespace Client Groups",
             "description": "This module deploys an Eventgrid Namespace Client Group."
@@ -2917,7 +2917,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-clientgroup",
+            "$fxv#0": "46d3xbcp.res.04f3723",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
@@ -3028,7 +3028,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2743910802165795079"
+              "templateHash": "5094840346938147313"
             },
             "name": "Eventgrid Namespace Topic Spaces",
             "description": "This module deploys an Eventgrid Namespace Topic Space."
@@ -3163,7 +3163,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-topicspace",
+            "$fxv#0": "46d3xbcp.res.025f450",
             "builtInRoleNames": {
               "Azure Resource Notifications System Topics Subscriber": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0b962ed2-6d56-471c-bd5f-3477d83a7ba4')]",
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -3314,7 +3314,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "4312427540592711301"
+              "templateHash": "89754318346620530"
             },
             "name": "Eventgrid Namespace Permissions Bindings",
             "description": "This module deploys an Eventgrid Namespace Permission Binding."
@@ -3370,7 +3370,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "46d3xbcp.res.eventgrid-namespace-permbinding",
+            "$fxv#0": "46d3xbcp.res.39b81e7",
             "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5539873287657952115"
+      "templateHash": "13073742466436592318"
     },
     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
@@ -189,7 +189,7 @@
     }
   },
   "variables": {
-    "$fxv#0": "46d3xbcp.res.network-nwmgr-secadmcfgrulecollrule",
+    "$fxv#0": "46d3xbcp.res.b51899a",
     "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
