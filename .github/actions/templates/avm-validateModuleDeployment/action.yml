@@ -35,6 +35,8 @@ description: >-
   do not relocate. Deployment metadata keeps its original location. Deployment
   retries stay in the validated region. Cleanup retains all attempt names and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
+  Request timeouts and unknown submission outcomes fail without resubmission while
+  preserving attempted deployment names for cleanup.
 
 inputs:
   modulePath:
@@ -465,7 +467,9 @@ runs:
           $res = New-TemplateDeployment @functionInput -Verbose
 
           # Get deployment name
-          Write-Output ('{0}={1}' -f 'deploymentNames', ($res.deploymentNames | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+          $deploymentNames = @($res.deploymentNames ?? @())
+          $deploymentNamesJson = $deploymentNames.Count -gt 0 ? (ConvertTo-Json -InputObject $deploymentNames -Compress) : ''
+          Write-Output ('{0}={1}' -f 'deploymentNames', $deploymentNamesJson) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'preflightRejectedDeploymentNames', (ConvertTo-Json -InputObject @($res.preflightRejectedDeploymentNames ?? @()) -Compress)) >> $env:GITHUB_OUTPUT
 
           # Populate further outputs
