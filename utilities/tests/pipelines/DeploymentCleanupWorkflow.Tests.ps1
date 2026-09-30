@@ -82,6 +82,31 @@ Describe 'Deployment submission and cleanup runtime integration' {
             return @{ StatusCode = 200; Content = (@{ value = $operations } | ConvertTo-Json -Depth 6 -Compress) }
         }
 
+        function Get-TestRequestTimeout {
+            param([string] $Format = 'Direct')
+            $timeout = [System.Threading.Tasks.TaskCanceledException]::new(
+                'The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.',
+                [System.TimeoutException]::new('The operation was canceled.', [System.Threading.Tasks.TaskCanceledException]::new('The operation was canceled.'))
+            )
+            $record = [System.Management.Automation.ErrorRecord]::new(
+                $timeout, 'HttpClientTimeout', [System.Management.Automation.ErrorCategory]::OperationStopped, $null
+            )
+            switch ($Format) {
+                'Direct' { return $timeout }
+                'InnerException' { return [System.InvalidOperationException]::new($timeout.Message, $timeout) }
+                'ErrorRecord' { return $record }
+                'RuntimeException' { return [System.Management.Automation.RuntimeException]::new($timeout.Message, $null, $record) }
+                'WriteError' {
+                    try {
+                        Write-Error -ErrorRecord $record -ErrorAction Stop
+                    } catch {
+                        return $_
+                    }
+                }
+                default { throw "Unknown timeout fixture format [$Format]." }
+            }
+        }
+
         function Invoke-TestSubmission {
             param([string] $Name, [string] $ResourceLocation, [string] $BaseTime, [securestring] $AdminSecret)
             $script:attemptNames.Add($Name)
@@ -95,17 +120,38 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 }
                 'FailedResult' { return @{ ProvisioningState = 'Failed'; Outputs = @{} } }
                 'NoResult' { return }
+                'Running' { return @{ ProvisioningState = 'Running'; Outputs = @{} } }
+                'MissingState' { return @{ Outputs = @{} } }
                 'Unknown' { throw 'The submission outcome is unknown: connection interrupted.' }
+                'RequestTimeout' { throw (Get-TestRequestTimeout -Format $script:timeoutFormat) }
+                'EmptyTimeout' { throw [System.Threading.Tasks.TaskCanceledException]::new('', (Get-TestRequestTimeout).InnerException) }
+                'TransportFailure' { throw [System.Net.Http.HttpRequestException]::new('The submission outcome is unknown: connection interrupted.') }
                 'Cancelled' { throw [System.OperationCanceledException]::new('Deployment cancelled') }
+                'TaskCancelled' { throw [System.Threading.Tasks.TaskCanceledException]::new('Deployment cancelled') }
+                'TimeoutWordingOnly' {
+                    throw [System.OperationCanceledException]::new('The request was canceled due to the configured HttpClient.Timeout of 100 seconds elapsing.')
+                }
                 'WrappedCancellation' {
                     throw [System.InvalidOperationException]::new('Submission stopped', [System.OperationCanceledException]::new('Deployment cancelled'))
+                }
+                'RecordCancellation' {
+                    $record = [System.Management.Automation.ErrorRecord]::new(
+                        [System.OperationCanceledException]::new('Deployment cancelled'),
+                        'Cancelled', [System.Management.Automation.ErrorCategory]::OperationStopped, $null
+                    )
+                    throw [System.Management.Automation.RuntimeException]::new('Submission stopped', $null, $record)
+                }
+                'MixedCancellation' {
+                    throw [System.AggregateException]::new(
+                        [System.Exception[]] @((Get-TestRequestTimeout), [System.OperationCanceledException]::new('Deployment cancelled'))
+                    )
                 }
                 'Succeeded' { return @{ ProvisioningState = 'Succeeded'; Outputs = @{} } }
                 default { throw 'Unexpected extra deployment attempt.' }
             }
         }
 
-        function Invoke-TestActionStep {
+        function Get-TestActionScript {
             param([string] $Name, [hashtable] $Outputs = @{})
             $stepScript = ($action.runs.steps | Where-Object { $_.name -eq $Name }).with.inlineScript
             $stepScript = $stepScript.Replace(
@@ -124,6 +170,25 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 $stepScript = $stepScript.Replace($key, $values[$key])
             }
             $stepScript | Should -Not -Match '\$\{\{'
+            return $stepScript
+        }
+
+        function Invoke-TestActionStep {
+            param(
+                [string] $Name, [hashtable] $Outputs = @{}, [string] $JobStatus = 'failure',
+                [string] $RemoveDeployment = 'true', [string] $SkipDeployment = 'false'
+            )
+            if ($Name -eq 'Remove deployed resources') {
+                $condition = ($action.runs.steps | Where-Object { $_.name -eq $Name }).if
+                $condition = $condition.Replace('${{', '').Replace('}}', '').
+                Replace('success()', '$($JobStatus -eq ''success'')').Replace('failure()', '$($JobStatus -eq ''failure'')').
+                Replace('inputs.removeDeployment', '$RemoveDeployment').Replace('env.skip_deployment_ci', '$SkipDeployment').
+                Replace('steps.deploy_step.outputs.deploymentNames', '$deploymentNames').
+                Replace('&&', '-and').Replace('||', '-or').Replace('!=', '-ne').Replace('==', '-eq')
+                $conditionScript = [scriptblock]::Create("param(`$JobStatus, `$RemoveDeployment, `$SkipDeployment, `$deploymentNames) $condition")
+                if (-not (. $conditionScript $JobStatus $RemoveDeployment $SkipDeployment ($Outputs.deploymentNames ?? ''))) { return }
+            }
+            $stepScript = Get-TestActionScript -Name $Name -Outputs $Outputs
             Clear-Content -LiteralPath $env:GITHUB_OUTPUT
             . ([scriptblock]::Create($stepScript))
         }
@@ -255,6 +320,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Set-TestTemplateScope
         $script:outcomes = @('PartialFailure', 'Preflight', 'Preflight')
         $script:preflightFormat = 'Az'
+        $script:timeoutFormat = 'Direct'
         $script:attemptNames = [System.Collections.Generic.List[string]]::new()
         $script:attemptRegions = [System.Collections.Generic.List[string]]::new()
         $script:attemptBaseTimes = [System.Collections.Generic.List[string]]::new()
@@ -300,7 +366,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $script:lookupPaths.Add($Path)
             if ($script:operationOverrides.ContainsKey($name)) {
                 $response = $script:operationOverrides[$name]
-                if ($response -is [System.Exception]) { throw $response }
+                if ($response -is [System.Exception] -or $response -is [System.Management.Automation.ErrorRecord]) { throw $response }
                 return $response
             }
             if ($name -eq 'fixture-dependencies') {
@@ -405,6 +471,131 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $result.ContainsKey('Exception') | Should -BeFalse
         $result.DeploymentNames | Should -Be @($script:attemptNames)
         @($result.PreflightRejectedDeploymentNames) | Should -Be @($script:attemptNames[0])
+    }
+
+    It 'Fails but emits the accepted name and reaches actual cleanup on a <format> HTTP timeout' -ForEach @(
+        @{ format = 'Direct' }, @{ format = 'InnerException' }, @{ format = 'ErrorRecord' }
+        @{ format = 'RuntimeException' }, @{ format = 'WriteError' }
+    ) {
+        $script:outcomes = @('RequestTimeout')
+        $script:timeoutFormat = $format
+
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
+
+        $outputs = Get-TestStepOutput
+        $outputs.deploymentNames | Should -Match '^\["[^"]+"\]$'
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+        $outputs.preflightRejectedDeploymentNames | Should -Be '[]'
+        $outputs.deploymentOutput | Should -BeExactly 'null'
+        $script:attemptNames.Count | Should -Be 1
+        @($script:attemptRegions) | Should -Be @('swedencentral')
+        $script:lookupNames.Count | Should -Be 0
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        @($script:lookupNames) | Should -Be @($script:attemptNames[0], 'fixture-dependencies')
+        $script:removedIds | Should -Contain $resourceIds[5]
+        @($script:removedIds | Where-Object { -not $_.StartsWith($resourceGroupId) }).Count | Should -Be 0
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Retains an earlier partial attempt when the next submission times out without replaying it' {
+        $script:outcomes = @('PartialFailure', 'RequestTimeout')
+        $script:timeoutFormat = 'RuntimeException'
+
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
+        $outputs = Get-TestStepOutput
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+        $outputs.preflightRejectedDeploymentNames | Should -Be '[]'
+        $script:attemptNames.Count | Should -Be 2
+        $extraResource = "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-timeout-created"
+        $script:operationOverrides[$script:attemptNames[1]] = New-TestOperationsResponse -Ids $extraResource
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        $script:removedIds | Should -Contain $resourceIds[5]
+        $script:removedIds | Should -Contain $extraResource
+        @($script:lookupNames) | Should -Be @($script:attemptNames[0], 'fixture-dependencies', $script:attemptNames[1])
+        Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
+    It 'Keeps prior preflight metadata separate from an accepted timeout attempt' {
+        $script:outcomes = @('Preflight', 'RequestTimeout')
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
+        $outputs = Get-TestStepOutput
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+        @($outputs.preflightRejectedDeploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames[0])
+        $script:operationOverrides[$script:attemptNames[0]] = @{ StatusCode = 404; Content = '{"error":{"code":"DeploymentNotFound"}}' }
+        $script:operationOverrides[$script:attemptNames[1]] = New-TestOperationsResponse -Ids $resourceIds[5]
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        @($script:removedIds) | Should -Be @($resourceIds[5])
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
+    It 'Does not treat an absent timeout attempt as a preflight rejection' {
+        $script:outcomes = @('RequestTimeout')
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
+        $outputs = Get-TestStepOutput
+        $script:operationOverrides[$script:attemptNames[0]] = @{ StatusCode = 404; Content = '{"error":{"code":"DeploymentNotFound"}}' }
+
+        { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*No deployment for the deployment name(s)*'
+
+        $script:lookupNames.Count | Should -Be 40
+        $script:removedIds.Count | Should -Be 0
+        Should -Invoke Start-Sleep -Times 39 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
+    It 'Still throws a timeout without retrying for callers not using DoNotThrow' {
+        $script:outcomes = @('RequestTimeout')
+        $deploymentInput.DoNotThrow = $false
+
+        { New-TemplateDeployment @deploymentInput } | Should -Throw '*HttpClient.Timeout*'
+
+        $script:attemptNames.Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Preserves timeout ownership without a diagnostic lookup when the exception message is empty' {
+        $script:outcomes = @('EmptyTimeout')
+        Mock Get-AzDeploymentOperation { throw (Get-TestRequestTimeout) }
+
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*failed without an error message*'
+        $outputs = Get-TestStepOutput
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+        $script:attemptNames.Count | Should -Be 1
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        $script:removedIds | Should -Contain $resourceIds[5]
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Preserves timeout ownership and strict cleanup at <scope> scope' -ForEach @(
+        @{ scope = 'resourcegroup'; pathPrefix = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/dep-fixture-rg' }
+        @{ scope = 'subscription'; pathPrefix = '/subscriptions/11111111-1111-1111-1111-111111111111' }
+        @{ scope = 'managementgroup'; pathPrefix = '/providers/Microsoft.Management/managementGroups/test-management-group' }
+        @{ scope = 'tenant'; pathPrefix = '' }
+    ) {
+        Set-TestTemplateScope -Scope $scope
+        $script:outcomes = @('RequestTimeout')
+        $result = New-TemplateDeployment @deploymentInput
+
+        $result.Exception | Should -Match 'HttpClient.Timeout'
+        @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+        $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        $script:attemptNames.Count | Should -Be 1
+
+        Initialize-DeploymentRemoval -TemplateFilePath $templatePath -DeploymentNames $result.DeploymentNames `
+            -SubscriptionId $subscriptionId -ResourceGroupName 'dep-fixture-rg' -ManagementGroupId 'test-management-group'
+
+        $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2021-04-01"
+        $script:removedIds | Should -Contain $resourceIds[5]
+        Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
     It 'Passes a single rejected attempt as a JSON array and cleans its successful retry' {
@@ -529,6 +720,56 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
     }
 
+    It 'Preserves known targets and reports a <format> discovery timeout at <target>' -ForEach @(
+        @{ format = 'Direct'; target = 'later-attempt' }
+        @{ format = 'ErrorRecord'; target = 'later-attempt' }
+        @{ format = 'RuntimeException'; target = 'later-attempt' }
+        @{ format = 'Direct'; target = 'nested-deployment' }
+        @{ format = 'RuntimeException'; target = 'nested-deployment' }
+    ) {
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw
+        $outputs = Get-TestStepOutput
+        $name = $target -eq 'later-attempt' ? $script:attemptNames[1] : 'fixture-dependencies'
+        $script:operationOverrides[$name] = Get-TestRequestTimeout -Format $format
+
+        { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*HttpClient.Timeout*'
+
+        $script:removedIds | Should -Contain $resourceGroupId
+        $script:lookupNames | Should -Contain $script:attemptNames[2]
+        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
+    It 'Reports a discovery timeout with no known targets instead of returning successful cleanup' {
+        $script:outcomes = @('Succeeded')
+        Invoke-TestActionStep -Name 'Deploy template file'
+        $outputs = Get-TestStepOutput
+        $script:operationOverrides[$script:attemptNames[0]] = Get-TestRequestTimeout
+
+        { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*HttpClient.Timeout*'
+
+        $script:removedIds.Count | Should -Be 0
+        $script:lookupNames.Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    It 'Does not suppress a <target> timeout carrying a DeploymentNotFound error ID' -ForEach @(
+        @{ target = 'later-attempt' }, @{ target = 'nested-deployment' }
+    ) {
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw
+        $outputs = Get-TestStepOutput
+        $name = $target -eq 'later-attempt' ? $script:attemptNames[1] : 'fixture-dependencies'
+        $script:operationOverrides[$name] = [System.Management.Automation.ErrorRecord]::new(
+            (Get-TestRequestTimeout), 'DeploymentNotFound', [System.Management.Automation.ErrorCategory]::ObjectNotFound, $null
+        )
+
+        { Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs } | Should -Throw '*HttpClient.Timeout*'
+
+        $script:removedIds | Should -Contain $resourceGroupId
+        @($script:lookupNames | Where-Object { $_ -eq $name }).Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
     It 'Only accepts explicit ResourceGroupNotFound as an already removed resource group' {
         Mock Invoke-AzRestMethod { @{ StatusCode = 404; Content = '{"error":{"code":"ResourceGroupNotFound"}}' } }
         $result = Get-DeploymentTargetResourceList -DeploymentNames 'accepted' -Scope resourcegroup -ResourceGroupName 'dep-fixture-rg'
@@ -599,43 +840,107 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Test-DeploymentPreflightRejection -ErrorRecord $record -DeploymentName 'owned' | Should -BeFalse
     }
 
+    It 'Unwraps a PowerShell ErrorRecord without using its message to classify a timeout' {
+        $inner = Get-TestRequestTimeout -Format ErrorRecord
+        $record = [System.Management.Automation.ErrorRecord]::new(
+            [System.Management.Automation.RuntimeException]::new('Submission failed', $null, $inner),
+            'WrappedError', [System.Management.Automation.ErrorCategory]::InvalidOperation, $null
+        )
+        $record.ErrorDetails = (New-TestPreflightError -Name 'owned' -Format Json).ErrorDetails
+
+        Get-DeploymentErrorKind -ErrorRecord $record | Should -Be 'Timeout'
+        Test-DeploymentPreflightRejection -ErrorRecord $record -DeploymentName 'owned' | Should -BeFalse
+    }
+
     It 'Preserves ambiguous <outcome> submission outcomes for strict cleanup' -ForEach @(
-        @{ outcome = 'Unknown' }, @{ outcome = 'NoResult' }
+        @{ outcome = 'Unknown' }, @{ outcome = 'NoResult' }, @{ outcome = 'TransportFailure' }
+        @{ outcome = 'Running' }, @{ outcome = 'MissingState' }
     ) {
         $script:outcomes = @($outcome, $outcome, $outcome)
         $result = New-TemplateDeployment @deploymentInput
         $result.Exception | Should -Match 'outcome is unknown'
-        $result.DeploymentNames.Count | Should -Be 3
+        $result.DeploymentNames.Count | Should -Be 1
+        $script:attemptNames.Count | Should -Be 1
         $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
     It 'Does not classify a context failure as a submitted preflight rejection' {
         Mock Set-AzContext { Write-Error 'Authentication failed while selecting the subscription.' }
         $result = New-TemplateDeployment @deploymentInput
         $result.Exception | Should -Match 'Authentication failed'
+        $result.DeploymentNames.Count | Should -Be 0
         $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
         $script:attemptNames.Count | Should -Be 0
     }
 
-    It 'Propagates <outcome> without another deployment attempt' -ForEach @(
-        @{ outcome = 'Cancelled' }, @{ outcome = 'WrappedCancellation' }
-    ) {
-        $script:outcomes = @($outcome)
-        { New-TemplateDeployment @deploymentInput } | Should -Throw
-        $script:attemptNames.Count | Should -Be 1
-        Should -Invoke Start-Sleep -Times 0 -Exactly
+    It 'Does not emit cleanup ownership or discover resources when context selection fails before submission' {
+        Mock Set-AzContext { throw [System.Net.Http.HttpRequestException]::new('Context selection failed before submission.') }
+
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*Context selection failed*'
+        $outputs = Get-TestStepOutput
+        $outputs.deploymentNames | Should -BeExactly ''
+        $outputs.preflightRejectedDeploymentNames | Should -Be '[]'
+        $script:attemptNames.Count | Should -Be 0
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        Should -Invoke Get-AzContext -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        $script:removedIds.Count | Should -Be 0
     }
 
-    It 'Stops the pipeline on direct PipelineStoppedException without retrying or returning success' {
+    It 'Keeps only the earlier submitted name when context selection fails before a retry' {
+        $script:outcomes = @('PartialFailure')
+        Mock Set-AzContext {
+            if ($script:attemptNames.Count -gt 0) {
+                throw [System.Net.Http.HttpRequestException]::new('Context selection failed before the next submission.')
+            }
+        }
+
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*Context selection failed*'
+        $outputs = Get-TestStepOutput
+        @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+        $script:attemptNames.Count | Should -Be 1
+        Mock Set-AzContext {}
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+
+        @($script:lookupNames) | Should -Be @($script:attemptNames[0], 'fixture-dependencies')
+        $script:removedIds | Should -Contain $resourceIds[5]
+        Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
+    }
+
+    It 'Propagates <outcome> without another deployment attempt' -ForEach @(
+        @{ outcome = 'Cancelled' }, @{ outcome = 'WrappedCancellation' }
+        @{ outcome = 'TaskCancelled' }, @{ outcome = 'TimeoutWordingOnly' }
+        @{ outcome = 'RecordCancellation' }, @{ outcome = 'MixedCancellation' }
+    ) {
+        $script:outcomes = @($outcome)
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw
+        $outputs = Get-TestStepOutput
+        $outputs.ContainsKey('deploymentNames') | Should -BeFalse
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs
+        $script:attemptNames.Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        $script:removedIds.Count | Should -Be 0
+    }
+
+    It 'Stops the actual deployment action on PipelineStoppedException without retrying or emitting cleanup outputs' {
         $trace = [System.Collections.Generic.List[string]]::new()
         $pipeline = [powershell]::Create()
         try {
             $null = $pipeline.AddScript(@'
-param($RepoRoot, $TemplatePath, $Trace)
-. (Join-Path $RepoRoot 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+param($ActionScript, $Trace)
+function Set-AzContext {
+    [CmdletBinding()]
+    param([string] $Subscription)
+    $Trace.Add('context')
+}
 function New-AzSubscriptionDeployment {
     [CmdletBinding()]
-    param([string] $TemplateFile, [string] $DeploymentName, [string] $Location)
+    param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
     $Trace.Add('submit')
     throw [System.Management.Automation.PipelineStoppedException]::new('Mock pipeline cancellation')
 }
@@ -643,14 +948,15 @@ function Start-Sleep {
     param([int] $Seconds)
     $Trace.Add('retry')
 }
-$null = New-TemplateDeployment -TemplateFilePath $TemplatePath -RepoRoot $RepoRoot -DeploymentMetadataLocation 'WestEurope' -DoNotThrow
+. ([scriptblock]::Create($ActionScript))
 $Trace.Add('returned')
-'@).AddArgument($repoRootPath).AddArgument($templatePath).AddArgument($trace)
+'@).AddArgument((Get-TestActionScript -Name 'Deploy template file')).AddArgument($trace)
             $null = $pipeline.Invoke()
 
             $pipeline.InvocationStateInfo.State | Should -Be 'Stopped'
             $pipeline.InvocationStateInfo.Reason | Should -BeOfType [System.Management.Automation.PipelineStoppedException]
-            @($trace) | Should -Be @('submit')
+            @($trace) | Should -Be @('context', 'submit')
+            (Get-TestStepOutput).ContainsKey('deploymentNames') | Should -BeFalse
         } finally {
             $pipeline.Dispose()
         }
@@ -659,6 +965,8 @@ $Trace.Add('returned')
     It 'Propagates cleanup cancellation without retries or resource removal' -ForEach @(
         @{ exception = [System.OperationCanceledException]::new('Cleanup cancelled') }
         @{ exception = [System.InvalidOperationException]::new('Cleanup stopped', [System.Management.Automation.PipelineStoppedException]::new('Pipeline cancelled')) }
+        @{ exception = [System.Threading.Tasks.TaskCanceledException]::new('Cleanup cancelled') }
+        @{ exception = [System.TimeoutException]::new('Request deadline', [System.Management.Automation.PipelineStoppedException]::new('Pipeline cancelled')) }
     ) {
         { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw
         $outputs = Get-TestStepOutput
@@ -669,6 +977,24 @@ $Trace.Add('returned')
         Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
         $script:removedIds.Count | Should -Be 0
         $script:lookupNames | Should -Not -Contain $script:attemptNames[2]
+    }
+
+    It 'Honors the actual cleanup condition for <condition>' -ForEach @(
+        @{ condition = 'cancelled job'; jobStatus = 'cancelled'; removeDeployment = 'true'; skipDeployment = 'false' }
+        @{ condition = 'retained resources'; jobStatus = 'failure'; removeDeployment = 'false'; skipDeployment = 'false' }
+        @{ condition = 'ignored deployment'; jobStatus = 'failure'; removeDeployment = 'true'; skipDeployment = 'true' }
+    ) {
+        $script:outcomes = @('RequestTimeout')
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
+        $outputs = Get-TestStepOutput
+        @($outputs.deploymentNames | ConvertFrom-Json).Count | Should -Be 1
+
+        Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs -JobStatus $jobStatus `
+            -RemoveDeployment $removeDeployment -SkipDeployment $skipDeployment
+
+        Should -Invoke Get-AzContext -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        $script:removedIds.Count | Should -Be 0
     }
 
     It 'Rejects a total deployment attempt limit of <limit>' -ForEach @(@{ limit = 0 }, @{ limit = 4 }) {

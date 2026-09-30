@@ -223,7 +223,9 @@ Describe 'Regional validation workflow runtime integration' {
         Mock New-AzSubscriptionDeployment {
             $script:deploymentRegions.Add($resourceLocation)
             $script:deploymentNames.Add($DeploymentName)
-            if ($script:deploymentRegions.Count -lt 3) { throw 'Deployment-stage regional capacity failure' }
+            if ($script:deploymentRegions.Count -lt 3) {
+                throw "The deployment '$DeploymentName' failed with error(s). (Code: DeploymentFailed) Inner error: Deployment-stage regional capacity failure"
+            }
             @{ ProvisioningState = 'Succeeded'; Outputs = @{} }
         }
         Invoke-ValidationAndDeployment
@@ -238,7 +240,7 @@ Describe 'Regional validation workflow runtime integration' {
     It 'Preserves deployment names for cleanup when all same-region deployment attempts fail' {
         Mock New-AzSubscriptionDeployment {
             $script:deploymentRegions.Add($resourceLocation)
-            throw 'Deployment failure'
+            throw "The deployment '$DeploymentName' failed with error(s). (Code: DeploymentFailed) Inner error: Deployment failure"
         }
         { Invoke-ValidationAndDeployment } | Should -Throw '*Deployment failure*'
         $outputs = Get-StepOutput
