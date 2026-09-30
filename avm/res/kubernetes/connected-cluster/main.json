@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7698386080958886287"
+      "templateHash": "8494385469852088775"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
@@ -377,7 +377,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -396,7 +396,7 @@
     },
     "connectedCluster": {
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2026-02-01-preview",
+      "apiVersion": "2026-05-01",
       "name": "[parameters('name')]",
       "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
@@ -468,7 +468,7 @@
       "metadata": {
         "description": "The location of the connected cluster."
       },
-      "value": "[reference('connectedCluster', '2026-02-01-preview', 'full').location]"
+      "value": "[reference('connectedCluster', '2026-05-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -476,7 +476,7 @@
       "metadata": {
         "description": "The principalId of the connected cluster identity."
       },
-      "value": "[reference('connectedCluster', '2026-02-01-preview', 'full').identity.principalId]"
+      "value": "[reference('connectedCluster', '2026-05-01', 'full').identity.principalId]"
     }
   }
 }

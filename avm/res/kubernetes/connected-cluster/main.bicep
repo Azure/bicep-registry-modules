@@ -85,7 +85,7 @@ var formattedRoleAssignments = [
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -104,7 +104,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // Resource definition
-resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2026-02-01-preview' = {
+resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2026-05-01' = {
   name: name
   kind: 'ProvisionedCluster'
   location: location
