@@ -9,6 +9,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 - Fixed the Git repository configuration being silently discarded by the resource provider. The configuration is now passed through as a single object that is typed against the resource provider schema, so only properties belonging to the selected repository type can be supplied.
 - Replaced the `gitConfigureLater` flag and the flat `git*` parameters with a single optional `gitConfiguration` parameter. Omitting it deploys the Data Factory without a Git repository configuration.
 - Updated the telemetry deployment to API version `2025-04-01`.
+- Updated the telemetry identifier to the prefix published in the AVM module index.
 - Updated the referenced `avm/res/network/private-endpoint` module to version `0.12.1`.
 
 ### Breaking Changes
