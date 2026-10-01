@@ -87,30 +87,27 @@ param controlPlane controlPlaneType = {
 @description('Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster.')
 param cloudProviderProfile cloudProviderProfileType
 
-@description('Optional. Security profile for the provisioned cluster instance (FIPS, custom CA certificates).')
-param hciSecurityProfile hciSecurityProfileType?
-
 @description('Optional. Authorized IP ranges for cluster VM access profile.')
 param authorizedIPRanges string?
 
 @description('Optional. Tags for the cluster resource.')
 param connectClustersTags object = {}
 
-import { aadProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+import { aadProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.3.0'
 @description('Optional. AAD profile for the connected cluster.')
 param aadProfile aadProfileType?
 
-import { arcAgentProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+import { arcAgentProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.3.0'
 @description('Optional. Arc agentry configuration for the provisioned cluster.')
 param arcAgentProfile arcAgentProfileType = {
   agentAutoUpgrade: 'Enabled'
 }
 
-import { oidcIssuerProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+import { oidcIssuerProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.3.0'
 @description('Optional. Open ID Connect (OIDC) Issuer Profile for the connected cluster.')
 param oidcIssuerProfile oidcIssuerProfileType = { enabled: false }
 
-import { securityProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+import { securityProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.3.0'
 @description('Optional. Security profile for the connected cluster.')
 param securityProfile securityProfileType = {
   workloadIdentity: {
@@ -121,7 +118,7 @@ param securityProfile securityProfileType = {
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -157,7 +154,7 @@ module secrets './secrets.bicep' = if (empty(linuxProfile) && !empty(keyVaultNam
 
 var enableReferencedModulesTelemetry = false
 
-module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.1' = {
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.3.0' = {
   name: 'connectedCluster'
   params: {
     name: name
@@ -171,11 +168,11 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.1' =
   }
 }
 
-resource existingCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-preview' existing = {
+resource existingCluster 'Microsoft.Kubernetes/connectedClusters@2026-05-01' existing = {
   name: name
 }
 
-resource provisionedCluster 'Microsoft.HybridContainerService/provisionedClusterInstances@2026-04-01-preview' = {
+resource provisionedCluster 'Microsoft.HybridContainerService/provisionedClusterInstances@2024-01-01' = {
   scope: existingCluster
   name: 'default'
   dependsOn: [
@@ -204,7 +201,6 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
       }
     }
     networkProfile: networkProfile
-    securityProfile: hciSecurityProfile
     storageProfile: storageProfile
   }
 }
@@ -254,8 +250,6 @@ type agentPoolProfileType = {
   osType: string
   @description('Required. The VM size for the nodes.')
   vmSize: string
-  @description('Optional. The number of GPUs per node in the pool.')
-  gpuCountPerNode: int?
 }
 
 @export()
@@ -332,16 +326,4 @@ type storageProfileType = {
     @description('Required. Whether the SMB CSI driver is enabled.')
     enabled: bool
   }
-}
-
-@export()
-@description('The type for HCI provisioned cluster security profile configuration.')
-type hciSecurityProfileType = {
-  @description('Optional. Custom CA trust certificates for the cluster.')
-  customCATrustCertificates: array?
-  @description('Optional. FIPS image configuration.')
-  fipsImage: {
-    @description('Required. Whether FIPS-compliant images are enabled.')
-    enabled: bool
-  }?
 }
