@@ -1,4 +1,6 @@
-﻿#region helper
+﻿. (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+
+#region helper
 
 function Test-DeploymentPreflightRejection {
     [CmdletBinding()]
@@ -12,6 +14,9 @@ function Test-DeploymentPreflightRejection {
     )
 
     if ($ErrorRecord.CategoryInfo.Category -in @('AuthenticationError', 'PermissionDenied', 'SecurityError', 'OperationStopped')) {
+        return $false
+    }
+    if ((Get-DeploymentErrorKind -ErrorRecord $ErrorRecord) -ne 'Other') {
         return $false
     }
     for ($exception = $ErrorRecord.Exception; $null -ne $exception; $exception = $exception.InnerException) {
@@ -145,6 +150,7 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
+Request timeouts and unknown submission outcomes fail without resubmission, retaining attempted names for cleanup.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
@@ -171,7 +177,8 @@ Optional. Provde a Key Value Pair (Object) that will be appended to the Paramete
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
 
 .PARAMETER RetryLimit
-Optional. Maximum total submission attempts, including the first. Between 1 and 3; defaults to 3.
+Optional. Maximum total attempts, including the first. Between 1 and 3; defaults to 3.
+Submitted deployments retry only after confirmed failure or preflight rejection.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
@@ -307,7 +314,6 @@ function New-TemplateDeploymentInner {
             } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
 
             Write-Verbose "Deploying with deployment name [$deploymentName]" -Verbose
-            $usedDeploymentNames += $deploymentName
             $DeploymentInputs['DeploymentName'] = $deploymentName
             $res = $null
             $submissionStarted = $false
@@ -327,6 +333,7 @@ function New-TemplateDeploymentInner {
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
                             $submissionStarted = $true
+                            $usedDeploymentNames += $deploymentName
                             $res = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
                         }
                         break
@@ -338,6 +345,7 @@ function New-TemplateDeploymentInner {
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
                             $submissionStarted = $true
+                            $usedDeploymentNames += $deploymentName
                             $res = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
@@ -345,6 +353,7 @@ function New-TemplateDeploymentInner {
                     'managementgroup' {
                         if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Create')) {
                             $submissionStarted = $true
+                            $usedDeploymentNames += $deploymentName
                             $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -ManagementGroupId $ManagementGroupId
                         }
                         break
@@ -352,6 +361,7 @@ function New-TemplateDeploymentInner {
                     'tenant' {
                         if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Create')) {
                             $submissionStarted = $true
+                            $usedDeploymentNames += $deploymentName
                             $res = New-AzTenantDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
@@ -377,35 +387,30 @@ function New-TemplateDeploymentInner {
 
                     throw "Deployed failed with provisioning state [Failed]. Error Message: [$exceptionMessage]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                 }
+                if ($submissionStarted -and $res.ProvisioningState -ne 'Succeeded') {
+                    throw "Deployment [$deploymentName] returned provisioning state [$($res.ProvisioningState)]; the submission outcome is unknown."
+                }
                 $Stoploop = $true
-            } catch [System.OperationCanceledException] {
-                throw
             } catch [System.Management.Automation.PipelineStoppedException] {
                 throw
             } catch {
-                for ($exception = $_.Exception; $null -ne $exception; $exception = $exception.InnerException) {
-                    if ($exception -is [System.OperationCanceledException] -or $exception -is [System.Management.Automation.PipelineStoppedException]) {
-                        throw
-                    }
+                $errorKind = Get-DeploymentErrorKind -ErrorRecord $_
+                if ($errorKind -eq 'Cancellation') {
+                    throw
                 }
-                if ($submissionStarted -and $null -eq $res -and (Test-DeploymentPreflightRejection -ErrorRecord $_ -DeploymentName $deploymentName)) {
+                $preflightRejected = $submissionStarted -and $null -eq $res -and (Test-DeploymentPreflightRejection -ErrorRecord $_ -DeploymentName $deploymentName)
+                if ($preflightRejected) {
                     $preflightRejectedDeploymentNames += $deploymentName
                     Write-Verbose "Deployment [$deploymentName] was rejected by preflight validation; cleanup will check whether a deployment record exists." -Verbose
                 }
-                if ($retryCount -ge $RetryLimit) {
+                $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. \(Code: DeploymentFailed\)(?:\s|$)"
+                $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $_.Exception.Message -cmatch $failedDeploymentMessage)
+                $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
+                if ($retryCount -ge $RetryLimit -or $unknownSubmission -or $errorKind -in @('Timeout', 'Transport')) {
                     if ($DoNotThrow) {
-
-                        # In case a deployment failes but not throws an exception (i.e. the exception message is empty) we try to fetch it via the deployment name
-                        if ([String]::IsNullOrEmpty($PSitem.Exception.Message)) {
-                            $errorInputObject = @{
-                                DeploymentScope   = $deploymentScope
-                                DeploymentName    = $deploymentName
-                                ResourceGroupName = $ResourceGroupName
-                                ManagementGroupId = $ManagementGroupId
-                            }
-                            $exceptionMessage = Get-ErrorMessageForScope @errorInputObject
-                        } else {
-                            $exceptionMessage = $PSitem.Exception.Message
+                        $exceptionMessage = $PSitem.Exception.Message
+                        if ([String]::IsNullOrEmpty($exceptionMessage)) {
+                            $exceptionMessage = "Deployment attempt [$deploymentName] failed without an error message (submission started: [$submissionStarted])."
                         }
 
                         return @{
@@ -452,6 +457,7 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
+Request timeouts and unknown submission outcomes fail without resubmission, retaining attempted names for cleanup.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
@@ -478,7 +484,8 @@ Optional. Provide a Key Value Pair (Object) that will be appended to the Paramet
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
 
 .PARAMETER RetryLimit
-Optional. Maximum total submission attempts, including the first. Between 1 and 3; defaults to 3.
+Optional. Maximum total attempts, including the first. Between 1 and 3; defaults to 3.
+Submitted deployments retry only after confirmed failure or preflight rejection.
 
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though

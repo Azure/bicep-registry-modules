@@ -1,0 +1,448 @@
+{{~ func parameter_categories(items) ~}}
+{{~ categories = ["Required", "Conditional", "Optional", "Generated", "Condition"] ~}}
+{{~ for item in items ~}}
+{{~ if item.description ~}}
+{{~ prefix = regex.match item.description `^\w+\.` ~}}
+{{~ if prefix.size > 0 ~}}
+{{~ category = string.replace prefix[0] "." "" ~}}
+{{~ if !(array.contains categories category) ~}}{{~ categories = array.add categories category ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ ret categories ~}}
+{{~ end ~}}
+{{~ func has_parameter(name) ~}}
+{{~ for item in module.parameters ~}}
+{{~ if item.name == name ~}}{{~ ret true ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ ret false ~}}
+{{~ end ~}}
+{{~ func category_description(item, category, path) ~}}
+{{~ if item.description == null ~}}{{~ ret "" ~}}{{~ end ~}}
+{{~ text = regex.replace item.description ("^" + category + `\. `) "" ~}}
+{{~ compiled = compiled_details[path] ~}}
+{{~ if compiled && compiled.Description && (string.starts_with compiled.Description item.description) && !(string.ends_with item.description "\n") ~}}
+{{~ suffix_matches = regex.match compiled.Description `(?:\r?\n)+$` ~}}
+{{~ if suffix_matches.size > 0 ~}}{{~ text = text + suffix_matches[0] ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ ret text | string.replace "\r\n" "<p>" | string.replace "\n- " "<li>" | string.replace "\n" "<p>" ~}}
+{{~ end ~}}
+{{~ func parameter_type(item, path) ~}}
+{{~ if item.secure && item.type == "string" ~}}{{~ ret "securestring" ~}}{{~ end ~}}
+{{~ if item.secure && item.type == "object" ~}}{{~ ret "secureObject" ~}}{{~ end ~}}
+{{~ compiled = compiled_details[path] ~}}
+{{~ if compiled && compiled.LegacyType != null ~}}{{~ ret compiled.LegacyType ~}}{{~ end ~}}
+{{~ if compiled && compiled.Type != null ~}}{{~ ret compiled.Type ~}}{{~ end ~}}
+{{~ ret item.type ~}}
+{{~ end ~}}
+{{~ func formatted_example(raw) ~}}
+{{~ lines = string.split (string.replace raw "\r\n" "\n") "\n" ~}}
+{{~ indent_matches = regex.match lines[0] `^\s+(?=.+)` ~}}
+{{~ trim_count = 0 ~}}
+{{~ if indent_matches.size > 0 ~}}{{~ trim_count = indent_matches[0].size ~}}{{~ end ~}}
+{{~ formatted = "" ~}}
+{{~ for line in lines ~}}
+{{~ if line != "" ~}}
+{{~ text = "  " + line ~}}
+{{~ if trim_count > 0 ~}}{{~ text = regex.replace text (`^\s{` + trim_count + `}`) "" ~}}{{~ end ~}}
+{{~ formatted = formatted + text + "\n" ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ ret string.rstrip formatted ~}}
+{{~ end ~}}
+{{~ func compiled_default_text(value, inner_indent, close_indent) ~}}
+{{~ if value == null ~}}{{~ ret "null" ~}}{{~ end ~}}
+{{~ kind = object.typeof value ~}}
+{{~ if kind == "string" ~}}{{~ ret "'" + (string.replace value "'" `\'`) + "'" ~}}{{~ end ~}}
+{{~ if kind == "boolean" || kind == "bool" ~}}{{~ if value ~}}{{~ ret "true" ~}}{{~ else ~}}{{~ ret "false" ~}}{{~ end ~}}{{~ end ~}}
+{{~ if kind == "array" ~}}
+{{~ if value.size == 0 ~}}{{~ ret "[]" ~}}{{~ end ~}}
+{{~ scalar_items = true ~}}
+{{~ for item in value ~}}
+{{~ if (object.typeof item) == "object" || (object.typeof item) == "array" ~}}{{~ scalar_items = false ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ ordered = value ~}}
+{{~ if scalar_items && value.size > 1 ~}}{{~ ordered = array.sort value ~}}{{~ end ~}}
+{{~ text = "[\n" ~}}
+{{~ for item in ordered ~}}{{~ text = text + inner_indent + (compiled_default_text item (inner_indent + "  ") inner_indent) + "\n" ~}}{{~ end ~}}
+{{~ ret text + close_indent + "]" ~}}
+{{~ end ~}}
+{{~ if kind == "object" ~}}
+{{~ keys = (object.keys value) | array.sort ~}}
+{{~ if keys.size == 0 ~}}{{~ ret "{}" ~}}{{~ end ~}}
+{{~ text = "{\n" ~}}
+{{~ for key in keys ~}}
+{{~ property = key ~}}
+{{~ if (regex.match key `^\w+$`).size == 0 ~}}{{~ property = "'" + (string.replace key "'" `\'`) + "'" ~}}{{~ end ~}}
+{{~ text = text + inner_indent + property + ": " + (compiled_default_text value[key] (inner_indent + "  ") inner_indent) + "\n" ~}}
+{{~ end ~}}
+{{~ ret text + close_indent + "}" ~}}
+{{~ end ~}}
+{{~ ret value ~}}
+{{~ end ~}}
+{{~ func has_documented_parameters(items) ~}}
+{{~ for child in items ~}}
+{{~ if child.description ~}}
+{{~ prefix = regex.match child.description `^\w+\. ` ~}}
+{{~ if prefix.size > 0 ~}}{{~ ret true ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ ret false ~}}
+{{~ end ~}}
+{{~ func document_children(item, path) ~}}
+{{~ compiled = compiled_details[path] ~}}
+{{~ ret (has_documented_parameters item.properties) && !(compiled && !compiled.DocumentChildren) ~}}
+{{~ end ~}}
+{{~ func last_documented_parameter(items) ~}}
+{{~ last = null ~}}
+{{~ for category in (parameter_categories items) ~}}
+{{~ for item in items ~}}
+{{~ if item.description && (string.starts_with item.description (category + ". ")) ~}}
+{{~ last = item ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ ret last ~}}
+{{~ end ~}}
+{{~ func renders_discriminator(item, path) ~}}
+{{~ if !item.discriminator ~}}{{~ ret false ~}}{{~ end ~}}
+{{~ compiled = compiled_details[path] ~}}
+{{~ if compiled && ((!compiled.DocumentChildren) || (compiled.IsResourceDerived && !compiled.HasDiscriminator)) ~}}{{~ ret false ~}}{{~ end ~}}
+{{~ ret true ~}}
+{{~ end ~}}
+{{~ func variant_cases(item, path) ~}}
+{{~ compiled = compiled_details[path] ~}}
+{{~ if !compiled || !compiled.VariantOrder || compiled.VariantOrder.size == 0 ~}}{{~ ret item.discriminator.cases ~}}{{~ end ~}}
+{{~ if compiled.VariantOrder.size != item.discriminator.cases.size ~}}{{~ ret null ~}}{{~ end ~}}
+{{~ ordered = [] ~}}
+{{~ for value in compiled.VariantOrder ~}}
+{{~ found = false ~}}
+{{~ for variant in item.discriminator.cases ~}}
+{{~ if variant.value == value ~}}{{~ ordered = array.add ordered variant ~}}{{~ found = true ~}}{{~ break ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ if !found ~}}{{~ ret null ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ ret ordered ~}}
+{{~ end ~}}
+{{~ func has_deep_discriminator(item, path) ~}}
+{{~ if renders_discriminator item path ~}}
+{{~ for variant in item.discriminator.cases ~}}
+{{~ for child in variant.properties ~}}
+{{~ child_path = path + "." + item.discriminator.propertyName + "-" + variant.value + "." + child.name ~}}
+{{~ if (renders_discriminator child child_path) || (document_children child child_path) ~}}{{~ ret true ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ last_child = null ~}}
+{{~ if document_children item path ~}}{{~ last_child = last_documented_parameter item.properties ~}}{{~ end ~}}
+{{~ if last_child ~}}
+{{~ child_path = path + "." + last_child.name ~}}
+{{~ if (renders_discriminator last_child child_path) || (has_deep_discriminator last_child child_path) ~}}{{~ ret true ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ ret false ~}}
+{{~ end ~}}
+{{~ func parameter_sections(items, parent, roles_in_scope) ~}}
+{{~ rendered_details = 0 ~}}
+{{~ previous_block_has_gap = false ~}}
+{{~ for category in (parameter_categories items) ~}}
+{{~ has_category = false ~}}
+{{~ for item in items ~}}
+{{~ if item.description && (string.starts_with item.description (category + ". ")) ~}}{{~ has_category = true ~}}{{~ end ~}}
+{{~ end ~}}
+{{ if has_category }}**{{ category }} parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+{{ for item in items }}{{ if item.description && (string.starts_with item.description (category + ". ")) }}{{~ full_name = item.name ~}}{{~ if parent != "" ~}}{{~ full_name = parent + "." + item.name ~}}{{~ end ~}}| [`{{ item.name }}`](#parameter-{{ full_name | string.downcase | string.replace "." "" }}) | {{ parameter_type item full_name }} | {{ category_description item category full_name }} |
+{{ end }}{{ end }}
+{{ end }}{{ end }}{{~ for category in (parameter_categories items) ~}}
+{{~ for item in items ~}}
+{{~ if item.description && (string.starts_with item.description (category + ". ")) ~}}
+{{~ full_name = item.name ~}}{{~ if parent != "" ~}}{{~ full_name = parent + "." + item.name ~}}{{~ end ~}}
+{{~ parameter_info = compiled_details[full_name] ~}}
+{{~ allowed_values = item.allowedValues ~}}
+{{~ direct_values = null ~}}
+{{~ if parent == "" && compiled_parameters[item.name] ~}}{{~ direct_values = compiled_parameters[item.name].allowedValues ~}}{{~ end ~}}
+{{~ if parameter_info && parameter_info.AllowedValues.size == 0 ~}}{{~ allowed_values = [] ~}}{{~ end ~}}
+{{~ if parameter_info && parameter_info.AllowedValues.size > 0 && ((direct_values && direct_values.size > 0) || item.allowedValues.size > 0 || parameter_info.AllowedValuesFromReference) ~}}{{~ allowed_values = parameter_info.AllowedValues ~}}{{~ end ~}}
+{{~ allowed_header = "[" ~}}
+{{~ if parent != "" && (regex.match item.name `^\w+$`).size == 0 ~}}{{~ allowed_header = "'" + (string.replace item.name "'" `\'`) + "': [" ~}}{{~ end ~}}
+{{~ use_fenced_default = false ~}}
+{{~ role_list = null ~}}
+{{~ role_ambiguous = false ~}}
+{{~ if item.name == "roleAssignments" && has_root_roles ~}}
+{{~ role_list = roles_in_scope ~}}
+{{~ if parent == "" ~}}
+{{~ for entry in role_names ~}}
+{{~ if entry.Identifier == "" ~}}{{~ role_list = entry.Names ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ else ~}}
+{{~ role_suffix = string.downcase (string.split parent ".")[0] ~}}
+{{~ match_count = 0 ~}}
+{{~ candidate_roles = null ~}}
+{{~ conflicting_roles = false ~}}
+{{~ for entry in role_names ~}}
+{{~ role_identifier = string.downcase entry.Identifier ~}}
+{{~ if role_identifier == role_suffix || string.ends_with role_identifier ("_" + role_suffix) ~}}
+{{~ match_count = match_count + 1 ~}}
+{{~ if candidate_roles == null ~}}{{~ candidate_roles = entry.Names ~}}
+{{~ else if (object.to_json candidate_roles) != (object.to_json entry.Names) ~}}{{~ conflicting_roles = true ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ if match_count == 1 ~}}{{~ role_list = candidate_roles ~}}
+{{~ else if match_count > 1 ~}}{{~ role_ambiguous = conflicting_roles ~}}{{~ role_list = null ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ if role_list != null && !role_ambiguous ~}}{{~ roles_in_scope = role_list ~}}{{~ end ~}}
+{{~ end ~}}{{ if rendered_details > 0 && !previous_block_has_gap }}{{ "\n" }}{{ end }}{{ rendered_details = rendered_details + 1 }}### Parameter: `{{ full_name }}`
+
+{{ category_description item category full_name }}
+
+- Required: {{ if item.required || (item.name == ">Any_other_property<" && ((parameter_info && parameter_info.Required) || (item.description && (string.starts_with item.description "Required. ")))) }}Yes{{ else }}No{{ end }}
+- Type: {{ parameter_type item full_name }}
+{{ if role_ambiguous }}__AVM_DOCS_AMBIGUOUS_ROLES__:{{ full_name }}
+{{ end }}{{ if role_list && role_list.size > 0 }}- Roles configurable by name:
+{{ for role in role_list }}  - `'{{ role }}'`
+{{ end }}{{ end }}{{ if item.defaultValue != null }}{{~ default_value = item.defaultValue ~}}
+{{~ compiled_default = null ~}}
+{{~ if parent == "" && compiled_parameters[item.name] && compiled_parameters[item.name].defaultValue != null ~}}
+{{~ compiled_default = compiled_parameters[item.name].defaultValue ~}}
+{{~ default_kind = object.typeof compiled_default ~}}
+{{~ if default_kind == "string" ~}}
+{{~ arm_expression = regex.match compiled_default `\[\w+\(.*\).*\]` ~}}
+{{~ if arm_expression.size > 0 ~}}{{~ default_value = compiled_default ~}}
+{{~ else ~}}{{~ default_value = "'" + compiled_default + "'" ~}}{{~ end ~}}
+{{~ else if item.type == "bool" ~}}{{~ if compiled_default == true ~}}{{~ default_value = "True" ~}}{{~ else ~}}{{~ default_value = "False" ~}}{{~ end ~}}
+{{~ else if default_kind == "array" && compiled_default.size == 0 ~}}{{~ default_value = "[]" ~}}
+{{~ else if default_kind == "object" && (object.keys compiled_default).size == 0 ~}}{{~ default_value = "{}" ~}}
+{{~ else if default_kind != "array" && default_kind != "object" ~}}{{~ default_value = compiled_default ~}}
+{{~ end ~}}{{~ end ~}}
+{{~ scalar_array = false ~}}
+{{~ if compiled_default && (object.typeof compiled_default) == "array" && compiled_default.size > 0 ~}}
+{{~ scalar_array = true ~}}
+{{~ for value in compiled_default ~}}
+{{~ if (object.typeof value) == "object" || (object.typeof value) == "array" ~}}{{~ scalar_array = false ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ compiled_object = false ~}}
+{{~ if compiled_default && (object.typeof compiled_default) == "object" ~}}{{~ compiled_object = (object.keys compiled_default).size > 0 ~}}{{~ end ~}}
+{{~ compiled_array = false ~}}
+{{~ if compiled_default && (object.typeof compiled_default) == "array" && !scalar_array && item.defaultValueFence && (string.contains default_value "\n") ~}}{{~ compiled_array = compiled_default.size > 0 ~}}{{~ end ~}}
+{{~ empty_collection = false ~}}
+{{~ if compiled_default && (object.typeof compiled_default) == "array" ~}}{{~ empty_collection = compiled_default.size == 0 ~}}{{~ end ~}}
+{{~ if compiled_default && (object.typeof compiled_default) == "object" ~}}{{~ empty_collection = (object.keys compiled_default).size == 0 ~}}{{~ end ~}}
+{{~ use_fenced_default = !empty_collection && (scalar_array || compiled_object || compiled_array || (item.defaultValueFence && (string.contains default_value "\n"))) ~}}
+{{ if use_fenced_default }}- Default:
+  ```Bicep
+{{ if scalar_array }}  [
+{{ for value in (compiled_default | array.sort) }}    {{ if (object.typeof value) == "string" }}'{{ value }}'{{ else }}{{ value }}{{ end }}
+{{ end }}  ]
+{{ else if compiled_object }}{{ for line in (string.split (compiled_default_text compiled_default "    " "") "\n") }}  {{ line }}
+{{ end }}{{ else if compiled_array }}{{ for line in (string.split (compiled_default_text compiled_default "  " "") "\n") }}  {{ line }}
+{{ end }}{{ else }}{{ for line in (string.split default_value "\n") }}  {{ line }}
+{{ end }}{{ end }}  ```{{ if allowed_values.size > 0 || (renders_discriminator item full_name) }}{{ "\n" }}{{ else }}{{ "\n\n" }}{{ end }}{{ else }}- Default: `{{ default_value }}`{{ "\n" }}{{ end }}{{ end }}{{ if allowed_values.size > 0 }}- Allowed:
+  ```Bicep
+  {{ allowed_header }}
+{{ for value in allowed_values }}    {{ if (object.typeof value) == "string" && item.type != "int" && item.type != "bool" }}'{{ value }}'{{ else if (object.typeof value) == "object" || (object.typeof value) == "array" }}{{ compiled_default_text value "      " "    " }}{{ else }}{{ value }}{{ end }}
+{{ end }}  ]
+  ```
+{{ end }}{{ min_value = item.minValue }}{{ max_value = item.maxValue }}{{ if parent == "" && compiled_parameters[item.name] }}{{ min_value = compiled_parameters[item.name].minValue }}{{ max_value = compiled_parameters[item.name].maxValue }}{{ else if parameter_info }}{{ min_value = parameter_info.MinValue }}{{ max_value = parameter_info.MaxValue }}{{ end }}{{ if min_value != null }}- MinValue: {{ min_value }}
+{{ end }}{{ if max_value != null }}- MaxValue: {{ max_value }}
+{{ end }}{{ if parameter_info && parameter_info.Example != null }}{{~ example_raw = parameter_info.Example ~}}{{ if (object.typeof example_raw) == "object" }}- Example:
+  ```Bicep
+{{ for line in (string.split (compiled_default_text example_raw "  " "") "\n") }}  {{ line }}
+{{ end }}  ```
+{{ else }}{{~ if (object.typeof example_raw) == "array" ~}}{{~ joined = "" ~}}{{~ for line in example_raw ~}}{{~ if for.index > 0 ~}}{{~ joined = joined + "\n" ~}}{{~ end ~}}{{~ joined = joined + line ~}}{{~ end ~}}{{~ example_raw = joined ~}}{{~ end ~}}{{~ if example_raw != "" ~}}{{~ example_lines = string.split (string.replace example_raw "\r\n" "\n") "\n" ~}}{{~ example_text = formatted_example example_raw ~}}{{ if example_lines.size == 1 }}- Example: `{{ string.lstrip example_text }}`
+{{ else }}- Example:
+  ```Bicep
+{{ example_text }}
+  ```
+{{ end }}{{ end }}{{ end }}{{ end }}{{ if renders_discriminator item full_name }}{{~ variants = variant_cases item full_name ~}}{{ if variants == null }}__AVM_DOCS_MISSING_VARIANT__:{{ full_name }}
+{{ else }}- Discriminator: `{{ item.discriminator.propertyName }}`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+{{ for variant in variants }}{{~ variant_name = full_name + "." + item.discriminator.propertyName + "-" + variant.value ~}}{{~ variant_info = compiled_details[variant_name] ~}}| [`{{ variant.value }}`](#variant-{{ variant_name | string.downcase | string.replace "." "" }}) | {{ if variant_info }}{{ variant_info.Description }}{{ end }} |
+{{ end }}
+{{ for variant in variants }}{{~ variant_name = full_name + "." + item.discriminator.propertyName + "-" + variant.value ~}}{{~ variant_info = compiled_details[variant_name] ~}}### Variant: `{{ variant_name }}`
+{{ if variant_info }}{{ variant_info.Description }}{{ end }}
+
+To use this variant, set the property `{{ item.discriminator.propertyName }}` to `{{ variant.value }}`.
+
+{{ if document_children variant variant_name }}{{ capture variant_parameters }}{{ parameter_sections variant.properties variant_name roles_in_scope }}{{ end }}{{ string.rstrip variant_parameters }}{{ "\n" }}{{ end }}
+{{ end }}{{ end }}{{ end }}{{ if document_children item full_name }}{{ if !use_fenced_default }}{{ "\n" }}{{ end }}{{ parameter_sections item.properties full_name roles_in_scope }}{{ end }}{{ previous_block_has_gap = (has_deep_discriminator item full_name) || ((renders_discriminator item full_name) && !(document_children item full_name)) || (use_fenced_default && allowed_values.size == 0 && !(document_children item full_name)) }}{{ end }}{{ end }}{{~ end ~}}
+{{~ end ~}}
+{{~ func output_type(output) ~}}
+{{~ compiled = compiled_outputs[output.name] ~}}
+{{~ if compiled && compiled.type && (string.downcase compiled.type) == "securestring" ~}}{{~ ret "securestring" ~}}{{~ end ~}}
+{{~ if compiled && compiled.type && (string.downcase compiled.type) == "secureobject" ~}}{{~ ret "secureObject" ~}}{{~ end ~}}
+{{~ if string.contains custom.typelessOutputs ("|" + output.name + "|") ~}}
+{{~ ret "" ~}}
+{{~ end ~}}
+{{~ if output.secure && output.type == "string" ~}}{{~ ret "securestring" ~}}{{~ end ~}}
+{{~ if output.secure && output.type == "object" ~}}{{~ ret "secureObject" ~}}{{~ end ~}}
+{{~ if output.type == "any" ~}}{{~ ret "" ~}}{{~ end ~}}
+{{~ ret output.type ~}}
+{{~ end ~}}
+{{~ func template_reference(resource) ~}}
+{{~ if resource.ApiVersion == "2018-10-15-preview" ~}}
+{{~ if resource.Type == "Microsoft.DevTestLab/labs" || resource.Type == "Microsoft.DevTestLab/labs/secrets" ~}}
+{{~ ret "Microsoft.DevTestLab/labs" ~}}
+{{~ end ~}}
+{{~ end ~}}
+{{~ provider = (string.split resource.Type "/")[0] ~}}
+{{~ ret provider + "/" + resource.ApiVersion + "/" + (string.replace resource.Type (provider + "/") "") ~}}
+{{~ end ~}}
+{{~ resource_types = object.from_json custom.resourceTypes ~}}
+{{~ references = object.from_json custom.references ~}}
+{{~ compiled_parameters = object.from_json custom.compiledParameters ~}}
+{{~ compiled_outputs = object.from_json custom.compiledOutputs ~}}
+{{~ role_names = object.from_json custom.roleNames ~}}
+{{~ has_root_roles = false ~}}
+{{~ for entry in role_names ~}}
+{{~ if entry.Identifier == "" ~}}{{~ has_root_roles = true ~}}{{~ end ~}}
+{{~ end ~}}
+{{~ compiled_details = object.from_json custom.compiledDetails ~}}
+{{~ examples = object.from_json custom.examples ~}}
+{{~ scope_children = object.from_json custom.scopeChildren ~}}
+{{~ deprecated_lines = object.from_json custom.deprecatedLines ~}}
+{{~ moved_lines = object.from_json custom.movedLines ~}}
+# {{ module.name }} `[{{ if custom.headerType != "" }}{{ custom.headerType }}{{ else if resource_types.size > 0 }}{{ resource_types[0].Type }}{{ end }}]`
+
+{{ if deprecated_lines.size > 0 }}{{ for line in deprecated_lines }}> {{ line }}
+{{ end }}
+{{ end }}{{ if moved_lines.size > 0 }}{{ for line in moved_lines }}> {{ line }}
+{{ end }}
+{{ end }}{{ module.description }}{{ custom.descriptionSuffix }}
+
+{{ if custom.isVersioned == "true" }}You can reference the module as follows:
+```bicep
+module {{ custom.moduleSymbol }} 'br/public:{{ custom.moduleReference }}:<version>' = {
+  params: { (...) }
+}
+```
+For examples, please refer to the [Usage Examples](#usage-examples) section.
+
+{{ end }}## Navigation
+
+- [Resource Types](#Resource-Types)
+{{ if module.usageExamples.size > 0 || scope_children.size > 0 }}- [Usage examples](#Usage-examples)
+{{ end }}- [Parameters](#Parameters)
+{{ if module.exportedFunctions.size > 0 }}- [Exported functions](#Exported-functions)
+{{ end }}- [Outputs](#Outputs)
+{{ if references.size > 0 }}- [Cross-referenced modules](#Cross-referenced-modules)
+{{ end }}{{ if custom.hasNotes == "true" }}- [Notes](#Notes)
+{{ end }}{{ if has_parameter "enableTelemetry" }}- [Data Collection](#Data-Collection)
+{{ end }}
+## Resource Types
+
+{{ if resource_types.size == 0 }}_None_
+{{ else }}| Resource Type | API Version | References |
+| :-- | :-- | :-- |
+{{ for resource in resource_types }}| `{{ resource.Type }}` | {{ resource.ApiVersion }} | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/{{ resource.Type | string.downcase | string.replace "/" "_" }}.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/{{ template_reference resource }})</li></ul> |
+{{ end }}{{ end }}
+{{ if scope_children.size > 0 }}## Usage examples
+
+**Note**: This is a multi-scoped module. This means, you will find the 'Usage Examples' in the documentation of the correspondingly scoped child modules:
+{{ for child in scope_children }}- `/{{ child }}/README.md`
+{{ end }}
+{{ else if module.usageExamples.size > 0 }}## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:{{ custom.moduleReference }}:<version>`.
+
+{{ for example in module.usageExamples }}{{ raw_header = "### Example " + (for.index + 1) + ": _" + example.name + "_" }}{{ clean_header = regex.replace raw_header `<\/?.+?>|[^A-Za-z0-9\s-]` "" }}{{ example_anchor = string.downcase (regex.replace (string.strip clean_header) `\s+` "-") }}- [{{ example.name }}](#{{ example_anchor }})
+{{ end }}
+{{ for example in module.usageExamples }}{{~ example_data = examples[example.path] ~}}### Example {{ for.index + 1 }}: _{{ example.name }}_
+
+{{ if example.description }}{{ example.description }}
+
+{{ end }}{{ path_parts = string.split example.path "/" }}You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/{{ path_parts[path_parts.size - 2] }}]
+{{ if example_data == null }}__AVM_DOCS_MISSING_EXAMPLE__:{{ example.path }}
+{{ else if example_data.InvalidReason != "" }}__AVM_DOCS_INVALID_EXAMPLE__:{{ example_data.InvalidReason }}
+{{ else }}{{ if example_data.HasIgnore }}
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+{{ example_data.IgnoreReason }}
+```
+{{ else }}
+{{ end }}
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+{{ if example_data.IsModule }}module {{ custom.moduleSymbol }} 'br/public:{{ custom.moduleReference }}:<version>' = {
+  params: {
+{{ if example_data.BicepParameters != "" }}{{ example_data.BicepParameters }}
+{{ else }}
+{{ end }}  }
+}{{ else }}{{ example.contents | string.replace "\r\n" "\n" }}{{ end }}
+```
+
+</details>
+<p>
+
+{{ if example_data.IsModule }}<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{{ example_data.JsonParameters }}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:{{ custom.moduleReference }}:<version>'
+{{ if example_data.BicepParameterFile != "" }}
+{{ example_data.BicepParameterFile }}{{ else }}
+{{ end }}
+```
+
+</details>
+<p>
+
+{{ end }}{{ end }}{{ end }}{{ end }}## Parameters
+
+{{ if module.parameters.size == 0 }}_None_
+
+{{ else }}{{ capture rendered_parameters }}{{ parameter_sections module.parameters "" null }}{{ end }}{{ string.rstrip rendered_parameters }}{{ "\n\n" }}{{ end }}{{ if module.exportedFunctions.size > 0 }}## Exported functions
+
+| Function | Description |
+| :-- | :-- |
+{{ for exported_function in module.exportedFunctions }}| `{{ exported_function.name }}` | {{ exported_function.description }} |
+{{ end }}
+{{ end }}## Outputs
+
+{{ if module.outputs.size == 0 }}_None_
+{{ else }}{{ has_output_description = false }}{{ for output in module.outputs }}{{ if output.description != null }}{{ has_output_description = true }}{{ end }}{{ end }}{{ if has_output_description }}| Output | Type | Description |
+| :-- | :-- | :-- |
+{{ for output in module.outputs }}| `{{ output.name }}` | {{ output_type output }} | {{ output.description | string.replace "\r\n" "<p>" | string.replace "\n" "<p>" }} |
+{{ end }}{{ else }}| Output | Type |
+| :-- | :-- |
+{{ for output in module.outputs }}| `{{ output.name }}` | {{ output_type output }} |
+{{ end }}{{ end }}{{ end }}
+{{ if references.size > 0 }}## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+{{ for reference in references }}| `{{ reference.Path }}` | {{ reference.Kind }} reference |
+{{ end }}
+{{ end }}{{ if custom.hasNotes == "true" }}## Notes
+{{ custom.notes }}{{ end }}{{ if has_parameter "enableTelemetry" }}## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft's privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+{{ end }}

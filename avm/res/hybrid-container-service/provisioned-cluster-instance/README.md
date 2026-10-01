@@ -16,6 +16,7 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -46,11 +47,6 @@ This instance deploys the module with the minimum set of required parameters.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-This test requires an Azure Stack HCI 24H2 cluster which is not available in the standard AVM CI environment.
-Validated via fork CI on branch avm-hci-ci targeting HCI test subscription.
-```
 
 <details>
 
@@ -144,11 +140,6 @@ This instance deploys the module with most of its features enabled.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-This test requires an Azure Stack HCI 24H2 cluster which is not available in the standard AVM CI environment.
-Validated via fork CI on branch avm-hci-ci targeting HCI test subscription.
-```
 
 <details>
 
@@ -420,11 +411,6 @@ This instance deploys the module in alignment with the best-practices of the Azu
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
 
-> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
-```text
-This test requires an Azure Stack HCI 24H2 cluster which is not available in the standard AVM CI environment.
-Validated via fork CI on branch avm-hci-ci targeting HCI test subscription.
-```
 
 <details>
 
@@ -1405,6 +1391,14 @@ Tags of the resource.
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/res/kubernetes/connected-cluster:0.1.1` | Remote reference |
 
 ## Data Collection
 

@@ -1,4 +1,4 @@
-# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers]`
+# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings]`
 
 This module enables Advanced Threat Protection for DBforMySQL Flexible Server.
 

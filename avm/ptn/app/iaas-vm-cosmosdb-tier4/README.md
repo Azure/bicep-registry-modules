@@ -566,7 +566,15 @@ Tags for all resources. Should include standard tags like Environment, Owner, Co
 - Required: No
 - Type: object
 - Default: `{}`
-- Example: `System.Management.Automation.OrderedHashtable`
+- Example:
+  ```Bicep
+  {
+    Application: 'MyApp'
+    CostCenter: 'IT'
+    Environment: 'Production'
+    Owner: 'TeamName'
+  }
+  ```
 
 ### Parameter: `virtualMachineImageReference`
 

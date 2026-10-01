@@ -4,6 +4,40 @@
   "extensions": {
     "microsoftGraphV1": "br:mcr.microsoft.com/bicep/extensions/microsoftgraph/v1.0:1.0.0"
   },
+  "documentation": {
+    "template": {
+      "file": "docs/templates/avm-readme-v1.scriban",
+      "includeRoot": "docs/templates"
+    },
+    "examples": {
+      "reassignments": [
+        {
+          "from": {
+            "include": [
+              "**/mg-scope.*/**"
+            ]
+          },
+          "to": "mg-scope"
+        },
+        {
+          "from": {
+            "include": [
+              "**/rg-scope.*/**"
+            ]
+          },
+          "to": "rg-scope"
+        },
+        {
+          "from": {
+            "include": [
+              "**/sub-scope.*/**"
+            ]
+          },
+          "to": "sub-scope"
+        }
+      ]
+    }
+  },
   "analyzers": {
     "core": {
       "rules": {

@@ -1,3 +1,5 @@
+. (Join-Path $PSScriptRoot '..' '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+
 #region helper
 <#
 .SYNOPSIS
@@ -217,7 +219,7 @@ function Get-DeploymentTargetResourceListInner {
         $op = Get-DeploymentOperationAtScope @baseInputObject
         [array] $deploymentTargets = $op.TargetResource.id | Where-Object { $_ -ne $null } | Select-Object -Unique
     } catch {
-        if (-not $DoThrow -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound') {
+        if (-not $DoThrow -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound' -and (Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Other') {
             Write-Warning "Deployment [$Name] was not found in scope [$Scope]. Ignoring, as nested deployment."
             return
         }
@@ -285,7 +287,8 @@ Get all deployments that match a given deployment name in a given scope using a 
 .DESCRIPTION
 Get all deployments that match a given deployment name in a given scope using a retry mechanic.
 Only DeploymentNotFound is retried. A preflight-rejected attempt with that response is known not to have been created.
-Other lookup failures remain explicit while allowing cleanup of resources found in other attempts. Cancellation propagates.
+Other lookup failures, including request timeouts, retain known resources for cleanup before reporting the error.
+Genuine cancellation propagates without further discovery or removal.
 
 .PARAMETER ResourceGroupName
 Optional. The name of the resource group for scope 'resourcegroup'
@@ -392,12 +395,11 @@ function Get-DeploymentTargetResourceList {
                 Write-Verbose ('Found & resolved deployment [{0}]. [{1}] resources found to remove.' -f $deploymentNameObject.Name, $targetResources.Count) -Verbose
                 $deploymentNameObject.Resolved = $true
             } catch {
-                for ($exception = $_.Exception; $null -ne $exception; $exception = $exception.InnerException) {
-                    if ($exception -is [System.OperationCanceledException] -or $exception -is [System.Management.Automation.PipelineStoppedException]) {
-                        throw
-                    }
+                $errorKind = Get-DeploymentErrorKind -ErrorRecord $_
+                if ($errorKind -eq 'Cancellation') {
+                    throw
                 }
-                if ($_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound') {
+                if ($errorKind -eq 'Other' -and $_.FullyQualifiedErrorId.Split(',')[0] -eq 'DeploymentNotFound') {
                     if ($deploymentNameObject.Name -in $PreflightRejectedDeploymentNames) {
                         Write-Verbose "Confirmed no deployment record for preflight-rejected attempt [$($deploymentNameObject.Name)]. No lookup retry is needed." -Verbose
                         $deploymentNameObject.Resolved = $true

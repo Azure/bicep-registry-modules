@@ -211,7 +211,7 @@ var clusterWitnessStorageAccountNameVar = witnessType == 'No Witness' ? '' : clu
 var azureServiceEndpointVar = witnessType == 'No Witness' ? '' : environment().suffixes.storage
 
 
-resource cluster 'Microsoft.AzureStackHCI/clusters@2026-04-30' existing = {
+resource cluster 'Microsoft.AzureStackHCI/clusters@2026-10-01' existing = {
   name: clusterName
 }
 
@@ -223,7 +223,7 @@ var baseSecretNames = [
 
 var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
 
-resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2026-04-30' = {
+resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2026-10-01' = {
   name: name
   parent: cluster
   properties: {
@@ -292,7 +292,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
                 ipv4Address: !empty(physicalNodesSettings)
                   ? physicalNodesSettings[index].ipv4Address
                   : (filter(
-                      reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2026-04-30', 'Full').properties.deviceConfiguration.nicDetails,
+                      reference('${hciNode}/providers/microsoft.azurestackhci/edgeDevices/default', '2026-10-01', 'Full').properties.deviceConfiguration.nicDetails,
                       nic => nic.?defaultGateway != null
                     ))[0].ip4Address
               }

@@ -6,9 +6,9 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Updated API version for `Microsoft.AzureStackHCI/clusters` to `2026-04-30`.
-- Updated API version for `Microsoft.AzureStackHCI/clusters/deploymentSettings` to `2026-04-30`.
-- Updated API version for `Microsoft.AzureStackHCI/edgeDevices` to `2026-04-30`.
+- Updated API version for `Microsoft.AzureStackHCI/clusters` to `2026-10-01`.
+- Updated API version for `Microsoft.AzureStackHCI/clusters/deploymentSettings` to `2026-10-01`.
+- Updated API version for `Microsoft.AzureStackHCI/edgeDevices` to `2026-10-01`.
 - Updated API version for `Microsoft.HybridCompute/machines` to `2026-07-15`.
 - Updated API version for `Microsoft.KeyVault/vaults` and `Microsoft.KeyVault/vaults/secrets` to `2026-02-01`, moving off the previously used preview API version.
 - Updated API version for `Microsoft.Storage/storageAccounts` to `2026-04-01`.
