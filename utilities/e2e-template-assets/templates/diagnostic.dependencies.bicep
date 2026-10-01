@@ -2,14 +2,14 @@
 // Parameters //
 // ========== //
 
-@description('Required. The name of the storage account to create.')
+@description('Required. The storage account base name. Truncated as needed to append a stable resource-group-specific suffix.')
 @maxLength(24)
 param storageAccountName string
 
 @description('Required. The name of the log analytics workspace to create.')
 param logAnalyticsWorkspaceName string
 
-@description('Required. The name of the event hub namespace to create.')
+@description('Required. The event hub namespace base name. Truncated as needed to append a stable resource-group-specific suffix.')
 param eventHubNamespaceName string
 
 @description('Required. The name of the event hub to create inside the event hub namespace.')
@@ -23,7 +23,7 @@ param location string = resourceGroup().location
 // ============ //
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2025-06-01' = {
-  name: storageAccountName
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   kind: 'StorageV2'
   sku: {
@@ -40,7 +40,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
 }
 
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
-  name: eventHubNamespaceName
+  name: '${take(eventHubNamespaceName, 36)}-${uniqueString(resourceGroup().id, eventHubNamespaceName)}'
   location: location
 
   resource eventHub 'eventhubs@2024-01-01' = {
