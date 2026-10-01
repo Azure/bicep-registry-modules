@@ -8,7 +8,7 @@ Describe 'Regional validation workflow runtime integration' {
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $actionPath -Raw)
         $environmentNames = @(
-            'TEMP', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
+            'TEMP', 'TMPDIR', 'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME',
             'localToken_resourceLocation'
         )
 
@@ -115,6 +115,7 @@ Describe 'Regional validation workflow runtime integration' {
             Remove-Item -LiteralPath "Env:\$name" -ErrorAction SilentlyContinue
         }
         $env:TEMP = $TestDrive
+        $env:TMPDIR = $TestDrive
         $env:GITHUB_WORKSPACE = $repoRootPath
         $env:GITHUB_OUTPUT = Join-Path $TestDrive 'step-output.txt'
         $null = New-Item -Path $env:GITHUB_OUTPUT -ItemType File -Force
