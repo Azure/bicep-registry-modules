@@ -1,10 +1,11 @@
 <#
 .SYNOPSIS
-Resolve additional test parameters from GitHub Actions.
+Resolve additional test parameters from GitHub Actions and the legacy CI Key Vault.
 
 .DESCRIPTION
 Matches GitHub names without regard to case: CI_ removes separator underscores,
-while CI__ preserves literal underscores. GitHub secrets override variables.
+while CI__ preserves literal underscores. Key Vault CI- names remain literal.
+GitHub secrets override variables; Key Vault only supplies missing parameters.
 Within each GitHub source, CI_ takes precedence over CI__. Multiple aliases in the
 winning prefix must not target the same template parameter.
 GitHub values are converted to the declared ARM parameter types.
@@ -21,6 +22,8 @@ The JSON-serialized, resolved GitHub Actions vars context.
 .PARAMETER GitHubSecrets
 The JSON-serialized, resolved GitHub Actions secrets context.
 
+.PARAMETER KeyVaultName
+Optional legacy vault supplying CI- secrets for parameters not configured in GitHub.
 #>
 function Get-CIParameterMap {
 
@@ -38,7 +41,10 @@ function Get-CIParameterMap {
         [string] $GitHubVariables = '{}',
 
         [Parameter()]
-        [string] $GitHubSecrets = '{}'
+        [string] $GitHubSecrets = '{}',
+
+        [Parameter()]
+        [string] $KeyVaultName
     )
 
     . (Join-Path $PSScriptRoot 'ConvertFrom-CIParameterName.ps1')
@@ -160,6 +166,23 @@ function Get-CIParameterMap {
             default {
                 throw "Parameter [$parameterName] has unsupported ARM type [$parameterType] for GitHub CI inputs."
             }
+        }
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($KeyVaultName) -and $parameters.psbase.Count -lt $TemplateParameters.psbase.Count) {
+        $vaultSecrets = Get-AzKeyVaultSecret -VaultName $KeyVaultName -ErrorAction Stop |
+            Where-Object { $_.Name -match '^CI-.+' }
+        foreach ($vaultSecret in $vaultSecrets) {
+            $name = $vaultSecret.Name.Substring(3)
+            if (-not $parameterNames.ContainsKey($name) -or $parameters.ContainsKey($name)) {
+                continue
+            }
+
+            $secret = Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $vaultSecret.Name -ErrorAction Stop
+            if ($secret.SecretValue -isnot [securestring]) {
+                throw "Key Vault did not return a secure value for CI parameter [$name]."
+            }
+            $parameters[$parameterNames[$name]] = $secret.SecretValue
         }
     }
 

@@ -14,6 +14,9 @@ inputs:
     description: "The path to the test file"
     required: true
     default: ""
+  managementGroupId:
+    description: "The management group ID to deploy to"
+    required: false
   psrulePath:
     description: "The path to PSRule configurations"
     required: false
@@ -32,18 +35,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: "Select BAMI test subscription"
-      id: get-test-subscription
-      shell: pwsh
-      run: |
-        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-BamiTestConfiguration.ps1')
-
-        $configuration = Get-BamiTestConfiguration
-        Write-Output ("subscriptionId={0}" -f $configuration.Subscriptions[0].id) >> $env:GITHUB_OUTPUT
-        Write-Output ("tenantId={0}" -f $configuration.TenantId) >> $env:GITHUB_OUTPUT
-        Write-Output ("managementGroupId={0}" -f $configuration.ManagementGroupId) >> $env:GITHUB_OUTPUT
-        Write-Output ("persistentSubscriptionId={0}" -f $configuration.PersistentSubscriptionId) >> $env:GITHUB_OUTPUT
-
     # [Token replacement] task(s)
     # ---------------------------
     - name: "Replace tokens in template file"
@@ -77,10 +68,18 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId           = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-            managementGroupId        = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
-            tenantId                 = '${{ steps.get-test-subscription.outputs.tenantId }}'
-            persistentSubscriptionId = '${{ steps.get-test-subscription.outputs.persistentSubscriptionId }}'
+            subscriptionId    = '${{ env.VALIDATE_SUBSCRIPTION_ID }}'
+            managementGroupId = '${{ inputs.managementGroupId }}'
+            tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
+          }
+          if ($env:AVM_TEST_TENANT -ceq 'bami') {
+            if ([string]::IsNullOrWhiteSpace($env:TEST_SUBSCRIPTION_IDS) -or
+                [string]::IsNullOrWhiteSpace($env:VALIDATE_TENANT_ID) -or
+                [string]::IsNullOrWhiteSpace($ConvertTokensInputs.Tokens['managementGroupId'])) {
+              throw 'BAMI PSRule requires tenant, management group and test subscriptions.'
+            }
+            . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+            $ConvertTokensInputs.Tokens['subscriptionId'] = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS)[0].id
           }
 
           # Add local (source control) tokens

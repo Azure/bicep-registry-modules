@@ -69,28 +69,24 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_BAMI_TENANT_ID: ${{ vars.TEST_BAMI_TENANT_ID }}
-          TEST_BAMI_BICEP_CLIENT_ID: ${{ vars.TEST_BAMI_BICEP_CLIENT_ID }}
-          TEST_BAMI_SUBSCRIPTION_IDS: ${{ vars.TEST_BAMI_SUBSCRIPTION_IDS }}
-          TEST_BAMI_MANAGEMENT_GROUP_ID: ${{ vars.TEST_BAMI_MANAGEMENT_GROUP_ID }}
-          TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID: ${{ vars.TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-BamiTestConfiguration.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-          $configuration = Get-BamiTestConfiguration
-          $subscriptions = $configuration.Subscriptions
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
           Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
-          Write-Output ("clientId={0}" -f $configuration.ClientId) >> $env:GITHUB_OUTPUT
-          Write-Output ("tenantId={0}" -f $configuration.TenantId) >> $env:GITHUB_OUTPUT
           Write-Output ("subscriptions={0}" -f (ConvertTo-Json -InputObject $subscriptions -Compress)) >> $env:GITHUB_OUTPUT
 
       # [Azure login] task(s)
       # ------------------------------
+      # Supports both OIDC and service principal with secret
+      # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ steps.get-test-subscriptions.outputs.clientId }}
-          tenant-id: ${{ steps.get-test-subscriptions.outputs.tenantId }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -138,27 +134,23 @@ jobs:
         id: get-test-subscriptions
         shell: pwsh
         env:
-          TEST_BAMI_TENANT_ID: ${{ vars.TEST_BAMI_TENANT_ID }}
-          TEST_BAMI_BICEP_CLIENT_ID: ${{ vars.TEST_BAMI_BICEP_CLIENT_ID }}
-          TEST_BAMI_SUBSCRIPTION_IDS: ${{ vars.TEST_BAMI_SUBSCRIPTION_IDS }}
-          TEST_BAMI_MANAGEMENT_GROUP_ID: ${{ vars.TEST_BAMI_MANAGEMENT_GROUP_ID }}
-          TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID: ${{ vars.TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
         run: |
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-BamiTestConfiguration.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-          $configuration = Get-BamiTestConfiguration
-          Write-Output ("subscriptionId={0}" -f $configuration.Subscriptions[0].id) >> $env:GITHUB_OUTPUT
-          Write-Output ("clientId={0}" -f $configuration.ClientId) >> $env:GITHUB_OUTPUT
-          Write-Output ("tenantId={0}" -f $configuration.TenantId) >> $env:GITHUB_OUTPUT
-          Write-Output ("managementGroupId={0}" -f $configuration.ManagementGroupId) >> $env:GITHUB_OUTPUT
+          $subscriptions = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID -Verbose)
+          Write-Output ("subscriptionId={0}" -f $subscriptions[0].id) >> $env:GITHUB_OUTPUT
 
       # [Azure login] task(s)
       # ------------------------------
+      # Supports both OIDC and service principal with secret
+      # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
       - name: Azure Login
         uses: azure/login@7ddb5af1ef8758cf1353cf3b42f940aee27ba21c # v3.0.2
         with:
-          client-id: ${{ steps.get-test-subscriptions.outputs.clientId }}
-          tenant-id: ${{ steps.get-test-subscriptions.outputs.tenantId }}
+          client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
+          tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ steps.get-test-subscriptions.outputs.subscriptionId }}
           enable-AzPSSession: true
 
@@ -169,13 +161,18 @@ jobs:
             # Load used functions
             . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'deploymentRemoval' 'Clear-ManagementGroupDeploymentHistory.ps1')
 
-            $functionInput = @{
-              ManagementGroupId            = '${{ steps.get-test-subscriptions.outputs.managementGroupId }}'
-              maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+            $mgmtGroupIdInput = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).customManagementGroupId }}'
+
+            foreach($mgmtGroupId in @('${{ secrets.ARM_MGMTGROUP_ID }}', 'bicep-lz-vending-automation-child')) {
+              Write-Verbose "Processing mgmtGroupId [$mgmtGroupId]" -Verbose
+              $functionInput = @{
+                ManagementGroupId            = $mgmtGroupId
+                maxDeploymentRetentionInDays = '${{ (fromJson(needs.job_initialize_pipeline.outputs.workflowInput)).maxDeploymentRetentionInDays }}'
+              }
+
+              Write-Verbose "Invoke task with" -Verbose
+              Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+              Clear-ManagementGroupDeploymentHistory @functionInput
             }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Clear-ManagementGroupDeploymentHistory @functionInput
           azPSVersion: "latest"

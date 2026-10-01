@@ -160,7 +160,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
             )
             $values = @{
                 '${{ inputs.deploymentMetadataLocation }}'                          = 'WestEurope'
-                '${{ steps.get-test-subscription.outputs.managementGroupId }}'       = 'test-management-group'
+                '${{ inputs.managementGroupId }}'                                   = 'test-management-group'
                 '${{ steps.get-test-subscription.outputs.subscriptionId }}'         = $subscriptionId
                 '${{ steps.validate-template.outputs.resourceLocation }}'           = 'swedencentral'
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''

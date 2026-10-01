@@ -34,24 +34,9 @@ Describe 'CI parameter workflow integration' {
             )
             throw 'Unexpected deployment.'
         }
-        function Get-AzKeyVaultSecret {
-            [CmdletBinding()]
-            param([string] $VaultName, [string] $Name)
-            throw 'Unexpected Key Vault access.'
-        }
-        function Get-AzResourceProvider {
-            [CmdletBinding()]
-            param([string[]] $ProviderNamespace)
-            throw 'Unexpected Azure provider query.'
-        }
-        function Get-AzLocation {
-            [CmdletBinding()]
-            param()
-            throw 'Unexpected Azure location query.'
-        }
 
         function Get-TestStepScript {
-            param([string] $StepName, [string] $TemplatePath, [string] $CustomLocation = '')
+            param([string] $StepName, [string] $TemplatePath)
 
             $script = ($action.runs.steps | Where-Object { $_.name -eq $StepName }).with.inlineScript
             # Keep mocks in place instead of loading the real Azure deployment functions.
@@ -61,10 +46,10 @@ Describe 'CI parameter workflow integration' {
                 "'{0}'" -f $TemplatePath.Replace("'", "''")
             )
             $script = $script.Replace('${{ inputs.deploymentMetadataLocation }}', 'westeurope')
-            $script = $script.Replace('${{ steps.get-test-subscription.outputs.managementGroupId }}', 'test-management-group')
+            $script = $script.Replace('${{ inputs.managementGroupId }}', '')
             $script = $script.Replace('${{ steps.get-test-subscription.outputs.subscriptionId }}', '11111111-1111-1111-1111-111111111111')
             $script = $script.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
-            $script = $script.Replace('${{ inputs.customLocation }}', $CustomLocation)
+            $script = $script.Replace('${{ inputs.customLocation }}', '')
             $script = $script.Replace('${{ steps.replace-tokens.outputs.resourceLocation }}', '')
             $script = $script.Replace('${{ steps.validate-template.outputs.resourceLocation }}', 'eastus')
             return [scriptblock]::Create($script)
@@ -82,7 +67,6 @@ Describe 'CI parameter workflow integration' {
         $env:GITHUB_OUTPUT = Join-Path $TestDrive 'output.txt'
         $env:AVM_CI_VARIABLES = '{"CI_ADMINMEMBERSSECRET":"variable-value","CI_RESOURCE_LOCATION":"eastus","CI__RESOURCELOCATION":"unused-region","CI__RESOURCE_NAME":"literal-name"}'
         $env:AVM_CI_SECRETS = '{"CI__ADMINMEMBERSSECRET":"shadowed-secret-value","CI_ADMIN_MEMBERS_SECRET":"secret-value","CI__SECURECONFIG":"{\"password\":\"nested-secret-value\"}"}'
-        $env:CI_KEY_VAULT_NAME = 'unused-legacy-vault'
 
         $templatePath = Join-Path $TestDrive 'template.json'
         @{
@@ -93,7 +77,6 @@ Describe 'CI parameter workflow integration' {
                 resourceLocation   = @{ type = 'string' }
                 resource_name      = @{ type = 'string' }
                 baseTime           = @{ type = 'string' }
-                legacyOnly         = @{ type = 'secureString' }
             }
         } | ConvertTo-Json -Depth 5 | Set-Content -Path $templatePath
         $bicepPath = Join-Path $TestDrive 'template.bicep'
@@ -121,11 +104,6 @@ output configuredParameters object = {
 
         Mock Test-TemplateDeployment {}
         Mock New-TemplateDeployment { @{ deploymentNames = @('test-deployment'); deploymentOutput = @{} } }
-        Mock Get-AzKeyVaultSecret { throw 'CI must never access the legacy Key Vault.' }
-        Mock Get-AzResourceProvider { throw 'Unexpected Azure provider query.' }
-        Mock Get-AzLocation { throw 'Unexpected Azure location query.' }
-        Mock Invoke-RestMethod { throw 'Unexpected network request.' }
-        Mock Invoke-WebRequest { throw 'Unexpected network request.' }
     }
 
     AfterEach {
@@ -147,7 +125,7 @@ output configuredParameters object = {
         $deployment.environment | Should -Be 'avm-validation'
         $step.with.githubVariables | Should -Be '${{ toJSON(vars) }}'
         $step.with.githubSecrets | Should -Be '${{ toJSON(secrets) }}'
-        @($workflow.env.Keys) | Should -Not -Contain 'CI_KEY_VAULT_NAME'
+        $workflow.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         @($workflow.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
         @($deployment.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
     }
@@ -166,9 +144,14 @@ output configuredParameters object = {
         }
     }
 
-    It 'Removes the unreachable vault warning and every vault fallback from the action' {
-        @($action.runs.steps.name) | Should -Not -Contain 'Warn about CI Key Vault deprecation'
-        ($action | ConvertTo-Json -Depth 20) | Should -Not -Match 'CI_KEY_VAULT_NAME|KeyVaultName'
+    It 'Warns about legacy vault support without exposing the vault name or values' {
+        $step = $action.runs.steps | Where-Object { $_.name -eq 'Warn about CI Key Vault deprecation' }
+
+        $step.if | Should -Be "env.skip_deployment_ci == 'false' && env.CI_KEY_VAULT_NAME != ''"
+        $messages = @(. ([scriptblock]::Create($step.run)))
+        $messages | Should -Match '^::warning'
+        $messages | Should -Match 'support may be removed'
+        $messages | Should -Match 'GitHub Actions secrets or variables'
     }
 
     It 'Passes <format> parameters to <stepName> without modifying the template or logging values' -ForEach @(
@@ -189,32 +172,10 @@ output configuredParameters object = {
             $AdditionalParameters.secureConfig.password -eq 'nested-secret-value' -and
             $AdditionalParameters.resourceLocation -eq 'eastus' -and
             $AdditionalParameters.resource_name -eq 'literal-name' -and
-            -not $AdditionalParameters.ContainsKey('legacyOnly') -and
             -not [string]::IsNullOrEmpty($AdditionalParameters.baseTime)
         }
-        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
         ($messages | Out-String) | Should -Not -Match 'secret-value|nested-secret-value|variable-value'
         Get-Content -Path $path -Raw | Should -BeExactly $before
-    }
-
-    It 'Does not use the legacy vault when <stepName> has no GitHub CI parameters' -ForEach @(
-        @{ stepName = 'Validate template file'; commandName = 'Test-TemplateDeployment' }
-        @{ stepName = 'Deploy template file'; commandName = 'New-TemplateDeployment' }
-    ) {
-        $env:AVM_CI_VARIABLES = '{"CI_KEY_VAULT_NAME":"unused-legacy-vault"}'
-        $env:AVM_CI_SECRETS = '{"AZURE_CREDENTIALS":"unused-legacy-credentials"}'
-        $script = Get-TestStepScript -StepName $stepName -TemplatePath $templatePath -CustomLocation 'eastus'
-
-        $null = . $script
-
-        Should -Invoke $commandName -Times 1 -Exactly -ParameterFilter {
-            -not $AdditionalParameters.ContainsKey('adminMembersSecret') -and
-            -not $AdditionalParameters.ContainsKey('secureConfig') -and
-            -not $AdditionalParameters.ContainsKey('legacyOnly')
-        }
-        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
-        Should -Invoke Get-AzResourceProvider -Times 0 -Exactly
-        Should -Invoke Get-AzLocation -Times 0 -Exactly
     }
 
     It 'Stops <stepName> when Bicep compilation fails' -ForEach @(
