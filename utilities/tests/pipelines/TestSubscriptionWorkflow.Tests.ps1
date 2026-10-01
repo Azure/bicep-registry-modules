@@ -1,3 +1,4 @@
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '', Justification = 'Key Vault mocks use synthetic test values, not credentials.')]
 param(
     [Parameter()]
     [string] $repoRootPath = (Get-Item -Path $PSScriptRoot).Parent.Parent.Parent.FullName
@@ -7,11 +8,7 @@ Describe 'Test subscription workflow integration' {
 
     BeforeDiscovery {
         $routingCases = foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
-            foreach ($repositoryCase in @(
-                    @{ repository = 'Azure/bicep-registry-modules'; bami = $true }
-                    @{ repository = 'contributor/bicep-registry-modules'; bami = $false }
-                    @{ repository = 'Azure/contributor-modules'; bami = $false }
-                )) {
+            foreach ($repository in @('Azure/bicep-registry-modules', 'contributor/bicep-registry-modules')) {
                 foreach ($modulePath in @('avm/res/dev-test-lab/lab', 'avm/res/example/unlisted', 'avm/res/example/new-module')) {
                     foreach ($selector in @(
                             @{ label = 'missing'; value = $null }
@@ -22,8 +19,7 @@ Describe 'Test subscription workflow integration' {
                         )) {
                         @{
                             workflowName  = $workflowName
-                            repository    = $repositoryCase.repository
-                            bami          = $repositoryCase.bami
+                            repository    = $repository
                             modulePath    = $modulePath
                             selectorName  = $selector.label
                             selectorValue = $selector.value
@@ -36,6 +32,7 @@ Describe 'Test subscription workflow integration' {
 
     BeforeAll {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+        . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-CIParameterMap.ps1')
 
         $workflows = @{}
         foreach ($workflowName in @('avm.template.module', 'avm.template.module.preview', 'avm.template.module.publish')) {
@@ -51,7 +48,7 @@ Describe 'Test subscription workflow integration' {
         $psrulePath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePSRule' 'action.yml'
         $psrule = ConvertFrom-Yaml -Yaml (Get-Content -Path $psrulePath -Raw)
         $ast = [System.Management.Automation.Language.Parser]::ParseInput($psrule.runs.steps[0].with.inlineScript, [ref] $null, [ref] $null)
-        $psruleSelection = $ast.Find({ param($node) $node -is [System.Management.Automation.Language.IfStatementAst] -and $node.Extent.Text.StartsWith('if ($env:AVM_TEST_TENANT') }, $true).Extent.Text
+        $psruleSelection = $ast.Find({ param($node) $node -is [System.Management.Automation.Language.IfStatementAst] -and $node.Extent.Text.StartsWith('if (-not [string]::IsNullOrEmpty($env:TEST_SUBSCRIPTION_IDS)') }, $true).Extent.Text
         $subscriptions = @(
             @{ id = '11111111-1111-1111-1111-111111111111'; name = 'test-one' }
             @{ id = '22222222-2222-2222-2222-222222222222'; name = 'test-two' }
@@ -65,32 +62,43 @@ Describe 'Test subscription workflow integration' {
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
 
-        function Resolve-TestRoutingExpression {
+        $poolExpression = '${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}'
+        $managementGroupExpression = '${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}'
+
+        function Resolve-TestSettingExpression {
             param([string] $Expression, [hashtable] $Context)
 
-            if ($Expression -notmatch '^\$\{\{ case\((github\.repository|env\.AVM_TEST_TENANT) == ''([^'']+)'', (''[^'']*''|(?:vars|secrets)\.[A-Z_]+), (''[^'']*''|(?:vars|secrets)\.[A-Z_]+)\) \}\}$') {
-                throw "Unexpected routing expression: $Expression"
+            if ($Expression -notmatch '^\$\{\{ ((?:vars|secrets)\.[A-Z_]+(?: \|\| (?:vars|secrets)\.[A-Z_]+)*) \}\}$') {
+                throw "Unexpected setting expression: $Expression"
             }
-            $selected = $Context[$Matches[1]] -eq $Matches[2] ? $Matches[3] : $Matches[4]
-            if ($selected.StartsWith("'")) {
-                return $selected.Substring(1, $selected.Length - 2)
+            foreach ($setting in ($Matches[1] -split ' \|\| ')) {
+                if (-not [string]::IsNullOrEmpty($Context[$setting])) {
+                    return $Context[$setting]
+                }
             }
-            if (-not $Context.ContainsKey($selected)) {
-                throw "Missing synthetic context value: $selected"
-            }
-            return $Context[$selected]
+            return ''
         }
 
         function Set-TestDeploymentEnvironment {
             param([hashtable] $Workflow, [hashtable] $Context)
 
-            $env:AVM_TEST_TENANT = Resolve-TestRoutingExpression -Expression $Workflow.env.AVM_TEST_TENANT -Context $Context
-            $Context['env.AVM_TEST_TENANT'] = $env:AVM_TEST_TENANT
             $step = $Workflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
             foreach ($name in $step.env.Keys) {
-                [Environment]::SetEnvironmentVariable($name, (Resolve-TestRoutingExpression -Expression $step.env[$name] -Context $Context))
+                [Environment]::SetEnvironmentVariable($name, (Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context))
             }
-            $env:MANAGEMENT_GROUP_ID = Resolve-TestRoutingExpression -Expression $step.with.managementGroupId -Context $Context
+            $env:MANAGEMENT_GROUP_ID = Resolve-TestSettingExpression -Expression $step.with.managementGroupId -Context $Context
+        }
+
+        function Get-TestAuthenticationScript {
+            param([string] $ModulePath = 'avm/res/storage/storage-account')
+
+            return [scriptblock]::Create($exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', $ModulePath))
+        }
+
+        function Get-AzKeyVaultSecret {
+            [CmdletBinding()]
+            param([string] $VaultName, [string] $Name)
+            throw 'Unexpected Key Vault access.'
         }
 
         function Get-StepOutput {
@@ -107,9 +115,9 @@ Describe 'Test subscription workflow integration' {
 
     BeforeEach {
         $savedEnvironment = @{}
-        foreach ($name in $environmentNames) {
-            $savedEnvironment[$name] = [Environment]::GetEnvironmentVariable($name)
-            [Environment]::SetEnvironmentVariable($name, $null)
+        foreach ($environmentName in $environmentNames) {
+            $savedEnvironment[$environmentName] = [Environment]::GetEnvironmentVariable($environmentName)
+            [Environment]::SetEnvironmentVariable($environmentName, $null)
         }
         $env:GITHUB_WORKSPACE = $repoRootPath
         $env:GITHUB_OUTPUT = Join-Path $TestDrive ("output-{0}.txt" -f [guid]::NewGuid())
@@ -121,25 +129,33 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_CLIENT_ID = 'test-client'
         $env:VALIDATE_TENANT_ID = 'test-tenant'
         $env:MANAGEMENT_GROUP_ID = 'test-management-group'
+        $env:SELECTED_SUBSCRIPTION_ID = $subscriptions[0].id
         $routingContext = @{
-            'github.repository'                  = 'Azure/bicep-registry-modules'
-            'vars.TEST_BAMI_SUBSCRIPTION_IDS'    = $subscriptionJson
-            'vars.TEST_BAMI_BICEP_CLIENT_ID'     = 'bami-client'
-            'vars.TEST_BAMI_TENANT_ID'           = 'bami-tenant'
-            'vars.TEST_BAMI_MANAGEMENT_GROUP_ID' = 'bami-management-group'
-            'vars.TEST_SUBSCRIPTION_IDS'         = '[{"id":"55555555-5555-5555-5555-555555555555","name":"contributor-one"}]'
-            'vars.CI_KEY_VAULT_NAME'             = 'contributor-vault'
-            'secrets.VALIDATE_CLIENT_ID'         = 'contributor-client'
-            'secrets.VALIDATE_TENANT_ID'         = 'contributor-tenant'
-            'secrets.VALIDATE_SUBSCRIPTION_ID'   = $env:VALIDATE_SUBSCRIPTION_ID
-            'secrets.ARM_MGMTGROUP_ID'           = 'contributor-management-group'
-            'secrets.AZURE_CREDENTIALS'          = '{"clientId":"contributor-client","tenantId":"contributor-tenant","clientSecret":"synthetic-secret"}'
+            'vars.VALIDATE_SUBSCRIPTION_IDS'       = $subscriptionJson
+            'vars.VALIDATE_CLIENT_ID'              = 'variable-client'
+            'vars.VALIDATE_TENANT_ID'              = 'variable-tenant'
+            'vars.VALIDATE_MANAGEMENT_GROUP_ID'    = 'variable-management-group'
+            'vars.VALIDATE_SUBSCRIPTION_ID'        = '88888888-8888-8888-8888-888888888888'
+            'vars.TEST_SUBSCRIPTION_IDS'           = '[{"id":"55555555-5555-5555-5555-555555555555","name":"variable-alias"}]'
+            'vars.ARM_MGMTGROUP_ID'                = 'variable-alias-group'
+            'vars.CI_KEY_VAULT_NAME'               = 'contributor-vault'
+            'secrets.VALIDATE_CLIENT_ID'           = 'secret-client'
+            'secrets.VALIDATE_TENANT_ID'           = 'secret-tenant'
+            'secrets.VALIDATE_SUBSCRIPTION_IDS'    = '[{"id":"66666666-6666-6666-6666-666666666666","name":"secret-canonical"}]'
+            'secrets.TEST_SUBSCRIPTION_IDS'        = '[{"id":"77777777-7777-7777-7777-777777777777","name":"secret-alias"}]'
+            'secrets.VALIDATE_SUBSCRIPTION_ID'     = $env:VALIDATE_SUBSCRIPTION_ID
+            'secrets.VALIDATE_MANAGEMENT_GROUP_ID' = 'secret-management-group'
+            'secrets.ARM_MGMTGROUP_ID'             = 'secret-alias-group'
+            'secrets.AZURE_CREDENTIALS'            = '{"clientId":"exception-client","tenantId":"variable-tenant","clientSecret":"synthetic-secret"}'
         }
+        Mock Get-AzKeyVaultSecret { throw 'Unexpected Key Vault access.' }
+        Mock Invoke-WebRequest { throw 'Unexpected network request.' }
+        Mock Invoke-RestMethod { throw 'Unexpected network request.' }
     }
 
     AfterEach {
-        foreach ($name in $environmentNames) {
-            [Environment]::SetEnvironmentVariable($name, $savedEnvironment[$name])
+        foreach ($environmentName in $environmentNames) {
+            [Environment]::SetEnvironmentVariable($environmentName, $savedEnvironment[$environmentName])
         }
     }
 
@@ -160,24 +176,26 @@ Describe 'Test subscription workflow integration' {
         $initializer.if | Should -Match "deploymentValidation == 'true'"
         $deployment.needs | Should -Contain 'job_initialize_subscription_selection'
         $deployment.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
-        $workflow.env.AVM_TEST_TENANT | Should -Be '${{ case(github.repository == ''Azure/bicep-registry-modules'', ''bami'', ''legacy'') }}'
-        ($workflow | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_MODULE_PATHS'
-        $workflow.env.ARM_MGMTGROUP_ID | Should -Be '${{ secrets.ARM_MGMTGROUP_ID }}'
-        $deploymentStep.with.managementGroupId | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}'
+        ($workflow | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|VALIDATE_PERSISTENT_SUBSCRIPTION_ID'
+        ($action | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
+        ($psrule | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
+        $workflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
+        $deploymentStep.with.managementGroupId | Should -Be $managementGroupExpression
         $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
-        $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_SUBSCRIPTION_IDS, vars.TEST_SUBSCRIPTION_IDS) }}'
-        $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_BICEP_CLIENT_ID, secrets.VALIDATE_CLIENT_ID) }}'
-        $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_TENANT_ID, secrets.VALIDATE_TENANT_ID) }}'
-        $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', secrets.VALIDATE_SUBSCRIPTION_ID) }}'
-        $deploymentStep.env.AZURE_CREDENTIALS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', secrets.AZURE_CREDENTIALS) }}'
-        $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', '''', vars.CI_KEY_VAULT_NAME) }}'
+        $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
+        $deploymentStep.env.VALIDATE_CLIENT_ID | Should -Be '${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}'
+        $deploymentStep.env.VALIDATE_TENANT_ID | Should -Be '${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}'
+        $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
+        $deploymentStep.env.AZURE_CREDENTIALS | Should -Be '${{ secrets.AZURE_CREDENTIALS }}'
+        $deploymentStep.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         $deployment.environment | Should -Be 'avm-validation'
         @($deployment.env.Keys) | Should -Not -Contain 'VALIDATE_CLIENT_ID'
         foreach ($jobName in @('job_psrule_must', 'job_psrule_opt')) {
             $step = $workflow.jobs[$jobName].steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModulePSRule' }
-            $step.with.managementGroupId | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_MANAGEMENT_GROUP_ID, secrets.ARM_MGMTGROUP_ID) }}'
-            $step.env.VALIDATE_TENANT_ID | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_TENANT_ID, '''') }}'
-            $step.env.TEST_SUBSCRIPTION_IDS | Should -Be '${{ case(env.AVM_TEST_TENANT == ''bami'', vars.TEST_BAMI_SUBSCRIPTION_IDS, '''') }}'
+            $step.with.managementGroupId | Should -Be $managementGroupExpression
+            $step.env.VALIDATE_TENANT_ID | Should -Be $deploymentStep.env.VALIDATE_TENANT_ID
+            $step.env.VALIDATE_SUBSCRIPTION_ID | Should -Be $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID
+            $step.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         }
         $deploymentStep.with.subscriptionSelectionSeed | Should -Be '${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}'
         $deploymentStep.with.subscriptionJobIndex | Should -Be '${{ strategy.job-index }}'
@@ -233,7 +251,7 @@ Describe 'Test subscription workflow integration' {
         (Get-StepOutput).subscriptionId | Should -Be $env:VALIDATE_SUBSCRIPTION_ID
     }
 
-    It 'Routes <modulePath> in <repository> through <workflowName> without reading the <selectorName> retired selector' -ForEach $routingCases {
+    It 'Uses generic variables for <modulePath> in <repository> through <workflowName> despite the <selectorName> retired selector' -ForEach $routingCases {
         $routingContext['github.repository'] = $repository
         $routingContext['inputs.modulePath'] = $modulePath
         $routingContext['vars.TEST_BAMI_MODULE_PATHS'] = $selectorValue
@@ -241,98 +259,175 @@ Describe 'Test subscription workflow integration' {
 
         . ([scriptblock]::Create($selectionStep.run))
 
-        if ($bami) {
-            $env:AVM_TEST_TENANT | Should -Be 'bami'
-            (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
-            $env:VALIDATE_CLIENT_ID | Should -Be 'bami-client'
-            $env:VALIDATE_TENANT_ID | Should -Be 'bami-tenant'
-            $env:MANAGEMENT_GROUP_ID | Should -Be 'bami-management-group'
-            $env:VALIDATE_SUBSCRIPTION_ID | Should -BeNullOrEmpty
-            $env:AZURE_CREDENTIALS | Should -BeNullOrEmpty
-            $env:CI_KEY_VAULT_NAME | Should -BeNullOrEmpty
-        } else {
-            $env:AVM_TEST_TENANT | Should -Be 'legacy'
-            (Get-StepOutput).subscriptionId | Should -Be '55555555-5555-5555-5555-555555555555'
-            $env:VALIDATE_CLIENT_ID | Should -Be 'contributor-client'
-            $env:VALIDATE_TENANT_ID | Should -Be 'contributor-tenant'
-            $env:MANAGEMENT_GROUP_ID | Should -Be 'contributor-management-group'
-            $env:VALIDATE_SUBSCRIPTION_ID | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
-            $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
-            $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
-        }
+        (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
+        $env:VALIDATE_CLIENT_ID | Should -Be 'variable-client'
+        $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
+        $env:MANAGEMENT_GROUP_ID | Should -Be 'variable-management-group'
+        $env:VALIDATE_SUBSCRIPTION_ID | Should -Be '88888888-8888-8888-8888-888888888888'
+        $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
+        $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
     }
 
-    It 'Keeps the external singleton fallback without requiring BAMI configuration in <workflowName>' -ForEach @(
+    It 'Supports identifiers supplied only as secrets in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
     ) {
-        $routingContext['github.repository'] = 'contributor/bicep-registry-modules'
-        $routingContext['vars.TEST_SUBSCRIPTION_IDS'] = ''
-        $routingContext['vars.TEST_BAMI_SUBSCRIPTION_IDS'] = '[invalid-unused-pool'
-        foreach ($setting in @('BICEP_CLIENT_ID', 'TENANT_ID', 'MANAGEMENT_GROUP_ID')) {
-            $routingContext["vars.TEST_BAMI_$setting"] = ''
+        foreach ($key in @($routingContext.Keys | Where-Object { $_ -like 'vars.*' })) {
+            $routingContext.Remove($key)
         }
         Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
 
         . ([scriptblock]::Create($selectionStep.run))
 
-        (Get-StepOutput).subscriptionId | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
-        $env:CI_KEY_VAULT_NAME | Should -Be 'contributor-vault'
+        (Get-StepOutput).subscriptionId | Should -Be '66666666-6666-6666-6666-666666666666'
+        $env:VALIDATE_CLIENT_ID | Should -Be 'secret-client'
+        $env:VALIDATE_TENANT_ID | Should -Be 'secret-tenant'
+        $env:MANAGEMENT_GROUP_ID | Should -Be 'secret-management-group'
+        $env:VALIDATE_SUBSCRIPTION_ID | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
         $env:AZURE_CREDENTIALS | Should -Be $routingContext['secrets.AZURE_CREDENTIALS']
     }
 
-    It 'Does not select contributor fallback for missing upstream BAMI variables in <workflowName>' -ForEach @(
+    It 'Supports variable-only identifiers but never reads credentials from variables in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
     ) {
-        foreach ($setting in @('SUBSCRIPTION_IDS', 'BICEP_CLIENT_ID', 'TENANT_ID', 'MANAGEMENT_GROUP_ID')) {
-            $missingContext = $routingContext.Clone()
-            $missingContext["vars.TEST_BAMI_$setting"] = ''
-            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $missingContext
+        foreach ($key in @($routingContext.Keys | Where-Object { $_ -like 'secrets.*' })) {
+            $routingContext.Remove($key)
+        }
+        $routingContext['vars.AZURE_CREDENTIALS'] = 'must-not-be-used'
+        Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
 
-            { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw '*Missing BAMI configuration*'
+        . ([scriptblock]::Create($selectionStep.run))
+        $null = . (Get-TestAuthenticationScript)
 
-            $env:AVM_TEST_TENANT | Should -Be 'bami'
-            $env:VALIDATE_SUBSCRIPTION_ID | Should -BeNullOrEmpty
-            $env:AZURE_CREDENTIALS | Should -BeNullOrEmpty
-            $env:CI_KEY_VAULT_NAME | Should -BeNullOrEmpty
+        (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
+        (Get-StepOutput).oidcException | Should -Be 'false'
+        $env:VALIDATE_CLIENT_ID | Should -Be 'variable-client'
+        $env:VALIDATE_TENANT_ID | Should -Be 'variable-tenant'
+        $env:AZURE_CREDENTIALS | Should -BeNullOrEmpty
+    }
+
+    It 'Prefers variables across aliases, then canonical secrets, then legacy secrets in <workflowName>' -ForEach @(
+        @{ workflowName = 'avm.template.module' }
+        @{ workflowName = 'avm.template.module.preview' }
+        @{ workflowName = 'avm.template.module.publish' }
+    ) {
+        foreach ($expected in @(
+                @{ removePool = 'vars.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'vars.VALIDATE_MANAGEMENT_GROUP_ID'; id = '55555555-5555-5555-5555-555555555555'; group = 'variable-alias-group' }
+                @{ removePool = 'vars.TEST_SUBSCRIPTION_IDS'; removeGroup = 'vars.ARM_MGMTGROUP_ID'; id = '66666666-6666-6666-6666-666666666666'; group = 'secret-management-group' }
+                @{ removePool = 'secrets.VALIDATE_SUBSCRIPTION_IDS'; removeGroup = 'secrets.VALIDATE_MANAGEMENT_GROUP_ID'; id = '77777777-7777-7777-7777-777777777777'; group = 'secret-alias-group' }
+                @{ removePool = 'secrets.TEST_SUBSCRIPTION_IDS'; removeGroup = 'secrets.ARM_MGMTGROUP_ID'; id = '88888888-8888-8888-8888-888888888888'; group = '' }
+            )) {
+            $routingContext.Remove($expected.removePool)
+            $routingContext.Remove($expected.removeGroup)
+            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            Clear-Content -Path $env:GITHUB_OUTPUT
+            . ([scriptblock]::Create($selectionStep.run))
+            (Get-StepOutput).subscriptionId | Should -Be $expected.id
+            $env:MANAGEMENT_GROUP_ID | Should -Be $expected.group
+        }
+        $routingContext.Remove('vars.VALIDATE_SUBSCRIPTION_ID')
+        Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+        Clear-Content -Path $env:GITHUB_OUTPUT
+        . ([scriptblock]::Create($selectionStep.run))
+        (Get-StepOutput).subscriptionId | Should -Be $routingContext['secrets.VALIDATE_SUBSCRIPTION_ID']
+    }
+
+    It 'Does not fall through a malformed preferred identifier to another source in <workflowName>' -ForEach @(
+        @{ workflowName = 'avm.template.module' }
+        @{ workflowName = 'avm.template.module.preview' }
+        @{ workflowName = 'avm.template.module.publish' }
+    ) {
+        foreach ($source in @('vars', 'secrets')) {
+            foreach ($invalidPool in @('[invalid', ' ', '[]')) {
+                $invalidContext = $routingContext.Clone()
+                if ($source -eq 'secrets') {
+                    $invalidContext.Remove('vars.VALIDATE_SUBSCRIPTION_IDS')
+                    $invalidContext.Remove('vars.TEST_SUBSCRIPTION_IDS')
+                }
+                $invalidContext["$source.VALIDATE_SUBSCRIPTION_IDS"] = $invalidPool
+                Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $invalidContext
+
+                $env:TEST_SUBSCRIPTION_IDS | Should -BeExactly $invalidPool
+                { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw
+                (Get-StepOutput).Count | Should -Be 0
+            }
+        }
+        foreach ($setting in @('VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID')) {
+            $invalidContext = $routingContext.Clone()
+            $invalidContext["vars.$setting"] = ' '
+            Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $invalidContext
+            { . (Get-TestAuthenticationScript) } | Should -Throw "*OIDC authentication requires [[]$setting[]]*"
             (Get-StepOutput).Count | Should -Be 0
         }
     }
 
-    It 'Rejects missing selected BAMI <setting> before login without using legacy fallback' -ForEach @(
-        @{ setting = 'TEST_SUBSCRIPTION_IDS' }
+    It 'Does not use historical provider settings when generic subscriptions are absent' {
+        $retiredContext = @{
+            'vars.TEST_BAMI_SUBSCRIPTION_IDS'    = $subscriptionJson
+            'vars.TEST_BAMI_TENANT_ID'           = 'retired-tenant'
+            'vars.TEST_BAMI_BICEP_CLIENT_ID'     = 'retired-client'
+            'vars.TEST_BAMI_MANAGEMENT_GROUP_ID' = 'retired-group'
+        }
+        Set-TestDeploymentEnvironment -Workflow $workflows['avm.template.module'] -Context $retiredContext
+
+        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw '*No test subscriptions configured*'
+        (Get-StepOutput).Count | Should -Be 0
+    }
+
+    It 'Does not require an unrelated management group or persistent subscription for OIDC selection' {
+        $env:MANAGEMENT_GROUP_ID = ''
+        . ([scriptblock]::Create($selectionStep.run))
+        $null = . (Get-TestAuthenticationScript)
+
+        (Get-StepOutput).subscriptionId | Should -BeIn $subscriptions.id
+        (Get-StepOutput).oidcException | Should -Be 'false'
+    }
+
+    It 'Requires <setting> for default OIDC without using secret credentials as a fallback' -ForEach @(
         @{ setting = 'VALIDATE_CLIENT_ID' }
         @{ setting = 'VALIDATE_TENANT_ID' }
-        @{ setting = 'MANAGEMENT_GROUP_ID' }
     ) {
-        $env:AVM_TEST_TENANT = 'bami'
         [Environment]::SetEnvironmentVariable($setting, '')
+        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
 
-        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw "*Missing BAMI configuration for [[]$setting[]]*"
+        { . (Get-TestAuthenticationScript) } | Should -Throw "*OIDC authentication requires [[]$setting[]]*"
         (Get-StepOutput).Count | Should -Be 0
     }
 
-    It 'Reads the BAMI pool for PSRule only when selected' {
-        $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'legacy-static-token'; managementGroupId = 'test-management-group' } }
-        $env:TEST_SUBSCRIPTION_IDS = 'invalid-unused-candidate'
-        . ([scriptblock]::Create($psruleSelection))
-        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be 'legacy-static-token'
-
-        $env:AVM_TEST_TENANT = 'bami'
-        { . ([scriptblock]::Create($psruleSelection)) } | Should -Throw
-        $env:TEST_SUBSCRIPTION_IDS = $subscriptionJson
+    It 'Resolves a PSRule pool or singleton without requiring authentication or a management group' {
+        $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'static-token'; managementGroupId = '' } }
+        $env:VALIDATE_CLIENT_ID = ''
+        $env:VALIDATE_TENANT_ID = ''
         . ([scriptblock]::Create($psruleSelection))
         $ConvertTokensInputs.Tokens.subscriptionId | Should -Be $subscriptions[0].id
+
+        $env:TEST_SUBSCRIPTION_IDS = ''
+        . ([scriptblock]::Create($psruleSelection))
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be $env:VALIDATE_SUBSCRIPTION_ID
+
+        $env:VALIDATE_SUBSCRIPTION_ID = ''
+        $ConvertTokensInputs.Tokens.subscriptionId = 'static-token'
+        . ([scriptblock]::Create($psruleSelection))
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be 'static-token'
     }
 
-    It 'Fails before login when the configured pool is invalid' {
-        $env:TEST_SUBSCRIPTION_IDS = '[]'
+    It 'Rejects a supplied invalid pool [<pool>] without falling back for deployment or PSRule' -ForEach @(
+        @{ pool = ' ' }
+        @{ pool = '[invalid' }
+        @{ pool = '[]' }
+        @{ pool = '{}' }
+        @{ pool = '[{"id":"invalid","name":"test"}]' }
+    ) {
+        $env:TEST_SUBSCRIPTION_IDS = $pool
+        $ConvertTokensInputs = @{ Tokens = @{ subscriptionId = 'static-token' } }
 
         { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw
+        { . ([scriptblock]::Create($psruleSelection)) } | Should -Throw
         (Get-StepOutput).Count | Should -Be 0
+        $ConvertTokensInputs.Tokens.subscriptionId | Should -Be 'static-token'
         $selectionStep.if | Should -Be "env.skip_deployment_ci == 'false'"
     }
 
@@ -348,6 +443,9 @@ Describe 'Test subscription workflow integration' {
         $defaultLogins.Count | Should -Be 2
         foreach ($login in $defaultLogins) {
             $login.with.'subscription-id' | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
+            $login.with.'client-id' | Should -Be '${{ env.VALIDATE_CLIENT_ID }}'
+            $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
+            $login.if | Should -Be '${{ steps.set-oidc-exception.outputs.oidcException == ''false'' && env.skip_deployment_ci == ''false'' }}'
         }
         foreach ($stepName in @('Replace tokens in template file', 'Validate template file', 'Deploy template file', 'Remove deployed resources')) {
             $step = $action.runs.steps | Where-Object { $_.name -eq $stepName }
@@ -358,13 +456,19 @@ Describe 'Test subscription workflow integration' {
         $exceptionLogins.Count | Should -Be 2
         foreach ($login in $exceptionLogins) {
             $login.with.creds | Should -Be '${{ steps.set-oidc-exception.outputs.azureCredentials }}'
+            $login.if | Should -Be '${{ steps.set-oidc-exception.outputs.oidcException == ''true''  && env.skip_deployment_ci == ''false''}}'
         }
         $exceptionStep.env.SELECTED_SUBSCRIPTION_ID | Should -Be '${{ steps.get-test-subscription.outputs.subscriptionId }}'
+        $exceptionStep.ContainsKey('continue-on-error') | Should -BeFalse
+        foreach ($login in @($defaultLogins + $exceptionLogins)) {
+            [array]::IndexOf($action.runs.steps, $selectionStep) | Should -BeLessThan ([array]::IndexOf($action.runs.steps, $login))
+            [array]::IndexOf($action.runs.steps, $exceptionStep) | Should -BeLessThan ([array]::IndexOf($action.runs.steps, $login))
+        }
     }
 
     It 'Updates and masks exception credentials without changing the original secret' {
         $credentials = @{
-            clientId                   = 'test-client'
+            clientId                   = 'different-exception-client'
             clientSecret               = 'not-a-real-secret'
             tenantId                   = 'test-tenant'
             subscriptionId             = $env:VALIDATE_SUBSCRIPTION_ID
@@ -382,6 +486,7 @@ Describe 'Test subscription workflow integration' {
         $outputs.oidcException | Should -Be 'true'
         $updatedCredentials.subscriptionId | Should -Be $subscriptions[2].id
         $updatedCredentials.clientId | Should -Be $credentials.clientId
+        $updatedCredentials.clientId | Should -Not -Be $env:VALIDATE_CLIENT_ID
         $updatedCredentials.clientSecret | Should -Be $credentials.clientSecret
         $updatedCredentials.tenantId | Should -Be $credentials.tenantId
         $updatedCredentials.activeDirectoryEndpointUrl | Should -Be $credentials.activeDirectoryEndpointUrl
@@ -390,6 +495,7 @@ Describe 'Test subscription workflow integration' {
     }
 
     It 'Does not require secret credentials for OIDC-capable modules' {
+        $env:AZURE_CREDENTIALS = '[invalid-unused-credentials'
         $script = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/storage/storage-account')
 
         $null = . ([scriptblock]::Create($script))
@@ -399,15 +505,125 @@ Describe 'Test subscription workflow integration' {
         $outputs.ContainsKey('azureCredentials') | Should -BeFalse
     }
 
-    It 'Blocks the BAMI HCI credential exception but allows the lab OIDC path' {
-        $env:AVM_TEST_TENANT = 'bami'
-        $hciScript = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/azure-stack-hci/cluster')
-        { . ([scriptblock]::Create($hciScript)) } | Should -Throw '*AZURE_CREDENTIALS exception is not supported*'
+    It 'Preserves credential-only exception authentication without additional identifier requirements' {
+        $env:VALIDATE_CLIENT_ID = ''
+        $env:VALIDATE_TENANT_ID = ''
+        $env:MANAGEMENT_GROUP_ID = ''
+        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
+
+        $null = . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster')
+
+        $outputs = Get-StepOutput
+        $outputs.oidcException | Should -Be 'true'
+        $credentials = $outputs.azureCredentials | ConvertFrom-Json
+        $credentials.clientId | Should -Be 'exception-client'
+        $credentials.tenantId | Should -Be 'variable-tenant'
+        $credentials.subscriptionId | Should -Be $env:SELECTED_SUBSCRIPTION_ID
+    }
+
+    It 'Matches tenant names without imposing a GUID-only credential schema' {
+        $env:VALIDATE_TENANT_ID = 'CUSTOMER.onmicrosoft.com'
+        $env:AZURE_CREDENTIALS = '{"clientId":"exception-client","tenantId":"customer.onmicrosoft.com","clientSecret":"synthetic-secret","activeDirectoryEndpointUrl":"https://login.example.invalid"}'
+
+        $null = . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster')
+
+        $credentials = (Get-StepOutput).azureCredentials | ConvertFrom-Json
+        $credentials.tenantId | Should -BeExactly 'customer.onmicrosoft.com'
+        $credentials.activeDirectoryEndpointUrl | Should -Be 'https://login.example.invalid'
+    }
+
+    It 'Rejects missing or malformed exception credential JSON without exposing it [<caseName>]' -ForEach @(
+        @{ caseName = 'missing'; json = $null }
+        @{ caseName = 'empty'; json = '' }
+        @{ caseName = 'whitespace'; json = ' ' }
+        @{ caseName = 'malformed'; json = '{"clientSecret":"private-value-do-not-log",' }
+        @{ caseName = 'null'; json = 'null' }
+        @{ caseName = 'array'; json = '[{"clientId":"test","tenantId":"test-tenant","clientSecret":"private-value-do-not-log"}]' }
+        @{ caseName = 'string'; json = '"private-value-do-not-log"' }
+    ) {
+        $env:AZURE_CREDENTIALS = $json
+        $errorRecord = { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
+            Should -Throw '*AZURE_CREDENTIALS*' -PassThru
+
+        $errorRecord.Exception.Message | Should -Not -Match 'private-value-do-not-log'
+        (Get-StepOutput).Count | Should -Be 0
+    }
+
+    It 'Requires nonempty string <field> in exception credentials without logging the payload' -ForEach @(
+        @{ field = 'clientId' }
+        @{ field = 'clientSecret' }
+        @{ field = 'tenantId' }
+    ) {
+        foreach ($value in @($null, '', ' ', 123, $false, @(), @{ invalid = 'private-value-do-not-log' })) {
+            $credentials = @{
+                clientId     = 'test-client'
+                tenantId     = 'test-tenant'
+                clientSecret = 'private-value-do-not-log'
+            }
+            $credentials[$field] = $value
+            $env:AZURE_CREDENTIALS = ConvertTo-Json -InputObject $credentials -Compress
+
+            $errorRecord = { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
+                Should -Throw "*AZURE_CREDENTIALS requires a non-empty string [[]$field[]]*" -PassThru
+
+            $errorRecord.Exception.Message | Should -Not -Match 'private-value-do-not-log'
+            (Get-StepOutput).Count | Should -Be 0
+        }
+    }
+
+    It 'Keeps exception path <modulePath> and its descendants fail-closed without matching credentials' -ForEach @(
+        @{ modulePath = 'avm/res/azure-stack-hci/cluster' }
+        @{ modulePath = 'avm/res/azure-stack-hci/logical-network' }
+        @{ modulePath = 'avm/res/azure-stack-hci/network-interface' }
+        @{ modulePath = 'avm/res/azure-stack-hci/virtual-hard-disk' }
+        @{ modulePath = 'avm/res/azure-stack-hci/virtual-machine-instance' }
+        @{ modulePath = 'avm/res/hybrid-container-service/provisioned-cluster-instance' }
+    ) {
+        foreach ($path in @($modulePath, "$modulePath/child")) {
+            $env:AZURE_CREDENTIALS = ''
+            { . (Get-TestAuthenticationScript -ModulePath $path) } | Should -Throw '*requires AZURE_CREDENTIALS*'
+            $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
+            { . (Get-TestAuthenticationScript -ModulePath $path) } | Should -Throw '*tenantId must match*'
+            (Get-StepOutput).Count | Should -Be 0
+        }
+    }
+
+    It 'Rejects a different tenant for an exception before either login can run' {
+        $env:AZURE_CREDENTIALS = $routingContext['secrets.AZURE_CREDENTIALS']
+        { . (Get-TestAuthenticationScript -ModulePath 'avm/res/azure-stack-hci/cluster') } |
+            Should -Throw '*tenantId must match the configured VALIDATE_TENANT_ID*'
         (Get-StepOutput).Count | Should -Be 0
 
         $labScript = $exceptionStep.with.inlineScript.Replace('${{ inputs.modulePath }}', 'avm/res/dev-test-lab/lab')
         $null = . ([scriptblock]::Create($labScript))
         (Get-StepOutput).oidcException | Should -Be 'false'
+    }
+
+    It 'Keeps the Key Vault warning and GitHub secret over variable over vault precedence after generic binding' {
+        Set-TestDeploymentEnvironment -Workflow $workflows['avm.template.module'] -Context $routingContext
+        $warningStep = $action.runs.steps | Where-Object { $_.name -eq 'Warn about CI Key Vault deprecation' }
+        $messages = @(. ([scriptblock]::Create($warningStep.run)))
+        Mock Get-AzKeyVaultSecret {
+            if (-not $Name) {
+                return @(@{ Name = 'CI-adminSecret' }, @{ Name = 'CI-region' }, @{ Name = 'CI-vaultOnly' })
+            }
+            return @{ SecretValue = ConvertTo-SecureString -String 'vault-value' -AsPlainText -Force }
+        }
+        $parameters = Get-CIParameterMap -TemplateParameters @{
+            adminSecret = @{ type = 'secureString' }
+            region      = @{ type = 'string' }
+            vaultOnly   = @{ type = 'secureString' }
+        } -GitHubVariables '{"CI_ADMIN_SECRET":"variable-value","CI_REGION":"eastus"}' `
+            -GitHubSecrets '{"CI_ADMINSECRET":"secret-value"}' -KeyVaultName $env:CI_KEY_VAULT_NAME
+
+        $messages | Should -Match '^::warning'
+        ($messages | Out-String) | Should -Not -Match 'contributor-vault|secret-value|variable-value|vault-value'
+        ConvertFrom-SecureString -SecureString $parameters.adminSecret -AsPlainText | Should -Be 'secret-value'
+        $parameters.region | Should -Be 'eastus'
+        ConvertFrom-SecureString -SecureString $parameters.vaultOnly -AsPlainText | Should -Be 'vault-value'
+        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { $VaultName -eq 'contributor-vault' -and -not $Name }
+        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { $VaultName -eq 'contributor-vault' -and $Name -eq 'CI-vaultOnly' }
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name -eq 'CI-adminSecret' -or $Name -eq 'CI-region' }
     }
 
     It 'Uses the configured pool for both history cleanup logins' {
