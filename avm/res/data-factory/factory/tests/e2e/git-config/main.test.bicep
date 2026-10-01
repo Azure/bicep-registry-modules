@@ -35,6 +35,21 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
+// Assigned to the module parameter as-is, so the resource provider's schema is enforced at build time.
+var gitConfiguration = {
+  type: 'FactoryVSTSConfiguration'
+  accountName: 'contoso'
+  projectName: 'contoso-adf'
+  repositoryName: 'contoso-adf-repo'
+  collaborationBranch: 'main'
+  rootFolder: '/'
+  disablePublish: false
+  tenantId: tenant().tenantId
+}
+
+// 'tenantId' is environment-specific and 'disablePublish' is not echoed back by the resource provider when false.
+var unassertedProperties = ['disablePublish', 'tenantId']
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -43,33 +58,19 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      gitConfigureLater: false
-      gitRepoType: 'FactoryVSTSConfiguration'
-      gitAccountName: 'contoso'
-      gitProjectName: 'contoso-adf'
-      gitRepositoryName: 'contoso-adf-repo'
-      gitCollaborationBranch: 'main'
-      gitRootFolder: '/'
-      gitDisablePublish: false
-      gitTenantId: tenant().tenantId
+      gitConfiguration: gitConfiguration
     }
   }
 ]
 
-// Asserts that the Git configuration requested above is not silently dropped by the resource provider.
-module testDeployment_validation 'validation.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-validation'
-  params: {
-    dataFactoryName: '${namePrefix}${serviceShort}001'
-    expectedRepoType: 'FactoryVSTSConfiguration'
-    expectedAccountName: 'contoso'
-    expectedProjectName: 'contoso-adf'
-    expectedRepositoryName: 'contoso-adf-repo'
-    expectedCollaborationBranch: 'main'
-    expectedRootFolder: '/'
+@description('The resource ID of the deployed Data Factory. Consumed by the post-deployment test.')
+output dataFactoryResourceId string = testDeployment[1].outputs.resourceId
+
+@description('The Git repository configuration properties that must be persisted on the Data Factory. Consumed by the post-deployment test.')
+output expectedGitConfiguration object[] = map(
+  filter(items(gitConfiguration), property => !contains(unassertedProperties, property.key)),
+  property => {
+    name: property.key
+    value: property.value
   }
-  dependsOn: [
-    testDeployment
-  ]
-}
+)

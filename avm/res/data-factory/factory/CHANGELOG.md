@@ -6,14 +6,42 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 ### Changes
 
-- Fixed the Git repository configuration being silently discarded by the resource provider. Only the properties that belong to the configured `gitRepoType` are now sent, and optional properties (`gitLastCommitId`, `gitTenantId`, `gitHostName`) are omitted instead of being sent as empty strings.
-- Added an end-to-end test that deploys the module with a Git repository configuration and asserts that the configuration is persisted on the Data Factory.
+- Fixed the Git repository configuration being silently discarded by the resource provider. The configuration is now passed through as a single object that is typed against the resource provider schema, so only properties belonging to the selected repository type can be supplied.
+- Replaced the `gitConfigureLater` flag and the flat `git*` parameters with a single optional `gitConfiguration` parameter. Omitting it deploys the Data Factory without a Git repository configuration.
 - Updated the telemetry deployment to API version `2025-04-01`.
 - Updated the referenced `avm/res/network/private-endpoint` module to version `0.12.1`.
 
 ### Breaking Changes
 
-- Deployments with `gitConfigureLater` set to `false` now fail with an explicit error if any of the required Git parameters (`gitAccountName`, `gitRepositoryName`, `gitCollaborationBranch`, `gitRootFolder` and, for `FactoryVSTSConfiguration`, `gitProjectName`) is empty. Previously such deployments succeeded but left the Data Factory without any Git configuration.
+- The parameters `gitConfigureLater`, `gitRepoType`, `gitAccountName`, `gitProjectName`, `gitRepositoryName`, `gitCollaborationBranch`, `gitDisablePublish`, `gitRootFolder`, `gitHostName`, `gitLastCommitId` and `gitTenantId` were removed and replaced by the `gitConfiguration` parameter.
+- `collaborationBranch` and `rootFolder` no longer default to `'main'` and `'/'`. Both are required by the resource provider and must be supplied explicitly whenever a Git repository configuration is used.
+
+  Before:
+
+  ```bicep
+  gitConfigureLater: false
+  gitRepoType: 'FactoryVSTSConfiguration'
+  gitAccountName: 'contoso'
+  gitProjectName: 'contoso-adf'
+  gitRepositoryName: 'contoso-adf-repo'
+  gitCollaborationBranch: 'main'
+  gitRootFolder: '/'
+  ```
+
+  After:
+
+  ```bicep
+  gitConfiguration: {
+    type: 'FactoryVSTSConfiguration'
+    accountName: 'contoso'
+    projectName: 'contoso-adf'
+    repositoryName: 'contoso-adf-repo'
+    collaborationBranch: 'main'
+    rootFolder: '/'
+  }
+  ```
+
+  Deployments that relied on `gitConfigureLater` defaulting to `true` require no change - omitting `gitConfiguration` preserves the existing behaviour.
 
 ## 0.12.1
 

@@ -24,38 +24,8 @@ param location string = resourceGroup().location
 ])
 param publicNetworkAccess string = ''
 
-@description('Optional. Boolean to define whether or not to configure git during template deployment.')
-param gitConfigureLater bool = true
-
-@description('Optional. Repository type - can be \'FactoryVSTSConfiguration\' or \'FactoryGitHubConfiguration\'. Default is \'FactoryVSTSConfiguration\'.')
-param gitRepoType string = 'FactoryVSTSConfiguration'
-
-@description('Optional. The account name.')
-param gitAccountName string = ''
-
-@description('Optional. The project name. Only relevant for \'FactoryVSTSConfiguration\'.')
-param gitProjectName string = ''
-
-@description('Optional. The repository name.')
-param gitRepositoryName string = ''
-
-@description('Optional. The collaboration branch name. Default is \'main\'.')
-param gitCollaborationBranch string = 'main'
-
-@description('Optional. Disable manual publish operation in ADF studio to favor automated publish.')
-param gitDisablePublish bool = false
-
-@description('Optional. The root folder path name. Default is \'/\'.')
-param gitRootFolder string = '/'
-
-@description('Optional. The GitHub Enterprise Server host (prefixed with \'https://\'). Only relevant for \'FactoryGitHubConfiguration\'.')
-param gitHostName string = ''
-
-@description('Optional. Add the last commit id from your git repo.')
-param gitLastCommitId string = ''
-
-@description('Optional. The tenant ID of the Azure DevOps organization. Only relevant for \'FactoryVSTSConfiguration\'.')
-param gitTenantId string = ''
+@description('Optional. The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration.')
+param gitConfiguration resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.repoConfiguration?
 
 @description('Optional. List of Global Parameters for the factory.')
 param globalParameters resourceInput<'Microsoft.DataFactory/factories@2018-06-01'>.properties.globalParameters?
@@ -160,36 +130,6 @@ var formattedRoleAssignments = [
 
 var isHSMManagedCMK = split(customerManagedKey.?keyVaultResourceId ?? '', '/')[?7] == 'managedHSMs'
 
-// The resource provider silently discards the entire repository configuration if it contains properties that do not belong to the selected repository type, or if optional properties are sent as empty strings.
-var gitRepoConfiguration = union(
-  {
-    type: gitRepoType
-    accountName: gitAccountName
-    repositoryName: gitRepositoryName
-    collaborationBranch: gitCollaborationBranch
-    rootFolder: gitRootFolder
-    disablePublish: gitDisablePublish
-  },
-  !empty(gitLastCommitId) ? { lastCommitId: gitLastCommitId } : {},
-  gitRepoType == 'FactoryVSTSConfiguration'
-    ? union({ projectName: gitProjectName }, !empty(gitTenantId) ? { tenantId: gitTenantId } : {})
-    : (!empty(gitHostName) ? { hostName: gitHostName } : {})
-)
-
-var missingGitParameters = gitConfigureLater
-  ? []
-  : union(
-      empty(gitAccountName) ? ['gitAccountName'] : [],
-      empty(gitRepositoryName) ? ['gitRepositoryName'] : [],
-      empty(gitCollaborationBranch) ? ['gitCollaborationBranch'] : [],
-      empty(gitRootFolder) ? ['gitRootFolder'] : [],
-      (gitRepoType == 'FactoryVSTSConfiguration' && empty(gitProjectName)) ? ['gitProjectName'] : []
-    )
-
-var validatedGitRepoConfiguration = empty(missingGitParameters)
-  ? gitRepoConfiguration
-  : fail('When \'gitConfigureLater\' is set to false, the following parameters must be provided: ${join(missingGitParameters, ', ')}. Otherwise the Data Factory is deployed without any Git configuration.')
-
 var enableReferencedModulesTelemetry = false
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!empty(customerManagedKey) && !isHSMManagedCMK) {
@@ -239,7 +179,7 @@ resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' = {
   tags: tags
   identity: identity
   properties: {
-    repoConfiguration: gitConfigureLater ? null : validatedGitRepoConfiguration
+    repoConfiguration: gitConfiguration
     globalParameters: globalParameters
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)

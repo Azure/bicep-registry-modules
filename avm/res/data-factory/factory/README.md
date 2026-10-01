@@ -204,15 +204,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     // Required parameters
     name: 'dffgit001'
     // Non-required parameters
-    gitAccountName: 'contoso'
-    gitCollaborationBranch: 'main'
-    gitConfigureLater: false
-    gitDisablePublish: false
-    gitProjectName: 'contoso-adf'
-    gitRepositoryName: 'contoso-adf-repo'
-    gitRepoType: 'FactoryVSTSConfiguration'
-    gitRootFolder: '/'
-    gitTenantId: '<gitTenantId>'
+    gitConfiguration: '<gitConfiguration>'
     location: '<location>'
   }
 }
@@ -235,32 +227,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       "value": "dffgit001"
     },
     // Non-required parameters
-    "gitAccountName": {
-      "value": "contoso"
-    },
-    "gitCollaborationBranch": {
-      "value": "main"
-    },
-    "gitConfigureLater": {
-      "value": false
-    },
-    "gitDisablePublish": {
-      "value": false
-    },
-    "gitProjectName": {
-      "value": "contoso-adf"
-    },
-    "gitRepositoryName": {
-      "value": "contoso-adf-repo"
-    },
-    "gitRepoType": {
-      "value": "FactoryVSTSConfiguration"
-    },
-    "gitRootFolder": {
-      "value": "/"
-    },
-    "gitTenantId": {
-      "value": "<gitTenantId>"
+    "gitConfiguration": {
+      "value": "<gitConfiguration>"
     },
     "location": {
       "value": "<location>"
@@ -282,15 +250,7 @@ using 'br/public:avm/res/data-factory/factory:<version>'
 // Required parameters
 param name = 'dffgit001'
 // Non-required parameters
-param gitAccountName = 'contoso'
-param gitCollaborationBranch = 'main'
-param gitConfigureLater = false
-param gitDisablePublish = false
-param gitProjectName = 'contoso-adf'
-param gitRepositoryName = 'contoso-adf-repo'
-param gitRepoType = 'FactoryVSTSConfiguration'
-param gitRootFolder = '/'
-param gitTenantId = '<gitTenantId>'
+param gitConfiguration = '<gitConfiguration>'
 param location = '<location>'
 ```
 
@@ -333,7 +293,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
     globalParameters: {
       testParameter1: {
         type: 'String'
@@ -499,9 +458,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "gitConfigureLater": {
-      "value": true
     },
     "globalParameters": {
       "value": {
@@ -681,7 +637,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param gitConfigureLater = true
 param globalParameters = {
   testParameter1: {
     type: 'String'
@@ -850,7 +805,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    gitConfigureLater: true
     integrationRuntimes: [
       {
         integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
@@ -939,9 +893,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "gitConfigureLater": {
-      "value": true
     },
     "integrationRuntimes": {
       "value": [
@@ -1034,7 +985,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param gitConfigureLater = true
 param integrationRuntimes = [
   {
     integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
@@ -1095,17 +1045,7 @@ param tags = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
-| [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
-| [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
-| [`gitDisablePublish`](#parameter-gitdisablepublish) | bool | Disable manual publish operation in ADF studio to favor automated publish. |
-| [`gitHostName`](#parameter-githostname) | string | The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'. |
-| [`gitLastCommitId`](#parameter-gitlastcommitid) | string | Add the last commit id from your git repo. |
-| [`gitProjectName`](#parameter-gitprojectname) | string | The project name. Only relevant for 'FactoryVSTSConfiguration'. |
-| [`gitRepositoryName`](#parameter-gitrepositoryname) | string | The repository name. |
-| [`gitRepoType`](#parameter-gitrepotype) | string | Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'. |
-| [`gitRootFolder`](#parameter-gitrootfolder) | string | The root folder path name. Default is '/'. |
-| [`gitTenantId`](#parameter-gittenantid) | string | The tenant ID of the Azure DevOps organization. Only relevant for 'FactoryVSTSConfiguration'. |
+| [`gitConfiguration`](#parameter-gitconfiguration) | object | The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration. |
 | [`globalParameters`](#parameter-globalparameters) | object | List of Global Parameters for the factory. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | An array of objects for the configuration of an Integration Runtime. |
 | [`linkedServices`](#parameter-linkedservices) | array | An array of objects for the configuration of Linked Services. |
@@ -1337,93 +1277,12 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `gitAccountName`
+### Parameter: `gitConfiguration`
 
-The account name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitCollaborationBranch`
-
-The collaboration branch name. Default is 'main'.
+The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration.
 
 - Required: No
-- Type: string
-- Default: `'main'`
-
-### Parameter: `gitConfigureLater`
-
-Boolean to define whether or not to configure git during template deployment.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitDisablePublish`
-
-Disable manual publish operation in ADF studio to favor automated publish.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `gitHostName`
-
-The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitLastCommitId`
-
-Add the last commit id from your git repo.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitProjectName`
-
-The project name. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepositoryName`
-
-The repository name.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `gitRepoType`
-
-Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `'FactoryVSTSConfiguration'`
-
-### Parameter: `gitRootFolder`
-
-The root folder path name. Default is '/'.
-
-- Required: No
-- Type: string
-- Default: `'/'`
-
-### Parameter: `gitTenantId`
-
-The tenant ID of the Azure DevOps organization. Only relevant for 'FactoryVSTSConfiguration'.
-
-- Required: No
-- Type: string
-- Default: `''`
+- Type: object
 
 ### Parameter: `globalParameters`
 

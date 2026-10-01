@@ -851,82 +851,15 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
       }
     },
-    "gitConfigureLater": {
-      "type": "bool",
-      "defaultValue": true,
+    "gitConfiguration": {
+      "type": "object",
       "metadata": {
-        "description": "Optional. Boolean to define whether or not to configure git during template deployment."
-      }
-    },
-    "gitRepoType": {
-      "type": "string",
-      "defaultValue": "FactoryVSTSConfiguration",
-      "metadata": {
-        "description": "Optional. Repository type - can be 'FactoryVSTSConfiguration' or 'FactoryGitHubConfiguration'. Default is 'FactoryVSTSConfiguration'."
-      }
-    },
-    "gitAccountName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The account name."
-      }
-    },
-    "gitProjectName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The project name. Only relevant for 'FactoryVSTSConfiguration'."
-      }
-    },
-    "gitRepositoryName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The repository name."
-      }
-    },
-    "gitCollaborationBranch": {
-      "type": "string",
-      "defaultValue": "main",
-      "metadata": {
-        "description": "Optional. The collaboration branch name. Default is 'main'."
-      }
-    },
-    "gitDisablePublish": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Disable manual publish operation in ADF studio to favor automated publish."
-      }
-    },
-    "gitRootFolder": {
-      "type": "string",
-      "defaultValue": "/",
-      "metadata": {
-        "description": "Optional. The root folder path name. Default is '/'."
-      }
-    },
-    "gitHostName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The GitHub Enterprise Server host (prefixed with 'https://'). Only relevant for 'FactoryGitHubConfiguration'."
-      }
-    },
-    "gitLastCommitId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Add the last commit id from your git repo."
-      }
-    },
-    "gitTenantId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The tenant ID of the Azure DevOps organization. Only relevant for 'FactoryVSTSConfiguration'."
-      }
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DataFactory/factories@2018-06-01#properties/properties/properties/repoConfiguration"
+        },
+        "description": "Optional. The Git repository configuration of the Data Factory. If omitted, the Data Factory is deployed without a Git repository configuration."
+      },
+      "nullable": true
     },
     "globalParameters": {
       "type": "object",
@@ -1095,7 +1028,7 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "repoConfiguration": "[if(parameters('gitConfigureLater'), null(), variables('validatedGitRepoConfiguration'))]",
+        "repoConfiguration": "[parameters('gitConfiguration')]",
         "globalParameters": "[parameters('globalParameters')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), if(not(variables('isHSMManagedCMK')), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')), fail('Managed HSM CMK encryption requires either specifying the ''keyVersion'' or omitting the ''autoRotationEnabled'' property. Setting ''autoRotationEnabled'' to false without a ''keyVersion'' is not allowed.')))), 'vaultBaseUrl', if(not(variables('isHSMManagedCMK')), reference('cMKKeyVault').vaultUri, format('https://{0}.managedhsm.azure.net/', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))))), null())]",
