@@ -80,9 +80,10 @@ Describe 'Regional validation workflow runtime integration' {
                 '${{ inputs.customLocation }}'                                      = $CustomLocation
                 '${{ inputs.customTokens }}'                                        = $CustomTokensInput
                 '${{  inputs.customTokens }}'                                       = $CustomTokensInput
-                '${{ inputs.managementGroupId }}'                                   = 'test-management-group'
+                '${{ steps.get-test-subscription.outputs.managementGroupId }}'       = 'test-management-group'
                 '${{ inputs.deploymentMetadataLocation }}'                          = 'WestEurope'
-                '${{ env.VALIDATE_TENANT_ID }}'                                     = 'test-tenant'
+                '${{ steps.get-test-subscription.outputs.tenantId }}'                = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa'
+                '${{ steps.get-test-subscription.outputs.persistentSubscriptionId }}' = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
                 '${{ env.TOKEN_NAMEPREFIX }}'                                       = 'testprefix'
                 '${{ steps.get-test-subscription.outputs.subscriptionId }}'         = '11111111-1111-1111-1111-111111111111'
                 '${{ steps.replace-tokens.outputs.resourceLocation }}'              = $Outputs.tokenLocation ?? ''

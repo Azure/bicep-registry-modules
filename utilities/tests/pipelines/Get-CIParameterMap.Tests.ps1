@@ -28,19 +28,7 @@ Describe 'Get-CIParameterMap' {
     }
 
     BeforeEach {
-        Mock Get-AzKeyVaultSecret {
-            if (-not $Name) {
-                return @(
-                    @{ Name = 'CI-adminMembersSecret' }
-                    @{ Name = 'CI-LEGACYONLY' }
-                    @{ Name = 'CI-unrelated' }
-                    @{ Name = 'unrelated' }
-                )
-            }
-            return @{
-                SecretValue = ConvertTo-SecureString -String "vault-$Name" -AsPlainText -Force
-            }
-        }
+        Mock Get-AzKeyVaultSecret { throw 'CI must never access the legacy Key Vault.' }
     }
 
     It 'Matches uppercase GitHub names and returns the declared parameter spelling' {
@@ -121,13 +109,12 @@ Describe 'Get-CIParameterMap' {
         ConvertFrom-SecureString -SecureString $result.foo -AsPlainText | Should -Be 'readable-foo'
     }
 
-    It 'Keeps an empty winning CI_ <source> value instead of falling back to CI__ or Key Vault' -ForEach @(
+    It 'Keeps an empty winning CI_ <source> value instead of falling back to CI__' -ForEach @(
         @{ source = 'Variables' }
         @{ source = 'Secrets' }
     ) {
         $arguments = @{
             TemplateParameters = @{ foo = @{ type = 'secureString' } }
-            KeyVaultName = 'test-vault'
             "GitHub$source" = '{"CI__FOO":"exact","CI_FOO":""}'
         }
 
@@ -153,13 +140,12 @@ Describe 'Get-CIParameterMap' {
         ConvertFrom-SecureString -SecureString $result.foo -AsPlainText | Should -Be 'readable'
     }
 
-    It 'Rejects multiple <source> aliases for the same parameter before accessing Key Vault' -ForEach @(
+    It 'Rejects multiple <source> aliases for the same parameter' -ForEach @(
         @{ source = 'Variables'; names = @('CI_ADMIN_MEMBERS_SECRET', 'CI_ADMINMEMBERSSECRET') }
         @{ source = 'Secrets'; names = @('CI_ADMIN_MEMBERS_SECRET', 'CI_ADMINMEMBERSSECRET') }
     ) {
         $arguments = @{
             TemplateParameters = $templateParameters
-            KeyVaultName       = 'test-vault'
             "GitHub$source"    = @{ $names[0] = 'one'; $names[1] = 'two' } | ConvertTo-Json -Compress
         }
 
@@ -209,7 +195,7 @@ Describe 'Get-CIParameterMap' {
             count  = @{ type = 'int' }
             values = @{ type = 'string' }
         }
-        $result = Get-CIParameterMap -TemplateParameters $definitions -KeyVaultName 'test-vault' `
+        $result = Get-CIParameterMap -TemplateParameters $definitions `
             -GitHubVariables '{"CI_KEYS":"example","CI_COUNT":"0","CI_VALUES":"example"}'
 
         @($result.psbase.Keys | Sort-Object) | Should -Be @('count', 'keys', 'values')
@@ -218,34 +204,33 @@ Describe 'Get-CIParameterMap' {
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
-    It 'Gives a GitHub secret precedence over a variable and a Key Vault secret' {
-        $result = Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault' `
+    It 'Gives a GitHub secret precedence over a variable without filling missing parameters from Key Vault' {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
             -GitHubVariables '{"CI_ADMINMEMBERSSECRET":"variable","CI_LOCATION":"westus"}' `
             -GitHubSecrets '{"ci_adminMembersSecret":"secret"}'
 
         ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'secret'
         $result.location | Should -Be 'westus'
-        ConvertFrom-SecureString -SecureString $result.legacyOnly -AsPlainText | Should -Be 'vault-CI-LEGACYONLY'
-        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { -not $Name }
-        Should -Invoke Get-AzKeyVaultSecret -Times 1 -Exactly -ParameterFilter { $Name -eq 'CI-LEGACYONLY' }
-        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name -eq 'CI-adminMembersSecret' -or $Name -eq 'CI-unrelated' -or $Name -eq 'unrelated' }
+        $result.ContainsKey('legacyOnly') | Should -BeFalse
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
-    It 'Gives a GitHub variable precedence over Key Vault' {
-        $result = Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault' `
+    It 'Does not fill missing GitHub variables from Key Vault' {
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
             -GitHubVariables '{"CI_ADMINMEMBERSSECRET":"variable"}'
 
         ConvertFrom-SecureString -SecureString $result.adminMembersSecret -AsPlainText | Should -Be 'variable'
-        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name -eq 'CI-adminMembersSecret' }
+        $result.ContainsKey('legacyOnly') | Should -BeFalse
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
     It 'Does not fall back when a GitHub secret is an empty string' {
-        $result = Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault' `
+        $result = Get-CIParameterMap -TemplateParameters $templateParameters `
             -GitHubVariables '{"CI_ADMINMEMBERSSECRET":"variable"}' -GitHubSecrets '{"CI_ADMINMEMBERSSECRET":""}'
 
         $result.adminMembersSecret | Should -BeOfType [securestring]
         $result.adminMembersSecret.Length | Should -Be 0
-        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly -ParameterFilter { $Name -eq 'CI-adminMembersSecret' }
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 
     It 'Preserves an explicitly empty variable' {
@@ -255,17 +240,8 @@ Describe 'Get-CIParameterMap' {
         $result.location | Should -BeExactly ''
     }
 
-    It 'Keeps legacy secure values without converting them to plaintext' {
-        $vaultValue = ConvertTo-SecureString -String 'legacy-value' -AsPlainText -Force
-        Mock Get-AzKeyVaultSecret { @{ SecretValue = $vaultValue } } -ParameterFilter { $Name -eq 'CI-LEGACYONLY' }
-
-        $result = Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault'
-
-        [object]::ReferenceEquals($result.legacyOnly, $vaultValue) | Should -BeTrue
-    }
-
     It 'Avoids Key Vault access when every parameter is supplied by GitHub' {
-        $result = Get-CIParameterMap -TemplateParameters @{ location = @{ type = 'string' } } -KeyVaultName 'test-vault' `
+        $result = Get-CIParameterMap -TemplateParameters @{ location = @{ type = 'string' } } `
             -GitHubVariables '{"CI_LOCATION":"westus"}'
 
         $result.location | Should -Be 'westus'
@@ -282,7 +258,7 @@ Describe 'Get-CIParameterMap' {
     }
 
     It 'Supports absent contexts and templates without parameters' {
-        $result = Get-CIParameterMap -TemplateParameters @{} -GitHubVariables '' -GitHubSecrets '' -KeyVaultName 'test-vault'
+        $result = Get-CIParameterMap -TemplateParameters @{} -GitHubVariables '' -GitHubSecrets ''
 
         $result.Count | Should -Be 0
         Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
@@ -466,17 +442,9 @@ Describe 'Get-CIParameterMap' {
             Should -Throw "*parameter *$parameterName*JSON*"
     }
 
-    It 'Surfaces vault failures instead of pretending no fallback values exist' {
-        Mock Get-AzKeyVaultSecret { throw 'Vault access denied.' }
-
+    It 'Rejects the removed Key Vault API rather than silently accepting a legacy fallback' {
         { Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault' } |
-            Should -Throw '*Vault access denied*'
-    }
-
-    It 'Rejects a missing vault secret value' {
-        Mock Get-AzKeyVaultSecret { @{ SecretValue = $null } } -ParameterFilter { $Name -eq 'CI-LEGACYONLY' }
-
-        { Get-CIParameterMap -TemplateParameters $templateParameters -KeyVaultName 'test-vault' } |
-            Should -Throw '*did not return a secure value*'
+            Should -Throw '*parameter*KeyVaultName*'
+        Should -Invoke Get-AzKeyVaultSecret -Times 0 -Exactly
     }
 }

@@ -19,7 +19,6 @@
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
 ##   | subscriptionSelectionSeed  | true     | ''      | Shared seed for shuffling the test subscription pool  | '12345'                                                                    |
 ##   | subscriptionJobIndex       | false    | '0'     | Matrix job index for round-robin subscription selection | '0'                                                                      |
-##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
 ##   | customLocation             | false    |         | Custom location overwrite, if needed                  | 'WestEurope'                                                               |
@@ -49,14 +48,11 @@ inputs:
     description: "The location to store the deployment metadata"
     required: true
   subscriptionSelectionSeed:
-    description: "Shared random seed for shuffling TEST_SUBSCRIPTION_IDS across the test matrix"
+    description: "Shared random seed for shuffling TEST_BAMI_SUBSCRIPTION_IDS across the test matrix"
     required: true
   subscriptionJobIndex:
     description: "Matrix job index used to assign a subscription from the shuffled pool"
     default: "0"
-    required: false
-  managementGroupId:
-    description: "The management group ID to deploy to"
     required: false
   customTokens:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
@@ -111,12 +107,6 @@ runs:
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
           }
 
-    - name: "Warn about CI Key Vault deprecation"
-      if: env.skip_deployment_ci == 'false' && env.CI_KEY_VAULT_NAME != ''
-      shell: pwsh
-      run: |
-        Write-Output '::warning title=CI Key Vault deprecation::CI_KEY_VAULT_NAME support may be removed in a future release. Use CI_-prefixed GitHub Actions secrets or variables instead. GitHub secrets override variables, and both override Key Vault values.'
-
     - name: "Select test subscription"
       id: get-test-subscription
       if: env.skip_deployment_ci == 'false'
@@ -124,23 +114,11 @@ runs:
       env:
         SUBSCRIPTION_SELECTION_SEED: ${{ inputs.subscriptionSelectionSeed }}
         SUBSCRIPTION_JOB_INDEX: ${{ inputs.subscriptionJobIndex }}
-        MANAGEMENT_GROUP_ID: ${{ inputs.managementGroupId }}
       run: |
-        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-BamiTestConfiguration.ps1')
 
-        if ($env:AVM_TEST_TENANT -ceq 'bami') {
-          foreach ($name in @('TEST_SUBSCRIPTION_IDS', 'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID')) {
-            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
-              throw "Missing BAMI configuration for [$name]."
-            }
-          }
-        }
-        $functionInput = @{
-          TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
-          FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
-          RandomSeed             = [int]::Parse($env:SUBSCRIPTION_SELECTION_SEED)
-        }
-        $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
+        $configuration = Get-BamiTestConfiguration -RandomSeed ([int]::Parse($env:SUBSCRIPTION_SELECTION_SEED))
+        $subscriptions = $configuration.Subscriptions
         $jobIndex = [int]::Parse($env:SUBSCRIPTION_JOB_INDEX)
         if ($jobIndex -lt 0) {
           throw 'The subscription job index must not be negative.'
@@ -148,74 +126,44 @@ runs:
         $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
 
         Write-Output ("subscriptionId={0}" -f $subscription.id) >> $env:GITHUB_OUTPUT
-        Write-Verbose ("Using test subscription [{0}] from a pool of [{1}]." -f $subscription.name, $subscriptions.Count) -Verbose
+        Write-Output ("clientId={0}" -f $configuration.ClientId) >> $env:GITHUB_OUTPUT
+        Write-Output ("tenantId={0}" -f $configuration.TenantId) >> $env:GITHUB_OUTPUT
+        Write-Output ("managementGroupId={0}" -f $configuration.ManagementGroupId) >> $env:GITHUB_OUTPUT
+        Write-Output ("persistentSubscriptionId={0}" -f $configuration.PersistentSubscriptionId) >> $env:GITHUB_OUTPUT
+        Write-Verbose ("Using BAMI test subscription [{0}] from a pool of [{1}]." -f $subscription.name, $subscriptions.Count) -Verbose
 
     # [Azure login] task(s)
     # ------------------------------
-    - name: "Set OIDC temporary exception"
-      id: set-oidc-exception
+    - name: "Check BAMI OIDC support"
+      id: check-bami-oidc
       if: env.skip_deployment_ci == 'false'
-      uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2
+      shell: pwsh
       env:
-        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Set OIDC exception'
+        MODULE_PATH: ${{ inputs.modulePath }}
+      run: |
+        $modulePath = $env:MODULE_PATH
+        # Subscription-level RBAC cleanup is not yet supported with OIDC for these modules.
+        $unsupportedModulePaths = @(
+          'avm/res/azure-stack-hci/cluster'
+          'avm/res/azure-stack-hci/logical-network'
+          'avm/res/azure-stack-hci/network-interface'
+          'avm/res/azure-stack-hci/virtual-hard-disk'
+          'avm/res/azure-stack-hci/virtual-machine-instance'
+          'avm/res/hybrid-container-service/provisioned-cluster-instance'
+        )
+        if (@(
+          $unsupportedModulePaths | Where-Object { $modulePath -eq $_ -or $modulePath.StartsWith("$_/", [System.StringComparison]::OrdinalIgnoreCase) }
+        ).Count -gt 0) {
+          throw "BAMI OIDC authentication is not supported for [$modulePath]. Deployment and cleanup must support OIDC before this module can run."
+        }
 
-          # List of modules requiring service principal + secret authentication
-          $modulePath = "${{ inputs.modulePath }}"
-          $exceptionModulePaths = @(
-            'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
-            'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
-          )
-          if ($env:AVM_TEST_TENANT -ceq 'bami' -and @(
-            $exceptionModulePaths | Where-Object { $modulePath -eq $_ -or $modulePath.StartsWith("$_/") }
-          ).Count -gt 0) {
-            throw "Missing BAMI candidate authentication configuration: the AZURE_CREDENTIALS exception is not supported for [$modulePath]."
-          }
-          if ($exceptionModulePaths.Contains($modulePath)) {
-            $oidcException = 'true'
-            Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
-          } else {
-            $oidcException = 'false'
-            Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
-          }
-
-          if ($oidcException -eq 'true') {
-            $credentials = ConvertFrom-Json -InputObject $env:AZURE_CREDENTIALS -AsHashtable -ErrorAction Stop
-            $credentials['subscriptionId'] = $env:SELECTED_SUBSCRIPTION_ID
-            $credentialsJson = ConvertTo-Json -InputObject $credentials -Depth 10 -Compress
-            Write-Output "::add-mask::$credentialsJson"
-            Write-Output "azureCredentials=$credentialsJson" >> $env:GITHUB_OUTPUT
-          }
-
-          Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
-          Write-Output '::endgroup::'
-
-    # Default: support both OIDC and service principal with secret
-    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      if: ${{ steps.check-bami-oidc.outcome == 'success' && env.skip_deployment_ci == 'false' }}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
-        client-id: ${{ env.VALIDATE_CLIENT_ID }}
-        tenant-id: ${{ env.VALIDATE_TENANT_ID }}
+        client-id: ${{ steps.get-test-subscription.outputs.clientId }}
+        tenant-id: ${{ steps.get-test-subscription.outputs.tenantId }}
         subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
-        enable-AzPSSession: true
-
-    # Exception: module requires login by using service principal with secret
-    # Should only be leveraged by modules listed in $exceptionModulePaths above
-    - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
-      with:
-        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
 
     # [Token replacement] task(s)
@@ -253,9 +201,10 @@ runs:
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
-            subscriptionId    = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-            managementGroupId = '${{ inputs.managementGroupId }}'
-            tenantId          = '${{ env.VALIDATE_TENANT_ID }}'
+            subscriptionId           = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
+            managementGroupId        = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
+            tenantId                 = '${{ steps.get-test-subscription.outputs.tenantId }}'
+            persistentSubscriptionId = '${{ steps.get-test-subscription.outputs.persistentSubscriptionId }}'
           }
 
           # Add local (source control) tokens
@@ -311,7 +260,7 @@ runs:
           # --------------------------
           # Fetching parameters
           $subscriptionId = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-          $managementGroupId = '${{ inputs.managementGroupId }}'
+          $managementGroupId = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
@@ -357,7 +306,6 @@ runs:
             TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
             GitHubVariables     = $env:AVM_CI_VARIABLES
             GitHubSecrets       = $env:AVM_CI_SECRETS
-            KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
           foreach ($parameter in $ciParameters.GetEnumerator()) {
@@ -402,7 +350,7 @@ runs:
           # Prepare general parameters
           # --------------------------
           $subscriptionId = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
-          $managementGroupId = '${{ inputs.managementGroupId }}'
+          $managementGroupId = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
 
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
@@ -443,7 +391,6 @@ runs:
             TemplateDefinitions = $moduleTemplateContent.definitions ?? @{}
             GitHubVariables     = $env:AVM_CI_VARIABLES
             GitHubSecrets       = $env:AVM_CI_SECRETS
-            KeyVaultName        = $env:CI_KEY_VAULT_NAME
           }
           $ciParameters = Get-CIParameterMap @ciParameterInput
           foreach ($parameter in $ciParameters.GetEnumerator()) {
@@ -487,24 +434,13 @@ runs:
 
     # [Azure login] task(s)
     # ------------------------------
-    # Default: support both OIDC and service principal with secret
-    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
     - name: "Azure Login - Default"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' && env.skip_deployment_ci == 'false' }}
+      if: ${{ steps.check-bami-oidc.outcome == 'success' && env.skip_deployment_ci == 'false' }}
       uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
       with:
-        client-id: ${{ env.VALIDATE_CLIENT_ID }}
-        tenant-id: ${{ env.VALIDATE_TENANT_ID }}
+        client-id: ${{ steps.get-test-subscription.outputs.clientId }}
+        tenant-id: ${{ steps.get-test-subscription.outputs.tenantId }}
         subscription-id: ${{ steps.get-test-subscription.outputs.subscriptionId }}
-        enable-AzPSSession: true
-
-    # Exception: module requires login by using service principal with secret
-    # Should only be leveraged by modules listed in $exceptionModulePaths above
-    - name: "Azure Login - Exception"
-      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true'  && env.skip_deployment_ci == 'false'}}
-      uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
-      with:
-        creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
 
     # [Post-Deployment test] task(s)
@@ -615,16 +551,13 @@ runs:
           $functionInput = @{
             TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
             DeploymentNames   = '${{ steps.deploy_step.outputs.deploymentNames }}' | ConvertFrom-Json
-            ManagementGroupId = '${{ inputs.managementGroupId }}'
+            ManagementGroupId = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
+            SubscriptionId    = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           }
 
           $preflightRejectedDeploymentNames = '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}'
           if (-not [string]::IsNullOrWhiteSpace($preflightRejectedDeploymentNames)) {
             $functionInput['PreflightRejectedDeploymentNames'] = @($preflightRejectedDeploymentNames | ConvertFrom-Json -ErrorAction Stop)
-          }
-
-          if (-not [String]::IsNullOrEmpty('${{ steps.get-test-subscription.outputs.subscriptionId }}')) {
-              $functionInput['SubscriptionId'] = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
           }
 
           Write-Verbose 'Invoke task with' -Verbose

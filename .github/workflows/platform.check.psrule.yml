@@ -30,7 +30,6 @@ env:
   PSRuleInputFilePath: "avm/PSRule-output.md"
   psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
   psrulePath: "utilities/pipelines/staticValidation/psrule"
-  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
@@ -72,6 +71,24 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      - name: Select BAMI test subscription
+        id: get-test-subscription
+        shell: pwsh
+        env:
+          TEST_BAMI_TENANT_ID: ${{ vars.TEST_BAMI_TENANT_ID }}
+          TEST_BAMI_BICEP_CLIENT_ID: ${{ vars.TEST_BAMI_BICEP_CLIENT_ID }}
+          TEST_BAMI_SUBSCRIPTION_IDS: ${{ vars.TEST_BAMI_SUBSCRIPTION_IDS }}
+          TEST_BAMI_MANAGEMENT_GROUP_ID: ${{ vars.TEST_BAMI_MANAGEMENT_GROUP_ID }}
+          TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID: ${{ vars.TEST_BAMI_PERSISTENT_SUBSCRIPTION_ID }}
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-BamiTestConfiguration.ps1')
+
+          $configuration = Get-BamiTestConfiguration
+          Write-Output ("subscriptionId={0}" -f $configuration.Subscriptions[0].id) >> $env:GITHUB_OUTPUT
+          Write-Output ("tenantId={0}" -f $configuration.TenantId) >> $env:GITHUB_OUTPUT
+          Write-Output ("managementGroupId={0}" -f $configuration.ManagementGroupId) >> $env:GITHUB_OUTPUT
+          Write-Output ("persistentSubscriptionId={0}" -f $configuration.PersistentSubscriptionId) >> $env:GITHUB_OUTPUT
+
       # [Token replacement] task(s)
       # ---------------------------
       - name: Replace tokens in relevant files
@@ -112,8 +129,10 @@ jobs:
 
             # Add enforced tokens
             $ConvertTokensInputs.Tokens += @{
-              subscriptionId    = '${{ secrets.VALIDATE_SUBSCRIPTION_ID }}'
-              managementGroupId = '${{ env.ARM_MGMTGROUP_ID }}'
+              subscriptionId           = '${{ steps.get-test-subscription.outputs.subscriptionId }}'
+              managementGroupId        = '${{ steps.get-test-subscription.outputs.managementGroupId }}'
+              tenantId                 = '${{ steps.get-test-subscription.outputs.tenantId }}'
+              persistentSubscriptionId = '${{ steps.get-test-subscription.outputs.persistentSubscriptionId }}'
             }
 
             # Add local (source control) tokens
