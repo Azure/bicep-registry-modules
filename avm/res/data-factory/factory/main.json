@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "10057085331125204597"
+      "templateHash": "5071117241890279124"
     },
     "name": "Data Factories",
     "description": "This module deploys a Data Factory."
