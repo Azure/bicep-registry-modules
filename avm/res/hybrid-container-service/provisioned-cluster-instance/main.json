@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12222240304754840211"
+      "templateHash": "14628577764753735681"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -84,13 +84,6 @@
           "type": "string",
           "metadata": {
             "description": "Required. The VM size for the nodes."
-          }
-        },
-        "gpuCountPerNode": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The number of GPUs per node in the pool."
           }
         }
       },
@@ -290,37 +283,6 @@
         "description": "The type for storage profile configuration."
       }
     },
-    "hciSecurityProfileType": {
-      "type": "object",
-      "properties": {
-        "customCATrustCertificates": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom CA trust certificates for the cluster."
-          }
-        },
-        "fipsImage": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether FIPS-compliant images are enabled."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. FIPS image configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for HCI provisioned cluster security profile configuration."
-      }
-    },
     "_1.systemComponentType": {
       "type": "object",
       "properties": {
@@ -346,7 +308,7 @@
       "metadata": {
         "description": "The type for system component configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -378,7 +340,7 @@
       "metadata": {
         "description": "The type for AAD profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -423,7 +385,7 @@
       "metadata": {
         "description": "The type for Arc agent profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -447,7 +409,7 @@
       "metadata": {
         "description": "The type for OIDC issuer profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -472,7 +434,7 @@
       "metadata": {
         "description": "The type for security profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     }
@@ -637,13 +599,6 @@
         "description": "Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster."
       }
     },
-    "hciSecurityProfile": {
-      "$ref": "#/definitions/hciSecurityProfileType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Security profile for the provisioned cluster instance (FIPS, custom CA certificates)."
-      }
-    },
     "authorizedIPRanges": {
       "type": "string",
       "nullable": true,
@@ -704,7 +659,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -724,12 +679,12 @@
     "existingCluster": {
       "existing": true,
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2024-07-15-preview",
+      "apiVersion": "2026-05-01",
       "name": "[parameters('name')]"
     },
     "provisionedCluster": {
       "type": "Microsoft.HybridContainerService/provisionedClusterInstances",
-      "apiVersion": "2026-04-01-preview",
+      "apiVersion": "2024-01-01",
       "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]",
       "name": "default",
       "extendedLocation": {
@@ -747,7 +702,6 @@
         "licenseProfile": "[parameters('licenseProfile')]",
         "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('secrets').outputs.sshPublicKeyPemValue.value)))))]",
         "networkProfile": "[parameters('networkProfile')]",
-        "securityProfile": "[parameters('hciSecurityProfile')]",
         "storageProfile": "[parameters('storageProfile')]"
       },
       "dependsOn": [
@@ -795,7 +749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "1037546646888251852"
+              "templateHash": "10332088240586661283"
             }
           },
           "parameters": {
@@ -843,8 +797,8 @@
           "variables": {
             "$fxv#0": "#!/bin/bash\nset -e\n\nREFLECT_BICEP_B64=\"$1\"\nREAD_BICEP_B64=\"$2\"\nREAD_JSON_B64=\"$3\"\nWRITE_BICEP_B64=\"$4\"\nWRITE_JSON_B64=\"$5\"\nSUBSCRIPTION_ID=\"$6\"\nRESOURCE_GROUP_NAME=\"$7\"\nCLUSTER_NAME=\"$8\"\n\n# Decode base64-encoded content to temp files\nTEMP_DIR=$(mktemp -d)\ncd \"$TEMP_DIR\"\necho \"$REFLECT_BICEP_B64\" | base64 -d > \"reflect.bicep\"\necho \"$READ_BICEP_B64\" | base64 -d > \"read.bicep\"\necho \"$READ_JSON_B64\" | base64 -d > \"read.json\"\necho \"$WRITE_BICEP_B64\" | base64 -d > \"write.bicep\"\necho \"$WRITE_JSON_B64\" | base64 -d > \"write.json\"\n\n# Login with managed identity and set subscription\naz login --identity --allow-no-subscriptions > /dev/null\naz account set --subscription \"$SUBSCRIPTION_ID\"\n\n# Ensure Bicep CLI is available\naz bicep upgrade\n\nDEPLOYMENT_NAME_1=\"$CLUSTER_NAME-sshkey-read\"\n\n# Read\naz deployment group create \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --template-file \"read.bicep\" \\\n  --parameters \"read.json\" || true\n\nPUBLIC_KEY=$(az deployment group show \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --query properties.outputs.publicKeySecretValue.value \\\n  --only-show-errors --output tsv || true)\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  # ssh-keygen does not exists, openssl is not compatible\n  az sshkey create --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" 2>ssh.log\n  az sshkey delete --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" --yes\n  PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n  PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n\n  PRIVATE_KEY_B64=$(cat $PRIVATE_KEY_FILE | base64 -w 0)\n  PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)\n  sed --in-place \"s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/\" 'write.json'\n  sed --in-place \"s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/\" 'write.json'\n\n  DEPLOYMENT_NAME_2=\"$CLUSTER_NAME-sshkey-write\"\n\n  # write\n  az deployment group create \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --template-file \"write.bicep\" \\\n    --parameters \"write.json\" || true\n\n  PUBLIC_KEY=$(az deployment group show \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --query properties.outputs.publicKeySecretValue.value \\\n    --only-show-errors --output tsv || true)\n\n  shred -u $PRIVATE_KEY_FILE\n  shred -u $PUBLIC_KEY_FILE\n  shred -u 'write.json'\nfi\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  exit 2\nfi\n\necho \"{\\\"output\\\": \\\"$PUBLIC_KEY\\\"}\"> $AZ_SCRIPTS_OUTPUT_PATH\n",
             "$fxv#1": "@secure()\nparam input string\n\n#disable-next-line outputs-should-not-contain-secrets\noutput output string = input\n",
-            "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
-            "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
+            "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
+            "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
             "readJsonRaw": "{\n  \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {\n    \"keyVaultName\": {\n      \"value\": \"{{keyVaultName}}\"\n    },\n    \"publicKeySecretName\": {\n      \"value\": \"{{publicKeySecretName}}\"\n    },\n    \"privateKeySecretName\": {\n      \"value\": \"{{privateKeySecretName}}\"\n    }\n  }\n}",
             "readJson": "[replace(replace(replace(variables('readJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]",
             "writeJsonRaw": "{\n  \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {\n    \"keyVaultName\": {\n      \"value\": \"{{keyVaultName}}\"\n    },\n    \"publicKeySecretName\": {\n      \"value\": \"{{publicKeySecretName}}\"\n    },\n    \"publicKeySecretValueBase64\": {\n      \"value\": \"{{publicKeySecretValueBase64}}\"\n    },\n    \"privateKeySecretName\": {\n      \"value\": \"{{privateKeySecretName}}\"\n    },\n    \"privateKeySecretValueBase64\": {\n      \"value\": \"{{privateKeySecretValueBase64}}\"\n    }\n  }\n}",
@@ -854,7 +808,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2026-02-01",
               "name": "[parameters('keyVaultName')]"
             },
             "managedIdentity": {
@@ -970,8 +924,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1409403525676849950"
+              "version": "0.47.16.16243",
+              "templateHash": "15373584917489478251"
             },
             "name": "Kubernetes Connected Cluster",
             "description": "This module deploys an Azure Arc connected cluster."
@@ -1122,6 +1076,28 @@
                 "description": "The type for security profile configuration."
               }
             },
+            "gatewayType": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the Arc gateway."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the gateway is enabled."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for gateway configuration."
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -1262,6 +1238,31 @@
                 "description": "Optional. Security profile for the connected cluster."
               }
             },
+            "gateway": {
+              "$ref": "#/definitions/gatewayType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The gateway configuration for routing traffic through a gateway."
+              }
+            },
+            "privateLinkScopeResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity."
+              }
+            },
+            "privateLinkState": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -1281,20 +1282,22 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.44d0125",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1312,7 +1315,7 @@
             },
             "connectedCluster": {
               "type": "Microsoft.Kubernetes/connectedClusters",
-              "apiVersion": "2024-07-15-preview",
+              "apiVersion": "2026-05-01",
               "name": "[parameters('name')]",
               "kind": "ProvisionedCluster",
               "location": "[parameters('location')]",
@@ -1328,7 +1331,10 @@
                 "infrastructure": null,
                 "oidcIssuerProfile": "[parameters('oidcIssuerProfile')]",
                 "securityProfile": "[parameters('securityProfile')]",
-                "azureHybridBenefit": null
+                "azureHybridBenefit": null,
+                "gateway": "[parameters('gateway')]",
+                "privateLinkScopeResourceId": "[if(not(empty(parameters('privateLinkScopeResourceId'))), parameters('privateLinkScopeResourceId'), null())]",
+                "privateLinkState": "[parameters('privateLinkState')]"
               }
             },
             "connectedCluster_roleAssignments": {
@@ -1338,7 +1344,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1381,7 +1387,7 @@
               "metadata": {
                 "description": "The location of the connected cluster."
               },
-              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+              "value": "[reference('connectedCluster', '2026-05-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -1389,7 +1395,7 @@
               "metadata": {
                 "description": "The principalId of the connected cluster identity."
               },
-              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').identity.principalId]"
+              "value": "[reference('connectedCluster', '2026-05-01', 'full').identity.principalId]"
             }
           }
         }

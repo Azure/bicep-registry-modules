@@ -16,7 +16,6 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -24,8 +23,8 @@ For examples, please refer to the [Usage Examples](#usage-examples) section.
 | Resource Type | API Version | References |
 | :-- | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | 2022-04-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.authorization_roleassignments.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments)</li></ul> |
-| `Microsoft.HybridContainerService/provisionedClusterInstances` | 2026-04-01-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcontainerservice_provisionedclusterinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2026-04-01-preview/provisionedClusterInstances)</li></ul> |
-| `Microsoft.Kubernetes/connectedClusters` | 2024-07-15-preview | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters)</li></ul> |
+| `Microsoft.HybridContainerService/provisionedClusterInstances` | 2024-01-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.hybridcontainerservice_provisionedclusterinstances.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances)</li></ul> |
+| `Microsoft.Kubernetes/connectedClusters` | 2026-05-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.kubernetes_connectedclusters.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2026-05-01/connectedClusters)</li></ul> |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | 2024-11-30 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.managedidentity_userassignedidentities.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities)</li></ul> |
 | `Microsoft.Resources/deploymentScripts` | 2023-08-01 | <ul style="padding-left: 0px;"><li>[AzAdvertizer](https://www.azadvertizer.net/azresourcetypes/microsoft.resources_deploymentscripts.html)</li><li>[Template reference](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts)</li></ul> |
 
@@ -614,7 +613,6 @@ param keyVaultName = '<keyVaultName>'
 | [`connectClustersTags`](#parameter-connectclusterstags) | object | Tags for the cluster resource. |
 | [`controlPlane`](#parameter-controlplane) | object | The profile for control plane of the provisioned cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`hciSecurityProfile`](#parameter-hcisecurityprofile) | object | Security profile for the provisioned cluster instance (FIPS, custom CA certificates). |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`licenseProfile`](#parameter-licenseprofile) | object | The license profile of the provisioned cluster. |
 | [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
@@ -772,7 +770,6 @@ The agent pool properties for the provisioned cluster.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`gpuCountPerNode`](#parameter-agentpoolprofilesgpucountpernode) | int | The number of GPUs per node in the pool. |
 | [`nodeLabels`](#parameter-agentpoolprofilesnodelabels) | object | The node labels to be applied to nodes in the pool. |
 | [`nodeTaints`](#parameter-agentpoolprofilesnodetaints) | array | The taints to be applied to nodes in the pool. |
 
@@ -838,13 +835,6 @@ The VM size for the nodes.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `agentPoolProfiles.gpuCountPerNode`
-
-The number of GPUs per node in the pool.
-
-- Required: No
-- Type: int
 
 ### Parameter: `agentPoolProfiles.nodeLabels`
 
@@ -1032,47 +1022,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `hciSecurityProfile`
-
-Security profile for the provisioned cluster instance (FIPS, custom CA certificates).
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customCATrustCertificates`](#parameter-hcisecurityprofilecustomcatrustcertificates) | array | Custom CA trust certificates for the cluster. |
-| [`fipsImage`](#parameter-hcisecurityprofilefipsimage) | object | FIPS image configuration. |
-
-### Parameter: `hciSecurityProfile.customCATrustCertificates`
-
-Custom CA trust certificates for the cluster.
-
-- Required: No
-- Type: array
-
-### Parameter: `hciSecurityProfile.fipsImage`
-
-FIPS image configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enabled`](#parameter-hcisecurityprofilefipsimageenabled) | bool | Whether FIPS-compliant images are enabled. |
-
-### Parameter: `hciSecurityProfile.fipsImage.enabled`
-
-Whether FIPS-compliant images are enabled.
-
-- Required: Yes
-- Type: bool
 
 ### Parameter: `kubernetesVersion`
 
@@ -1391,14 +1340,6 @@ Tags of the resource.
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/res/kubernetes/connected-cluster:0.1.1` | Remote reference |
 
 ## Data Collection
 
