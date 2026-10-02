@@ -131,7 +131,7 @@ param replicaTimeout int = 1800
   'Manual'
   'Schedule'
 ])
-@description('Required. Trigger type of the job.')
+@description('Required. Trigger with typo errors for testing type of the job.')
 param triggerType string
 
 var formattedUserAssignedIdentities = reduce(

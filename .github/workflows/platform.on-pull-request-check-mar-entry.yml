@@ -1,0 +1,63 @@
+name: .Platform - Check Module existence in MAR on Pull Request
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - edited
+      - synchronize
+  push:
+    branches: ["main"]
+    paths:
+      - "avm/ptn/**"
+      - "avm/res/**"
+      - "avm/utl/**"
+
+permissions:
+  contents: read
+
+jobs:
+  mar-existence-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: "Check if module exists in MAR-file"
+        shell: pwsh
+        run: |
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleInMAR.ps1')
+
+          # 1. Get list of all modules qualifying for publishing (updated and versioned) and order them by length, so that child modules are processed first
+          $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath (Join-Path $env:GITHUB_WORKSPACE 'avm') |
+            Sort-Object -Property Length -Descending -Unique |
+            ForEach-Object {
+              $normalizedPath = $_ -replace '[\\/]+', '/'                 # Normalize path separators to '/' for Windows and Linux
+              $normalizedPath -replace '^.*/(avm/.+?)/main\.json$', '$1'  # Extract the module path
+            }
+
+          # 2. Loop through the modules and check if they exist in the MAR file.
+          $notInMARModules = @()
+          ForEach ($module in $modulesToPublishList) {
+            $functionInput = @{
+              PublishedModuleName = $module
+            }
+            Write-Verbose "Invoke function with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+            $isInMAR = Confirm-ModuleInMAR @functionInput
+            if (-not $isInMAR) {
+              $notInMARModules += $module
+            }
+          }
+
+          # 3. fail the step if there are modules not in MAR and print them out.
+          if ($notInMARModules.Count -gt 0) {
+            throw "The following modules are not present in the MAR file and must be added before merging: `n$($notInMARModules -join "`n")"
+          } else {
+            Write-Output "All modules [$($modulesToPublishList -join ", ")] exist in the MAR file."
+          }
