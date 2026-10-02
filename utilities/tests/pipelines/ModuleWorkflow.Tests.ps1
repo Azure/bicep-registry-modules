@@ -260,11 +260,6 @@ Describe 'Generic module workflow' {
             RelativePath  = 'utilities\pipelines\platform\Switch-WorkflowState.ps1'
             ParameterName = 'IncludePattern'
         }
-        @{
-            FunctionName  = 'Invoke-WorkflowsFailedJobsReRun'
-            RelativePath  = 'utilities\tools\Invoke-WorkflowsFailedJobsReRun.ps1'
-            ParameterName = 'PipelineFilter'
-        }
     ) {
         $parseErrors = $null
         $ast = [System.Management.Automation.Language.Parser]::ParseFile(

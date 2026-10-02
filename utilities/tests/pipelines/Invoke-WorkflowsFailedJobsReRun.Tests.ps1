@@ -36,6 +36,40 @@ Describe 'Test Invoke-WorkflowsFailedJobsReRun' {
         . (Join-Path $repoRootPath 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowLatestRun.ps1')
     }
 
+    Context 'Default workflow filter' {
+
+        It 'Excludes the experimental workflow while retaining non-experimental module retries' {
+            Mock Get-GitHubModuleWorkflowList {
+                return @(
+                    @{ id = 111; name = 'avm.res.kusto.cluster' }
+                    @{ id = 222; name = 'avm.ptn.test' }
+                    @{ id = 333; name = 'avm.utl.test' }
+                    @{ id = 444; name = '.Module - Check and Publish' }
+                    @{ id = 555; name = '.Module - Check and Publish [EXPERIMENTAL]' }
+                    @{ id = 666; name = '.Platform - Rerun failed workflows' }
+                ) | Where-Object { $_.name -match $Filter }
+            }
+            Mock Get-GitHubModuleWorkflowLatestRun {
+                return @{
+                    id          = $WorkflowId
+                    name        = "Workflow $WorkflowId"
+                    status      = 'completed'
+                    conclusion  = 'failure'
+                    run_attempt = 1
+                }
+            }
+            Mock Invoke-GitHubWorkflowRunFailedJobsReRun { return $true }
+
+            Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath
+
+            Should -Invoke Get-GitHubModuleWorkflowLatestRun -Times 0 -Exactly -ParameterFilter { $WorkflowId -in @(555, 666) }
+            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 4 -Exactly
+            foreach ($expectedRunId in @(111, 222, 333, 444)) {
+                Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 1 -Exactly -ParameterFilter { $RunId -eq $expectedRunId }
+            }
+        }
+    }
+
     Context 'Hard stop based on run_attempt' {
 
         BeforeEach {
