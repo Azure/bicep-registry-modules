@@ -63,7 +63,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimin'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -86,7 +86,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmimin"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -113,7 +113,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimin'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -138,7 +138,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimax'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -281,7 +281,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmimax"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -477,7 +477,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimax'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -622,7 +622,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmivln'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -674,7 +674,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmivln"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -736,7 +736,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmivln'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -790,7 +790,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmiwaf'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -900,7 +900,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmiwaf"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -1055,7 +1055,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmiwaf'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'

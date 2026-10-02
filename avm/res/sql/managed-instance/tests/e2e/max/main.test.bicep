@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: enforcedLocation
-      name: '${namePrefix}-${serviceShort}'
+      name: '${namePrefix}-${serviceShort}-${uniqueString(resourceGroup.id)}'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
