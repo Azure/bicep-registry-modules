@@ -38,7 +38,7 @@ Describe 'Test Invoke-WorkflowsFailedJobsReRun' {
 
     Context 'Default workflow filter' {
 
-        It 'Excludes the experimental workflow while retaining non-experimental module retries' {
+        It 'Excludes generic workflows while retaining resource, pattern, and utility module retries' {
             Mock Get-GitHubModuleWorkflowList {
                 return @(
                     @{ id = 111; name = 'avm.res.kusto.cluster' }
@@ -62,9 +62,9 @@ Describe 'Test Invoke-WorkflowsFailedJobsReRun' {
 
             Invoke-WorkflowsFailedJobsReRun -RepoRoot $script:repoRootPath
 
-            Should -Invoke Get-GitHubModuleWorkflowLatestRun -Times 0 -Exactly -ParameterFilter { $WorkflowId -in @(555, 666) }
-            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 4 -Exactly
-            foreach ($expectedRunId in @(111, 222, 333, 444)) {
+            Should -Invoke Get-GitHubModuleWorkflowLatestRun -Times 0 -Exactly -ParameterFilter { $WorkflowId -in @(444, 555, 666) }
+            Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 3 -Exactly
+            foreach ($expectedRunId in @(111, 222, 333)) {
                 Should -Invoke Invoke-GitHubWorkflowRunFailedJobsReRun -Times 1 -Exactly -ParameterFilter { $RunId -eq $expectedRunId }
             }
         }

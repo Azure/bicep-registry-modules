@@ -148,7 +148,7 @@ Optional. The PAT to use to interact with either GitHub. If not provided, the sc
 Optional. The branch to run the pipelines for (e.g. `main`). Defaults to 'main'.
 
 .PARAMETER PipelineFilter
-Optional. The workflow names to filter down to (regex). Excludes the experimental generic module workflow by default.
+Optional. The workflow names to filter down to (regex). Excludes the generic module workflow by default.
 
 .PARAMETER RepositoryOwner
 Optional. The GitHub organization to run the workfows in.
@@ -196,7 +196,7 @@ function Invoke-WorkflowsFailedJobsReRun {
         [string] $TargetBranch = 'main',
 
         [Parameter(Mandatory = $false)]
-        [string] $PipelineFilter = '(?:avm\.(?:res|ptn|utl)|^\.Module - Check and Publish$)',
+        [string] $PipelineFilter = 'avm\.(?:res|ptn|utl)',
 
         [Parameter(Mandatory = $false)]
         [string] $RepositoryOwner = 'Azure',
