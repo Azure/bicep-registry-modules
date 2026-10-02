@@ -286,7 +286,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
-    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
@@ -906,7 +905,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "subnetResourceId": {
       "value": "<subnetResourceId>"
     },
-    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
@@ -2495,6 +2493,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 
