@@ -176,11 +176,7 @@ jobs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
-    concurrency:
-      group: generic-module-${{ matrix.modulePath }}
-      queue: max
     permissions:
       contents: read
       id-token: write
@@ -202,11 +198,7 @@ jobs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
-    concurrency:
-      group: generic-module-${{ matrix.modulePath }}
-      queue: max
     permissions:
       contents: read
     uses: ./.github/workflows/avm.template.module.static.yml
@@ -220,11 +212,7 @@ jobs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
-    concurrency:
-      group: generic-module-${{ matrix.modulePath }}
-      queue: max
     permissions:
       contents: write
       id-token: write
@@ -248,11 +236,7 @@ jobs:
       - job_initialize_pipeline
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix: ${{ fromJson(case(needs.job_initialize_pipeline.outputs.hasModules == 'true', needs.job_initialize_pipeline.outputs.moduleMatrix, '{"include":[]}')) }}
-    concurrency:
-      group: generic-module-${{ matrix.modulePath }}
-      queue: max
     permissions:
       contents: write
     uses: ./.github/workflows/avm.template.module.publish-only.yml

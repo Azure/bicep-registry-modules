@@ -116,20 +116,31 @@ jobs:
   #############################
   job_initialize_subscription_selection:
     name: "Initialize subscription selection"
+    environment: avm-validation
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      contents: read
     if: (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
     outputs:
-      randomSeed: ${{ steps.random-seed.outputs.randomSeed }}
+      deploymentMatrix: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
     steps:
-      - name: "Generate shared subscription shuffle seed"
-        id: random-seed
-        shell: pwsh
-        run: |
-          Write-Output ("randomSeed={0}" -f (Get-Random -Minimum 0 -Maximum 2147483647)) >> $env:GITHUB_OUTPUT
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: "Prepare deployment matrix"
+        id: deployment-matrix
+        uses: ./.github/actions/templates/avm-getModuleDeploymentMatrix
+        with:
+          modulePath: ${{ inputs.modulePath }}
+          moduleTestFilePaths: ${{ inputs.moduleTestFilePaths }}
+          displaySubscriptionNames: ${{ vars.VALIDATE_SUBSCRIPTION_IDS != '' || vars.TEST_SUBSCRIPTION_IDS != '' }}
+        env:
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
 
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deploy [${{ matrix.testCases.name}}]"
+    name: "Deploy [${{ matrix.testCases.name }}] on [${{ matrix.testCases.subscriptionName }}]"
     environment: avm-validation
     runs-on: ubuntu-latest
     if: |
@@ -145,7 +156,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        testCases: ${{ fromJson(inputs.moduleTestFilePaths) }}
+        testCases: ${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}
+    concurrency:
+      group: ${{ matrix.testCases.concurrencyGroup }}
+      queue: max
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -161,8 +175,8 @@ jobs:
           modulePath: "${{ inputs.modulePath }}"
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           deploymentMetadataLocation: "WestEurope"
-          subscriptionSelectionSeed: "${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}"
-          subscriptionJobIndex: "${{ strategy.job-index }}"
+          subscriptionIndex: "${{ matrix.testCases.subscriptionIndex }}"
+          subscriptionKey: "${{ matrix.testCases.subscriptionKey }}"
           managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
@@ -186,6 +200,9 @@ jobs:
   job_publish_module: # Note: Keep this job's display name ("Publishing") stable; it may be referenced as a required branch-protection status check.
     name: "Publishing"
     runs-on: ubuntu-latest
+    concurrency:
+      group: avm-publish-${{ inputs.modulePath }}
+      queue: max
     # Note: Below !cancelled() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
     if: |
       !cancelled() &&

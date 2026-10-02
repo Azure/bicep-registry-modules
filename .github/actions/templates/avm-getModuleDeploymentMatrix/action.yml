@@ -1,0 +1,44 @@
+name: "Get module deployment matrix"
+description: "Preselect subscriptions in the deployment environment and identify subscription or shared-scope locks without exposing secret-backed identifiers."
+
+inputs:
+  modulePath:
+    description: "The path to the module's folder"
+    required: true
+  moduleTestFilePaths:
+    description: "The module test file records as JSON"
+    required: true
+  displaySubscriptionNames:
+    description: "Show friendly names only when the subscription pool comes from variables, not secrets"
+    default: "false"
+    required: false
+
+outputs:
+  deploymentMatrix:
+    description: "Test files with pinned subscription identities and deployment concurrency groups"
+    value: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Assign subscriptions and deployment locks"
+      id: deployment-matrix
+      shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
+        MODULE_TEST_FILE_PATHS: ${{ inputs.moduleTestFilePaths }}
+        DISPLAY_SUBSCRIPTION_NAMES: ${{ inputs.displaySubscriptionNames }}
+      run: |
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleDeploymentMatrix.ps1')
+
+        $functionInput = @{
+          ModulePath               = $env:MODULE_PATH
+          TestFilePaths            = @(ConvertFrom-Json -InputObject $env:MODULE_TEST_FILE_PATHS -AsHashtable)
+          TestSubscriptionIds      = $env:TEST_SUBSCRIPTION_IDS
+          FallbackSubscriptionId   = $env:VALIDATE_SUBSCRIPTION_ID
+          RandomSeed               = Get-Random -Minimum 0 -Maximum 2147483647
+          DisplaySubscriptionNames = $env:DISPLAY_SUBSCRIPTION_NAMES -eq 'true'
+          RepoRoot                 = $env:GITHUB_WORKSPACE
+        }
+        $matrix = @(Get-ModuleDeploymentMatrix @functionInput)
+        Write-Output ("deploymentMatrix={0}" -f (ConvertTo-Json -InputObject $matrix -Depth 10 -Compress)) >> $env:GITHUB_OUTPUT

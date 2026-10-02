@@ -17,8 +17,10 @@
 ##   | modulePath                 | true     | ''      | The path to the module file directory                 | 'modules/api-management/service/main.bicep'                                |
 ##   | templateFilePath           | true     | ''      | The path to the template file to use for deployment   | 'modules/api-management/service/tests/e2e/maix/main.test.bicep'            |
 ##   | deploymentMetadataLocation | true     | ''      | The location to store the deployment metadata         | 'WestEurope'                                                               |
-##   | subscriptionSelectionSeed  | true     | ''      | Shared seed for shuffling the test subscription pool  | '12345'                                                                    |
+##   | subscriptionSelectionSeed  | false    | ''      | Legacy shared seed when no subscription is preselected | '12345'                                                                  |
 ##   | subscriptionJobIndex       | false    | '0'     | Matrix job index for round-robin subscription selection | '0'                                                                      |
+##   | subscriptionIndex          | false    | ''      | Preselected position in the unshuffled subscription pool | '0'                                                                     |
+##   | subscriptionKey            | false    | ''      | SHA-256 of the preselected canonical subscription ID   |                                                                          |
 ##   | managementGroupId          | false    | ''      | The managementGroupId to deploy to                    | '1a97b80a-4dda-4f50-ab53-349e29344654'                                     |
 ##   | customTokens               | false    | ''      | Additional token pairs in json format.                | '{"tokenName":"tokenValue"}'                                               |
 ##   | removeDeployment           | false    | 'true'  | Set "true" to set module up for removal               | 'true'                                                                     |
@@ -36,7 +38,8 @@ description: >-
   retries stay in the validated region. Cleanup retains all attempt names and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
   Request timeouts and unknown submission outcomes fail without resubmission while
-  preserving attempted deployment names for cleanup.
+  preserving attempted deployment names for cleanup. A preselected subscription is
+  verified before login and reused through cleanup without reshuffling the pool.
 
 inputs:
   modulePath:
@@ -49,11 +52,17 @@ inputs:
     description: "The location to store the deployment metadata"
     required: true
   subscriptionSelectionSeed:
-    description: "Shared random seed for shuffling TEST_SUBSCRIPTION_IDS across the test matrix"
-    required: true
+    description: "Legacy shared shuffle seed, required only when subscriptionIndex and subscriptionKey are not provided"
+    required: false
   subscriptionJobIndex:
     description: "Matrix job index used to assign a subscription from the shuffled pool"
     default: "0"
+    required: false
+  subscriptionIndex:
+    description: "Preselected index in the original, unshuffled subscription pool"
+    required: false
+  subscriptionKey:
+    description: "SHA-256 digest of the preselected canonical subscription ID; a changed pool fails before login"
     required: false
   managementGroupId:
     description: "The management group ID to deploy to"
@@ -124,6 +133,8 @@ runs:
       env:
         SUBSCRIPTION_SELECTION_SEED: ${{ inputs.subscriptionSelectionSeed }}
         SUBSCRIPTION_JOB_INDEX: ${{ inputs.subscriptionJobIndex }}
+        PRESELECTED_SUBSCRIPTION_INDEX: ${{ inputs.subscriptionIndex }}
+        PRESELECTED_SUBSCRIPTION_KEY: ${{ inputs.subscriptionKey }}
         MANAGEMENT_GROUP_ID: ${{ inputs.managementGroupId }}
       run: |
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
@@ -135,14 +146,28 @@ runs:
         $functionInput = @{
           TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
           FallbackSubscriptionId = $env:VALIDATE_SUBSCRIPTION_ID
-          RandomSeed             = [int]::Parse($env:SUBSCRIPTION_SELECTION_SEED)
         }
-        $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
-        $jobIndex = [int]::Parse($env:SUBSCRIPTION_JOB_INDEX)
-        if ($jobIndex -lt 0) {
-          throw 'The subscription job index must not be negative.'
+        if (-not [string]::IsNullOrEmpty($env:PRESELECTED_SUBSCRIPTION_INDEX) -or
+            -not [string]::IsNullOrEmpty($env:PRESELECTED_SUBSCRIPTION_KEY)) {
+          $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
+          $subscriptionIndex = -1
+          if (-not [int]::TryParse($env:PRESELECTED_SUBSCRIPTION_INDEX, [ref] $subscriptionIndex) -or
+              $subscriptionIndex -lt 0 -or $subscriptionIndex -ge $subscriptions.Count) {
+            throw 'The preselected subscription index is invalid for the configured pool.'
+          }
+          $subscription = $subscriptions[$subscriptionIndex]
+          if ($subscription.key -cne $env:PRESELECTED_SUBSCRIPTION_KEY) {
+            throw 'The configured subscription pool no longer matches the preselected subscription identity.'
+          }
+        } else {
+          $functionInput.RandomSeed = [int]::Parse($env:SUBSCRIPTION_SELECTION_SEED)
+          $subscriptions = @(Get-TestSubscriptionList @functionInput -Verbose)
+          $jobIndex = [int]::Parse($env:SUBSCRIPTION_JOB_INDEX)
+          if ($jobIndex -lt 0) {
+            throw 'The subscription job index must not be negative.'
+          }
+          $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
         }
-        $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
 
         Write-Output ("subscriptionId={0}" -f $subscription.id) >> $env:GITHUB_OUTPUT
         Write-Verbose ("Using test subscription [{0}] from a pool of [{1}]." -f $subscription.name, $subscriptions.Count) -Verbose

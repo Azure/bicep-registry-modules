@@ -18,6 +18,8 @@ Describe 'Generic module workflow' {
         $staticWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $staticWorkflowPath -Raw)
         $publishWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $publishWorkflowPath -Raw)
         $publishOnlyWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $publishOnlyWorkflowPath -Raw)
+        $legacyWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.yml') -Raw)
+        $deploymentAction = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw)
         $toggleWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $toggleWorkflowPath -Raw)
     }
 
@@ -26,12 +28,76 @@ Describe 'Generic module workflow' {
         $workflow.ContainsKey('concurrency') | Should -BeFalse
     }
 
-    It 'queues generic module jobs without sharing legacy concurrency groups' {
+    It 'does not hold deployment or publishing locks around reusable workflows and static checks' {
         foreach ($jobName in @('call_module_preview', 'call_module_fork_static', 'call_module_publish', 'call_module_publish_only')) {
-            $workflow.jobs[$jobName].concurrency.group | Should -Be 'generic-module-${{ matrix.modulePath }}'
-            $workflow.jobs[$jobName].concurrency.queue | Should -Be 'max'
-            $workflow.jobs[$jobName].strategy.'max-parallel' | Should -Be 1
+            $workflow.jobs[$jobName].ContainsKey('concurrency') | Should -BeFalse
+            $workflow.jobs[$jobName].strategy.ContainsKey('max-parallel') | Should -BeFalse
+            $workflow.jobs[$jobName].strategy.'fail-fast' | Should -BeFalse
         }
+        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
+            $validationWorkflow.ContainsKey('concurrency') | Should -BeFalse
+            foreach ($jobName in @('job_module_static_validation', 'job_psrule_must', 'job_psrule_opt', 'job_initialize_subscription_selection')) {
+                $validationWorkflow.jobs[$jobName].ContainsKey('concurrency') | Should -BeFalse
+                @($validationWorkflow.jobs[$jobName].needs) | Should -Not -Contain 'job_module_deploy_validation'
+            }
+        }
+        $staticWorkflow.jobs.job_module_static_validation.ContainsKey('concurrency') | Should -BeFalse
+    }
+
+    It 'holds each selected target lock over the complete deployment and cleanup job without cancellation' {
+        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
+            $deployment = $validationWorkflow.jobs.job_module_deploy_validation
+            $deployment.name | Should -Be 'Deploy [${{ matrix.testCases.name }}] on [${{ matrix.testCases.subscriptionName }}]'
+            $deployment.concurrency.group | Should -Be '${{ matrix.testCases.concurrencyGroup }}'
+            $deployment.concurrency.queue | Should -Be 'max'
+            $deployment.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
+            $deployment.strategy.'fail-fast' | Should -BeFalse
+            @($deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }).Count | Should -Be 1
+        }
+        $cleanup = $deploymentAction.runs.steps | Where-Object { $_.name -eq 'Remove deployed resources' }
+        $cleanup.if | Should -Be '${{ (success() || failure()) && inputs.removeDeployment == ''true'' && steps.deploy_step.outputs.deploymentNames != '''' && env.skip_deployment_ci == ''false'' }}'
+        $cleanup.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))
+        [array]::IndexOf($deploymentAction.runs.steps, $cleanup) | Should -BeGreaterThan (
+            [array]::IndexOf($deploymentAction.runs.steps, ($deploymentAction.runs.steps | Where-Object { $_.id -eq 'deploy_step' }))
+        )
+        @($deploymentAction.runs.steps | Where-Object { $_.ContainsKey('concurrency') }).Count | Should -Be 0
+    }
+
+    It 'retains one separate global publication lock across legacy, preview, manual and publish-only entry points' {
+        foreach ($publishingJob in @(
+                $legacyWorkflow.jobs.job_publish_module
+                $previewWorkflow.jobs.job_preview_module
+                $publishWorkflow.jobs.job_publish_module
+                $publishOnlyWorkflow.jobs.job_publish_module
+            )) {
+            $publishingJob.concurrency.group | Should -Be 'avm-publish-${{ inputs.modulePath }}'
+            $publishingJob.concurrency.queue | Should -Be 'max'
+            $publishingJob.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
+            $publishingJob.concurrency.group | Should -Not -Match 'github\.|subscription|avm-deploy'
+        }
+        foreach ($publishingWorkflow in @($publishWorkflow, $publishOnlyWorkflow)) {
+            $publishingWorkflow.jobs.job_publish_approval.ContainsKey('concurrency') | Should -BeFalse
+            $publishingWorkflow.jobs.job_publish_module.needs | Should -Contain 'job_publish_approval'
+        }
+    }
+
+    It 'pins every direct deployment composite caller before the deployment job acquires its lock' {
+        $callerCount = 0
+        foreach ($file in (Get-ChildItem -Path (Join-Path $repoRootPath '.github' 'workflows') -Filter '*.yml' -File)) {
+            $caller = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $file.FullName -Raw)
+            foreach ($job in $caller.jobs.Values) {
+                foreach ($step in @($job.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' })) {
+                    $callerCount++
+                    $job.needs | Should -Contain 'job_initialize_subscription_selection'
+                    $job.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
+                    $job.concurrency.group | Should -Be '${{ matrix.testCases.concurrencyGroup }}'
+                    $step.with.subscriptionIndex | Should -Be '${{ matrix.testCases.subscriptionIndex }}'
+                    $step.with.subscriptionKey | Should -Be '${{ matrix.testCases.subscriptionKey }}'
+                    $step.with.ContainsKey('subscriptionSelectionSeed') | Should -BeFalse
+                }
+            }
+        }
+        $callerCount | Should -BeGreaterOrEqual 3
     }
 
     It 'keeps automatic preview permissions read-only' {
