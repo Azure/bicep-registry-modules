@@ -23,6 +23,95 @@ BeforeAll {
     }
 }
 
+Describe 'Template validation error messages' {
+    It 'Reports nested Azure codes, messages and targets without unrelated response fields' {
+        $response = [pscustomobject]@{
+            Error = [pscustomobject]@{
+                Code           = 'InvalidTemplateDeployment'
+                Message        = 'Deployment validation failed.'
+                AdditionalInfo = @{ requestBody = 'private-request-body' }
+                Details        = @(
+                    @{
+                        code       = 'RequestDisallowedByPolicy'
+                        message    = 'The resource is blocked by a policy.'
+                        target     = 'managedInstance'
+                        innererror = @{ code = 'PolicyViolation'; message = 'Use an approved location.' }
+                    }
+                )
+            }
+        }
+
+        $message = Get-TemplateValidationErrorMessage -ValidationErrors $response
+
+        $message | Should -Match 'Code: InvalidTemplateDeployment; Message: Deployment validation failed\.'
+        $message | Should -Match 'Code: RequestDisallowedByPolicy; Message: The resource is blocked by a policy\.; Target: managedInstance'
+        $message | Should -Match 'Code: PolicyViolation; Message: Use an approved location\.'
+        $message | Should -Not -Match 'private-request-body|AdditionalInfo|requestBody'
+    }
+
+    It 'Redacts supplied values including secure strings, objects and escaped values' {
+        $secret = 'private\value"+&'
+        $jsonSecret = ConvertTo-Json -InputObject $secret -Compress
+        $escapedSecret = $jsonSecret.Substring(1, $jsonSecret.Length - 2)
+        $encodedSecret = [System.Uri]::EscapeDataString($secret)
+        $response = @{
+            Code    = 'InvalidParameter'
+            Message = "Rejected $secret, $escapedSecret, $encodedSecret, object-private-value and fixed-base-time."
+            Target  = 'object-private-value'
+        }
+        $parameters = @{
+            password = ConvertTo-SecureString -String $secret -AsPlainText -Force
+            config   = @{ keys = @([pscustomobject]@{ token = 'object-private-value' }) }
+            baseTime = 'fixed-base-time'
+            empty    = ''
+        }
+
+        $message = Get-TemplateValidationErrorMessage -ValidationErrors $response -AdditionalParameters $parameters
+
+        $message | Should -Match 'Code: InvalidParameter'
+        $message | Should -Match 'Message: Rejected \[REDACTED\], \[REDACTED\], \[REDACTED\], \[REDACTED\] and \[REDACTED\]\.'
+        $message | Should -Match 'Target: \[REDACTED\]'
+        $message | Should -Not -Match 'private|fixed-base-time'
+        $response.Message | Should -Match ([regex]::Escape($secret))
+    }
+
+    It 'Redacts values read from a JSON parameter file' {
+        $parameterFile = Join-Path $TestDrive 'parameters.json'
+        '{"parameters":{"password":{"value":"file-private-value"},"config":{"value":{"token":"nested-private-value"}}}}' |
+            Set-Content -LiteralPath $parameterFile
+
+        $message = Get-TemplateValidationErrorMessage -ParameterFilePath $parameterFile -ValidationErrors @{
+            Code    = 'InvalidParameter'
+            Message = 'Rejected file-private-value and nested-private-value.'
+        }
+
+        $message | Should -Match 'Code: InvalidParameter; Message: Rejected \[REDACTED\] and \[REDACTED\]\.'
+        $message | Should -Not -Match 'private-value'
+    }
+
+    It 'Reports codes without messages when parameter-file values cannot be inspected: <name>' -ForEach @(
+        @{ name = 'vault reference'; file = 'reference.json'; content = '{"parameters":{"password":{"reference":{"keyVault":{"id":"vault"},"secretName":"password"}}}}' }
+        @{ name = 'Bicep parameters'; file = 'main.bicepparam'; content = "using './main.bicep'" }
+        @{ name = 'malformed JSON'; file = 'invalid.json'; content = '{"parameters":' }
+        @{ name = 'missing file'; file = 'missing.json'; content = $null }
+    ) {
+        $parameterFile = Join-Path $TestDrive $file
+        if ($null -ne $content) { Set-Content -LiteralPath $parameterFile -Value $content }
+
+        $message = Get-TemplateValidationErrorMessage -ParameterFilePath $parameterFile -ValidationErrors @{
+            Code    = 'InvalidTemplateDeployment'
+            Message = 'Unknown-private-value'
+            Target  = 'Unknown-private-value'
+            Details = @(@{ Code = 'InvalidParameter'; Message = 'Unknown-private-value' })
+        }
+
+        $message | Should -Match 'Code: InvalidTemplateDeployment'
+        $message | Should -Match 'Code: InvalidParameter'
+        $message | Should -Match 'parameter-file values cannot be safely redacted'
+        $message | Should -Not -Match 'Unknown-private-value'
+    }
+}
+
 Describe 'Regional validation error classification' {
     It 'Classifies <name> conservatively' -ForEach @(
         @{ name = 'location ineligible'; code = 'RequestDisallowedByAzure'; message = 'See https://aka.ms/locationineligible'; expected = $true }
@@ -273,6 +362,47 @@ Describe 'Bounded template validation with actual runtime helpers' {
 
         @($script:requests) | Should -Be @('centralus', 'eastus', 'koreacentral')
         [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($original))
+    }
+
+    It 'Displays nested Azure error details on a terminal failure and preserves the response' {
+        $script:failure = @{
+            Code    = 'InvalidTemplateDeployment'
+            Message = 'Deployment validation failed for fixed-base-time.'
+            Details = @(@{ Code = 'QuotaExceeded'; Message = 'Requested 16 vCores, available 8.'; Target = 'managedInstance' })
+        }
+        Mock Test-AzSubscriptionDeployment { $script:failure }
+        $caughtError = $null
+
+        try {
+            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab'
+        } catch {
+            $caughtError = $_
+        }
+
+        $caughtError | Should -Not -BeNullOrEmpty
+        $caughtError.FullyQualifiedErrorId | Should -Match '^TemplateValidationFailed'
+        [object]::ReferenceEquals($caughtError.TargetObject, $script:failure) | Should -BeTrue
+        $caughtError.ErrorDetails.Message | Should -Match 'Code: QuotaExceeded; Message: Requested 16 vCores, available 8\.; Target: managedInstance'
+        $caughtError.ErrorDetails.Message | Should -Not -Match 'fixed-base-time'
+        ($caughtError | Out-String) | Should -Match 'QuotaExceeded'
+        Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
+    }
+
+    It 'Retains readable Azure details when regional retries are exhausted' {
+        Mock Test-AzSubscriptionDeployment { $script:regionalFailure }
+        $caughtError = $null
+
+        try {
+            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab'
+        } catch {
+            $caughtError = $_
+        }
+
+        $caughtError | Should -Not -BeNullOrEmpty
+        $caughtError.ErrorDetails.Message | Should -Match 'Code: InvalidTemplateDeployment'
+        $caughtError.ErrorDetails.Message | Should -Match 'Code: RequestDisallowedByAzure'
+        Test-RegionalValidationError -ErrorRecord $caughtError | Should -BeTrue
+        Should -Invoke Test-AzSubscriptionDeployment -Times 3 -Exactly
     }
 
     It 'Refreshes region tokens in locally referenced Bicep files from pristine inputs' {
