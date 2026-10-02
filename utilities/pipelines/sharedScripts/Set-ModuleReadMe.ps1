@@ -1124,7 +1124,7 @@ function Build-OrderedJSONObject {
         } | ConvertTo-Json -Depth 99)
 
     # [3/8] If we have at least one required and one other parameter we want to add a comment
-    if ($RequiredParametersList.Count -ge 1 -and $orderedJSONParameters.Keys.Count -ge 2) {
+    if ($RequiredParametersList.Count -ge 1 -and $orderedJSONParameters.PSBase.Keys.Count -ge 2) {
 
         $jsonExampleArray = $jsonExample -split '\n'
 
