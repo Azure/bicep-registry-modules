@@ -6,6 +6,7 @@ Resolve the test subscription pool and optionally shuffle it.
 TEST_SUBSCRIPTION_IDS uses a JSON array of { id, name } objects. An unset variable
 retains the legacy validation subscription as a singleton pool. A shared random
 seed reproduces the same shuffled order across deployment matrix jobs.
+Records retain their original pool index and a SHA-256 digest of the canonical subscription ID.
 #>
 function Get-TestSubscriptionList {
 
@@ -40,7 +41,8 @@ function Get-TestSubscriptionList {
     }
 
     $normalizedSubscriptions = @(
-        foreach ($subscription in $subscriptions) {
+        for ($index = 0; $index -lt $subscriptions.Count; $index++) {
+            $subscription = $subscriptions[$index]
             $subscriptionId = [guid]::Empty
             if ($subscription -isnot [pscustomobject] -or
                 $subscription.id -isnot [string] -or
@@ -54,8 +56,12 @@ function Get-TestSubscriptionList {
             }
 
             [pscustomobject]@{
-                id   = $subscription.id
-                name = $subscription.name
+                id    = $subscription.id
+                name  = $subscription.name
+                index = $index
+                key   = [Convert]::ToHexString([System.Security.Cryptography.SHA256]::HashData(
+                        [System.Text.Encoding]::UTF8.GetBytes($subscriptionId.ToString('D'))
+                    )).ToLowerInvariant()
             }
         }
     )
