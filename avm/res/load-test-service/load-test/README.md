@@ -55,7 +55,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   params: {
     // Required parameters
-    name: 'ltmin001'
+    name: '<name>'
     // Non-required parameters
     location: '<location>'
   }
@@ -76,7 +76,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ltmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "location": {
@@ -97,7 +97,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 using 'br/public:avm/res/load-test-service/load-test:<version>'
 
 // Required parameters
-param name = 'ltmin001'
+param name = '<name>'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -120,7 +120,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   params: {
     // Required parameters
-    name: 'ltmax001'
+    name: '<name>'
     // Non-required parameters
     loadTestDescription: 'This is a test load test to validate the module.'
     location: '<location>'
@@ -132,7 +132,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'd37a15bc-8634-4f4f-a736-700c1b955cd7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -172,7 +172,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ltmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "loadTestDescription": {
@@ -194,7 +194,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "d37a15bc-8634-4f4f-a736-700c1b955cd7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -234,7 +234,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 using 'br/public:avm/res/load-test-service/load-test:<version>'
 
 // Required parameters
-param name = 'ltmax001'
+param name = '<name>'
 // Non-required parameters
 param loadTestDescription = 'This is a test load test to validate the module.'
 param location = '<location>'
@@ -246,7 +246,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'd37a15bc-8634-4f4f-a736-700c1b955cd7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -288,7 +288,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   params: {
     // Required parameters
-    name: 'ltucmk001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -314,7 +314,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ltucmk001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -342,7 +342,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 using 'br/public:avm/res/load-test-service/load-test:<version>'
 
 // Required parameters
-param name = 'ltucmk001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -370,7 +370,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   params: {
     // Required parameters
-    name: 'ltwaf001'
+    name: '<name>'
     // Non-required parameters
     enableTelemetry: '<enableTelemetry>'
     loadTestDescription: 'This is a sample load test.'
@@ -398,7 +398,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ltwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "enableTelemetry": {
@@ -432,7 +432,7 @@ module loadTest 'br/public:avm/res/load-test-service/load-test:<version>' = {
 using 'br/public:avm/res/load-test-service/load-test:<version>'
 
 // Required parameters
-param name = 'ltwaf001'
+param name = '<name>'
 // Non-required parameters
 param enableTelemetry = '<enableTelemetry>'
 param loadTestDescription = 'This is a sample load test.'

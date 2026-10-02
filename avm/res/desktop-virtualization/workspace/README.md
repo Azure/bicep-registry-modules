@@ -217,7 +217,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: 'e31e3fcd-816f-49b9-a741-feff792a56d7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -379,7 +379,7 @@ module workspace 'br/public:avm/res/desktop-virtualization/workspace:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "e31e3fcd-816f-49b9-a741-feff792a56d7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -525,7 +525,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: 'e31e3fcd-816f-49b9-a741-feff792a56d7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

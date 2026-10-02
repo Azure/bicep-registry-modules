@@ -176,7 +176,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     }
     roleAssignments: [
       {
-        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Network Contributor'
@@ -257,7 +257,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     "roleAssignments": {
       "value": [
         {
-          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Network Contributor"
@@ -328,7 +328,7 @@ param policySettings = {
 }
 param roleAssignments = [
   {
-    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Network Contributor'

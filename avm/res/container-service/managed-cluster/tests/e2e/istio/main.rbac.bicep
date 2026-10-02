@@ -10,7 +10,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
 
 resource secretPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: keyVault
-  name: guid('msi-${principalId}-KeyVault-Secret-User-RoleAssignment')
+  name: guid(keyVault.id, 'msi-${principalId}-KeyVault-Secret-User-RoleAssignment')
   properties: {
     principalId: principalId
     roleDefinitionId: subscriptionResourceId(

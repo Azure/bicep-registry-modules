@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using small parameter set'
@@ -35,7 +37,11 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       computeGalleryName: 'gal${namePrefix}${serviceShort}'
       computeGalleryImageDefinitionName: computeGalleryImageDefinitionName
-      assetsStorageAccountName: 'st${namePrefix}${serviceShort}'
+      assetsStorageAccountName: uniqueResourceName(
+        'st${namePrefix}${serviceShort}',
+        subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+        24
+      )
       computeGalleryImageDefinitions: [
         {
           hyperVGeneration: 'V2'

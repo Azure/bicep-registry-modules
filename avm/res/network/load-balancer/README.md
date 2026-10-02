@@ -1729,7 +1729,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '3a5b2a4a-3584-4d6b-9cf0-ceb1e4f88a5d'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1898,7 +1898,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "3a5b2a4a-3584-4d6b-9cf0-ceb1e4f88a5d",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -2049,7 +2049,7 @@ param probes = [
 ]
 param roleAssignments = [
   {
-    name: '3a5b2a4a-3584-4d6b-9cf0-ceb1e4f88a5d'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

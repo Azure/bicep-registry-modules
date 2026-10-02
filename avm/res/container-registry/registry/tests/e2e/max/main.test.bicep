@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -70,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50)
       location: resourceLocation
       acrAdminUserEnabled: false
       acrSku: 'Premium'
@@ -140,13 +142,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+          name: guid(resourceGroup.id, '37c5bf75-c804-4607-94a9-e7485164f9f7')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -182,7 +184,7 @@ module testDeployment '../../../main.bicep' = [
             subscription().subscriptionId,
             resourceGroupName,
             'Microsoft.ContainerRegistry/registries/scopeMaps',
-            '${namePrefix}${serviceShort}001',
+            uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 50),
             '${namePrefix}${serviceShort}ScopeMap'
           )
           status: 'enabled'

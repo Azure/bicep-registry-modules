@@ -167,7 +167,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     }
     roleAssignments: [
       {
-        name: '30eaf006-ee2d-4a95-921c-87dfdb4c2061'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -267,7 +267,7 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     "roleAssignments": {
       "value": [
         {
-          "name": "30eaf006-ee2d-4a95-921c-87dfdb4c2061",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -351,7 +351,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '30eaf006-ee2d-4a95-921c-87dfdb4c2061'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

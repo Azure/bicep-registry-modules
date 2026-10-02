@@ -59,6 +59,11 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
 
+      - name: "Install offline naming validation dependency"
+        shell: pwsh
+        run: |
+          Install-Module -Name PSRule.Rules.Azure -RequiredVersion '1.47.0' -Scope CurrentUser -Force
+
       - name: Run CI tests
         id: pester_run_step
         uses: azure/powershell@53dd145408794f7e80f97cfcca04155c85234709 # v2.0.0

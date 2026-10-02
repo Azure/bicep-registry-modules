@@ -412,7 +412,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -793,7 +793,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "a8697438-70e8-4f40-baa4-6e90a57fe1dc",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1158,7 +1158,7 @@ param ptr = [
 ]
 param roleAssignments = [
   {
-    name: 'a8697438-70e8-4f40-baa4-6e90a57fe1dc'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

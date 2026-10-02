@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Web App with Azure Storage Accounts Configuration'
@@ -36,8 +38,8 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     serverFarmName: 'dep-${namePrefix}-sf-${serviceShort}'
-    primaryStorageAccountName: 'dep${namePrefix}st${serviceShort}01'
-    secondaryStorageAccountName: 'dep${namePrefix}st${serviceShort}02'
+    primaryStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}01', resourceGroup.id, 24)
+    secondaryStorageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}02', resourceGroup.id, 24)
   }
 }
 
@@ -51,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 60)
       location: enforcedLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId

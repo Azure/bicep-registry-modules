@@ -181,7 +181,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
     }
     roleAssignments: [
       {
-        name: '026b830f-441f-469a-8cf3-c3ea9f5bcfe1'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -280,7 +280,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "026b830f-441f-469a-8cf3-c3ea9f5bcfe1",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -369,7 +369,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '026b830f-441f-469a-8cf3-c3ea9f5bcfe1'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

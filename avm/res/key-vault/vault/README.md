@@ -62,7 +62,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   params: {
     // Required parameters
-    name: 'kvvmin002'
+    name: '<name>'
     // Non-required parameters
     enablePurgeProtection: false
   }
@@ -83,7 +83,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "kvvmin002"
+      "value": "<name>"
     },
     // Non-required parameters
     "enablePurgeProtection": {
@@ -104,7 +104,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 using 'br/public:avm/res/key-vault/vault:<version>'
 
 // Required parameters
-param name = 'kvvmin002'
+param name = '<name>'
 // Non-required parameters
 param enablePurgeProtection = false
 ```
@@ -127,7 +127,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   params: {
     // Required parameters
-    name: 'kvvec002'
+    name: '<name>'
     // Non-required parameters
     enablePurgeProtection: false
     enableRbacAuthorization: true
@@ -180,8 +180,9 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "kvvec002"
+      "value": "<name>"
     },
     "enablePurgeProtection": {
       "value": false
@@ -239,7 +240,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 using 'br/public:avm/res/key-vault/vault:<version>'
 
 // Required parameters
-param name = 'kvvec002'
+param name = '<name>'
 // Non-required parameters
 param enablePurgeProtection = false
 param enableRbacAuthorization = true
@@ -296,7 +297,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   params: {
     // Required parameters
-    name: 'kvvmax002'
+    name: '<name>'
     // Non-required parameters
     accessPolicies: [
       {
@@ -480,7 +481,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     ]
     roleAssignments: [
       {
-        name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -547,8 +548,9 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "kvvmax002"
+      "value": "<name>"
     },
     "accessPolicies": {
       "value": [
@@ -751,7 +753,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -824,7 +826,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 using 'br/public:avm/res/key-vault/vault:<version>'
 
 // Required parameters
-param name = 'kvvmax002'
+param name = '<name>'
 // Non-required parameters
 param accessPolicies = [
   {
@@ -1008,7 +1010,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: 'b50cc72e-a2f2-4c4c-a3ad-86a43feb6ab8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1079,7 +1081,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   params: {
     // Required parameters
-    name: 'kvvrsa002'
+    name: '<name>'
     // Non-required parameters
     enablePurgeProtection: false
     enableRbacAuthorization: true
@@ -1132,8 +1134,9 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "kvvrsa002"
+      "value": "<name>"
     },
     "enablePurgeProtection": {
       "value": false
@@ -1191,7 +1194,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 using 'br/public:avm/res/key-vault/vault:<version>'
 
 // Required parameters
-param name = 'kvvrsa002'
+param name = '<name>'
 // Non-required parameters
 param enablePurgeProtection = false
 param enableRbacAuthorization = true
@@ -1248,7 +1251,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   params: {
     // Required parameters
-    name: 'kvvwaf002'
+    name: '<name>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -1345,8 +1348,9 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "kvvwaf002"
+      "value": "<name>"
     },
     "diagnosticSettings": {
       "value": [
@@ -1460,7 +1464,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 using 'br/public:avm/res/key-vault/vault:<version>'
 
 // Required parameters
-param name = 'kvvwaf002'
+param name = '<name>'
 // Non-required parameters
 param diagnosticSettings = [
   {

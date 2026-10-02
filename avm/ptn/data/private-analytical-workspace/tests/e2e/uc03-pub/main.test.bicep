@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Use Case 3 - allowed IP address'
@@ -39,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-1'
+    keyVaultName: uniqueResourceName('dep-${namePrefix}-kv-${serviceShort}-1', resourceGroup.id, 24)
   }
 }
 

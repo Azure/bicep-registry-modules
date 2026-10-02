@@ -174,7 +174,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     }
     roleAssignments: [
       {
-        name: 'fec82bb5-8552-4c4b-a3f6-65bdae54d7f4'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -264,7 +264,7 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     "roleAssignments": {
       "value": [
         {
-          "name": "fec82bb5-8552-4c4b-a3f6-65bdae54d7f4",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -338,7 +338,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'fec82bb5-8552-4c4b-a3f6-65bdae54d7f4'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

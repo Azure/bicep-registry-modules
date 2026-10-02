@@ -190,7 +190,7 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
     }
     roleAssignments: [
       {
-        name: 'bb049c96-2571-4a25-b760-444ab25d86ed'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -314,7 +314,7 @@ module frontDoorWebApplicationFirewallPolicy 'br/public:avm/res/network/front-do
     "roleAssignments": {
       "value": [
         {
-          "name": "bb049c96-2571-4a25-b760-444ab25d86ed",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -428,7 +428,7 @@ param policySettings = {
 }
 param roleAssignments = [
   {
-    name: 'bb049c96-2571-4a25-b760-444ab25d86ed'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

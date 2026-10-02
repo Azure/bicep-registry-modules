@@ -138,7 +138,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -217,7 +217,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "fc3ee4d9-d0c0-42c2-962f-082cf8d78882",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -288,7 +288,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

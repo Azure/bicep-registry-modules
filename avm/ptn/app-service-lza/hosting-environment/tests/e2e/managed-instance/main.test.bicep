@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'Managed Instance'
 metadata description = 'This instance deploys a Managed Instance (Custom Mode) App Service Plan with Application Gateway and a jumpbox VM.'
 
@@ -50,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}${serviceShort}', 10)
+      workloadName: uniqueResourceName('${namePrefix}${serviceShort}', resourceGroup.id, 10)
       logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       tags: {
         environment: 'test'

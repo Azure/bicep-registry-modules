@@ -241,7 +241,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     osDiskSizeGB: 127
     roleAssignments: [
       {
-        name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -400,7 +400,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     "roleAssignments": {
       "value": [
         {
-          "name": "bb257a92-dc06-4831-9b74-ee5442d8ce0f",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -541,7 +541,7 @@ param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
 param roleAssignments = [
   {
-    name: 'bb257a92-dc06-4831-9b74-ee5442d8ce0f'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

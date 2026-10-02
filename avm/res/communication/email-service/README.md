@@ -131,7 +131,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
         name: 'AzureManagedDomain'
         roleAssignments: [
           {
-            name: '1a441bec-9c57-49d1-9a83-b7fd62901413'
+            name: '<name>'
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Owner'
@@ -172,7 +172,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
     }
     roleAssignments: [
       {
-        name: 'bdfa5270-8a55-466d-90d0-b5e96a90fadc'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -234,7 +234,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
           "name": "AzureManagedDomain",
           "roleAssignments": [
             {
-              "name": "1a441bec-9c57-49d1-9a83-b7fd62901413",
+              "name": "<name>",
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
@@ -281,7 +281,7 @@ module emailService 'br/public:avm/res/communication/email-service:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "bdfa5270-8a55-466d-90d0-b5e96a90fadc",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -339,7 +339,7 @@ param domains = [
     name: 'AzureManagedDomain'
     roleAssignments: [
       {
-        name: '1a441bec-9c57-49d1-9a83-b7fd62901413'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -380,7 +380,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'bdfa5270-8a55-466d-90d0-b5e96a90fadc'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

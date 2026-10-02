@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 metadata name = 'Front Door'
 metadata description = 'This instance deploys the module with Azure Front Door as the public ingress and a Linux web app.'
 
@@ -45,7 +47,10 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: take('${namePrefix}${serviceShort}', 10)
+      workloadName: uniqueResourceName('${namePrefix}${serviceShort}', resourceGroup.id, 10)
+      frontDoorConfig: {
+        endpointName: uniqueResourceName('${namePrefix}-${serviceShort}-endpoint', resourceGroup.id, 46)
+      }
       logAnalyticsWorkspaceResourceId: dependencies.outputs.logAnalyticsWorkspaceResourceId
       tags: {
         environment: 'test'

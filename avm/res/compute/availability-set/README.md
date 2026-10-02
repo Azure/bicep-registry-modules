@@ -129,7 +129,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
       {
-        name: 'd9d13442-232d-4861-9ab9-bad5e90c4f71'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -188,7 +188,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     "roleAssignments": {
       "value": [
         {
-          "name": "d9d13442-232d-4861-9ab9-bad5e90c4f71",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -241,7 +241,7 @@ param lock = {
 param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
 param roleAssignments = [
   {
-    name: 'd9d13442-232d-4861-9ab9-bad5e90c4f71'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

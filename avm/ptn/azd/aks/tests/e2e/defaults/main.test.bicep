@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -37,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     location: enforcedLocation
-    appName: 'dep-${namePrefix}-app-${serviceShort}'
+    appName: uniqueResourceName('dep-${namePrefix}-app-${serviceShort}', resourceGroup.id, 60)
     appServicePlanName: 'dep-${namePrefix}-apps-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
@@ -54,8 +56,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'mc${uniqueString(deployment().name)}-${serviceShort}'
-      containerRegistryName: '${uniqueString(deployment().name, enforcedLocation)}testcontainerregistry${serviceShort}'
-      keyVaultName: 'kv${uniqueString(deployment().name)}-${serviceShort}'
+      containerRegistryName: uniqueResourceName('cr${namePrefix}${serviceShort}', resourceGroup.id, 50)
+      keyVaultName: uniqueResourceName('kv${namePrefix}${serviceShort}', resourceGroup.id, 24)
       principalId: nestedDependencies.outputs.identityPrincipalId
       monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsResourceId
       principalType: 'ServicePrincipal'

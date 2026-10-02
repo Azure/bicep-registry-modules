@@ -94,7 +94,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawmin002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -119,7 +119,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawmin002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -144,7 +144,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawmin002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -171,7 +171,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawmax002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -215,7 +215,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawmax002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -265,7 +265,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawmax002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -311,7 +311,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawminpriv002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -341,7 +341,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawminpriv002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -375,7 +375,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawminpriv002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -407,7 +407,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawminpu002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -442,7 +442,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawminpu002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -481,7 +481,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawminpu002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -518,7 +518,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawu1pr002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -548,7 +548,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawu1pr002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -582,7 +582,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawu1pr002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -614,7 +614,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawu1pu002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -649,7 +649,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawu1pu002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -688,7 +688,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawu1pu002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {
@@ -725,7 +725,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawu2pr002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       databricks: {
@@ -763,7 +763,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawu2pr002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -807,7 +807,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawu2pr002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
@@ -847,7 +847,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawu2pu002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       databricks: {
@@ -890,7 +890,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawu2pu002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -939,7 +939,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawu2pu002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   databricks: {
@@ -1254,7 +1254,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-workspace:<version>' = {
   params: {
     // Required parameters
-    name: 'dpawwaf002'
+    name: '<name>'
     // Non-required parameters
     advancedOptions: {
       keyVault: {
@@ -1295,7 +1295,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dpawwaf002"
+      "value": "<name>"
     },
     // Non-required parameters
     "advancedOptions": {
@@ -1344,7 +1344,7 @@ module privateAnalyticalWorkspace 'br/public:avm/ptn/data/private-analytical-wor
 using 'br/public:avm/ptn/data/private-analytical-workspace:<version>'
 
 // Required parameters
-param name = 'dpawwaf002'
+param name = '<name>'
 // Non-required parameters
 param advancedOptions = {
   keyVault: {

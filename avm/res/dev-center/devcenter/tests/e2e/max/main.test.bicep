@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -89,12 +91,20 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
     deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
     virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
     imageTemplateResourceGroupName: ''
-    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
+    assetsStorageAccountName: uniqueResourceName(
+      'depst${namePrefix}${serviceShort}',
+      subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+      24
+    )
     assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
     storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
     waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
     imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
-    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
+    deploymentScriptStorageAccountName: uniqueResourceName(
+      'depst${namePrefix}${serviceShort}ds',
+      subscriptionResourceId('Microsoft.Resources/resourceGroups', resourceGroupName),
+      24
+    )
     computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
     computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
     imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
@@ -161,7 +171,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup1.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

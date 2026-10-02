@@ -1,0 +1,113 @@
+name: ".Platform - Check E2E Resource Names"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - "avm/**/*.bicep"
+      - "avm/**/*.json"
+      - "bicepconfig.json"
+      - "utilities/e2e-template-assets/**"
+      - "utilities/pipelines/staticValidation/*E2eResourceName*.ps1"
+      - "utilities/pipelines/staticValidation/global-resource-names.json"
+      - "utilities/pipelines/sharedScripts/Get-ModuleWorkflowMatrix.ps1"
+      - "utilities/pipelines/sharedScripts/Set-EnvironmentOnAgent.ps1"
+      - "utilities/pipelines/sharedScripts/helper/Build-ViaRPC.ps1"
+      - "utilities/tests/pipelines/E2eResourceNames.Tests.ps1"
+      - "utilities/tests/pipelines/UniqueResourceName.Tests.ps1"
+      - ".github/workflows/platform.on-pull-request-check-e2e-names.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-e2e-resource-names-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  job_check_names:
+    name: "Validate e2e resource names offline"
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: "Resolve affected e2e templates"
+        id: affected
+        shell: pwsh
+        env:
+          BASE_SHA: "${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA: "${{ github.event.pull_request.head.sha }}"
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleWorkflowMatrix.ps1')
+          $changedFiles = @()
+          if ($env:BASE_SHA -and $env:HEAD_SHA) {
+            $changedFiles = @(git diff --no-renames --name-only --diff-filter=ACMRTD "$($env:BASE_SHA)...$($env:HEAD_SHA)")
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to identify changed files.' }
+          }
+          $checkAll = -not $env:BASE_SHA -or @($changedFiles | Where-Object { $_ -match '^(utilities/|bicepconfig\.json$|\.github/workflows/platform\.on-pull-request-check-e2e-names\.yml$)' }).Count -gt 0
+          if ($checkAll) {
+            $testFiles = @(Get-ChildItem -LiteralPath (Join-Path $env:GITHUB_WORKSPACE 'avm') -Recurse -Filter 'main.test.bicep' -File | Where-Object { $_.FullName -match '[/\\]tests[/\\]e2e[/\\]' } | ForEach-Object FullName)
+          } else {
+            $matrix = Get-ModuleWorkflowMatrix -ChangedFilePath $changedFiles -RepoRoot $env:GITHUB_WORKSPACE
+            $testFiles = @($matrix.include | ForEach-Object {
+              $modulePath = $_.modulePath
+              $_.moduleTestFilePaths | ConvertFrom-Json | Where-Object { $_.path -match '^tests/e2e/' } | ForEach-Object {
+                Join-Path $env:GITHUB_WORKSPACE $modulePath $_.path
+              }
+            })
+          }
+          ConvertTo-Json -InputObject $testFiles | Set-Content -LiteralPath (Join-Path $env:RUNNER_TEMP 'e2e-name-test-files.json')
+          "count=$($testFiles.Count)" >> $env:GITHUB_OUTPUT
+          "E2e templates selected: $($testFiles.Count)" >> $env:GITHUB_STEP_SUMMARY
+
+      - name: "Install validation dependencies"
+        if: steps.affected.outputs.count != '0'
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+          Set-EnvironmentOnAgent -PSModules @(
+            @{ Name = 'Pester'; Version = '5.7.1' }
+            @{ Name = 'PSRule.Rules.Azure'; Version = '1.47.0' }
+          )
+
+      - name: "Test naming helper and validator"
+        if: steps.affected.outputs.count != '0'
+        shell: pwsh
+        run: |
+          Import-Module Pester -MinimumVersion 5.7.1
+          $testPaths = @(
+            (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'UniqueResourceName.Tests.ps1')
+            (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'tests' 'pipelines' 'E2eResourceNames.Tests.ps1')
+          )
+          $result = Invoke-Pester -Path $testPaths -PassThru -Output Detailed
+          if ($result.Result -ne 'Passed') { throw 'Naming helper or validator tests failed.' }
+
+      - name: "Check compiled templates without an Azure connection"
+        if: steps.affected.outputs.count != '0'
+        shell: pwsh
+        run: |
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'Invoke-E2eResourceNameValidation.ps1')
+          $testFiles = @(Get-Content -LiteralPath (Join-Path $env:RUNNER_TEMP 'e2e-name-test-files.json') -Raw | ConvertFrom-Json)
+          $reportPath = Join-Path $env:RUNNER_TEMP 'e2e-resource-names.json'
+          try {
+            Invoke-E2eResourceNameValidation -TestFilePath $testFiles -ReportPath $reportPath
+          } finally {
+            if (Test-Path -LiteralPath $reportPath) {
+              $results = @(Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json)
+              $failed = @($results | Where-Object { $_.Error -or $_.Violations.Count -gt 0 })
+              "Templates checked: $($results.Count); failed: $($failed.Count)." >> $env:GITHUB_STEP_SUMMARY
+              foreach ($failure in $failed) {
+                $path = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $failure.TestFilePath)
+                "- ${path}: $($failure.Error) $($failure.Violations.Name -join ', ')" >> $env:GITHUB_STEP_SUMMARY
+              }
+            }
+          }

@@ -107,7 +107,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       version: 'latest'
     }
     // Non-required parameters
-    assetsStorageAccountName: 'stapvmiaibmin'
+    assetsStorageAccountName: '<assetsStorageAccountName>'
     deploymentsToPerform: '<deploymentsToPerform>'
     location: '<location>'
     resourceGroupName: '<resourceGroupName>'
@@ -160,7 +160,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     // Non-required parameters
     "assetsStorageAccountName": {
-      "value": "stapvmiaibmin"
+      "value": "<assetsStorageAccountName>"
     },
     "deploymentsToPerform": {
       "value": "<deploymentsToPerform>"
@@ -209,7 +209,7 @@ param imageTemplateImageSource = {
   version: 'latest'
 }
 // Non-required parameters
-param assetsStorageAccountName = 'stapvmiaibmin'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
 param deploymentsToPerform = '<deploymentsToPerform>'
 param location = '<location>'
 param resourceGroupName = '<resourceGroupName>'
@@ -958,7 +958,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
       version: 'latest'
     }
     // Non-required parameters
-    assetsStorageAccountName: 'stapvmiaibob'
+    assetsStorageAccountName: '<assetsStorageAccountName>'
     deploymentsToPerform: 'Only base'
     imageManagedIdentityName: 'msi-it-apvmiaibob'
     location: '<location>'
@@ -1012,7 +1012,7 @@ module azureImageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-b
     },
     // Non-required parameters
     "assetsStorageAccountName": {
-      "value": "stapvmiaibob"
+      "value": "<assetsStorageAccountName>"
     },
     "deploymentsToPerform": {
       "value": "Only base"
@@ -1064,7 +1064,7 @@ param imageTemplateImageSource = {
   version: 'latest'
 }
 // Non-required parameters
-param assetsStorageAccountName = 'stapvmiaibob'
+param assetsStorageAccountName = '<assetsStorageAccountName>'
 param deploymentsToPerform = 'Only base'
 param imageManagedIdentityName = 'msi-it-apvmiaibob'
 param location = '<location>'

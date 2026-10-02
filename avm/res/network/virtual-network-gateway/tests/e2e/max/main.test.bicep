@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -30,6 +32,8 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
+
+var publicIpDomainNameLabel = uniqueResourceName('${namePrefix}-dm-${serviceShort}', resourceGroup.id, 60)
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
@@ -67,14 +71,14 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 58)
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
         clusterMode: 'activeActiveBgp'
-        secondPipName: '${namePrefix}${serviceShort}001-pip2'
+        secondPipName: uniqueResourceName('${namePrefix}${serviceShort}001-pip2', resourceGroup.id, 63)
         customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
         secondCustomBgpIpAddresses: ['169.254.22.4', '169.254.22.5']
       }
@@ -93,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       domainNameLabel: [
-        '${namePrefix}-dm-${serviceShort}'
+        publicIpDomainNameLabel
       ]
       domainNameLabelScope: 'TenantReuse'
       lock: {
@@ -107,13 +111,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
+          name: guid(resourceGroup.id, 'db30550e-70b7-4dbe-901e-e9363b69c05f')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

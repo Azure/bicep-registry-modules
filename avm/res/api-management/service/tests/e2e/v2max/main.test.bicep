@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying an APIM PremiumV2 SKU with a large parameter set'
@@ -44,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
     locationRegion2: enforcedLocationRegion2
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     publicIPNamePrefix: 'dep-${namePrefix}-pip-${serviceShort}'
-    publicIpDnsLabelPrefix: 'dep-${namePrefix}-dnsprefix-${uniqueString(deployment().name, enforcedLocation)}'
+    publicIpDnsLabelPrefix: uniqueResourceName('dep-${namePrefix}-dns-${serviceShort}', resourceGroup.id, 63)
     networkSecurityGroupNamePrefix: 'dep-${namePrefix}-nsg-${serviceShort}'
     virtualNetworkNamePrefix: 'dep-${namePrefix}-vnet-${serviceShort}'
     routeTableNamePrefix: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -70,7 +72,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-var apimName = '${namePrefix}${serviceShort}002'
+var apimName = uniqueResourceName('${namePrefix}${serviceShort}002', resourceGroup.id, 50)
 var backend1Name = 'backend1'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -273,13 +275,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
-          name: '6432d807-dc34-488e-8b15-9c560f79b111'
+          name: guid(resourceGroup.id, '6432d807-dc34-488e-8b15-9c560f79b111')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
