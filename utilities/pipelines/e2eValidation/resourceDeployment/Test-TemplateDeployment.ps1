@@ -1,3 +1,87 @@
+function Get-TemplateValidationErrorMessage {
+    [CmdletBinding()]
+    [OutputType([string])]
+    param (
+        [Parameter(Mandatory)]
+        [object[]] $ValidationErrors,
+
+        [Parameter()]
+        [hashtable] $AdditionalParameters,
+
+        [Parameter()]
+        [string] $ParameterFilePath
+    )
+
+    $parameterValues = [System.Collections.Generic.Queue[object]]::new()
+    $parameterValues.Enqueue($AdditionalParameters)
+    $includeMessages = [string]::IsNullOrEmpty($ParameterFilePath)
+    if ($ParameterFilePath -and [System.IO.Path]::GetExtension($ParameterFilePath) -eq '.json') {
+        try {
+            $fileParameters = (Get-Content -LiteralPath $ParameterFilePath -Raw -ErrorAction Stop |
+                    ConvertFrom-Json -AsHashtable -ErrorAction Stop).parameters
+            if ($fileParameters -is [System.Collections.IDictionary]) {
+                $parameterValues.Enqueue($fileParameters)
+                $includeMessages = @($fileParameters.GetEnumerator() | Where-Object { $_.Value.reference }).Count -eq 0
+            }
+        } catch [System.ArgumentException], [System.IO.IOException], [System.UnauthorizedAccessException], [System.Management.Automation.ItemNotFoundException] {
+            $includeMessages = $false
+        }
+    }
+
+    $redactions = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    $visitedValues = [System.Collections.Generic.HashSet[object]]::new()
+    while ($parameterValues.Count -gt 0) {
+        $value = $parameterValues.Dequeue()
+        if ($null -eq $value -or -not $visitedValues.Add($value)) { continue }
+        if ($value -is [System.Collections.IDictionary]) {
+            foreach ($entry in $value.GetEnumerator()) { $parameterValues.Enqueue($entry.Value) }
+        } elseif ($value -is [System.Collections.IEnumerable] -and $value -isnot [string]) {
+            foreach ($entry in $value) { $parameterValues.Enqueue($entry) }
+        } elseif ($value -is [pscustomobject]) {
+            foreach ($property in $value.PSObject.Properties) { $parameterValues.Enqueue($property.Value) }
+        } else {
+            $text = $value -is [securestring] ? (ConvertFrom-SecureString -SecureString $value -AsPlainText) : [string] $value
+            if ($text.Length -eq 0) { continue }
+            $null = $redactions.Add($text)
+            $null = $redactions.Add([System.Uri]::EscapeDataString($text))
+            $json = ConvertTo-Json -InputObject $text -Compress
+            $null = $redactions.Add($json.Substring(1, $json.Length - 2))
+        }
+    }
+
+    $messages = [System.Collections.Generic.List[string]]::new()
+    $messages.Add('Template is not valid.')
+    $pendingErrors = [System.Collections.Generic.Queue[object]]::new()
+    foreach ($validationError in $ValidationErrors) { $pendingErrors.Enqueue($validationError) }
+    $visitedErrors = [System.Collections.Generic.HashSet[object]]::new()
+    while ($pendingErrors.Count -gt 0) {
+        $node = $pendingErrors.Dequeue()
+        if ($null -eq $node -or -not $visitedErrors.Add($node)) { continue }
+
+        # Do not serialize arbitrary response fields, which can contain deployment inputs.
+        $fields = foreach ($property in @('Code', 'Message', 'Target')) {
+            if (($property -eq 'Code' -or $includeMessages) -and
+                $node.$property -is [string] -and -not [string]::IsNullOrWhiteSpace($node.$property)) {
+                '{0}: {1}' -f $property, $node.$property
+            }
+        }
+        if ($fields) { $messages.Add($fields -join '; ') }
+        foreach ($property in @('Error', 'Details', 'InnerError')) {
+            foreach ($child in $node.$property) { $pendingErrors.Enqueue($child) }
+        }
+    }
+    if (-not $includeMessages) {
+        $messages.Add('Error messages and targets are omitted because parameter-file values cannot be safely redacted.')
+    }
+
+    $message = $messages -join [Environment]::NewLine
+    if ($redactions.Count -gt 0) {
+        $pattern = ($redactions | Sort-Object -Property Length -Descending | ForEach-Object { [regex]::Escape($_) }) -join '|'
+        $message = [regex]::Replace($message, $pattern, '[REDACTED]')
+    }
+    return $message
+}
+
 <#
 .SYNOPSIS
 Run a template validation using a given parameter file
@@ -5,6 +89,8 @@ Run a template validation using a given parameter file
 .DESCRIPTION
 Run a template validation using a given parameter file
 Works on a resource group, subscription, managementgroup and tenant level
+Returned validation errors include Azure codes and nested messages with supplied parameter values redacted.
+The original response is retained for retry classification; caught errors do not write additional log output.
 
 .PARAMETER ParametersBasePath
 Mandatory. The path to the root of the parameters folder to test with
@@ -186,6 +272,14 @@ function Test-TemplateDeployment {
                 'TemplateValidationFailed',
                 [System.Management.Automation.ErrorCategory]::InvalidResult,
                 $res
+            )
+            $messageInput = @{
+                ValidationErrors     = $errors
+                AdditionalParameters = $AdditionalParameters
+                ParameterFilePath    = $ParameterFilePath
+            }
+            $validationError.ErrorDetails = [System.Management.Automation.ErrorDetails]::new(
+                (Get-TemplateValidationErrorMessage @messageInput)
             )
             $PSCmdlet.ThrowTerminatingError($validationError)
         } else {
