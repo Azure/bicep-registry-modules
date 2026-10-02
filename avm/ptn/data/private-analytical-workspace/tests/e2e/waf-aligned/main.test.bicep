@@ -27,7 +27,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -52,14 +52,7 @@ module testDeployment '../../../main.bicep' = [
       enableTelemetry: true
       enableDatabricks: true
       advancedOptions: {
-        logAnalyticsWorkspace: {
-          dataRetention: 35
-          dailyQuotaGb: '1'
-          replication: {
-            enabled: true
-            location: 'westeurope' // paired region of northeurope
-          }
-        }
+        logAnalyticsWorkspace: { dataRetention: 35, dailyQuotaGb: 1 }
         keyVault: {
           createMode: 'default'
           sku: 'standard'

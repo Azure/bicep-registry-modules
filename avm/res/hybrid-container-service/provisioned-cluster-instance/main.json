@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5066200243745344930"
+      "templateHash": "14628577764753735681"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -84,13 +84,6 @@
           "type": "string",
           "metadata": {
             "description": "Required. The VM size for the nodes."
-          }
-        },
-        "gpuCountPerNode": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The number of GPUs per node in the pool."
           }
         }
       },
@@ -290,37 +283,6 @@
         "description": "The type for storage profile configuration."
       }
     },
-    "hciSecurityProfileType": {
-      "type": "object",
-      "properties": {
-        "customCATrustCertificates": {
-          "type": "array",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Custom CA trust certificates for the cluster."
-          }
-        },
-        "fipsImage": {
-          "type": "object",
-          "properties": {
-            "enabled": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Whether FIPS-compliant images are enabled."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. FIPS image configuration."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for HCI provisioned cluster security profile configuration."
-      }
-    },
     "_1.systemComponentType": {
       "type": "object",
       "properties": {
@@ -346,7 +308,7 @@
       "metadata": {
         "description": "The type for system component configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -378,7 +340,7 @@
       "metadata": {
         "description": "The type for AAD profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -423,7 +385,7 @@
       "metadata": {
         "description": "The type for Arc agent profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -447,7 +409,7 @@
       "metadata": {
         "description": "The type for OIDC issuer profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     },
@@ -472,7 +434,7 @@
       "metadata": {
         "description": "The type for security profile configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.1.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/kubernetes/connected-cluster:0.3.0"
         }
       }
     }
@@ -637,13 +599,6 @@
         "description": "Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster."
       }
     },
-    "hciSecurityProfile": {
-      "$ref": "#/definitions/hciSecurityProfileType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Security profile for the provisioned cluster instance (FIPS, custom CA certificates)."
-      }
-    },
     "authorizedIPRanges": {
       "type": "string",
       "nullable": true,
@@ -696,14 +651,16 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.res.c5e30c6",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.hybcontsvc-provclustinst.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "apiVersion": "2025-04-01",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -722,12 +679,12 @@
     "existingCluster": {
       "existing": true,
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2024-07-15-preview",
+      "apiVersion": "2026-05-01",
       "name": "[parameters('name')]"
     },
     "provisionedCluster": {
       "type": "Microsoft.HybridContainerService/provisionedClusterInstances",
-      "apiVersion": "2026-04-01-preview",
+      "apiVersion": "2024-01-01",
       "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]",
       "name": "default",
       "extendedLocation": {
@@ -745,7 +702,6 @@
         "licenseProfile": "[parameters('licenseProfile')]",
         "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('secrets').outputs.sshPublicKeyPemValue.value)))))]",
         "networkProfile": "[parameters('networkProfile')]",
-        "securityProfile": "[parameters('hciSecurityProfile')]",
         "storageProfile": "[parameters('storageProfile')]"
       },
       "dependsOn": [
@@ -968,8 +924,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1409403525676849950"
+              "version": "0.47.16.16243",
+              "templateHash": "15373584917489478251"
             },
             "name": "Kubernetes Connected Cluster",
             "description": "This module deploys an Azure Arc connected cluster."
@@ -1120,6 +1076,28 @@
                 "description": "The type for security profile configuration."
               }
             },
+            "gatewayType": {
+              "type": "object",
+              "properties": {
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the Arc gateway."
+                  }
+                },
+                "enabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Whether the gateway is enabled."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for gateway configuration."
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -1260,6 +1238,31 @@
                 "description": "Optional. Security profile for the connected cluster."
               }
             },
+            "gateway": {
+              "$ref": "#/definitions/gatewayType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The gateway configuration for routing traffic through a gateway."
+              }
+            },
+            "privateLinkScopeResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resource ID of an Arc Private Link Scope to associate with this cluster for private connectivity."
+              }
+            },
+            "privateLinkState": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The state of private link on the connected cluster resource. Allowed values: Enabled, Disabled."
+              }
+            },
             "roleAssignments": {
               "type": "array",
               "items": {
@@ -1279,20 +1282,22 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "$fxv#0": "46d3xbcp.res.44d0125",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-            }
+            },
+            "telemetryIdPrefix": "[variables('$fxv#0')]"
           },
           "resources": {
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2025-04-01",
+              "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1310,7 +1315,7 @@
             },
             "connectedCluster": {
               "type": "Microsoft.Kubernetes/connectedClusters",
-              "apiVersion": "2024-07-15-preview",
+              "apiVersion": "2026-05-01",
               "name": "[parameters('name')]",
               "kind": "ProvisionedCluster",
               "location": "[parameters('location')]",
@@ -1326,7 +1331,10 @@
                 "infrastructure": null,
                 "oidcIssuerProfile": "[parameters('oidcIssuerProfile')]",
                 "securityProfile": "[parameters('securityProfile')]",
-                "azureHybridBenefit": null
+                "azureHybridBenefit": null,
+                "gateway": "[parameters('gateway')]",
+                "privateLinkScopeResourceId": "[if(not(empty(parameters('privateLinkScopeResourceId'))), parameters('privateLinkScopeResourceId'), null())]",
+                "privateLinkState": "[parameters('privateLinkState')]"
               }
             },
             "connectedCluster_roleAssignments": {
@@ -1336,7 +1344,7 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('name'))]",
+              "scope": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]",
               "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
                 "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
@@ -1379,7 +1387,7 @@
               "metadata": {
                 "description": "The location of the connected cluster."
               },
-              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+              "value": "[reference('connectedCluster', '2026-05-01', 'full').location]"
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
@@ -1387,7 +1395,7 @@
               "metadata": {
                 "description": "The principalId of the connected cluster identity."
               },
-              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').identity.principalId]"
+              "value": "[reference('connectedCluster', '2026-05-01', 'full').identity.principalId]"
             }
           }
         }

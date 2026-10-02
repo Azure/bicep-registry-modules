@@ -178,7 +178,7 @@ var nsgRulesDbw = [
 ]
 
 var logName = '${name}-log'
-var logDefaultDailyQuotaGb = '-1'
+var logDefaultDailyQuotaGb = -1
 var logDefaultDataRetention = 365
 
 var kvName = '${name}-kv'
@@ -289,12 +289,11 @@ var subnets = concat(
 // Resources      //
 // ============== //
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: take(
-    '46d3xbcp.ptn.data-privateanalyticalworkspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-    64
-  )
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -343,7 +342,7 @@ resource logExisting 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
   )
 }
 
-resource kvExisting 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!createNewKV) {
+resource kvExisting 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!createNewKV) {
   name: createNewKV ? 'dummyName' : last(split(keyVaultResourceId!, '/'))
   scope: resourceGroup(
     createNewKV ? subscription().id : (split(keyVaultResourceId!, '/')[2]),
@@ -351,7 +350,7 @@ resource kvExisting 'Microsoft.KeyVault/vaults@2026-02-01' existing = if (!creat
   )
 }
 
-module vnet 'br/public:avm/res/network/virtual-network:0.10.2' = if (createNewVNET) {
+module vnet 'br/public:avm/res/network/virtual-network:0.5.0' = if (createNewVNET) {
   name: '${uniqueString(deployment().name, location)}-vnet-${vnetName}'
   params: {
     // Required parameters
@@ -484,7 +483,7 @@ module dnsZoneSaBlob 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (cr
   }
 }
 
-module log 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (createNewLog) {
+module log 'br/public:avm/res/operational-insights/workspace:0.7.1' = if (createNewLog) {
   name: '${uniqueString(deployment().name, location)}-law-${logName}'
   params: {
     // Required parameters
@@ -492,7 +491,6 @@ module log 'br/public:avm/res/operational-insights/workspace:0.16.1' = if (creat
     // Non-required parameters
     dailyQuotaGb: advancedOptions.?logAnalyticsWorkspace.?dailyQuotaGb ?? logDefaultDailyQuotaGb
     dataRetention: advancedOptions.?logAnalyticsWorkspace.?dataRetention ?? logDefaultDataRetention
-    replication: advancedOptions.?logAnalyticsWorkspace.?replication
     diagnosticSettings: []
     enableTelemetry: enableTelemetry
     location: location
@@ -592,7 +590,7 @@ module dnsZoneKv 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (create
   }
 }
 
-module accessConnector 'br/public:avm/res/databricks/access-connector:0.4.3' = if (enableDatabricks) {
+module accessConnector 'br/public:avm/res/databricks/access-connector:0.3.0' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-connector-${dbwAccessConnectorName}'
   params: {
     // Required parameters
@@ -609,13 +607,13 @@ module accessConnector 'br/public:avm/res/databricks/access-connector:0.4.3' = i
   }
 }
 
-module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabricks) {
+module dbw 'br/public:avm/res/databricks/workspace:0.8.5' = if (enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-workspace-${dbwName}'
   params: {
     // Required parameters
     name: dbwName
     // Conditional parameters
-    accessConnectorResourceId: accessConnector!.outputs.resourceId
+    accessConnectorResourceId: accessConnector.outputs.resourceId
     // Non-required parameters
     customPublicSubnetName: createNewVNET ? subnetNameDbwFrontend : advancedOptions.?databricks.?subnetNameFrontend
     customPrivateSubnetName: createNewVNET ? subnetNameDbwBackend : advancedOptions.?databricks.?subnetNameBackend
@@ -648,7 +646,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabrick
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneDbw!.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
                 }
               ]
             }
@@ -667,7 +665,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabrick
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneDbw!.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneDbw.outputs.resourceId
                 }
               ]
             }
@@ -699,7 +697,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabrick
           ? {
               privateDnsZoneGroupConfigs: [
                 {
-                  privateDnsZoneResourceId: dnsZoneSaBlob!.outputs.resourceId
+                  privateDnsZoneResourceId: dnsZoneSaBlob.outputs.resourceId
                 }
               ]
             }
@@ -714,7 +712,7 @@ module dbw 'br/public:avm/res/databricks/workspace:0.12.0' = if (enableDatabrick
   }
 }
 
-module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.8.1' = if (createNewVNET && enableDatabricks) {
+module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (createNewVNET && enableDatabricks) {
   name: '${uniqueString(deployment().name, location)}-zone-${privateDnsZoneNameDbw}'
   params: {
     // Required parameters
@@ -728,7 +726,7 @@ module dnsZoneDbw 'br/public:avm/res/network/private-dns-zone:0.8.1' = if (creat
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: vnet!.outputs.resourceId
+        virtualNetworkResourceId: vnet.outputs.resourceId
       }
     ]
   }
@@ -823,8 +821,6 @@ type virtualNetworkType = {
   subnetNamePrivateLink: string?
 }
 
-import { workspaceReplicationType } from 'br/public:avm/res/operational-insights/workspace:0.16.1'
-
 @export()
 type logAnalyticsWorkspaceType = {
   @description('Optional. Number of days data will be retained for. The default value is: \'365\'.')
@@ -832,11 +828,9 @@ type logAnalyticsWorkspaceType = {
   @maxValue(730)
   dataRetention: int?
 
-  @description('Optional. The workspace daily quota for ingestion in GB. Supports decimal values. Example: \'0.5\' for 0.5 GB, \'2\' for 2 GB. Default is \'-1\' (no limit).')
-  dailyQuotaGb: string?
-
-  @description('Optional. The workspace replication properties.')
-  replication: workspaceReplicationType?
+  @description('Optional. The workspace daily quota for ingestion. The default value is: \'-1\' (not limited).')
+  @minValue(-1)
+  dailyQuotaGb: int?
 }
 
 @export()

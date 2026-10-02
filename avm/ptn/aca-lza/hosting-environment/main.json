@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12411895052592704638"
+      "templateHash": "18150437698884275798"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -257,12 +257,16 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.ptn.0010ec8",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-07-01",
-      "name": "[format('46d3xbcp.ptn.acalza-hostingenvironment.{0}', substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}', variables('telemetryIdPrefix'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
@@ -313,7 +317,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "10433361473421855502"
+              "templateHash": "11256868923533846780"
             }
           },
           "parameters": {
@@ -353,7 +357,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}\n",
+            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
             "naming": "[json(variables('$fxv#0'))]",
             "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
             "resourceTypeToken": "RES_TYPE",
@@ -48047,7 +48051,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "8630964408160262786"
+              "templateHash": "18145688522908402895"
             }
           },
           "parameters": {
@@ -48677,7 +48681,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "2992362113950836377"
+                      "templateHash": "11041357248289813519"
                     }
                   },
                   "parameters": {
@@ -48813,7 +48817,7 @@
                     {
                       "condition": "[not(empty(parameters('appGatewayCertificateData')))]",
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2026-02-01",
+                      "apiVersion": "2024-04-01-preview",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -48842,7 +48846,7 @@
                   "outputs": {
                     "SecretUri": {
                       "type": "string",
-                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2026-02-01').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
+                      "value": "[if(not(variables('useSelfSignedCert')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('appGatewayCertificateKeyName')), '2024-04-01-preview').secretUri, reference(resourceId('Microsoft.Resources/deploymentScripts', format('{0}-certDeploymentScript', take(uniqueString(resourceGroup().name, 'self-signed-cert', parameters('location')), 4))), '2023-08-01').outputs.secretUrl)]"
                     }
                   }
                 }

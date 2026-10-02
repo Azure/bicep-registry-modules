@@ -1,7 +1,7 @@
 metadata name = 'Finops-hub'
 metadata description = 'This module deploys a Finops hub from the Finops toolkit.'
 
-@description('Required. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
+@description('Optional. Name of the hub. Used to ensure unique resource names. Default: "finops-hub".')
 param hubName string
 
 @description('Optional. Location for all Resources.')
@@ -151,9 +151,11 @@ module keyVault 'modules/keyVault.bicep' = {
   }
 }
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.finopstoolkit-finopshub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
