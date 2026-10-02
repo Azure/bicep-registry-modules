@@ -135,6 +135,10 @@ param auditSettings auditSettingsType = {
   state: 'Enabled'
 }
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+@description('Optional. The diagnostic settings of the server\'s `master` database. Server-level audit logs (i.e., the `SQLSecurityAuditEvents` & `DevOpsOperationsAudit` categories) are emitted by the implicitly created `master` database. Hence, forwarding them to a Log Analytics workspace, Event Hub, Storage Account or partner solution requires a diagnostic setting on that database. If no log categories are specified, all logs are configured by default. Metrics are only configured if explicitly specified, as the `master` database does not emit any.')
+param masterDatabaseDiagnosticSettings diagnosticSettingFullType[]?
+
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
@@ -567,6 +571,43 @@ module server_audit_settings 'auditing-setting/main.bicep' = if (!empty(auditSet
   }
 }
 
+// The `master` database is implicitly created together with the logical server and can therefore not be deployed by this
+// module. It is referenced as an existing resource as it is the scope the server-level audit logs are emitted at.
+resource masterDatabase 'Microsoft.Sql/servers/databases@2025-01-01' existing = {
+  name: 'master'
+  parent: server
+}
+
+resource masterDatabase_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (masterDatabaseDiagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-master-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        // The `master` database does not emit any metrics, hence they are only configured if explicitly requested
+        for group in (diagnosticSetting.?metricCategories ?? []): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: masterDatabase
+  }
+]
+
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
@@ -675,7 +716,6 @@ output privateEndpoints privateEndpointOutputType[] = [
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
 import { perDatabaseSettingsType, skuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
