@@ -2,7 +2,7 @@
 param location string
 
 @description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
-param hostVMSize string = 'Standard_D16as_v7'
+param hostVMSize string = 'Standard_E48bds_v5'
 
 @description('Optional. The local admin user name.')
 param localAdminUsername string = 'admin-hci'
@@ -183,7 +183,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
   }
 }
 
-param imageReferenceId string = '/SharedGalleries/b9e38f20-7c9c-4497-a25d-1a0c5eef2108-DIRECTLYSHARING/Images/vhci-Generalized/Versions/latest'
+param imageReferenceId string = '/subscriptions/98f24b96-fffa-4142-bec5-8472d0f30749/resourceGroups/prithjit-rg-hci-image-builder/providers/Microsoft.Compute/galleries/avmhcivmimagegallery/images/hci-host-image/versions/1.0.0'
 
 // Azure Stack HCI Host VM -
 resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
@@ -211,15 +211,15 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
       ]
     }
     storageProfile: {
-      imageReference: !empty(imagePublisher)
-        ? {
+      imageReference: !empty(imageReferenceId)
+        ? (startsWith(imageReferenceId, '/SharedGalleries/')
+            ? { sharedGalleryImageId: imageReferenceId }
+            : { id: imageReferenceId })
+        : {
             publisher: imagePublisher
             offer: imageOffer
             sku: imageSku
             version: imageVersion
-          }
-        : {
-            sharedGalleryImageId: imageReferenceId
           }
       osDisk: {
         createOption: 'FromImage'
@@ -243,13 +243,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
         }
       }
     }
-    securityProfile: {
-      uefiSettings: {
-        secureBootEnabled: true
-        vTpmEnabled: true
-      }
-      securityType: 'TrustedLaunch'
-    }
     licenseType: 'Windows_Server'
   }
 }
@@ -263,7 +256,7 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
   scope: vm
 }
 
-resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = {
   parent: vm
   name: 'wait'
   location: location
@@ -272,6 +265,7 @@ resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       script: loadTextContent('./scripts/wait.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    timeoutInSeconds: 600
     parameters: [
       {
         name: 'Minutes'
@@ -285,7 +279,7 @@ resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
 // Initialize Arc on HCI Node VMs and AD for HCI  //
 // ==============================================//
 
-resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = {
   parent: vm
   name: 'ad'
   location: location
@@ -297,6 +291,7 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       script: loadTextContent('./scripts/provision-ad.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    timeoutInSeconds: 5400
     parameters: [
       {
         name: 'IP'
@@ -340,7 +335,7 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   }
 }
 
-resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
+resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
   parent: vm
   name: 'arc1'
   location: location
@@ -352,6 +347,7 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    timeoutInSeconds: 5400
     parameters: [
       {
         name: 'IP'
@@ -403,7 +399,7 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!
   }
 }
 
-resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
+resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = if (!empty(arbDeploymentAppId ?? '') && !empty(arbDeploymentServicePrincipalSecret ?? '')) {
   parent: vm
   name: 'arc2'
   location: location
@@ -415,6 +411,7 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = if (!
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    timeoutInSeconds: 5400
     parameters: [
       {
         name: 'IP'
