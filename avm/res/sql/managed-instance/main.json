@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7283541681941744260"
+      "templateHash": "10490751762473247589"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -761,7 +761,7 @@
       "minValue": 32,
       "maxValue": 32768,
       "metadata": {
-        "description": "Optional. Storage size in GB. Increments of 32 GB allowed only."
+        "description": "Optional. Storage size in GB, from 32 to 32768 in increments of 32 GB."
       }
     },
     "vCores": {
