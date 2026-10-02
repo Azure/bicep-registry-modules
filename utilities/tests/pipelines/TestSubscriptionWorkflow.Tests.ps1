@@ -39,6 +39,7 @@ Describe 'Test subscription workflow integration' {
             $workflowPath = Join-Path $repoRootPath '.github' 'workflows' "$workflowName.yml"
             $workflows[$workflowName] = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
         }
+        $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -Path $actionPath -Raw)
         $selectionStep = $action.runs.steps | Where-Object { $_.id -eq 'get-test-subscription' }
@@ -87,7 +88,8 @@ Describe 'Test subscription workflow integration' {
         function Set-TestDeploymentEnvironment {
             param([hashtable] $Workflow, [hashtable] $Context)
 
-            $step = $Workflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+            $Workflow.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+            $step = $deploymentWorkflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
             foreach ($name in $step.env.Keys) {
                 [Environment]::SetEnvironmentVariable($name, (Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context))
             }
@@ -192,15 +194,17 @@ Describe 'Test subscription workflow integration' {
     ) {
         $workflow = $workflows[$workflowName]
         $initializer = $workflow.jobs.job_initialize_subscription_selection
-        $deployment = $workflow.jobs.job_module_deploy_validation
+        $caller = $workflow.jobs.job_module_deploy_validation
+        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $deploymentStep = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
         $initializationStep = $initializer.steps | Where-Object { $_.id -eq 'deployment-matrix' }
 
         $initializer.permissions.Count | Should -Be 1
         $initializer.permissions.contents | Should -Be 'read'
         $initializer.environment | Should -Be 'avm-validation'
-        @($initializer.outputs.Keys) | Should -Be @('deploymentMatrix')
+        @($initializer.outputs.Keys | Sort-Object) | Should -Be @('deploymentMatrix', 'sharedScope')
         $initializer.outputs.deploymentMatrix | Should -Be '${{ steps.deployment-matrix.outputs.deploymentMatrix }}'
+        $initializer.outputs.sharedScope | Should -Be '${{ steps.deployment-matrix.outputs.sharedScope }}'
         $initializer.ContainsKey('concurrency') | Should -BeFalse
         $initializationStep.uses | Should -Be './.github/actions/templates/avm-getModuleDeploymentMatrix'
         $initializationStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
@@ -209,12 +213,15 @@ Describe 'Test subscription workflow integration' {
         $initializer.steps[0].uses | Should -Match '^actions/checkout@'
         $initializer.steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
         $initializer.if | Should -Match "deploymentValidation == 'true'"
-        $deployment.needs | Should -Contain 'job_initialize_subscription_selection'
-        $deployment.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
+        $caller.needs | Should -Contain 'job_initialize_subscription_selection'
+        $caller.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
+        $caller.secrets | Should -Be 'inherit'
+        $caller.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
         ($workflow | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|VALIDATE_PERSISTENT_SUBSCRIPTION_ID'
         ($action | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
         ($psrule | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
         $workflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
+        $deploymentWorkflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
         $deploymentStep.with.managementGroupId | Should -Be $managementGroupExpression
         $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
         $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
@@ -232,9 +239,9 @@ Describe 'Test subscription workflow integration' {
             $step.env.VALIDATE_SUBSCRIPTION_ID | Should -Be $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID
             $step.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         }
-        $deployment.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
-        $deploymentStep.with.subscriptionIndex | Should -Be '${{ matrix.testCases.subscriptionIndex }}'
-        $deploymentStep.with.subscriptionKey | Should -Be '${{ matrix.testCases.subscriptionKey }}'
+        $caller.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
+        $deploymentStep.with.subscriptionIndex | Should -Be '${{ fromJson(inputs.testCase).subscriptionIndex }}'
+        $deploymentStep.with.subscriptionKey | Should -Be '${{ fromJson(inputs.testCase).subscriptionKey }}'
         $deploymentStep.with.ContainsKey('subscriptionSelectionSeed') | Should -BeFalse
         $deploymentStep.with.ContainsKey('subscriptionJobIndex') | Should -BeFalse
         $selectionStep.env.PRESELECTED_SUBSCRIPTION_INDEX | Should -Be '${{ inputs.subscriptionIndex }}'
@@ -256,6 +263,7 @@ Describe 'Test subscription workflow integration' {
             $records = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID)
 
             . ([scriptblock]::Create($matrixStep.run))
+            (Get-StepOutput).sharedScope | Should -Be 'false'
             $matrixOutput = (Get-StepOutput).deploymentMatrix
             $matrix = @($matrixOutput | ConvertFrom-Json -AsHashtable)
 

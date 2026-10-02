@@ -63,9 +63,11 @@ Describe 'Module deployment matrix' {
     }
 
     It 'Preselects the same seeded round-robin records and includes readable variable-backed names' {
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $matrix = $selection.testCases
         $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
 
+        $selection.sharedScope | Should -BeFalse
         $matrix.Count | Should -Be $testFiles.Count
         foreach ($index in 0..7) {
             $selected = $shuffled[$index % $shuffled.Count]
@@ -91,7 +93,7 @@ Describe 'Module deployment matrix' {
             $matrixInput.FallbackSubscriptionId = $subscriptions[0].id
         }
 
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $matrix = (Get-ModuleDeploymentMatrix @matrixInput).testCases
         $output = ConvertTo-Json -InputObject $matrix -Depth 10 -Compress
         foreach ($subscription in $subscriptions) {
             $output | Should -Not -Match ([regex]::Escape($subscription.id))
@@ -108,13 +110,13 @@ Describe 'Module deployment matrix' {
     }
 
     It 'Keeps subscription lock identities independent of pool order, shuffle, display names and configuration source' {
-        $first = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $first = (Get-ModuleDeploymentMatrix @matrixInput).testCases
         $reordered = @($subscriptions[2], $subscriptions[0], $subscriptions[1])
         $matrixInput.TestSubscriptionIds = ConvertTo-Json -InputObject $reordered -Compress
         $matrixInput.RandomSeed = 17
         $matrixInput.DisplaySubscriptionNames = $false
 
-        $second = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $second = (Get-ModuleDeploymentMatrix @matrixInput).testCases
 
         ($first.concurrencyGroup | Sort-Object -Unique) | Should -Be ($second.concurrencyGroup | Sort-Object -Unique)
         foreach ($entry in $second) {
@@ -124,21 +126,23 @@ Describe 'Module deployment matrix' {
 
     It 'Retains singleton selection for every test index' {
         $matrixInput.TestSubscriptionIds = ConvertTo-Json -InputObject @($subscriptions[1]) -Compress
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $matrix = (Get-ModuleDeploymentMatrix @matrixInput).testCases
 
         @($matrix.subscriptionIndex | Sort-Object -Unique) | Should -Be @(0)
         @($matrix.subscriptionName | Sort-Object -Unique) | Should -Be @('sub-avm-test-002')
         @($matrix.concurrencyGroup | Sort-Object -Unique).Count | Should -Be 1
     }
 
-    It 'Shares the module lock for any root <scope> test' -ForEach @(
+    It 'Requests an additional shared lock without replacing subscription locks for a root <scope> test' -ForEach @(
         @{ scope = 'managementgroup' }
         @{ scope = 'tenant' }
     ) {
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[2].path)] = New-ScopeTemplate -Scope $scope
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $matrix = $selection.testCases
 
-        @($matrix.concurrencyGroup | Sort-Object -Unique) | Should -Be @('avm-deploy-avm/res/example/module-shared')
+        $selection.sharedScope | Should -BeTrue
+        @($matrix.concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
         @($matrix.subscriptionKey | Sort-Object -Unique).Count | Should -Be 3
     }
 
@@ -157,9 +161,10 @@ Describe 'Module deployment matrix' {
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[2].path)] =
             New-ScopeTemplate -Resources @{ compiledModule = $outer }
 
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
 
-        @($matrix.concurrencyGroup | Sort-Object -Unique) | Should -Be @('avm-deploy-avm/res/example/module-shared')
+        $selection.sharedScope | Should -BeTrue
+        @($selection.testCases.concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
     }
 
     It 'Keeps resource-group templates and nested resource-group deployments subscription-isolated' {
@@ -170,22 +175,25 @@ Describe 'Module deployment matrix' {
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[0].path)] = New-ScopeTemplate -Scope resourcegroup
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[1].path)] = New-ScopeTemplate -Resources @($nested)
 
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $matrix = $selection.testCases
 
+        $selection.sharedScope | Should -BeFalse
         @($matrix.concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
         $matrix.concurrencyGroup | Should -Not -Contain 'avm-deploy-avm/res/example/module-shared'
     }
 
-    It 'Conservatively shares locks when an external linked template cannot be inspected' {
+    It 'Requires an additional shared lock when an external linked template cannot be inspected' {
         $linked = @{
             type       = 'Microsoft.Resources/deployments'
             properties = @{ templateLink = @{ uri = 'https://example.invalid/template.json' } }
         }
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[1].path)] = New-ScopeTemplate -Resources @($linked)
 
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
 
-        @($matrix.concurrencyGroup | Sort-Object -Unique) | Should -Be @('avm-deploy-avm/res/example/module-shared')
+        $selection.sharedScope | Should -BeTrue
+        @($selection.testCases.concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
         Should -Invoke Invoke-WebRequest -Times 0 -Exactly
         Should -Invoke Invoke-RestMethod -Times 0 -Exactly
     }
@@ -194,7 +202,7 @@ Describe 'Module deployment matrix' {
         $testFiles[1].e2eIgnore = $true
         $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
 
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $matrix = (Get-ModuleDeploymentMatrix @matrixInput).testCases
 
         $matrix[1].e2eIgnore | Should -BeTrue
         $matrix[1].subscriptionKey | Should -BeNullOrEmpty
@@ -206,8 +214,10 @@ Describe 'Module deployment matrix' {
     It 'Does not require subscriptions or compile templates when all deployment tests are ignored' {
         $testFiles | ForEach-Object { $_.e2eIgnore = $true }
         $matrixInput.TestSubscriptionIds = ''
-        $matrix = @(Get-ModuleDeploymentMatrix @matrixInput)
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $matrix = $selection.testCases
 
+        $selection.sharedScope | Should -BeFalse
         $matrix.Count | Should -Be 8
         @($matrix.subscriptionName | Sort-Object -Unique) | Should -Be @('Deployment disabled')
         Should -Invoke bicep -Times 0 -Exactly
@@ -216,7 +226,7 @@ Describe 'Module deployment matrix' {
     It 'Returns an empty matrix without subscription access when there are no tests' {
         $matrixInput.TestFilePaths = @()
         $matrixInput.TestSubscriptionIds = ''
-        @(Get-ModuleDeploymentMatrix @matrixInput).Count | Should -Be 0
+        (Get-ModuleDeploymentMatrix @matrixInput).testCases.Count | Should -Be 0
         Should -Invoke bicep -Times 0 -Exactly
     }
 
@@ -249,6 +259,49 @@ Describe 'Module deployment matrix' {
         $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[0].path)] = New-ScopeTemplate -Resources @($nested)
 
         { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw '*non-supported ARM template schema*'
+    }
+
+    It 'Keeps identical inner keys across revisions that add, ignore or remove a <target> test' -ForEach @(
+        @{ target = 'managementgroup' }
+        @{ target = 'tenant' }
+        @{ target = 'linked-template' }
+    ) {
+        $isolated = Get-ModuleDeploymentMatrix @matrixInput
+        $keysBySubscription = @{}
+        foreach ($entry in $isolated.testCases) {
+            $keysBySubscription[$entry.subscriptionKey] = $entry.concurrencyGroup
+        }
+        $isolated.sharedScope | Should -BeFalse
+        $keysBySubscription['bafde89c041e1756082b933aaf16cad8e65dec48de748479352f657e89dd6da5'] |
+            Should -Be 'avm-deploy-avm/res/example/module-bafde89c041e1756082b933aaf16cad8e65dec48de748479352f657e89dd6da5'
+        $sharedTemplate = if ($target -eq 'linked-template') {
+            New-ScopeTemplate -Resources @(@{
+                    type = 'Microsoft.Resources/deployments'
+                    properties = @{ templateLink = @{ uri = 'https://example.invalid/template.json' } }
+                })
+        } else {
+            New-ScopeTemplate -Scope $target
+        }
+        $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[2].path)] = $sharedTemplate
+        $sharedRevision = Get-ModuleDeploymentMatrix @matrixInput
+        $matrixInput.RandomSeed = 17
+        $otherSharedRevision = Get-ModuleDeploymentMatrix @matrixInput
+        $sharedRevision.sharedScope | Should -BeTrue
+        $otherSharedRevision.sharedScope | Should -BeTrue
+
+        $testFiles[2].e2eIgnore = $true
+        $ignoredRevision = Get-ModuleDeploymentMatrix @matrixInput
+        $ignoredRevision.sharedScope | Should -BeFalse
+        $matrixInput.TestFilePaths = @($testFiles | Where-Object { $_.name -ne $testFiles[2].name })
+        $removedRevision = Get-ModuleDeploymentMatrix @matrixInput
+        $removedRevision.sharedScope | Should -BeFalse
+
+        foreach ($revision in @($sharedRevision, $otherSharedRevision, $ignoredRevision, $removedRevision)) {
+            foreach ($entry in ($revision.testCases | Where-Object { -not $_.e2eIgnore })) {
+                $entry.concurrencyGroup | Should -BeExactly $keysBySubscription[$entry.subscriptionKey]
+                $entry.concurrencyGroup | Should -Not -Be 'avm-deploy-avm/res/example/module-shared'
+            }
+        }
     }
 
     It 'Preserves file-based scope discovery while accepting compiled template content for <scope>' -ForEach @(

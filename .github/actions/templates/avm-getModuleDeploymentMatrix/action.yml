@@ -1,5 +1,5 @@
 name: "Get module deployment matrix"
-description: "Preselect subscriptions in the deployment environment and identify subscription or shared-scope locks without exposing secret-backed identifiers."
+description: "Preselect subscriptions and identify when an additional shared-scope lock is needed without exposing secret-backed identifiers."
 
 inputs:
   modulePath:
@@ -17,6 +17,9 @@ outputs:
   deploymentMatrix:
     description: "Test files with pinned subscription identities and deployment concurrency groups"
     value: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
+  sharedScope:
+    description: "Whether the deployment phase also requires a shared per-module lock"
+    value: ${{ steps.deployment-matrix.outputs.sharedScope }}
 
 runs:
   using: "composite"
@@ -40,5 +43,6 @@ runs:
           DisplaySubscriptionNames = $env:DISPLAY_SUBSCRIPTION_NAMES -eq 'true'
           RepoRoot                 = $env:GITHUB_WORKSPACE
         }
-        $matrix = @(Get-ModuleDeploymentMatrix @functionInput)
-        Write-Output ("deploymentMatrix={0}" -f (ConvertTo-Json -InputObject $matrix -Depth 10 -Compress)) >> $env:GITHUB_OUTPUT
+        $selection = Get-ModuleDeploymentMatrix @functionInput
+        Write-Output ("deploymentMatrix={0}" -f (ConvertTo-Json -InputObject $selection.testCases -Depth 10 -Compress)) >> $env:GITHUB_OUTPUT
+        Write-Output ("sharedScope={0}" -f $selection.sharedScope.ToString().ToLowerInvariant()) >> $env:GITHUB_OUTPUT

@@ -127,6 +127,7 @@ jobs:
     if: inputs.moduleTestFilePaths != '[]' && (fromJson(inputs.workflowInput)).deploymentValidation == 'true'
     outputs:
       deploymentMatrix: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
+      sharedScope: ${{ steps.deployment-matrix.outputs.sharedScope }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
@@ -144,9 +145,7 @@ jobs:
           VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
 
   job_module_deploy_validation:
-    name: "Deploy [${{ matrix.testCases.name }}] on [${{ matrix.testCases.subscriptionName }}]"
-    environment: avm-validation
-    runs-on: ubuntu-latest
+    name: "Deployment validation"
     permissions:
       contents: read
       id-token: write
@@ -166,38 +165,15 @@ jobs:
       matrix:
         testCases: ${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}
     concurrency:
-      group: ${{ matrix.testCases.concurrencyGroup }}
+      group: ${{ needs.job_initialize_subscription_selection.outputs.sharedScope == 'true' && !matrix.testCases.e2eIgnore && format('avm-deploy-{0}-shared', inputs.modulePath) || format('avm-deploy-{0}-run-{1}-{2}-{3}', inputs.modulePath, github.run_id, github.run_attempt, strategy.job-index) }}
       queue: max
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-        with:
-          fetch-depth: 0
-      - name: "Set environment"
-        uses: ./.github/actions/templates/avm-setEnvironment
-        with:
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-      - name: "Run deployment validation with test file [${{ matrix.testCases.path }}]"
-        uses: ./.github/actions/templates/avm-validateModuleDeployment
-        with:
-          modulePath: "${{ inputs.modulePath }}"
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
-          deploymentMetadataLocation: "WestEurope"
-          subscriptionIndex: "${{ matrix.testCases.subscriptionIndex }}"
-          subscriptionKey: "${{ matrix.testCases.subscriptionKey }}"
-          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
-          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
-          customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
-          e2eIgnore: "${{ matrix.testCases.e2eIgnore }}"
-          githubVariables: ${{ toJSON(vars) }}
-          githubSecrets: ${{ toJSON(secrets) }}
-        env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
-          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
-          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
-          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
-          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}
+    uses: ./.github/workflows/avm.template.module.deployment.yml
+    with:
+      workflowInput: ${{ inputs.workflowInput }}
+      modulePath: ${{ inputs.modulePath }}
+      testCase: ${{ toJSON(matrix.testCases) }}
+      tokenNamePrefix: "gci"
+    secrets: inherit
 
   job_preview_module:
     name: "Publishing preview"

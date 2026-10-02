@@ -4,7 +4,8 @@ Assign test subscriptions and deployment locks before scheduling deployment jobs
 
 .DESCRIPTION
 Preserves seeded round-robin selection while exposing only pool positions and ID digests.
-Modules with management-group, tenant or unresolved linked templates share one deployment lock.
+Subscription locks are invariant across revisions. Management-group, tenant or unresolved
+linked templates additionally require a shared deployment-phase lock.
 #>
 function Get-ModuleDeploymentMatrix {
 
@@ -70,7 +71,7 @@ function Get-ModuleDeploymentMatrix {
     }
 
     $moduleKey = $ModulePath.Replace('\', '/').Trim('/').ToLowerInvariant()
-    for ($jobIndex = 0; $jobIndex -lt $TestFilePaths.Count; $jobIndex++) {
+    $matrix = @(for ($jobIndex = 0; $jobIndex -lt $TestFilePaths.Count; $jobIndex++) {
         $test = $TestFilePaths[$jobIndex]
         $ignored = $test.e2eIgnore -eq $true -or $test.e2eIgnore -eq 'true'
         $entry = @{
@@ -87,8 +88,13 @@ function Get-ModuleDeploymentMatrix {
             $entry.subscriptionIndex = $subscription.index
             $entry.subscriptionKey = $subscription.key
             $entry.subscriptionName = $DisplaySubscriptionNames ? $subscription.name : "Configured subscription $($subscription.index + 1)"
-            $entry.concurrencyGroup = $sharedScope ? "avm-deploy-$moduleKey-shared" : "avm-deploy-$moduleKey-$($subscription.key)"
+            $entry.concurrencyGroup = "avm-deploy-$moduleKey-$($subscription.key)"
         }
         $entry
+    })
+
+    return @{
+        testCases   = $matrix
+        sharedScope = $sharedScope
     }
 }

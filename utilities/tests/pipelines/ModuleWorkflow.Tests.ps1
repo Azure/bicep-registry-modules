@@ -19,6 +19,7 @@ Describe 'Generic module workflow' {
         $publishWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $publishWorkflowPath -Raw)
         $publishOnlyWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $publishOnlyWorkflowPath -Raw)
         $legacyWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.yml') -Raw)
+        $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $deploymentAction = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw)
         $toggleWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $toggleWorkflowPath -Raw)
     }
@@ -46,14 +47,21 @@ Describe 'Generic module workflow' {
 
     It 'holds each selected target lock over the complete deployment and cleanup job without cancellation' {
         foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
-            $deployment = $validationWorkflow.jobs.job_module_deploy_validation
-            $deployment.name | Should -Be 'Deploy [${{ matrix.testCases.name }}] on [${{ matrix.testCases.subscriptionName }}]'
-            $deployment.concurrency.group | Should -Be '${{ matrix.testCases.concurrencyGroup }}'
-            $deployment.concurrency.queue | Should -Be 'max'
-            $deployment.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
-            $deployment.strategy.'fail-fast' | Should -BeFalse
-            @($deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }).Count | Should -Be 1
+            $caller = $validationWorkflow.jobs.job_module_deploy_validation
+            $caller.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+            $caller.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
+            $caller.concurrency.queue | Should -Be 'max'
+            $caller.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
+            $caller.strategy.'fail-fast' | Should -BeFalse
         }
+        @($deploymentWorkflow.jobs.Keys) | Should -Be @('job_module_deploy_validation')
+        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
+        $deployment.name | Should -Be 'Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]'
+        $deployment.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
+        $deployment.concurrency.queue | Should -Be 'max'
+        $deployment.concurrency.ContainsKey('cancel-in-progress') | Should -BeFalse
+        $deployment.ContainsKey('strategy') | Should -BeFalse
+        @($deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }).Count | Should -Be 1
         $cleanup = $deploymentAction.runs.steps | Where-Object { $_.name -eq 'Remove deployed resources' }
         $cleanup.if | Should -Be '${{ (success() || failure()) && inputs.removeDeployment == ''true'' && steps.deploy_step.outputs.deploymentNames != '''' && env.skip_deployment_ci == ''false'' }}'
         $cleanup.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))
@@ -61,6 +69,34 @@ Describe 'Generic module workflow' {
             [array]::IndexOf($deploymentAction.runs.steps, ($deploymentAction.runs.steps | Where-Object { $_.id -eq 'deploy_step' }))
         )
         @($deploymentAction.runs.steps | Where-Object { $_.ContainsKey('concurrency') }).Count | Should -Be 0
+    }
+
+    It 'serializes each shared-scope test under a distinct outer lock without coupling ordinary or ignored tests' {
+        $expectedGroup = '${{ needs.job_initialize_subscription_selection.outputs.sharedScope == ''true'' && !matrix.testCases.e2eIgnore && format(''avm-deploy-{0}-shared'', inputs.modulePath) || format(''avm-deploy-{0}-run-{1}-{2}-{3}'', inputs.modulePath, github.run_id, github.run_attempt, strategy.job-index) }}'
+        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
+            $caller = $validationWorkflow.jobs.job_module_deploy_validation
+            $caller.concurrency.group | Should -BeExactly $expectedGroup
+            $caller.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
+            $caller.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
+            $caller.concurrency.group | Should -Not -Match 'subscriptionKey|concurrencyGroup'
+        }
+
+        $sharedFormat = [regex]::Match($expectedGroup, "format\('(avm-deploy-\{0\}-shared)'").Groups[1].Value
+        $runFormat = [regex]::Match($expectedGroup, "format\('(avm-deploy-\{0\}-run-\{1\}-\{2\}-\{3\})'").Groups[1].Value
+        $sharedKey = $sharedFormat -f 'avm/res/example/module'
+        $sharedKey | Should -Be 'avm-deploy-avm/res/example/module-shared'
+        $innerKey = 'avm-deploy-avm/res/example/module-bafde89c041e1756082b933aaf16cad8e65dec48de748479352f657e89dd6da5'
+        $runKeys = @(foreach ($run in 100, 101) {
+                foreach ($attempt in 1, 2) {
+                    foreach ($testIndex in 0, 1) {
+                        $runFormat -f 'avm/res/example/module', $run, $attempt, $testIndex
+                    }
+                }
+            })
+        @($runKeys | Sort-Object -Unique).Count | Should -Be 8
+        $runKeys | Should -Not -Contain $sharedKey
+        $runKeys | Should -Not -Contain $innerKey
+        $sharedKey | Should -Not -Be $innerKey
     }
 
     It 'retains one separate global publication lock across legacy, preview, manual and publish-only entry points' {
@@ -88,16 +124,21 @@ Describe 'Generic module workflow' {
             foreach ($job in $caller.jobs.Values) {
                 foreach ($step in @($job.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' })) {
                     $callerCount++
-                    $job.needs | Should -Contain 'job_initialize_subscription_selection'
-                    $job.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
-                    $job.concurrency.group | Should -Be '${{ matrix.testCases.concurrencyGroup }}'
-                    $step.with.subscriptionIndex | Should -Be '${{ matrix.testCases.subscriptionIndex }}'
-                    $step.with.subscriptionKey | Should -Be '${{ matrix.testCases.subscriptionKey }}'
+                    $file.Name | Should -Be 'avm.template.module.deployment.yml'
+                    $job.concurrency.group | Should -Be '${{ fromJson(inputs.testCase).concurrencyGroup }}'
+                    $step.with.subscriptionIndex | Should -Be '${{ fromJson(inputs.testCase).subscriptionIndex }}'
+                    $step.with.subscriptionKey | Should -Be '${{ fromJson(inputs.testCase).subscriptionKey }}'
                     $step.with.ContainsKey('subscriptionSelectionSeed') | Should -BeFalse
                 }
             }
         }
-        $callerCount | Should -BeGreaterOrEqual 3
+        $callerCount | Should -Be 1
+        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
+            $caller = $validationWorkflow.jobs.job_module_deploy_validation
+            $caller.needs | Should -Contain 'job_initialize_subscription_selection'
+            $caller.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+            $caller.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
+        }
     }
 
     It 'keeps automatic preview permissions read-only' {
@@ -185,6 +226,10 @@ Describe 'Generic module workflow' {
     It 'uses the same stable generic name prefix for PSRule and deployment validation' {
         $previewWorkflow.env.TOKEN_NAMEPREFIX | Should -Be 'gci'
         $publishWorkflow.env.TOKEN_NAMEPREFIX | Should -Be 'gci'
+        $previewWorkflow.jobs.job_module_deploy_validation.with.tokenNamePrefix | Should -Be 'gci'
+        $publishWorkflow.jobs.job_module_deploy_validation.with.tokenNamePrefix | Should -Be 'gci'
+        $legacyWorkflow.jobs.job_module_deploy_validation.with.ContainsKey('tokenNamePrefix') | Should -BeFalse
+        $deploymentWorkflow.env.TOKEN_NAMEPREFIX | Should -Be '${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}'
         $workflow.jobs.call_module_preview.with.ContainsKey('customTokens') | Should -BeFalse
         $workflow.jobs.call_module_publish.with.ContainsKey('customTokens') | Should -BeFalse
     }

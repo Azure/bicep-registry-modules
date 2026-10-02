@@ -12,6 +12,7 @@ Describe 'CI parameter workflow integration' {
             $workflowPath = Join-Path $repoRootPath '.github' 'workflows' "$workflowName.yml"
             $workflows[$workflowName] = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
         }
+        $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -Path $actionPath -Raw)
         $environmentNames = @('GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'AVM_CI_VARIABLES', 'AVM_CI_SECRETS', 'CI_KEY_VAULT_NAME')
@@ -119,13 +120,18 @@ output configuredParameters object = {
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         $workflow = $workflows[$workflowName]
-        $deployment = $workflow.jobs.job_module_deploy_validation
+        $caller = $workflow.jobs.job_module_deploy_validation
+        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $step = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
 
+        $caller.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+        $caller.secrets | Should -Be 'inherit'
+        $caller.with.workflowInput | Should -Be '${{ inputs.workflowInput }}'
         $deployment.environment | Should -Be 'avm-validation'
         $step.with.githubVariables | Should -Be '${{ toJSON(vars) }}'
         $step.with.githubSecrets | Should -Be '${{ toJSON(secrets) }}'
         $workflow.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
+        $deploymentWorkflow.env.CI_KEY_VAULT_NAME | Should -Be '${{ vars.CI_KEY_VAULT_NAME }}'
         @($workflow.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
         @($deployment.env.Keys) | Should -Not -Contain 'AVM_CI_SECRETS'
     }
