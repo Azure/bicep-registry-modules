@@ -1,0 +1,66 @@
+name: "avm.template.module.deployment"
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        required: true
+      modulePath:
+        type: string
+        required: true
+      testCase:
+        type: string
+        required: true
+      tokenNamePrefix:
+        type: string
+        required: false
+
+env:
+  ARM_MGMTGROUP_ID: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
+  TOKEN_NAMEPREFIX: "${{ inputs.tokenNamePrefix || secrets.TOKEN_NAMEPREFIX }}"
+  CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
+
+permissions: {}
+
+jobs:
+  job_module_deploy_validation:
+    name: "Deploy [${{ fromJson(inputs.testCase).name }}] on [${{ fromJson(inputs.testCase).subscriptionName }}]"
+    environment: avm-validation
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: ${{ fromJson(inputs.testCase).concurrencyGroup }}
+      queue: max
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        with:
+          fetch-depth: 0
+      - name: "Set environment"
+        uses: ./.github/actions/templates/avm-setEnvironment
+        with:
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      - name: "Run deployment validation with test file [${{ fromJson(inputs.testCase).path }}]"
+        uses: ./.github/actions/templates/avm-validateModuleDeployment
+        with:
+          modulePath: "${{ inputs.modulePath }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}"
+          deploymentMetadataLocation: "WestEurope"
+          subscriptionIndex: "${{ fromJson(inputs.testCase).subscriptionIndex }}"
+          subscriptionKey: "${{ fromJson(inputs.testCase).subscriptionKey }}"
+          managementGroupId: "${{ vars.VALIDATE_MANAGEMENT_GROUP_ID || vars.ARM_MGMTGROUP_ID || secrets.VALIDATE_MANAGEMENT_GROUP_ID || secrets.ARM_MGMTGROUP_ID }}"
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+          customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
+          e2eIgnore: "${{ fromJson(inputs.testCase).e2eIgnore }}"
+          githubVariables: ${{ toJSON(vars) }}
+          githubSecrets: ${{ toJSON(secrets) }}
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          CI_KEY_VAULT_NAME: ${{ vars.CI_KEY_VAULT_NAME }}
+          TEST_SUBSCRIPTION_IDS: ${{ vars.VALIDATE_SUBSCRIPTION_IDS || vars.TEST_SUBSCRIPTION_IDS || secrets.VALIDATE_SUBSCRIPTION_IDS || secrets.TEST_SUBSCRIPTION_IDS }}
+          VALIDATE_CLIENT_ID: ${{ vars.VALIDATE_CLIENT_ID || secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ vars.VALIDATE_TENANT_ID || secrets.VALIDATE_TENANT_ID }}

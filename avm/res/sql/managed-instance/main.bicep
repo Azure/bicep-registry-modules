@@ -26,7 +26,7 @@ param skuName string = 'GP_Gen5'
 @description('Optional. The tier or edition of the particular SKU, e.g. Basic, Premium.')
 param skuTier string = 'GeneralPurpose'
 
-@description('Optional. Storage size in GB. Increments of 32 GB allowed only.')
+@description('Optional. Storage size in GB, from 32 to 32768 in increments of 32 GB.')
 @minValue(32)
 @maxValue(32768)
 param storageSizeInGB int = 32
