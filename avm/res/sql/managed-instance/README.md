@@ -63,7 +63,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimin'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -86,7 +86,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmimin"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -113,7 +113,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimin'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -138,7 +138,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmimax'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -281,7 +281,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmimax"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -477,7 +477,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmimax'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -622,7 +622,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmivln'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -674,7 +674,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmivln"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -736,7 +736,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmivln'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -790,7 +790,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   params: {
     // Required parameters
-    name: 'sqlmiwaf'
+    name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     administratorLogin: 'adminUserName'
@@ -900,7 +900,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "sqlmiwaf"
+      "value": "<name>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -1055,7 +1055,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
 using 'br/public:avm/res/sql/managed-instance:<version>'
 
 // Required parameters
-param name = 'sqlmiwaf'
+param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
@@ -1200,7 +1200,7 @@ param vulnerabilityAssessment = {
 | [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
 | [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
 | [`sourceManagedInstanceResourceId`](#parameter-sourcemanagedinstanceresourceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
-| [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB. Increments of 32 GB allowed only. |
+| [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB, from 32 to 32768 in increments of 32 GB. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timezoneId`](#parameter-timezoneid) | string | ID of the timezone. Allowed values are timezones supported by Windows. |
 | [`vCores`](#parameter-vcores) | int | The number of vCores. |
@@ -2380,7 +2380,7 @@ The resource identifier of the source managed instance associated with create op
 
 ### Parameter: `storageSizeInGB`
 
-Storage size in GB. Increments of 32 GB allowed only.
+Storage size in GB, from 32 to 32768 in increments of 32 GB.
 
 - Required: No
 - Type: int

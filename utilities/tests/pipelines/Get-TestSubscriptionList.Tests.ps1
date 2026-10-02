@@ -21,6 +21,7 @@ Describe 'Get-TestSubscriptionList' {
 
         $result.id | Should -Be $subscriptions.id
         $result.name | Should -Be $subscriptions.name
+        $result.index | Should -Be @(0, 1, 2)
     }
 
     It 'Keeps a single configured subscription unchanged' {
@@ -39,6 +40,33 @@ Describe 'Get-TestSubscriptionList' {
 
         $first.id | Should -Be $second.id
         ($first.id | Sort-Object) | Should -Be ($subscriptions.id | Sort-Object)
+        foreach ($record in $first) {
+            $record.id | Should -Be $subscriptions[$record.index].id
+        }
+    }
+
+    It 'Hashes only the canonical GUID, independently of names, order, seed or fallback source' {
+        $id = 'ABCDEF12-3456-7890-ABCD-EF1234567890'
+        $pool = @(
+            @{ id = $id; name = 'original-name' }
+            $subscriptions[0]
+        )
+        $first = @(Get-TestSubscriptionList -TestSubscriptionIds (ConvertTo-Json -InputObject $pool -Compress) -RandomSeed 42) |
+            Where-Object { $_.id -eq $id }
+        $pool = @(
+            $subscriptions[0]
+            @{ id = $id.ToLowerInvariant(); name = 'renamed' }
+        )
+        $second = @(Get-TestSubscriptionList -TestSubscriptionIds (ConvertTo-Json -InputObject $pool -Compress) -RandomSeed 17) |
+            Where-Object { $_.id -eq $id }
+        $fallback = Get-TestSubscriptionList -FallbackSubscriptionId $id.ToLowerInvariant()
+
+        $first.key | Should -Match '^[a-f0-9]{64}$'
+        $first.key | Should -BeExactly $second.key
+        $first.key | Should -BeExactly $fallback.key
+        $first.index | Should -Be 0
+        $second.index | Should -Be 1
+        $first.key | Should -Not -Be (Get-TestSubscriptionList -FallbackSubscriptionId $subscriptions[0].id).key
     }
 
     It 'Can vary the shuffled order between runs' {

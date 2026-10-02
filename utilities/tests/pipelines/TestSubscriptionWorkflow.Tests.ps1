@@ -39,10 +39,14 @@ Describe 'Test subscription workflow integration' {
             $workflowPath = Join-Path $repoRootPath '.github' 'workflows' "$workflowName.yml"
             $workflows[$workflowName] = ConvertFrom-Yaml -Yaml (Get-Content -Path $workflowPath -Raw)
         }
+        $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $actionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml'
         $action = ConvertFrom-Yaml -Yaml (Get-Content -Path $actionPath -Raw)
         $selectionStep = $action.runs.steps | Where-Object { $_.id -eq 'get-test-subscription' }
         $exceptionStep = $action.runs.steps | Where-Object { $_.id -eq 'set-oidc-exception' }
+        $matrixActionPath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-getModuleDeploymentMatrix' 'action.yml'
+        $matrixAction = ConvertFrom-Yaml -Yaml (Get-Content -Path $matrixActionPath -Raw)
+        $matrixStep = $matrixAction.runs.steps | Where-Object { $_.id -eq 'deployment-matrix' }
         $cleanupPath = Join-Path $repoRootPath '.github' 'workflows' 'platform.deployment.history.cleanup.yml'
         $cleanupWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $cleanupPath -Raw)
         $psrulePath = Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModulePSRule' 'action.yml'
@@ -58,6 +62,8 @@ Describe 'Test subscription workflow integration' {
         $environmentNames = @(
             'GITHUB_WORKSPACE', 'GITHUB_OUTPUT', 'TEST_SUBSCRIPTION_IDS', 'VALIDATE_SUBSCRIPTION_ID',
             'SUBSCRIPTION_SELECTION_SEED', 'SUBSCRIPTION_JOB_INDEX', 'SELECTED_SUBSCRIPTION_ID',
+            'PRESELECTED_SUBSCRIPTION_INDEX', 'PRESELECTED_SUBSCRIPTION_KEY',
+            'MODULE_PATH', 'MODULE_TEST_FILE_PATHS', 'DISPLAY_SUBSCRIPTION_NAMES',
             'AZURE_CREDENTIALS', 'TEST_SUBSCRIPTIONS', 'AVM_TEST_TENANT',
             'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID', 'CI_KEY_VAULT_NAME'
         )
@@ -82,11 +88,25 @@ Describe 'Test subscription workflow integration' {
         function Set-TestDeploymentEnvironment {
             param([hashtable] $Workflow, [hashtable] $Context)
 
-            $step = $Workflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+            $Workflow.jobs.job_module_deploy_validation.uses | Should -Be './.github/workflows/avm.template.module.deployment.yml'
+            $step = $deploymentWorkflow.jobs.job_module_deploy_validation.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
             foreach ($name in $step.env.Keys) {
                 [Environment]::SetEnvironmentVariable($name, (Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context))
             }
             $env:MANAGEMENT_GROUP_ID = Resolve-TestSettingExpression -Expression $step.with.managementGroupId -Context $Context
+        }
+
+        function Set-TestInitializationEnvironment {
+            param([hashtable] $Workflow, [hashtable] $Context)
+
+            $step = $Workflow.jobs.job_initialize_subscription_selection.steps | Where-Object { $_.id -eq 'deployment-matrix' }
+            foreach ($name in $step.env.Keys) {
+                [Environment]::SetEnvironmentVariable($name, (Resolve-TestSettingExpression -Expression $step.env[$name] -Context $Context))
+            }
+            $env:DISPLAY_SUBSCRIPTION_NAMES = [string] (
+                -not [string]::IsNullOrEmpty($Context['vars.VALIDATE_SUBSCRIPTION_IDS']) -or
+                -not [string]::IsNullOrEmpty($Context['vars.TEST_SUBSCRIPTION_IDS'])
+            )
         }
 
         function Get-TestAuthenticationScript {
@@ -114,6 +134,7 @@ Describe 'Test subscription workflow integration' {
     }
 
     BeforeEach {
+        $savedExitCode = $global:LASTEXITCODE
         $savedEnvironment = @{}
         foreach ($environmentName in $environmentNames) {
             $savedEnvironment[$environmentName] = [Environment]::GetEnvironmentVariable($environmentName)
@@ -130,6 +151,8 @@ Describe 'Test subscription workflow integration' {
         $env:VALIDATE_TENANT_ID = 'test-tenant'
         $env:MANAGEMENT_GROUP_ID = 'test-management-group'
         $env:SELECTED_SUBSCRIPTION_ID = $subscriptions[0].id
+        $env:MODULE_PATH = 'avm/res/example/module'
+        $env:MODULE_TEST_FILE_PATHS = '[{"path":"tests/e2e/defaults/main.test.bicep","name":"defaults","e2eIgnore":false},{"path":"tests/e2e/max/main.test.bicep","name":"max","e2eIgnore":false}]'
         $routingContext = @{
             'vars.VALIDATE_SUBSCRIPTION_IDS'       = $subscriptionJson
             'vars.VALIDATE_CLIENT_ID'              = 'variable-client'
@@ -151,35 +174,54 @@ Describe 'Test subscription workflow integration' {
         Mock Get-AzKeyVaultSecret { throw 'Unexpected Key Vault access.' }
         Mock Invoke-WebRequest { throw 'Unexpected network request.' }
         Mock Invoke-RestMethod { throw 'Unexpected network request.' }
+        Mock bicep {
+            $global:LASTEXITCODE = 0
+            '{"$schema":"https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#","resources":[]}'
+        }
     }
 
     AfterEach {
+        $global:LASTEXITCODE = $savedExitCode
         foreach ($environmentName in $environmentNames) {
             [Environment]::SetEnvironmentVariable($environmentName, $savedEnvironment[$environmentName])
         }
     }
 
-    It 'Wires the Actions variable and shared seed into <workflowName>' -ForEach @(
+    It 'Preselects subscriptions in the deployment environment before acquiring locks in <workflowName>' -ForEach @(
         @{ workflowName = 'avm.template.module' }
         @{ workflowName = 'avm.template.module.preview' }
         @{ workflowName = 'avm.template.module.publish' }
     ) {
         $workflow = $workflows[$workflowName]
         $initializer = $workflow.jobs.job_initialize_subscription_selection
-        $deployment = $workflow.jobs.job_module_deploy_validation
+        $caller = $workflow.jobs.job_module_deploy_validation
+        $deployment = $deploymentWorkflow.jobs.job_module_deploy_validation
         $deploymentStep = $deployment.steps | Where-Object { $_.uses -eq './.github/actions/templates/avm-validateModuleDeployment' }
+        $initializationStep = $initializer.steps | Where-Object { $_.id -eq 'deployment-matrix' }
 
-        $initializer.permissions.Count | Should -Be 0
-        $initializer.ContainsKey('environment') | Should -BeFalse
-        @($initializer.outputs.Keys) | Should -Be @('randomSeed')
-        $initializer.outputs.randomSeed | Should -Be '${{ steps.random-seed.outputs.randomSeed }}'
+        $initializer.permissions.Count | Should -Be 1
+        $initializer.permissions.contents | Should -Be 'read'
+        $initializer.environment | Should -Be 'avm-validation'
+        @($initializer.outputs.Keys | Sort-Object) | Should -Be @('deploymentMatrix', 'sharedScope')
+        $initializer.outputs.deploymentMatrix | Should -Be '${{ steps.deployment-matrix.outputs.deploymentMatrix }}'
+        $initializer.outputs.sharedScope | Should -Be '${{ steps.deployment-matrix.outputs.sharedScope }}'
+        $initializer.ContainsKey('concurrency') | Should -BeFalse
+        $initializationStep.uses | Should -Be './.github/actions/templates/avm-getModuleDeploymentMatrix'
+        $initializationStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
+        $initializationStep.env.VALIDATE_SUBSCRIPTION_ID | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_ID || secrets.VALIDATE_SUBSCRIPTION_ID }}'
+        $initializationStep.with.displaySubscriptionNames | Should -Be '${{ vars.VALIDATE_SUBSCRIPTION_IDS != '''' || vars.TEST_SUBSCRIPTION_IDS != '''' }}'
+        $initializer.steps[0].uses | Should -Match '^actions/checkout@'
+        $initializer.steps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
         $initializer.if | Should -Match "deploymentValidation == 'true'"
-        $deployment.needs | Should -Contain 'job_initialize_subscription_selection'
-        $deployment.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
+        $caller.needs | Should -Contain 'job_initialize_subscription_selection'
+        $caller.if | Should -Match "needs.job_initialize_subscription_selection.result == 'success'"
+        $caller.secrets | Should -Be 'inherit'
+        $caller.with.testCase | Should -Be '${{ toJSON(matrix.testCases) }}'
         ($workflow | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|VALIDATE_PERSISTENT_SUBSCRIPTION_ID'
         ($action | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
         ($psrule | ConvertTo-Json -Depth 20) | Should -Not -Match 'TEST_BAMI_|AVM_TEST_TENANT|github\.repository'
         $workflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
+        $deploymentWorkflow.env.ARM_MGMTGROUP_ID | Should -Be $managementGroupExpression
         $deploymentStep.with.managementGroupId | Should -Be $managementGroupExpression
         $selectionStep.env.MANAGEMENT_GROUP_ID | Should -Be '${{ inputs.managementGroupId }}'
         $deploymentStep.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
@@ -197,19 +239,95 @@ Describe 'Test subscription workflow integration' {
             $step.env.VALIDATE_SUBSCRIPTION_ID | Should -Be $deploymentStep.env.VALIDATE_SUBSCRIPTION_ID
             $step.env.TEST_SUBSCRIPTION_IDS | Should -Be $poolExpression
         }
-        $deploymentStep.with.subscriptionSelectionSeed | Should -Be '${{ needs.job_initialize_subscription_selection.outputs.randomSeed }}'
-        $deploymentStep.with.subscriptionJobIndex | Should -Be '${{ strategy.job-index }}'
+        $caller.strategy.matrix.testCases | Should -Be '${{ fromJson(needs.job_initialize_subscription_selection.outputs.deploymentMatrix) }}'
+        $deploymentStep.with.subscriptionIndex | Should -Be '${{ fromJson(inputs.testCase).subscriptionIndex }}'
+        $deploymentStep.with.subscriptionKey | Should -Be '${{ fromJson(inputs.testCase).subscriptionKey }}'
+        $deploymentStep.with.ContainsKey('subscriptionSelectionSeed') | Should -BeFalse
+        $deploymentStep.with.ContainsKey('subscriptionJobIndex') | Should -BeFalse
+        $selectionStep.env.PRESELECTED_SUBSCRIPTION_INDEX | Should -Be '${{ inputs.subscriptionIndex }}'
+        $selectionStep.env.PRESELECTED_SUBSCRIPTION_KEY | Should -Be '${{ inputs.subscriptionKey }}'
     }
 
-    It 'Generates a numeric seed without subscription data or Azure access' {
-        $seedStep = $workflows['avm.template.module'].jobs.job_initialize_subscription_selection.steps[0]
+    It 'Keeps selection identical through initialization and execution for each configuration source in <workflowName>' -ForEach @(
+        @{ workflowName = 'avm.template.module' }
+        @{ workflowName = 'avm.template.module.preview' }
+        @{ workflowName = 'avm.template.module.publish' }
+    ) {
+        foreach ($source in @(
+                'vars.VALIDATE_SUBSCRIPTION_IDS', 'vars.TEST_SUBSCRIPTION_IDS',
+                'secrets.VALIDATE_SUBSCRIPTION_IDS', 'secrets.TEST_SUBSCRIPTION_IDS',
+                'vars.VALIDATE_SUBSCRIPTION_ID', 'secrets.VALIDATE_SUBSCRIPTION_ID'
+            )) {
+            Clear-Content -Path $env:GITHUB_OUTPUT
+            Set-TestInitializationEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+            $records = @(Get-TestSubscriptionList -TestSubscriptionIds $env:TEST_SUBSCRIPTION_IDS -FallbackSubscriptionId $env:VALIDATE_SUBSCRIPTION_ID)
 
-        . ([scriptblock]::Create($seedStep.run))
-        $seed = (Get-StepOutput).randomSeed
+            . ([scriptblock]::Create($matrixStep.run))
+            (Get-StepOutput).sharedScope | Should -Be 'false'
+            $matrixOutput = (Get-StepOutput).deploymentMatrix
+            $matrix = @($matrixOutput | ConvertFrom-Json -AsHashtable)
 
-        $seed | Should -Match '^\d+$'
-        [int] $seed | Should -BeGreaterOrEqual 0
-        $seedStep.run | Should -Not -Match 'secrets\.|vars\.|Azure|AzContext'
+            $matrix.Count | Should -Be 2
+            foreach ($entry in $matrix) {
+                $selected = $records[$entry.subscriptionIndex]
+                $entry.subscriptionKey | Should -BeExactly $selected.key
+                $entry.concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($selected.key)"
+                if ($source -like 'vars.*SUBSCRIPTION_IDS') {
+                    $entry.subscriptionName | Should -BeExactly $selected.name
+                } else {
+                    $entry.subscriptionName | Should -Match '^Configured subscription \d+$'
+                    foreach ($record in $records) {
+                        $matrixOutput | Should -Not -Match ([regex]::Escape($record.id))
+                        $matrixOutput | Should -Not -Match ([regex]::Escape($record.name))
+                    }
+                }
+
+                Clear-Content -Path $env:GITHUB_OUTPUT
+                Set-TestDeploymentEnvironment -Workflow $workflows[$workflowName] -Context $routingContext
+                $env:PRESELECTED_SUBSCRIPTION_INDEX = [string] $entry.subscriptionIndex
+                $env:PRESELECTED_SUBSCRIPTION_KEY = $entry.subscriptionKey
+                $env:SUBSCRIPTION_SELECTION_SEED = 'not-used'
+                $env:SUBSCRIPTION_JOB_INDEX = 'not-used'
+                . ([scriptblock]::Create($selectionStep.run))
+                (Get-StepOutput).subscriptionId | Should -BeExactly $selected.id
+            }
+            $routingContext.Remove($source)
+        }
+        Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+        Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+    }
+
+    It 'Rejects reordered or replaced preselected records without login outputs or reselection' -ForEach @(
+        @{ mutation = 'reordered' }
+        @{ mutation = 'replaced' }
+    ) {
+        $record = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson)[1]
+        $env:PRESELECTED_SUBSCRIPTION_INDEX = [string] $record.index
+        $env:PRESELECTED_SUBSCRIPTION_KEY = $record.key
+        $changed = @($subscriptions[1], $subscriptions[0], $subscriptions[2])
+        if ($mutation -eq 'replaced') {
+            $changed = @($subscriptions[0], $subscriptions[2])
+        }
+        $env:TEST_SUBSCRIPTION_IDS = ConvertTo-Json -InputObject $changed -Compress
+
+        $errorRecord = { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw '*no longer matches the preselected subscription identity*' -PassThru
+
+        (Get-StepOutput).Count | Should -Be 0
+        $errorRecord.Exception.Message | Should -Not -Match $record.id
+    }
+
+    It 'Rejects incomplete or invalid preselection rather than falling back to random assignment' -ForEach @(
+        @{ index = ''; key = 'expected'; errorMessage = '*preselected subscription index is invalid*' }
+        @{ index = '0'; key = ''; errorMessage = '*preselected subscription identity*' }
+        @{ index = '-1'; key = 'expected'; errorMessage = '*preselected subscription index is invalid*' }
+        @{ index = '3'; key = 'expected'; errorMessage = '*preselected subscription index is invalid*' }
+        @{ index = 'invalid'; key = 'expected'; errorMessage = '*preselected subscription index is invalid*' }
+    ) {
+        $env:PRESELECTED_SUBSCRIPTION_INDEX = $index
+        $env:PRESELECTED_SUBSCRIPTION_KEY = $key
+
+        { . ([scriptblock]::Create($selectionStep.run)) } | Should -Throw $errorMessage
+        (Get-StepOutput).Count | Should -Be 0
     }
 
     It 'Assigns consecutive matrix jobs round-robin over the same shuffled pool' {
