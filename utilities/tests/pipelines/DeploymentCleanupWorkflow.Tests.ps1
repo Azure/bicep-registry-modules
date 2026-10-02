@@ -118,6 +118,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 'PartialFailure' {
                     throw "21:06:59 - The deployment '$Name' failed with error(s). (Code: DeploymentFailed) Inner error: StorageAccountAlreadyTaken. InvalidTemplateDeployment: reported preflight validation errors."
                 }
+                'DetailedFailure' { throw ($script:detailedFailureMessage -f $Name) }
                 'FailedResult' { return @{ ProvisioningState = 'Failed'; Outputs = @{} } }
                 'NoResult' { return }
                 'Running' { return @{ ProvisioningState = 'Running'; Outputs = @{} } }
@@ -126,6 +127,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
                 'RequestTimeout' { throw (Get-TestRequestTimeout -Format $script:timeoutFormat) }
                 'EmptyTimeout' { throw [System.Threading.Tasks.TaskCanceledException]::new('', (Get-TestRequestTimeout).InnerException) }
                 'TransportFailure' { throw [System.Net.Http.HttpRequestException]::new('The submission outcome is unknown: connection interrupted.') }
+                'AuthenticationFailure' {
+                    throw [System.UnauthorizedAccessException]::new('The submission outcome is unknown: authentication failed. (Code: DeploymentFailed)')
+                }
                 'Cancelled' { throw [System.OperationCanceledException]::new('Deployment cancelled') }
                 'TaskCancelled' { throw [System.Threading.Tasks.TaskCanceledException]::new('Deployment cancelled') }
                 'TimeoutWordingOnly' {
@@ -319,6 +323,9 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $templatePath = Join-Path $TestDrive 'max' 'main.test.json'
         Set-TestTemplateScope
         $script:outcomes = @('PartialFailure', 'Preflight', 'Preflight')
+        $script:detailedFailureMessage = "08:33:53 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). Status Message: " +
+        'At least one resource deployment operation failed. Please list deployment operations for details. Please see https://aka.ms/arm-deployment-operations for usage details. (Code: DeploymentFailed) - ' +
+        'The deployment request failed because it would bring the total number of vCores to 4, which exceeds the limit of 0 allowed for the requested hardware family in your subscription. (Code:ProvisioningDisabled)'
         $script:preflightFormat = 'Az'
         $script:timeoutFormat = 'Direct'
         $script:attemptNames = [System.Collections.Generic.List[string]]::new()
@@ -398,11 +405,13 @@ Describe 'Deployment submission and cleanup runtime integration' {
         }
     }
 
-    It 'Cleans t1 partial resources without waiting for uncreated t2/t3 using <format> rejection errors and actual action outputs' -ForEach @(
-        @{ format = 'Az' }
-        @{ format = 'Json' }
-        @{ format = 'AzErrorDetails' }
+    It 'Cleans t1 partial resources after <failure> without waiting for uncreated t2/t3 using <format> rejection errors and actual action outputs' -ForEach @(
+        @{ failure = 'PartialFailure'; format = 'Az' }
+        @{ failure = 'PartialFailure'; format = 'Json' }
+        @{ failure = 'PartialFailure'; format = 'AzErrorDetails' }
+        @{ failure = 'DetailedFailure'; format = 'Az' }
     ) {
+        $script:outcomes[0] = $failure
         $script:preflightFormat = $format
         { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*InvalidTemplateDeployment*'
         $outputs = Get-TestStepOutput
@@ -425,6 +434,58 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 60 }
         Should -Invoke Remove-AzKeyVault -Times 0 -Exactly
         ($messages | Out-String) | Should -Not -Match 'test-only-secret-not-for-logs'
+    }
+
+    It 'Retries detailed Azure failures within <limit> total attempts without changing parameters' -ForEach @(
+        @{ limit = 1 }, @{ limit = 2 }, @{ limit = 3 }
+    ) {
+        $script:outcomes = @('DetailedFailure', 'DetailedFailure', 'DetailedFailure', 'Succeeded')
+
+        $result = New-TemplateDeployment @deploymentInput -RetryLimit $limit
+
+        $result.Exception | Should -Be ($script:detailedFailureMessage -f $script:attemptNames[-1])
+        @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+        $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        $script:attemptNames.Count | Should -Be $limit
+        @($script:attemptNames | Select-Object -Unique).Count | Should -Be $limit
+        @($script:attemptRegions) | Should -Be (@('swedencentral') * $limit)
+        @($script:attemptBaseTimes | Select-Object -Unique).Count | Should -Be 1
+        Should -Invoke New-AzSubscriptionDeployment -Times $limit -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+        Should -Invoke Set-AzContext -Times $limit -Exactly -ParameterFilter { $Subscription -eq $subscriptionId }
+        Should -Invoke Start-Sleep -Times ($limit - 1) -Exactly -ParameterFilter { $Seconds -eq 5 }
+    }
+
+    It 'Retries a detailed terminal failure and returns the later successful attempt' {
+        $script:outcomes = @('DetailedFailure', 'Succeeded')
+
+        $result = New-TemplateDeployment @deploymentInput
+
+        $result.ContainsKey('Exception') | Should -BeFalse
+        $result.ContainsKey('DeploymentOutput') | Should -BeTrue
+        @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+        $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        $script:attemptNames.Count | Should -Be 2
+        @($script:attemptRegions) | Should -Be @('swedencentral', 'swedencentral')
+        Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+    }
+
+    It 'Does not retry a failure message with <reason>' -ForEach @(
+        @{ reason = 'a different deployment name'; match = "'{0}'"; replacement = "'another-deployment'" }
+        @{ reason = 'an unknown-outcome prefix'; match = '08:33:53 - '; replacement = 'The submission outcome is unknown: ' }
+        @{ reason = 'an in-progress state'; match = 'failed with error(s).'; replacement = 'is still running.' }
+        @{ reason = 'only a nested DeploymentFailed code'; match = '(Code: DeploymentFailed)'; replacement = '(Code: Unknown) Nested error: (Code: DeploymentFailed)' }
+        @{ reason = 'a failure code on an unrelated line'; match = ' (Code: DeploymentFailed)'; replacement = "`n(Code: DeploymentFailed)" }
+    ) {
+        $script:detailedFailureMessage = $script:detailedFailureMessage.Replace($match, $replacement)
+        $script:outcomes = @('DetailedFailure', 'Succeeded')
+
+        $result = New-TemplateDeployment @deploymentInput
+
+        $result.Exception | Should -Be ($script:detailedFailureMessage -f $script:attemptNames[0])
+        @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+        $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+        $script:attemptNames.Count | Should -Be 1
+        Should -Invoke Start-Sleep -Times 0 -Exactly
     }
 
     It 'Still cleans a marked preflight attempt when its record exists' {
@@ -854,7 +915,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
 
     It 'Preserves ambiguous <outcome> submission outcomes for strict cleanup' -ForEach @(
         @{ outcome = 'Unknown' }, @{ outcome = 'NoResult' }, @{ outcome = 'TransportFailure' }
-        @{ outcome = 'Running' }, @{ outcome = 'MissingState' }
+        @{ outcome = 'Running' }, @{ outcome = 'MissingState' }, @{ outcome = 'AuthenticationFailure' }
     ) {
         $script:outcomes = @($outcome, $outcome, $outcome)
         $result = New-TemplateDeployment @deploymentInput

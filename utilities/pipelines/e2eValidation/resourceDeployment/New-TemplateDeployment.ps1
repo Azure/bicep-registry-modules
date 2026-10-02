@@ -403,7 +403,7 @@ function New-TemplateDeploymentInner {
                     $preflightRejectedDeploymentNames += $deploymentName
                     Write-Verbose "Deployment [$deploymentName] was rejected by preflight validation; cleanup will check whether a deployment record exists." -Verbose
                 }
-                $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. \(Code: DeploymentFailed\)(?:\s|$)"
+                $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $_.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
                 if ($retryCount -ge $RetryLimit -or $unknownSubmission -or $errorKind -in @('Timeout', 'Transport')) {
