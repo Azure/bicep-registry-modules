@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "17711546466566151709"
+      "templateHash": "7283541681941744260"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -2334,7 +2334,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "11772580385118483765"
+              "templateHash": "9912814974174905590"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -2418,7 +2418,7 @@
             "managedInstance": {
               "existing": true,
               "type": "Microsoft.Sql/managedInstances",
-              "apiVersion": "2025-08-01-preview",
+              "apiVersion": "2024-05-01-preview",
               "name": "[parameters('managedInstanceName')]"
             },
             "storageAccount": {
@@ -2455,7 +2455,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('managedInstance', '2025-08-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
