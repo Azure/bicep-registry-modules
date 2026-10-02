@@ -162,7 +162,7 @@ Describe 'Generic module workflow' {
         $matrixStep.run | Should -Match ([regex]::Escape('-ExcludeMetadataChanges:($env:EVENT_NAME -ne ''pull_request'')'))
     }
 
-    It 'runs full validation only for internal pull requests' {
+    It 'limits optional pull request deployment validation to internal branches' {
         $preview = $workflow.jobs.call_module_preview
         $preview.if | Should -Match "github.event_name == 'push'"
         $preview.if | Should -Match 'github.event.pull_request.head.repo.full_name == github.repository'
@@ -277,6 +277,78 @@ Describe 'Generic module workflow' {
     }
 }
 
+Describe 'Generic module pull request opt-in' {
+
+    BeforeAll {
+        $workflowPath = Join-Path $repoRootPath '.github' 'workflows' 'avm.module.yml'
+        $workflow = ConvertFrom-Yaml -Yaml (Get-Content -LiteralPath $workflowPath -Raw)
+        $initialize = $workflow.jobs.job_initialize_pipeline
+        $matrixStep = $initialize.steps | Where-Object { $_.id -eq 'get-module-matrix' }
+
+        function Test-WorkflowExpression {
+            param(
+                [string] $Expression,
+                [string] $EventName = 'pull_request',
+                [string] $Action = 'synchronize',
+                [string[]] $Labels = @(),
+                [string] $AddedLabel = '',
+                [bool] $ManualDeployment = $true
+            )
+
+            $condition = $Expression.Replace('${{', '').Replace('}}', '').Trim()
+            $condition = $condition.Replace(
+                "case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, ",
+                "(`$EventName -eq 'workflow_dispatch' ? `$ManualDeployment : "
+            )
+            $condition = $condition -replace "contains\(github\.event\.pull_request\.labels\.\*\.name, ('[^']+')\)", '($Labels -contains $1)'
+            $condition = $condition.Replace('cancelled()', '$false').
+            Replace('github.repository', "'Azure/bicep-registry-modules'").
+            Replace('github.event_name', '$EventName').
+            Replace('github.event.action', '$Action').
+            Replace('github.event.label.name', '$AddedLabel').
+            Replace('&&', '-and').Replace('||', '-or').Replace('!=', '-ne').Replace('==', '-eq')
+            $condition = $condition -replace '(?<!\$)\btrue\b', '$true' -replace '(?<!\$)\bfalse\b', '$false'
+
+            return . ([scriptblock]::Create($condition))
+        }
+    }
+
+    It 'gates checks and e2e tests for <Name>' -ForEach @(
+        @{ Name = 'an unlabeled update'; Action = 'synchronize'; Labels = @(); AddedLabel = ''; Checks = $false; E2E = $false }
+        @{ Name = 'a checks-only update'; Action = 'synchronize'; Labels = @('PR: Run Checks'); AddedLabel = ''; Checks = $true; E2E = $false }
+        @{ Name = 'an e2e-only update'; Action = 'synchronize'; Labels = @('PR: Run E2E Tests'); AddedLabel = ''; Checks = $false; E2E = $false }
+        @{ Name = 'a both-labels update'; Action = 'synchronize'; Labels = @('PR: Run Checks', 'PR: Run E2E Tests'); AddedLabel = ''; Checks = $true; E2E = $true }
+        @{ Name = 'adding only the checks label'; Action = 'labeled'; Labels = @('PR: Run Checks'); AddedLabel = 'PR: Run Checks'; Checks = $true; E2E = $false }
+        @{ Name = 'adding only the e2e label'; Action = 'labeled'; Labels = @('PR: Run E2E Tests'); AddedLabel = 'PR: Run E2E Tests'; Checks = $false; E2E = $false }
+        @{ Name = 'adding the e2e label second'; Action = 'labeled'; Labels = @('PR: Run Checks', 'PR: Run E2E Tests'); AddedLabel = 'PR: Run E2E Tests'; Checks = $true; E2E = $true }
+        @{ Name = 'adding the checks label second'; Action = 'labeled'; Labels = @('PR: Run Checks', 'PR: Run E2E Tests'); AddedLabel = 'PR: Run Checks'; Checks = $true; E2E = $true }
+        @{ Name = 'adding an unrelated label with checks enabled'; Action = 'labeled'; Labels = @('PR: Run Checks', 'unrelated'); AddedLabel = 'unrelated'; Checks = $false; E2E = $false }
+        @{ Name = 'adding an unrelated label with both opt-ins'; Action = 'labeled'; Labels = @('PR: Run Checks', 'PR: Run E2E Tests', 'unrelated'); AddedLabel = 'unrelated'; Checks = $false; E2E = $false }
+    ) {
+        $context = @{
+            Action     = $Action
+            Labels     = $Labels
+            AddedLabel = $AddedLabel
+        }
+        $runChecks = Test-WorkflowExpression -Expression $initialize.if @context
+        $runDeployment = Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION @context
+
+        $runChecks | Should -Be $Checks
+        ($runChecks -and $runDeployment) | Should -Be $E2E
+    }
+
+    It 'preserves <EventName> deployment validation with manual input <ManualDeployment>' -ForEach @(
+        @{ EventName = 'push'; ManualDeployment = $false; Expected = $true }
+        @{ EventName = 'push'; ManualDeployment = $true; Expected = $true }
+        @{ EventName = 'workflow_dispatch'; ManualDeployment = $false; Expected = $false }
+        @{ EventName = 'workflow_dispatch'; ManualDeployment = $true; Expected = $true }
+    ) {
+        Test-WorkflowExpression -Expression $initialize.if -EventName $EventName | Should -BeTrue
+        Test-WorkflowExpression -Expression $matrixStep.env.DEPLOYMENT_VALIDATION -EventName $EventName -ManualDeployment $ManualDeployment |
+            Should -Be $Expected
+    }
+}
+
 Describe 'Generic module pull request matrix' {
 
     BeforeAll {
@@ -351,8 +423,12 @@ Describe 'Generic module pull request matrix' {
         $global:LASTEXITCODE = $savedExitCode
     }
 
-    It 'selects metadata-only changes for a pull request' {
+    It 'selects metadata-only pull request changes with deployment validation <DeploymentValidation>' -ForEach @(
+        @{ DeploymentValidation = 'false' }
+        @{ DeploymentValidation = 'true' }
+    ) {
         $env:EVENT_NAME = 'pull_request'
+        $env:DEPLOYMENT_VALIDATION = $DeploymentValidation
 
         $outputs = Invoke-MatrixStep
 
@@ -361,7 +437,8 @@ Describe 'Generic module pull request matrix' {
         $outputs.hasModules | Should -Be 'true'
         $outputs.includeAllVersionedModules | Should -Be 'false'
         @(($outputs.moduleMatrix | ConvertFrom-Json).include.modulePath) | Should -Be @('avm/res/test/module')
-        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be 'true'
+        ($outputs.workflowInput | ConvertFrom-Json).staticValidation | Should -Be 'true'
+        ($outputs.workflowInput | ConvertFrom-Json).deploymentValidation | Should -Be $DeploymentValidation
     }
 
     It 'still excludes metadata-only changes on pushes' {
