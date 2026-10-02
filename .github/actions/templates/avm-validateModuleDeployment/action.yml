@@ -128,12 +128,9 @@ runs:
       run: |
         . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-TestSubscriptionList.ps1')
 
-        if ($env:AVM_TEST_TENANT -ceq 'bami') {
-          foreach ($name in @('TEST_SUBSCRIPTION_IDS', 'VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID', 'MANAGEMENT_GROUP_ID')) {
-            if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
-              throw "Missing BAMI configuration for [$name]."
-            }
-          }
+        if (-not [string]::IsNullOrEmpty($env:TEST_SUBSCRIPTION_IDS) -and
+            [string]::IsNullOrWhiteSpace($env:TEST_SUBSCRIPTION_IDS)) {
+          throw 'The configured test subscription pool must not contain only whitespace.'
         }
         $functionInput = @{
           TestSubscriptionIds    = $env:TEST_SUBSCRIPTION_IDS
@@ -174,21 +171,42 @@ runs:
             'avm/res/azure-stack-hci/virtual-machine-instance'   # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/hybrid-container-service/provisioned-cluster-instance' # Failing on resource deletion when trying to delete RBAC at subscription level
           )
-          if ($env:AVM_TEST_TENANT -ceq 'bami' -and @(
+          if (@(
             $exceptionModulePaths | Where-Object { $modulePath -eq $_ -or $modulePath.StartsWith("$_/") }
           ).Count -gt 0) {
-            throw "Missing BAMI candidate authentication configuration: the AZURE_CREDENTIALS exception is not supported for [$modulePath]."
-          }
-          if ($exceptionModulePaths.Contains($modulePath)) {
             $oidcException = 'true'
             Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
           } else {
+            foreach ($name in @('VALIDATE_CLIENT_ID', 'VALIDATE_TENANT_ID')) {
+              if ([string]::IsNullOrWhiteSpace([Environment]::GetEnvironmentVariable($name))) {
+                throw "OIDC authentication requires [$name]."
+              }
+            }
             $oidcException = 'false'
             Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
           }
 
           if ($oidcException -eq 'true') {
-            $credentials = ConvertFrom-Json -InputObject $env:AZURE_CREDENTIALS -AsHashtable -ErrorAction Stop
+            if ([string]::IsNullOrWhiteSpace($env:AZURE_CREDENTIALS)) {
+              throw 'This module requires AZURE_CREDENTIALS for service principal authentication.'
+            }
+            try {
+              $credentials = ConvertFrom-Json -InputObject $env:AZURE_CREDENTIALS -AsHashtable -NoEnumerate -ErrorAction Stop
+            } catch [System.ArgumentException] {
+              throw 'AZURE_CREDENTIALS must be a valid JSON object.'
+            }
+            if ($credentials -isnot [System.Collections.IDictionary]) {
+              throw 'AZURE_CREDENTIALS must be a JSON object.'
+            }
+            foreach ($name in @('clientId', 'clientSecret', 'tenantId')) {
+              if ($credentials[$name] -isnot [string] -or [string]::IsNullOrWhiteSpace($credentials[$name])) {
+                throw "AZURE_CREDENTIALS requires a non-empty string [$name]."
+              }
+            }
+            if (-not [string]::IsNullOrEmpty($env:VALIDATE_TENANT_ID) -and
+                $credentials['tenantId'] -ine $env:VALIDATE_TENANT_ID) {
+              throw 'AZURE_CREDENTIALS tenantId must match the configured VALIDATE_TENANT_ID.'
+            }
             $credentials['subscriptionId'] = $env:SELECTED_SUBSCRIPTION_ID
             $credentialsJson = ConvertTo-Json -InputObject $credentials -Depth 10 -Compress
             Write-Output "::add-mask::$credentialsJson"
