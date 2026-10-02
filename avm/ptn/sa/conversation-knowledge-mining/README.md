@@ -14,7 +14,6 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 
 > **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
-
 You can reference the module as follows:
 ```bicep
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
@@ -168,6 +167,184 @@ The following section provides usage examples for the module, which were used to
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/conversation-knowledge-mining:<version>`.
+
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+
+### Example 1: _Sandbox configuration with default parameter values_
+
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) with the required AI service location and an explicit solution name and primary location. All other optional parameters use their defaults for a Sandbox environment.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/sandbox]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    location: '<location>'
+    solutionName: '<solutionName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param location = '<location>'
+param solutionName = '<solutionName>'
+```
+
+</details>
+<p>
+
+### Example 2: _WAF-aligned configuration with default parameter values_
+
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) with the required AI service location, an explicit solution name and primary location, scalability, telemetry, monitoring, private networking, redundancy, and VM administrator credentials. All other optional parameters use their defaults.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
+  params: {
+    // Required parameters
+    azureAiServiceLocation: '<azureAiServiceLocation>'
+    // Non-required parameters
+    enableMonitoring: true
+    enablePrivateNetworking: true
+    enableRedundancy: true
+    enableScalability: true
+    enableTelemetry: true
+    location: '<location>'
+    solutionName: '<solutionName>'
+    vmAdminPassword: '<vmAdminPassword>'
+    vmAdminUsername: 'adminuser'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "azureAiServiceLocation": {
+      "value": "<azureAiServiceLocation>"
+    },
+    // Non-required parameters
+    "enableMonitoring": {
+      "value": true
+    },
+    "enablePrivateNetworking": {
+      "value": true
+    },
+    "enableRedundancy": {
+      "value": true
+    },
+    "enableScalability": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "solutionName": {
+      "value": "<solutionName>"
+    },
+    "vmAdminPassword": {
+      "value": "<vmAdminPassword>"
+    },
+    "vmAdminUsername": {
+      "value": "adminuser"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
+
+// Required parameters
+param azureAiServiceLocation = '<azureAiServiceLocation>'
+// Non-required parameters
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableRedundancy = true
+param enableScalability = true
+param enableTelemetry = true
+param location = '<location>'
+param solutionName = '<solutionName>'
+param vmAdminPassword = '<vmAdminPassword>'
+param vmAdminUsername = 'adminuser'
+```
+
+</details>
+<p>
 
 ## Parameters
 

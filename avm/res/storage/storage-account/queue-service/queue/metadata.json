@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Storage Account - Queue",
   "moduleDescription": "AVM Child Module for Storage Account - Queue",
-  "telemetryIdPrefix": "46d3xbcp.res.storage-queue",
+  "telemetryIdPrefix": "46d3xbcp.res.5be7e12",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.storage-queue"],
   "canonicalType": "Microsoft.Storage/storageAccounts/queueServices/queues"
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5525127904761961960"
+      "templateHash": "16215506195613098787"
     },
     "name": "Azd Machine Learning workspace",
     "description": "DEPRECATED - Create a machine learning workspace, configure the key vault access policy and assign role permissions to the machine learning instance.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -146,6 +146,10 @@
       }
     }
   },
+  "variables": {
+    "$fxv#0": "46d3xbcp.ptn.14f3c1d",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
+  },
   "resources": {
     "keyVault::keyVaultAccess": {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
@@ -173,7 +177,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.azd-mlproject.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

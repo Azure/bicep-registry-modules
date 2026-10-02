@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Bastion Host",
   "moduleDescription": "AVM Resource Module for Bastion Host",
-  "telemetryIdPrefix": "46d3xbcp.res.network-bastionhost",
+  "telemetryIdPrefix": "46d3xbcp.res.543f036",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-bastionhost"],
   "canonicalType": "Microsoft.Network/bastionHosts",
   "owners": ["krbar"]
 }

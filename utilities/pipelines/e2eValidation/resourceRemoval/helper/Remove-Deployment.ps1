@@ -18,6 +18,9 @@ Optional. The ID of the management group to fetch deployments from. Relevant for
 .PARAMETER DeploymentName(s)
 Optional. The name(s) of the deployment(s). Combined with resources provide via the resource Id(s).
 
+.PARAMETER PreflightRejectedDeploymentNames
+Optional. Attempt names rejected by preflight validation. Real deployment records are still resolved and cleaned.
+
 .PARAMETER ResourceId(s)
 Optional. The resource Id(s) of the resources to remove. Combined with resources found via the deployment name(s).
 
@@ -49,6 +52,9 @@ function Remove-Deployment {
         [string[]] $DeploymentNames = @(),
 
         [Parameter(Mandatory = $false)]
+        [string[]] $PreflightRejectedDeploymentNames = @(),
+
+        [Parameter(Mandatory = $false)]
         [string[]] $ResourceIds = @(),
 
         [Parameter(Mandatory = $false)]
@@ -73,26 +79,25 @@ function Remove-Deployment {
     }
 
     process {
-        $azContext = Get-AzContext
+        if (@($PreflightRejectedDeploymentNames | Where-Object { $_ -notin $DeploymentNames }).Count -gt 0) {
+            throw 'Preflight rejection metadata contains names outside the supplied deployments.'
+        }
+        $azContext = Get-AzContext -ErrorAction Stop
 
         $deployedTargetResources = $ResourceIds
+        $resolveResult = @{}
 
         if ($DeploymentNames.Count -gt 0) {
             # Prepare data
             # ============
             $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath
 
-            # Fundamental checks
-            if ($deploymentScope -eq 'resourcegroup' -and -not (Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction 'SilentlyContinue')) {
-                Write-Verbose "Resource group [$ResourceGroupName] does not exist (anymore). Skipping removal of its contained resources" -Verbose
-                return
-            }
-
             # Fetch deployments
             # =================
             $deploymentsInputObject = @{
-                DeploymentNames = $DeploymentNames
-                Scope           = $deploymentScope
+                DeploymentNames                  = $DeploymentNames
+                PreflightRejectedDeploymentNames = $PreflightRejectedDeploymentNames
+                Scope                            = $deploymentScope
             }
             if (-not [String]::IsNullOrEmpty($ResourceGroupName)) {
                 $deploymentsInputObject['resourceGroupName'] = $ResourceGroupName
@@ -111,7 +116,9 @@ function Remove-Deployment {
         Write-Verbose ('Total number of deployment target resources after fetching deployments [{0}]' -f $deployedTargetResources.Count) -Verbose
 
         if (-not $deployedTargetResources) {
-            # Nothing to do
+            if ($resolveResult.resolveError) {
+                throw ('The following error was thrown while resolving the original deployment names: [{0}]' -f $resolveResult.resolveError)
+            }
             return
         }
 

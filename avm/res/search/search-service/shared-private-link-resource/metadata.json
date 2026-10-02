@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Search Service - Shared Private Link Resource",
   "moduleDescription": "AVM Child Module for Search Service - Shared Private Link Resource",
-  "telemetryIdPrefix": "46d3xbcp.res.search-searchsvc-sharedprivlinkres",
+  "telemetryIdPrefix": "46d3xbcp.res.0ba7be3",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.search-searchsvc-sharedprivlinkres"],
   "canonicalType": "Microsoft.Search/searchServices/sharedPrivateLinkResources"
 }

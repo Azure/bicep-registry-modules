@@ -28,7 +28,7 @@ param skuTier string = 'GeneralPurpose'
 
 @description('Optional. Storage size in GB. Increments of 32 GB allowed only.')
 @minValue(32)
-@maxValue(8192)
+@maxValue(32768)
 param storageSizeInGB int = 32
 
 @description('Optional. The number of vCores.')
@@ -90,15 +90,15 @@ param restorePointInTime string?
 @description('Optional. The resource identifier of the source managed instance associated with create operation of this instance.')
 param sourceManagedInstanceResourceId string?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The diagnostic settings of the service. If neither metrics nor logs are specified, all metrics & logs are configured by default. If only one of them is specified, the other one will not be configured.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -108,7 +108,7 @@ param tags resourceInput<'Microsoft.Sql/managedInstances@2023-08-01'>.tags?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.6.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.7.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -238,9 +238,11 @@ var maintenanceConfigurationId = maintenanceWindow == 'Custom1' || maintenanceWi
 
 var enableReferencedModulesTelemetry bool = false
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -257,7 +259,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2025-01-01' = {
   name: name
   location: location
   tags: tags

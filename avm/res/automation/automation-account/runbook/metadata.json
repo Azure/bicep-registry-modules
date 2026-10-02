@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Automation Account - Runbook",
   "moduleDescription": "AVM Child Module for Automation Account - Runbook",
-  "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-runbook",
+  "telemetryIdPrefix": "46d3xbcp.res.497cce1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.aut-autacct-runbook"],
   "canonicalType": "Microsoft.Automation/automationAccounts/runbooks"
 }

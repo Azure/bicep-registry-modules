@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "API Management Service - Product Group",
   "moduleDescription": "AVM Child Module for API Management Service - Product Group",
-  "telemetryIdPrefix": "46d3xbcp.res.apimgmt-productgroup",
+  "telemetryIdPrefix": "46d3xbcp.res.1bda9da",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.apimgmt-productgroup"],
   "canonicalType": "Microsoft.ApiManagement/service/products/groups"
 }

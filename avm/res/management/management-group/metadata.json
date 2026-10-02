@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Management Group",
   "moduleDescription": "AVM Resource Module for Management Group",
-  "telemetryIdPrefix": "46d3xbcp.res.management-managementgroup",
+  "telemetryIdPrefix": "46d3xbcp.res.07588e9",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.management-managementgroup"],
   "alternativeNames": ["MG"],
   "canonicalType": "Microsoft.Management/managementGroups",
   "owners": ["fblix"]

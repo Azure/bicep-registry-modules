@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Automation Account - Hybrid Runbook Worker Group - Hybrid Runb Wrkr",
   "moduleDescription": "AVM Child Module for Automation Account - Hybrid Runbook Worker Group - Hybrid Runb Wrkr",
-  "telemetryIdPrefix": "46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo",
+  "telemetryIdPrefix": "46d3xbcp.res.d5e33fe",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.aut-autacct-hybrunbkwrkrgrphybrubo"],
   "canonicalType": "Microsoft.Automation/automationAccounts/hybridRunbookWorkerGroups/hybridRunbookWorkers"
 }

@@ -3440,7 +3440,16 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.6.1` | Remote reference |
+| `br/public:avm/res/network/azure-firewall:0.10.1` | Remote reference |
+| `br/public:avm/res/network/express-route-gateway:0.8.0` | Remote reference |
+| `br/public:avm/res/network/p2s-vpn-gateway:0.1.3` | Remote reference |
+| `br/public:avm/res/network/p2s-vpn-gateway:0.1.4` | Remote reference |
+| `br/public:avm/res/network/virtual-hub:0.4.3` | Remote reference |
+| `br/public:avm/res/network/virtual-wan:0.4.3` | Remote reference |
+| `br/public:avm/res/network/vpn-gateway:0.3.0` | Remote reference |
+| `br/public:avm/res/network/vpn-server-configuration:0.1.2` | Remote reference |
+| `br/public:avm/res/network/vpn-server-configuration:0.2.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.7.0` | Remote reference |
 
 ## Data Collection
 

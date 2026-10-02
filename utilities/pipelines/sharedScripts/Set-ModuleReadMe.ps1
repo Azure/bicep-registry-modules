@@ -1124,7 +1124,7 @@ function Build-OrderedJSONObject {
         } | ConvertTo-Json -Depth 99)
 
     # [3/8] If we have at least one required and one other parameter we want to add a comment
-    if ($RequiredParametersList.Count -ge 1 -and $OrderedJSONParameters.Keys.Count -ge 2) {
+    if ($RequiredParametersList.Count -ge 1 -and $orderedJSONParameters.PSBase.Keys.Count -ge 2) {
 
         $jsonExampleArray = $jsonExample -split '\n'
 
@@ -2040,13 +2040,6 @@ function Initialize-ReadMe {
         $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
     }
 
-    # Orphaned readme existing?
-    $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
-    $isOrphaned = Test-Path $orphanedReadMeFilePath
-    if ($isOrphaned) {
-        $orphanedReadMeContent = Get-Content -Path $orphanedReadMeFilePath | ForEach-Object { "> $_".Trim() }
-    }
-
     # Moved readme existing?
     $movedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'MOVED-TO-AVM.md'
     $isMovedToAVM = Test-Path $movedReadMeFilePath
@@ -2090,8 +2083,6 @@ function Initialize-ReadMe {
         '',
         ($isDeprecated ? $deprecatedModuleFileContent : $null),
         ($isDeprecated ? '' : $null),
-        ($isOrphaned ? $orphanedReadMeContent : $null),
-        ($isOrphaned ? '' : $null),
         ($isMovedToAVM ? $movedReadMeContent : $null),
         ($isMovedToAVM ? '' : $null),
         $moduleDescription,

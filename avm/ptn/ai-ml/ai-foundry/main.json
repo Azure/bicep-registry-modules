@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "14649929880309905643"
+      "templateHash": "6632607736268892832"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -702,8 +702,10 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.0cdb388",
     "resourcesName": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('baseName'), parameters('baseUniqueName')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "projectName": "[if(not(empty(tryGet(tryGet(parameters('aiFoundryConfiguration'), 'project'), 'name'))), parameters('aiFoundryConfiguration').project.name, format('proj-{0}', variables('resourcesName')))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]",
     "createCapabilityHosts": "[and(coalesce(tryGet(parameters('aiFoundryConfiguration'), 'createCapabilityHosts'), false()), parameters('includeAssociatedResources'))]"
   },
   "resources": {
@@ -711,7 +713,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.aiml-aifoundry.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -3735,7 +3737,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2692735394080255994"
+              "templateHash": "6954034207179674914"
             }
           },
           "definitions": {

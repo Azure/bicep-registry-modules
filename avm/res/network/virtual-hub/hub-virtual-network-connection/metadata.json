@@ -2,6 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Virtual Hub - Hub Virtual Network Connection",
   "moduleDescription": "AVM Child Module for Virtual Hub - Hub Virtual Network Connection",
-  "telemetryIdPrefix": "46d3xbcp.res.network-virtualhub-hubvirtualnetwork",
+  "telemetryIdPrefix": "46d3xbcp.res.9d361c9",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.network-virtualhub-hubvirtualnetwork"],
   "canonicalType": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections"
 }

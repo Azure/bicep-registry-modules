@@ -18,9 +18,11 @@ param partnerNamespaceResourceID string = ''
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.servicebus-namespace-drconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceGroup().location), 0, 4)}'
+  name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, resourceGroup().location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

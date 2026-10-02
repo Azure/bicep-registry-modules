@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Hybrid Compute Machine",
   "moduleDescription": "AVM Resource Module for Hybrid Compute Machine",
-  "telemetryIdPrefix": "46d3xbcp.res.hybridcompute-machine",
+  "telemetryIdPrefix": "46d3xbcp.res.d384932",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.hybridcompute-machine"],
   "canonicalType": "Microsoft.HybridCompute/machines",
   "owners": ["chirag1603", "bniranjanbhat", "PrithwiTech"]
 }

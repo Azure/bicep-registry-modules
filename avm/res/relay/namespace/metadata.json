@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Relay Namespace",
   "moduleDescription": "AVM Resource Module for Relay Namespace",
-  "telemetryIdPrefix": "46d3xbcp.res.relay-namespace",
+  "telemetryIdPrefix": "46d3xbcp.res.68e2ca1",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.relay-namespace"],
   "canonicalType": "Microsoft.Relay/namespaces",
   "owners": ["krbar"]
 }

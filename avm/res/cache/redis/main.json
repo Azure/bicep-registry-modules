@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "8318589209871386297"
+      "templateHash": "13446593670926219943"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache.\n\nPlease note that Azure Cache for Redis announced its retirement timeline for all SKUs ([ref](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-whats-new)).\nWe recommend moving your existing Azure Cache for Redis instances to Azure Managed Redis as soon as you can using the `avm/res/cache/redis-enterprise` module.\n\n**Important retirement dates for the Basic, Standard, and Premium tiers deployed by this module (Azure Public Cloud):**\n\n| Date | Description |\n| --- | --- |\n| April 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n\n**Important retirement dates for Azure Government and Microsoft Azure operated by 21Vianet (Azure in China):**\n\n| Date | Description |\n| --- | --- |\n| October 1, 2026 | Creating new caches in Basic, Standard, or Premium tiers is blocked for new customers. |\n| April 1, 2027 | Creating new caches in Basic, Standard, or Premium tiers is blocked for existing customers. |\n| October 1, 2028 | Remaining caches in Basic, Standard, or Premium tiers are turned off. |\n"
@@ -1089,6 +1089,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "46d3xbcp.res.23583fc",
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
@@ -1099,14 +1100,15 @@
       "Redis Cache Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e0f68234-74aa-48ed-b826-c38b57376e17')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
-      "name": "[format('46d3xbcp.res.cache-redis.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -2378,7 +2380,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "15014180728870331637"
+              "templateHash": "11494909369095381516"
             }
           },
           "definitions": {

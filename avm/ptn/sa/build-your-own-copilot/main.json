@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12132188846810950070"
+      "templateHash": "15498061393061990423"
     },
     "name": "Build Your Own Copilot Solution Accelerator",
     "description": "This module deploys a comprehensive Build Your Own Copilot solution accelerator with Azure AI Services, CosmosDB, SQL Database, Key Vault, Storage Account, Azure AI Search, and a containerized web application. The solution includes AI Foundry services for GPT and embedding models, supporting both private and public networking configurations with optional WAF-aligned features for monitoring, scalability, and redundancy.\n\n|**Post-Deployment Step** |\n|-------------|\n| After completing the deployment, follow the steps in the [Post-Deployment Guide](https://github.com/microsoft/Build-your-own-copilot-Solution-Accelerator/blob/main/docs/AVMPostDeploymentGuide.md) to configure and verify your environment. |\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -248,6 +248,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "46d3xbcp.ptn.b5e681b",
     "solutionLocation": "[if(empty(parameters('location')), resourceGroup().location, parameters('location'))]",
     "solutionSuffix": "[toLower(trim(replace(replace(replace(replace(replace(replace(format('{0}{1}', parameters('solutionName'), parameters('solutionUniqueToken')), '-', ''), '_', ''), '.', ''), '/', ''), ' ', ''), '*', '')))]",
     "appEnvironment": "Prod",
@@ -388,7 +389,8 @@
     "sqlDbName": "[format('sqldb-{0}', variables('solutionSuffix'))]",
     "webServerFarmResourceName": "[format('asp-{0}', variables('solutionSuffix'))]",
     "webSiteResourceName": "[format('app-{0}', variables('solutionSuffix'))]",
-    "aiSearchName": "[format('srch-{0}', variables('solutionSuffix'))]"
+    "aiSearchName": "[format('srch-{0}', variables('solutionSuffix'))]",
+    "telemetryIdPrefix": "[variables('$fxv#0')]"
   },
   "resources": {
     "resourceGroupTags": {
@@ -443,7 +445,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.ptn.sa-buildyourowncopilot.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, variables('solutionLocation')), 0, 4)), 64)]",
+      "name": "[format('{0}.{1}.{2}', variables('telemetryIdPrefix'), replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, variables('solutionLocation')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -26385,7 +26387,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2237623315848229073"
+              "templateHash": "13599291425099468482"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -27598,7 +27600,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.47.16.16243",
-                      "templateHash": "10089327033794726280"
+                      "templateHash": "10053709217619410109"
                     }
                   },
                   "definitions": {
@@ -29309,7 +29311,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.47.16.16243",
-                              "templateHash": "6224369657838034788"
+                              "templateHash": "14503775739765014610"
                             }
                           },
                           "definitions": {

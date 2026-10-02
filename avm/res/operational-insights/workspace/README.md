@@ -69,7 +69,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwadv001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.25'
     dataExports: [
       {
         destination: {
@@ -373,7 +373,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.25"
     },
     "dataExports": {
       "value": [
@@ -701,7 +701,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwadv001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.25'
 param dataExports = [
   {
     destination: {
@@ -1241,7 +1241,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmax001'
     // Non-required parameters
-    dailyQuotaGb: '<dailyQuotaGb>'
+    dailyQuotaGb: '0.5'
     dataSources: [
       {
         eventLogName: 'Application'
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     // Non-required parameters
     "dailyQuotaGb": {
-      "value": "<dailyQuotaGb>"
+      "value": "0.5"
     },
     "dataSources": {
       "value": [
@@ -1921,7 +1921,7 @@ using 'br/public:avm/res/operational-insights/workspace:<version>'
 // Required parameters
 param name = 'oiwmax001'
 // Non-required parameters
-param dailyQuotaGb = '<dailyQuotaGb>'
+param dailyQuotaGb = '0.5'
 param dataSources = [
   {
     eventLogName: 'Application'

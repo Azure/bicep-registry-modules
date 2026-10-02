@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "AZD - Monitoring",
   "moduleDescription": "AVM Pattern Module for AZD - Monitoring",
-  "telemetryIdPrefix": "46d3xbcp.ptn.azd-monitoring",
+  "telemetryIdPrefix": "46d3xbcp.ptn.09e9dd4",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.ptn.azd-monitoring"],
   "alternativeNames": ["Azure Developer CLI - Monitoring"],
   "canonicalType": "azd/monitoring",
   "owners": ["JeffreyCA"]

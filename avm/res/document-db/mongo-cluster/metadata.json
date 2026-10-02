@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/Azure/azure-verified-modules-tools/main/src/Avm.Authoring/Resources/Schemas/v1/avm-module-metadata.schema.json",
   "moduleDisplayName": "Cosmos DB for MongoDB (vCore)",
   "moduleDescription": "AVM Resource Module for Cosmos DB for MongoDB (vCore)",
-  "telemetryIdPrefix": "46d3xbcp.res.documentdb-mongocluster",
+  "telemetryIdPrefix": "46d3xbcp.res.cf84039",
+  "alternativeTelemetryIdPrefixes": ["46d3xbcp.res.documentdb-mongocluster"],
   "canonicalType": "Microsoft.DocumentDB/mongoClusters",
   "owners": ["sinedied"]
 }
