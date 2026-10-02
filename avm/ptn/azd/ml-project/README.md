@@ -51,6 +51,88 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/azd/ml-project:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mlProject 'br/public:avm/ptn/azd/ml-project:<version>' = {
+  params: {
+    // Required parameters
+    hubResourceId: '<hubResourceId>'
+    keyVaultName: '<keyVaultName>'
+    name: 'mlpmin001'
+    userAssignedName: 'mlpminuai001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "hubResourceId": {
+      "value": "<hubResourceId>"
+    },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
+    "name": {
+      "value": "mlpmin001"
+    },
+    "userAssignedName": {
+      "value": "mlpminuai001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/azd/ml-project:<version>'
+
+// Required parameters
+param hubResourceId = '<hubResourceId>'
+param keyVaultName = '<keyVaultName>'
+param name = 'mlpmin001'
+param userAssignedName = 'mlpminuai001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
