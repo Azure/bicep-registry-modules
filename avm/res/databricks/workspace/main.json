@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "578122209245310920"
+      "templateHash": "2836790893206817782"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -1092,7 +1092,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16649955668740488228"
+              "templateHash": "11913795046786283149"
             }
           },
           "parameters": {
@@ -1163,7 +1163,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "16649955668740488228"
+              "templateHash": "11913795046786283149"
             }
           },
           "parameters": {

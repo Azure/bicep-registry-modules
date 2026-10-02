@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "5349231524501643652"
+      "templateHash": "8989439571124758442"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -3557,7 +3557,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3955980680596352056"
+              "templateHash": "17724832572728919639"
             }
           },
           "definitions": {

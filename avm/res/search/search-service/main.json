@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "7022399176033672399"
+      "templateHash": "11517506044461111986"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -1887,7 +1887,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "13388062897833845351"
+              "templateHash": "4536754760662241313"
             }
           },
           "definitions": {

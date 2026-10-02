@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "6409473350505053803"
+      "templateHash": "14691336471084490971"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -7413,7 +7413,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "3196846249547589955"
+              "templateHash": "13077193496243058077"
             }
           },
           "definitions": {
