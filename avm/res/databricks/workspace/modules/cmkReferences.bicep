@@ -4,10 +4,10 @@ param keyVaultResourceId string
 @description('Required. The name of the key vault key.')
 param keyName string
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(keyVaultResourceId, '/'))
 
-  resource cMKKey 'keys@2025-05-01' existing = {
+  resource cMKKey 'keys@2026-02-01' existing = {
     name: keyName
   }
 }

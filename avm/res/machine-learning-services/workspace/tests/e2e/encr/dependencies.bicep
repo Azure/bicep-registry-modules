@@ -18,7 +18,7 @@ param storageAccountName string
 @description('Required. The name of the additional Storage Account to create.')
 param secondaryStorageAccountName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -36,7 +36,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     accessPolicies: []
   }
 
-  resource key 'keys@2022-07-01' = {
+  resource key 'keys@2026-02-01' = {
     name: 'keyEncryptionKey'
     properties: {
       kty: 'RSA'

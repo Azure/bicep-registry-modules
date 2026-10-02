@@ -197,7 +197,11 @@ function Build-ViaRPC {
 
             # Compile template
             Send-BicepJsonRpc -id $id -method 'bicep/compile' -params @{ path = $filePath }
-            $response = (Read-BicepJsonRpcResponse | ConvertFrom-Json).result
+            $rpcResponse = Read-BicepJsonRpcResponse | ConvertFrom-Json
+            if ($rpcResponse.error) {
+                throw "Bicep JSON-RPC error [$($rpcResponse.error.code)]: $($rpcResponse.error.message)"
+            }
+            $response = $rpcResponse.result
 
             # Interpret response
             if ($response.success) {
@@ -209,10 +213,10 @@ function Build-ViaRPC {
                     $null = New-Item -Path $exportedTemplateFilePath -Value $response.contents -Force
                 }
             } else {
-                Write-Host 'Build failed:' -ForegroundColor 'Red'
-                foreach ($diag in $response.diagnostics) {
-                    Write-Host ('  [{0}] {1} (at {2}:{3},{4})' -f $diag.severity, $diag.message, $diag.range.start.line, $diag.range.start.character, $diag.range.end.character) -ForegroundColor 'Yellow'
+                $diagnostics = $response.diagnostics | ForEach-Object {
+                    '  [{0}] {1} (at {2}:{3},{4})' -f $_.severity, $_.message, $_.range.start.line, $_.range.start.character, $_.range.end.character
                 }
+                Write-Error ("Build failed for [$filePath]:`n{0}" -f ($diagnostics -join "`n"))
             }
             $id++
 

@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/ptn/ai-ml/ai-foundry/CHANGELOG.md).
 
+## 0.7.1
+
+### Changes
+
+- Updated `Microsoft.KeyVault/vaults` API version from `2024-11-01` to `2026-02-01`.
+
+### Breaking Changes
+
+- None
+
 ## 0.7.0
 
 ### Changes

@@ -173,7 +173,7 @@ var formattedAccessPolicies = [
 // ============ //
 
 var telemetryIdPrefix = loadJsonContent('metadata.json', 'telemetryIdPrefix')
-
+module test 'br/public:avm/ptn/azd/ml'
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '${telemetryIdPrefix}.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
