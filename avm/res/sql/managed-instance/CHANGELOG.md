@@ -8,8 +8,6 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 
 - Changed max size of `storageSizeInGB` from 8192 to the documented max 32768
 - Updated `Microsoft.Sql/managedInstances` API version from `2024-05-01-preview` to `2025-01-01`
-- Clarified the documented range for `storageSizeInGB` without changing its constraints or default.
-- Moved the max end-to-end test from East US to East Asia without changing its SKU or vCore count.
 
 ### Breaking Changes
 
