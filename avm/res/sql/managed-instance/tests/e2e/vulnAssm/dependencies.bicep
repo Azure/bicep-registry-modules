@@ -13,11 +13,11 @@ param managedIdentityName string
 @description('Required. The name of the Deployment Script to create to get the paired region name.')
 param pairedRegionScriptName string
 
-@description('Required. The name of the Key Vault to create.')
-param keyVaultName string
-
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
+
+@description('Required. The name of the Storage Account to create.')
+param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
 var addressPrefixString = replace(replace(addressPrefix, '.', '-'), '/', '-')
@@ -381,59 +381,20 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-09-01' = {
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' = {
-  name: keyVaultName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
+  name: storageAccountName
   location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    tenantId: tenant().tenantId
-    enablePurgeProtection: true
-    softDeleteRetentionInDays: 7
-    enabledForTemplateDeployment: true
-    enabledForDiskEncryption: true
-    enabledForDeployment: true
-    enableRbacAuthorization: true
-    accessPolicies: []
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
   }
-
-  resource key 'keys@2026-02-01' = {
-    name: 'keyEncryptionKey'
-    properties: {
-      kty: 'RSA'
-    }
+  properties: {
+    allowBlobPublicAccess: false
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
-  scope: keyVault::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-    ) // Key Vault Crypto Service Encryption User
-    principalType: 'ServicePrincipal'
-  }
-}
+@description('The resource ID of the created Storage Account.')
+output storageAccountResourceId string = storageAccount.id
 
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Managed Identity.')
-output managedIdentityResourceId string = managedIdentity.id
-
-@description('The URL of the created Key Vault Encryption Key.')
-output keyVaultEncryptionKeyUrl string = keyVault::key.properties.keyUriWithVersion
-
-@description('The name of the created Key Vault Encryption Key.')
-output keyVaultKeyName string = keyVault::key.name
-
-@description('The name of the created Key Vault.')
-output keyVaultName string = keyVault.name
