@@ -216,6 +216,26 @@ Describe 'Deployment submission and cleanup runtime integration' {
             param()
             throw 'Unexpected Azure context lookup.'
         }
+        function Get-AzDeployment {
+            [CmdletBinding()]
+            param([string] $Name, [object] $DefaultProfile)
+            throw 'Unexpected Azure deployment status lookup.'
+        }
+        function Get-AzResourceGroupDeployment {
+            [CmdletBinding()]
+            param([string] $Name, [string] $ResourceGroupName, [object] $DefaultProfile)
+            throw 'Unexpected Azure deployment status lookup.'
+        }
+        function Get-AzManagementGroupDeployment {
+            [CmdletBinding()]
+            param([string] $Name, [string] $ManagementGroupId, [object] $DefaultProfile)
+            throw 'Unexpected Azure deployment status lookup.'
+        }
+        function Get-AzTenantDeployment {
+            [CmdletBinding()]
+            param([string] $Name, [object] $DefaultProfile)
+            throw 'Unexpected Azure deployment status lookup.'
+        }
         function New-AzSubscriptionDeployment {
             [CmdletBinding()]
             param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
@@ -356,6 +376,10 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Mock Start-Sleep {}
         Mock Set-AzContext {}
         Mock Get-AzContext { @{ Subscription = @{ Id = $subscriptionId } } }
+        Mock Get-AzDeployment {}
+        Mock Get-AzResourceGroupDeployment {}
+        Mock Get-AzManagementGroupDeployment {}
+        Mock Get-AzTenantDeployment {}
         Mock Get-AzResourceGroup { @{ ResourceId = $resourceGroupId } }
         Mock New-AzSubscriptionDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
         Mock New-AzResourceGroupDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
@@ -620,11 +644,11 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
     }
 
-    It 'Preserves timeout ownership without a diagnostic lookup when the exception message is empty' {
+    It 'Preserves timeout ownership and reports failed recovery when the original message is empty' {
         $script:outcomes = @('EmptyTimeout')
         Mock Get-AzDeploymentOperation { throw (Get-TestRequestTimeout) }
 
-        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*failed without an error message*'
+        { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*Status recovery*'
         $outputs = Get-TestStepOutput
         @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
         $script:attemptNames.Count | Should -Be 1
@@ -657,6 +681,343 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $script:lookupPaths | Should -Contain "$pathPrefix/providers/Microsoft.Resources/deployments/$($script:attemptNames[0])/operations?api-version=2021-04-01"
         $script:removedIds | Should -Contain $resourceIds[5]
         Should -Invoke Start-Sleep -Times 0 -Exactly
+    }
+
+    Context 'Read-only recovery after a submitted request timeout' {
+        BeforeAll {
+            function Get-TestDeploymentStatus {
+                param([string] $Name, [string] $Scope, [object] $Profile, [string] $Target)
+                $script:statusReads.Add(@{ Name = $Name; Scope = $Scope; Profile = $Profile; Target = $Target })
+                $state = $script:statusStates[$script:statusReads.Count - 1]
+                switch ($state) {
+                    'Timeout' { throw (Get-TestRequestTimeout) }
+                    'Authentication' { throw [System.UnauthorizedAccessException]::new('Status read authentication failed.') }
+                    'Transport' { throw [System.Net.Http.HttpRequestException]::new('Status read connection failed.') }
+                    'NotFound' { throw 'DeploymentNotFound: the original deployment was not found.' }
+                    'Cancelled' { throw [System.OperationCanceledException]::new('Status read cancelled.') }
+                    'TaskCancelled' { throw [System.Threading.Tasks.TaskCanceledException]::new('Status read cancelled.') }
+                    'TimeoutWordingOnly' {
+                        throw [System.OperationCanceledException]::new('HttpClient.Timeout of 100 seconds elapsing.')
+                    }
+                    'Missing' { return }
+                    'MissingState' { return @{ DeploymentName = $Name } }
+                    'Mismatched' { return @{ DeploymentName = 'another-deployment'; ProvisioningState = 'Failed' } }
+                    'Ambiguous' {
+                        return @(
+                            @{ DeploymentName = $Name; ProvisioningState = 'Succeeded' }
+                            @{ DeploymentName = $Name; ProvisioningState = 'Failed' }
+                        )
+                    }
+                    default {
+                        if ([string]::IsNullOrEmpty($state)) { throw 'Unexpected extra deployment status read.' }
+                        return @{
+                            DeploymentName    = $Name
+                            ProvisioningState = $state
+                            Outputs           = @{ recovered = @{ type = 'string'; value = 'ready' } }
+                        }
+                    }
+                }
+            }
+        }
+
+        BeforeEach {
+            $script:outcomes = @('RequestTimeout')
+            $script:statusStates = @('Running', 'Succeeded')
+            $script:statusReads = [System.Collections.Generic.List[hashtable]]::new()
+            $script:recoveryClock = [datetime]::new(2026, 10, 2, 10, 40, 39, [DateTimeKind]::Utc)
+            $script:selectedContext = [pscustomobject]@{
+                Subscription = @{ Id = $subscriptionId }
+                Tenant       = @{ Id = '22222222-2222-2222-2222-222222222222' }
+                Account      = @{ Id = 'fixture-account' }
+            }
+            Mock Get-Date {
+                if ($Format) { return $script:recoveryClock.ToString($Format) }
+                return $script:recoveryClock
+            }
+            Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddSeconds($Seconds) }
+            Mock Get-AzContext { $script:selectedContext }
+            Mock Get-AzDeployment {
+                Get-TestDeploymentStatus -Name $Name -Scope 'subscription' -Profile $DefaultProfile
+            }
+            Mock Get-AzResourceGroupDeployment {
+                Get-TestDeploymentStatus -Name $Name -Scope 'resourcegroup' -Profile $DefaultProfile -Target $ResourceGroupName
+            }
+            Mock Get-AzManagementGroupDeployment {
+                Get-TestDeploymentStatus -Name $Name -Scope 'managementgroup' -Profile $DefaultProfile -Target $ManagementGroupId
+            }
+            Mock Get-AzTenantDeployment {
+                Get-TestDeploymentStatus -Name $Name -Scope 'tenant' -Profile $DefaultProfile
+            }
+            Mock Get-ErrorMessageForScope { 'The vCore quota was exceeded. (Code:ProvisioningDisabled)' }
+        }
+
+        It 'Recovers Running to Succeeded at <scope> scope without changing the original target or inputs' -ForEach @(
+            @{ scope = 'resourcegroup'; target = 'dep-fixture-rg'; command = 'New-AzResourceGroupDeployment' }
+            @{ scope = 'subscription'; target = ''; command = 'New-AzSubscriptionDeployment' }
+            @{ scope = 'managementgroup'; target = 'test-management-group'; command = 'New-AzManagementGroupDeployment' }
+            @{ scope = 'tenant'; target = ''; command = 'New-AzTenantDeployment' }
+        ) {
+            Set-TestTemplateScope -Scope $scope
+            $result = New-TemplateDeployment @deploymentInput
+
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be 1
+            @($script:attemptRegions) | Should -Be @('swedencentral')
+            @($script:attemptBaseTimes) | Should -Be @($deploymentInput.AdditionalParameters.baseTime)
+            $script:statusReads.Count | Should -Be 2
+            foreach ($read in $script:statusReads) {
+                $read.Name | Should -BeExactly $script:attemptNames[0]
+                $read.Scope | Should -BeExactly $scope
+                $read.Target | Should -BeExactly $target
+                [object]::ReferenceEquals($read.Profile, $script:selectedContext) | Should -BeTrue
+            }
+            Should -Invoke $command -Times 1 -Exactly -ParameterFilter {
+                $TemplateFile -eq $templatePath -and $resourceLocation -eq 'swedencentral' -and
+                ($ResourceGroupName -eq 'dep-fixture-rg' -or $Location -eq 'WestEurope')
+            }
+            Should -Invoke Get-AzContext -Times 1 -Exactly
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Returns an already successful deployment after a <format> timeout' -ForEach @(
+            @{ format = 'Direct' }, @{ format = 'InnerException' }, @{ format = 'ErrorRecord' }
+            @{ format = 'RuntimeException' }, @{ format = 'WriteError' }
+        ) {
+            $script:timeoutFormat = $format
+            $script:statusStates = @('Succeeded')
+            $deploymentInput.DoNotThrow = $false
+            $result = New-TemplateDeployment @deploymentInput
+            $result.DeploymentOutput.recovered.value | Should -BeExactly 'ready'
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Observes recognized active states without submitting a replacement' {
+            $script:statusStates = @('Accepted', 'Running', 'Creating', 'Updating', 'Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $script:statusReads.Count | Should -Be 5
+            $script:attemptNames.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 4 -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Tolerates bounded status-read timeouts and resets their counter after a successful read' -ForEach @(
+            @{ states = @('Timeout', 'Succeeded') }
+            @{ states = @('Timeout', 'Timeout', 'Succeeded') }
+            @{ states = @('Timeout', 'Timeout', 'Running', 'Timeout', 'Timeout', 'Succeeded') }
+        ) {
+            $script:statusStates = $states
+            $result = New-TemplateDeployment @deploymentInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be $states.Count
+            Should -Invoke Start-Sleep -Times ($states.Count - 1) -Exactly -ParameterFilter { $Seconds -eq 15 }
+        }
+
+        It 'Stops after three consecutive status-read timeouts and retains ownership and the original error' {
+            $script:statusStates = @('Timeout', 'Timeout', 'Timeout', 'Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match 'three consecutive request timeouts'
+            $result.Exception | Should -Match 'HttpClient.Timeout of 100 seconds'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 3
+            Should -Invoke Start-Sleep -Times 2 -Exactly -ParameterFilter { $Seconds -eq 15 }
+            Should -Invoke Start-Sleep -Times 0 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Stops observation after the 60-minute recovery window without resubmitting' {
+            Mock Start-Sleep { $script:recoveryClock = $script:recoveryClock.AddMinutes(60) }
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match '3600-second recovery window'
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+        }
+
+        It 'Fails explicitly on <state> without interpreting it as a failed deployment' -ForEach @(
+            @{ state = 'Missing'; message = 'exactly the original deployment' }
+            @{ state = 'MissingState'; message = 'unsupported recovery state' }
+            @{ state = 'Mismatched'; message = 'exactly the original deployment' }
+            @{ state = 'Ambiguous'; message = 'exactly the original deployment' }
+            @{ state = 'NotFound'; message = 'DeploymentNotFound' }
+            @{ state = 'Authentication'; message = 'authentication failed' }
+            @{ state = 'Transport'; message = 'connection failed' }
+            @{ state = 'Unknown'; message = 'unsupported recovery state' }
+            @{ state = 'Canceled'; message = 'unsupported recovery state' }
+        ) {
+            $script:statusStates = @($state)
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match $message
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Rejects a <kind> context before querying deployment status' -ForEach @(
+            @{ kind = 'missing' }, @{ kind = 'different subscription' }
+        ) {
+            if ($kind -eq 'missing') {
+                $script:selectedContext = $null
+            } else {
+                $script:selectedContext.Subscription.Id = '33333333-3333-3333-3333-333333333333'
+            }
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match 'Azure context does not match'
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 0
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Accepts an equivalent canonical subscription ID without changing context' {
+            $deploymentInput.SubscriptionId = "{$subscriptionId}"
+            $script:statusStates = @('Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            $script:statusReads.Count | Should -Be 1
+            [object]::ReferenceEquals($script:statusReads[0].Profile, $script:selectedContext) | Should -BeTrue
+            Should -Invoke Set-AzContext -Times 1 -Exactly -ParameterFilter { $Subscription -eq "{$subscriptionId}" }
+        }
+
+        It 'Propagates a <state> status read without submitting again' -ForEach @(
+            @{ state = 'Cancelled' }, @{ state = 'TaskCancelled' }, @{ state = 'TimeoutWordingOnly' }
+        ) {
+            $script:statusStates = @($state)
+            { New-TemplateDeployment @deploymentInput } | Should -Throw
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Uses only the existing <limit>-attempt bound after observation confirms Failed' -ForEach @(
+            @{ limit = 1 }, @{ limit = 2 }, @{ limit = 3 }
+        ) {
+            $deploymentInput.RetryLimit = $limit
+            $script:outcomes = @('RequestTimeout', 'RequestTimeout', 'RequestTimeout', 'Succeeded')
+            $script:statusStates = @('Failed', 'Failed', 'Failed')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match 'confirmed Failed during timeout recovery'
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            $result.Exception | Should -Match 'vCore quota was exceeded.*ProvisioningDisabled'
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be $limit
+            $script:statusReads.Count | Should -Be $limit
+            @($script:attemptRegions | Select-Object -Unique) | Should -Be @('swedencentral')
+            @($script:attemptBaseTimes | Select-Object -Unique).Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times ($limit - 1) -Exactly -ParameterFilter { $Seconds -eq 5 }
+            Should -Invoke Get-ErrorMessageForScope -Times $limit -Exactly -ParameterFilter {
+                $DeploymentScope -eq 'subscription' -and $DeploymentName -in $script:attemptNames
+            }
+        }
+
+        It 'Retains confirmed failure and both errors when operation details cannot be read' -ForEach @(
+            @{ exception = [System.UnauthorizedAccessException]::new('Operation detail authentication failed.') }
+            @{ exception = [System.Net.Http.HttpRequestException]::new('Operation detail connection failed.') }
+            @{ exception = [System.TimeoutException]::new('Operation detail request timed out.') }
+        ) {
+            $script:detailException = $exception
+            Mock Get-ErrorMessageForScope { throw $script:detailException }
+            $script:statusStates = @('Failed')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match 'confirmed Failed.*failure details could not be read'
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            $result.Exception | Should -Match ([regex]::Escape($exception.Message))
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $result.PreflightRejectedDeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Propagates cancellation during operation detail lookup without another attempt' {
+            Mock Get-ErrorMessageForScope { throw [System.OperationCanceledException]::new('Operation detail lookup cancelled.') }
+            $script:statusStates = @('Failed')
+            { New-TemplateDeployment @deploymentInput } | Should -Throw '*Operation detail lookup cancelled*'
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Allows a successful normal retry only after observation confirms Failed' {
+            $script:outcomes = @('RequestTimeout', 'Succeeded')
+            $script:statusStates = @('Failed')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            $script:attemptNames.Count | Should -Be 2
+            $script:statusReads.Count | Should -Be 1
+            Should -Invoke Start-Sleep -Times 1 -Exactly -ParameterFilter { $Seconds -eq 5 }
+        }
+
+        It 'Retains earlier attempts and reaches actual cleanup after successful recovery' {
+            $script:outcomes = @('PartialFailure', 'RequestTimeout')
+            Invoke-TestActionStep -Name 'Deploy template file'
+            $outputs = Get-TestStepOutput
+            ($outputs.deploymentOutput | ConvertFrom-Json).recovered.value | Should -BeExactly 'ready'
+            @($outputs.deploymentNames | ConvertFrom-Json) | Should -Be @($script:attemptNames)
+            $outputs.preflightRejectedDeploymentNames | Should -BeExactly '[]'
+            $script:attemptNames.Count | Should -Be 2
+            $extraResource = "$resourceGroupId/providers/Microsoft.ManagedIdentity/userAssignedIdentities/dep-recovered"
+            $script:operationOverrides[$script:attemptNames[1]] = New-TestOperationsResponse -Ids $extraResource
+
+            Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs -JobStatus 'success'
+
+            $script:removedIds | Should -Contain $resourceIds[5]
+            $script:removedIds | Should -Contain $extraResource
+            @($script:lookupNames) | Should -Be @($script:attemptNames[0], 'fixture-dependencies', $script:attemptNames[1])
+        }
+
+        It 'Retains earlier preflight metadata when recovery succeeds' {
+            $script:outcomes = @('Preflight', 'RequestTimeout')
+            $script:statusStates = @('Succeeded')
+            $result = New-TemplateDeployment @deploymentInput
+            $result.ContainsKey('Exception') | Should -BeFalse
+            @($result.DeploymentNames) | Should -Be @($script:attemptNames)
+            @($result.PreflightRejectedDeploymentNames) | Should -Be @($script:attemptNames[0])
+            $script:attemptNames.Count | Should -Be 2
+        }
+
+        It 'Does not recover a timeout before submission starts' {
+            Mock Set-AzContext { throw (Get-TestRequestTimeout) }
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Match 'HttpClient.Timeout'
+            $result.DeploymentNames.Count | Should -Be 0
+            $script:attemptNames.Count | Should -Be 0
+            $script:statusReads.Count | Should -Be 0
+            Should -Invoke Get-AzContext -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Does not add recovery to <outcome> submission outcomes' -ForEach @(
+            @{ outcome = 'NoResult' }, @{ outcome = 'Running' }, @{ outcome = 'MissingState' }
+            @{ outcome = 'Unknown' }, @{ outcome = 'TransportFailure' }, @{ outcome = 'AuthenticationFailure' }
+        ) {
+            $script:outcomes = @($outcome)
+            $result = New-TemplateDeployment @deploymentInput
+            $result.Exception | Should -Not -BeNullOrEmpty
+            $script:attemptNames.Count | Should -Be 1
+            $script:statusReads.Count | Should -Be 0
+            Should -Invoke Get-AzContext -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
+
+        It 'Does not submit or observe under WhatIf' {
+            New-TemplateDeployment @deploymentInput -WhatIf
+            $script:attemptNames.Count | Should -Be 0
+            $script:statusReads.Count | Should -Be 0
+            Should -Invoke Get-AzContext -Times 0 -Exactly
+            Should -Invoke Start-Sleep -Times 0 -Exactly
+        }
     }
 
     It 'Passes a single rejected attempt as a JSON array and cleans its successful retry' {
@@ -988,12 +1349,14 @@ Describe 'Deployment submission and cleanup runtime integration' {
         $script:removedIds.Count | Should -Be 0
     }
 
-    It 'Stops the actual deployment action on PipelineStoppedException without retrying or emitting cleanup outputs' {
+    It 'Stops the actual deployment action on PipelineStoppedException during <phase> without retrying or emitting cleanup outputs' -ForEach @(
+        @{ phase = 'submission' }, @{ phase = 'recovery' }
+    ) {
         $trace = [System.Collections.Generic.List[string]]::new()
         $pipeline = [powershell]::Create()
         try {
             $null = $pipeline.AddScript(@'
-param($ActionScript, $Trace)
+param($ActionScript, $Trace, $Phase)
 function Set-AzContext {
     [CmdletBinding()]
     param([string] $Subscription)
@@ -1003,20 +1366,42 @@ function New-AzSubscriptionDeployment {
     [CmdletBinding()]
     param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
     $Trace.Add('submit')
+    if ($Phase -eq 'recovery') {
+        throw [System.TimeoutException]::new('Mock request timeout')
+    }
     throw [System.Management.Automation.PipelineStoppedException]::new('Mock pipeline cancellation')
 }
+function Get-AzContext {
+    [CmdletBinding()]
+    param()
+    $Trace.Add('read-context')
+    return @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' } }
+}
+function Get-AzDeployment {
+    [CmdletBinding()]
+    param([string] $Name, [object] $DefaultProfile)
+    $Trace.Add('read-status')
+    throw [System.Management.Automation.PipelineStoppedException]::new('Mock polling cancellation')
+}
+function Get-AzResourceGroupDeployment { throw 'Unexpected resource group status read.' }
+function Get-AzManagementGroupDeployment { throw 'Unexpected management group status read.' }
+function Get-AzTenantDeployment { throw 'Unexpected tenant status read.' }
 function Start-Sleep {
     param([int] $Seconds)
     $Trace.Add('retry')
 }
 . ([scriptblock]::Create($ActionScript))
 $Trace.Add('returned')
-'@).AddArgument((Get-TestActionScript -Name 'Deploy template file')).AddArgument($trace)
+'@).AddArgument((Get-TestActionScript -Name 'Deploy template file')).AddArgument($trace).AddArgument($phase)
             $null = $pipeline.Invoke()
 
             $pipeline.InvocationStateInfo.State | Should -Be 'Stopped'
             $pipeline.InvocationStateInfo.Reason | Should -BeOfType [System.Management.Automation.PipelineStoppedException]
-            @($trace) | Should -Be @('context', 'submit')
+            if ($phase -eq 'recovery') {
+                @($trace) | Should -Be @('context', 'submit', 'read-context', 'read-status')
+            } else {
+                @($trace) | Should -Be @('context', 'submit')
+            }
             (Get-TestStepOutput).ContainsKey('deploymentNames') | Should -BeFalse
         } finally {
             $pipeline.Dispose()
@@ -1049,11 +1434,12 @@ $Trace.Add('returned')
         { Invoke-TestActionStep -Name 'Deploy template file' } | Should -Throw '*HttpClient.Timeout*'
         $outputs = Get-TestStepOutput
         @($outputs.deploymentNames | ConvertFrom-Json).Count | Should -Be 1
+        Should -Invoke Get-AzContext -Times 1 -Exactly
 
         Invoke-TestActionStep -Name 'Remove deployed resources' -Outputs $outputs -JobStatus $jobStatus `
             -RemoveDeployment $removeDeployment -SkipDeployment $skipDeployment
 
-        Should -Invoke Get-AzContext -Times 0 -Exactly
+        Should -Invoke Get-AzContext -Times 1 -Exactly
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
         $script:removedIds.Count | Should -Be 0
     }

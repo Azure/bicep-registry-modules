@@ -37,8 +37,9 @@ description: >-
   do not relocate. Deployment metadata keeps its original location. Deployment
   retries stay in the validated region. Cleanup retains all attempt names and only
   skips missing records after confirmed preflight rejection and DeploymentNotFound.
-  Request timeouts and unknown submission outcomes fail without resubmission while
-  preserving attempted deployment names for cleanup. A preselected subscription is
+  After a submission request timeout, observe the same deployment for up to 60 minutes
+  without resubmitting; only confirmed failure permits a bounded retry. Unknown
+  outcomes preserve attempted deployment names for cleanup. A preselected subscription is
   verified before login and reused through cleanup without reshuffling the pool.
 
 inputs:

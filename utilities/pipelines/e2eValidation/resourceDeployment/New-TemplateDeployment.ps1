@@ -2,6 +2,99 @@
 
 #region helper
 
+<#
+.SYNOPSIS
+Observe the original deployment after a request timeout without submitting it again.
+#>
+function Wait-TemplateDeployment {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet('resourcegroup', 'subscription', 'managementgroup', 'tenant')]
+        [string] $DeploymentScope,
+
+        [Parameter(Mandatory)]
+        [string] $DeploymentName,
+
+        [Parameter()]
+        [string] $SubscriptionId,
+
+        [Parameter()]
+        [string] $ResourceGroupName,
+
+        [Parameter()]
+        [string] $ManagementGroupId,
+
+        [Parameter()]
+        [ValidateRange(1, 3600)]
+        [int] $TimeoutSeconds = 3600,
+
+        [Parameter()]
+        [ValidateRange(1, 60)]
+        [int] $PollIntervalSeconds = 15
+    )
+
+    $context = Get-AzContext -ErrorAction Stop
+    if ($null -eq $context -or (
+            $DeploymentScope -in @('resourcegroup', 'subscription') -and
+            -not [string]::IsNullOrEmpty($SubscriptionId) -and [guid] $context.Subscription.Id -ne [guid] $SubscriptionId
+        )) {
+        throw "The current Azure context does not match deployment [$DeploymentName]; status recovery cannot continue."
+    }
+    $readInputs = @{
+        Name           = $DeploymentName
+        DefaultProfile = $context
+        ErrorAction    = 'Stop'
+    }
+    $deadline = (Get-Date).ToUniversalTime().AddSeconds($TimeoutSeconds)
+    $consecutiveTimeouts = 0
+    while ((Get-Date).ToUniversalTime() -lt $deadline) {
+        try {
+            $records = @(switch ($DeploymentScope) {
+                    'resourcegroup' { Get-AzResourceGroupDeployment @readInputs -ResourceGroupName $ResourceGroupName }
+                    'subscription' { Get-AzDeployment @readInputs }
+                    'managementgroup' { Get-AzManagementGroupDeployment @readInputs -ManagementGroupId $ManagementGroupId }
+                    'tenant' { Get-AzTenantDeployment @readInputs }
+                })
+            $consecutiveTimeouts = 0
+        } catch [System.Management.Automation.PipelineStoppedException] {
+            throw
+        } catch {
+            if ((Get-DeploymentErrorKind -ErrorRecord $_) -ne 'Timeout') {
+                throw
+            }
+            $consecutiveTimeouts++
+            if ($consecutiveTimeouts -ge 3) {
+                throw [System.TimeoutException]::new(
+                    "Status recovery for deployment [$DeploymentName] stopped after three consecutive request timeouts.", $_.Exception
+                )
+            }
+            Write-Warning "Status read for deployment [$DeploymentName] timed out ($consecutiveTimeouts/3); no deployment is being resubmitted."
+            $records = $null
+        }
+
+        if ($null -ne $records) {
+            if ($records.Count -ne 1 -or $records[0].DeploymentName -cne $DeploymentName) {
+                throw "Status recovery did not return exactly the original deployment [$DeploymentName]."
+            }
+            $deployment = $records[0]
+            if ($deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
+                return $deployment
+            }
+            if ($deployment.ProvisioningState -notin @('Accepted', 'Running', 'Creating', 'Updating')) {
+                throw "Deployment [$DeploymentName] has unsupported recovery state [$($deployment.ProvisioningState)]."
+            }
+            Write-Verbose "Deployment [$DeploymentName] remains [$($deployment.ProvisioningState)]; observing the same deployment." -Verbose
+        }
+
+        $remainingSeconds = ($deadline - (Get-Date).ToUniversalTime()).TotalSeconds
+        if ($remainingSeconds -gt 0) {
+            Start-Sleep -Seconds ([Math]::Min($PollIntervalSeconds, $remainingSeconds))
+        }
+    }
+    throw [System.TimeoutException]::new("Status recovery for deployment [$DeploymentName] exceeded the $TimeoutSeconds-second recovery window.")
+}
+
 function Test-DeploymentPreflightRejection {
     [CmdletBinding()]
     [OutputType([bool])]
@@ -150,7 +243,8 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
-Request timeouts and unknown submission outcomes fail without resubmission, retaining attempted names for cleanup.
+After a submitted request times out, observe the same deployment for up to 60 minutes.
+Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
@@ -394,21 +488,73 @@ function New-TemplateDeploymentInner {
             } catch [System.Management.Automation.PipelineStoppedException] {
                 throw
             } catch {
-                $errorKind = Get-DeploymentErrorKind -ErrorRecord $_
+                $deploymentError = $_
+                $errorKind = Get-DeploymentErrorKind -ErrorRecord $deploymentError
+                $recoveryFailed = $false
                 if ($errorKind -eq 'Cancellation') {
                     throw
                 }
-                $preflightRejected = $submissionStarted -and $null -eq $res -and (Test-DeploymentPreflightRejection -ErrorRecord $_ -DeploymentName $deploymentName)
+                if ($submissionStarted -and $null -eq $res -and $errorKind -eq 'Timeout') {
+                    Write-Warning "Request for deployment [$deploymentName] timed out; observing its status without resubmitting. $($deploymentError.Exception.Message)"
+                    try {
+                        $res = Wait-TemplateDeployment -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                            -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
+                    } catch [System.Management.Automation.PipelineStoppedException] {
+                        throw
+                    } catch {
+                        if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                            throw
+                        }
+                        $exception = [System.AggregateException]::new(
+                            "Status recovery for deployment [$deploymentName] failed; the submission outcome remains unknown.",
+                            [System.Exception[]] @($deploymentError.Exception, $_.Exception)
+                        )
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentTimeoutRecoveryFailed', [System.Management.Automation.ErrorCategory]::OperationTimeout, $deploymentName
+                        )
+                        $recoveryFailed = $true
+                    }
+                    if ($res.ProvisioningState -eq 'Succeeded') {
+                        $Stoploop = $true
+                        continue
+                    }
+                    if ($res.ProvisioningState -eq 'Failed') {
+                        $errorKind = 'Other'
+                        try {
+                            $failureDetails = Get-ErrorMessageForScope -DeploymentScope $deploymentScope -DeploymentName $deploymentName `
+                                -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId
+                            $exception = [System.InvalidOperationException]::new(
+                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery. Error Message: [$failureDetails]. Original request error: $($deploymentError.Exception.Message)",
+                                $deploymentError.Exception
+                            )
+                        } catch [System.Management.Automation.PipelineStoppedException] {
+                            throw
+                        } catch {
+                            if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                                throw
+                            }
+                            $exception = [System.AggregateException]::new(
+                                "Deployment [$deploymentName] was confirmed Failed during timeout recovery, but its failure details could not be read.",
+                                [System.Exception[]] @($deploymentError.Exception, $_.Exception)
+                            )
+                            $recoveryFailed = $true
+                        }
+                        $deploymentError = [System.Management.Automation.ErrorRecord]::new(
+                            $exception, 'DeploymentFailedAfterTimeout', [System.Management.Automation.ErrorCategory]::InvalidResult, $deploymentName
+                        )
+                    }
+                }
+                $preflightRejected = $submissionStarted -and $null -eq $res -and (Test-DeploymentPreflightRejection -ErrorRecord $deploymentError -DeploymentName $deploymentName)
                 if ($preflightRejected) {
                     $preflightRejectedDeploymentNames += $deploymentName
                     Write-Verbose "Deployment [$deploymentName] was rejected by preflight validation; cleanup will check whether a deployment record exists." -Verbose
                 }
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
-                $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $_.Exception.Message -cmatch $failedDeploymentMessage)
+                $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                if ($retryCount -ge $RetryLimit -or $unknownSubmission -or $errorKind -in @('Timeout', 'Transport')) {
+                if ($retryCount -ge $RetryLimit -or $unknownSubmission -or $recoveryFailed -or $errorKind -in @('Timeout', 'Transport')) {
                     if ($DoNotThrow) {
-                        $exceptionMessage = $PSitem.Exception.Message
+                        $exceptionMessage = $deploymentError.Exception.Message
                         if ([String]::IsNullOrEmpty($exceptionMessage)) {
                             $exceptionMessage = "Deployment attempt [$deploymentName] failed without an error message (submission started: [$submissionStarted])."
                         }
@@ -419,12 +565,12 @@ function New-TemplateDeploymentInner {
                             Exception                        = $exceptionMessage
                         }
                     } else {
-                        throw $PSitem.Exception.Message
+                        throw $deploymentError
                     }
                     $Stoploop = $true
                 } else {
                     Write-Verbose "Resource deployment Failed.. ($retryCount/$RetryLimit) Retrying in 5 Seconds.. `n"
-                    Write-Verbose ($PSitem.Exception.Message | Out-String) -Verbose
+                    Write-Verbose ($deploymentError.Exception.Message | Out-String) -Verbose
                     Start-Sleep -Seconds 5
                     $retryCount++
                 }
@@ -457,7 +603,8 @@ Run a template deployment using a given parameter file.
 Works on a resource group, subscription, managementgroup and tenant level
 Returns every attempted DeploymentNames entry and an optional PreflightRejectedDeploymentNames subset.
 Cleanup must confirm DeploymentNotFound before treating a preflight rejection as an uncreated deployment.
-Request timeouts and unknown submission outcomes fail without resubmission, retaining attempted names for cleanup.
+After a submitted request times out, observe the same deployment for up to 60 minutes.
+Only confirmed failure permits another submission; unknown outcomes retain attempted names for cleanup.
 
 .PARAMETER TemplateFilePath
 Mandatory. The path to the deployment file
