@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using only defaults'
 metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
@@ -16,10 +18,9 @@ param serviceShort string = 'krlbmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The service principal object ID of the Kubernetes Runtime HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 087fca6e-4606-4d41-b3f6-5ebdf75b8b4c`.')
-@secure()
-#disable-next-line secure-parameter-default
-param kubernetesRuntimeRPObjectId string = ''
+resource kubernetesRuntimeResourceProvider 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '087fca6e-4606-4d41-b3f6-5ebdf75b8b4c'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -50,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
         '10.0.0.100-10.0.0.110'
       ]
       advertiseMode: 'ARP'
-      kubernetesRuntimeRPObjectId: kubernetesRuntimeRPObjectId
+      kubernetesRuntimeRPObjectId: kubernetesRuntimeResourceProvider.id
     }
   }
 ]
