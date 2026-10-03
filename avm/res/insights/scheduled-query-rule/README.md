@@ -939,6 +939,7 @@ Indicates the type of scheduled query rule.
   [
     'LogAlert'
     'LogToMetric'
+    'SimpleLogAlert'
   ]
   ```
 
