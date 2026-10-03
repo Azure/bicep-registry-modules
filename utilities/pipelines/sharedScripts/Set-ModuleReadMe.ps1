@@ -1244,7 +1244,7 @@ function ConvertTo-FormattedJSONParameterObject {
 
             # Individual checks
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
-            $isLineWithObjectPropertyReferenceValue = $lineValue -match '(?<=[^"])\b\.\b(?=[^"]*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
+            $isLineWithObjectPropertyReferenceValue = $lineValue -match '^(?:(?!\/\/)[^"''])*\b\.\b(?=[^"'']*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
             $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*(?<!\\)\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}', but NOT "abc: \${xyz}"
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
