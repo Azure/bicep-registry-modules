@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
 Create and publish a new release tag.
 
