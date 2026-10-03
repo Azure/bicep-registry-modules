@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Updated `Microsoft.KeyVault/vaults` API version from `2024-11-01` to `2026-02-01`.
+- Updated the Cognitive Services account module to `0.15.1` so private endpoints wait for model deployments and commitment plans to finish.
 
 ### Breaking Changes
 
