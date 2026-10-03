@@ -488,7 +488,19 @@ function Set-DefinitionSection {
             if (-not [String]::IsNullOrEmpty($example)) {
                 # allign content to the left by removing trailing whitespaces
                 $leadingSpacesToTrim = ($example -match '^(\s+).+') ? $matches[1].Length : 0
-                $exampleLines = $example -split '\n'
+
+                switch ($example) {
+                    { $_ -is [string] } {
+                        $exampleLines = $example -split '\n'
+                    }
+                    { $_ -is [Hashtable] } {
+                        $exampleLines = "{`n$(ConvertTo-FormattedBicep $example | Out-String)`n}" -split '\n'
+                    }
+                    default {
+                        throw 'Not supported example syntax. Please check.'
+                    }
+                }
+
                 # Removing excess leading spaces
                 $example = ($exampleLines | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" -replace "^\s{$leadingSpacesToTrim}" } | Out-String).TrimEnd()
 
@@ -837,6 +849,9 @@ Mandatory. The file path to the module's root
 .PARAMETER FullModuleIdentifier
 Mandatory. The full identifier of the module (i.e., ProviderNamespace + ResourceType)
 
+.PARAMETER ModuleType
+Mandatory. The type of the module (e.g., 'res', 'ptn', 'utl')
+
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
 
@@ -856,7 +871,7 @@ Optional. Pre-Loaded content. May be used to reuse the same data for multiple in
 Optional. Define whether or not to force refresh cache data. Note, the cache automatically expires after 1 day.
 
 .EXAMPLE
-Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
+Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -ModuleType 'res' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -PreLoadedContent @{ CrossReferencedModuleList = @{ ... } }
 Update the given readme file's 'Cross-referenced modules' section based on the given template file content
 #>
 function Set-CrossReferencesSection {
@@ -868,6 +883,9 @@ function Set-CrossReferencesSection {
 
         [Parameter(Mandatory = $true)]
         [string] $FullModuleIdentifier,
+
+        [Parameter(Mandatory = $true)]
+        [string] $ModuleType,
 
         [Parameter(Mandatory)]
         [hashtable] $TemplateFileContent,
@@ -892,7 +910,7 @@ function Set-CrossReferencesSection {
         $CrossReferencedModuleList = $PreLoadedContent.CrossReferencedModuleList
     }
 
-    $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
+    $dependencies = $CrossReferencedModuleList["$ModuleType/$FullModuleIdentifier"]
 
     if (-not $dependencies -or ($dependencies -and -not $dependencies['localPathReferences'] -and -not $dependencies['remoteReferences'])) {
         # no cross references in the template
@@ -2232,7 +2250,9 @@ function Set-ModuleReadMe {
     }
 
     $moduleRoot = Split-Path $TemplateFilePath -Parent
-    $fullModuleIdentifier = ($moduleRoot -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
+    $fullModuleIdentifierParts = ($moduleRoot -replace '\\', '/') -split '\/avm\/(res|ptn|utl)\/'
+    $moduleType = $fullModuleIdentifierParts[1]
+    $fullModuleIdentifier = $fullModuleIdentifierParts[2]
     # Custom modules are modules having the same resource type but different properties based on the name
     # E.g., web/site/config--appsetting vs web/site/config--authsettingv2
     $customModuleSeparator = '--'
@@ -2354,6 +2374,7 @@ function Set-ModuleReadMe {
         $inputObject = @{
             ModuleRoot           = $ModuleRoot
             FullModuleIdentifier = $fullModuleIdentifier
+            ModuleType           = $moduleType
             ReadMeFileContent    = $readMeFileContent
             TemplateFileContent  = $templateFileContent
             PreLoadedContent     = $PreLoadedContent

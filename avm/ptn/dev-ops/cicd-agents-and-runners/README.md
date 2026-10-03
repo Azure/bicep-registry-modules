@@ -1754,6 +1754,13 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 | Variant | Description |
 | :-- | :-- |
+| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  |
+| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  |
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
 | [`github`](#variant-selfhostedconfigselfhostedtype-github) |  |
 | [`azuredevops`](#variant-selfhostedconfigselfhostedtype-azuredevops) |  |
 

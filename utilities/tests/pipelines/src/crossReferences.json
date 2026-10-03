@@ -1,5 +1,5 @@
 {
-  "network/private-endpoint": {
+  "res/network/private-endpoint": {
     "remoteReferences": "br/public:avm/utl/types/avm-common-types:0.6.1",
     "localPathReferences": null,
     "resourceReferences": [
@@ -10,7 +10,7 @@
       "Microsoft.Resources/deployments@2025-04-01"
     ]
   },
-  "network/private-endpoint/private-dns-zone-group": {
+  "res/network/private-endpoint/private-dns-zone-group": {
     "remoteReferences": null,
     "localPathReferences": null,
     "resourceReferences": [
@@ -18,7 +18,7 @@
       "Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-10-01"
     ]
   },
-  "types/avm-common-types": {
+  "utl/types/avm-common-types": {
     "remoteReferences": null,
     "localPathReferences": null,
     "resourceReferences": null

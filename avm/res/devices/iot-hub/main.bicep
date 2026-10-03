@@ -208,7 +208,7 @@ resource iotHub 'Microsoft.Devices/IotHubs@2023-06-30' = {
   }
 }
 
-module consumerGroupsModule 'consumergroup/main.bicep' = [
+module consumerGroupsModule 'event-hub-endpoint/consumergroup/main.bicep' = [
   for (consumerGroup, index) in (consumerGroups ?? []): {
     name: '${deployment().name}-ConsumerGroup-${index}'
     params: {
