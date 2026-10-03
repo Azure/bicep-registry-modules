@@ -61,7 +61,9 @@ jobs:
       !(github.repository != 'Azure/bicep-registry-modules' && github.event_name != 'workflow_dispatch') &&
       (github.event_name != 'pull_request' || (
         contains(github.event.pull_request.labels.*.name, 'PR: Run Checks') &&
-        (github.event.action != 'labeled' || github.event.label.name == 'PR: Run Checks')
+        (github.event.action != 'labeled' ||
+          github.event.label.name == 'PR: Run Checks' ||
+          github.event.label.name == 'PR: Run E2E Tests')
       ))
     steps:
       - name: "Checkout"
@@ -75,7 +77,7 @@ jobs:
           BASE_SHA: "${{ case(github.event_name == 'pull_request', github.event.pull_request.base.sha, github.event.before) }}"
           CREATE_RELEASE_TAG: "${{ inputs.createReleaseTag }}"
           CUSTOM_LOCATION: "${{ inputs.customLocation }}"
-          DEPLOYMENT_VALIDATION: "${{ case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, true) }}"
+          DEPLOYMENT_VALIDATION: "${{ case(github.event_name == 'workflow_dispatch', inputs.deploymentValidation, github.event_name != 'pull_request' || (contains(github.event.pull_request.labels.*.name, 'PR: Run Checks') && contains(github.event.pull_request.labels.*.name, 'PR: Run E2E Tests'))) }}"
           EVENT_NAME: "${{ github.event_name }}"
           HEAD_SHA: "${{ github.sha }}"
           MODULE_PATH_INPUT: "${{ inputs.modulePaths }}"

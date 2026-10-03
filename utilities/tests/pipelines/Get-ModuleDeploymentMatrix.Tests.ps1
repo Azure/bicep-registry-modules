@@ -198,6 +198,64 @@ Describe 'Module deployment matrix' {
         Should -Invoke Invoke-RestMethod -Times 0 -Exactly
     }
 
+    It 'Requires a shared lock for <expression> within a compiled module with <resourceFormat> resources' -ForEach @(
+        @{ expression = '[variables(''$fxv#0'')]'; resourceFormat = 'array' }
+        @{ expression = '[variables(''$fxv#0'')]'; resourceFormat = 'symbolic' }
+        @{ expression = '[parameters(''nestedTemplate'')]'; resourceFormat = 'array' }
+        @{ expression = '[parameters(''nestedTemplate'')]'; resourceFormat = 'symbolic' }
+    ) {
+        $nested = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = $expression }
+        }
+        $nestedResources = @($nested)
+        if ($resourceFormat -eq 'symbolic') {
+            $nestedResources = @{ nested = $nested }
+        }
+        $registryTemplate = New-ScopeTemplate -Scope resourcegroup -Resources $nestedResources
+        $registryTemplate.variables = @{
+            '$fxv#0' = (New-ScopeTemplate -Scope resourcegroup -Resources @(@{
+                        type = 'Microsoft.Authorization/roleAssignments'
+                        name = 'test-role-assignment'
+                    }))
+        }
+        $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[1].path)] =
+            New-ScopeTemplate -Resources @{
+                compiledModule = @{
+                    type       = 'Microsoft.Resources/deployments'
+                    properties = @{ template = $registryTemplate }
+                }
+            }
+
+        $selection = Get-ModuleDeploymentMatrix @matrixInput
+        $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
+
+        $selection.sharedScope | Should -BeTrue
+        $selection.testCases.Count | Should -Be $testFiles.Count
+        foreach ($index in 0..7) {
+            $subscription = $shuffled[$index % $shuffled.Count]
+            $selection.testCases[$index].subscriptionKey | Should -BeExactly $subscription.key
+            $selection.testCases[$index].concurrencyGroup | Should -BeExactly "avm-deploy-avm/res/example/module-$($subscription.key)"
+        }
+        Should -Invoke Invoke-WebRequest -Times 0 -Exactly
+        Should -Invoke Invoke-RestMethod -Times 0 -Exactly
+    }
+
+    It 'Preserves invalid concrete schema errors when expression-based templates are also present' {
+        $expressionTemplate = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = '[variables(''$fxv#0'')]' }
+        }
+        $invalidTemplate = @{
+            type       = 'Microsoft.Resources/deployments'
+            properties = @{ template = @{ '$schema' = 'https://example.invalid/unknown.json#' } }
+        }
+        $script:compiledTemplates[(Join-Path $TestDrive $matrixInput.ModulePath $testFiles[0].path)] =
+            New-ScopeTemplate -Resources @($expressionTemplate, $invalidTemplate)
+
+        { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw '*non-supported ARM template schema*'
+    }
+
     It 'Preserves round-robin positions around ignored tests without acquiring their deployment locks' {
         $testFiles[1].e2eIgnore = $true
         $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
