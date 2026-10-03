@@ -97,7 +97,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 128
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_D2s_v5'
           enableAutoScaling: true
           minCount: 1
           maxCount: 3

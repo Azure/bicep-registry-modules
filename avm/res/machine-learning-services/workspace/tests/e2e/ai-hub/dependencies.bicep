@@ -7,10 +7,10 @@ param keyVaultName string
 @description('Required. The name of the Application Insights instance to create.')
 param applicationInsightsName string
 
-@description('Required. The name of the Storage Account to create.')
+@description('Required. The storage account base name. A stable resource-group-specific suffix is added.')
 param storageAccountName string
 
-@description('Required. The name of the additional Storage Account to create.')
+@description('Required. The additional storage account base name. A stable resource-group-specific suffix is added.')
 param secondaryStorageAccountName string
 
 @description('Required. The name of the AI Services to create.')
@@ -42,7 +42,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: storageAccountName
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -51,7 +51,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
 }
 
 resource secondaryStorageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
-  name: secondaryStorageAccountName
+  name: '${take(secondaryStorageAccountName, 11)}${uniqueString(resourceGroup().id, secondaryStorageAccountName)}'
   location: location
   sku: {
     name: 'Standard_LRS'

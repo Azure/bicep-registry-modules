@@ -75,7 +75,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 1
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     // Non-required parameters
@@ -157,7 +157,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 1,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -265,7 +265,7 @@ param primaryAgentPoolProfiles = [
     count: 1
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 // Non-required parameters
@@ -347,7 +347,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     // Non-required parameters
@@ -384,7 +384,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -421,7 +421,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 // Non-required parameters
@@ -458,7 +458,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 3
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     // Non-required parameters
@@ -496,7 +496,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 3,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -536,7 +536,7 @@ param primaryAgentPoolProfiles = [
     count: 3
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 // Non-required parameters
@@ -574,7 +574,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         count: 2
         mode: 'System'
         name: 'systempool'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     // Non-required parameters
@@ -639,7 +639,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "count": 2,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -712,7 +712,7 @@ param primaryAgentPoolProfiles = [
     count: 2
     mode: 'System'
     name: 'systempool'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 // Non-required parameters
@@ -790,7 +790,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     // Non-required parameters
@@ -903,7 +903,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -1026,7 +1026,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 // Non-required parameters
@@ -1149,7 +1149,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           maxSurge: '33%'
           nodeSoakDurationInMinutes: 0
         }
-        vmSize: 'Standard_DS2_v2'
+        vmSize: 'Standard_D2s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -1502,7 +1502,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "maxSurge": "33%",
             "nodeSoakDurationInMinutes": 0
           },
-          "vmSize": "Standard_DS2_v2",
+          "vmSize": "Standard_D2s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -1983,7 +1983,7 @@ param primaryAgentPoolProfiles = [
       maxSurge: '33%'
       nodeSoakDurationInMinutes: 0
     }
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_D2s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2326,7 +2326,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2354,7 +2354,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2410,7 +2410,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2442,7 +2442,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2506,7 +2506,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2534,7 +2534,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -2590,7 +2590,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         osDiskSizeGB: 0
         osType: 'Linux'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
     ]
@@ -2619,7 +2619,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
         vnetSubnetResourceId: '<vnetSubnetResourceId>'
       }
       {
@@ -2641,7 +2641,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
         type: 'VirtualMachineScaleSets'
-        vmSize: 'Standard_DS4_v2'
+        vmSize: 'Standard_D8s_v5'
       }
     ]
     apiServerAccessProfile: {
@@ -2777,7 +2777,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "osDiskSizeGB": 0,
           "osType": "Linux",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         }
       ]
@@ -2810,7 +2810,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2",
+          "vmSize": "Standard_D8s_v5",
           "vnetSubnetResourceId": "<vnetSubnetResourceId>"
         },
         {
@@ -2832,7 +2832,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
           "type": "VirtualMachineScaleSets",
-          "vmSize": "Standard_DS4_v2"
+          "vmSize": "Standard_D8s_v5"
         }
       ]
     },
@@ -2994,7 +2994,7 @@ param primaryAgentPoolProfiles = [
     osDiskSizeGB: 0
     osType: 'Linux'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
 ]
@@ -3023,7 +3023,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
     vnetSubnetResourceId: '<vnetSubnetResourceId>'
   }
   {
@@ -3045,7 +3045,7 @@ param agentPools = [
     scaleSetEvictionPolicy: 'Delete'
     scaleSetPriority: 'Regular'
     type: 'VirtualMachineScaleSets'
-    vmSize: 'Standard_DS4_v2'
+    vmSize: 'Standard_D8s_v5'
   }
 ]
 param apiServerAccessProfile = {

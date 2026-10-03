@@ -159,6 +159,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2024-05-01' 
   }
 }
 
+@sys.batchSize(1)
 module volumeGroup_volumes 'volume/main.bicep' = [
   for (volume, index) in (volumes ?? []): {
     name: '${uniqueString(deployment().name, location)}-VolumeGroup-Volume-${index}'
@@ -174,6 +175,7 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
+@sys.batchSize(1)
 module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
@@ -226,6 +228,9 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      volumeGroup_volumes
+    ]
   }
 ]
 

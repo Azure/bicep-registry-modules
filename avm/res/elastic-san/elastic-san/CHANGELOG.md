@@ -7,6 +7,7 @@ The latest version of the changelog can be found [here](https://github.com/Azure
 ### Changes
 
 - Publishing child modules: `volume-group`, `volume-group/snapshot`, `volume-group/volume`
+- Serialized volume group, volume, and private endpoint deployment to avoid concurrent Elastic SAN operations.
 
 ### Breaking Changes
 

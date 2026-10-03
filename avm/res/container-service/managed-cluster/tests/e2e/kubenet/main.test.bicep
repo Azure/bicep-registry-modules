@@ -84,7 +84,7 @@ module testDeployment '../../../main.bicep' = [
           osDiskSizeGB: 0
           osType: 'Linux'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS4_v2'
+          vmSize: 'Standard_D8s_v5'
         }
       ]
       agentPools: [

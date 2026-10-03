@@ -10,8 +10,8 @@ param automationAccountName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
-@description('Required. The name of the Deployment Script to create to get the paired region name.')
-param pairedRegionScriptName string
+@description('Required. The name of the Deployment Script that selects a supported replication region.')
+param replicationRegionScriptName string
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
   name: storageAccountName
@@ -55,8 +55,8 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-  name: pairedRegionScriptName
+resource getReplicationRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: replicationRegionScriptName
   location: location
   kind: 'AzurePowerShell'
   identity: {
@@ -69,7 +69,7 @@ resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2023-08-01
     azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: '-Location \\"${location}\\"'
-    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+    scriptContent: loadTextContent('../../shared/Get-ReplicationRegion.ps1')
   }
   tags: {
     SecurityControl: 'Ignore' // SFI policies would prevent key based authentication to the storage account
@@ -91,5 +91,5 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
-@description('The name of the paired region.')
-output pairedRegionName string = getPairedRegionScript.properties.outputs.pairedRegionName
+@description('The name of a supported replication region.')
+output replicationRegionName string = getReplicationRegionScript.properties.outputs.replicationRegionName

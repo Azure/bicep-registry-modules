@@ -74,6 +74,10 @@ This instance deploys the module as a Blob Storage account.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/blob]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Azure rejects new legacy BlobStorage accounts with AccountKindNotSupported. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.
+```
 
 <details>
 
@@ -3144,6 +3148,10 @@ This instance deploys the module as Storage Account version 1.
 
 You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/v1]
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Azure no longer permits creating general-purpose-v1 storage accounts. The max and waf-aligned scenarios cover StorageV2 accounts and blob containers.
+```
 
 <details>
 

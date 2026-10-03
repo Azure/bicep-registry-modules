@@ -329,10 +329,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     replicaLocations: [
       {
         name: 'mycentralusreplica'
-        replicaLocation: 'centralus'
+        replicaLocation: '<replicaLocation>'
       }
       {
-        replicaLocation: 'westus'
+        replicaLocation: '<replicaLocation>'
       }
     ]
     roleAssignments: [
@@ -458,10 +458,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
       "value": [
         {
           "name": "mycentralusreplica",
-          "replicaLocation": "centralus"
+          "replicaLocation": "<replicaLocation>"
         },
         {
-          "replicaLocation": "westus"
+          "replicaLocation": "<replicaLocation>"
         }
       ]
     },
@@ -573,10 +573,10 @@ param managedIdentities = {
 param replicaLocations = [
   {
     name: 'mycentralusreplica'
-    replicaLocation: 'centralus'
+    replicaLocation: '<replicaLocation>'
   }
   {
-    replicaLocation: 'westus'
+    replicaLocation: '<replicaLocation>'
   }
 ]
 param roleAssignments = [
@@ -804,10 +804,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     ]
     replicaLocations: [
       {
-        replicaLocation: 'centralus'
+        replicaLocation: '<replicaLocation>'
       }
       {
-        replicaLocation: 'westus'
+        replicaLocation: '<replicaLocation>'
       }
     ]
     softDeleteRetentionInDays: 1
@@ -868,10 +868,10 @@ module configurationStore 'br/public:avm/res/app-configuration/configuration-sto
     "replicaLocations": {
       "value": [
         {
-          "replicaLocation": "centralus"
+          "replicaLocation": "<replicaLocation>"
         },
         {
-          "replicaLocation": "westus"
+          "replicaLocation": "<replicaLocation>"
         }
       ]
     },
@@ -922,10 +922,10 @@ param keyValues = [
 ]
 param replicaLocations = [
   {
-    replicaLocation: 'centralus'
+    replicaLocation: '<replicaLocation>'
   }
   {
-    replicaLocation: 'westus'
+    replicaLocation: '<replicaLocation>'
   }
 ]
 param softDeleteRetentionInDays = 1

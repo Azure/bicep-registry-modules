@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "13701062262965602702"
+      "templateHash": "15097795369616680026"
     },
     "name": "Elastic SAN Volume Groups",
     "description": "This module deploys an Elastic SAN Volume Group."
@@ -865,7 +865,9 @@
     "volumeGroup_volumes": {
       "copy": {
         "name": "volumeGroup_volumes",
-        "count": "[length(coalesce(parameters('volumes'), createArray()))]"
+        "count": "[length(coalesce(parameters('volumes'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1318,7 +1320,9 @@
     "volumeGroup_privateEndpoints": {
       "copy": {
         "name": "volumeGroup_privateEndpoints",
-        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2025-04-01",
@@ -1972,7 +1976,8 @@
         }
       },
       "dependsOn": [
-        "volumeGroup"
+        "volumeGroup",
+        "volumeGroup_volumes"
       ]
     }
   },
