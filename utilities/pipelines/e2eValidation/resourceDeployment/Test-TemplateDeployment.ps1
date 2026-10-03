@@ -9,7 +9,10 @@ function Get-TemplateValidationErrorMessage {
         [hashtable] $AdditionalParameters,
 
         [Parameter()]
-        [string] $ParameterFilePath
+        [string] $ParameterFilePath,
+
+        [Parameter()]
+        [string] $Summary = 'Template is not valid.'
     )
 
     $parameterValues = [System.Collections.Generic.Queue[object]]::new()
@@ -50,7 +53,7 @@ function Get-TemplateValidationErrorMessage {
     }
 
     $messages = [System.Collections.Generic.List[string]]::new()
-    $messages.Add('Template is not valid.')
+    $messages.Add($Summary)
     $pendingErrors = [System.Collections.Generic.Queue[object]]::new()
     foreach ($validationError in $ValidationErrors) { $pendingErrors.Enqueue($validationError) }
     $visitedErrors = [System.Collections.Generic.HashSet[object]]::new()
@@ -206,9 +209,10 @@ function Test-TemplateDeployment {
         $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $TemplateFilePath -Verbose
 
         # Generate a valid deployment name. Must match ^[-\w\._\(\)]+$
-        do {
-            $deploymentName = ('{0}-{1}' -f $deploymentNamePrefix, (Get-Date -Format 'yyyyMMddTHHMMssffffZ'))[0..63] -join ''
-        } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
+        $deploymentName = ('{0}-{1}' -f $deploymentNamePrefix, (Get-Date -Format 'yyyyMMddTHHMMssffffZ'))[0..63] -join ''
+        if ($deploymentName -notmatch '^[-\w\._\(\)]+$') {
+            throw "Generated validation deployment name [$deploymentName] contains unsupported characters."
+        }
 
         if ($deploymentScope -ne 'resourceGroup') {
             Write-Verbose "Testing with deployment name [$deploymentName]" -Verbose
