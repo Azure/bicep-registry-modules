@@ -130,7 +130,7 @@ function Set-AVMModule {
     if ($InvokeForDiff) {
         $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
 
-        $relevantTemplatePaths = @() + (Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '[\/|\\]main\.bicep$' })
+        $relevantTemplatePaths = @() + (Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '^(?!.*[\/\\]tests[\/\\]).+\.bicep$' }) # Any Bicep file exluding test files. Includes e.g., templates in the /modules folder
         Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose
 
         # Handling relevant parent modules that would be affected by a diff in a child
@@ -139,7 +139,7 @@ function Set-AVMModule {
         } | ForEach-Object { Join-Path $_ 'main.bicep' } | Where-Object { Test-Path $_ } | Select-Object -Unique
         Write-Verbose ('Union with [{0}] relevant parent folder template files' -f $parentTemplatePaths.Count) -Verbose
         $relevantTemplatePaths += $parentTemplatePaths
-        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique
+        $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique | Where-Object { $_ -match '[\/|\\]main\.bicep$' } # Now remove all non main.bicep files
 
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
         $relevantTemplatePaths | ForEach-Object {
@@ -242,7 +242,7 @@ function Set-AVMModule {
         }
 
         $compilationChunks = $testFilePaths ? (Split-Array -InputArray $testFilePaths -SplitSize $defaultSplitSize) : @()
-        if ($relevantTemplatePaths.Count -le $defaultSplitSize) {
+        if ($testFilePaths.Count -le $defaultSplitSize) {
             $compilationChunks = , $compilationChunks
         } else {
             $compilationChunks = $compilationChunks
