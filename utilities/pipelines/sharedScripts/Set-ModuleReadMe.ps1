@@ -1227,6 +1227,9 @@ function ConvertTo-FormattedJSONParameterObject {
             continue
         }
 
+        # Preserve quoted values, including URLs, when removing inline comments.
+        $line = $line -replace '("(?:\\.|[^"\\])*")|//.*$', '$1'
+
         # [2.4] Syntax:
         # - Everything left of a leftest ':' should be wrapped in quotes (as a parameter name is always a string)
         # - However, we don't want to accidently catch something like "CriticalAddonsOnly=true:NoSchedule"
@@ -1332,14 +1335,7 @@ function ConvertTo-FormattedJSONParameterObject {
             continue
         }
 
-        if ( $paramInJSONFormatArray[$index] -match '(?<![:\/])\/\/.*$' ) {
-            # Has inline comment (i.e., a situation where you have '//' not enclosed by quotes)
-            $lineElements = $paramInJSONFormatArray[$index] -split '(?<![:\/])\/\/.*$'
-            $paramInJSONFormatArray[$index] = '{0}, // {1}' -f $lineElements[0].Trim(), $lineElements[1].Trim()
-
-        } else {
-            $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
-        }
+        $paramInJSONFormatArray[$index] = '{0},' -f $paramInJSONFormatArray[$index].Trim()
     }
 
     # [2.8] Format the final JSON string to an object to enable processing
@@ -2013,10 +2009,16 @@ function Initialize-ReadMe {
 
     if ($ReadMeFilePath -match 'avm.(?:res)') {
         # Resource module
-        $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
+        $metadataFilePath = Join-Path (Split-Path $TemplateFilePath -Parent) 'metadata.json'
+        [string] $formattedResourceType = if (Test-Path -LiteralPath $metadataFilePath) {
+            (Get-Content -LiteralPath $metadataFilePath -Raw | ConvertFrom-Json -ErrorAction Stop).canonicalType
+        }
+        if ($formattedResourceType -notmatch '^[^/]+\.[^/]+/') {
+            $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier -ForceCacheRefresh:$ForceCacheRefresh
+        }
 
         $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-            $_ -match "^$formattedResourceType$"
+            $_ -eq $formattedResourceType
         }
 
         if ($inTemplateResourceType) {

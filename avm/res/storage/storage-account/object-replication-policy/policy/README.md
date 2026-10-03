@@ -159,9 +159,11 @@ Enable/Disable usage telemetry for module.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `name` | string | The name of the created Object Replication Policy. |
 | `objectReplicationPolicyId` | string | Resource ID of the created Object Replication Policy. |
 | `policyId` | string | Policy ID of the created Object Replication Policy. |
 | `resourceGroupName` | string | Resource group name of the provisioned resources. |
+| `resourceId` | string | The resource ID of the created Object Replication Policy. |
 | `rules` | array | Rules created Object Replication Policy. |
 
 ## Data Collection
