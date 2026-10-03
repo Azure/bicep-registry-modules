@@ -1,4 +1,4 @@
-# DevTest Lab Secrets `[Microsoft.DevTestLab/labs/secrets]`
+# DevTest Lab Secrets `[Microsoft.DevTestLab/labs]`
 
 This module deploys a DevTest Lab Secret.
 

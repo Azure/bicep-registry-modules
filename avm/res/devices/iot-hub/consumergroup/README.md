@@ -1,4 +1,4 @@
-# IoT Hub Consumer Groups `[Microsoft.Devices/IotHubs/eventHubEndpoints/ConsumerGroups]`
+# IoT Hub Consumer Groups `[Microsoft.Devices/IotHubs]`
 
 This module deploys an IoT Hub Consumer Group.
 
