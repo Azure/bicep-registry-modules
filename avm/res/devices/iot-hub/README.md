@@ -39,6 +39,556 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/devices/iot-hub:<version>`.
 
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using only defaults](#example-2-using-only-defaults)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/defaults]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dihmin001'
+    skuName: 'S1'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dihmin001"
+    },
+    "skuName": {
+      "value": "S1"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/devices/iot-hub:<version>'
+
+// Required parameters
+param name = 'dihmin001'
+param skuName = 'S1'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
+
+This instance deploys the module testing consumer groups.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/max]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dihmax001'
+    skuName: 'S1'
+    // Non-required parameters
+    allowedFqdnList: [
+      'www.bing.com'
+      'www.microsoft.com'
+    ]
+    authorizationPolicies: []
+    cloudToDevice: {
+      defaultTtlAsIso8601: 'PT1H'
+      maxDeliveryCount: 5
+    }
+    comments: 'Testing iot-hub with maximum configuration.'
+    consumerGroups: [
+      'dihmaxcg001'
+      'dihmaxcg002'
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    disableDeviceSAS: true
+    disableLocalAuth: true
+    disableModuleSAS: true
+    enableDataResidency: false
+    eventHubEndpoints: {
+      events: {
+        partitionCount: 4
+        retentionTimeInDays: 7
+      }
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    messagingEndpoints: {
+      fileNotifications: {
+        lockDurationAsIso8601: 'PT1M'
+        maxDeliveryCount: 5
+        ttlAsIso8601: 'PT1H'
+      }
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'iotHub'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          application: 'AVM'
+          'hidden-title': 'This is visible in the resource name'
+        }
+      }
+    ]
+    skuCapacity: 2
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dihmax001"
+    },
+    "skuName": {
+      "value": "S1"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": [
+        "www.bing.com",
+        "www.microsoft.com"
+      ]
+    },
+    "authorizationPolicies": {
+      "value": []
+    },
+    "cloudToDevice": {
+      "value": {
+        "defaultTtlAsIso8601": "PT1H",
+        "maxDeliveryCount": 5
+      }
+    },
+    "comments": {
+      "value": "Testing iot-hub with maximum configuration."
+    },
+    "consumerGroups": {
+      "value": [
+        "dihmaxcg001",
+        "dihmaxcg002"
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "disableDeviceSAS": {
+      "value": true
+    },
+    "disableLocalAuth": {
+      "value": true
+    },
+    "disableModuleSAS": {
+      "value": true
+    },
+    "enableDataResidency": {
+      "value": false
+    },
+    "eventHubEndpoints": {
+      "value": {
+        "events": {
+          "partitionCount": 4,
+          "retentionTimeInDays": 7
+        }
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "messagingEndpoints": {
+      "value": {
+        "fileNotifications": {
+          "lockDurationAsIso8601": "PT1M",
+          "maxDeliveryCount": 5,
+          "ttlAsIso8601": "PT1H"
+        }
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "iotHub",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "application": "AVM",
+            "hidden-title": "This is visible in the resource name"
+          }
+        }
+      ]
+    },
+    "skuCapacity": {
+      "value": 2
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/devices/iot-hub:<version>'
+
+// Required parameters
+param name = 'dihmax001'
+param skuName = 'S1'
+// Non-required parameters
+param allowedFqdnList = [
+  'www.bing.com'
+  'www.microsoft.com'
+]
+param authorizationPolicies = []
+param cloudToDevice = {
+  defaultTtlAsIso8601: 'PT1H'
+  maxDeliveryCount: 5
+}
+param comments = 'Testing iot-hub with maximum configuration.'
+param consumerGroups = [
+  'dihmaxcg001'
+  'dihmaxcg002'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param disableDeviceSAS = true
+param disableLocalAuth = true
+param disableModuleSAS = true
+param enableDataResidency = false
+param eventHubEndpoints = {
+  events: {
+    partitionCount: 4
+    retentionTimeInDays: 7
+  }
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param messagingEndpoints = {
+  fileNotifications: {
+    lockDurationAsIso8601: 'PT1M'
+    maxDeliveryCount: 5
+    ttlAsIso8601: 'PT1H'
+  }
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'iotHub'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      application: 'AVM'
+      'hidden-title': 'This is visible in the resource name'
+    }
+  }
+]
+param skuCapacity = 2
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+You can find the full example and the setup of its dependencies in the deployment test folder path [/tests/e2e/waf-aligned]
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
+  params: {
+    // Required parameters
+    name: 'dihwaf001'
+    skuName: 'S1'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'iotHub'
+        subnetResourceId: '<subnetResourceId>'
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'iotHub'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dihwaf001"
+    },
+    "skuName": {
+      "value": "S1"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "iotHub",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "iotHub",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/devices/iot-hub:<version>'
+
+// Required parameters
+param name = 'dihwaf001'
+param skuName = 'S1'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'iotHub'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'iotHub'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
