@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Deploying multiple regions'
@@ -39,7 +41,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    name: '${namePrefix}-multi-region'
+    name: uniqueResourceName('${namePrefix}-multi-region', resourceGroup.id, 44)
     enableAutomaticFailover: true
     enableMultipleWriteLocations: true
     backupPolicyType: 'Periodic'

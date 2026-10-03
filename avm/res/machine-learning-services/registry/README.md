@@ -55,7 +55,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
   params: {
-    name: 'mlsrmin001'
+    name: '<name>'
   }
 }
 ```
@@ -73,7 +73,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "mlsrmin001"
+      "value": "<name>"
     }
   }
 }
@@ -89,7 +89,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 ```bicep-params
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
-param name = 'mlsrmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -110,7 +110,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'mlsrmax001'
+    name: '<name>'
     // Non-required parameters
     acrAccountName: '<acrAccountName>'
     acrSku: 'Premium'
@@ -154,7 +154,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
     ]
     roleAssignments: [
       {
-        name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -198,7 +198,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "mlsrmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAccountName": {
@@ -256,7 +256,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
     "roleAssignments": {
       "value": [
         {
-          "name": "8f8b1c39-827f-43e6-a457-98bb15b5dbdf",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -308,7 +308,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'mlsrmax001'
+param name = '<name>'
 // Non-required parameters
 param acrAccountName = '<acrAccountName>'
 param acrSku = 'Premium'
@@ -352,7 +352,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -398,7 +398,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'mlsrwaf001'
+    name: '<name>'
     // Non-required parameters
     privateEndpoints: [
       {
@@ -435,7 +435,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "mlsrwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "privateEndpoints": {
@@ -474,7 +474,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'mlsrwaf001'
+param name = '<name>'
 // Non-required parameters
 param privateEndpoints = [
   {

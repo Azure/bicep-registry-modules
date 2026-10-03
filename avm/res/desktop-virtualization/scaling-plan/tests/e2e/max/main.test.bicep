@@ -198,13 +198,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
+          name: guid(resourceGroup.id, 'c2c1c560-2169-405a-a8dc-7427e403e5ac')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

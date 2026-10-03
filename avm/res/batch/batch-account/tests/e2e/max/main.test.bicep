@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -35,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
@@ -64,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: uniqueResourceName('${namePrefix}${serviceShort}001', resourceGroup.id, 24)
       location: resourceLocation
       storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       diagnosticSettings: [
@@ -99,7 +101,7 @@ module testDeployment '../../../main.bicep' = [
           }
           roleAssignments: [
             {
-              name: '9afa4fb3-2157-40db-aebb-039ce73c50ca'
+              name: guid(resourceGroup.id, '9afa4fb3-2157-40db-aebb-039ce73c50ca')
               roleDefinitionIdOrName: 'Owner'
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
@@ -185,13 +187,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'd57821b0-52b3-4a42-9799-533a9cdb7eec'
+          name: guid(resourceGroup.id, 'd57821b0-52b3-4a42-9799-533a9cdb7eec')
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
+          name: guid(resourceGroup.id, 'Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

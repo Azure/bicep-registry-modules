@@ -64,7 +64,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'creagr002'
+    name: '<name>'
     // Non-required parameters
     database: {
       geoReplication: {
@@ -98,7 +98,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creagr002"
+      "value": "<name>"
     },
     // Non-required parameters
     "database": {
@@ -134,7 +134,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creagr002'
+param name = '<name>'
 // Non-required parameters
 param database = {
   geoReplication: {
@@ -170,7 +170,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'creaei001'
+    name: '<name>'
     // Non-required parameters
     database: {
       accessKeysAuthentication: 'Disabled'
@@ -199,7 +199,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creaei001"
+      "value": "<name>"
     },
     // Non-required parameters
     "database": {
@@ -228,7 +228,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creaei001'
+param name = '<name>'
 // Non-required parameters
 param database = {
   accessKeysAuthentication: 'Disabled'
@@ -259,7 +259,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'creanc001'
+    name: '<name>'
     // Non-required parameters
     database: {
       clusteringPolicy: 'NoCluster'
@@ -282,7 +282,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creanc001"
+      "value": "<name>"
     },
     // Non-required parameters
     "database": {
@@ -305,7 +305,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creanc001'
+param name = '<name>'
 // Non-required parameters
 param database = {
   clusteringPolicy: 'NoCluster'
@@ -334,7 +334,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'creshsmu001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -366,7 +366,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creshsmu001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -400,7 +400,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creshsmu001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -434,7 +434,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'creuace001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -470,7 +470,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "creuace001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -510,7 +510,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'creuace001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -547,7 +547,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
-    name: 'cremin001'
+    name: '<name>'
   }
 }
 ```
@@ -565,7 +565,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "cremin001"
+      "value": "<name>"
     }
   }
 }
@@ -581,7 +581,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
-param name = 'cremin001'
+param name = '<name>'
 ```
 
 </details>
@@ -602,7 +602,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'cremax001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: [
       1
@@ -684,7 +684,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
-        name: '759769d2-fc52-4a92-a943-724e48927e0b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -725,7 +725,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "cremax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -831,7 +831,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "759769d2-fc52-4a92-a943-724e48927e0b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -874,7 +874,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'cremax001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = [
   1
@@ -956,7 +956,7 @@ param privateEndpoints = [
 param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
-    name: '759769d2-fc52-4a92-a943-724e48927e0b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -999,7 +999,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   params: {
     // Required parameters
-    name: 'crewaf001'
+    name: '<name>'
     // Non-required parameters
     availabilityZones: '<availabilityZones>'
     database: {
@@ -1078,7 +1078,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crewaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "availabilityZones": {
@@ -1169,7 +1169,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
 using 'br/public:avm/res/cache/redis-enterprise:<version>'
 
 // Required parameters
-param name = 'crewaf001'
+param name = '<name>'
 // Non-required parameters
 param availabilityZones = '<availabilityZones>'
 param database = {

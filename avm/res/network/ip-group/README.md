@@ -143,7 +143,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
     }
     roleAssignments: [
       {
-        name: '26438d40-c8be-4229-ba65-800cf4e49dc8'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -204,7 +204,7 @@ module ipGroup 'br/public:avm/res/network/ip-group:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "26438d40-c8be-4229-ba65-800cf4e49dc8",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -257,7 +257,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '26438d40-c8be-4229-ba65-800cf4e49dc8'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

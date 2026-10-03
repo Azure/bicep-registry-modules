@@ -459,7 +459,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -610,7 +610,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "f5c27a7b-9b18-4dc1-b002-db3c38e80b64",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -749,7 +749,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

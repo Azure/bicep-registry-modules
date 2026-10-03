@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
@@ -40,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     applicationInsightsName: 'dep-${namePrefix}-appI-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}st${serviceShort}', resourceGroup.id, 24)
     location: resourceLocation
   }
 }

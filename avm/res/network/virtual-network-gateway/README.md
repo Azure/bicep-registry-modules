@@ -73,13 +73,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activeActiveBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgaab001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgaab'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -118,7 +118,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgaab001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -132,7 +132,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgaab"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -179,13 +179,13 @@ param clusterSettings = {
   clusterMode: 'activeActiveBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgaab001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgaab'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -230,13 +230,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       ]
     }
     gatewayType: 'Vpn'
-    name: 'nvgaaa001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgaaa'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -283,7 +283,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgaaa001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -297,7 +297,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgaaa"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -352,13 +352,13 @@ param clusterSettings = {
   ]
 }
 param gatewayType = 'Vpn'
-param name = 'nvgaaa001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgaaa'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -402,7 +402,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgaaep'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -457,7 +457,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgaaep"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -514,7 +514,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgaaep'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -552,13 +552,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activeActiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgaa001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgaa'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -597,7 +597,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgaa001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -611,7 +611,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgaa"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -658,13 +658,13 @@ param clusterSettings = {
   clusterMode: 'activeActiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgaa001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgaa'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -712,7 +712,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgapb'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -770,7 +770,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgapb"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -828,7 +828,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgapb'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -876,7 +876,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgapep'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -935,7 +935,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgapep"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -996,7 +996,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgapep'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -1040,7 +1040,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgap'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -1093,7 +1093,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgap"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -1146,7 +1146,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgap'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -1183,7 +1183,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgcr001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     customRoutes: {
@@ -1224,7 +1224,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgcr001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1271,7 +1271,7 @@ param clusterSettings = {
   clusterMode: 'activePassiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgcr001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param customRoutes = {
@@ -1310,7 +1310,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activeActiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgmin001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
@@ -1338,7 +1338,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgmin001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1362,7 +1362,7 @@ param clusterSettings = {
   clusterMode: 'activeActiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgmin001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
@@ -1480,10 +1480,10 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
         '169.254.22.4'
         '169.254.22.5'
       ]
-      secondPipName: 'nvgmax001-pip2'
+      secondPipName: '<secondPipName>'
     }
     gatewayType: 'Vpn'
-    name: 'nvgmax001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -1503,7 +1503,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgmax'
+      '<publicIpDomainNameLabel>'
     ]
     domainNameLabelScope: 'TenantReuse'
     enableBgpRouteTranslationForNat: true
@@ -1555,7 +1555,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     roleAssignments: [
       {
-        name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -1608,14 +1608,14 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
           "169.254.22.4",
           "169.254.22.5"
         ],
-        "secondPipName": "nvgmax001-pip2"
+        "secondPipName": "<secondPipName>"
       }
     },
     "gatewayType": {
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgmax001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1645,7 +1645,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgmax"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "domainNameLabelScope": {
@@ -1715,7 +1715,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     "roleAssignments": {
       "value": [
         {
-          "name": "db30550e-70b7-4dbe-901e-e9363b69c05f",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -1774,10 +1774,10 @@ param clusterSettings = {
     '169.254.22.4'
     '169.254.22.5'
   ]
-  secondPipName: 'nvgmax001-pip2'
+  secondPipName: '<secondPipName>'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgmax001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
@@ -1797,7 +1797,7 @@ param diagnosticSettings = [
 ]
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgmax'
+  '<publicIpDomainNameLabel>'
 ]
 param domainNameLabelScope = 'TenantReuse'
 param enableBgpRouteTranslationForNat = true
@@ -1849,7 +1849,7 @@ param publicIpAvailabilityZones = [
 ]
 param roleAssignments = [
   {
-    name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -1898,7 +1898,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgp2sec001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     clientRevokedCertThumbprint: '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
@@ -1944,7 +1944,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgp2sec001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -2000,7 +2000,7 @@ param clusterSettings = {
   clusterMode: 'activePassiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgp2sec001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param clientRevokedCertThumbprint = '1f24c630cda418ef2069ffad4fdd5f463a1b69aa'
@@ -2044,13 +2044,13 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activeActiveNoBgp'
     }
     gatewayType: 'Vpn'
-    name: 'nvgvpn001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgvpn'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -2089,7 +2089,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgvpn001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -2103,7 +2103,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgvpn"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -2150,13 +2150,13 @@ param clusterSettings = {
   clusterMode: 'activeActiveNoBgp'
 }
 param gatewayType = 'Vpn'
-param name = 'nvgvpn001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgvpn'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true
@@ -2202,7 +2202,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       ]
     }
     gatewayType: 'Vpn'
-    name: 'nvgmwaf001'
+    name: '<name>'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     allowRemoteVnetTraffic: true
@@ -2222,7 +2222,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     ]
     disableIPSecReplayProtection: true
     domainNameLabel: [
-      'dm-nvgmwaf'
+      '<publicIpDomainNameLabel>'
     ]
     enableBgpRouteTranslationForNat: true
     enablePrivateIpAddress: true
@@ -2313,7 +2313,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       "value": "Vpn"
     },
     "name": {
-      "value": "nvgmwaf001"
+      "value": "<name>"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -2343,7 +2343,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "domainNameLabel": {
       "value": [
-        "dm-nvgmwaf"
+        "<publicIpDomainNameLabel>"
       ]
     },
     "enableBgpRouteTranslationForNat": {
@@ -2448,7 +2448,7 @@ param clusterSettings = {
   ]
 }
 param gatewayType = 'Vpn'
-param name = 'nvgmwaf001'
+param name = '<name>'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param allowRemoteVnetTraffic = true
@@ -2468,7 +2468,7 @@ param diagnosticSettings = [
 ]
 param disableIPSecReplayProtection = true
 param domainNameLabel = [
-  'dm-nvgmwaf'
+  '<publicIpDomainNameLabel>'
 ]
 param enableBgpRouteTranslationForNat = true
 param enablePrivateIpAddress = true

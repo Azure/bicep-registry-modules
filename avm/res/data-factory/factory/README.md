@@ -67,7 +67,7 @@ The test is skipped because running the HSM scenario requires a persistent Manag
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   params: {
     // Required parameters
-    name: 'dffencr001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -93,7 +93,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -119,7 +119,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 using 'br/public:avm/res/data-factory/factory:<version>'
 
 // Required parameters
-param name = 'dffencr001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -146,7 +146,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 ```bicep
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   params: {
-    name: 'dffmin001'
+    name: '<name>'
   }
 }
 ```
@@ -164,7 +164,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "dffmin001"
+      "value": "<name>"
     }
   }
 }
@@ -180,7 +180,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/data-factory/factory:<version>'
 
-param name = 'dffmin001'
+param name = '<name>'
 ```
 
 </details>
@@ -201,7 +201,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   params: {
     // Required parameters
-    name: 'dffmax001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -323,7 +323,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '12093237-f40a-4f36-868f-accbeebf540c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -363,7 +363,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -509,7 +509,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "12093237-f40a-4f36-868f-accbeebf540c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -549,7 +549,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 using 'br/public:avm/res/data-factory/factory:<version>'
 
 // Required parameters
-param name = 'dffmax001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
@@ -671,7 +671,7 @@ param privateEndpoints = [
 ]
 param roleAssignments = [
   {
-    name: '12093237-f40a-4f36-868f-accbeebf540c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -713,7 +713,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   params: {
     // Required parameters
-    name: 'dffwaf001'
+    name: '<name>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -798,7 +798,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dffwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -897,7 +897,7 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
 using 'br/public:avm/res/data-factory/factory:<version>'
 
 // Required parameters
-param name = 'dffwaf001'
+param name = '<name>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'

@@ -58,7 +58,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: {
     // Required parameters
-    name: 'dihmin001'
+    name: '<name>'
     skuName: 'S1'
   }
 }
@@ -78,7 +78,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihmin001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "S1"
@@ -98,7 +98,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
 using 'br/public:avm/res/devices/iot-hub:<version>'
 
 // Required parameters
-param name = 'dihmin001'
+param name = '<name>'
 param skuName = 'S1'
 ```
 
@@ -120,7 +120,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: {
     // Required parameters
-    name: 'dihmax001'
+    name: '<name>'
     skuName: 'S1'
     // Non-required parameters
     allowedFqdnList: [
@@ -210,7 +210,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihmax001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "S1"
@@ -330,7 +330,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
 using 'br/public:avm/res/devices/iot-hub:<version>'
 
 // Required parameters
-param name = 'dihmax001'
+param name = '<name>'
 param skuName = 'S1'
 // Non-required parameters
 param allowedFqdnList = [
@@ -422,7 +422,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   params: {
     // Required parameters
-    name: 'dihwaf001'
+    name: '<name>'
     skuName: 'S1'
     // Non-required parameters
     diagnosticSettings: [
@@ -480,7 +480,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dihwaf001"
+      "value": "<name>"
     },
     "skuName": {
       "value": "S1"
@@ -544,7 +544,7 @@ module iotHub 'br/public:avm/res/devices/iot-hub:<version>' = {
 using 'br/public:avm/res/devices/iot-hub:<version>'
 
 // Required parameters
-param name = 'dihwaf001'
+param name = '<name>'
 param skuName = 'S1'
 // Non-required parameters
 param diagnosticSettings = [

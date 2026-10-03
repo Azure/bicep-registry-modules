@@ -209,7 +209,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     publicDataEndpointEnabled: false
     roleAssignments: [
       {
-        name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -389,7 +389,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "4de0cbb1-1f3d-4eb3-ac11-5797f548199b",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -548,7 +548,7 @@ param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
 param roleAssignments = [
   {
-    name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

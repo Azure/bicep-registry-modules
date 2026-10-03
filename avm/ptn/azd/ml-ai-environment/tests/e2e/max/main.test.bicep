@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
@@ -44,15 +46,15 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: enforcedLocation
       hubName: '${namePrefix}${serviceShort}hub001'
-      keyVaultName: '${namePrefix}${serviceShort}kv002'
-      cognitiveServicesName: '${namePrefix}${serviceShort}cs001'
+      keyVaultName: uniqueResourceName('${namePrefix}${serviceShort}kv002', resourceGroup.id, 24)
+      cognitiveServicesName: uniqueResourceName('${namePrefix}${serviceShort}cs001', resourceGroup.id, 64)
       projectName: '${namePrefix}${serviceShort}pro001'
-      storageAccountName: '${namePrefix}${serviceShort}sta001'
+      storageAccountName: uniqueResourceName('${namePrefix}${serviceShort}sta001', resourceGroup.id, 24)
       userAssignedtName: '${namePrefix}${serviceShort}ua001'
-      containerRegistryName: '${namePrefix}${serviceShort}cr001'
+      containerRegistryName: uniqueResourceName('${namePrefix}${serviceShort}cr001', resourceGroup.id, 50)
       applicationInsightsName: '${namePrefix}${serviceShort}appin001'
       logAnalyticsName: '${namePrefix}${serviceShort}la001'
-      searchServiceName: '${namePrefix}${serviceShort}search001'
+      searchServiceName: uniqueResourceName('${namePrefix}${serviceShort}search001', resourceGroup.id, 60)
       openAiConnectionName: '${namePrefix}${serviceShort}ai001-connection'
       searchConnectionName: '${namePrefix}${serviceShort}search001-connection'
       cognitiveServicesDeployments: [

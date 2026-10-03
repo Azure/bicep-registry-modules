@@ -185,7 +185,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     relayUDP: 'Enabled'
     roleAssignments: [
       {
-        name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -356,7 +356,7 @@ module hostPool 'br/public:avm/res/desktop-virtualization/host-pool:<version>' =
     "roleAssignments": {
       "value": [
         {
-          "name": "52c43567-917f-4c56-8c9b-6cadeef37b51",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -489,7 +489,7 @@ param publicUDP = 'Enabled'
 param relayUDP = 'Enabled'
 param roleAssignments = [
   {
-    name: '52c43567-917f-4c56-8c9b-6cadeef37b51'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

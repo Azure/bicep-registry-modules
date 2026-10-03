@@ -128,7 +128,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     }
     roleAssignments: [
       {
-        name: '78ad6c3f-7f77-4d26-9576-dbd947241ef0'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -191,7 +191,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     "roleAssignments": {
       "value": [
         {
-          "name": "78ad6c3f-7f77-4d26-9576-dbd947241ef0",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -242,7 +242,7 @@ param lock = {
 }
 param roleAssignments = [
   {
-    name: '78ad6c3f-7f77-4d26-9576-dbd947241ef0'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'

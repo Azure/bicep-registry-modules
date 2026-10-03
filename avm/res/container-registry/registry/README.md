@@ -67,7 +67,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrmin001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Standard'
     location: '<location>'
@@ -89,7 +89,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmin001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -113,7 +113,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrmin001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Standard'
 param location = '<location>'
@@ -137,7 +137,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrencr001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Premium'
     customerManagedKey: {
@@ -165,7 +165,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrencr001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -199,7 +199,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrencr001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Premium'
 param customerManagedKey = {
@@ -229,7 +229,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrmax001'
+    name: '<name>'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
@@ -314,7 +314,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     roleAssignmentMode: 'AbacRepositoryPermissions'
     roleAssignments: [
       {
-        name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -377,7 +377,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
         status: 'enabled'
       }
     ]
-    trustPolicyStatus: 'disabled'
+    trustPolicyStatus: '<trustPolicyStatus>'
     webhooks: [
       {
         name: 'acrx001webhook'
@@ -402,7 +402,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -519,7 +519,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "37c5bf75-c804-4607-94a9-e7485164f9f7",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -596,7 +596,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       ]
     },
     "trustPolicyStatus": {
-      "value": "disabled"
+      "value": "<trustPolicyStatus>"
     },
     "webhooks": {
       "value": [
@@ -621,7 +621,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrmax001'
+param name = '<name>'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
@@ -706,7 +706,7 @@ param replications = [
 param roleAssignmentMode = 'AbacRepositoryPermissions'
 param roleAssignments = [
   {
-    name: '37c5bf75-c804-4607-94a9-e7485164f9f7'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -769,7 +769,7 @@ param tokens = [
     status: 'enabled'
   }
 ]
-param trustPolicyStatus = 'disabled'
+param trustPolicyStatus = '<trustPolicyStatus>'
 param webhooks = [
   {
     name: 'acrx001webhook'
@@ -796,7 +796,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrempty001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Premium'
     location: '<location>'
@@ -821,7 +821,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrempty001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -854,7 +854,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrempty001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Premium'
 param location = '<location>'
@@ -881,7 +881,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrs001'
+    name: '<name>'
     // Non-required parameters
     acrSku: 'Standard'
     location: '<location>'
@@ -912,7 +912,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrs001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrSku": {
@@ -947,7 +947,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrs001'
+param name = '<name>'
 // Non-required parameters
 param acrSku = 'Standard'
 param location = '<location>'
@@ -980,7 +980,7 @@ You can find the full example and the setup of its dependencies in the deploymen
 module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: '<name>'
     // Non-required parameters
     acrAdminUserEnabled: false
     acrSku: 'Premium'
@@ -1023,7 +1023,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    trustPolicyStatus: 'disabled'
+    trustPolicyStatus: '<trustPolicyStatus>'
   }
 }
 ```
@@ -1042,7 +1042,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "<name>"
     },
     // Non-required parameters
     "acrAdminUserEnabled": {
@@ -1115,7 +1115,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
       }
     },
     "trustPolicyStatus": {
-      "value": "disabled"
+      "value": "<trustPolicyStatus>"
     }
   }
 }
@@ -1132,7 +1132,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
 using 'br/public:avm/res/container-registry/registry:<version>'
 
 // Required parameters
-param name = 'crrwaf001'
+param name = '<name>'
 // Non-required parameters
 param acrAdminUserEnabled = false
 param acrSku = 'Premium'
@@ -1175,7 +1175,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param trustPolicyStatus = 'disabled'
+param trustPolicyStatus = '<trustPolicyStatus>'
 ```
 
 </details>

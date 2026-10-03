@@ -1,3 +1,5 @@
+import { uniqueResourceName } from '../../../../../../../utilities/e2e-template-assets/functions/unique-resource-name.bicep'
+
 targetScope = 'subscription'
 
 metadata name = 'Using storages'
@@ -37,7 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
+    storageAccountName: uniqueResourceName('dep${namePrefix}sa${serviceShort}', resourceGroup.id, 24)
     fileShareName: 'testshare'
   }
 }
@@ -53,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       containerAppsEnvironmentName: '${namePrefix}${serviceShort}cae001'
-      containerRegistryName: '${namePrefix}${serviceShort}cr001'
+      containerRegistryName: uniqueResourceName('${namePrefix}${serviceShort}cr001', resourceGroup.id, 50)
       logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
       location: resourceLocation
       publicNetworkAccess: 'Enabled'
