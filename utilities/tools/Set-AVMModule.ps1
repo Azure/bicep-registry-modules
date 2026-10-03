@@ -141,8 +141,9 @@ function Set-AVMModule {
         $relevantTemplatePaths += $parentTemplatePaths
         $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique | Where-Object { $_ -match '[\/|\\]main\.bicep$' } # Now remove all non main.bicep files
 
-        # Filter 'deprecated'
+        # Filter 'deprecated' & only consider existing files (important if diff shows moved files)
         $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+            (Test-Path $_) -and
             -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
         }
 
