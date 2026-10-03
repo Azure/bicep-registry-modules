@@ -46,7 +46,12 @@ description: >-
 
 inputs:
   modulePath:
-    description: "The path to the module file directory used to determine the resource location"
+    description: >-
+      Exact module directory path used to determine the resource location and look up
+      optional subscription features. Root .required-features.json maps module paths
+      to arrays of "Namespace/FeatureName" strings. Registration runs after login,
+      before validation, and persists after testing. Missing or empty requirements
+      are skipped; the test identity needs feature and provider registration permissions.
     required: true
   templateFilePath:
     description: "The path to the template file to use for deployment"
@@ -241,6 +246,8 @@ runs:
             Write-Output "azureCredentials=$credentialsJson" >> $env:GITHUB_OUTPUT
           }
 
+          $tenantId = if ($oidcException -eq 'true') { $credentials['tenantId'] } else { $env:VALIDATE_TENANT_ID }
+          Write-Output ('{0}={1}' -f 'tenantId', $tenantId) >> $env:GITHUB_OUTPUT
           Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
           Write-Output '::endgroup::'
 
@@ -263,6 +270,26 @@ runs:
       with:
         creds: ${{ steps.set-oidc-exception.outputs.azureCredentials }}
         enable-AzPSSession: true
+
+    - name: "Register required subscription features"
+      id: register-required-features
+      if: env.skip_deployment_ci == 'false'
+      shell: pwsh
+      env:
+        MODULE_PATH: ${{ inputs.modulePath }}
+        SELECTED_SUBSCRIPTION_ID: ${{ steps.get-test-subscription.outputs.subscriptionId }}
+        SELECTED_TENANT_ID: ${{ steps.set-oidc-exception.outputs.tenantId }}
+      run: |
+        $ErrorActionPreference = 'Stop'
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Register-RequiredSubscriptionFeature.ps1')
+
+        $functionInput = @{
+          RepoRootPath   = $env:GITHUB_WORKSPACE
+          ModulePath     = $env:MODULE_PATH
+          SubscriptionId = $env:SELECTED_SUBSCRIPTION_ID
+          TenantId       = $env:SELECTED_TENANT_ID
+        }
+        $null = Register-RequiredSubscriptionFeature @functionInput -Verbose
 
     # [Token replacement] task(s)
     # ---------------------------
