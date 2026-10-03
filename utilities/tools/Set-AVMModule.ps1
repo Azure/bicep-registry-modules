@@ -39,6 +39,9 @@ Optional. Skip the Avm.Authoring version check only when using a trusted source 
 .PARAMETER InvokeForDiff
 Optional. Build files only for those modules who's files have changed (based on diff of branch to origin/main)
 
+.PARAMETER IncludeDeprecated
+Optional. Include deprecated modules in the generation process.
+
 .PARAMETER RepoRootPath
 Optional. Path to the root of the repository.
 
@@ -102,6 +105,9 @@ function Set-AVMModule {
         [switch] $SkipModuleVersionCheck,
 
         [Parameter(Mandatory = $false)]
+        [switch] $IncludeDeprecated,
+
+        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
@@ -144,7 +150,7 @@ function Set-AVMModule {
         # Filter 'deprecated' & only consider existing files (important if diff shows moved files)
         $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
             (Test-Path $_) -and
-            -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+            ($IncludeDeprecated -or -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md')))
         }
 
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
@@ -177,8 +183,10 @@ function Set-AVMModule {
             $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
 
             # Filter 'deprecated'
-            $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
-                -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+            if (-not $IncludeDeprecated) {
+                $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+                    -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+                }
             }
         }
     }
