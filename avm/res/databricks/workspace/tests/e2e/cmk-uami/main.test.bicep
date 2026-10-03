@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'With encryption'
 metadata description = 'This instance deploys the module with customer-managed keys for encryption, where 2 different keys are hosted in the same vault and the AzureDatabricks Enterprise Application is used to pull the keys.'
 
@@ -23,16 +25,16 @@ param baseTime string = utcNow('u')
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
-@secure()
-param azureDatabricksEnterpriseApplicationObjectId string = ''
-
 // ============ //
 // Dependencies //
 // ============ //
 
 // General resources
 // =================
+resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '2ff814a6-3304-4ab8-85cb-cd0e6f879c1d'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
@@ -43,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     location: resourceLocation
-    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
+    databricksApplicationObjectId: azureDatabricks.id
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
   }
@@ -76,10 +78,10 @@ module testDeployment '../../../main.bicep' = [
 // Post-Deployment //
 // =============== //
 // The managed-disk's disk-encryption-set requires its identity to have at least 'Key Vault Crypto Service Encryption User' permissions on the used key.
-resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2026-02-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
 
-  resource key 'keys@2025-05-01' existing = {
+  resource key 'keys@2026-02-01' existing = {
     name: nestedDependencies.outputs.keyVaultDiskKeyName
   }
 

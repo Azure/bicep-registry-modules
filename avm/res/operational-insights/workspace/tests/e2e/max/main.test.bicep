@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    replicationRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -181,7 +181,7 @@ module testDeployment '../../../main.bicep' = [
       }
       replication: {
         enabled: true
-        location: nestedDependencies.outputs.pairedRegionName
+        location: nestedDependencies.outputs.replicationRegionName
       }
       gallerySolutions: [
         {

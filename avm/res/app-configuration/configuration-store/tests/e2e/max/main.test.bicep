@@ -59,6 +59,9 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
+var firstReplicaLocation = toLower(resourceLocation) == 'centralus' ? 'eastus2' : 'centralus'
+var secondReplicaLocation = toLower(resourceLocation) == 'westus' ? 'eastus2' : 'westus'
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -71,10 +74,12 @@ module testDeployment '../../../main.bicep' = [
       createMode: 'Default'
       replicaLocations: [
         {
-          replicaLocation: 'centralus'
+          replicaLocation: firstReplicaLocation
           name: 'mycentralusreplica'
         }
-        { replicaLocation: 'westus' }
+        {
+          replicaLocation: secondReplicaLocation
+        }
       ]
       enablePurgeProtection: false //Only for Testing purposes. Waf Aligned is true
       diagnosticSettings: [

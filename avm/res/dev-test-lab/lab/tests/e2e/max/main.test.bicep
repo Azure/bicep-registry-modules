@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -17,10 +19,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dtllmax'
 
-@description('Required. My parameter\'s description. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureLabServicesEnterpriseApplicationObjectId\'.')
-@secure()
-param AzureLabServicesEnterpriseApplicationObjectId string = ''
-
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
@@ -33,6 +31,10 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
+resource azureLabServices 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '1a14be2a-e903-4cec-99cf-b2e209259a0f'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
@@ -43,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    AzureLabServicesEnterpriseApplicationObjectId: AzureLabServicesEnterpriseApplicationObjectId
+    AzureLabServicesEnterpriseApplicationObjectId: azureLabServices.id
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     diskEncryptionSetName: 'dep-${namePrefix}-des-${serviceShort}'

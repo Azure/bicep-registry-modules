@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.47.16.16243",
-      "templateHash": "12910005950227761520"
+      "templateHash": "13168410811481635673"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -1785,7 +1785,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "2536432815505351150"
+              "templateHash": "12363116841930796239"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret."
@@ -1886,7 +1886,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults/secrets@2026-02-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -2136,7 +2136,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.47.16.16243",
-              "templateHash": "6285358579182638163"
+              "templateHash": "12034305525329154357"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key."
@@ -2315,7 +2315,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults/keys@2024-11-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults/keys@2026-02-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },

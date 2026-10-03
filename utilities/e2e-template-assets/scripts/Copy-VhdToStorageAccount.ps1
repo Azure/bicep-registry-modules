@@ -89,9 +89,18 @@ process {
     Write-Verbose 'Initializing source storage account parameters before the blob copy' -Verbose
     Write-Verbose ('Retrieving source storage account from Image Template [{0}] in resource group [{1}]' -f $imageTemplateName, $imageTemplateResourceGroup) -Verbose
     Get-InstalledModule
-    $imgtRunOutput = Get-AzImageBuilderTemplateRunOutput -ImageTemplateName $imageTemplateName -ResourceGroupName $imageTemplateResourceGroup | Where-Object ArtifactUri -NE $null
-    $sourceUri = $imgtRunOutput.ArtifactUri
-    $sourceStorageAccountName = $sourceUri.Split('//')[1].Split('.')[0]
+    $imgtRunOutputs = @(Get-AzImageBuilderTemplateRunOutput -ImageTemplateName $imageTemplateName -ResourceGroupName $imageTemplateResourceGroup -ErrorAction Stop | Where-Object {
+            -not [string]::IsNullOrWhiteSpace($_.ArtifactUri)
+        })
+    if ($imgtRunOutputs.Count -ne 1) {
+        throw ('Expected exactly one VHD artifact URI from image template [{0}] in resource group [{1}], but found [{2}]. Check the image build result.' -f $imageTemplateName, $imageTemplateResourceGroup, $imgtRunOutputs.Count)
+    }
+    $sourceUri = $imgtRunOutputs[0].ArtifactUri
+    [uri] $sourceBlobUri = $null
+    if (-not [uri]::TryCreate($sourceUri, [UriKind]::Absolute, [ref] $sourceBlobUri) -or $sourceBlobUri.Scheme -notin @('https', 'http')) {
+        throw ('Image template [{0}] returned an invalid VHD artifact URI.' -f $imageTemplateName)
+    }
+    $sourceStorageAccountName = $sourceBlobUri.Host.Split('.')[0]
     $storageAccountList = Get-AzStorageAccount
     $sourceStorageAccount = $storageAccountList | Where-Object StorageAccountName -EQ $sourceStorageAccountName
     $sourceStorageAccountContext = $sourceStorageAccount.Context
