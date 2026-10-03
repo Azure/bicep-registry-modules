@@ -162,7 +162,6 @@ jobs:
       inputs.moduleTestFilePaths != '[]' &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_initialize_subscription_selection.result == 'success' &&
-      needs.job_initialize_subscription_selection.outputs.deploymentMatrix != '[]' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
     needs:
@@ -193,19 +192,12 @@ jobs:
       !cancelled() &&
       inputs.requirePublishApproval &&
       needs.job_module_static_validation.result == 'success' &&
-      (needs.job_module_deploy_validation.result == 'success' || (
-        needs.job_module_deploy_validation.result == 'skipped' &&
-        needs.job_initialize_subscription_selection.result == 'success' &&
-        needs.job_initialize_subscription_selection.outputs.deploymentMatrix == '[]' &&
-        (needs.job_psrule_must.result == 'success' || needs.job_psrule_must.result == 'skipped')
-      )) &&
+      needs.job_module_deploy_validation.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       github.repository == 'Azure/bicep-registry-modules'
     needs:
-      - job_initialize_subscription_selection
       - job_module_static_validation
       - job_module_deploy_validation
-      - job_psrule_must
     steps:
       - name: "Approval granted"
         shell: pwsh
@@ -224,19 +216,12 @@ jobs:
       inputs.publishReleaseTag &&
       (!inputs.requirePublishApproval || needs.job_publish_approval.result == 'success') &&
       needs.job_module_static_validation.result == 'success' &&
-      (needs.job_module_deploy_validation.result == 'success' || (
-        needs.job_module_deploy_validation.result == 'skipped' &&
-        needs.job_initialize_subscription_selection.result == 'success' &&
-        needs.job_initialize_subscription_selection.outputs.deploymentMatrix == '[]' &&
-        (needs.job_psrule_must.result == 'success' || needs.job_psrule_must.result == 'skipped')
-      )) &&
+      needs.job_module_deploy_validation.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       github.repository == 'Azure/bicep-registry-modules'
     needs:
-      - job_initialize_subscription_selection
       - job_module_static_validation
       - job_module_deploy_validation
-      - job_psrule_must
       - job_publish_approval
     steps:
       - name: "Checkout"

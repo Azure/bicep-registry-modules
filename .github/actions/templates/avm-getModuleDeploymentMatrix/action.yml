@@ -15,7 +15,7 @@ inputs:
 
 outputs:
   deploymentMatrix:
-    description: "Non-ignored test files with pinned subscription identities and deployment concurrency groups"
+    description: "Test files with pinned subscription identities and deployment concurrency groups"
     value: ${{ steps.deployment-matrix.outputs.deploymentMatrix }}
   sharedScope:
     description: "Whether the deployment phase also requires a shared per-module lock"

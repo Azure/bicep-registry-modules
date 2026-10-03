@@ -149,7 +149,6 @@ jobs:
       !cancelled() &&
       (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
       needs.job_initialize_subscription_selection.result == 'success' &&
-      needs.job_initialize_subscription_selection.outputs.deploymentMatrix != '[]' &&
       needs.job_module_static_validation.result != 'failure' &&
       needs.job_psrule_must.result != 'failure'
     needs:
@@ -186,19 +185,12 @@ jobs:
     if: |
       !cancelled() &&
       needs.job_module_static_validation.result == 'success' &&
-      (needs.job_module_deploy_validation.result == 'success' || (
-        needs.job_module_deploy_validation.result == 'skipped' &&
-        needs.job_initialize_subscription_selection.result == 'success' &&
-        needs.job_initialize_subscription_selection.outputs.deploymentMatrix == '[]' &&
-        (needs.job_psrule_must.result == 'success' || needs.job_psrule_must.result == 'skipped')
-      )) &&
+      needs.job_module_deploy_validation.result == 'success' &&
       github.ref == 'refs/heads/main' &&
       github.repository	 == 'Azure/bicep-registry-modules'
     needs:
-      - job_initialize_subscription_selection
       - job_module_static_validation
       - job_module_deploy_validation
-      - job_psrule_must
     steps:
       - name: "Checkout"
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0

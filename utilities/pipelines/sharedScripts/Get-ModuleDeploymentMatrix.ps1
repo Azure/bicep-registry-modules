@@ -4,7 +4,7 @@ Assign test subscriptions and deployment locks before scheduling deployment jobs
 
 .DESCRIPTION
 Preserves seeded round-robin selection while exposing only pool positions and ID digests.
-Omits ignored tests without changing subscription assignments for the remaining tests.
+Ignored tests use unique groups and do not share deployment locks.
 Subscription locks are invariant across revisions. Management-group and tenant scopes, plus
 linked or expression-based templates, additionally require a shared deployment-phase lock.
 #>
@@ -74,19 +74,24 @@ function Get-ModuleDeploymentMatrix {
     $moduleKey = $ModulePath.Replace('\', '/').Trim('/').ToLowerInvariant()
     $matrix = @(for ($jobIndex = 0; $jobIndex -lt $TestFilePaths.Count; $jobIndex++) {
         $test = $TestFilePaths[$jobIndex]
-        if ($test.e2eIgnore -eq $true -or $test.e2eIgnore -eq 'true') {
-            continue
-        }
-        $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
-        @{
+        $ignored = $test.e2eIgnore -eq $true -or $test.e2eIgnore -eq 'true'
+        $entry = @{
             path              = $test.path
             name              = $test.name
-            e2eIgnore         = $false
-            subscriptionIndex = $subscription.index
-            subscriptionKey   = $subscription.key
-            subscriptionName  = $DisplaySubscriptionNames ? $subscription.name : "Configured subscription $($subscription.index + 1)"
-            concurrencyGroup  = "avm-deploy-$moduleKey-$($subscription.key)"
+            e2eIgnore         = $ignored
+            subscriptionIndex = ''
+            subscriptionKey   = ''
+            subscriptionName  = 'Deployment disabled'
+            concurrencyGroup  = "avm-deploy-$moduleKey-ignored-$([guid]::NewGuid().ToString('N'))"
         }
+        if (-not $ignored) {
+            $subscription = $subscriptions[$jobIndex % $subscriptions.Count]
+            $entry.subscriptionIndex = $subscription.index
+            $entry.subscriptionKey = $subscription.key
+            $entry.subscriptionName = $DisplaySubscriptionNames ? $subscription.name : "Configured subscription $($subscription.index + 1)"
+            $entry.concurrencyGroup = "avm-deploy-$moduleKey-$($subscription.key)"
+        }
+        $entry
     })
 
     return @{

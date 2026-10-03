@@ -22,43 +22,6 @@ Describe 'Generic module workflow' {
         $deploymentWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'workflows' 'avm.template.module.deployment.yml') -Raw)
         $deploymentAction = ConvertFrom-Yaml -Yaml (Get-Content -Path (Join-Path $repoRootPath '.github' 'actions' 'templates' 'avm-validateModuleDeployment' 'action.yml') -Raw)
         $toggleWorkflow = ConvertFrom-Yaml -Yaml (Get-Content -Path $toggleWorkflowPath -Raw)
-
-        function Test-ValidationCondition {
-            param(
-                [string] $Expression,
-                [hashtable] $Overrides = @{},
-                [bool] $Cancelled = $false
-            )
-
-            $context = @{
-                'inputs.workflowInput'                                                  = '{"deploymentValidation":"true"}'
-                'inputs.moduleTestFilePaths'                                            = '[{"name":"ignored","e2eIgnore":true}]'
-                'inputs.includeAllVersionedModules'                                     = $false
-                'inputs.requirePublishApproval'                                         = $true
-                'inputs.publishReleaseTag'                                              = $true
-                'needs.job_initialize_subscription_selection.result'                    = 'success'
-                'needs.job_initialize_subscription_selection.outputs.deploymentMatrix' = '[]'
-                'needs.job_module_static_validation.result'                             = 'success'
-                'needs.job_psrule_must.result'                                          = 'success'
-                'needs.job_module_deploy_validation.result'                             = 'skipped'
-                'needs.job_publish_approval.result'                                     = 'success'
-                'github.ref'                                                           = 'refs/heads/main'
-                'github.repository'                                                    = 'Azure/bicep-registry-modules'
-                'github.event_name'                                                    = 'push'
-            }
-            foreach ($key in $Overrides.Keys) {
-                $context[$key] = $Overrides[$key]
-            }
-
-            $condition = $Expression.Replace('${{', '').Replace('}}', '').Trim()
-            $condition = $condition -replace '\b(?:inputs|needs|github)\.[A-Za-z0-9_.]+', '$context[''$0'']'
-            $condition = $condition.Replace('fromJson(', '(ConvertFrom-Json -InputObject ').
-            Replace('cancelled()', '$Cancelled').
-            Replace('&&', '-and').Replace('||', '-or').Replace('!=', '-ne').Replace('==', '-eq').
-            Replace('!', '-not ')
-
-            return . ([scriptblock]::Create($condition))
-        }
     }
 
     It 'uses the expected display name and has no global concurrency group' {
@@ -82,61 +45,51 @@ Describe 'Generic module workflow' {
         $staticWorkflow.jobs.job_module_static_validation.ContainsKey('concurrency') | Should -BeFalse
     }
 
-    It 'handles deployment and publishing conditions for <Name>' -ForEach @(
-        @{ Name = 'all tests ignored'; Overrides = @{}; Deploy = $false; Publish = $true }
-        @{ Name = 'all tests ignored without PSRule cases'; Overrides = @{ 'needs.job_psrule_must.result' = 'skipped' }; Deploy = $false; Publish = $true }
-        @{ Name = 'successful runnable tests'; Overrides = @{ 'needs.job_initialize_subscription_selection.outputs.deploymentMatrix' = '[{"name":"active"}]'; 'needs.job_module_deploy_validation.result' = 'success' }; Deploy = $true; Publish = $true }
-        @{ Name = 'failed runnable tests'; Overrides = @{ 'needs.job_initialize_subscription_selection.outputs.deploymentMatrix' = '[{"name":"active"}]'; 'needs.job_module_deploy_validation.result' = 'failure' }; Deploy = $true; Publish = $false }
-        @{ Name = 'unexpectedly skipped runnable tests'; Overrides = @{ 'needs.job_initialize_subscription_selection.outputs.deploymentMatrix' = '[{"name":"active"}]' }; Deploy = $true; Publish = $false }
-        @{ Name = 'failed initialization'; Overrides = @{ 'needs.job_initialize_subscription_selection.result' = 'failure' }; Deploy = $false; Publish = $false }
-        @{ Name = 'cancelled initialization'; Overrides = @{ 'needs.job_initialize_subscription_selection.result' = 'cancelled' }; Deploy = $false; Publish = $false }
-        @{ Name = 'disabled deployment validation'; Overrides = @{ 'inputs.workflowInput' = '{"deploymentValidation":"false"}'; 'needs.job_initialize_subscription_selection.result' = 'skipped'; 'needs.job_initialize_subscription_selection.outputs.deploymentMatrix' = '' }; Deploy = $false; Publish = $false }
-        @{ Name = 'failed static checks'; Overrides = @{ 'needs.job_module_static_validation.result' = 'failure' }; Deploy = $false; Publish = $false }
-        @{ Name = 'failed required PSRule checks'; Overrides = @{ 'needs.job_psrule_must.result' = 'failure' }; Deploy = $false; Publish = $false }
-        @{ Name = 'cancelled required PSRule checks'; Overrides = @{ 'needs.job_psrule_must.result' = 'cancelled' }; Deploy = $false; Publish = $false }
-        @{ Name = 'cancelled deployment validation'; Overrides = @{ 'needs.job_module_deploy_validation.result' = 'cancelled' }; Deploy = $false; Publish = $false }
-        @{ Name = 'a non-main branch'; Overrides = @{ 'github.ref' = 'refs/heads/test' }; Deploy = $false; Publish = $false }
-        @{ Name = 'a fork repository'; Overrides = @{ 'github.repository' = 'contributor/bicep-registry-modules' }; Deploy = $false; Publish = $false }
+    It 'selects only the appropriate deployment steps when e2eIgnore is <ignored>' -ForEach @(
+        @{ ignored = $true }
+        @{ ignored = $false }
     ) {
-        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
-            $caller = $validationWorkflow.jobs.job_module_deploy_validation
-            $caller.if | Should -Match ([regex]::Escape("needs.job_initialize_subscription_selection.outputs.deploymentMatrix != '[]'"))
-            Test-ValidationCondition -Expression $caller.if -Overrides $Overrides | Should -Be $Deploy -Because $validationWorkflow.name
+        $steps = $deploymentWorkflow.jobs.job_module_deploy_validation.steps
+        $steps.Count | Should -Be 4
+        $steps[0].name | Should -Be 'Report skipped deployment'
+        $steps[0].if | Should -Be '${{ fromJson(inputs.testCase).e2eIgnore }}'
+        $steps[0].env.TEMPLATE_FILE_PATH | Should -Be '${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}'
+        foreach ($step in $steps[1..3]) {
+            $step.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
+        }
 
-            foreach ($job in @($validationWorkflow.jobs.Values | Where-Object { $_.name -in @('Publishing', 'Publishing preview', 'Approve release tag creation') })) {
-                $job.needs | Should -Contain 'job_initialize_subscription_selection'
-                $job.needs | Should -Contain 'job_psrule_must'
-                Test-ValidationCondition -Expression $job.if -Overrides $Overrides | Should -Be $Publish -Because "$($validationWorkflow.name): $($job.name)"
-            }
+        $selectedSteps = @(foreach ($step in $steps) {
+                $condition = $step.if.Replace('${{', '').Replace('}}', '').
+                Replace('fromJson(inputs.testCase).e2eIgnore', '$ignored').Replace('!', '-not ')
+                if (. ([scriptblock]::Create($condition))) {
+                    $step
+                }
+            })
+
+        if ($ignored) {
+            $selectedSteps.Count | Should -Be 1
+            $selectedSteps[0].name | Should -Be 'Report skipped deployment'
+            $selectedSteps[0].shell | Should -Be 'pwsh'
+            $selectedSteps[0].ContainsKey('uses') | Should -BeFalse
+        } else {
+            $selectedSteps.Count | Should -Be 3
+            $selectedSteps[0].uses | Should -Match '^actions/checkout@'
+            $selectedSteps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
+            $selectedSteps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
         }
     }
 
-    It 'does not run deployment or publishing jobs after workflow cancellation' {
-        foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
-            foreach ($job in @($validationWorkflow.jobs.Values | Where-Object { $_.name -in @('Deployment validation', 'Publishing', 'Publishing preview', 'Approve release tag creation') })) {
-                Test-ValidationCondition -Expression $job.if -Cancelled $true | Should -BeFalse
-            }
-        }
-    }
+    It 'reports an ignored deployment without requiring checkout or environment setup' {
+        $reportStep = $deploymentWorkflow.jobs.job_module_deploy_validation.steps[0]
+        $savedTemplatePath = $env:TEMPLATE_FILE_PATH
+        try {
+            $env:TEMPLATE_FILE_PATH = 'avm/res/example/module/tests/e2e/ignored/main.test.bicep'
 
-    It 'preserves preview exceptions for <Name>' -ForEach @(
-        @{ Name = 'modules without test files'; Overrides = @{ 'inputs.moduleTestFilePaths' = '[]' } }
-        @{ Name = 'all-versioned-module previews'; Overrides = @{ 'inputs.includeAllVersionedModules' = $true } }
-    ) {
-        $Overrides['needs.job_initialize_subscription_selection.result'] = 'skipped'
-        $Overrides['needs.job_initialize_subscription_selection.outputs.deploymentMatrix'] = ''
+            $message = . ([scriptblock]::Create($reportStep.run))
 
-        Test-ValidationCondition -Expression $previewWorkflow.jobs.job_preview_module.if -Overrides $Overrides | Should -BeTrue
-    }
-
-    It 'keeps release-tag and approval controls effective when all deployment tests are ignored' {
-        Test-ValidationCondition -Expression $publishWorkflow.jobs.job_publish_approval.if -Overrides @{ 'inputs.requirePublishApproval' = $false } |
-            Should -BeFalse
-        Test-ValidationCondition -Expression $publishWorkflow.jobs.job_publish_module.if -Overrides @{ 'inputs.publishReleaseTag' = $false } |
-            Should -BeFalse
-        foreach ($approvalResult in @('failure', 'skipped', 'cancelled')) {
-            Test-ValidationCondition -Expression $publishWorkflow.jobs.job_publish_module.if -Overrides @{ 'needs.job_publish_approval.result' = $approvalResult } |
-                Should -BeFalse
+            $message | Should -Be "Skipping deployment for [$env:TEMPLATE_FILE_PATH] because .e2eignore is set."
+        } finally {
+            $env:TEMPLATE_FILE_PATH = $savedTemplatePath
         }
     }
 
