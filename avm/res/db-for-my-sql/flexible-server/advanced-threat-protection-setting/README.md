@@ -1,10 +1,10 @@
-# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers]`
+# DBforMySQL Flexible Server Advanced Threat Protection `[Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings]`
 
 This module enables Advanced Threat Protection for DBforMySQL Flexible Server.
 
 You can reference the module as follows:
 ```bicep
-module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server/advanced-threat-protection:<version>' = {
+module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server/advanced-threat-protection-setting:<version>' = {
   params: { (...) }
 }
 ```
