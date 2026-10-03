@@ -565,7 +565,7 @@ Describe 'Test subscription workflow integration' {
             $login.with.'tenant-id' | Should -Be '${{ env.VALIDATE_TENANT_ID }}'
             $login.if | Should -Be '${{ steps.set-oidc-exception.outputs.oidcException == ''false'' && env.skip_deployment_ci == ''false'' }}'
         }
-        foreach ($stepName in @('Replace tokens in template file', 'Validate template file', 'Deploy template file', 'Remove deployed resources')) {
+        foreach ($stepName in @('Replace tokens in template file', 'Deploy template file', 'Remove deployed resources')) {
             $step = $action.runs.steps | Where-Object { $_.name -eq $stepName }
             $step.with.inlineScript | Should -Match ([regex]::Escape('${{ steps.get-test-subscription.outputs.subscriptionId }}'))
             $step.with.inlineScript | Should -Not -Match 'env\.VALIDATE_SUBSCRIPTION_ID'

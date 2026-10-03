@@ -165,8 +165,12 @@ Describe 'Deployment submission and cleanup runtime integration' {
             $values = @{
                 '${{ inputs.deploymentMetadataLocation }}'                          = 'WestEurope'
                 '${{ inputs.managementGroupId }}'                                   = 'test-management-group'
+                '${{ inputs.modulePath }}'                                          = 'avm/res/retry-test/widget'
+                '${{ inputs.customLocation }}'                                      = 'swedencentral'
+                '${{ inputs.removeDeployment }}'                                    = 'true'
+                '${{ steps.replace-tokens.outputs.resourceLocation }}'              = ''
                 '${{ steps.get-test-subscription.outputs.subscriptionId }}'         = $subscriptionId
-                '${{ steps.validate-template.outputs.resourceLocation }}'           = 'swedencentral'
+                '${{ steps.deploy_step.outputs.remainingDeploymentNames }}'         = $Outputs.remainingDeploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.deploymentNames }}'                  = $Outputs.deploymentNames ?? ''
                 '${{ steps.deploy_step.outputs.preflightRejectedDeploymentNames }}' = $Outputs.preflightRejectedDeploymentNames ?? ''
             }
@@ -240,6 +244,11 @@ Describe 'Deployment submission and cleanup runtime integration' {
             [CmdletBinding()]
             param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
             throw 'Unexpected Azure deployment.'
+        }
+        function Test-AzSubscriptionDeployment {
+            [CmdletBinding()]
+            param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
+            throw 'Unexpected Azure validation.'
         }
         function New-AzResourceGroupDeployment {
             [CmdletBinding()]
@@ -382,6 +391,7 @@ Describe 'Deployment submission and cleanup runtime integration' {
         Mock Get-AzTenantDeployment {}
         Mock Get-AzResourceGroup { @{ ResourceId = $resourceGroupId } }
         Mock New-AzSubscriptionDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
+        Mock Test-AzSubscriptionDeployment {}
         Mock New-AzResourceGroupDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
         Mock New-AzManagementGroupDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
         Mock New-AzTenantDeployment { Invoke-TestSubmission $DeploymentName $resourceLocation $baseTime $adminSecret }
@@ -1371,6 +1381,11 @@ function New-AzSubscriptionDeployment {
     }
     throw [System.Management.Automation.PipelineStoppedException]::new('Mock pipeline cancellation')
 }
+function Test-AzSubscriptionDeployment {
+    [CmdletBinding()]
+    param([string] $TemplateFile, [string] $DeploymentName, [string] $Location, [string] $resourceLocation, [string] $baseTime, [securestring] $adminSecret)
+    $Trace.Add('validate')
+}
 function Get-AzContext {
     [CmdletBinding()]
     param()
@@ -1398,9 +1413,9 @@ $Trace.Add('returned')
             $pipeline.InvocationStateInfo.State | Should -Be 'Stopped'
             $pipeline.InvocationStateInfo.Reason | Should -BeOfType [System.Management.Automation.PipelineStoppedException]
             if ($phase -eq 'recovery') {
-                @($trace) | Should -Be @('context', 'submit', 'read-context', 'read-status')
+                @($trace) | Should -Be @('context', 'validate', 'context', 'submit', 'read-context', 'read-status')
             } else {
-                @($trace) | Should -Be @('context', 'submit')
+                @($trace) | Should -Be @('context', 'validate', 'context', 'submit')
             }
             (Get-TestStepOutput).ContainsKey('deploymentNames') | Should -BeFalse
         } finally {
