@@ -141,6 +141,11 @@ function Set-AVMModule {
         $relevantTemplatePaths += $parentTemplatePaths
         $relevantTemplatePaths = $relevantTemplatePaths | Sort-Object -Unique | Where-Object { $_ -match '[\/|\\]main\.bicep$' } # Now remove all non main.bicep files
 
+        # Filter 'deprecated'
+        $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+            -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+        }
+
         Write-Verbose ('Running for [{0}] relevant files' -f $relevantTemplatePaths.Count) -Verbose
         $relevantTemplatePaths | ForEach-Object {
             $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
@@ -169,6 +174,11 @@ function Set-AVMModule {
             $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
         } else {
             $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+
+            # Filter 'deprecated'
+            $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+                -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
+            }
         }
     }
 
