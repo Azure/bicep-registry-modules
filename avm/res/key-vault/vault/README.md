@@ -180,6 +180,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvec002"
     },
@@ -547,6 +548,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvmax002"
     },
@@ -1132,6 +1134,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvrsa002"
     },
@@ -1345,6 +1348,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvwaf002"
     },

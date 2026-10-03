@@ -115,6 +115,7 @@ Describe 'Template validation error messages' {
 Describe 'Regional validation error classification' {
     It 'Classifies <name> conservatively' -ForEach @(
         @{ name = 'location ineligible'; code = 'RequestDisallowedByAzure'; message = 'See https://aka.ms/locationineligible'; expected = $true }
+        @{ name = 'new customers not accepted'; code = 'RequestDisallowedByAzure'; message = 'The selected region is currently not accepting new customers: https://aka.ms/locationineligible.'; expected = $true }
         @{ name = 'regional allocation'; code = 'AllocationFailed'; message = 'Insufficient capacity in this region.'; expected = $true }
         @{ name = 'zonal allocation'; code = 'ZonalAllocationFailed'; message = 'Allocation failed in this zone.'; expected = $true }
         @{ name = 'regional capacity'; code = 'InsufficientCapacity'; message = 'Insufficient capacity in the location.'; expected = $true }
@@ -131,7 +132,8 @@ Describe 'Regional validation error classification' {
         @{ name = 'configuration allocation'; code = 'AllocationFailed'; message = 'A configuration constraint failed.'; expected = $false }
         @{ name = 'nonregional SKU'; code = 'SkuNotAvailable'; message = 'SKU is not available for this subscription.'; expected = $false }
         @{ name = 'assertion'; code = 'AssertionFailed'; message = 'Location assertion failed'; expected = $false }
-        @{ name = 'missing code'; code = ''; message = 'https://aka.ms/locationineligible'; expected = $false }
+        @{ name = 'unsupported zones'; code = 'AvailabilityZoneNotSupported'; message = "The supported zones for location are ''."; expected = $false }
+        @{ name = 'missing code'; code = ''; message = "Capacity is unavailable in region 'norwayeast'."; expected = $false }
     ) {
         $errorRecord = New-TestValidationError -Response @{ code = $code; message = $message }
         Test-RegionalValidationError -ErrorRecord $errorRecord | Should -Be $expected
@@ -157,7 +159,21 @@ Describe 'Regional validation error classification' {
                 @{ code = 'AuthorizationFailed'; message = 'Forbidden' }
             )
         }
+
         Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) | Should -BeFalse
+    }
+
+    It 'Only accepts ResourceDeploymentFailure when every descendant is regional: <kind>' -ForEach @(
+        @{ kind = 'regional'; details = @(@{ code = 'SkuNotAvailable'; message = 'Standard_B12ms is not available in location ItalyNorth.' }); expected = $true }
+        @{ kind = 'empty'; details = @(); expected = $false }
+        @{ kind = 'unknown'; details = @(@{ code = 'Unknown'; message = 'Region failure.' }); expected = $false }
+        @{ kind = 'mixed'; details = @(@{ code = 'SkuNotAvailable'; message = 'SKU not available in location ItalyNorth.' }, @{ code = 'InvalidParameter'; message = 'EncryptionAtHost is not enabled for this subscription.' }); expected = $false }
+    ) {
+        $response = @{ code = 'DeploymentFailed'; details = @(
+                @{ code = 'ResourceDeploymentFailure'; message = 'The resource write operation reached terminal provisioning state Failed.'; details = $details }
+            )
+        }
+        Test-RegionalValidationError -ErrorRecord (New-TestValidationError -Response $response) | Should -Be $expected
     }
 
     It 'Reads Az PowerShell property casing as well as ARM JSON casing' {
@@ -278,7 +294,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
     BeforeEach {
         $savedTemp = $env:TEMP
         $env:TEMP = $TestDrive
-        '{"Microsoft.DevTestLab":{"labs":{}}}' | Set-Content -LiteralPath (Join-Path $TestDrive 'avm-apiSpecs.json')
+        '{"Microsoft.RetryTest":{"widgets":{}}}' | Set-Content -LiteralPath (Join-Path $TestDrive 'avm-apiSpecs.json')
         $templatePath = Join-Path $TestDrive ("template-{0}.json" -f [guid]::NewGuid())
         $template = @{
             '$schema'  = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
@@ -306,7 +322,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
         Mock Invoke-RestMethod { throw 'Unexpected network request.' }
         Mock Get-Random { 0 }
         Mock Get-AzResourceProvider {
-            @{ ResourceTypes = @(@{ ResourceTypeName = 'labs'; Locations = $script:providerLocations }) }
+            @{ ResourceTypes = @(@{ ResourceTypeName = 'widgets'; Locations = $script:providerLocations }) }
         }
         Mock Get-AzLocation {
             @(
@@ -341,7 +357,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
     }
 
     It 'Revalidates a different allowed region and leaves only its region tokens for deployment' {
-        $location = Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab'
+        $location = Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget'
 
         $location | Should -Be 'eastus'
         @($script:requests.Region) | Should -Be @('centralus', 'eastus')
@@ -357,7 +373,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
     It 'Bounds regional failures at three distinct candidates and restores pristine files on exhaustion' {
         Mock Test-AzSubscriptionDeployment { $script:requests.Add($resourceLocation); $script:regionalFailure }
 
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } |
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } |
             Should -Throw '*Template is not valid*'
 
         @($script:requests) | Should -Be @('centralus', 'eastus', 'koreacentral')
@@ -374,7 +390,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
         $caughtError = $null
 
         try {
-            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab'
+            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget'
         } catch {
             $caughtError = $_
         }
@@ -393,7 +409,7 @@ Describe 'Bounded template validation with actual runtime helpers' {
         $caughtError = $null
 
         try {
-            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab'
+            Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget'
         } catch {
             $caughtError = $_
         }
@@ -426,7 +442,7 @@ module child './child.bicep' = {
             Get-Content -LiteralPath $childPath -Raw | Should -Match "unrelated = 'centralus'"
             if ($resourceLocation -eq 'centralus') { $script:regionalFailure }
         }
-        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' | Should -Be 'eastus'
+        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' | Should -Be 'eastus'
         Get-Content -LiteralPath $childPath -Raw | Should -Match "param location string = 'eastus'"
         Should -Invoke Test-AzSubscriptionDeployment -Times 2 -Exactly
     }
@@ -437,13 +453,13 @@ module child './child.bicep' = {
                 throw (New-TestValidationError -Response @{ error = $script:regionalFailure } -ErrorDetails)
             }
         }
-        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' | Should -Be 'eastus'
+        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' | Should -Be 'eastus'
         Should -Invoke Test-AzSubscriptionDeployment -Times 2 -Exactly
     }
 
     It 'Stops without validation or file mutation when provider location metadata is still missing' {
         $script:providerLocations = @()
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } |
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } |
             Should -Throw '*No location metadata*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
         [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($original))
@@ -451,7 +467,7 @@ module child './child.bicep' = {
 
     It 'Does not validate or retry after token replacement fails' {
         Mock Convert-TokensInFileList { $false }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } |
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } |
             Should -Throw '*token replacement failed*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
@@ -459,18 +475,18 @@ module child './child.bicep' = {
 
     It 'Honors a smaller total-attempt limit' {
         Mock Test-AzSubscriptionDeployment { $script:regionalFailure }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' -RetryLimit 2 } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' -RetryLimit 2 } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 2 -Exactly
     }
 
     It 'Rejects an invalid attempt limit <limit>' -ForEach @(@{ limit = 0 }, @{ limit = 4 }) {
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' -RetryLimit $limit } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' -RetryLimit $limit } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
     }
 
     It 'Stops when supported candidates are exhausted without returning to the metadata location' {
         $script:providerLocations = @('Central US')
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } |
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } |
             Should -Throw '*No supported, allowed regions remain*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke Get-Random -Times 1 -Exactly
@@ -481,33 +497,33 @@ module child './child.bicep' = {
         @{ code = 'MissingSubscriptionRegistration' }, @{ code = 'AssertionFailed' }
     ) {
         Mock Test-AzSubscriptionDeployment { @{ Code = $code; Message = 'sensitive-error-payload' } }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
     }
 
     It 'Does not retry mixed errors' {
         $script:regionalFailure.Details += @{ Code = 'AuthorizationFailed'; Message = 'Forbidden' }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
     }
 
     It 'Rejects malformed returned errors instead of reporting successful validation' {
         Mock Test-AzSubscriptionDeployment { @{ Code = ''; Message = 'Malformed validation failure' } }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw '*Template is not valid*'
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw '*Template is not valid*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
     }
 
     It 'Propagates a thrown authentication error without another candidate' {
         Mock Test-AzSubscriptionDeployment { throw '403 Forbidden' }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw '*403 Forbidden*'
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw '*403 Forbidden*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
     }
 
     It 'Propagates cancellation and restores region-token files' {
         Mock Test-AzSubscriptionDeployment { throw [System.OperationCanceledException]::new('Validation cancelled') }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw '*Validation cancelled*'
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw '*Validation cancelled*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
         [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($original))
@@ -519,7 +535,7 @@ module child './child.bicep' = {
             $null = New-Item -Path $TemplateFile -ItemType Directory
             $script:regionalFailure
         }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw '*denied*'
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw '*denied*'
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
     }
@@ -531,14 +547,14 @@ module child './child.bicep' = {
     ) {
         $validationInput.AdditionalParameters.resourceLocation = $parameter
         Mock Test-AzSubscriptionDeployment { $script:regionalFailure }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' -CustomLocation $custom -TokenResourceLocation $token } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' -CustomLocation $custom -TokenResourceLocation $token } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly -ParameterFilter { $resourceLocation -eq 'westeurope' }
         Should -Invoke Get-AzResourceProvider -Times 0 -Exactly
     }
 
     It 'Rejects conflicting pins rather than silently overriding customLocation' {
         $validationInput.AdditionalParameters.resourceLocation = 'eastus'
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' -CustomLocation 'centralus' } |
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' -CustomLocation 'centralus' } |
             Should -Throw '*Conflicting resource locations*'
         Should -Invoke Test-AzSubscriptionDeployment -Times 0 -Exactly
     }
@@ -546,7 +562,7 @@ module child './child.bicep' = {
     It 'Does not relocate an explicitly global resource' {
         $script:providerLocations = @('Global')
         Mock Test-AzSubscriptionDeployment { $script:regionalFailure }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly -ParameterFilter { $resourceLocation -eq 'WestEurope' }
         Should -Invoke Get-AzResourceProvider -Times 1 -Exactly
         Should -Invoke Get-AzLocation -Times 0 -Exactly
@@ -556,7 +572,7 @@ module child './child.bicep' = {
         $template.'$schema' = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
         $template | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $templatePath
         $validationInput.ResourceGroupName = 'existing-validation-name'
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw
         Should -Invoke New-AzResourceGroup -Times 1 -Exactly -ParameterFilter {
             $Name -eq 'existing-validation-name' -and $Location -eq 'centralus'
         }
@@ -569,18 +585,18 @@ module child './child.bicep' = {
         $template | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $templatePath
         $validationInput.AdditionalParameters.Remove('resourceLocation')
         Mock Test-AzSubscriptionDeployment { $script:regionalFailure }
-        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' } | Should -Throw
+        { Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' } | Should -Throw
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
     }
 
     It 'Keeps a successful nonregional flow to one attempt' {
         Mock Test-AzSubscriptionDeployment {}
-        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' | Should -Be 'centralus'
+        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' | Should -Be 'centralus'
         Should -Invoke Test-AzSubscriptionDeployment -Times 1 -Exactly
     }
 
     It 'Does not print error payloads or parameter values during regional recovery' {
-        $messages = Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' 3>&1 4>&1
+        $messages = Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' 3>&1 4>&1
         ($messages | Out-String) | Should -Match 'centralus.*1/3'
         ($messages | Out-String) | Should -Match 'eastus.*2/3'
         ($messages | Out-String) | Should -Not -Match 'sensitive-error-payload|fixed-base-time'
@@ -592,7 +608,7 @@ module child './child.bicep' = {
     ) {
         $template.'$schema' = "https://schema.management.azure.com/schemas/2019-08-01/$schema.json#"
         $template | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $templatePath
-        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/dev-test-lab/lab' | Should -Be 'eastus'
+        Test-TemplateDeploymentWithRetry -ValidationInput $validationInput -ModuleRoot 'avm/res/retry-test/widget' | Should -Be 'eastus'
         Should -Invoke $command -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
     }
 }

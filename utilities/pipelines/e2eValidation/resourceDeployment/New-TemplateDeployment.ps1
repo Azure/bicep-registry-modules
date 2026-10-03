@@ -2,6 +2,53 @@
 
 #region helper
 
+function Get-TemplateDeployment {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory)]
+        [ValidateSet('resourcegroup', 'subscription', 'managementgroup', 'tenant')]
+        [string] $DeploymentScope,
+
+        [Parameter(Mandatory)]
+        [string] $DeploymentName,
+
+        [Parameter()]
+        [string] $SubscriptionId,
+
+        [Parameter()]
+        [string] $ResourceGroupName,
+
+        [Parameter()]
+        [string] $ManagementGroupId,
+
+        [Parameter()]
+        [object] $DefaultProfile
+    )
+
+    $context = $DefaultProfile ?? (Get-AzContext -ErrorAction Stop)
+    if ($null -eq $context -or (
+            $DeploymentScope -in @('resourcegroup', 'subscription') -and
+            -not [string]::IsNullOrEmpty($SubscriptionId) -and [guid] $context.Subscription.Id -ne [guid] $SubscriptionId
+        )) {
+        throw "The current Azure context does not match deployment [$DeploymentName]; status recovery cannot continue."
+    }
+    $readInputs = @{
+        Name           = $DeploymentName
+        DefaultProfile = $context
+        ErrorAction    = 'Stop'
+    }
+    $records = @(switch ($DeploymentScope) {
+            'resourcegroup' { Get-AzResourceGroupDeployment @readInputs -ResourceGroupName $ResourceGroupName }
+            'subscription' { Get-AzDeployment @readInputs }
+            'managementgroup' { Get-AzManagementGroupDeployment @readInputs -ManagementGroupId $ManagementGroupId }
+            'tenant' { Get-AzTenantDeployment @readInputs }
+        })
+    if ($records.Count -ne 1 -or $records[0].DeploymentName -cne $DeploymentName) {
+        throw "Status recovery did not return exactly the original deployment [$DeploymentName]."
+    }
+    return $records[0]
+}
+
 <#
 .SYNOPSIS
 Observe the original deployment after a request timeout without submitting it again.
@@ -41,21 +88,12 @@ function Wait-TemplateDeployment {
         )) {
         throw "The current Azure context does not match deployment [$DeploymentName]; status recovery cannot continue."
     }
-    $readInputs = @{
-        Name           = $DeploymentName
-        DefaultProfile = $context
-        ErrorAction    = 'Stop'
-    }
     $deadline = (Get-Date).ToUniversalTime().AddSeconds($TimeoutSeconds)
     $consecutiveTimeouts = 0
     while ((Get-Date).ToUniversalTime() -lt $deadline) {
         try {
-            $records = @(switch ($DeploymentScope) {
-                    'resourcegroup' { Get-AzResourceGroupDeployment @readInputs -ResourceGroupName $ResourceGroupName }
-                    'subscription' { Get-AzDeployment @readInputs }
-                    'managementgroup' { Get-AzManagementGroupDeployment @readInputs -ManagementGroupId $ManagementGroupId }
-                    'tenant' { Get-AzTenantDeployment @readInputs }
-                })
+            $deployment = Get-TemplateDeployment -DeploymentScope $DeploymentScope -DeploymentName $DeploymentName `
+                -SubscriptionId $SubscriptionId -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId -DefaultProfile $context
             $consecutiveTimeouts = 0
         } catch [System.Management.Automation.PipelineStoppedException] {
             throw
@@ -70,14 +108,10 @@ function Wait-TemplateDeployment {
                 )
             }
             Write-Warning "Status read for deployment [$DeploymentName] timed out ($consecutiveTimeouts/3); no deployment is being resubmitted."
-            $records = $null
+            $deployment = $null
         }
 
-        if ($null -ne $records) {
-            if ($records.Count -ne 1 -or $records[0].DeploymentName -cne $DeploymentName) {
-                throw "Status recovery did not return exactly the original deployment [$DeploymentName]."
-            }
-            $deployment = $records[0]
+        if ($null -ne $deployment) {
             if ($deployment.ProvisioningState -in @('Succeeded', 'Failed')) {
                 return $deployment
             }
@@ -184,6 +218,9 @@ Optional. The resource group to search the deployment in, if the scope is 'resou
 .PARAMETER ManagementGroupId
 Optional. The management group to search the deployment in, if the scope is 'managementgroup'
 
+.PARAMETER AsObject
+Optional. Return structured failed-operation errors. Unknown states cannot authorize relocation.
+
 .EXAMPLE
 Get-ErrorMessageForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
 
@@ -208,30 +245,51 @@ function Get-ErrorMessageForScope {
         [string] $ResourceGroupName = '',
 
         [Parameter(Mandatory = $false)]
-        [string] $ManagementGroupId
+        [string] $ManagementGroupId,
+
+        [Parameter()]
+        [switch] $AsObject
     )
 
     switch ($deploymentScope) {
         'resourcegroup' {
-            $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName
+            $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
             break
         }
         'subscription' {
-            $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName
+            $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
             break
         }
         'managementgroup' {
-            $deployments = Get-AzManagementGroupDeploymentOperation -DeploymentName $deploymentName -ManagementGroupId $ManagementGroupId
+            $deployments = Get-AzManagementGroupDeploymentOperation -DeploymentName $deploymentName -ManagementGroupId $ManagementGroupId -ErrorAction Stop
             break
         }
         'tenant' {
-            $deployments = Get-AzTenantDeploymentOperation -DeploymentName $deploymentName
+            $deployments = Get-AzTenantDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
             break
         }
     }
-    if ($deployments) {
-        return ($deployments | Where-Object { $_.ProvisioningState -ne 'Succeeded' }).StatusMessage
+    $failedOperations = @($deployments | Where-Object { $_.ProvisioningState -ne 'Succeeded' })
+    if ($AsObject) {
+        $errors = [System.Collections.Generic.List[object]]::new()
+        foreach ($operation in $failedOperations) {
+            if ($operation.ProvisioningState -ne 'Failed') {
+                throw "Deployment [$DeploymentName] has an operation in state [$($operation.ProvisioningState)]; regional retry is unsafe."
+            }
+            if ($operation.StatusMessage -is [string]) {
+                try {
+                    $errors.Add((ConvertFrom-Json -InputObject $operation.StatusMessage -AsHashtable -NoEnumerate -ErrorAction Stop))
+                } catch {
+                    Write-Warning "Deployment [$DeploymentName] has an unstructured operation error; it cannot authorize regional relocation."
+                    $errors.Add($null)
+                }
+            } else {
+                $errors.Add($operation.StatusMessage)
+            }
+        }
+        return , @($errors)
     }
+    return $failedOperations.StatusMessage
 }
 
 <#
@@ -274,11 +332,20 @@ Optional. Additional parameters you can provide with the deployment. E.g. @{ res
 Optional. Maximum total attempts, including the first. Between 1 and 3; defaults to 3.
 Submitted deployments retry only after confirmed failure or preflight rejection.
 
+.PARAMETER AttemptNumber
+Optional. Starting attempt ordinal for deployment names. Coordinated retries supply the global ordinal with RetryLimit=1.
+
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
 
 .PARAMETER RepoRoot
 Mandatory. Path to the root of the repository.
+
+.OUTPUTS
+Returns DeploymentNames, PreflightRejectedDeploymentNames and DeploymentOutput or Exception.
+With DoNotThrow, failures also include the original ErrorRecord and existing RetryAllowed decision.
+FailureQueryAllowed permits an authoritative state lookup, not retry or cleanup on its own.
+RecoveredFailure identifies a failed deployment whose timeout recovery completed without uncertainty.
 
 .EXAMPLE
 New-TemplateDeploymentInner -TemplateFilePath 'C:/key-vault/vault/main.json' -ParameterFilePath 'C:/key-vault/vault/.test/parameters.json' -DeploymentMetadataLocation 'WestEurope' -ResourceGroupName 'aLegendaryRg'
@@ -329,6 +396,10 @@ function New-TemplateDeploymentInner {
         [Parameter(Mandatory = $false)]
         [ValidateRange(1, 3)]
         [int] $RetryLimit = 3,
+
+        [Parameter()]
+        [ValidateRange(1, 3)]
+        [int] $AttemptNumber = 1,
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot
@@ -403,14 +474,17 @@ function New-TemplateDeploymentInner {
 
         do {
             # Generate a valid deployment name. Must match ^[-\w\._\(\)]+$
-            do {
-                $deploymentName = ('{0}-t{1}-{2}' -f $deploymentNamePrefix, $retryCount, (Get-Date -Format 'yyyyMMddTHHMMssffffZ'))[0..63] -join ''
-            } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
+            $suffix = '-t{0}-{1}' -f ($AttemptNumber + $retryCount - 1), (Get-Date -Format 'yyyyMMddTHHMMssffffZ')
+            $deploymentName = $deploymentNamePrefix.Substring(0, [Math]::Min($deploymentNamePrefix.Length, 64 - $suffix.Length)) + $suffix
+            if ($deploymentName -notmatch '^[-\w\._\(\)]+$') {
+                throw "Generated deployment name [$deploymentName] contains unsupported characters."
+            }
 
             Write-Verbose "Deploying with deployment name [$deploymentName]" -Verbose
             $DeploymentInputs['DeploymentName'] = $deploymentName
             $res = $null
             $submissionStarted = $false
+            $submissionReturned = $false
 
             try {
                 switch ($deploymentScope) {
@@ -465,6 +539,7 @@ function New-TemplateDeploymentInner {
                         $Stoploop = $true
                     }
                 }
+                $submissionReturned = $true
                 if ($submissionStarted -and $null -eq $res) {
                     throw "Deployment [$deploymentName] returned no result; the submission outcome is unknown."
                 }
@@ -552,7 +627,8 @@ function New-TemplateDeploymentInner {
                 $failedDeploymentMessage = "^(?:\d{2}:\d{2}:\d{2} - )?The deployment '$([regex]::Escape($deploymentName))' failed with error\(s\)\. (?:Showing \d+ out of \d+ error\(s\)\. Status Message: (?:(?!\(Code:)[^\r\n])* )?\(Code: DeploymentFailed\)(?:\s|$)"
                 $confirmedFailure = $res.ProvisioningState -eq 'Failed' -or ($errorKind -eq 'Other' -and $deploymentError.Exception.Message -cmatch $failedDeploymentMessage)
                 $unknownSubmission = $submissionStarted -and -not $preflightRejected -and -not $confirmedFailure
-                if ($retryCount -ge $RetryLimit -or $unknownSubmission -or $recoveryFailed -or $errorKind -in @('Timeout', 'Transport')) {
+                $retryAllowed = -not $unknownSubmission -and -not $recoveryFailed -and $errorKind -notin @('Timeout', 'Transport')
+                if ($retryCount -ge $RetryLimit -or -not $retryAllowed) {
                     if ($DoNotThrow) {
                         $exceptionMessage = $deploymentError.Exception.Message
                         if ([String]::IsNullOrEmpty($exceptionMessage)) {
@@ -563,6 +639,11 @@ function New-TemplateDeploymentInner {
                             DeploymentNames                  = $usedDeploymentNames
                             PreflightRejectedDeploymentNames = $preflightRejectedDeploymentNames
                             Exception                        = $exceptionMessage
+                            ErrorRecord                      = $deploymentError
+                            RetryAllowed                     = $retryAllowed
+                            FailureQueryAllowed              = $submissionStarted -and -not $preflightRejected -and -not $recoveryFailed -and
+                            $errorKind -eq 'Other' -and (($null -eq $res -and -not $submissionReturned) -or $res.ProvisioningState -eq 'Failed')
+                            RecoveredFailure                 = $deploymentError.FullyQualifiedErrorId -eq 'DeploymentFailedAfterTimeout' -and -not $recoveryFailed
                         }
                     } else {
                         throw $deploymentError
@@ -634,11 +715,20 @@ Optional. Additional parameters you can provide with the deployment. E.g. @{ res
 Optional. Maximum total attempts, including the first. Between 1 and 3; defaults to 3.
 Submitted deployments retry only after confirmed failure or preflight rejection.
 
+.PARAMETER AttemptNumber
+Optional. Starting attempt ordinal for deployment names. Coordinated retries supply the global ordinal with RetryLimit=1.
+
 .PARAMETER DoNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
 
 .PARAMETER RepoRoot
 Optional. Path to the root of the repository.
+
+.OUTPUTS
+Returns DeploymentNames, PreflightRejectedDeploymentNames and DeploymentOutput or Exception.
+With DoNotThrow, failures also include the original ErrorRecord and existing RetryAllowed decision.
+FailureQueryAllowed permits an authoritative state lookup, not retry or cleanup on its own.
+RecoveredFailure identifies a failed deployment whose timeout recovery completed without uncertainty.
 
 .EXAMPLE
 New-TemplateDeployment -TemplateFilePath 'C:/key-vault/vault/main.bicep' -ParameterFilePath 'C:/key-vault/vault/.test/parameters.json' -DeploymentMetadataLocation 'WestEurope' -ResourceGroupName 'aLegendaryRg'
@@ -690,6 +780,10 @@ function New-TemplateDeployment {
         [ValidateRange(1, 3)]
         [int] $RetryLimit = 3,
 
+        [Parameter()]
+        [ValidateRange(1, 3)]
+        [int] $AttemptNumber = 1,
+
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
     )
@@ -720,6 +814,7 @@ function New-TemplateDeployment {
             ManagementGroupId          = $ManagementGroupId
             DoNotThrow                 = $DoNotThrow
             RetryLimit                 = $RetryLimit
+            AttemptNumber              = $AttemptNumber
             RepoRoot                   = $RepoRoot
         }
         if ($ParameterFilePath) {

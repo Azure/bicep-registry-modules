@@ -45,6 +45,54 @@ Describe 'Generic module workflow' {
         $staticWorkflow.jobs.job_module_static_validation.ContainsKey('concurrency') | Should -BeFalse
     }
 
+    It 'selects only the appropriate deployment steps when e2eIgnore is <ignored>' -ForEach @(
+        @{ ignored = $true }
+        @{ ignored = $false }
+    ) {
+        $steps = $deploymentWorkflow.jobs.job_module_deploy_validation.steps
+        $steps.Count | Should -Be 4
+        $steps[0].name | Should -Be 'Report skipped deployment'
+        $steps[0].if | Should -Be '${{ fromJson(inputs.testCase).e2eIgnore }}'
+        $steps[0].env.TEMPLATE_FILE_PATH | Should -Be '${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}'
+        foreach ($step in $steps[1..3]) {
+            $step.if | Should -Be '${{ !fromJson(inputs.testCase).e2eIgnore }}'
+        }
+
+        $selectedSteps = @(foreach ($step in $steps) {
+                $condition = $step.if.Replace('${{', '').Replace('}}', '').
+                Replace('fromJson(inputs.testCase).e2eIgnore', '$ignored').Replace('!', '-not ')
+                if (. ([scriptblock]::Create($condition))) {
+                    $step
+                }
+            })
+
+        if ($ignored) {
+            $selectedSteps.Count | Should -Be 1
+            $selectedSteps[0].name | Should -Be 'Report skipped deployment'
+            $selectedSteps[0].shell | Should -Be 'pwsh'
+            $selectedSteps[0].ContainsKey('uses') | Should -BeFalse
+        } else {
+            $selectedSteps.Count | Should -Be 3
+            $selectedSteps[0].uses | Should -Match '^actions/checkout@'
+            $selectedSteps[1].uses | Should -Be './.github/actions/templates/avm-setEnvironment'
+            $selectedSteps[2].uses | Should -Be './.github/actions/templates/avm-validateModuleDeployment'
+        }
+    }
+
+    It 'reports an ignored deployment without requiring checkout or environment setup' {
+        $reportStep = $deploymentWorkflow.jobs.job_module_deploy_validation.steps[0]
+        $savedTemplatePath = $env:TEMPLATE_FILE_PATH
+        try {
+            $env:TEMPLATE_FILE_PATH = 'avm/res/example/module/tests/e2e/ignored/main.test.bicep'
+
+            $message = . ([scriptblock]::Create($reportStep.run))
+
+            $message | Should -Be "Skipping deployment for [$env:TEMPLATE_FILE_PATH] because .e2eignore is set."
+        } finally {
+            $env:TEMPLATE_FILE_PATH = $savedTemplatePath
+        }
+    }
+
     It 'holds each selected target lock over the complete deployment and cleanup job without cancellation' {
         foreach ($validationWorkflow in @($legacyWorkflow, $previewWorkflow, $publishWorkflow)) {
             $caller = $validationWorkflow.jobs.job_module_deploy_validation
