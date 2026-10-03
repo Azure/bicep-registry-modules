@@ -134,8 +134,6 @@ function Set-AVMModule {
     #   Pre-Build  #
     # ============ #
     if ($InvokeForDiff) {
-        $resolvedPath = (Test-Path $ModuleFolderPath) ? (Resolve-Path $ModuleFolderPath).Path : $ModuleFolderPath
-
         $relevantTemplatePaths = @() + (Get-GitDiff -PathOnly -SkipStats | Where-Object { $_ -match '^(?!.*[\/\\]tests[\/\\]).+\.bicep$' }) # Any Bicep file exluding test files. Includes e.g., templates in the /modules folder
         Write-Verbose ('Found [{0}] files in diff' -f $relevantTemplatePaths.Count) -Verbose
 
@@ -181,12 +179,12 @@ function Set-AVMModule {
             $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
         } else {
             $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
+        }
 
-            # Filter 'deprecated'
-            if (-not $IncludeDeprecated) {
-                $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
-                    -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
-                }
+        # Filter 'deprecated'
+        if (-not $IncludeDeprecated) {
+            $relevantTemplatePaths = $relevantTemplatePaths | Where-Object {
+                -not (Test-Path (Join-Path (Split-Path $_) 'DEPRECATED.md'))
             }
         }
     }
