@@ -70,6 +70,7 @@ process {
     $resourceActionInputObject = @{
         ImageTemplateName = $imageTemplateName
         ResourceGroupName = $imageTemplateResourceGroup
+        ErrorAction       = 'Stop'
     }
     if ($NoWait) {
         $resourceActionInputObject['NoWait'] = $true
