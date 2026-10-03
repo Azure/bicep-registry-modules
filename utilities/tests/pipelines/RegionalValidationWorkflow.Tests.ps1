@@ -68,6 +68,11 @@ Describe 'Regional validation workflow runtime integration' {
             param([string] $DeploymentName)
             throw 'Unexpected Azure operation lookup.'
         }
+        function Invoke-AzRestMethod {
+            [CmdletBinding()]
+            param([string] $Method, [string] $Path)
+            throw 'Unexpected Azure REST request.'
+        }
 
         function Get-StepOutput {
             $outputs = @{}
@@ -156,6 +161,7 @@ Describe 'Regional validation workflow runtime integration' {
         $script:deploymentRegions = [System.Collections.Generic.List[string]]::new()
         $script:deploymentTokens = [System.Collections.Generic.List[string]]::new()
         $script:deploymentNames = [System.Collections.Generic.List[string]]::new()
+        $script:operationError = @{ error = @{ code = 'InvalidTemplate'; message = 'Nonregional failure.' } }
         $script:regionalFailure = @{
             Code    = 'InvalidTemplateDeployment'
             Details = @(@{ Code = 'RequestDisallowedByAzure'; Message = 'Region is not accepting new customers. See https://aka.ms/locationineligible.' })
@@ -184,7 +190,18 @@ Describe 'Regional validation workflow runtime integration' {
         Mock Get-AzContext { @{ Subscription = @{ Id = '11111111-1111-1111-1111-111111111111' } } }
         Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
         Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"InvalidTemplate","message":"Nonregional failure"}}' }
+            @{ ProvisioningState = 'Failed'; StatusMessage = 'Nonregional failure. (Code: InvalidTemplate)' }
+        }
+        Mock Invoke-AzRestMethod {
+            $Method | Should -Be 'GET'
+            $Path | Should -Match '^/subscriptions/11111111-1111-1111-1111-111111111111/providers/Microsoft.Resources/deployments/[^/]+/operations\?api-version=2021-04-01$'
+            @{
+                StatusCode = 200
+                Content    = ConvertTo-Json -Depth 10 -InputObject @{ value = @(
+                        @{ properties = @{ provisioningState = 'Failed'; provisioningOperation = 'Create'; statusMessage = $script:operationError } }
+                    )
+                }
+            }
         }
         Mock Test-AzSubscriptionDeployment {
             $script:validationRegions.Add($resourceLocation)
@@ -283,12 +300,14 @@ Describe 'Regional validation workflow runtime integration' {
             $content.variables.subscriptionToken | Should -Be '11111111-1111-1111-1111-111111111111'
             ConvertFrom-SecureString -SecureString $adminSecret -AsPlainText | Should -Be 'secret-value-not-for-logs'
             if ($script:deploymentNames.Count -eq 1) {
-                throw "08:51:48 - The deployment '$DeploymentName' failed with error(s). Status Message: Nested deployment preflight failed. (Code: InvalidTemplateDeployment) Standard_B12ms is unavailable in location centralus. (Code:SkuNotAvailable)"
+                throw "08:51:48 - The deployment '$DeploymentName' failed with error(s). Status Message: Nested deployment preflight failed. (Code: InvalidTemplateDeployment) ExampleSku is unavailable in location centralus. (Code:SkuNotAvailable)"
             }
             @{ ProvisioningState = 'Succeeded'; Outputs = @{ selectedRegion = @{ Type = 'String'; Value = $resourceLocation } } }
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"ResourceDeploymentFailure","details":[{"code":"SkuNotAvailable","message":"Standard_B12ms is not available in location centralus."}]}}' }
+        $script:operationError = @{ error = @{ code = 'ResourceDeploymentFailure'; details = @(
+                    @{ code = 'SkuNotAvailable'; message = 'ExampleSku is not available in location centralus.' }
+                )
+            }
         }
         Mock Initialize-DeploymentRemoval {
             if ($RequireCompleteRemoval) {
@@ -327,9 +346,7 @@ Describe 'Regional validation workflow runtime integration' {
             $script:deploymentNames.Add($DeploymentName)
             throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"SkuNotAvailable","message":"The SKU is not available in location centralus."}}' }
-        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
         Mock Initialize-DeploymentRemoval { @{ RemovedDeploymentNames = @($DeploymentNames) } }
 
         { Invoke-ValidationAndDeployment } | Should -Throw '*Regional capacity failure*'
@@ -348,9 +365,7 @@ Describe 'Regional validation workflow runtime integration' {
             $script:deploymentNames.Add($DeploymentName)
             throw "The deployment '$DeploymentName' failed with error(s). (Code: InvalidTemplateDeployment) Regional capacity failure."
         }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = '{"error":{"code":"SkuNotAvailable","message":"The SKU is not available in location centralus."}}' }
-        }
+        $script:operationError = @{ error = @{ code = 'SkuNotAvailable'; message = 'The SKU is not available in location centralus.' } }
         Mock Initialize-DeploymentRemoval {
             if ($RequireCompleteRemoval) { throw 'Removal still pending.' }
         }
