@@ -1,4 +1,5 @@
 ﻿. (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'Get-DeploymentErrorKind.ps1')
+. (Join-Path $PSScriptRoot '..' '..' 'sharedScripts' 'Get-DeploymentOperationAtScope.ps1')
 
 #region helper
 
@@ -219,7 +220,8 @@ Optional. The resource group to search the deployment in, if the scope is 'resou
 Optional. The management group to search the deployment in, if the scope is 'managementgroup'
 
 .PARAMETER AsObject
-Optional. Return structured failed-operation errors. Unknown states cannot authorize relocation.
+Optional. Read structured failed-operation errors from every ARM operation page, not formatted Az messages.
+Unknown states or incomplete operation data cannot authorize relocation.
 
 .EXAMPLE
 Get-ErrorMessageForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
@@ -251,6 +253,45 @@ function Get-ErrorMessageForScope {
         [switch] $AsObject
     )
 
+    if ($AsObject) {
+        try {
+            $context = Get-AzContext -ErrorAction Stop
+            if (($DeploymentScope -in @('resourcegroup', 'subscription') -and [string]::IsNullOrWhiteSpace($context.Subscription.Id)) -or
+                ($DeploymentScope -eq 'resourcegroup' -and [string]::IsNullOrWhiteSpace($ResourceGroupName)) -or
+                ($DeploymentScope -eq 'managementgroup' -and [string]::IsNullOrWhiteSpace($ManagementGroupId))) {
+                throw 'The deployment scope is incomplete.'
+            }
+            $deployments = Get-DeploymentOperationAtScope -Scope $DeploymentScope -Name $DeploymentName `
+                -SubscriptionId $context.Subscription.Id -ResourceGroupName $ResourceGroupName -ManagementGroupId $ManagementGroupId `
+                -IncludeAllOperations -ErrorAction Stop
+        } catch [System.Management.Automation.PipelineStoppedException] {
+            throw
+        } catch {
+            if ((Get-DeploymentErrorKind -ErrorRecord $_) -eq 'Cancellation') {
+                throw
+            }
+            throw "Failed to read complete deployment operation pages for deployment [$DeploymentName]; regional retry is unsafe."
+        }
+
+        $errors = [System.Collections.Generic.List[object]]::new()
+        foreach ($operation in $deployments) {
+            if ($operation.provisioningState -isnot [string] -or $operation.provisioningState -notin @('Succeeded', 'Failed')) {
+                throw "Deployment [$DeploymentName] has an operation without a terminal provisioning state; regional retry is unsafe."
+            }
+            if ($operation.provisioningState -eq 'Succeeded') {
+                continue
+            }
+            if ($operation.statusMessage -isnot [System.Management.Automation.PSCustomObject] -and
+                $operation.statusMessage -isnot [System.Collections.IDictionary]) {
+                Write-Warning "Deployment [$DeploymentName] has no structured ARM operation error; it cannot authorize regional relocation."
+                $errors.Add($null)
+            } else {
+                $errors.Add($operation.statusMessage)
+            }
+        }
+        return , @($errors)
+    }
+
     switch ($deploymentScope) {
         'resourcegroup' {
             $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
@@ -270,25 +311,6 @@ function Get-ErrorMessageForScope {
         }
     }
     $failedOperations = @($deployments | Where-Object { $_.ProvisioningState -ne 'Succeeded' })
-    if ($AsObject) {
-        $errors = [System.Collections.Generic.List[object]]::new()
-        foreach ($operation in $failedOperations) {
-            if ($operation.ProvisioningState -ne 'Failed') {
-                throw "Deployment [$DeploymentName] has an operation in state [$($operation.ProvisioningState)]; regional retry is unsafe."
-            }
-            if ($operation.StatusMessage -is [string]) {
-                try {
-                    $errors.Add((ConvertFrom-Json -InputObject $operation.StatusMessage -AsHashtable -NoEnumerate -ErrorAction Stop))
-                } catch {
-                    Write-Warning "Deployment [$DeploymentName] has an unstructured operation error; it cannot authorize regional relocation."
-                    $errors.Add($null)
-                }
-            } else {
-                $errors.Add($operation.StatusMessage)
-            }
-        }
-        return , @($errors)
-    }
     return $failedOperations.StatusMessage
 }
 

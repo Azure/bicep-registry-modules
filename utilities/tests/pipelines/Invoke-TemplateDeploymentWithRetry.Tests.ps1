@@ -131,8 +131,14 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
 
         function New-FixtureOperation {
-            param([string] $Id, [string] $State = 'Succeeded', [string] $Operation = 'Create')
-            @{ properties = @{ provisioningOperation = $Operation; provisioningState = $State; targetResource = @{ id = $Id } } }
+            param([string] $Id, [string] $State = 'Succeeded', [string] $Operation = 'Create', [object] $StatusMessage)
+            @{ properties = @{
+                    provisioningOperation = $Operation
+                    provisioningState     = $State
+                    targetResource        = @{ id = $Id }
+                    statusMessage         = $StatusMessage
+                }
+            }
         }
 
         function Assert-FixtureParameters {
@@ -187,7 +193,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 State      = 'Failed'
                 Operations = @(
                     (New-FixtureOperation -Id $script:groupId)
-                    (New-FixtureOperation -Id $script:nestedId)
+                    (New-FixtureOperation -Id $script:nestedId -State Failed -StatusMessage $script:regionalError)
                 )
             }
             $script:records[$script:nestedId] = @{
@@ -206,6 +212,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
                 'Regional' { throw ($script:incidentMessage -f $Name) }
                 'Legacy' {
                     $script:operationError = @{ error = @{ code = 'QuotaExceeded'; message = 'Nonregional quota failure.' } }
+                    $script:records[$rootId].Operations[1].properties.statusMessage = $script:operationError
                     throw "The deployment '$Name' failed with error(s). (Code: DeploymentFailed) QuotaExceeded"
                 }
                 'FailedResult' { return @{ ProvisioningState = 'Failed' } }
@@ -281,14 +288,15 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $script:trace = [System.Collections.Generic.List[string]]::new()
         $script:regionalError = @{ error = @{
                 code    = 'InvalidTemplateDeployment'
-                details = @(@{ code = 'SkuNotAvailable'; message = "The requested VM size 'Standard_B12ms' is not available in location 'ItalyNorth'." })
+                message = 'A nested deployment failed preflight validation.'
+                details = @(@{ code = 'SkuNotAvailable'; message = "The requested SKU 'ExampleSku' is not available in location 'ItalyNorth'." })
             }
         }
+        $script:operationStatusMessage = "A nested deployment failed preflight validation. (Code: InvalidTemplateDeployment)`n" +
+        " - The requested SKU 'ExampleSku' is not available in location 'ItalyNorth'. (Code: SkuNotAvailable)`n"
         $script:incidentMessage = "08:51:48 - The deployment '{0}' failed with error(s). Showing 1 out of 1 error(s). Status Message: " +
-        "The template deployment 'bdqfi6fak4vwu-test-cvmsswinuni-init' is not valid according to the validation procedure. " +
-        "The following resource provider(s) - 'Microsoft.Compute/virtualMachineScaleSets (2024-11-01)' reported preflight validation errors. " +
-        "Tracking id is '87e3102a-8544-4345-8c23-9302b8058d92'. See inner errors for details. (Code: InvalidTemplateDeployment) - " +
-        "The requested VM size for resource 'Following SKUs have failed for Capacity Restrictions: Standard_B12ms' is currently not available in location 'ItalyNorth'. " +
+        "A nested deployment failed preflight validation. (Code: InvalidTemplateDeployment) - " +
+        "The requested SKU 'ExampleSku' is not available in location 'ItalyNorth'. " +
         'Please try another size or deploy to a different location or different zone. See https://aka.ms/azureskunotavailable for details. (Code:SkuNotAvailable)'
 
         $templatePath = Join-Path $TestDrive 'main.test.json'
@@ -343,10 +351,10 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Mock Get-AzResourceGroupDeployment { Get-FixtureStatus $Name resourcegroup $ResourceGroupName '' $DefaultProfile }
         Mock Get-AzManagementGroupDeployment { Get-FixtureStatus $Name managementgroup '' $ManagementGroupId $DefaultProfile }
         Mock Get-AzTenantDeployment { Get-FixtureStatus $Name tenant '' '' $DefaultProfile }
-        Mock Get-AzDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:operationError -Depth 15 -Compress } }
-        Mock Get-AzResourceGroupDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:operationError -Depth 15 -Compress } }
-        Mock Get-AzManagementGroupDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:operationError -Depth 15 -Compress } }
-        Mock Get-AzTenantDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:operationError -Depth 15 -Compress } }
+        Mock Get-AzDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = $script:operationStatusMessage } }
+        Mock Get-AzResourceGroupDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = $script:operationStatusMessage } }
+        Mock Get-AzManagementGroupDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = $script:operationStatusMessage } }
+        Mock Get-AzTenantDeploymentOperation { @{ ProvisioningState = 'Failed'; StatusMessage = $script:operationStatusMessage } }
         Mock Get-AzResourceGroup { @{ ResourceId = $script:groupId } }
         Mock Get-AzResource { throw 'Unexpected resource lookup outside a confirmed removed parent.' }
         Mock Get-AzResourceLock {}
@@ -366,7 +374,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Mock Invoke-AzRestMethod { Invoke-FixtureRest $Method $Path }
     }
 
-    It 'Recovers the exact nested preflight capacity incident only after removing resources and deployment records' {
+    It 'Relocates using raw regional errors despite SDK-formatted operation messages only after confirmed cleanup' {
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
 
         $result.ContainsKey('Exception') | Should -BeFalse
@@ -388,6 +396,192 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         $templateInput.AdditionalParameters.resourceLocation | Should -BeExactly ''
         (Get-Content -LiteralPath $templatePath -Raw | ConvertFrom-Json).variables.regionToken | Should -Be 'swedencentral'
         Should -Invoke New-AzSubscriptionDeployment -Times 2 -Exactly -ParameterFilter { $Location -eq 'WestEurope' }
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+    }
+
+    It 'Preserves SDK-formatted display messages at <scope> scope' -ForEach @(
+        @{ scope = 'subscription'; command = 'Get-AzDeploymentOperation' }
+        @{ scope = 'resourcegroup'; command = 'Get-AzResourceGroupDeploymentOperation' }
+        @{ scope = 'managementgroup'; command = 'Get-AzManagementGroupDeploymentOperation' }
+        @{ scope = 'tenant'; command = 'Get-AzTenantDeploymentOperation' }
+    ) {
+        $message = Get-ErrorMessageForScope -DeploymentScope $scope -DeploymentName 'display-fixture' `
+            -ResourceGroupName 'retry-fixture' -ManagementGroupId 'test-management-group'
+        $message | Should -BeExactly $script:operationStatusMessage
+        Should -Invoke $command -Times 1 -Exactly -ParameterFilter { $DeploymentName -eq 'display-fixture' }
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Reads every raw operation page without filtering operation types at <scope> scope' -ForEach @(
+        @{ scope = 'subscription'; prefix = '/subscriptions/11111111-1111-1111-1111-111111111111' }
+        @{ scope = 'resourcegroup'; prefix = '/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/retry-fixture' }
+        @{ scope = 'managementgroup'; prefix = '/providers/Microsoft.Management/managementGroups/test-management-group' }
+        @{ scope = 'tenant'; prefix = '' }
+    ) {
+        $id = "$prefix/providers/Microsoft.Resources/deployments/structured-fixture"
+        $script:records[$id] = @{ Operations = @(
+                (New-FixtureOperation -Id $script:groupId)
+                (New-FixtureOperation -Operation Action -State Failed -StatusMessage $script:regionalError)
+            )
+        }
+        $firstPage = "${id}/operations?api-version=2021-04-01"
+        $nextPage = "$firstPage&`$skiptoken=next"
+        $script:restOverrides["GET $firstPage"] = New-FixtureResponse -Content @{
+            value    = @($script:records[$id].Operations[0])
+            nextLink = "https://management.azure.com$nextPage"
+        }
+        $script:restOverrides["GET $nextPage"] = New-FixtureResponse -Content @{ value = @($script:records[$id].Operations[1]) }
+        $errors = Get-ErrorMessageForScope -DeploymentScope $scope -DeploymentName 'structured-fixture' `
+            -ResourceGroupName 'retry-fixture' -ManagementGroupId 'test-management-group' -AsObject
+
+        $errors | Should -HaveCount 1
+        $errors[0].error.code | Should -BeExactly 'InvalidTemplateDeployment'
+        $errors[0].error.details[0].code | Should -BeExactly 'SkuNotAvailable'
+        $errors[0].error.details[0].message | Should -BeExactly $script:regionalError.error.details[0].message
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+            $Method -eq 'GET' -and $Path -eq $firstPage
+        }
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter {
+            $Method -eq 'GET' -and $Path -eq $nextPage
+        }
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Get-AzResourceGroupDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Get-AzManagementGroupDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Get-AzTenantDeploymentOperation -Times 0 -Exactly
+    }
+
+    It 'Does not treat missing operations as successful empty evidence at <scope> scope' -ForEach @(
+        @{ scope = 'subscription'; code = 'DeploymentNotFound' }
+        @{ scope = 'resourcegroup'; code = 'DeploymentNotFound' }
+        @{ scope = 'resourcegroup'; code = 'ResourceGroupNotFound' }
+        @{ scope = 'managementgroup'; code = 'DeploymentNotFound' }
+        @{ scope = 'tenant'; code = 'DeploymentNotFound' }
+    ) {
+        Mock Invoke-AzRestMethod { New-FixtureResponse -StatusCode 404 -Content @{ error = @{ code = $code } } }
+        {
+            Get-ErrorMessageForScope -DeploymentScope $scope -DeploymentName 'missing-fixture' `
+                -ResourceGroupName 'retry-fixture' -ManagementGroupId 'test-management-group' -AsObject
+        } | Should -Throw '*complete deployment operation pages*'
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly
+    }
+
+    It 'Rejects an incomplete <scope> scope before reading operations' -ForEach @(
+        @{ scope = 'subscription'; missing = 'subscription' }
+        @{ scope = 'resourcegroup'; missing = 'subscription' }
+        @{ scope = 'resourcegroup'; missing = 'resource group' }
+        @{ scope = 'managementgroup'; missing = 'management group' }
+    ) {
+        $resourceGroup = 'retry-fixture'
+        $managementGroup = 'test-management-group'
+        switch ($missing) {
+            'subscription' { $script:azContext.Subscription = $null }
+            'resource group' { $resourceGroup = '' }
+            'management group' { $managementGroup = '' }
+        }
+        {
+            Get-ErrorMessageForScope -DeploymentScope $scope -DeploymentName 'scope-fixture' `
+                -ResourceGroupName $resourceGroup -ManagementGroupId $managementGroup -AsObject
+        } | Should -Throw '*complete deployment operation pages*'
+        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+    }
+
+    It 'Does not relocate from <kind> raw operation data despite regional SDK text' -ForEach @(
+        @{ kind = 'missing operation list' }, @{ kind = 'non-array operation list' }, @{ kind = 'array response' }
+        @{ kind = 'null response' }, @{ kind = 'string response' }
+        @{ kind = 'empty operation list' }, @{ kind = 'successful operations only' }
+        @{ kind = 'null operation' }, @{ kind = 'missing properties' }, @{ kind = 'array properties' }
+        @{ kind = 'missing operation type' }, @{ kind = 'array operation type' }
+        @{ kind = 'missing state' }, @{ kind = 'array state' }, @{ kind = 'Running state' }
+        @{ kind = 'Accepted state' }, @{ kind = 'Canceled state' }, @{ kind = 'unknown state' }
+        @{ kind = 'missing error' }, @{ kind = 'text error' }, @{ kind = 'JSON-string error' }, @{ kind = 'array error' }
+        @{ kind = 'blank leaf code' }, @{ kind = 'empty error object' }, @{ kind = 'mixed error' }
+    ) {
+        Mock Invoke-AzRestMethod {
+            $root = $script:roots[0]
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+                $failure = New-FixtureOperation -Id $script:nestedId -State Failed -StatusMessage $script:regionalError
+                $content = @{ value = @($script:records[$root].Operations[1], $failure) }
+                switch ($kind) {
+                    'missing operation list' { $content.Remove('value') }
+                    'non-array operation list' { $content.value = $failure }
+                    'array response' { return New-FixtureResponse -Content @($content) }
+                    'null response' { return New-FixtureResponse -Content $null }
+                    'string response' { return New-FixtureResponse -Content 'unexpected-response' }
+                    'empty operation list' { $content.value = @() }
+                    'successful operations only' { $content.value = @((New-FixtureOperation -Id $script:groupId)) }
+                    'null operation' { $content.value[1] = $null }
+                    'missing properties' { $content.value[1] = @{} }
+                    'array properties' { $failure.properties = @($failure.properties) }
+                    'missing operation type' { $failure.properties.Remove('provisioningOperation') }
+                    'array operation type' { $failure.properties.provisioningOperation = @('Create') }
+                    'missing state' { $failure.properties.Remove('provisioningState') }
+                    'array state' { $failure.properties.provisioningState = @('Failed') }
+                    'Running state' { $failure.properties.provisioningState = 'Running' }
+                    'Accepted state' { $failure.properties.provisioningState = 'Accepted' }
+                    'Canceled state' { $failure.properties.provisioningState = 'Canceled' }
+                    'unknown state' { $failure.properties.provisioningState = 'Unknown' }
+                    'missing error' { $failure.properties.Remove('statusMessage') }
+                    'text error' { $failure.properties.statusMessage = $script:operationStatusMessage }
+                    'JSON-string error' { $failure.properties.statusMessage = ConvertTo-Json $script:regionalError -Depth 10 -Compress }
+                    'array error' { $failure.properties.statusMessage = @($script:regionalError) }
+                    'blank leaf code' { $failure.properties.statusMessage = @{ error = @{ code = ''; message = 'Capacity is not available in this location.' } } }
+                    'empty error object' { $failure.properties.statusMessage = @{} }
+                    'mixed error' { $failure.properties.statusMessage = @{ error = @{ code = 'AuthorizationFailed'; message = 'Access denied.' } } }
+                }
+                return New-FixtureResponse -Content $content
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $script:submissions.Count | Should -Be 1
+        $script:validations.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($originalBytes))
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+    }
+
+    It 'Includes nonregional failures from <operation> operations before considering relocation' -ForEach @(
+        @{ operation = 'Read' }, @{ operation = 'Delete' }, @{ operation = 'Action' }
+        @{ operation = 'EvaluateDeploymentOutput' }, @{ operation = 'NotSpecified' }
+    ) {
+        Mock Invoke-AzRestMethod {
+            $root = $script:roots[0]
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+                return New-FixtureResponse -Content @{ value = @($script:records[$root].Operations) + @(
+                        (New-FixtureOperation -Operation $operation -State Failed -StatusMessage @{
+                                error = @{ code = 'InvalidTemplate'; message = 'Invalid configuration.' }
+                            })
+                    )
+                }
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $script:submissions.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+    }
+
+    It 'Rejects <kind> operation-page failures without exposing raw response data' -ForEach @(
+        @{ kind = 'invalid JSON' }, @{ kind = 'HTTP failure' }, @{ kind = 'transport exception' }
+    ) {
+        Mock Invoke-AzRestMethod {
+            switch ($kind) {
+                'invalid JSON' { return @{ StatusCode = 200; Content = '{"value": raw-response-secret' } }
+                'HTTP failure' { return New-FixtureResponse -StatusCode 403 -Content @{ error = @{ code = 'raw-response-secret' } } }
+                'transport exception' { throw [System.Net.Http.HttpRequestException]::new('raw-response-secret') }
+            }
+        }
+        $log = @(Invoke-TemplateDeploymentWithRetry @retryInput 3>&1 4>&1)
+        $result = $log | Where-Object { $_ -is [hashtable] }
+        ($log | Out-String) | Should -Not -Match 'raw-response-secret'
+        $result.Exception | Should -Match 'complete deployment operation pages'
+        $result.Exception | Should -Not -Match 'raw-response-secret'
+        $script:submissions.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
     }
 
     It 'Preserves independent budgets with outcomes <outcomes> and rejected validations <rejected>' -ForEach @(
@@ -408,7 +602,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         if ($outcomes[-1] -eq 'Succeeded') {
             $result.ContainsKey('Exception') | Should -BeFalse
         } else {
-            $result.Exception | Should -Match 'Standard_B12ms'
+            $result.Exception | Should -Match 'ExampleSku'
             $result.RemainingDeploymentNames | Should -Be @($script:names[-1])
             [Convert]::ToBase64String([System.IO.File]::ReadAllBytes($templatePath)) | Should -Be ([Convert]::ToBase64String($originalBytes))
         }
@@ -454,7 +648,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     ) {
         $script:regionalError.error.details += @{ code = $code; message = 'Permanent error.' }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $script:submissions.Count | Should -Be 1
         $script:removed.Count | Should -Be 0
         $result.RemainingDeploymentNames | Should -Be @($script:names)
@@ -466,7 +660,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = $state } }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'no retry is safe'
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $script:submissions.Count | Should -Be 1
         $script:removed.Count | Should -Be 0
     }
@@ -488,16 +682,23 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
     }
 
     It 'Stops when <phase> lookup fails and preserves both diagnostics' -ForEach @(
-        @{ phase = 'status' }, @{ phase = 'details' }, @{ phase = 'cleanup discovery' }
+        @{ phase = 'status'; expected = 'Lookup failed' }
+        @{ phase = 'details'; expected = 'complete deployment operation pages' }
+        @{ phase = 'cleanup discovery'; expected = 'Lookup failed' }
     ) {
         switch ($phase) {
             'status' { Mock Get-AzDeployment { throw [System.Net.Http.HttpRequestException]::new('Lookup failed.') } }
-            'details' { Mock Get-AzDeploymentOperation { throw [System.UnauthorizedAccessException]::new('Lookup failed.') } }
-            'cleanup discovery' { Mock Invoke-AzRestMethod { throw [System.TimeoutException]::new('Lookup failed.') } }
+            'details' { Mock Invoke-AzRestMethod { throw [System.UnauthorizedAccessException]::new('Lookup failed.') } }
+            'cleanup discovery' {
+                Mock Invoke-AzRestMethod {
+                    if ($Path.Split('?')[0] -eq "$script:nestedId/operations") { throw [System.TimeoutException]::new('Lookup failed.') }
+                    Invoke-FixtureRest $Method $Path
+                }
+            }
         }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
-        $result.Exception | Should -Match 'Lookup failed'
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match $expected
+        $result.Exception | Should -Match 'ExampleSku'
         $script:submissions.Count | Should -Be 1
         $result.RemainingDeploymentNames | Should -Be @($script:names)
     }
@@ -525,7 +726,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
             }
         }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $result.Exception | Should -Match $expected
         $result.RemainingDeploymentNames | Should -Be @($script:names)
         $script:submissions.Count | Should -Be 1
@@ -540,8 +741,13 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         switch ($phase) {
             'submission' { $script:outcomes = @('Cancel') }
             'status' { Mock Get-AzDeployment { throw [System.OperationCanceledException]::new('Cancelled.') } }
-            'details' { Mock Get-AzDeploymentOperation { throw [System.OperationCanceledException]::new('Cancelled.') } }
-            'discovery' { Mock Invoke-AzRestMethod { throw [System.OperationCanceledException]::new('Cancelled.') } }
+            'details' { Mock Invoke-AzRestMethod { throw [System.OperationCanceledException]::new('Cancelled.') } }
+            'discovery' {
+                Mock Invoke-AzRestMethod {
+                    if ($Path.Split('?')[0] -eq "$script:nestedId/operations") { throw [System.OperationCanceledException]::new('Cancelled.') }
+                    Invoke-FixtureRest $Method $Path
+                }
+            }
             'removal' { Mock Remove-AzResource { throw [System.OperationCanceledException]::new('Cancelled.') } }
             'record deletion' {
                 Mock Invoke-AzRestMethod {
@@ -619,7 +825,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
         $script:regionalError = @{ error = @{ code = 'ResourceDeploymentFailure'; details = $details } }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $script:submissions.Count | Should -Be 1
         $script:removed.Count | Should -Be 0
     }
@@ -667,7 +873,7 @@ Describe 'Coordinated regional deployment retries with actual cleanup' {
         }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match $expected
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $result.DeploymentNames | Should -Be @($script:names)
         $result.RemainingDeploymentNames.Count | Should -Be 0
         $script:submissions.Count | Should -Be 1
@@ -714,7 +920,7 @@ module dependency './dependency.bicep' = {
         Mock Restore-RegionTokenFile { throw 'Token restoration failed.' }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'Token restoration failed'
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $result.DeploymentNames.Count | Should -Be 1
         $result.RemainingDeploymentNames.Count | Should -Be 0
         $script:submissions.Count | Should -Be 1
@@ -744,6 +950,8 @@ module dependency './dependency.bicep' = {
 
     It 'Refuses unsafe operation pagination: <kind>' -ForEach @(
         @{ kind = 'foreign host' }, @{ kind = 'different deployment' }, @{ kind = 'cycle' }
+        @{ kind = 'insecure scheme' }, @{ kind = 'userinfo' }, @{ kind = 'fragment' }
+        @{ kind = 'false link' }, @{ kind = 'zero link' }, @{ kind = 'array link' }, @{ kind = 'blank link' }
     ) {
         Mock Invoke-AzRestMethod {
             if ($Method -eq 'GET' -and $Path.Contains('/operations?')) {
@@ -752,8 +960,15 @@ module dependency './dependency.bicep' = {
                     'foreign host' { "https://example.invalid${root}/operations?api-version=2021-04-01" }
                     'different deployment' { "https://management.azure.com${root}-other/operations?api-version=2021-04-01" }
                     'cycle' { "https://management.azure.com${root}/operations?api-version=2021-04-01" }
+                    'insecure scheme' { "http://management.azure.com${root}/operations?api-version=2021-04-01" }
+                    'userinfo' { "https://other@management.azure.com${root}/operations?api-version=2021-04-01" }
+                    'fragment' { "https://management.azure.com${root}/operations?api-version=2021-04-01#fragment" }
+                    'false link' { $false }
+                    'zero link' { 0 }
+                    'array link' { , @() }
+                    'blank link' { ' ' }
                 }
-                return New-FixtureResponse -Content @{ value = @(); nextLink = $nextLink }
+                return New-FixtureResponse -Content @{ value = @($script:records[$root].Operations[1]); nextLink = $nextLink }
             }
             Invoke-FixtureRest $Method $Path
         }
@@ -762,6 +977,38 @@ module dependency './dependency.bicep' = {
         $script:removed.Count | Should -Be 0
         $script:submissions.Count | Should -Be 1
         Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly -ParameterFilter { $Path -like '*example.invalid*' -or $Path -like '*-other/operations*' }
+    }
+
+    It 'Rejects a <kind> later operation page without authorizing cleanup from the first regional error' -ForEach @(
+        @{ kind = 'nonregional error' }, @{ kind = 'running operation' }, @{ kind = 'missing error' }
+        @{ kind = 'HTTP failure' }, @{ kind = 'malformed page' }
+    ) {
+        Mock Invoke-AzRestMethod {
+            $root = $script:roots[0]
+            if ($Method -eq 'GET' -and $Path -eq "${root}/operations?api-version=2021-04-01") {
+                return New-FixtureResponse -Content @{
+                    value    = @($script:records[$root].Operations[1])
+                    nextLink = "https://management.azure.com${root}/operations?api-version=2021-04-01&`$skiptoken=next"
+                }
+            }
+            if ($Method -eq 'GET' -and $Path.EndsWith('&$skiptoken=next')) {
+                switch ($kind) {
+                    'HTTP failure' { return New-FixtureResponse -StatusCode 503 }
+                    'malformed page' { return New-FixtureResponse -Content @{} }
+                    'nonregional error' { $operation = New-FixtureOperation -State Failed -StatusMessage @{ error = @{ code = 'Unknown'; message = 'Unknown failure.' } } }
+                    'running operation' { $operation = New-FixtureOperation -State Running -StatusMessage $script:regionalError }
+                    'missing error' { $operation = New-FixtureOperation -State Failed }
+                }
+                return New-FixtureResponse -Content @{ value = @($operation) }
+            }
+            Invoke-FixtureRest $Method $Path
+        }
+        $result = Invoke-TemplateDeploymentWithRetry @retryInput
+        $result.Exception | Should -Not -BeNullOrEmpty
+        $script:submissions.Count | Should -Be 1
+        $script:removed.Count | Should -Be 0
+        $result.RemainingDeploymentNames | Should -Be @($script:names)
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly -ParameterFilter { $Path.EndsWith('&$skiptoken=next') }
     }
 
     It 'Keeps known resource IDs when a later operation page fails' {
@@ -865,7 +1112,7 @@ module dependency './dependency.bicep' = {
             Invoke-FixtureRest $Method $Path
         }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
-        $result.Exception | Should -Match 'Standard_B12ms'
+        $result.Exception | Should -Match 'ExampleSku'
         $result.Exception | Should -Match 'record removal failed'
         $result.DeploymentNames | Should -Be @($script:names)
         $result.RemainingDeploymentNames | Should -Be @($script:names[1])
@@ -913,14 +1160,14 @@ module dependency './dependency.bicep' = {
             throw [System.Management.Automation.ErrorRecord]::new($exception, 'Forbidden', $category, $null)
         }
         Mock Get-AzDeployment { @{ DeploymentName = $Name; ProvisioningState = 'Failed' } }
-        Mock Get-AzDeploymentOperation {
-            @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:regionalError -Depth 15 }
+        Mock Invoke-AzRestMethod {
+            New-FixtureResponse -Content @{ value = @((New-FixtureOperation -State Failed -StatusMessage $script:regionalError)) }
         }
         $result = Invoke-TemplateDeploymentWithRetry @retryInput
         $result.Exception | Should -Match 'forbidden'
         $script:submissions.Count | Should -Be 1
-        Should -Invoke Get-AzDeploymentOperation -Times 1 -Exactly
-        Should -Invoke Invoke-AzRestMethod -Times 0 -Exactly
+        Should -Invoke Get-AzDeploymentOperation -Times 0 -Exactly
+        Should -Invoke Invoke-AzRestMethod -Times 1 -Exactly
     }
 
     It 'Preserves full attempt suffixes for long prefixes and a frozen clock' {
@@ -969,16 +1216,17 @@ module dependency './dependency.bicep' = {
         $script:groupId = $script:groupId.Replace($script:subscriptionId, $otherSubscription)
         $script:vnetId = $script:vnetId.Replace($script:subscriptionId, $otherSubscription)
         $script:nestedId = $script:nestedId.Replace($script:subscriptionId, $otherSubscription)
-        Mock Get-AzDeploymentOperation {
-            $script:records[$script:roots[0]].Operations = @((New-FixtureOperation -Id $script:subscriptionRecordId))
-            $script:records[$script:subscriptionRecordId] = @{
-                State      = 'Succeeded'
-                Operations = @((New-FixtureOperation -Id $script:groupId), (New-FixtureOperation -Id $script:nestedId))
-            }
-            @{ ProvisioningState = 'Failed'; StatusMessage = ConvertTo-Json $script:operationError -Depth 15 }
-        }
         Mock Invoke-AzRestMethod {
             $id = $Path.Split('?')[0]
+            if ($Method -eq 'GET' -and $id -eq "$($script:roots[0])/operations" -and -not $script:records.ContainsKey($script:subscriptionRecordId)) {
+                $script:records[$script:roots[0]].Operations = @(
+                    (New-FixtureOperation -Id $script:subscriptionRecordId -State Failed -StatusMessage $script:regionalError)
+                )
+                $script:records[$script:subscriptionRecordId] = @{
+                    State      = 'Succeeded'
+                    Operations = @((New-FixtureOperation -Id $script:groupId), (New-FixtureOperation -Id $script:nestedId))
+                }
+            }
             if ($id -eq $script:subscriptionRecordId) {
                 $script:trace.Add("${Method}:$id")
                 if ($Method -eq 'DELETE') {
@@ -1012,7 +1260,7 @@ module dependency './dependency.bicep' = {
         $log = @(Invoke-TemplateDeploymentWithRetry @retryInput -DeploymentLimit 1 3>&1 4>&1)
         $result = $log | Where-Object { $_ -is [hashtable] }
         $messages = $log | Where-Object { $_ -isnot [hashtable] } | Out-String
-        $messages | Should -Match 'Standard_B12ms'
+        $messages | Should -Match 'ExampleSku'
         $messages | Should -Not -Match 'secret-not-for-logs|fixed-base-time'
         $result.Exception | Should -Match '\[REDACTED\]'
         $result.Exception | Should -Not -Match 'secret-not-for-logs|fixed-base-time'
