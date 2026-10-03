@@ -76,6 +76,7 @@ Describe 'Module deployment matrix' {
             $matrix[$index].subscriptionName | Should -Be $selected.name
             $matrix[$index].path | Should -Be $testFiles[$index].path
             $matrix[$index].name | Should -Be $testFiles[$index].name
+            $matrix[$index].e2eIgnore | Should -BeFalse
             $matrix[$index].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($selected.key)"
         }
         @($matrix[0..2].concurrencyGroup | Sort-Object -Unique).Count | Should -Be 3
@@ -256,28 +257,40 @@ Describe 'Module deployment matrix' {
         { Get-ModuleDeploymentMatrix @matrixInput } | Should -Throw '*non-supported ARM template schema*'
     }
 
-    It 'Preserves round-robin positions around ignored tests without acquiring their deployment locks' {
-        $testFiles[1].e2eIgnore = $true
+    It 'Omits ignored tests while preserving round-robin positions with a <flagType> flag' -ForEach @(
+        @{ flagType = 'boolean'; flag = $true }
+        @{ flagType = 'string'; flag = 'true' }
+    ) {
+        foreach ($index in @(0, 3, 7)) {
+            $testFiles[$index].e2eIgnore = $flag
+        }
         $shuffled = @(Get-TestSubscriptionList -TestSubscriptionIds $subscriptionJson -RandomSeed 12345)
 
         $matrix = (Get-ModuleDeploymentMatrix @matrixInput).testCases
 
-        $matrix[1].e2eIgnore | Should -BeTrue
-        $matrix[1].subscriptionKey | Should -BeNullOrEmpty
-        $matrix[1].concurrencyGroup | Should -Be 'avm-deploy-avm/res/example/module-ignored'
-        $matrix[2].subscriptionKey | Should -Be $shuffled[2].key
-        Should -Invoke bicep -Times 7 -Exactly
+        $remainingIndices = @(1, 2, 4, 5, 6)
+        $matrix.Count | Should -Be $remainingIndices.Count
+        $matrix.name | Should -Be $testFiles[$remainingIndices].name
+        foreach ($index in 0..($matrix.Count - 1)) {
+            $subscription = $shuffled[$remainingIndices[$index] % $shuffled.Count]
+            $matrix[$index].e2eIgnore | Should -BeFalse
+            $matrix[$index].subscriptionKey | Should -Be $subscription.key
+            $matrix[$index].concurrencyGroup | Should -Be "avm-deploy-avm/res/example/module-$($subscription.key)"
+        }
+        Should -Invoke bicep -Times 5 -Exactly
     }
 
-    It 'Does not require subscriptions or compile templates when all deployment tests are ignored' {
-        $testFiles | ForEach-Object { $_.e2eIgnore = $true }
+    It 'Returns an empty matrix without subscriptions or compilation when all tests have a <flagType> ignore flag' -ForEach @(
+        @{ flagType = 'boolean'; flag = $true }
+        @{ flagType = 'string'; flag = 'true' }
+    ) {
+        $testFiles | ForEach-Object { $_.e2eIgnore = $flag }
         $matrixInput.TestSubscriptionIds = ''
         $selection = Get-ModuleDeploymentMatrix @matrixInput
-        $matrix = $selection.testCases
 
         $selection.sharedScope | Should -BeFalse
-        $matrix.Count | Should -Be 8
-        @($matrix.subscriptionName | Sort-Object -Unique) | Should -Be @('Deployment disabled')
+        $selection.testCases.Count | Should -Be 0
+        ConvertTo-Json -InputObject $selection.testCases -Compress | Should -BeExactly '[]'
         Should -Invoke bicep -Times 0 -Exactly
     }
 

@@ -17,6 +17,27 @@ Describe 'Get-ModuleWorkflowMatrix' {
         @($result.include.psRuleModuleTestFilePaths | ConvertFrom-Json).Count | Should -BeGreaterThan 0
     }
 
+    It 'Keeps modules and PSRule cases eligible when all deployment tests are ignored' {
+        $modulePath = 'avm/res/test/module'
+        $moduleFolder = Join-Path $TestDrive $modulePath
+        $null = New-Item -Path $moduleFolder -ItemType Directory -Force
+        Set-Content -Path (Join-Path $moduleFolder 'main.bicep') -Value "metadata name = 'test'"
+        foreach ($testName in @('defaults', 'max', 'waf-aligned')) {
+            $testFolder = Join-Path $moduleFolder 'tests' 'e2e' $testName
+            $null = New-Item -Path $testFolder -ItemType Directory -Force
+            Set-Content -Path (Join-Path $testFolder 'main.test.bicep') -Value "targetScope = 'subscription'"
+            Set-Content -Path (Join-Path $testFolder '.e2eignore') -Value 'Ignored test fixture.'
+        }
+
+        $result = Get-ModuleWorkflowMatrix -ModulePathInput $modulePath -RepoRoot $TestDrive
+
+        $result.include.modulePath | Should -Be @($modulePath)
+        $testCases = @($result.include.moduleTestFilePaths | ConvertFrom-Json)
+        $testCases.Count | Should -Be 3
+        @($testCases | Where-Object { -not $_.e2eIgnore }).Count | Should -Be 0
+        @($result.include.psRuleModuleTestFilePaths | ConvertFrom-Json).name | Should -Be @('defaults', 'waf-aligned')
+    }
+
     It 'Resolves comma-separated paths and removes duplicates' {
         $inputPaths = 'avm/res/storage/storage-account, avm/res/network/virtual-network, avm/res/storage/storage-account'
 

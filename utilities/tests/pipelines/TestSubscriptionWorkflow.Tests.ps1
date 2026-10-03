@@ -297,6 +297,36 @@ Describe 'Test subscription workflow integration' {
         Should -Invoke Invoke-RestMethod -Times 0 -Exactly
     }
 
+    It 'Serializes only runnable tests with <remainingCount> remaining deployment cases' -ForEach @(
+        @{ ignoredNames = @('defaults'); remainingCount = 1 }
+        @{ ignoredNames = @('defaults', 'max'); remainingCount = 0 }
+    ) {
+        $testFiles = @(ConvertFrom-Json -InputObject $env:MODULE_TEST_FILE_PATHS -AsHashtable)
+        foreach ($test in $testFiles) {
+            $test.e2eIgnore = $test.name -in $ignoredNames
+        }
+        $env:MODULE_TEST_FILE_PATHS = ConvertTo-Json -InputObject $testFiles -Compress
+        if ($remainingCount -eq 0) {
+            $env:TEST_SUBSCRIPTION_IDS = ''
+            $env:VALIDATE_SUBSCRIPTION_ID = ''
+        }
+
+        . ([scriptblock]::Create($matrixStep.run))
+
+        $outputs = Get-StepOutput
+        $outputs.sharedScope | Should -Be 'false'
+        $outputs.deploymentMatrix | Should -Match '^\[.*\]$'
+        $matrix = @($outputs.deploymentMatrix | ConvertFrom-Json -AsHashtable)
+        $matrix.Count | Should -Be $remainingCount
+        if ($remainingCount -eq 0) {
+            $outputs.deploymentMatrix | Should -BeExactly '[]'
+        } else {
+            $matrix[0].name | Should -Be 'max'
+            $matrix[0].e2eIgnore | Should -BeFalse
+        }
+        Should -Invoke bicep -Times $remainingCount -Exactly
+    }
+
     It 'Rejects reordered or replaced preselected records without login outputs or reselection' -ForEach @(
         @{ mutation = 'reordered' }
         @{ mutation = 'replaced' }
