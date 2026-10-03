@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/db-for-my-sql/flexible-server/CHANGELOG.md).
 
+## 0.11.2
+
+### Changes
+
+- Updated 'advanced-threat-protection-setting' child module
+
+### Breaking Changes
+
+- None
+
 ## 0.11.1
 
 ### Changes

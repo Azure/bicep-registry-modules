@@ -56,20 +56,19 @@ function Invoke-Async {
             $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
 
 
-            if ($PassThruObject) {
-                # Relay any pending output from the child jobs.
-                $result = ($job | Receive-Job -WriteJobInResults -Wait)[1]
-                $PassThruObject += $result ?? @{}
-            } else {
-                # Relay any pending output from the child jobs.
-                $job | Receive-Job
-            }
-
             # Update the progress display.
             [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
             Write-Progress -Activity ($ProgressText -f $completedJobsCount, $List.Count) -Status "$percent% complete" -PercentComplete $percent
 
         } while ($completedJobsCount -lt $job.ChildJobs.Count)
+
+        if ($PSBoundParameters.ContainsKey('PassThruObject')) {
+            foreach ($result in ($job | Receive-Job)) {
+                $PassThruObject += $result ?? @{}
+            }
+        } else {
+            $job | Receive-Job
+        }
 
         # Clean up the job.
         $job | Remove-Job
@@ -78,7 +77,7 @@ function Invoke-Async {
         $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
     }
 
-    if ($PassThruObject) {
+    if ($PSBoundParameters.ContainsKey('PassThruObject')) {
         return $PassThruObject
     }
 }
