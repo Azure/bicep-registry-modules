@@ -2,6 +2,17 @@
 
 The latest version of the changelog can be found [here](https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/recovery-services/vault/CHANGELOG.md).
 
+## 0.14.0
+
+### Changes
+
+- Deploy all replication fabrics and containers before their mappings to support cross-fabric and forward container references.
+- Fixed generated policy and target-container resource IDs to include the resource group.
+
+### Breaking Changes
+
+- Mapping names generated from `targetProtectionContainerResourceId` now use the target container name instead of the fabric name. Set `name` explicitly to retain an existing mapping name.
+
 ## 0.13.2
 
 ### Changes
