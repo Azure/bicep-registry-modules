@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using large parameter set'
 metadata description = 'This instance deploys the module with most of its features enabled.'
 
@@ -25,10 +27,6 @@ param azureDevOpsOrganizationName string = ''
 @secure()
 param azureDevOpsProjectName string = ''
 
-@description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
-@secure()
-param devOpsInfrastructureObjectID string = ''
-
 // The Managed DevOps Pools resource is not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
@@ -36,6 +34,10 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+
+resource devOpsInfrastructure 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '31687f79-5e43-4c1e-8c63-d9f4bff5cf8b'
+}
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
@@ -50,7 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
     devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    devOpsInfrastructureObjectID: devOpsInfrastructureObjectID
+    devOpsInfrastructureObjectID: devOpsInfrastructure.id
   }
 }
 
