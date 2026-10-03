@@ -16,7 +16,7 @@ param pairedRegionScriptName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Storage Account to create.')
+@description('Required. The storage account base name. Truncated as needed to append a stable resource-group-specific suffix.')
 param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
@@ -382,7 +382,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2025-09-01' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2026-04-01' = {
-  name: storageAccountName
+  name: '${take(storageAccountName, 11)}${uniqueString(resourceGroup().id, storageAccountName)}'
   location: location
   kind: 'StorageV2'
   sku: {

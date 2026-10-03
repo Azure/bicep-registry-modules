@@ -4,6 +4,7 @@ Assign test subscriptions and deployment locks before scheduling deployment jobs
 
 .DESCRIPTION
 Preserves seeded round-robin selection while exposing only pool positions and ID digests.
+Ignored tests use unique groups and do not share deployment locks.
 Subscription locks are invariant across revisions. Management-group and tenant scopes, plus
 linked or expression-based templates, additionally require a shared deployment-phase lock.
 #>
@@ -81,7 +82,7 @@ function Get-ModuleDeploymentMatrix {
             subscriptionIndex = ''
             subscriptionKey   = ''
             subscriptionName  = 'Deployment disabled'
-            concurrencyGroup  = "avm-deploy-$moduleKey-ignored"
+            concurrencyGroup  = "avm-deploy-$moduleKey-ignored-$([guid]::NewGuid().ToString('N'))"
         }
         if (-not $ignored) {
             $subscription = $subscriptions[$jobIndex % $subscriptions.Count]

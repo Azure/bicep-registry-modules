@@ -26,6 +26,9 @@ Optional. The ID of the management group to fetch deployments from. Relevant for
 .PARAMETER PurgeTestResources
 Optional. Specify to fetch and remove all resources in the current context that match the 'dep-' pattern
 
+.PARAMETER RequireCompleteRemoval
+Optional. Confirm complete removal of terminal deployments and their records before regional relocation.
+
 .EXAMPLE
 Initialize-DeploymentRemoval -DeploymentName 'n-vw-t1-20211204T1812029146Z' -TemplateFilePath "$home/ResourceModules/modules/network/virtual-wan/main.bicep" -resourceGroupName 'test-virtualWan-rg'
 
@@ -59,7 +62,10 @@ function Initialize-DeploymentRemoval {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [switch] $PurgeTestResources
+        [switch] $PurgeTestResources,
+
+        [Parameter()]
+        [switch] $RequireCompleteRemoval
     )
 
     begin {
@@ -177,6 +183,7 @@ function Initialize-DeploymentRemoval {
             TemplateFilePath                 = $TemplateFilePath
             RemoveFirstSequence              = $removeFirstSequence
             RemoveLastSequence               = $removeLastSequence
+            RequireCompleteRemoval           = $RequireCompleteRemoval
         }
         if (-not [String]::IsNullOrEmpty($TemplateFilePath)) {
             $inputObject['TemplateFilePath'] = $TemplateFilePath

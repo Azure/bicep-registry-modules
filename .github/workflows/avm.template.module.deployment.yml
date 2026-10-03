@@ -35,15 +35,25 @@ jobs:
       group: ${{ fromJson(inputs.testCase).concurrencyGroup }}
       queue: max
     steps:
+      - name: "Report skipped deployment"
+        if: ${{ fromJson(inputs.testCase).e2eIgnore }}
+        shell: pwsh
+        env:
+          TEMPLATE_FILE_PATH: "${{ inputs.modulePath }}/${{ fromJson(inputs.testCase).path }}"
+        run: |
+          Write-Output "Skipping deployment for [$env:TEMPLATE_FILE_PATH] because .e2eignore is set."
       - name: "Checkout"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           fetch-depth: 0
       - name: "Set environment"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
       - name: "Run deployment validation with test file [${{ fromJson(inputs.testCase).path }}]"
+        if: ${{ !fromJson(inputs.testCase).e2eIgnore }}
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           modulePath: "${{ inputs.modulePath }}"
