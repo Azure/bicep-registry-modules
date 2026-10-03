@@ -1,5 +1,7 @@
 targetScope = 'subscription'
 
+extension microsoftGraphV1
+
 metadata name = 'Using managed HSM Customer-Managed-Keys with User-Assigned identity'
 metadata description = 'This instance deploys the module with Managed HSM-based Customer Managed Key (CMK) encryption, using a User-Assigned Managed Identity to access the HSM key.'
 
@@ -20,10 +22,6 @@ param namePrefix string = '#_namePrefix_#'
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Required. The object id of the AzureDatabricks Enterprise Application. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDatabricksEnterpriseApplicationObjectId\'.')
-@secure()
-param azureDatabricksEnterpriseApplicationObjectId string = ''
-
 @description('Required. The resource ID of the Managed Identity used by the deployment script. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-deploymentMSIName\'.')
 @secure()
 param deploymentMSIResourceId string = ''
@@ -41,6 +39,10 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
+resource azureDatabricks 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: '2ff814a6-3304-4ab8-85cb-cd0e6f879c1d'
+}
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -60,7 +62,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
-    databricksApplicationObjectId: azureDatabricksEnterpriseApplicationObjectId
+    databricksApplicationObjectId: azureDatabricks.id
     primaryHSMKeyName: nestedHsmDependencies.outputs.primaryKeyName
     secondaryHSMKeyName: nestedHsmDependencies.?outputs.?secondaryKeyName
     deploymentScriptNamePrefix: 'dep-${namePrefix}-ds-${serviceShort}'
